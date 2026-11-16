@@ -17,3 +17,5 @@ IMS AKA 的适用不取决于 SIP 核心是否符合 TS23.228。非3GPP接入可
 接续：[主系统注册](../identity/primary-registration.md)、[EPS 信令承载](../network-policy/eps-signalling.md)。
 
 [官方原文](https://www.etsi.org/deliver/etsi_TS/133100_133199/133180/19.04.00_60/ts_133180v190400p.pdf)，印刷页67–68。
+
+传输认证之外，应用用户的[原生客户端取令牌](../identity/native-authentication.md)另有前提。

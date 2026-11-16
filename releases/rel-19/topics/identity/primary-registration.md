@@ -17,3 +17,5 @@ SIP 层注册完成时，向 MC 服务服务器的第三方注册是可选的。
 - [注册器定位与用户绑定](../signalling/registrar-routing.md)
 
 迁往伙伴系统时另读[双方授权与重定向门槛](migration-authorization.md)，不能把主系统注册成功当作伙伴服务已获授权。
+
+TS33.180 V19.4.0补充：[无令牌初始注册与服务授权](service-authorization.md)。本页仍只代表TS23.280 V19.9.0的高层流程。

@@ -1,0 +1,47 @@
+{
+  "topic_id": "r19-token-refresh",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS33.180 V19.4.0 Annex B.5 的授权码客户端刷新路径；客户端已取得可用refresh token。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v19.4.0",
+  "claims": [
+    {
+      "id": "grant",
+      "clause": "B.5.1",
+      "conditions": [],
+      "conclusion": "B.5.1将refresh token限定为authorization-code grant客户端，不发给implicit grant客户端；此处只描述该刷新路径，不将该句提升为所有伙伴交换的绝对限制。刷新可减少access token过期后的重新登录，并不保证永远免登录。"
+    },
+    {
+      "id": "request",
+      "clause": "B.5.2",
+      "conditions": [
+        "向IdMS token endpoint刷新"
+      ],
+      "conclusion": "grant_type为refresh_token，请求scope只能等于或小于原授权请求范围。如果IdMS发放过client credentials，客户端须用登记时建立的凭据向token endpoint认证。"
+    },
+    {
+      "id": "response",
+      "clause": "B.5.3",
+      "conditions": [
+        "刷新响应"
+      ],
+      "conclusion": "响应提供access token，可另发refresh token；不能假设每次刷新均轮换refresh token。"
+    }
+  ],
+  "limitations": [
+    "这里只核grant、scope与响应的基本边界；未覆盖完整撤销、轮换存储、失败恢复或账户失效处理。",
+    "B.7.4–B.7.5伙伴jwt-bearer交换另列可选refresh token，与B.5.1概括存在范围张力；伙伴流程须另核，不能据本页否定其响应字段。"
+  ],
+  "related": [
+    "native-authentication.md",
+    "service-authorization.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

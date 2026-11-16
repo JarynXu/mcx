@@ -1,0 +1,59 @@
+{
+  "topic_id": "r19-native-authentication",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS33.180 V19.4.0；Annex B 本版详细定义的是 native MCX client。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v19.4.0",
+  "claims": [
+    {
+      "id": "registration",
+      "clauses": [
+        "B.3",
+        "B.4.1"
+      ],
+      "conditions": [],
+      "conclusion": "取令牌前客户端须向IdMS登记，原生客户端登记client_id与redirect URI；登记方法不由此profile规定。不能把这项登记和用户SIP注册混为一件事。"
+    },
+    {
+      "id": "code",
+      "clauses": [
+        "B.4.2.2",
+        "B.4.2.3",
+        "B.4.2.4"
+      ],
+      "conditions": [
+        "原生授权码流程"
+      ],
+      "conclusion": "认证请求使用response_type=code、已登记的client_id和redirect_uri、包含必选openid的scope、state、acr_values及PKCE的code_challenge/S256。响应state必须完全匹配；不匹配须忽略授权码，不交换令牌，也不返回错误。令牌请求使用grant_type=authorization_code并携带code_verifier，redirect_uri与认证请求一致；本条要求原生客户端认证（使用PKCE），若用client secret则按规定置于Authorization头。"
+    },
+    {
+      "id": "consumers",
+      "clauses": [
+        "5.1.2.1",
+        "5.1.2.3.1",
+        "B.4.2.5"
+      ],
+      "conditions": [
+        "令牌响应有效且获授权"
+      ],
+      "conclusion": "ID token由客户端消费，用于识别用户/MC service ID；access token交资源服务器用于服务访问。虽然流程概述描述三类令牌，B.4.2.5表明确把ID token与refresh token列为可选，不能据概述保证每次均有三个。"
+    }
+  ],
+  "limitations": [
+    "这里只给关键约束，不复制完整参数表或OIDC错误状态机。",
+    "OIDC Core及RFC6749/7636等依赖原文未核，不能把本页当完整安全实现；PKCE与客户端认证的原文表述被保留，不擅自等同。"
+  ],
+  "related": [
+    "service-authorization.md",
+    "token-refresh.md",
+    "../security/access-transport.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

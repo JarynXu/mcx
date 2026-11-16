@@ -97,3 +97,7 @@
 Release 19 的条款不得静默用于其他 Release；缺失主题不是“规范没有要求”。
 
 接入安全补充：[HTTP-1 与 SIP-1](topics/security/access-transport.md)已核 TS33.180 V19.4.0 的选定条款；外部安全 profile 与应用令牌流程仍未核。
+
+## 认证到私呼保护的按需路径
+
+[原生客户端取令牌](topics/identity/native-authentication.md)解释客户端登记、授权码和PKCE；[服务授权与身份绑定](topics/identity/service-authorization.md)回答无token能否注册及逐条位置授权；[令牌刷新](topics/identity/token-refresh.md)限定scope与grant类型。随后按问题选择[KMS密钥获取](topics/security/kms-provisioning.md)或[在网私呼PCK分发](topics/security/private-key-distribution.md)。密钥交换成功不是业务准入或媒体连通证明。

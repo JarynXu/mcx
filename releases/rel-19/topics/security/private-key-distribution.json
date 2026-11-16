@@ -1,0 +1,57 @@
+{
+  "topic_id": "r19-private-key-distribution",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "在网（on-network）；TS33.180 V19.4.0；用户已认证，UE已取得与MC service ID关联的KMS密钥材料。",
+    "本流程适用单MC系统MCPTT/MCVideo，以及跨MC系统MCPTT；不据此外推跨系统MCVideo。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v19.4.0",
+  "claims": [
+    {
+      "id": "distribute",
+      "clause": "7.2.2",
+      "conditions": [],
+      "conclusion": "发起UE生成PCK；Private Call Request中的SDP offer携带MIKEY-SAKKE I_MESSAGE，将PCK封装给终止用户的UID，同时带PCK-ID，并用发起用户UID关联密钥签名。单系统经发起侧主服务器转发；跨系统MCPTT还经终止侧伙伴服务器。"
+    },
+    {
+      "id": "verify",
+      "clause": "5.2.2",
+      "conditions": [
+        "所选KMS可接受，收到MIKEY-SAKKE I_MESSAGE"
+      ],
+      "conclusion": "接收实体按发起者身份与时间验证签名，成功后才用KMS下发的身份密钥提取/解密所封装密钥，并取得密钥标识。这里不提供完整重放检查、UID算法或MIKEY解析器。"
+    },
+    {
+      "id": "kms",
+      "clause": "7.2.2",
+      "conditions": [
+        "发起或接收KMS选择不可接受"
+      ],
+      "conclusion": "可返回KMS Redirect Response提供KMS信息，发起方可重新尝试。此分支不保证存在共同可接受的KMS，也不允许绕过证书/域策略。"
+    },
+    {
+      "id": "boundary",
+      "clause": "7.2.2",
+      "conditions": [
+        "本节密钥分发完成"
+      ],
+      "conclusion": "后续会话建立信令仍依MCPTT/MCVideo业务规范进行，因此密钥分发成功本身不能证明被叫接受或媒体已成功建立。若安全网关代表终止用户，发起客户端须向用户警示完整端到端安全可能无法保证。"
+    }
+  ],
+  "limitations": [
+    "TS23.379/23.281业务准入与完整呼叫状态机、SRTP完整profile、KRR列表选择算法未核，不给确定SIP失败码。",
+    "§7.2.2对TS23.281的参考编号前后不一致；按规范名称定位，不将编号错误当作新依赖。"
+  ],
+  "related": [
+    "kms-provisioning.md",
+    "../identity/service-authorization.md",
+    "../interworking/private-encryption.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

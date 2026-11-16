@@ -9,3 +9,5 @@ LMS 根据请求信息触发按需报告，或从 PLMN 获取最新位置，然�
 [条款与条件](on-demand-usage.json)、[来源目录](../../sources.json)。底层§10.9.3.2的已核采集行为见[配置与上报](report-acquisition.md)；PLMN LCS及完整协议编码仍未核；不把此版本结论冒充旧 V19.10.1 摘要已核。
 
 按问题续读：[位置权限要求](privacy.md)、[MC/LMR 互通查询](../interworking/location-query.md)。
+
+令牌与逐条消息校验另见[服务授权](../identity/service-authorization.md)中的位置分支，来源TS33.180 V19.4.0。
