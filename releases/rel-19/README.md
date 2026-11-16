@@ -245,3 +245,7 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 ### Message Store
 
 [访问与对象](topics/mcdata/message-store-access-and-objects.md)区分客户端认证与服务器存入；[文件落点](topics/mcdata/message-store-file-locality.md)说明 retrieveFile 缺省获取和重复 retrieve 的结果；[通知同步](topics/mcdata/message-store-notification-sync.md)区分创建通道、变更订阅和本地对象更新。这里的文件“本地保存”指 Message Store，不是用户终端。
+
+### 通信存储启停
+
+[控制请求](topics/mcdata/message-store-control-request.md)、[PF准入](topics/mcdata/message-store-control-admission.md)与[执行结果](topics/mcdata/message-store-control-result.md)解释获准范围、全体开关和指定名单，以及200的含义。停用不是删除历史对象；指定名单body的原文差异尚未裁决。
