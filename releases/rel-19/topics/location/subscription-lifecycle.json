@@ -1,0 +1,51 @@
+{
+  "topic_id": "r19-location-subscription-lifecycle",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS23.280 V19.9.0; single MC system; Stage2"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v19.9.0",
+  "claims": [
+    {
+      "id": "subscribe",
+      "clause": "10.9.3.5",
+      "conditions": [
+        "MC service server or LMC subscribes using MC service IDs or group IDs"
+      ],
+      "conclusion": "LMS checks LMC authorization; implicitly trusted MC service server need not be checked here. Group subscription obtains affiliation data from service server, maintains current affiliates after a successful group-dynamic-data subscription response, and updates target reporting configuration if needed. Location-subscription response indicates subscription status."
+    },
+    {
+      "id": "notify",
+      "clause": "10.9.3.6.1",
+      "conditions": [
+        "Target user's location already subscribed",
+        "LMS has verified recipient's authorization to receive it"
+      ],
+      "conclusion": "Configured trigger causes latest location notification. Group-based LMC subscription reports only currently affiliated users. MC service server does not receive optional UE label."
+    },
+    {
+      "id": "cancel",
+      "clause": "10.9.3.7",
+      "conditions": [
+        "Authorized user has target MC service ID and its location subscriptions"
+      ],
+      "conclusion": "LMS checks cancellation authorization; group cancellation also cancels group dynamic-data subscription and deletes its affiliated-member list. Cancel associated triggers from the same authorized user/server to the same targets, not every reporting trigger from everyone. Cancellation response indicates cancellation status."
+    }
+  ],
+  "limitations": [
+    "Underlying group-dynamic-data protocol and full cancellation/configuration IE encoding not checked.",
+    "No equivalence to V19.10.1 editorial summaries is asserted."
+  ],
+  "related": [
+    "report-acquisition.md",
+    "on-demand-usage.md",
+    "../interworking/location-subscription.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

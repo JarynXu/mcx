@@ -6,6 +6,6 @@
 
 LMS 根据请求信息触发按需报告，或从 PLMN 获取最新位置，然后立即回报已获取的信息。“立即”不证明定位测量零延迟或特定精度。可选 UE label 不发给 MC 服务服务器。
 
-[条款与条件](on-demand-usage.json)、[来源目录](../../sources.json)。底层§10.9.3.2及PLMN LCS未在本页核验；不把此版本结论冒充旧 V19.10.1 摘要已核。
+[条款与条件](on-demand-usage.json)、[来源目录](../../sources.json)。底层§10.9.3.2的已核采集行为见[配置与上报](report-acquisition.md)；PLMN LCS及完整协议编码仍未核；不把此版本结论冒充旧 V19.10.1 摘要已核。
 
 按问题续读：[位置权限要求](privacy.md)、[MC/LMR 互通查询](../interworking/location-query.md)。

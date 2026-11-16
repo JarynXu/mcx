@@ -1,0 +1,54 @@
+{
+  "topic_id": "r19-location-history-recovery",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS23.280 V19.9.0 §10.9.3.9",
+    "LMC configured to store location while not reporting, has stored triggered reports, and has returned to reporting"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v19.9.0",
+  "claims": [
+    {
+      "id": "recover",
+      "clause": "10.9.3.9.2.1",
+      "conditions": [
+        "LMS requests stored location over restored communication link"
+      ],
+      "conclusion": "LMC returns one or more history reports, newest qualifying stored information first; history transmission does not interrupt current reporting."
+    },
+    {
+      "id": "lookup",
+      "clause": "10.9.3.9.2.2",
+      "conditions": [
+        "MC service server or another LMC requests history via LMS"
+      ],
+      "conclusion": "LMS checks authorization and available history; retrieves from reporting LMC only if desired history is unavailable locally, then reports requested history. Optional UE label goes to requesting LMC."
+    },
+    {
+      "id": "cancel",
+      "clauses": [
+        "10.9.3.9.4.1",
+        "10.9.3.9.4.3"
+      ],
+      "conditions": [
+        "History transmission ongoing",
+        "MC service server or another LMC requests cancellation"
+      ],
+      "conclusion": "LMS checks authorization and determines cancellation of source transmission, LMS transmission or both; executes requested cancellation if no other authorized LMC requests that source's history. Cancellation does not change emergency, non-emergency or not-reporting trigger criteria."
+    }
+  ],
+  "limitations": [
+    "Not a storage-capacity, retention, retransmission or deletion policy.",
+    "No guarantee every movement was recorded: storage depends on configured triggering criteria."
+  ],
+  "related": [
+    "report-acquisition.md",
+    "subscription-lifecycle.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

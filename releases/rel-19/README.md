@@ -70,6 +70,8 @@
 
 ## 位置与网络策略
 
+单系统采集见[配置触发与按需上报](topics/location/report-acquisition.md)，持续跟踪见[组目标、通知及取消](topics/location/subscription-lifecycle.md)，恢复通信后的积压位置见[历史补报](topics/location/history-recovery.md)。
+
 单系统按需查询可先读[取得位置与回报的顺序](topics/location/on-demand-usage.md)，已核 V19.9.0；不据此升级下列其他版本摘要。
 
 [位置传播权限与保护要求](topics/location/privacy.md)已核对 Stage 1 原文，不能替代下列 Stage 2 机制核验。
