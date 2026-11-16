@@ -25,3 +25,5 @@ LMR 定义组的晚加入在 §10.3.3.7.3 step 4 还有媒体条件：指定 E2E
 本页只核验 TS23.283 的互通段；TS23.379 基础呼叫过程、LMR 内部信令及完整失败状态机未核验。
 
 [组配置](group-configuration.md) · [组呼请求字段](group-call-request.md) · [互通范围](scope.md) · [结构化知识](late-entry.json)
+
+Chat 的显式 join、隐式归属及回覆盖另见 [chat 加入](chat-entry.md)，不要从这里省略其独立前提。

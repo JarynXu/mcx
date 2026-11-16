@@ -1,0 +1,44 @@
+{
+  "topic_id": "r19-iwf-deaffiliation-exit",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "预安排或 chat 组呼正在进行，MCPTT 用户与 IWF 代表的 LMR 用户同在呼叫中。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "lmr-group",
+      "clause": "10.3.6.1–2",
+      "conditions": [
+        "组预先定义在 IWF，已有 MCPTT 用户归属，至少一个 LMR 用户由 MCPTT ID 表示",
+        "MCPTT 客户端取消归属"
+      ],
+      "conclusion": "IWF 经 MCPTT server 要求该客户端 leave；用户获通知，客户端响应并退出，server 将响应转交 IWF。"
+    },
+    {
+      "id": "mc-group",
+      "clause": "10.3.6.3",
+      "conditions": [
+        "组预先定义在组管理服务器，已有 MCPTT 用户归属，至少一个 LMR 用户由 MCPTT ID 表示",
+        "IWF 代表的 LMR 用户取消归属"
+      ],
+      "conclusion": "MCPTT server 向 IWF 发该用户的 leave 请求；IWF 响应并退出对应呼叫，移除该 LMR 用户。"
+    }
+  ],
+  "limitations": [
+    "仅核对列出的 Stage 2 互通段，不覆盖底层注册认证、完整失败处理、超时及 LMR 内部过程。",
+    "Only the corresponding de-affiliated user is removed; IWF leave here does not establish that all LMR users leave."
+  ],
+  "related": [
+    "late-entry.md",
+    "group-call-release.md",
+    "scope.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

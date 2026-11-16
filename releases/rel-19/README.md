@@ -56,3 +56,5 @@
 当前没有完整的注册认证、安全密钥、呼叫/媒体状态机、QoS/承载映射和各服务 off-network 实现知识。不能从某个子主题推出这些路径已经覆盖。位置配置取消字段集合仍未核清，本目录不提供该行为的确定规则。
 
 Release 19 的条款不得静默用于其他 Release；缺失主题不是“规范没有要求”。
+
+互通 chat 的 [join 与回覆盖](topics/interworking/chat-entry.md)、[释放后归属保留](topics/interworking/chat-release.md) 与 [取消归属后单用户退出](topics/interworking/deaffiliation-exit.md) 应分别判断，不能把 join、leave 和全组 release 当同一状态变化。

@@ -21,3 +21,5 @@ IWF 按呼叫中每个 MCPTT 用户发释放请求，server 转发；客户端�
 本页只核验 TS23.283 的互通段；TS23.379 基础呼叫过程、LMR 内部信令及完整失败状态机未核验。
 
 [组配置](group-configuration.md) · [组呼请求字段](group-call-request.md) · [互通范围](scope.md) · [结构化知识](group-call-release.json)
+
+若问题涉及 chat 的可选响应或释放后归属状态，另读 [chat 释放](chat-release.md)；若只是取消归属导致单用户离开，读 [de-affiliation 退出](deaffiliation-exit.md)。
