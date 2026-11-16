@@ -75,3 +75,9 @@ BYE或REFER按对应客户端分支加入Reason，protocol=SIP、cause=200、tex
 - [group-participant-removal](group-participant-removal.md)
 
 [ETSI官方TS24.379 V19.4.0](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/19.04.00_60/ts_124379v190400p.pdf)，印刷页73、109、110、149、278、288、289、302；仅本版本。
+
+## 离网独立范围
+
+本页在网条件与claim不适用于离网组呼。离网基本呼叫控制另见：
+
+- [离网组呼的本端退出与忽略窗口](offnetwork-group-local-leave.md)

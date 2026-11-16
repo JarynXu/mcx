@@ -63,3 +63,10 @@
 - [确认等待前的准入检查](../groups/prearranged-admission.md)
 
 - [区分183的来源与确认状态](group-terminating-responses.md)
+
+## 离网独立范围
+
+本页在网条件与claim不适用于离网组呼。离网基本呼叫控制另见：
+
+- [离网组呼的探测、加入与发起](offnetwork-group-probe-and-start.md)
+- [离网组呼的用户接受、确认与公告](offnetwork-group-acceptance-and-announcement.md)

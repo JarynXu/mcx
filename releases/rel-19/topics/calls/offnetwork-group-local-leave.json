@@ -1,0 +1,163 @@
+{
+  "topic_id": "r19-calls-offnetwork-group-local-leave",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "仅TS24.379 V19.4.0 §10.2普通离网MCPTT组呼基本呼叫控制；排除广播、紧急/迫近危险变化、并发呼叫合并、私呼和在网SIP。每组ID独立状态机。",
+    "假定已具备该组的合法使用条件、可用承载、组播地址及所需配置；本主题不核ProSe发现/授权/安全，也不以GROUP CALL PROBE当作无线设备发现。",
+    "呼叫类型控制由原文明示的独立状态机承担；本范围限普通类型且不发生类型变更。媒体/离网话权仅核调用边界，不引入在网服务器仲裁，不宣称获准发声或端到端声音送达。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v19.4.0",
+  "claims": [
+    {
+      "id": "offgroup-maxduration-is-remaining-time",
+      "role": "MCPTT client / UE",
+      "state": "启用TFG6的建呼/加入路径；或S3",
+      "input": "按入口计算TFG6；或TFG6到期",
+      "conditions": [
+        "启用TFG6的建呼/加入路径；或S3；按入口计算TFG6；或TFG6到期"
+      ],
+      "timers": "TFG6=X−(Y−Z)秒；X为组OffNetwork/MaxDuration，Y为当前Unix UTC秒（不数闰秒），Z为触发计算公告的start time；没有此公告时用已存start time。",
+      "conclusion": "TFG6按从呼叫开始已过的时间扣减，而非每位后来加入者重新获得完整X。S3到期时释放媒体、调用24.380 §7.2.3.9.2停止话权、停运行的TFG2、启TFG5并进S6。",
+      "clause": "10.2.2.4.1.2;10.2.2.4.5.9",
+      "printed_pages": [
+        384,
+        385,
+        392,
+        393
+      ],
+      "limitations": [
+        "不编造MaxDuration默认；24.483准确配置表未核。",
+        "负剩余时长、时钟偏差和UTC回拨规则未在这些段落给出。"
+      ],
+      "source_references": [
+        {
+          "url": "https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/19.04.00_60/ts_124379v190400p.pdf",
+          "clause": "10.2.2.4.1.2;10.2.2.4.5.9",
+          "printed_pages": [
+            384,
+            385,
+            392,
+            393
+          ],
+          "evidence_paraphrase": "最大时长基于原call start time；到期本端转忽略。",
+          "source_id": "3gpp-ts-24.379-v19.4.0"
+        }
+      ],
+      "normative_strength": "SHALL；证据边界不新增协议动作。"
+    },
+    {
+      "id": "offgroup-local-leave",
+      "role": "MCPTT client / UE",
+      "state": "S3、S4或S5",
+      "input": "用户要求release该组呼",
+      "conditions": [
+        "S3、S4或S5；用户要求release该组呼"
+      ],
+      "timers": "停运行的TFG4、TFG2、TFG6；启动TFG5。",
+      "conclusion": "释放已建立媒体（如有），调用24.380 §7.2.3.9.2停止话权，停相关计时并进入S6。条款是本端退出和忽略公告，不列向全组发结束消息，也不能用本端动作证明其他UE已退出。",
+      "clause": "10.2.2.4.5.1",
+      "printed_pages": [
+        390
+      ],
+      "limitations": [
+        "不把此release改写为SIP BYE，也不把停止话权helper当已核全部离网话权状态转换。"
+      ],
+      "source_references": [
+        {
+          "url": "https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/19.04.00_60/ts_124379v190400p.pdf",
+          "clause": "10.2.2.4.5.1",
+          "printed_pages": [
+            390
+          ],
+          "evidence_paraphrase": "本端释放后S6，不是全组清除。",
+          "source_id": "3gpp-ts-24.379-v19.4.0"
+        }
+      ],
+      "normative_strength": "SHALL；证据边界不新增协议动作。"
+    },
+    {
+      "id": "offgroup-ignore-then-clear",
+      "role": "MCPTT client / UE",
+      "state": "S6",
+      "input": "收到组ID匹配本状态机保存组ID的ANNOUNCEMENT；或TFG5到期",
+      "conditions": [
+        "S6；收到组ID匹配本状态机保存组ID的ANNOUNCEMENT；或TFG5到期"
+      ],
+      "timers": "匹配公告停止并重新启动TFG5；到期清理。",
+      "conclusion": "收到组ID匹配的公告时，更新保存的SDP、call identifier、originating user ID、refresh interval及Call start time，停止并重新启动TFG5，仍留S6。因此30秒不是自用户离开起绝对清理上限。TFG5到期释放保存的SDP、call identifier、originating user ID、refresh interval、group ID及Call start time，销毁call-type状态机并回S1；不以本端清理证明无线范围中该组呼结束。",
+      "clause": "10.2.2.4.5.2/.4;B.3.1.1",
+      "printed_pages": [
+        390,
+        391,
+        711
+      ],
+      "limitations": [
+        ".5.2入口要求组ID匹配，未要求call identifier相同；不能复制周期公告的完整匹配表当作该段原文。",
+        "S6主动重新加入的.5.3不在本主题展开。"
+      ],
+      "source_references": [
+        {
+          "url": "https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/19.04.00_60/ts_124379v190400p.pdf",
+          "clause": "10.2.2.4.5.2/.4;B.3.1.1",
+          "printed_pages": [
+            390,
+            391,
+            711
+          ],
+          "evidence_paraphrase": "S6每次符合条件的公告重启忽略计时。",
+          "source_id": "3gpp-ts-24.379-v19.4.0"
+        }
+      ],
+      "normative_strength": "SHALL；证据边界不新增协议动作。"
+    },
+    {
+      "id": "offgroup-cancel-while-probing",
+      "role": "MCPTT client / UE",
+      "state": "S2之后的S7",
+      "input": "S2用户release；之后S7收到匹配组公告或TFG1到期",
+      "conditions": [
+        "S2之后的S7；S2用户release；之后S7收到匹配组公告或TFG1到期"
+      ],
+      "timers": "S2取消停TFG3但未停TFG1；S7收到公告停TFG1启TFG5；TFG1到期回S1。",
+      "conclusion": "S2尚在探测时用户退出只停重发、进S7，不走已有公告的S6释放分支。S7若收到匹配组公告，保存SDP、call ID、originator、refresh及start time，转S6；若TFG1先到期则释放组ID、销毁call-type状态机、回S1。",
+      "clause": "10.2.2.4.5.5/.7/.8",
+      "printed_pages": [
+        391,
+        392
+      ],
+      "limitations": [
+        "不把S7等待理解为仍在参与媒体；S7再次主动发起的.5.6未展开。"
+      ],
+      "source_references": [
+        {
+          "url": "https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/19.04.00_60/ts_124379v190400p.pdf",
+          "clause": "10.2.2.4.5.5/.7/.8",
+          "printed_pages": [
+            391,
+            392
+          ],
+          "evidence_paraphrase": "探测中取消仍等原公告窗口，不继续PROBE重发。",
+          "source_id": "3gpp-ts-24.379-v19.4.0"
+        }
+      ],
+      "normative_strength": "SHALL；证据边界不新增协议动作。"
+    }
+  ],
+  "limitations": [
+    "不是完整离网状态机、媒体发送成功或全员参与证明。"
+  ],
+  "related": [
+    "offnetwork-group-probe-and-start.md",
+    "offnetwork-group-acceptance-and-announcement.md",
+    "group-participant-leave.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "standard_stage": 3
+}

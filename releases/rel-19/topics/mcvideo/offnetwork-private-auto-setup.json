@@ -1,0 +1,158 @@
+{
+  "topic_id": "r19-mcvideo-offnetwork-private-auto-setup",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "固定TS24.281 V19.3.0 §10.3，两个已确定用户之间普通离网私呼，选择自动应答路径；不处理发现邻居、组呼加入、手动应答、video pull、紧急、网关或在网SIP/PF/CF流程。",
+    "目标MCVideo ID和所需离网传输配置已经具备，具体发现、地址解析及ProSe承载取得未核。每个私呼控制状态机以MCVideo user ID为粒度，同时私呼数受配置MaxCallNc10限制；不创造数值或超限响应。",
+    "P0无私呼控制实体；P1非进行中且忽略同call id；P2等呼叫响应；P3等释放响应；P4正在通话；P5为pending。必须按claim的本地角色、状态、消息及call-id条件执行，不能把一端状态当两端同时成立。",
+    "普通媒体与transmission control只保留24.281声明的接口。TS24.581 V19.2.0的离网媒体过程未核；TS24.379、24.483、33.180及RFC细节未核，不声称已闭合发送/接收许可、首帧、完整互通或安全算法。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.281-v19.3.0",
+  "claims": [
+    {
+      "id": "offnetwork-call-control-is-not-sip",
+      "conditions": [
+        "客户端参与本范围离网私呼。"
+      ],
+      "conclusion": "信令使用MONP MCVideo消息，由MONP MCVIDEO MESSAGE CARRIER承载，经UDP发送至条文所称用户local IP，端口8809、TTL255；收到该端口UDP按MONP消息处理。不能套用在网INVITE/200/BYE或CF授权状态。",
+      "clause": "10.3.1.1.1",
+      "printed_pages": [
+        353
+      ],
+      "normative_strength": "所述条件成立后SHALL；本条不增补未列入口。",
+      "short_evidence": "8809",
+      "limitations": [
+        "原文local IP address of the MCVideo user不足以闭合发现/路由，不自行改成广播或特定对端地址算法。",
+        "完整载体封装依赖24.379；监听UDP并不证明业务包或画面已到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v19.3.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf",
+          "clause": "10.3.1.1.1",
+          "printed_pages": [
+            353
+          ]
+        }
+      ]
+    },
+    {
+      "id": "offnetwork-auto-initiation-keeps-profile-gates",
+      "conditions": [
+        "发起端处于P0或P1，用户要求发起普通私呼；user profile Common/PrivateCall/Authorised=true；请求自动应答且AutoCommence=true。"
+      ],
+      "conclusion": "客户端生成并保存随机call identifier、双方用户ID和PRIVATE CALL类型，保存自动应答模式及离网私呼ProSe优先级，生成SDP并发送SETUP REQUEST；CFP1置1、启动TFP1，进入P2。若需要建立端到端安全上下文，须在SDP前完成本条规定的PCK/PCK-ID、面向被叫封装与签名I_MESSAGE步骤；位置保存及携带为可选。",
+      "clause": "10.3.2.1;10.3.2.4.2.1",
+      "printed_pages": [
+        355,
+        356,
+        357
+      ],
+      "normative_strength": "主干与条件安全分支SHALL；位置MAY。",
+      "short_evidence": "Authorised",
+      "limitations": [
+        "完整配置路径按24.281引用，未核24.483的默认、上限或权限配置来源；不把发起授权等同发流/收流许可。",
+        "随机范围原文为(0,65536)，不擅自解释端点包含性。未满足自动模式条件时存在手动分支，但本主题不展开。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v19.3.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf",
+          "clause": "10.3.2.1;10.3.2.4.2.1",
+          "printed_pages": [
+            355,
+            356,
+            357
+          ]
+        }
+      ]
+    },
+    {
+      "id": "offnetwork-auto-target-media-rejection",
+      "conditions": [
+        "终接端P0或P1；收到新call identifier的SETUP REQUEST；所声明SDP媒体会话不能建立；本页限自动应答路径。"
+      ],
+      "conclusion": "终接端保存标识并回PRIVATE CALL REJECT；仅在请求限制失败通知且FailRestrict=true时Reason为FAILED，否则为MEDIA FAILURE。启动TFP7；若原为P0则转P1。发起端若在P2收到相同call identifier的REJECT，则停止运行中的TFP1/TFP2、启动TFP7、释放呼叫控制状态机并进入P1。",
+      "clause": "10.3.2.4.3.1;10.3.2.4.2.7",
+      "printed_pages": [
+        359,
+        360,
+        358
+      ],
+      "normative_strength": "所述条件成立后SHALL；本条不增补未列入口。",
+      "short_evidence": "MEDIA FAILURE",
+      "limitations": [
+        "媒体可否建立的底层判定未核；不替换成SIP错误码。",
+        "接收拒绝后的release state machine与进入P1并列，按原文保留，不另造对象销毁算法。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v19.3.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf",
+          "clause": "10.3.2.4.3.1;10.3.2.4.2.7",
+          "printed_pages": [
+            359,
+            360,
+            358
+          ]
+        }
+      ]
+    },
+    {
+      "id": "offnetwork-auto-target-accept-is-still-pending",
+      "conditions": [
+        "终接端P0或P1收到自动模式SETUP REQUEST；call identifier不同于所存值；SDP媒体可以建立。"
+      ],
+      "conclusion": "终接端保存call/双方ID、PRIVATE CALL类型及优先级。若offer携mikey I_MESSAGE须验签；失败回REJECT并留当前状态，Reason仅在请求隐藏且FailRestrict=true时为FAILED，否则为E2E SECURITY CONTEXT FAILURE。验签成功才解封PCK并取PCK-ID，随后生成answer、发ACCEPT、按answer建立媒体、CFP4置1、启动TFP4并进P5；无a=key-mgmt的分支也明确执行后述answer/ACCEPT/媒体/计数/等待步骤。",
+      "clause": "10.3.2.4.3.2",
+      "printed_pages": [
+        360,
+        361
+      ],
+      "normative_strength": "所述条件成立后SHALL；本条不增补未列入口。",
+      "short_evidence": "P5",
+      "limitations": [
+        "只允许原文明确的有合法指定密钥属性和完全无属性两支；有其它key-mgmt格式时不补默认通过。",
+        "P5一般状态说明称等待用户，但自动流程在发ACCEPT后也进P5；不得把自动P5解释成用户尚未点击接受。",
+        "拒绝分支写remain而非显式stop；不补停止字句，成功验签及无属性分支本身各有独立条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v19.3.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf",
+          "clause": "10.3.2.4.3.2",
+          "printed_pages": [
+            360,
+            361
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "仅已确定用户间自动应答的有限离网信令路径，不是可直接实现的完整协议或媒体指南。"
+  ],
+  "related": [
+    "offnetwork-private-media-entry.md",
+    "offnetwork-private-release.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "standard_stage": 3,
+  "source_issues": [
+    {
+      "clause": "10.3.2.3.6 versus10.3.2.4.3.2",
+      "printed_pages": [
+        356,
+        361
+      ],
+      "issue": "P5概述等待用户，但自动流程ACCEPT后亦进P5；按事件保持两个语境。"
+    }
+  ]
+}

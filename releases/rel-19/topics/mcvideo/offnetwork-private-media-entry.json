@@ -1,0 +1,146 @@
+{
+  "topic_id": "r19-mcvideo-offnetwork-private-media-entry",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "固定TS24.281 V19.3.0 §10.3，两个已确定用户之间普通离网私呼，选择自动应答路径；不处理发现邻居、组呼加入、手动应答、video pull、紧急、网关或在网SIP/PF/CF流程。",
+    "目标MCVideo ID和所需离网传输配置已经具备，具体发现、地址解析及ProSe承载取得未核。每个私呼控制状态机以MCVideo user ID为粒度，同时私呼数受配置MaxCallNc10限制；不创造数值或超限响应。",
+    "P0无私呼控制实体；P1非进行中且忽略同call id；P2等呼叫响应；P3等释放响应；P4正在通话；P5为pending。必须按claim的本地角色、状态、消息及call-id条件执行，不能把一端状态当两端同时成立。",
+    "普通媒体与transmission control只保留24.281声明的接口。TS24.581 V19.2.0的离网媒体过程未核；TS24.379、24.483、33.180及RFC细节未核，不声称已闭合发送/接收许可、首帧、完整互通或安全算法。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.281-v19.3.0",
+  "claims": [
+    {
+      "id": "offnetwork-originator-accept-does-not-prove-media-permission",
+      "conditions": [
+        "发起端P2收到回应其SETUP REQUEST且call identifier相同的PRIVATE CALL ACCEPT。"
+      ],
+      "conclusion": "发起端存SDP answer并发ACCEPT ACK，停止运行中的TFP1/TFP2，按answer建立媒体；随后启动transmission control、TFP5并进P4。原文把该端角色写为terminating transmission participant，并指向24.581的clause a.b；保留字面，不自行改角色或选择某个在网状态。P4/媒体建立不证明已获具体流的发送或接收许可，更不证明首帧显示。",
+      "clause": "10.3.2.4.2.8",
+      "printed_pages": [
+        358,
+        359
+      ],
+      "normative_strength": "所述条件成立后SHALL；本条不增补未列入口。",
+      "short_evidence": "clause a.b",
+      "limitations": [
+        "未取得24.581离网原文，不能给出grant、排队、接收请求、首帧确认的算法。",
+        "不把ACCEPT ACK当SIP ACK，也不把SDP建立义务写成已实际成功传输。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v19.3.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf",
+          "clause": "10.3.2.4.2.8",
+          "printed_pages": [
+            358,
+            359
+          ]
+        }
+      ]
+    },
+    {
+      "id": "offnetwork-target-completes-on-ack-or-rtp",
+      "conditions": [
+        "自动应答终接端已按接受分支进入P5；收到发起用户的PRIVATE CALL ACCEPT ACK或RTP媒体。"
+      ],
+      "conclusion": "实际处理者是自动接收端P5。该接收端须停TFP4，按本段引用启动transmission control；step2字面称originating MCVideo client并指向24.581 clause a.b，保留该角色称谓差异，不改成终接。随后启动TFP5并进P4。这两种触发是替代关系：ACK路径无需先证明RTP到达；RTP路径只表明相应媒体接收事件，不等于完成解码、展示或应用验收。",
+      "clause": "10.3.2.4.3.4",
+      "printed_pages": [
+        362
+      ],
+      "normative_strength": "所述条件成立后SHALL；本条不增补未列入口。",
+      "short_evidence": "RTP",
+      "limitations": [
+        "本段仍引用24.581 clause a.b；没有完整媒体资格判据。",
+        "本入口未重述call-id相等检查，不自行加成原文强制字段校验；完整消息分派仍未核。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v19.3.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf",
+          "clause": "10.3.2.4.3.4",
+          "printed_pages": [
+            362
+          ]
+        }
+      ]
+    },
+    {
+      "id": "offnetwork-auto-setup-timeout-is-not-sip-failure",
+      "conditions": [
+        "分别观察自动模式发起端P2的TFP1/CFP1，或接受后的终接端P5的TFP4/CFP4。"
+      ],
+      "conclusion": "普通计时到期重传各自SETUP REQUEST或ACCEPT并增加相应计数、重启计时器、保留等待状态；当发起端TFP1到期且CFP1等于上限并为自动模式时，启动TFP7并进P1；终接端TFP4到期且CFP4等于上限时，同样启动TFP7并进P1。这是不同端点的有限失败出口，不是SIP超时响应。",
+      "clause": "10.3.2.4.2.2;10.3.2.4.2.4;10.3.2.4.3.3;10.3.2.4.3.5",
+      "printed_pages": [
+        357,
+        358,
+        361,
+        362
+      ],
+      "normative_strength": "所述条件成立后SHALL；本条不增补未列入口。",
+      "short_evidence": "TFP7",
+      "limitations": [
+        "原文一般重传与达上限专节并列，未在一般入口写低于上限；不提供自行裁定的重叠事件执行优先级。",
+        "不造计时秒数/重传上限，也不从进P1推定全部媒体资源已清，尤其终接先建立媒体后的失败段未列清理步骤。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v19.3.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf",
+          "clause": "10.3.2.4.2.2;10.3.2.4.2.4;10.3.2.4.3.3;10.3.2.4.3.5",
+          "printed_pages": [
+            357,
+            358,
+            361,
+            362
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "仅已确定用户间自动应答的有限离网信令路径，不是可直接实现的完整协议或媒体指南。"
+  ],
+  "related": [
+    "offnetwork-private-auto-setup.md",
+    "offnetwork-private-release.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "standard_stage": 3,
+  "source_issues": [
+    {
+      "clause": "10.3.2.4.2.8 step7",
+      "printed_pages": [
+        359
+      ],
+      "issue": "发起端接收ACCEPT后的媒体调用字面为terminating transmission participant且引用clause a.b；不自行修正角色或引用。"
+    },
+    {
+      "clause": "10.3.2.4.3.4 step2",
+      "printed_pages": [
+        362
+      ],
+      "issue": "实际入口为自动接收端P5，媒体调用字面却称originating MCVideo client并引用clause a.b；并列保留实际处理者及源文角色，不裁决。"
+    },
+    {
+      "clause": "10.3.2.4.2.2/.4;10.3.2.4.3.3/.5;10.3.2.4.5.2/.3",
+      "printed_pages": [
+        357,
+        358,
+        361,
+        362,
+        366,
+        367
+      ],
+      "issue": "一般超时重传与计数上限出口并列，未写完整优先级，不裁决同时满足的执行调度。"
+    }
+  ]
+}

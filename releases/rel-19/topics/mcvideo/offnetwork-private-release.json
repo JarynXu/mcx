@@ -1,0 +1,135 @@
+{
+  "topic_id": "r19-mcvideo-offnetwork-private-release",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "固定TS24.281 V19.3.0 §10.3，两个已确定用户之间普通离网私呼，选择自动应答路径；不处理发现邻居、组呼加入、手动应答、video pull、紧急、网关或在网SIP/PF/CF流程。",
+    "目标MCVideo ID和所需离网传输配置已经具备，具体发现、地址解析及ProSe承载取得未核。每个私呼控制状态机以MCVideo user ID为粒度，同时私呼数受配置MaxCallNc10限制；不创造数值或超限响应。",
+    "P0无私呼控制实体；P1非进行中且忽略同call id；P2等呼叫响应；P3等释放响应；P4正在通话；P5为pending。必须按claim的本地角色、状态、消息及call-id条件执行，不能把一端状态当两端同时成立。",
+    "普通媒体与transmission control只保留24.281声明的接口。TS24.581 V19.2.0的离网媒体过程未核；TS24.379、24.483、33.180及RFC细节未核，不声称已闭合发送/接收许可、首帧、完整互通或安全算法。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.281-v19.3.0",
+  "claims": [
+    {
+      "id": "offnetwork-user-release-enters-wait",
+      "conditions": [
+        "本地客户端P4，用户要求释放普通离网私呼。"
+      ],
+      "conclusion": "客户端发PRIVATE CALL RELEASE，携所存call和双方ID；CFP3置1、启动TFP3并进P3。用户提出释放的这个入口未列立即终止媒体，不应改写为点击停止即双方停止播放。",
+      "clause": "10.3.2.4.5.1",
+      "printed_pages": [
+        366
+      ],
+      "normative_strength": "所述条件成立后SHALL；本条不增补未列入口。",
+      "short_evidence": "P3",
+      "limitations": [
+        "发起建立前取消另有P2入口，不等同此P4释放；不套BYE或SIP200。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v19.3.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf",
+          "clause": "10.3.2.4.5.1",
+          "printed_pages": [
+            366
+          ]
+        }
+      ]
+    },
+    {
+      "id": "offnetwork-release-receiver-and-requester-stop-separately",
+      "conditions": [
+        "分别观察P4客户端收到来自originating MCVideo user的PRIVATE CALL RELEASE，或发送RELEASE后处于P3且收到对应RELEASE ACK的端。"
+      ],
+      "conclusion": "P4客户端收到来自originating MCVideo user的RELEASE后，先发RELEASE ACK，再终止本地媒体、启动TFP7并进P1；P3请求端收到ACK则停运行中的TFP3、终止媒体、启动TFP7并进P1。两端按各自事件处理，不存在由单一ACK证明两个播放器同步清空的结论。",
+      "clause": "10.3.2.4.5.4;10.3.2.4.5.5",
+      "printed_pages": [
+        367
+      ],
+      "normative_strength": "所述条件成立后SHALL；本条不增补未列入口。",
+      "short_evidence": "terminate",
+      "limitations": [
+        "未核缓冲帧、应用显示及底层资源释放过程；不能把terminate media解释为已撤回历史视频。",
+        "接收分支保留原文originating发送者限定，不扩成任意对端，不据此补双向释放算法。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v19.3.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf",
+          "clause": "10.3.2.4.5.4;10.3.2.4.5.5",
+          "printed_pages": [
+            367
+          ]
+        }
+      ]
+    },
+    {
+      "id": "offnetwork-release-timeout-and-duration-have-local-exits",
+      "conditions": [
+        "P3等待释放响应；或P4的TFP5到期；或P1的TFP7到期。"
+      ],
+      "conclusion": "P3的TFP3到期走释放重传、增加CFP3并继续等待；达CFP3上限的专节则要求终止媒体、启动TFP7并进P1。P4中TFP5到期也直接终止媒体、启TFP7、进P1。P1在TFP7到期后清除所存call identifier并进P0，不能把P1和彻底清标识的P0混为一态。",
+      "clause": "10.3.2.4.5.2;10.3.2.4.5.3;10.3.2.4.5.6;10.3.2.4.5.7",
+      "printed_pages": [
+        366,
+        367,
+        368
+      ],
+      "normative_strength": "所述条件成立后SHALL；本条不增补未列入口。",
+      "short_evidence": "CFP3",
+      "limitations": [
+        "一般重传与上限专节的重叠触发优先级不裁决；原文将CFP3称timer、将TFP3括注称request retransmission，保留差异。",
+        "TFP5到期段未列向对端发送RELEASE，不自行补成完整双方通知流程。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v19.3.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf",
+          "clause": "10.3.2.4.5.2;10.3.2.4.5.3;10.3.2.4.5.6;10.3.2.4.5.7",
+          "printed_pages": [
+            366,
+            367,
+            368
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "仅已确定用户间自动应答的有限离网信令路径，不是可直接实现的完整协议或媒体指南。"
+  ],
+  "related": [
+    "offnetwork-private-auto-setup.md",
+    "offnetwork-private-media-entry.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "standard_stage": 3,
+  "source_issues": [
+    {
+      "clause": "10.3.2.4.5.2 step3;10.3.2.4.5.3 opening",
+      "printed_pages": [
+        366,
+        367
+      ],
+      "issue": "CFP3写timer，TFP3括注request；保留变量名与局部功能，不造新计时器。"
+    },
+    {
+      "clause": "10.3.2.4.2.2/.4;10.3.2.4.3.3/.5;10.3.2.4.5.2/.3",
+      "printed_pages": [
+        357,
+        358,
+        361,
+        362,
+        366,
+        367
+      ],
+      "issue": "一般超时重传与计数上限出口并列，未写完整优先级，不裁决同时满足的执行调度。"
+    }
+  ]
+}

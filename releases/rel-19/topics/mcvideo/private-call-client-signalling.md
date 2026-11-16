@@ -68,8 +68,11 @@ Auto 分支要求 Answer-Mode=Auto 且本地 auto，或本地 manual 但愿意 a
 
 - 从另一客户端拉取视频另见 video-pull-request-and-authorization；本页普通私呼媒体结论不直接扩展到 pull。pull 专属 TS24.581 媒体依赖仍未核实，隐式请求不据此推断发生在200之前或之后。
 
+- 普通离网自动私呼另见offnetwork-private-auto-setup；本页在网SIP及媒体结论不直接迁移到离网。离网媒体发送/接收资格和画面交付仍须各自来源支持。
+
 ## 按需继续
 
+- [离网自动私呼：发起资格、接受与拒绝](offnetwork-private-auto-setup.md)
 - [向另一客户端拉视频：请求角色与双边授权](video-pull-request-and-authorization.md)
 
 - [private-call-server-admission](private-call-server-admission.md)
