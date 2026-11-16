@@ -1,0 +1,62 @@
+{
+  "topic_id": "r19-identity-idm-protocol-sequence",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "仅 TS24.482 V19.0.0 §§4.1、5.3、6.2–6.3 的在网流程。认证成功不等于 MC 业务已获准；具体服务授权另行执行。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.482-v19.0.0",
+  "claims": [
+    {
+      "id": "trigger-and-authorization",
+      "clause": "5.3; 6.2.1; 6.3.1",
+      "conditions": [
+        "MC service client 触发用户认证"
+      ],
+      "conclusion": "IdM client 通过 TLS 访问配置的授权端点，认证请求包含 client_id 及要求参数。正文展开 GET，也允许 OIDC 的 POST 替代。收到用于凭据表单的200后提示用户名/密码并POST；用户名/密码是必须支持的方法，不是唯一允许的方法。"
+    },
+    {
+      "id": "token-endpoint",
+      "clause": "6.2.1; 6.3.1",
+      "conditions": [
+        "已收到 OIDC Authentication Response；完整流程还须执行适用的state等安全检查，见native-authentication"
+      ],
+      "conclusion": "IdM client 通过 TLS 连接配置的 token endpoint，通过表单编码POST发送 grant_type=authorization_code 与其余要求参数。服务器验证 Token Request，有效才生成成功 Token Response；不能把表单200或授权响应当作已取得业务 access token。"
+    },
+    {
+      "id": "handoff",
+      "clause": "6.2.1",
+      "conditions": [
+        "IdM client 收到 OIDC Token Response"
+      ],
+      "conclusion": "本版要求按 OIDC 验证响应中的 ID/access/refresh token，再将 ID/access token交给 MC service client，交付方法由实现决定。这里不把“验证”展开成客户端解码所有JWT；与安全规范的验证分工及字段可选性须分别核对。"
+    },
+    {
+      "id": "home-exchange",
+      "clause": "4.1; 6.2.2; 6.3.2",
+      "conditions": [
+        "已取得 home access token，服务客户端请求用于伙伴身份认证的 security token"
+      ],
+      "conclusion": "通过 TLS 向 home token endpoint 发 token-exchange 表单POST。返回 access_token 字段承载的是 security token，IdM client 提取并暂存，供伙伴令牌请求使用；字段同名不代表可直接当作伙伴业务资源的 access token。暂存到到期或被替换的说明不等于规范定义了安全删除算法。"
+    }
+  ],
+  "limitations": [
+    "OIDC、RFC6749/8693与配置文档完整原文未核，未提供全部错误、超时或重试策略。",
+    "本版要求客户端验证三类token；不能据此决定opaque access token的解析办法。",
+    "字段义务及文本疑义见 token-response-obligations；本页不统一跨规范措辞。",
+    "不得把客户端三token验证简化成只检查expires_in，也不得据此要求客户端解码全部token；外部OIDC依赖和两个规范的角色分工尚未完整消解。"
+  ],
+  "related": [
+    "native-authentication.md",
+    "token-response-obligations.md",
+    "partner-token-exchange.md",
+    "http-transport-endpoints.md",
+    "service-authorization.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

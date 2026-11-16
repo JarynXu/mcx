@@ -125,3 +125,9 @@ Release 19 的条款不得静默用于其他 Release；缺失主题不是“规�
 组协议排障继续看[代理至组拥有方的授权](topics/groups/subscription-proxy.md)和[未知XML条件处理](topics/groups/unknown-extensions.md)；[权限页](topics/groups/document-access.md)同时列出资源联动及所有者仍受限制的操作。
 
 HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-transport-endpoints.md)和[发送者身份分支](topics/identity/http-sender-identity.md)，再进入具体资源授权。两页限定 TS24.482 V19.0.0，不代表后续版本。
+
+需要消息顺序时，查[IdM授权与令牌端点](topics/identity/idm-protocol-sequence.md)；参数安全约束仍在原生认证页，响应字段差异单列，不用流程概述覆盖条件。
+
+### 私呼被叫的业务结果
+
+密钥分发后可续读[拒绝、应答与取消](topics/calls/private-client-acceptance.md)及[模式选择](topics/calls/commencement-selection.md)。这些 TS24.379 V19.4.0 客户端步骤区分 MIKEY失败、用户拒绝、振铃与最终响应；服务器授权和媒体全流程仍未完整覆盖。

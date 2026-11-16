@@ -59,3 +59,5 @@
 - [UE密钥清理](ue-key-lifecycle.md)
 
 - [kms-redirection](kms-redirection.md)
+
+按需续读：[协议步骤](../calls/private-client-acceptance.md)，注意页面所标规范版本及独立适用条件。

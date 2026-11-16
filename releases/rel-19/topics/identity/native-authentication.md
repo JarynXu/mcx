@@ -40,3 +40,5 @@ ID token由客户端消费，用于识别用户/MC service ID；access token交�
 ## 跨规范使用前
 
 [令牌响应义务差异](token-response-obligations.md)列出 TS24.482 V19.0.0 与本页安全规范版本的不同措辞。不要把 ID/refresh 字段必选性静默统一。
+
+按需续读：[协议步骤](idm-protocol-sequence.md)，注意页面所标规范版本及独立适用条件。
