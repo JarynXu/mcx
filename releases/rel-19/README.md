@@ -145,3 +145,16 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 从[兴趣组PUBLISH](topics/groups/explicit-affiliation-publish.md)请求建立或刷新，[SUBSCRIBE/NOTIFY](topics/groups/explicit-affiliation-observation.md)用于观察结果。部分[退组请求](topics/groups/explicit-deaffiliation-request.md)必须保留其他兴趣组；[服务器撤销状态](topics/groups/explicit-deaffiliation-state.md)说明失败清理及同用户多客户端的未闭合处。PUBLISH200不能单独证明逐组变更成功。
 
 已归属后，按[组ID加入及服务器late entry](topics/groups/active-call-entry.md)或[已有会话身份重入](topics/groups/rejoin-session.md)选择入口；两者还须通过各自通话准入。本文不把归属成功、被邀请与通话已建立合成一个状态。
+
+## 归属后如何观察和退出通话
+
+- [请求触发隐式归属的资格](topics/groups/implicit-affiliation-eligibility.md)与[候选记录及结果处理](topics/groups/implicit-affiliation-state.md)。
+- [订阅会话参与者状态](topics/groups/conference-state.md)，需要合并增量通知时读[版本与合并规则](topics/groups/conference-state-merge.md)。
+- [主动退出本次组呼](topics/calls/group-participant-leave.md)与[服务器移除参与者](topics/calls/group-participant-removal.md)。
+
+归属状态、会话名单、呼叫接受和媒体可用性分别判断，不用一个200响应代替所有结果。
+
+## 预建立与业务会话
+
+- [建立、空闲修改和拆除](topics/calls/preestablished-session-lifecycle.md)
+- [预建立承载组呼：REFER、Contact 与通知](topics/calls/preestablished-group-association.md)

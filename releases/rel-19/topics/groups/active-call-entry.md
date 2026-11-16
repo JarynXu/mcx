@@ -61,3 +61,5 @@ TS24.379 V19.4.0，普通在网预安排组呼；限定非重组，非远程发�
 [ETSI官方TS24.379 V19.4.0](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/19.04.00_60/ts_124379v190400p.pdf)，印刷页278、297、298、299、303、304；仅本版本。
 
 - [先分清归属通知与加入通话](explicit-affiliation-observation.md)
+
+- [conference-state](conference-state.md)

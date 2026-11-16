@@ -1,0 +1,57 @@
+{
+  "topic_id": "r19-groups-conference-state-merge",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "RFC4575（2006-08）§4.3–4.6、§5.2；作为TS24.379 V19.4.0 conference状态过程的外部依赖，不把RFC标成Rel19规范。",
+    "下述版本比较在同一订阅内进行；state指XML文档/元素更新方式，不是endpoint的接听状态。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "ietf-rfc4575",
+  "claims": [
+    {
+      "id": "initial-full",
+      "clause": "4.3;4.6;5.2",
+      "conditions": [
+        "首次收到conference-info state=full的通知。"
+      ],
+      "conclusion": "用文档version初始化本地版本并填入内容；version的作用域是订阅，不是全系统共享序号。"
+    },
+    {
+      "id": "old-and-full",
+      "clause": "4.6",
+      "conditions": [
+        "已有本地版本且收到后续通知。"
+      ],
+      "conclusion": "version不大于本地值则丢弃；更高版本的full/deleted替换本地状态和版本。根deleted表示会议已不存在，SHOULD以Expires=0终止订阅。"
+    },
+    {
+      "id": "partial-gap",
+      "clause": "4.6",
+      "conditions": [
+        "收到比本地版本更高的根partial通知。"
+      ],
+      "conclusion": "恰好高1才推进版本并合并；高出超过1则必须刷新订阅以触发全量通知，不能把缺失更新自行补齐。"
+    },
+    {
+      "id": "element-state",
+      "clause": "4.4;4.5;4.6",
+      "conditions": [
+        "正在处理可接受的更新；按对应层级的state和键合并。"
+      ],
+      "conclusion": "full替换对应元素，deleted移除对应元素，partial按键递归更新；user和endpoint的键均为各自entity。缺省state为full。不能因根partial就把所有子元素当partial，也不能把本次未列用户视为离会。 父full要求子full；deleted父的子信息必须忽略。递归只用于支持partial的元素，原子元素整体替换。"
+    }
+  ],
+  "limitations": [
+    "这里只覆盖基本合并规则，未完整展开XML扩展、所有元素和SIP订阅恢复；版本回绕与后续RFC更新未核。",
+    "RFC5.2允许无变化时partial及其后full同版本，4.6又要求丢弃不大于本地版本的文档；本页保留接收算法，不擅改为同版本全量必定接受。"
+  ],
+  "related": [
+    "conference-state.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

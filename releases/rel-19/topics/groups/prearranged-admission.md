@@ -81,3 +81,5 @@
 - [受邀侧服务设置、寻址与身份绑定](../calls/group-terminating-addressing.md)
 
 - [本客户端如何请求及刷新归属](explicit-affiliation-publish.md)
+
+- [implicit-affiliation-eligibility](implicit-affiliation-eligibility.md)

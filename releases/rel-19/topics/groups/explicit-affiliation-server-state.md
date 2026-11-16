@@ -128,3 +128,5 @@ PUBLISH目标为组CF PSI；消息标明目标组及served用户，Expires=42949
 - [explicit-affiliation-server-gates](explicit-affiliation-server-gates.md)
 
 [ETSI官方TS24.379 V19.4.0](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/19.04.00_60/ts_124379v190400p.pdf)，印刷页211、212、213、214、215、216、217、218、219、228、229、230、231、235；仅本版本。
+
+- [implicit-affiliation-state](implicit-affiliation-state.md)

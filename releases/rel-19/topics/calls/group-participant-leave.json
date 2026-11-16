@@ -1,0 +1,115 @@
+{
+  "topic_id": "r19-calls-group-participant-leave",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS24.379 V19.4.0，普通在网已建立预安排组呼；本条conditions叠加此范围。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v19.4.0",
+  "claims": [
+    {
+      "id": "client-on-demand",
+      "clause": "10.1.1.2.3.1;6.2.4.1",
+      "conditions": [
+        "用户要求退出已建立的按需组呼。"
+      ],
+      "conclusion": "客户端经10.1.1.2.3.1进入6.2.4.1，先与媒体面交互，再发送BYE，Request-URI为要退出的MCPTT session identity；收到BYE的200后再与媒体面交互。不能套用通用6.2.5中未建立INVITE的CANCEL分支。",
+      "printed_pages": [
+        278,
+        73
+      ]
+    },
+    {
+      "id": "client-pre-established",
+      "clause": "10.1.1.2.3.2;6.2.4.2",
+      "conditions": [
+        "用户要求退出预建立会话中的组呼。"
+      ],
+      "conclusion": "客户端发送对话外初始REFER。Request-URI为服务服务器上标识预建立会话的PSI；Refer-To为要退出的MCPTT session identity，method=BYE；Target-Dialog标识预建立会话；Refer-Sub=false、Supported=norefersub。发送前及收到REFER 2xx后分别执行规定媒体交互。此REFER不是拆除预建立对话的BYE。",
+      "printed_pages": [
+        278,
+        73
+      ]
+    },
+    {
+      "id": "migration-reason",
+      "clause": "6.2.4.1;6.2.4.2",
+      "conditions": [
+        "客户端退出本次已建立按需组呼或预建立承载中的组呼，且该退出由用户迁移触发。"
+      ],
+      "conclusion": "BYE或REFER按对应客户端分支加入Reason，protocol=SIP、cause=200、text=User migration；不能无条件加在普通用户退出上。",
+      "printed_pages": [
+        73
+      ]
+    },
+    {
+      "id": "originating-bye",
+      "clause": "10.1.1.3.3.1;6.3.2.1.6",
+      "conditions": [
+        "发起参与功能收到所服务客户端退出BYE。"
+      ],
+      "conclusion": "经10.1.1.3.3.1进入6.3.2.1.6：执行媒体交互后生成发向控制功能的BYE；Request-URI使用所收BYE的session identity，P-Asserted-Identity为自身参与功能PSI；原请求含mcptt-info时复制。控制侧200回到后向客户端转送200并执行控制侧会话资源释放交互。",
+      "printed_pages": [
+        288,
+        109
+      ]
+    },
+    {
+      "id": "refer-binding",
+      "clause": "10.1.1.3.3.2;6.3.2.1.7",
+      "conditions": [
+        "发起参与功能收到客户端REFER且Refer-To的method=BYE。"
+      ],
+      "conclusion": "用P-Asserted-Identity中的public user identity确定MCPTT ID；无identity binding时返回403及Warning 141并停止。Refer-Sub=false且Supported包含norefersub时不建立隐式订阅。",
+      "printed_pages": [
+        289,
+        109,
+        110
+      ]
+    },
+    {
+      "id": "refer-ack-order",
+      "clause": "6.3.2.1.7",
+      "conditions": [
+        "收到客户端REFER，Refer-To URI的method=BYE，且PAI中的PUI与MCPTT ID绑定存在。"
+      ],
+      "conclusion": "参与功能先发送REFER 200（Supported=norefersub；请求Refer-Sub=false时响应也带false），之后才生成发往控制功能的BYE：URI为Refer-To中的session identity，PAI为自身PSI，按存在条件复制mcptt-info。下游BYE 200再触发控制侧关联媒体资源释放。因此REFER 200不证明下游BYE已完成。",
+      "printed_pages": [
+        109,
+        110
+      ]
+    },
+    {
+      "id": "control-leave-policy",
+      "clause": "10.1.1.4.3;6.3.3.2.4",
+      "conditions": [
+        "控制功能收到普通组呼参与者退出BYE。"
+      ],
+      "conclusion": "控制功能先执行相应客户端腿媒体资源释放交互并回应200，再检查组呼释放策略6.3.8.1。若需要全组释放，调用6.3.3.1.5并按存在条件传递mcptt-info；若不需要全组释放，必须向仍参与且订阅conference事件的客户端发NOTIFY。单个退出既不必然解散全组，也不保证全组继续。",
+      "printed_pages": [
+        302,
+        149
+      ]
+    }
+  ],
+  "limitations": [
+    "只核SIP业务控制链；24.380媒体及话权的具体消息、完成条件未核，不能承诺媒体清理全部完成。",
+    "RFC/24.229通用重试、超时、事务竞争未展开。",
+    "组呼释放策略及T4/TNG2/TNG3细则继续引用已有group-release-timers，不重复覆盖。",
+    "排除紧急/迫近危险、远程发起的隐式归属清理、临时组及ad hoc额外规则。",
+    "本次退出与显式PUBLISH归属撤销分别建模；不能从此处未写撤销推成所有条件下归属永久保留。",
+    "6.3.2.1.6在发起参与功能语境的200响应段将主体称为terminating MCPTT function。保留该文字错位提示，不据此新造额外终接角色跳转。"
+  ],
+  "related": [
+    "group-release-timers.md",
+    "../groups/conference-state.md",
+    "../groups/explicit-deaffiliation-state.md",
+    "group-participant-removal.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

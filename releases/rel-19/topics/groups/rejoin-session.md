@@ -69,3 +69,5 @@ TS24.379 V19.4.0 Stage3，在网普通预安排组呼的rejoin；不展开紧急
 [ETSI官方TS24.379 V19.4.0](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/19.04.00_60/ts_124379v190400p.pdf)，印刷页278、289、303、304；仅本版本。
 
 - [组ID入口及服务器邀请](active-call-entry.md)
+
+- [conference-state](conference-state.md)

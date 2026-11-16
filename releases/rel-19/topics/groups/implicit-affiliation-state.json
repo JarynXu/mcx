@@ -1,0 +1,144 @@
+{
+  "topic_id": "r19-groups-implicit-affiliation-state",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "在网MCPTT，限TS24.379 V19.4.0。",
+    "本页说明调用请求触发的§9.2.2.2.12–.14及§9.2.2.3.7/.11；服务授权后按profile配置组的§9.2.2.2.15是另一路，不与本页成功/失败回调合并。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v19.4.0",
+  "claims": [
+    {
+      "id": "participating-identity-and-candidate",
+      "clause": "9.2.2.2.12 steps1–7,Note1",
+      "conditions": [
+        "某SIP请求已按调用方条件触发§9.2.2.2.12；本claim不自行增加新的触发场景。"
+      ],
+      "conclusion": "从mcptt-info的mcptt-client-id取client、mcptt-request-uri取组，从PAI的PUI识别served用户；定位user→client后复制旧组列表构造候选表。目标组不存在或旧记录已过期时新增affiliating记录，到期按当前时间加candidate expiration interval。该小节未明示此间隔的赋值来源，不能自定值。",
+      "printed_pages": [
+        223,
+        224
+      ]
+    },
+    {
+      "id": "participating-n2-commit-or-discard",
+      "clause": "9.2.2.2.12 steps8–11,Note2",
+      "conditions": [
+        "§9.2.2.2.12已按本次用户/client/组构造候选表。"
+      ],
+      "conclusion": "N2按该用户候选表及其他client中的不同组ID计数，只计affiliating/affiliated且未过期的记录；超N2按服务提供方策略减至N2。若目标组因N2仍不能加入，丢弃候选表并结束本过程；否则以候选表替换该client原组列表。helper本身不发送486，具体响应来自调用方。",
+      "printed_pages": [
+        224
+      ]
+    },
+    {
+      "id": "owner-adds-client-and-user-expiry",
+      "clause": "9.2.2.3.7 steps1–5;9.2.2.3.2",
+      "conditions": [
+        "控制功能收到针对用户尚未归属组的SIP请求，且调用方要求执行§9.2.2.3.7；served group entry可定位。"
+      ],
+      "conclusion": "组取mcptt-request-uri、handled用户取mcptt-calling-user-id；组内user entry不存在才创建。向该用户的client列表添加从请求得到的client ID，已有则不重复添加，并按本地策略设置user entry到期时间。与显式per-group PUBLISH设置整个client列表不同，这里描述增添client；期限仍在组内user层。随后调用§9.2.2.3.5通知。",
+      "printed_pages": [
+        228,
+        232
+      ]
+    },
+    {
+      "id": "completion-belongs-to-triggering-request",
+      "clause": "9.2.2.2.13 steps1–2",
+      "conditions": [
+        "参与侧按§9.2.2.2.12为特定请求新增了目标组记录。",
+        "从控制功能收到的2xx对应触发该隐式过程的同一SIP请求。"
+      ],
+      "conclusion": "§9.2.2.2.13把该新增记录设为affiliated，并调用§9.2.2.2.5通知served用户。它不是任意SIP 200都生效，也不是显式PUBLISH 200后的通用确认规则；本条没有重复显式NOTIFY确认分支的本地未过期或p-id条件，不自行移植。",
+      "printed_pages": [
+        224
+      ]
+    },
+    {
+      "id": "on-demand-completion-order",
+      "clause": "10.1.1.3.1.1 2xx handling steps6A–8",
+      "conditions": [
+        "O-PF按§10.1.1.3.1.1处理的预安排INVITE已调用§9.2.2.2.12；收到该转发INVITE的2xx。"
+      ],
+      "conclusion": "响应处理step7先调用§9.2.2.2.13完成隐式归属，step8再向客户端发送生成的200。这里确认的是归属记录；收到2xx并不抹掉消息携带的P-Answer-State或既有Unconfirmed边界。",
+      "printed_pages": [
+        282
+      ]
+    },
+    {
+      "id": "participating-cancellation-is-targeted",
+      "clause": "9.2.2.2.14",
+      "conditions": [
+        "请求已通过§9.2.2.2.12新增特定user/client/group记录。",
+        "参与侧决定拒绝该触发请求，或从控制功能收到该请求的4xx、5xx、6xx。"
+      ],
+      "conclusion": "§9.2.2.2.14删除此次新增且匹配发送用户、请求client及目标组的组记录。不是清空同用户其他client的该组记录，也未规定将N2策略裁减过的旧表完整回滚。该helper没有列3xx或timer F触发，不得照搬显式PUBLISH失败清理。",
+      "printed_pages": [
+        224,
+        225
+      ]
+    },
+    {
+      "id": "on-demand-failure-order",
+      "clause": "10.1.1.3.1.1 4xx/5xx/6xx handling steps1–4",
+      "conditions": [
+        "§10.1.1.3.1.1曾调用§9.2.2.2.12；收到同一转发INVITE的4xx/5xx/6xx。"
+      ],
+      "conclusion": "先生成响应并保留收到的Warning，再向客户端转发；其后才调用§9.2.2.2.14。不要把上条helper写成所有调用场景都必须先清理后发失败响应。",
+      "printed_pages": [
+        282
+      ]
+    },
+    {
+      "id": "notification-uses-existing-subscriptions",
+      "clause": "9.2.2.3.7 step5;9.2.2.3.5;9.2.2.2.13 step2;9.2.2.2.5",
+      "conditions": [
+        "隐式记录更新按§9.2.2.3.7调用§9.2.2.3.5，或隐式完成按§9.2.2.2.13调用§9.2.2.2.5。",
+        "相应状态订阅已按其接收订阅过程建立。"
+      ],
+      "conclusion": "复用组侧per-group或用户侧per-user状态通知；不是广播给所有客户端，也不是conference入会通知。§9.2.2.3.5的p-id回带条件专指显式§9.2.2.3.3调用，不能因隐式更新复用通知helper就断言产生显式PUBLISH的关联p-id。",
+      "printed_pages": [
+        215,
+        224,
+        231,
+        232
+      ]
+    },
+    {
+      "id": "owner-cancellation-not-an-unambiguous-algorithm",
+      "clause": "9.2.2.3.11;9.2.2.3.7 step4",
+      "conditions": [
+        "试图据§9.2.2.3.11实现§9.2.2.3.7之后的控制侧隐式取消。"
+      ],
+      "conclusion": "本版条文位于拥有组的server程序，却称执行者为participating function；要求删除新增的user information entry，条件又沿client层定位。若user entry原已存在而只新增一个client，条文没有给出清晰逐client删除算法。只能保留该冲突，不承诺必清整用户或一定保留其他client。",
+      "printed_pages": [
+        232,
+        234
+      ],
+      "classification": "原文角色和删除层次疑义，不作为确定执行算法"
+    }
+  ],
+  "limitations": [
+    "原文step7(a)复制所有旧记录，step7(b)对已过期目标又新增；未给重复目标记录的替换/去重操作，不输出可直接运行的列表算法。",
+    "9.2.2.2.12 step7：candidate expiration interval在本小节未初始化；全量复制旧记录后对过期目标新增的重复ID处理未规定。不从显式PUBLISH期限或CF本地策略补值。",
+    "9.2.2.2.11 step1(a)：step1查user entry，失败分支却称group entry；已有页按上下文呈现，不将此文字疑点藏在通用可执行算法中。本小节也未重复expiration检查。",
+    "10.1.1.4.2 steps14(a/c),15(a/e)：复合and/or、远程发起和资格来源交叉引用仍保留原文边界。本批不生成覆盖所有优先/远程/重组场景的布尔表达式。",
+    "9.2.2.3.11：取消helper的角色名、删除user层和client条件不闭合。已列独立疑义claim，不修成逐client取消伪代码。",
+    "9.2.2.2.15：已读以区分机制：服务授权成功后，profile无OnNetwork/ImplicitAffiliations或无含组ID的entry时停止；有配置时走候选表及§9.2.2.2.6 PUBLISH。本批不收入第三主题，不套用2xx呼叫完成规则到该路径。",
+    "6.3.2.1.8.1;6.3.3.1.13.2;6.3.3.1.13.5：本批仅使用调用方已判定的优先授权结果，未重新验收全部配置条件。",
+    "外部依赖：TS24.229 SIP事务、TS24.481/24.484配置取得与合法性、TS29.283数据库、TS33.180服务授权、RFC实现依赖未由本批完整核验。"
+  ],
+  "related": [
+    "../groups/explicit-affiliation-server-state.md",
+    "../groups/explicit-deaffiliation-state.md",
+    "../groups/active-call-entry.md",
+    "../groups/implicit-affiliation-eligibility.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

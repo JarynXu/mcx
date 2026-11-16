@@ -1,0 +1,104 @@
+{
+  "topic_id": "r19-calls-group-participant-removal",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS24.379 V19.4.0，普通在网已建立预安排组呼；本条conditions叠加此范围。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v19.4.0",
+  "claims": [
+    {
+      "id": "control-remove-or-all",
+      "clause": "10.1.1.4.4.2;10.1.1.4.4.3;6.3.3.1.5",
+      "conditions": [
+        "控制功能判定某客户端需要移除，例如取消归属或为了容纳更高优先级用户；或另按6.3.8.1判定整组需要释放。"
+      ],
+      "conclusion": "两类触发均进入6.3.3.1.5，但对象不同：单参与者移除针对所选客户端；只有整组释放才向所有参与者发送BYE。不能把示例deaffiliation补写成PUBLISH 200即完成移除。",
+      "printed_pages": [
+        302,
+        131
+      ]
+    },
+    {
+      "id": "control-bye-resources",
+      "clause": "6.3.3.1.5",
+      "conditions": [
+        "控制功能按6.3.3.1.5移除参与者。"
+      ],
+      "conclusion": "先执行媒体释放交互、生成BYE并发向相应客户端。若移除最后客户端且TNG3尚未到期，停止TNG3；收到BYE 200后执行该客户端SIP会话相关资源的媒体释放交互。实际媒体面细节依赖24.380，未在本研究展开。",
+      "printed_pages": [
+        131
+      ]
+    },
+    {
+      "id": "remove-notification",
+      "clause": "10.1.1.4.4.3;6.3.3.2.4",
+      "conditions": [
+        "控制功能主动移除客户端成功后。"
+      ],
+      "conclusion": "10.1.1.4.4.3允许MAY向conference事件订阅者通知。不能与收到参与者BYE且不需全组释放时6.3.3.2.4的SHALL通知混为同一强度。",
+      "printed_pages": [
+        302,
+        149
+      ]
+    },
+    {
+      "id": "terminating-on-demand",
+      "clause": "10.1.1.3.4.1;6.3.2.2.8.1",
+      "conditions": [
+        "终接参与功能收到控制功能BYE，属于按需组呼腿。"
+      ],
+      "conclusion": "经10.1.1.3.4.1进入6.3.2.2.8.1：执行控制侧资源释放媒体交互，生成发给客户端的BYE，PAI为自身PSI，存在mcptt-info时复制；收到客户端BYE 200后向控制功能发送200，再执行客户端侧资源释放媒体交互。",
+      "printed_pages": [
+        289,
+        124,
+        125
+      ]
+    },
+    {
+      "id": "terminating-pre-established",
+      "clause": "10.1.1.3.4.2;6.3.2.2.8.2",
+      "conditions": [
+        "终接参与功能收到控制功能BYE，其session identity指向与该参与功能有预建立会话的用户。"
+      ],
+      "conclusion": "经10.1.1.3.4.2进入6.3.2.2.8.2：调用24.380 9.3断开控制侧资源，向控制功能发送200，断开客户端资源与控制功能资源的连接，并保留面向客户端的预建立会话。不能将此路径描述成把控制BYE原样转给客户端、拆除预建立会话。",
+      "printed_pages": [
+        289,
+        125
+      ]
+    },
+    {
+      "id": "client-receive-bye",
+      "clause": "10.1.1.2.3.3;6.2.6",
+      "conditions": [
+        "普通预安排组呼客户端收到服务器BYE。"
+      ],
+      "conclusion": "经10.1.1.2.3.3进入6.2.6，执行媒体交互并生成/发送BYE 200。此处没有证明取消组归属或修改配置成员表。",
+      "printed_pages": [
+        278,
+        74,
+        75
+      ]
+    }
+  ],
+  "limitations": [
+    "只核SIP业务控制链；24.380媒体及话权的具体消息、完成条件未核，不能承诺媒体清理全部完成。",
+    "RFC/24.229通用重试、超时、事务竞争未展开。",
+    "组呼释放策略及T4/TNG2/TNG3细则继续引用已有group-release-timers，不重复覆盖。",
+    "排除紧急/迫近危险、远程发起的隐式归属清理、临时组及ad hoc额外规则。",
+    "本次退出与显式PUBLISH归属撤销分别建模；不能从此处未写撤销推成所有条件下归属永久保留。",
+    "6.3.2.1.6在发起参与功能语境的200响应段将主体称为terminating MCPTT function。保留该文字错位提示，不据此新造额外终接角色跳转。"
+  ],
+  "related": [
+    "group-release-timers.md",
+    "../groups/conference-state.md",
+    "../groups/explicit-deaffiliation-state.md",
+    "group-participant-leave.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}
