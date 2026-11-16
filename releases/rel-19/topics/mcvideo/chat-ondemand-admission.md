@@ -120,3 +120,5 @@ CF生成200和SDP answer，SHOULD带Session-Expires并监督SIP会话；refreshe
 [3GPP TS24.281 V19.3.0 / ETSI TS124281 V19.3.0 (2026-01)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf)；仅本版本。
 
 [3GPP TS24.581 V19.2.0 / ETSI TS124581 V19.2.0 (2026-08)](https://www.etsi.org/deliver/etsi_ts/124500_124599/124581/19.02.00_60/ts_124581v190200p.pdf)；媒体层按此独立版本核对。
+
+- [chat离开与存续的对应条件](chat-release-policy.md)

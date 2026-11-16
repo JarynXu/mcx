@@ -304,3 +304,8 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 - [MCData 显式归属到组 owner：聚合记录、成员检查与接受边界](topics/mcdata/explicit-affiliation-owner-admission.md)
 - [MCData owner 状态回流：独立订阅、匹配确认与缺席条件](topics/mcdata/explicit-affiliation-owner-state.md)
 - [MCData 归属失败与结果回到客户端：清理范围及期限边界](topics/mcdata/explicit-affiliation-lifecycle-results.md)
+
+### MCVideo chat离开与存续
+
+- [MCVideo chat离开与移除：BYE确认不等于全组结束](topics/mcvideo/chat-participant-leave.md)
+- [MCVideo chat存续：三项释放条件与可选组时长](topics/mcvideo/chat-release-policy.md)

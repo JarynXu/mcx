@@ -95,3 +95,16 @@ O-PF按组ID确定CF PSI，生成INVITE并把Request-URI设为该CF PSI；在mcv
 [3GPP TS24.281 V19.3.0 / ETSI TS124281 V19.3.0 (2026-01)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf)；仅本版本。
 
 [3GPP TS24.581 V19.2.0 / ETSI TS124581 V19.2.0 (2026-08)](https://www.etsi.org/deliver/etsi_ts/124500_124599/124581/19.02.00_60/ts_124581v190200p.pdf)；媒体层按此独立版本核对。
+
+## 普通chat入口与预安排重入的边界
+
+适用条件：讨论本页普通chat进入路径与预安排重入/晚入的区别，而不是扩展优先或NCF路径。
+
+已核普通chat§9.2.2.2.1.1以组ID生成initial INVITE并向serving PF PSI发送，CF区分identity不存在与session ongoing。预安排§9.2.1.2.4.1的session-identity Request-URI改写，以及§9.2.1.4.6在新affiliation/回覆盖通知后主动邀请，均是另有明确条件的预安排入口，不能机械移植为chat规则。chat客户端接收INVITE的§9.2.2.2.1.6明确用于emergency/imminent-peril且affiliated但未joined；它不构成普通chat自动晚入依据。
+
+- 这是已核入口不可类推的边界，不声称全规范绝对禁止chat使用session identity，也不凭目录没有rejoin标题推导完整恢复行为。
+- 一般SIP re-INVITE、覆盖探测、自动恢复/重试、NCF与临时组仍未闭合；不把一次普通加入200当恢复旧发送许可。
+
+依据：§9.2.2.2.1.1;9.2.2.2.1.6;9.2.2.4.1.1 steps10–11;9.2.1.2.4.1;9.2.1.4.6，印刷页216、236、248、249、254、262、263。
+
+- [chat离开与存续的对应条件](chat-participant-leave.md)

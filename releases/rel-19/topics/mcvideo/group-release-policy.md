@@ -12,7 +12,7 @@ TS24.281 V19.3.0，普通在网、带transmission control、按需预安排MCVid
 
 适用条件：CF评估§6.3.8.1的本普通预安排组呼释放策略。
 
-以下五项任一成立即SHALL释放组会话：CF收到媒体平面报告T4(Inactivity)到期；会话只剩一人或无人；发起人离开且地方策略要求在该情形释放；最低数量的affiliated组成员不在场；TNG3到期。所以一个人挂断并不自动等于全组结束，但可能触发人数不足或发起人策略等条件。
+以下五项任一成立即SHALL释放本预安排组会话：CF收到媒体平面报告T4(Inactivity)到期；会话只剩一人或无人；发起人离开且地方策略要求在该情形释放；最低数量的affiliated组成员不在场；TNG3到期。其中原文第1项和第3项明确只适用于pre-arranged，不能直接用于chat。一个人挂断并不自动等于全组结束，但可能触发人数不足或发起人策略等条件。
 
 - 五项是OR，不是同时满足；发起人离开必须保留according to local policy前提，不改成所有发起人退出都结束全组。
 - “minimum number of affiliated MCVideo group members is not present”在本段没有给出具体配置字段或算法，不能擅自等同于初建on-network-minimum-number-to-start、required成员全部应答或客户端名单总数。
@@ -68,3 +68,5 @@ TS24.281 V19.3.0，普通在网、带transmission control、按需预安排MCVid
 [3GPP TS24.281 V19.3.0 / ETSI TS124281 V19.3.0 (2026-01)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf)；仅本版本。
 
 [媒体侧 TS24.581 V19.2.0](https://www.etsi.org/deliver/etsi_ts/124500_124599/124581/19.02.00_60/ts_124581v190200p.pdf)；混合来源按claim的source_references分版追溯，不将媒体页码归给24.281。
+
+- [chat离开与存续的对应条件](chat-release-policy.md)
