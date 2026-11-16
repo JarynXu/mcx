@@ -1,0 +1,52 @@
+{
+  "topic_id": "r19-location-trigger-override",
+  "release": 19,
+  "state": "candidate",
+  "common_conditions": [
+    "Single MC system",
+    "Authorized user",
+    "An applicable location-trigger override procedure"
+  ],
+  "condition_rule": "Every claim inherits all common_conditions and adds its own conditions; do not extract a claim without both.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v19.10.1",
+  "claims": [
+    {
+      "id": "override-boundary",
+      "clause": "10.9.3.12.1",
+      "conditions": [
+        "Authorized user",
+        "Single MC system"
+      ],
+      "conclusion": "Only user-configured triggers are overridden; MC service server triggers remain unaffected."
+    },
+    {
+      "id": "stored-configuration-updates",
+      "clause": "10.9.3.12.2",
+      "conditions": [
+        "Override active",
+        "New trigger request arrives"
+      ],
+      "conclusion": "Apply the new request to stored configuration until override ends."
+    },
+    {
+      "id": "restore-configuration",
+      "clause": "10.9.3.12.3",
+      "conditions": [
+        "Authorized cancellation of prior override"
+      ],
+      "conclusion": "Retrieve and restore the stored trigger configuration; do not infer fresh measurement or end-to-end delivery."
+    }
+  ],
+  "related": [
+    {
+      "topic": "r19-location-reporting",
+      "relation": "reporting-context",
+      "required": false
+    }
+  ],
+  "verification": {
+    "original_standard_reopened": false,
+    "independent_usage_acceptance": false
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "topic_id": "r19-rx-retry",
+  "release": 19,
+  "state": "candidate",
+  "common_conditions": [
+    "Release 19 only"
+  ],
+  "condition_rule": "Every claim inherits all common_conditions and adds its own conditions; do not extract a claim without both.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-29.214-v19.3.0",
+  "claims": [
+    {
+      "id": "retry-wait",
+      "clause": "5.3.39",
+      "conditions": [
+        "Temporary rejection",
+        "Retry-Interval present",
+        "Same Service Information and IP-CAN session"
+      ],
+      "conclusion": "Do not resend that information before the interval expires; this does not independently authorize retry."
+    },
+    {
+      "id": "permanent-failure",
+      "clause": "5.5.1",
+      "conditions": [
+        "REQUESTED_SERVICE_NOT_AUTHORIZED (5063)"
+      ],
+      "conclusion": "The permanent-failure restriction is not overridden by waiting for an interval."
+    },
+    {
+      "id": "missing-interval",
+      "clause": "5.3.39",
+      "conditions": [
+        "Retry-Interval absent"
+      ],
+      "conclusion": "This knowledge provides no default retry duration."
+    }
+  ],
+  "related": [],
+  "verification": {
+    "original_standard_reopened": false,
+    "independent_usage_acceptance": false
+  }
+}

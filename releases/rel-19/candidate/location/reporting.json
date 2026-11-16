@@ -1,0 +1,69 @@
+{
+  "topic_id": "r19-location-reporting",
+  "release": 19,
+  "state": "candidate",
+  "common_conditions": [
+    "Release 19 only"
+  ],
+  "condition_rule": "Every claim inherits all common_conditions and adds its own conditions; do not extract a claim without both.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v19.10.1",
+  "claims": [
+    {
+      "id": "recipient-cancellation",
+      "clause": "10.9.1",
+      "conditions": [
+        "A subscribed MC service user cancels its subscription"
+      ],
+      "conclusion": "Stop delivery to that subscriber; do not infer cancellation for all recipients."
+    },
+    {
+      "id": "measurement-data",
+      "clause": "10.9.2.2",
+      "conditions": [
+        "Location report"
+      ],
+      "conclusion": "Measurement time accompanies location information; accuracy is optional and at least one listed location element is supplied."
+    },
+    {
+      "id": "group-affiliation",
+      "clause": "10.9.3.3",
+      "conditions": [
+        "Single MC system",
+        "Group-targeted reporting trigger"
+      ],
+      "conclusion": "Track current affiliation and cancel the relevant group trigger when a user de-affiliates."
+    },
+    {
+      "id": "report-not-fresh-measurement",
+      "clause": "10.9.3.6.1",
+      "conditions": [
+        "Event-triggered location notification"
+      ],
+      "conclusion": "Notification is not proof of a newly performed measurement."
+    },
+    {
+      "id": "ue-label-direction",
+      "clauses": [
+        "10.9.2.2",
+        "10.9.3.6.1"
+      ],
+      "conditions": [
+        "Applicable non-null UE-label configuration",
+        "Message direction matters"
+      ],
+      "conclusion": "Do not include the UE label in location notification to the MC service server."
+    }
+  ],
+  "related": [
+    {
+      "topic": "r19-location-trigger-override",
+      "relation": "configuration-interaction",
+      "required": false
+    }
+  ],
+  "verification": {
+    "original_standard_reopened": false,
+    "independent_usage_acceptance": false
+  }
+}

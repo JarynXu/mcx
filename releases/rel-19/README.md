@@ -2,10 +2,11 @@
 
 ## 当前范围
 
-本目录是公开候选摘编，不是 Rel19 整版完成声明。首批仅整理 TS 23.280 V19.10.1 的位置报告、组目标及触发覆盖边界。
+本目录是公开候选摘编，不是 Rel19 整版完成声明。当前整理 TS 23.280 V19.10.1 的位置报告、组目标及触发覆盖边界，以及 TS 29.214 V19.3.0 的 Rx 重试限制。
 
 - [位置报告与组目标](candidate/location/reporting.md)
 - [位置触发覆盖与恢复](candidate/location/trigger-override.md)
+- [Rx 临时拒绝与重试间隔](candidate/network-policy/rx-retry.md)
 - [来源清单](sources.json)
 - [状态清单](status.json)
 - [首批公开核查](reviews/2026-11-16-publication-review.md)
