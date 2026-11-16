@@ -1,0 +1,42 @@
+{
+  "topic_id": "r19-migration-exit",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS23.280 V19.9.0 Stage2",
+    "此前用户已迁移至伙伴系统。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v19.9.0",
+  "claims": [
+    {
+      "id": "return",
+      "clause": "10.6.3.3.2.1",
+      "conditions": [
+        "用户已在返回的主 MC 系统完成 MC 服务授权"
+      ],
+      "conclusion": "主系统向旧伙伴发送迁移服务去授权通知，经双方网关转发；不做拓扑隐藏时可直接在服务服务器间发送。旧伙伴更新保存的迁移信息。旧伙伴何时停止该用户服务不在本条范围内，身份映射保存时长由实现决定。"
+    },
+    {
+      "id": "move-again",
+      "clause": "10.6.3.3.2.2",
+      "conditions": [
+        "用户已在新伙伴C完成 MC 服务授权"
+      ],
+      "conclusion": "C向主系统发送 MC 服务授权通知；随后按照返回主系统流程的步骤1至4，向旧伙伴B通知去授权并更新其迁移信息。不能将该流程解释为用户一开始迁移就无条件删除旧系统全部状态。"
+    }
+  ],
+  "limitations": [
+    "不包含失败回滚、超时、并发迁移仲裁或正在进行呼叫的连续性保证。",
+    "没有规定身份映射保存的固定时长，不等同于立即删除所有用户数据。"
+  ],
+  "related": [
+    "migration-authorization.md",
+    "primary-registration.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

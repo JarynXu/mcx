@@ -48,6 +48,8 @@
 
 对话内请求另读 [SIP 对话标识及路由集](topics/signalling/dialog-routing.md)：外部 RFC 基线，不冒充已核完整 MCX profile。5GS 则读 [QFI、5QI 与 ARP](topics/network-policy/5gs-qos-model.md)，需要判断 GBR 失保留流时再读 [通知控制](topics/network-policy/5gs-notification-control.md)。
 
+伙伴系统另读[迁移授权及重定向门槛](topics/identity/migration-authorization.md)，返回或再迁移时读[旧伙伴去授权](topics/identity/migration-exit.md)。普通互联、用户迁移和 SIP 对话路由是不同问题；这条路径不保证进行中通话连续。
+
 ## 身份、紧急行为与媒体业务
 
 以下为 Stage 1 的要求解释，不是可直接运行的协议实现。
@@ -93,3 +95,5 @@
 当前没有完整的注册认证、安全密钥、呼叫/媒体状态机、QoS/承载映射和各服务 off-network 实现知识。不能从某个子主题推出这些路径已经覆盖。位置配置取消字段集合仍未核清，本目录不提供该行为的确定规则。
 
 Release 19 的条款不得静默用于其他 Release；缺失主题不是“规范没有要求”。
+
+接入安全补充：[HTTP-1 与 SIP-1](topics/security/access-transport.md)已核 TS33.180 V19.4.0 的选定条款；外部安全 profile 与应用令牌流程仍未核。

@@ -1,0 +1,63 @@
+{
+  "topic_id": "r19-migration-authorization",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS23.280 V19.9.0 Stage2"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v19.9.0",
+  "claims": [
+    {
+      "id": "interconnection",
+      "clause": "10.6.2",
+      "conditions": [
+        "需要通过互联与伙伴 MC 系统通信，区别于用户迁移"
+      ],
+      "conclusion": "用户授权在用户的服务 MC 系统中进行，使用 TS33.180 的 MCX 用户服务授权过程；不能为普通互联附加本页迁移流程的配置和凭据前提。"
+    },
+    {
+      "id": "two-checks",
+      "clauses": [
+        "10.6.2",
+        "10.6.3.3.1"
+      ],
+      "conditions": [
+        "迁移用户已有包含伙伴连接参数的用户配置，且已认证并取得伙伴服务授权所需凭据。"
+      ],
+      "conclusion": "迁移时客户端向伙伴提交所选主系统用户配置索引及双方 MC service ID；伙伴先检查迁入许可，主系统另检查该用户使用该配置迁往该伙伴的许可。伙伴初检判据不由本规范规定。"
+    },
+    {
+      "id": "redirect-gate",
+      "clause": "10.6.3.3.1",
+      "conditions": [
+        "迁移用户已有包含伙伴连接参数的用户配置，且已认证并取得伙伴服务授权所需凭据。",
+        "迁移授权成功路径"
+      ],
+      "conclusion": "主系统记录迁移目标及所需身份映射；伙伴保存对应信息。映射用于通信重定向的前提是伙伴 MC 服务授权成功，不应仅凭收到迁移响应就推断已满足这一条件。步骤13完成伙伴服务授权，步骤14通知主系统；不做拓扑隐藏时可直接在两端服务服务器间交换迁移请求与响应。"
+    },
+    {
+      "id": "registration-data",
+      "clause": "10.6.3.3.1",
+      "conditions": [
+        "迁移用户已有包含伙伴连接参数的用户配置，且已认证并取得伙伴服务授权所需凭据。",
+        "在伙伴服务服务器进行初始注册"
+      ],
+      "conclusion": "客户端提供 UE 的 L4S 能力；若通过 PLMN LCS 取得位置，还须向伙伴服务服务器提供 UE IMSI。"
+    }
+  ],
+  "limitations": [
+    "§10.6.3.3.1步骤12使用成功迁移/授权措辞，而步骤13及NOTE3明确保留随后服务授权与重定向门槛；本文不将其压成单次授权。",
+    "TS33.180跨域凭据验证、令牌与密钥，以及Stage3消息编码尚未核验。"
+  ],
+  "related": [
+    "primary-registration.md",
+    "migration-exit.md",
+    "../signalling/registrar-routing.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

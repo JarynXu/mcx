@@ -15,3 +15,5 @@ SIP 层注册完成时，向 MC 服务服务器的第三方注册是可选的。
 - [Stage1 应用身份与授权范围](authentication-boundary.md)
 - [EPS 接入和信令 QoS](../network-policy/eps-signalling.md)
 - [注册器定位与用户绑定](../signalling/registrar-routing.md)
+
+迁往伙伴系统时另读[双方授权与重定向门槛](migration-authorization.md)，不能把主系统注册成功当作伙伴服务已获授权。
