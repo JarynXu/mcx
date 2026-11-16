@@ -15,3 +15,9 @@
 不提供邀请、媒体建立、暂停或恢复的线级消息和定时器；配置能力不等于任意部署已开启。
 
 [transmission-admission](transmission-admission.md) · [reception](reception.md) · [结构化条件](no-receivers.json)
+
+## 服务器计时与结束证据
+
+- [某个源无人接收：T11到期、停止命令与T3确认](server-stream-idle-termination.md)
+
+这些路径依据TS24.581 V19.2.0指定Stage3程序，不把业务要求、发出命令和完成停止视为同一事件。

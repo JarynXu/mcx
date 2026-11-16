@@ -47,3 +47,10 @@ SIP请求和响应内所有XML MIME bodies都须保护，每个受保护body对�
 - [../identity/service-authorization](../identity/service-authorization.md)
 
 [ETSI官方TS33.180 V19.4.0](https://www.etsi.org/deliver/etsi_TS/133100_133199/133180/19.04.00_60/ts_133180v190400p.pdf)，印刷页97、98、100、101、103、104；仅本版本。
+
+## MCData具体XML程序
+
+- [../mcdata/xml-protection-activation](../mcdata/xml-protection-activation.md)
+- [../mcdata/xml-server-forwarding](../mcdata/xml-server-forwarding.md)
+
+这些指定程序依据TS24.282 V19.7.0；不从其他安全架构页的可选机制表述推导MCData配置缺项即关闭。

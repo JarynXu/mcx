@@ -81,3 +81,7 @@ INVITE的2xx触发ACK、session timer及向TS24.582 §6.1.1.2的媒体面交互�
 - [SDS服务器准入：主叫身份、控制功能与私聊目标](sds-server-identities-and-private-admission.md)
 - [SDS普通组控制：组文档、发送资格与当前归属](sds-group-controller-admission.md)
 - [SDS服务器链：地址转换与202、200的证据范围](sds-server-responses-and-routing.md)
+
+## 媒体面SDS的对应路径
+
+- [SDS 媒体面建链：按需 INVITE、方向协商与媒体路径](sds-media-session-setup.md)

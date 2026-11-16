@@ -90,3 +90,10 @@ SIP 建立、身份准入、控制通道和所需安全处理已按各自规范�
 - [participant-reception-control](participant-reception-control.md)
 
 [ETSI 官方 TS24.581 V19.2.0](https://www.etsi.org/deliver/etsi_ts/124500_124599/124581/19.02.00_60/ts_124581v190200p.pdf)；仅所列版本和条款。
+
+## 服务器计时与结束证据
+
+- [排队后授予：T4重发何时停止，达到上限是否撤权](server-queued-grant-retry.md)
+- [某个源无人接收：T11到期、停止命令与T3确认](server-stream-idle-termination.md)
+
+这些路径依据TS24.581 V19.2.0指定Stage3程序，不把业务要求、发出命令和完成停止视为同一事件。

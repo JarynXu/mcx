@@ -1,0 +1,82 @@
+# SDS 媒体面建链：按需 INVITE、方向协商与媒体路径
+
+限在网、正常非紧急的 on-demand standalone SDS，目标为直接 MCData ID 的 one-to-one 或普通预安排组；排除 SDS session、预建立会话、ad hoc、TGI、重组、functional alias、跨域网关、MBMS/MBS 和 FD。
+
+发送选择前的 §11.1 传输控制已成功，后续各角色适用的准入检查也必须通过。只核所列字段与动作，不将其当作完整 INVITE 编码模板或完整安全验证。
+
+组客户端仍受 §9.2.3.2.3 的两个入口限制：preconfigured-group-use-only 为 true 时应向用户提示且必须停止；AllowedSDS 叶节点存在且为 false 时必须拒绝发送并停止。
+
+## Standalone媒体面不是SDS session
+
+适用条件：用户发送一条 standalone SDS，且 payload 大于已配置的 max-payload-size-sds-cplane-bytes。
+
+§9.2.1.1 在 §11.1 成功后选择 §9.2.3.2.3，建立按需媒体面 standalone SDS。客户端仍用 one-to-one-sds 或 group-sds 的 request-type；私聊目标放在 resource-lists 的单个 entry，普通组目标放在 mcdata-request-uri 并带 mcdata-client-id。初始 SIP Request-URI 指向服务本用户的 PF 的 PSI。用户另行要求 SDS session 时走 §9.2.4，不能因为两者都有 INVITE 和 MSRP 就合并为一种会话。
+
+- 阈值相等仍属控制面分支；服务尺寸上限、单次请求上限和允许发送的权限不因转媒体面而消失。详见既有发送选择主题。
+- 只覆盖直接用户 ID；不复述别名重定向和其安全上下文重建。
+
+依据：§9.2.1.1;9.2.3.1;9.2.3.2.3 steps7a,7b(i),8b(i)–(iii),9;9.2.4.1，印刷页 189、190、210、211、212、213、224。
+
+## SDP单向媒体和连接角色
+
+适用条件：客户端为 §9.2.3 standalone SDS 生成初始 SDP offer，接收端为被接受的媒体流生成 answer。
+
+offer 的 m=message 包含端口、TCP/MSRP 或采用 TLS 时的 TCP/TLS/MSRP、格式 *、sendonly、自身 MSRP URI 的 path，以及 mcdata-signalling 和 mcdata-payload 两个 accept-types；setup 为 actpass。接收客户端的 answer 对接受的流使用 recvonly、自身 path、对应 offer 的传输协议和同样两个 accept-types，setup 按 RFC 6135 生成。SDS session 的 sendrecv 不适用于这条 standalone 主线。
+
+- 两种传输协议的列举不等于 TLS 可在所有部署中任意关闭；本主题不裁决其他安全要求。
+- accept-types 声明接收格式，不能据此推出 SDS payload 已经在 INVITE 内传送或媒体传输已经完成。
+
+依据：§9.2.3.2.1 step1;9.2.3.2.2;9.2.4.2.1 step1;9.2.4.2.2 step1，印刷页 210、211、224、225。
+
+## 参与功能与控制功能各自维护媒体路径
+
+适用条件：请求已通过各角色准入；PF 转发 offer/answer，CF 为发送端和被邀请端分别生成 SDP。
+
+PF 的 offer 只保留收到的一个 SDS 媒体段，并保留已有 mikey key-mgmt；需要锚定媒体时替换 IP/端口，若替换 IP 则把自身 MSRP URI 插到 path 中已有 URI 前。answer 的地址和 path 也按对应条件处理。若 PF 与 CF 同服且 PF 没有独立媒体 IP 或端口，原文允许省去相应替换。CF 面向被邀请方的 offer 是 sendonly/actpass，path 为 CF 自身 MSRP URI；面向邀请方的 answer 是 recvonly/passive，也使用 CF 自身 path。因此不能把所有 SIP 跳点等同于必经的独立媒体节点，也不能把 CF 的 answer 当作原样转发目标客户端 answer。
+
+- IP/端口替换的触发条件是 if required，所列录制、合法监听和 MBMS 是例子，不是穷尽表。
+- 这里不建立 TCP 连接、TLS 证书验证或 MSRP 路由实现模型。
+
+依据：§9.2.3.3.1;9.2.3.3.2;9.2.3.4.1;9.2.3.4.2;6.3.7.1.23 step7a，印刷页 115、116、215、216、220、221。
+
+## 密钥建立可能阻断邀请接受
+
+适用条件：私聊进入 §9.2.3.2.1 step2 与 §9.2.3.2.3 step7c 所述安全上下文建立分支；接收端收到 SDP key-mgmt 内的 MIKEY-SAKKE I_MESSAGE。
+
+发送端在需要端到端安全且上下文不存在，或现有上下文过期的条款条件下，准备 PCK/PCK-ID 与签名的 MIKEY-SAKKE I_MESSAGE，并放入 SDP 的 mikey key-mgmt。接收端从 I_MESSAGE 的 IDRi 取主叫 MCData ID、转成 UID 并验证签名；验证失败必须以 SIP 488 加 Warning136 拒绝 INVITE，停止后续步骤。验证成功才提取并解密 PCK、取得 PCK-ID，再继续接受邀请。服务器还受 §5.3 的跨消息复制 keying material 要求约束。
+
+- 这是本版信令接口中的条件性步骤，不代表每个 INVITE 都新建密钥上下文，也不把签名通过等同于最终用户已收到完整 SDS。
+- 密钥算法、UID 生成、时效与重放处理仍依赖 TS 33.180；本稿不重新核这些算法。
+
+依据：§9.2.3.2.1 step2;9.2.3.2.3 step7c;9.2.3.2.4 step3;5.3.0，印刷页 50、51、210、212、214。
+
+## INVITE有自身的服务器准入门槛
+
+适用条件：O-PF、CF、T-PF 分别处理普通媒体面 standalone SDS INVITE；只有本角色前序检查成功时才进入后续步骤。
+
+O-PF 仍从 PAI 的 public user identity 解析主叫 MCData ID，拒绝无绑定或绑定过期的用户，并确定相应 CF、执行 §11.1 授权。CF 另查媒体参数是否可接受和 SDP 是否给出 MSRP URI，不满足时回 488；缺少所要求的 SDS feature tag 时回 403。CF 私聊只在直接目标列表恰有一个 entry 时邀请该用户；普通组须通过组文档、成员、SDS 服务、发送权限和归属检查，再邀请筛出的 affiliated 成员。T-PF 另要求 Contact 中有 isfocus，缺少时回 403/Warning104；目标用户绑定不存在时回 404。媒体面必须依这些 INVITE 条款准入，不能直接复制控制面 MESSAGE 的全部错误码、MIME 三体检查和阈值拒绝表。
+
+- 本条是成功主链的前置门槛摘要，不是全部授权矩阵。T-PF 的配置入站通信列表检查仍见 step4A；所列成功不能绕过它。
+- CF 资源不足或拥塞可回 500；客户端资源不足等也可拒绝。
+- 普通组supported-services的字面谓词和空resource-lists的未定义处理，见本页来源中的未解细节。
+
+依据：§9.2.3.3.3 steps1–7;9.2.3.3.4 steps1–4A;9.2.3.4.4 steps1–7，印刷页 216、217、218、219、222、223、224。
+
+## 证据边界
+
+- 依赖 TS 24.229 的 SIP/SDP 和 RFC 4975、6135、6714 的细节未在本批展开。
+- 没有据字段存在推断完整 XML/TLV 完整性校验、端到端加密或媒体鉴权成功。
+
+## 按需继续
+
+- [sds-transmission-selection](sds-transmission-selection.md)
+- [sds-media-setup-and-transfer-evidence](sds-media-setup-and-transfer-evidence.md)
+- [xml-inbound-validation](xml-inbound-validation.md)
+
+[3GPP TS 24.282 V19.7.0 / ETSI TS 124 282 V19.7.0 (2026-08)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf)；仅本版本。
+
+## 来源中的未解细节
+
+- §9.2.3.4.4 step6a,6b，印刷页 222、223：私聊明确拒绝无 resource-lists 或超过一个 entry，邀请分支要求恰有一个 entry；已存在但零 entry 的列表未被这些明示分支覆盖。
+- §9.2.3.4.4 step7e，印刷页 223：supported-services 谓词仍是缺失，或存在 service 的 enabler 不等于 SDS ICSI；不能静默改成只在完全不存在匹配 SDS 条目时拒绝。
+- §9.2.3.4.3 step11，印刷页 221、222：此处原文写 P-Asserted-Service-Id；相邻 PF 过程及分类使用 P-Asserted-Service。本稿不将该字段拼写当作经过纠错的完整报文模板。

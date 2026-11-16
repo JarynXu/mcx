@@ -1,0 +1,122 @@
+{
+  "topic_id": "r19-mcdata-xml-inbound-validation",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS 24.282 V19.7.0 的 MCData UE 或 server 接收 SIP request/response，处于 6.5.1.4 适用范围。",
+    "本主题只给已核 XML 程序边界。验签或解密成功不替代后续 MCData ID 与 public user identity 绑定、服务权限或载荷验证。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.282-v19.7.0",
+  "claims": [
+    {
+      "id": "integrity-precedes-decryption",
+      "clause": "6.5.1.4 steps1–2",
+      "conditions": [
+        "接收方执行 6.5.1.4。"
+      ],
+      "conclusion": "在其他程序之前，先识别是否施加 XML 完整性，已施加则验证；随后识别相关敏感 XML 是否施加机密性，已施加则解密。任一相应检查失败时，本入口写明不再执行本条款后续程序。它不是先读解密字段做业务授权，再补验签的流程。",
+      "printed_pages": [
+        124
+      ],
+      "limitations": [
+        "停止范围保留原文 this clause；不扩写为删除密钥、释放会话或所有失败均已完成业务拒绝。具体响应码须另看失败分支。",
+        "入口包含 SIP responses，而下层错误步骤写发送 SIP 403；本批没有解决响应收到错误后如何形成完整 SIP 事务的通用规则。"
+      ]
+    },
+    {
+      "id": "marker-detection-is-not-permission-to-accept",
+      "clause": "6.5.2.4.1;6.5.3.4.1;4.6 EXAMPLE3–4",
+      "conditions": [
+        "接收方识别 XML 保护形式，或判断缺少保护标记是否可以继续。"
+      ],
+      "conclusion": "6.5 的识别步骤分别检查 Signature、EncryptedData，以及 URI 属性是否使用 MC Services 机密性保护域名；缺少相应标记只被识别为未施加该保护，不是验证通过。4.6 的服务器接收示例 3/4 又在配置要求保护时，对缺少相应标记返回错误，因此不能推导未保护内容一律放行。",
+      "printed_pages": [
+        37,
+        126,
+        131
+      ],
+      "limitations": [
+        "4.6 为概览示例，未给这些缺标记情况统一的 SIP 错误码；不由示例自动补 403/139 或 403/140。",
+        "6.5.3.1 的独立签名容器与 6.5.3.4.1 的 body 内 Signature 描述需结合外部定义，本文不发明遍历或定位算法。"
+      ]
+    },
+    {
+      "id": "missing-signature-parts-has-known-by-other-means-exception",
+      "clause": "6.5.3.4.2 step1",
+      "conditions": [
+        "已经进入 6.5.3.4.2 的 XML 完整性验证；Signature 必需子元素未出现在 MIME body，且这些缺项也未通过其他方式为发送方和接收方所知。"
+      ],
+      "conclusion": "此时验证程序失败并退出。缺项与双方无法通过其他方式获知是合取条件，不能删掉后一条件；这一步本身未明写 403 或 Warning 139。",
+      "printed_pages": [
+        131
+      ],
+      "limitations": [
+        "不把此子元素检查等同于完全没有 Signature 时的标记识别；必需子元素清单及外部已知信息如何建立未在本批展开。"
+      ]
+    },
+    {
+      "id": "failed-reference-or-signature-has-139",
+      "clause": "6.5.3.4.2 steps2–6",
+      "conditions": [
+        "进入 6.5.3.4.2，必需子元素检查未终止；reference validation 失败，或 reference validation 通过后以取得的 XPK 验证 SignatureValue 失败。"
+      ],
+      "conclusion": "这两个明确的验证失败分支均发送 SIP 403 加 Warning 139，并停止本条款余下步骤。不能用 XML 用户身份声明、SIP 200 或后续业务检查替代这两项验证。",
+      "printed_pages": [
+        131
+      ],
+      "limitations": [
+        "W3C reference/signature validation 和 XPK-ID 查找失败的详细算法未核；不把缺 key、解析失败等所有可能异常自动归并为这里的两个明文分支。"
+      ]
+    },
+    {
+      "id": "element-decryption-140-does-not-cover-all-uri-errors",
+      "clause": "6.5.2.4.2;6.5.2.4.3;6.5.1.4 step2",
+      "conditions": [
+        "6.5.2.4.2 被调用来解密 XML MIME body 中 type 为 encrypted 的单个 XML 元素；若由通用入站入口调用，前置完整性步骤未阻断。"
+      ],
+      "conclusion": "EncryptedData 或规范所述子元素缺失时发送 SIP 403 加 Warning 140 并退出；执行解密失败也发送 403/140，只有成功分支继续返回明文。不能据此要求所有原本未加密元素均返回 140。URI 属性另有 6.5.2.4.3，它未列同样完整的失败码和退出分支，不能把元素解密错误规则原封移植过去。",
+      "printed_pages": [
+        124,
+        126,
+        127
+      ],
+      "limitations": [
+        "6.5.1.4 的通用解密调用指向 6.5.2.4.2；URI helper 在 6.5.2.5 则被明确单独调用。本文保留交叉引用覆盖边界，不补出完整 URI 错误算法。"
+      ]
+    }
+  ],
+  "limitations": [
+    "仅覆盖本页指定XML程序；不替代身份绑定、TLV或用户数据保护，外部算法、配置获取和密钥准备仍须分别核验。"
+  ],
+  "related": [
+    "sds-transmission-selection.md",
+    "sds-notification-routing.md",
+    "sds-disposition-aggregation.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  },
+  "standard_stage": 3,
+  "source_issues": [
+    {
+      "clause": "6.5.3.1;6.5.3.4.1",
+      "printed_pages": [
+        128,
+        129,
+        131
+      ],
+      "detail": "前者规定独立 mcptt-signed MIME body 的签名指向各 XML bodies；后者以 XML MIME body 中有无 Signature 判断保护。不能只取后一语句发明嵌入每个目标 body 的解析规则。"
+    },
+    {
+      "clause": "6.5.1.4;6.5.2.4.3",
+      "printed_pages": [
+        124,
+        127
+      ],
+      "detail": "通用入口解密引用元素 helper 6.5.2.4.2，URI helper 有独立条款；该 URI helper 的错误分支未展开。"
+    }
+  ]
+}

@@ -81,3 +81,10 @@ CF先发送出站MESSAGE，随后按steps18–19生成202并回给通知发出�
 - [sds-notification-routing](sds-notification-routing.md)
 
 [ETSI TS124282 V19.7.0 / 3GPP TS24.282 V19.7.0](https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf)；仅本版本。
+
+## MCData具体XML程序
+
+- [xml-inbound-validation](xml-inbound-validation.md)
+- [xml-server-forwarding](xml-server-forwarding.md)
+
+这些指定程序依据TS24.282 V19.7.0；不从其他安全架构页的可选机制表述推导MCData配置缺项即关闭。

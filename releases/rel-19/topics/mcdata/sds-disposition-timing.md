@@ -86,3 +86,7 @@ READ相关动作保留原文display indication条件，不把它解释为自然�
 - [SDS通知经过参与功能：身份绑定、重交付与目标路由](sds-notification-routing.md)
 - [SDS通知控制功能：原消息关联、组成员检查与聚合窗口](sds-disposition-aggregation.md)
 - [SDS服务器链：地址转换与202、200的证据范围](sds-server-responses-and-routing.md)
+
+## 媒体面SDS的对应路径
+
+- [SDS 媒体面结果：建链 200、媒体接口与交付证据](sds-media-setup-and-transfer-evidence.md)

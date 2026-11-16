@@ -45,7 +45,7 @@ PF删除临时存储中的message并停止正文称TD1的计时器。该步骤�
 
 PF生成新MESSAGE，Request-URI指向CF的public service identity，复制收到的MIME bodies，附SDS的P-Asserted-Service，并以PF自己的PSI作为P-Asserted-Identity后发送。收到此转发请求的202或200时，分别生成相同类别响应给通知发出客户端；收到4xx/5xx/6xx则转送响应并保留收到的Warning字段。
 
-- step10还规定在其所述条件下补mcdata-info和通知发出者MCData ID，但其交叉引用step8与step8内容不对应，见source_anomalies；不据此宣称已存在的XML身份一定被覆盖或重新绑定。
+- step10还规定在其所述条件下补mcdata-info和通知发出者MCData ID，但其交叉引用step8与step8内容不对应（step8实际设置Request-URI）；不据此宣称已存在的XML身份一定被覆盖或重新绑定。
 - CF PSI发现与跨域网关路由在原文NOTE6/7中列为范围外。
 
 依据：§12.2.2.1 steps7–15 and response handling，印刷页 316、317。
@@ -83,3 +83,10 @@ PF调用6.3.2.1：出站Request-URI为目标MCData用户所绑定的public user 
 ### 相关服务器路径
 
 - [SDS通知控制功能：原消息关联、组成员检查与聚合窗口](sds-disposition-aggregation.md)
+
+## MCData具体XML程序
+
+- [xml-inbound-validation](xml-inbound-validation.md)
+- [xml-server-forwarding](xml-server-forwarding.md)
+
+这些指定程序依据TS24.282 V19.7.0；不从其他安全架构页的可选机制表述推导MCData配置缺项即关闭。

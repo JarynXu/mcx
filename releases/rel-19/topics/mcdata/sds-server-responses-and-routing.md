@@ -65,3 +65,8 @@ T-PF对其收到的失败生成相应SIP响应、带上收到的Warning字段并
 - [SDS服务器准入：主叫身份、控制功能与私聊目标](sds-server-identities-and-private-admission.md)
 - [SDS普通组控制：组文档、发送资格与当前归属](sds-group-controller-admission.md)
 - [SDS通知控制功能：原消息关联、组成员检查与聚合窗口](sds-disposition-aggregation.md)
+
+## 媒体面SDS的对应路径
+
+- [SDS 媒体面结果：建链 200、媒体接口与交付证据](sds-media-setup-and-transfer-evidence.md)
+- [SDS 媒体面收尾：结果 BYE 与逐段释放](sds-media-result-and-release.md)

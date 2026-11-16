@@ -75,3 +75,9 @@ T-PF使用mcdata-request-uri中的目标MCData ID查找其public user identity�
 
 - [SDS普通组控制：组文档、发送资格与当前归属](sds-group-controller-admission.md)
 - [SDS服务器链：地址转换与202、200的证据范围](sds-server-responses-and-routing.md)
+
+## MCData具体XML程序
+
+- [xml-inbound-validation](xml-inbound-validation.md)
+
+这些指定程序依据TS24.282 V19.7.0；不从其他安全架构页的可选机制表述推导MCData配置缺项即关闭。

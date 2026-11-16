@@ -191,3 +191,15 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 ### SDS 服务器准入与通知
 
 按问题选择[身份与私聊准入](topics/mcdata/sds-server-identities-and-private-admission.md)、[普通组文档与归属](topics/mcdata/sds-group-controller-admission.md)或[路由及202/200](topics/mcdata/sds-server-responses-and-routing.md)。通知另经[参与功能路由与暂存](topics/mcdata/sds-notification-routing.md)、[控制功能关联与聚合](topics/mcdata/sds-disposition-aggregation.md)。TDC1窗口到期允许聚合发送，不证明全员成功；普通原请求与回执的SIP事务不能合并解释。
+
+### MCVideo 计时与源终止
+
+[发送/接收空闲](topics/mcvideo/server-idle-timers.md)区分T1、T2和T5；[排队授予重传](topics/mcvideo/server-queued-grant-retry.md)说明T4达到上限仍保留Taken；[无人接收源的终止](topics/mcvideo/server-stream-idle-termination.md)连接T11、结束命令、T3宽限及确认。默认值可配置；源终止、停止转发和通话释放分别判断。
+
+### MCData XML的先行安全处理
+
+[启用范围与配置默认](topics/mcdata/xml-protection-activation.md)、[入站验证及139/140](topics/mcdata/xml-inbound-validation.md)、[复制和出口重加密](topics/mcdata/xml-server-forwarding.md)分别回答发送前、业务处理前和服务器转发时的问题。身份绑定成功不能替代密码验证；XML、TLV及用户数据保护分别判断。
+
+### SDS 按需媒体面的信令与结果
+
+超过控制面阈值后，按[INVITE与SDP建链](topics/mcdata/sds-media-session-setup.md)、[建链和传输证据](topics/mcdata/sds-media-setup-and-transfer-evidence.md)、[结果BYE与资源释放](topics/mcdata/sds-media-result-and-release.md)选择问题。TS24.282指定的媒体接口不展开TS24.582内部成功判据，不能据此断言全组数据交付已核；用户主动释放也不无条件替代自动结果收尾。

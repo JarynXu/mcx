@@ -56,7 +56,7 @@ Floor Request 带优先级时，用它与协商最高 floor priority 的较低�
 
 依据：§6.3.5.4.1;6.3.5.4.6;6.3.5.4.7，印刷页 85、90、91。
 
-边界：查询响应 step1(b) 的 Track Info 条件把对象写为 Info 而非所收 Request，见 source_issues；不静默修正。未授权发媒体后的 T8 等制止链未在本主题展开。
+边界：查询响应 step1(b) 的 Track Info 条件把对象写为 Info 而非所收 Request；不静默修正。未授权发媒体后的 T8 等制止链未在本主题展开。
 
 ## 证据边界
 

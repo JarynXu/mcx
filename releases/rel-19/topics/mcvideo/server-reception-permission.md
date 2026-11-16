@@ -104,3 +104,10 @@ general转通知，停本源T11，C7减去本源C11；到下限才转Gr Idle。�
 - [reception](reception.md)
 
 [ETSI TS 124 581 V19.2.0 / 3GPP TS24.581 V19.2.0](https://www.etsi.org/deliver/etsi_ts/124500_124599/124581/19.02.00_60/ts_124581v190200p.pdf)；仅本版本。
+
+## 服务器计时与结束证据
+
+- [服务器空闲计时：通知重发不等于释放通话](server-idle-timers.md)
+- [某个源无人接收：T11到期、停止命令与T3确认](server-stream-idle-termination.md)
+
+这些路径依据TS24.581 V19.2.0指定Stage3程序，不把业务要求、发出命令和完成停止视为同一事件。

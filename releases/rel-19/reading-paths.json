@@ -992,6 +992,10 @@
         {
           "condition": "回执关联失败、组成员检查或聚合窗口",
           "read": "topics/mcdata/sds-disposition-aggregation.md"
+        },
+        {
+          "condition": "业务检查前的XML验证、解密或403/139、140",
+          "read": "topics/mcdata/xml-inbound-validation.md"
         }
       ],
       "boundary": "TS24.282 V19.7.0指定普通在网SDS客户端及服务器Stage3分支。原SDS的202/200、通知的202/200、DELIVERED和READ分别判断；聚合到期不代表全员成功。身份绑定不替代密码验证，媒体交付、配置和原文未闭合处按主题保留。"
@@ -1019,9 +1023,71 @@
         {
           "condition": "普通组手动接收、按用户与SSRC筛流或停止下行",
           "read": "topics/mcvideo/server-reception-permission.md"
+        },
+        {
+          "condition": "发送/接收空闲计时是否释放通话",
+          "read": "topics/mcvideo/server-idle-timers.md"
+        },
+        {
+          "condition": "排队授予后不发媒体、重发上限与许可",
+          "read": "topics/mcvideo/server-queued-grant-retry.md"
+        },
+        {
+          "condition": "某个源无人接收、T11终止及T3宽限确认",
+          "read": "topics/mcvideo/server-stream-idle-termination.md"
         }
       ],
       "boundary": "TS24.581 V19.2.0指定普通在网客户端与服务器Stage3分支；SIP200、来流通知、许可和实际RTP分别判断。普通组服务器设Mode1，不从客户端Mode0条件反推服务器授权。完整信令、安全及多流变更未闭合，内部路由和编码疑义留在对应主题。"
+    },
+    {
+      "id": "mcdata-xml-protection",
+      "question": "MCData XML是否受保护，验证失败和服务器转发怎样处理？",
+      "select_one_by_question": [
+        {
+          "condition": "客户端/服务器配置缺项、保护对象或发送前签名",
+          "read": "topics/mcdata/xml-protection-activation.md"
+        },
+        {
+          "condition": "入站缺标记、验签、元素或URI解密及139/140",
+          "read": "topics/mcdata/xml-inbound-validation.md"
+        },
+        {
+          "condition": "服务器复制、明文可见及出口重加密",
+          "read": "topics/mcdata/xml-server-forwarding.md"
+        },
+        {
+          "condition": "需要XML密钥角色的安全架构，不是MCData具体配置",
+          "read": "topics/security/xml-protection.md"
+        }
+      ],
+      "boundary": "24.282 V19.7.0的具体程序与33.180 V19.4.0安全架构分开核验。未保护、验证失败、身份绑定失败和业务无权不是同一事件；原文算法、附录引用及URI错误缺口不构成完整实现。"
+    },
+    {
+      "id": "sds-media-signalling-and-result",
+      "question": "SDS超过控制面阈值后如何建链，怎样理解媒体成功与释放？",
+      "select_one_by_question": [
+        {
+          "condition": "先确认发送权限、大小上限和阈值",
+          "read": "topics/mcdata/sds-transmission-selection.md"
+        },
+        {
+          "condition": "按需INVITE、SDP方向、媒体路径及密钥准入",
+          "read": "topics/mcdata/sds-media-session-setup.md"
+        },
+        {
+          "condition": "建链200、ACK与实际媒体交付的边界",
+          "read": "topics/mcdata/sds-media-setup-and-transfer-evidence.md"
+        },
+        {
+          "condition": "媒体结果BYE或用户主动释放的逐段资源清理",
+          "read": "topics/mcdata/sds-media-result-and-release.md"
+        },
+        {
+          "condition": "真正要判断DELIVERED或READ",
+          "read": "topics/mcdata/sds-disposition-timing.md"
+        }
+      ],
+      "boundary": "仅TS24.282 V19.7.0普通在网按需standalone SDS。TS24.582内部数据传输及成功判据未核；第9章自动结果BYE与第13章主叫用户主动释放不合并为已证实的完整全组算法。"
     }
   ]
 }

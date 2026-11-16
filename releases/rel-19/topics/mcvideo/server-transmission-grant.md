@@ -72,7 +72,7 @@ TS24.581 V19.2.0，controlling MCVideo function，在网普通组呼，非广播
 ## 证据边界
 
 - 不覆盖最初呼叫准入、隐式请求、排队/抢占或忙时并发授权。
-- 服务器重入unless显式请求与客户端不得隐式的措辞张力保留在source_issues，不据此构造重入授权。
+- 服务器重入unless显式请求与客户端不得隐式的措辞张力在此保留，不据此构造重入授权。
 
 ## 按需继续
 
@@ -81,3 +81,11 @@ TS24.581 V19.2.0，controlling MCVideo function，在网普通组呼，非广播
 - [no-receivers](no-receivers.md)
 
 [ETSI TS 124 581 V19.2.0 / 3GPP TS24.581 V19.2.0](https://www.etsi.org/deliver/etsi_ts/124500_124599/124581/19.02.00_60/ts_124581v190200p.pdf)；仅本版本。
+
+## 服务器计时与结束证据
+
+- [服务器空闲计时：通知重发不等于释放通话](server-idle-timers.md)
+- [排队后授予：T4重发何时停止，达到上限是否撤权](server-queued-grant-retry.md)
+- [某个源无人接收：T11到期、停止命令与T3确认](server-stream-idle-termination.md)
+
+这些路径依据TS24.581 V19.2.0指定Stage3程序，不把业务要求、发出命令和完成停止视为同一事件。

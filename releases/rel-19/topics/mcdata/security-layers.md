@@ -58,3 +58,9 @@ Date and Time明文保留，使服务器能排序并判断是否过期；Payload
 [ETSI官方TS33.180 V19.4.0](https://www.etsi.org/deliver/etsi_TS/133100_133199/133180/19.04.00_60/ts_133180v190400p.pdf)，印刷页89、90、91、92、93；仅本版本。
 
 原文边界：§8.5.2.1对SPK/MuSiK及标识的列举次序不一致，不可机械套用respectively生成错误映射。
+
+## MCData具体XML程序
+
+- [xml-protection-activation](xml-protection-activation.md)
+
+这些指定程序依据TS24.282 V19.7.0；不从其他安全架构页的可选机制表述推导MCData配置缺项即关闭。

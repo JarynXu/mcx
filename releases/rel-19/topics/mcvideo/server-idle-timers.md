@@ -1,0 +1,61 @@
+# 服务器空闲计时：通知重发不等于释放通话
+
+TS24.581 V19.2.0，controlling MCVideo function，在网普通非广播/system/emergency/imminent-peril、非临时组呼。
+
+只核已成立服务器状态中的T1/T2/T5；不重建SIP建立或MCVideo呼叫释放策略。
+
+## 发送空闲的入态有明确门槛
+
+适用条件：从非Start-stop状态进入G: Transmit Idle；没有MCVideo客户端协商发送请求排队；active Transmission request queue为空。
+
+此分支发送Transmission Idle通知并递增Message Sequence Number，启动T2、C2=1及T1，置G为Idle并令Cx=0。不能把这段当作每次首次初始化或任意排队配置都执行的通用入态动作。
+
+- 同一外层“没有客户端协商排队”之下另有非空队列分支，原文张力已知；本主题只取空队列分支，不修正外层条件。
+
+依据：§6.3.4.3.2 step1，印刷页 56。
+
+## T1到期由信令决定是否释放
+
+适用条件：服务器G: Transmit Idle中T1(Inactivity)到期。
+
+按可配置服务商策略通知应用/信令T1已到期；信令发起释放才进入Releasing。信令未发起释放时，应该重启T1并保持Idle。T1表列默认30秒且可配置；组呼取组文档list-service中的on-network-hang-timer，不把默认值当部署必值。
+
+- 表的expiry栏简写通话释放，程序却明确有信令不释放分支；不升级为T1到期必挂断。
+- 表把participant请求发送写为normal stop；已核程序§6.3.4.3.3在grant分支才明确停止T1/T2。不得因收到任何请求就声称已停止。
+
+依据：§6.3.4.3.5;11.1.3 Table11.1.3-1 T1 row;6.3.4.3.3 step3，印刷页 57、58、219。
+
+## T2的两次上限检查不可合并
+
+适用条件：G: Transmit Idle中T2(Transmit Idle)到期，按§6.3.4.3.4逐步处理C2。
+
+先在C2未到上限时重启T2并将C2加一；之后仍以C2未到上限为条件，才再次向全体participant发Transmission Idle并递增消息序号，始终留Idle。两次检查不可合成“到期前未达上限就必发一次”。C2默认10且可配置；未配置counter值时必须采用默认值；T2随无线接入特性配置，表未给固定默认秒数。
+
+- 不由此推算所有实现的总发包次数；没有把C2达到上限改成撤权、发送失败或释放通话。
+- T2表提及另一停止监督timer且注明范围外，本稿不补该timer；实际配置取T2-transmission-idle，未核TS24.484取得过程。
+
+依据：§6.3.4.3.4;11.1.3 Table11.1.3-1 T2 row;11.2.3 Table11.2.3-1 C2 row，印刷页 57、58、219、224。
+
+## 接收空闲T5是独立时钟
+
+适用条件：从非Start-stop状态进入Gr: Reception Idle；或已在该态运行的T5(Reception Inactivity)到期。
+
+入态启动T5并令C7=0。到期通知应用/信令；仅当其发起释放才进入Releasing，否则应该重启T5并保持接收Idle。T5默认30秒且可配置，组呼配置来自list-service的on-network-reception-hang-timer，与T1不是同一个时钟。
+
+- T5表同样简写到期释放；这里保留程序的条件分支。
+- 表的normal stop称请求接收，正文已核grant/进入Accepted时停止T5；不把拒绝请求当必然停止。
+- 本条不将Gr无接收者与G无发送者混为同一状态；任一计时器的释放策略依赖TS24.281。
+
+依据：§6.3.6.3.2;6.3.6.3.5;11.1.3 Table11.1.3-1 T5 row;6.3.6.3.6 step2;6.3.6.4.2，印刷页 87、88、89、220。
+
+## 证据边界
+
+- 私呼表中另有配置来源，本主题没有核私呼业务适用链。
+- 不声称已核首次Start-stop入态的所有计时初始化或所有释放原因。
+
+## 按需继续
+
+- [server-transmission-grant](server-transmission-grant.md)
+- [server-reception-permission](server-reception-permission.md)
+
+[3GPP TS24.581 V19.2.0 / ETSI TS124581 V19.2.0 (2026-08), Release19](https://www.etsi.org/deliver/etsi_ts/124500_124599/124581/19.02.00_60/ts_124581v190200p.pdf)；仅本版本。

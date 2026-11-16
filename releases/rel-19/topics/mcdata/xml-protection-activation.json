@@ -1,0 +1,111 @@
+{
+  "topic_id": "r19-mcdata-xml-protection-activation",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "依据 TS 24.282 V19.7.0 的 6.5，讨论 MCData UE 或服务器在 SIP request/response 中处理 XML 的程序，不是全部 MCData 安全协议。",
+    "所需密钥及标识按 6.5.2.2 和 6.5.3.2 假定已经可用；本文不补配置获取失败、密钥缺失恢复或密码算法实现。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.282-v19.7.0",
+  "claims": [
+    {
+      "id": "xml-applicability-and-scope",
+      "clause": "6.5.1.1;6.5.2.1;6.5.3.1;4.6",
+      "conditions": [
+        "判断 6.5 对 SDS、FD、通知或释放过程的适用及保护对象。"
+      ],
+      "conclusion": "6.5 一般适用于第 9、10、12、13 章；注册和服务授权的保护另见第 7 章。机密性配置不逐字段选择：启用时保护 4.6 所列敏感 XML 元素和属性，关闭时不施加此 XML 机密性保护。完整性配置不逐 body 选择：启用时保护所有 XML MIME bodies，关闭时不施加此 XML 完整性保护。 §4.6列出的敏感对象为MCData ID、组ID、位置、alert indicator、包含MCData ID的access token、client ID及functional alias。",
+      "printed_pages": [
+        123,
+        124,
+        128,
+        129,
+        35
+      ],
+      "limitations": [
+        "敏感 XML 字段的保护不等于加密整个 SIP 消息；XML body 完整性也不等于 DATA PAYLOAD 或 TLV 信令验证。",
+        "服务器原样复制入口另有 6.5.2.5 的具体规则，见转发主题；不由一般配置规则自行改写其明文复制步骤。"
+      ]
+    },
+    {
+      "id": "client-server-item-absence-enables",
+      "clause": "6.5.2.3.1;6.5.2.3.2;6.5.3.3.1;6.5.3.3.2",
+      "conditions": [
+        "MCData client 发往 server，或 server 发往 client；按 MCData Service Configuration document 判断出站 XML 保护。"
+      ],
+      "conclusion": "confidentiality-protection 为 true 或该元素缺失，启用机密性；为 false 则关闭并明文放入相关 XML 内容。integrity-protection 独立判断：true 或元素缺失启用，false 关闭。不能把其中一个开关当成另一保护的授权。",
+      "printed_pages": [
+        125,
+        130
+      ],
+      "limitations": [
+        "缺失默认指配置文档中的指定元素缺失，不是整份配置文档不可取得或无法解析时的完整处理规则；TS 24.484 未在本批核验。"
+      ]
+    },
+    {
+      "id": "server-server-has-own-toggle",
+      "clause": "6.5.2.3.2;6.5.3.3.2",
+      "conditions": [
+        "MCData server 向另一 MCData server 发送，按 6.5.2.3.2 和 6.5.3.3.2 判断出站 XML 保护。"
+      ],
+      "conclusion": "服务器间两类保护均检查 protection-between-mcdata-servers 下的 allow-signalling-protection：true 或该元素缺失时启用，false 时关闭。客户端与服务器之间的两个开关不能代替此服务器间配置。",
+      "printed_pages": [
+        125,
+        130
+      ],
+      "limitations": [
+        "6.5.3.3.2 的关闭完整性分支末尾误用或混用 encryption 文字，保留为原文异常，不据此把机密性和完整性合成同一机制。",
+        "同样不推导整份配置缺失时的恢复策略。"
+      ]
+    },
+    {
+      "id": "outbound-signing-is-separate-and-success-gated",
+      "clause": "6.5.1.3;6.5.3.1;6.5.3.3.3",
+      "conditions": [
+        "MCData UE 或 server 即将发出 SIP request/response，且相应出站完整性配置要求保护所列 XML MIME bodies。"
+      ],
+      "conclusion": "6.5.1.3 要求发送前执行完整性程序。每个受保护 XML body 有自己的签名及 Content-ID/cid 引用；签名集中放入名称为 application/vnd.3gpp.mcptt-signed+xml 的 MIME body，不应改名成 mcdata-signed。6.5.3.3.3 的后续生成步骤以 reference generation、signature generation 分别成功为前提。",
+      "printed_pages": [
+        124,
+        128,
+        129,
+        130,
+        131
+      ],
+      "limitations": [
+        "所核发送程序没有给出生成失败后的完整 SIP 错误码或降级策略，不能自行改成无签名发送。",
+        "签名容器、规范化及算法的外部定义尚未核验；本文不提供可执行签名算法。"
+      ]
+    }
+  ],
+  "limitations": [
+    "仅覆盖本页指定XML程序；不替代身份绑定、TLV或用户数据保护，外部算法、配置获取和密钥准备仍须分别核验。"
+  ],
+  "related": [
+    "../security/xml-protection.md",
+    "security-layers.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  },
+  "standard_stage": 3,
+  "source_issues": [
+    {
+      "clause": "6.5.3.3.2",
+      "printed_pages": [
+        130
+      ],
+      "detail": "关闭服务器间完整性分支末尾使用 without encryption；不据此混淆两种保护。"
+    },
+    {
+      "clause": "6.5.3.3.3",
+      "printed_pages": [
+        131
+      ],
+      "detail": "签名 schema/semantics 引用 Annex F.6.2/F.6.3，并同时引用 24.379 的 MIME 定义；本批不裁决附录归属或展开外部 schema。"
+    }
+  ]
+}
