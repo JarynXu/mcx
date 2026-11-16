@@ -1,0 +1,74 @@
+{
+  "topic_id": "r19-group-change-subscription",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3gpp-ts-24.481-v19.3.0",
+    "Stage3"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.481-v19.3.0",
+  "claims": [
+    {
+      "id": "subscriber-scope",
+      "clause": "6.3.13.1",
+      "pages": [
+        20,
+        21
+      ],
+      "conditions": [
+        "GMC versus MCS server subscription procedure"
+      ],
+      "conclusion": "GMC covers group documents and/or GKTPs elements; MCS server covers group documents. Constituent-group GMS has a distinct subscriber procedure."
+    },
+    {
+      "id": "request-target",
+      "clause": "6.3.13.2.1 b",
+      "page": 21,
+      "conditions": [
+        "GMC initial SIP SUBSCRIBE"
+      ],
+      "conclusion": "Request-URI is configured GMS subscription-proxy public service identity, not the XCAP resource URI."
+    },
+    {
+      "id": "resource-entries",
+      "clause": "6.3.13.2.1 a",
+      "page": 21,
+      "conditions": [
+        "GMC initial SIP SUBSCRIBE"
+      ],
+      "conclusion": "resource-lists MIME body has one entry per resource, with relative reference based on configured XCAP root; group-ID document or GKTP document plus GKTPs node selector."
+    },
+    {
+      "id": "credentials-and-protection",
+      "clause": "6.3.13.2.1 c/d",
+      "page": 21,
+      "conditions": [
+        "GMC initial SIP SUBSCRIBE"
+      ],
+      "conclusion": "Include acquired access token; if identity hiding is required, protect both mcptt-info and resource-lists MIME bodies for confidentiality/integrity and include MIKEY body with CSK. Referenced mechanisms not reproduced here."
+    },
+    {
+      "id": "service-agnostic",
+      "clause": "6.3.13.1",
+      "page": 21,
+      "conditions": [
+        "Group management procedures"
+      ],
+      "conclusion": "MC-service agnostic despite historical MCPTT names in service-specific bodies/headers."
+    }
+  ],
+  "limitations": [
+    "Not a complete SUBSCRIBE template; service/Contact requirements and dependent SIP/event procedures must also be satisfied.",
+    "TS24.482 authentication and TS24.379 protection dependencies not independently checked."
+  ],
+  "related": [
+    "document-access.md",
+    "forwarding.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

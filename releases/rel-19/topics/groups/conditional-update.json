@@ -1,0 +1,61 @@
+{
+  "topic_id": "r19-xcap-conditional-update",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "XCAP operations referenced by TS24.481 V19.3.0",
+    "RFC4825 §7.11"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "ietf-rfc-4825",
+  "claims": [
+    {
+      "id": "shared-etag",
+      "clause": "7.11",
+      "conditions": [
+        "Resources within one document"
+      ],
+      "conclusion": "Document, elements and attributes share the document entity tag."
+    },
+    {
+      "id": "conditional-write",
+      "clause": "7.11",
+      "conditions": [
+        "Conditional node PUT using known ETag",
+        "Document changed"
+      ],
+      "conclusion": "Server rejects with 412; invalidate cache, fetch entire document/new ETag before retry. This does not define semantic merge."
+    },
+    {
+      "id": "conditional-delete",
+      "clause": "7.11",
+      "conditions": [
+        "Conditional element/attribute DELETE succeeds",
+        "Document remains"
+      ],
+      "conclusion": "Response ETag applies to remaining document resources, not existence of deleted node."
+    },
+    {
+      "id": "conditional-read",
+      "clause": "7.11",
+      "conditions": [
+        "GET with If-None-Match and cached ETag"
+      ],
+      "conclusion": "Unchanged tag gives 304; changed tag gives 200 with content."
+    }
+  ],
+  "limitations": [
+    "No cross-document transaction or automatic merge.",
+    "RFC4825 is a referenced protocol, not itself a Release19 specification."
+  ],
+  "related": [
+    "resource-operations.md",
+    "creation.md",
+    "document-access.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}
