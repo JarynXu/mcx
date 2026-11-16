@@ -56,3 +56,5 @@ TS24.379 V19.4.0 §11.1.1.2.1.2，带话权控制的在网按需私呼及明确�
 - [../interworking/private-manual](../interworking/private-manual.md)
 
 [ETSI 官方 TS24.379 V19.4.0](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/19.04.00_60/ts_124379v190400p.pdf)，印刷页71、72、422、423、424；仅本版本。
+
+前置授权见[主叫参与功能](originating-authorization.md)与[被叫参与功能](terminating-authorization.md)；跨节点200含义见[控制功能响应](control-routing-results.md)。这些是各自角色的条件，不能合并成只看状态码的判断。

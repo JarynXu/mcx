@@ -131,3 +131,5 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 ### 私呼被叫的业务结果
 
 密钥分发后可续读[拒绝、应答与取消](topics/calls/private-client-acceptance.md)及[模式选择](topics/calls/commencement-selection.md)。这些 TS24.379 V19.4.0 客户端步骤区分 MIKEY失败、用户拒绝、振铃与最终响应；服务器授权和媒体全流程仍未完整覆盖。
+
+私呼服务器链可从[主叫授权与路由](topics/calls/originating-authorization.md)进入，按问题续读[控制功能的响应含义](topics/calls/control-routing-results.md)、[被叫侧授权](topics/calls/terminating-authorization.md)或[first-to-answer选择与清理](topics/calls/first-to-answer-selection.md)。媒体缓冲条件下存在200/Unconfirmed，不能仅凭200认定被叫已应答。
