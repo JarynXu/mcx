@@ -77,3 +77,5 @@
 - [../security/group-key-membership](../security/group-key-membership.md)
 
 [ETSI官方TS24.379 V19.4.0](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/19.04.00_60/ts_124379v190400p.pdf)，印刷页159、160、161、162、163、164、228、293、294、295、296、297；仅本版本。
+
+- [受邀侧服务设置、寻址与身份绑定](../calls/group-terminating-addressing.md)

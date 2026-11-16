@@ -1,0 +1,89 @@
+{
+  "topic_id": "r19-groups-terminating-client-acceptance",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "在网 MCPTT 普通预安排组呼，终接客户端收到初始 INVITE，按需而非预建立会话。",
+    "不展开广播、紧急/迫近危险状态迁移、远程发起、临时组/重组、Replaces 或转接。",
+    "本普通主题不覆盖特定主叫 functional alias 的 MaxSimultaneousEmergencyGroupCalls 已达上限这一独立拒绝条件。",
+    "各模式 claim 以此前未拒绝该请求为条件；所列字段和消息不构成完整 SIP/SDP 模板。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v19.4.0",
+  "claims": [
+    {
+      "id": "TC1",
+      "clause": "10.1.1.2.1.2 steps 1–2",
+      "conditions": [
+        "收到初始 INVITE。"
+      ],
+      "conclusion": "在本主题范围内，客户端资源不足或有本规范范围外原因时 MAY 拒绝。若按 step 1 拒绝，向参与功能发送适当拒绝码及 Warning；用户获准限制失败原因时，可改为无 Warning 的 480；随后停止本子节。",
+      "printed_pages": "270–271"
+    },
+    {
+      "id": "TC2",
+      "clause": "10.1.1.2.1.2 step 7",
+      "conditions": [
+        "先前未拒绝该请求，正在判定自动应答分支。"
+      ],
+      "conclusion": "两种条件任一成立才按本条进入自动过程：Answer-Mode=Auto 且本地设为自动；或 Answer-Mode=Auto、本地设为手动，但客户端允许这次自动应答。调用组呼 6.2.3.1.2。",
+      "printed_pages": "272"
+    },
+    {
+      "id": "TC3",
+      "clause": "10.1.1.2.1.2 step 8",
+      "conditions": [
+        "先前未拒绝该请求，正在判定手动应答分支。"
+      ],
+      "conclusion": "两种条件任一成立时按本条进入手动过程：Answer-Mode=Manual 且本地设为手动；或 Answer-Mode=Manual、本地设为自动，但客户端允许这次手动应答。调用组呼 6.2.3.2.2。",
+      "printed_pages": "272"
+    },
+    {
+      "id": "TC4",
+      "clause": "6.2.3.2.2",
+      "conditions": [
+        "已进入组呼手动过程 6.2.3.2.2。"
+      ],
+      "conclusion": "用户确认之前，客户端 MAY 自动产生 183；产生时 Contact 必须含 g.3gpp.mcptt 和值为 MCPTT ICSI 的 g.3gpp.icsi-ref。用户拒绝邀请时 SHALL 发 480 + Warning110，并停止此过程。该组呼过程没有规定私呼的 180 振铃或手动转发 480/175。",
+      "printed_pages": "72–73"
+    },
+    {
+      "id": "TC5",
+      "clause": "6.2.3.1.2 → 6.2.3.1.1 steps 1–5,7,8,10; 6.2.3.2.2 final-200 paragraph; 10.1.1.2.1.2 step 9",
+      "conditions": [
+        "进入组呼自动过程；或手动过程中实际发送 INVITE 的最终 200。无 Replaces/转接的本普通按需分支。"
+      ],
+      "conclusion": "组呼自动过程复用 6.2.3.1.1；手动最终 200 再引用组呼自动过程。200 带 Require:timer、Contact 的 MCPTT 能力标签、Session-Expires 且 refresher=uas，并启动会话计时器；带按 6.2.2 构造的 SDP answer。客户端发送 200 后按 24.380 与媒体层交互。发送该 200 时 MAY 订阅 conference event package。",
+      "printed_pages": "71–73; 272"
+    }
+  ],
+  "limitations": [
+    "原文 step 1(b) 另列特定主叫 functional alias 的 MaxSimultaneousEmergencyGroupCalls 已达上限；按本主题范围单独排除。该条件原文未另写 incoming emergency-ind=true，因此排除是本稿边界，不能据此断言普通来话永不触发它；也不替换为私呼 MaxCall 或发起侧 N6。",
+    "step 1A 的重组重复受邀/Warning196 不在本普通组范围；step 2 明确指 step 1，不把二者隐式合并。",
+    "具体失败原因限制授权、用户配置及全套 SIP 拒绝码仍依所引规范。",
+    "本组呼子节未列 Priv-Answer-Mode=Auto 的独立触发，不照搬私呼 step 9(c)。不能由普通 Auto 头推导任意呼叫必须自动接听。",
+    "该子节没有给出头缺失、冲突或未列组合的通用客户端默认回退；不添加 Priv-Answer-Mode=Manual 私呼分支。",
+    "该条没有要求此客户端 183 带 P-Answer-State=Unconfirmed；不能把它与 T-PF 自动流程生成的 Unconfirmed 183 混同。",
+    "183 是可选的确认前响应，不证明用户已经确认；本条不提供用户交互超时秒数。",
+    "这是本被叫腿的最终响应，不意味着所有组成员已答复、主叫已收到最终响应或话权获准。",
+    "NAT 条件下另依 RFC5626；完整 SDP、媒体面和会话定时器实现不在本稿展开。",
+    "用户确认怎样驱动发送最终 200 的界面机制不在这些条款中具体定义。",
+    "未展开 TS24.229、RFC5373/RFC3262/RFC5626 的全部处理，不给出全部缺头/冲突头默认规则。",
+    "未核 TS24.484 设置来源、失败原因限制授权的完整过程；TPF仅消费已经收到的Answer-Mode Indication。",
+    "客户端及TPF完整SDP/媒体/话权、密钥校验、取消竞态和后续释放未由这些claims覆盖。",
+    "本次不重复发起授权、主控组文档/归属准入和TNG1成功/失败门槛。",
+    "组呼客户端模式选择没有私呼的独立 Priv-Answer-Mode 条件；自动响应本身通过 6.2.3.1.2 明确复用 6.2.3.1.1。",
+    "手动组呼是可选确认前183加拒绝480/110，不是私呼180和手动转发480/175。",
+    "10.1.1.2.1.2 没有列私呼 MIKEY-SAKKE PCK验签488/136或私呼CANCEL专段；这只说明不能照搬，不证明完整组呼没有安全/取消处理。"
+  ],
+  "related": [
+    "../calls/group-terminating-mode.md",
+    "../calls/group-terminating-responses.md",
+    "../calls/group-acknowledged-start.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

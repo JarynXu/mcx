@@ -61,3 +61,5 @@
 [ETSI官方TS24.379 V19.4.0](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/19.04.00_60/ts_124379v190400p.pdf)，印刷页149、291、295、296、299、300、709；仅本版本。
 
 - [确认等待前的准入检查](../groups/prearranged-admission.md)
+
+- [区分183的来源与确认状态](group-terminating-responses.md)
