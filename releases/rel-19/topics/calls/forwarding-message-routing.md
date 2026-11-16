@@ -36,7 +36,7 @@ forwarding-target-id先取forwarding-target-orig-id；仅转发request且别名�
 
 ## 证据边界
 
-- 完整客户端重呼、缓存生命周期、24.229与24.484依赖未全部核验；本文不是完整报文模板。
+- 客户端重呼见关联主题；缓存生命周期、24.229与24.484依赖仍未全部核验；本文不是完整报文模板。
 
 ## 按需继续
 
@@ -47,3 +47,7 @@ forwarding-target-id先取forwarding-target-orig-id；仅转发request且别名�
 [ETSI官方TS24.379 V19.4.0](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/19.04.00_60/ts_124379v190400p.pdf)，印刷页128、129、510、511、512；仅本版本。
 
 原文边界：§11.1.9.4步骤8a与8b(iv)对forwarding-target-id的anyExt层次写法不一致，不据此宣称完整XML模板已核。
+
+- [forwarding-client-reorigination](forwarding-client-reorigination.md)
+
+- [forwarding-client-results](forwarding-client-results.md)

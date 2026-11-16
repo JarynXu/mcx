@@ -55,3 +55,5 @@ allow-cancel-private-emergency-call=true才授权；否则停止。成功进入�
 - [alert-state](alert-state.md)
 
 [ETSI官方TS24.379 V19.4.0](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/19.04.00_60/ts_124379v190400p.pdf)，印刷页89、91、92、93、138、139、426、427、461、462；仅本版本。
+
+- [private-upgrade](private-upgrade.md)

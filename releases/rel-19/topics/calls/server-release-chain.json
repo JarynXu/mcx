@@ -1,0 +1,74 @@
+{
+  "topic_id": "r19-calls-server-release-chain",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS24.379 V19.4.0的选定私呼服务器释放链；结合§11.1.4.1，无话权私呼仅由客户端发起结束，不把服务器触发规则无限外推。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v19.4.0",
+  "claims": [
+    {
+      "id": "triggers",
+      "clause": "6.3.8.2；11.1.4.1",
+      "conditions": [
+        "控制功能适用私呼会话释放策略"
+      ],
+      "conclusion": "收到媒体层T4 inactivity到期指示、会话时长超过私呼最大时长、会话只剩一名或没有参与者，任一条件成立须释放。此处不规定T4值或最长时长配置值；不能用群组TNG3替代。"
+    },
+    {
+      "id": "control-send",
+      "clause": "6.3.3.1.5；6.3.3.2.4",
+      "conditions": [
+        "控制功能需移除私呼参与者"
+      ],
+      "conclusion": "发送BYE前与媒体层交互，收到该BYE的200后再进行关联媒体资源释放；不将组呼TNG3特例并入私呼。"
+    },
+    {
+      "id": "control-receive",
+      "clause": "6.3.3.1.5；6.3.3.2.4",
+      "conditions": [
+        "控制功能收到私呼BYE"
+      ],
+      "conclusion": "先媒体处理并回200，再检查会话释放策略；需释放其他参与者时按发送BYE程序处理，并复制已有mcptt-info；不将adhoc授权特例并入私呼。"
+    },
+    {
+      "id": "participant-bye",
+      "clause": "6.3.2.1.6；11.1.3.2.1.1",
+      "conditions": [
+        "参与功能收到按需私呼客户端的BYE"
+      ],
+      "conclusion": "媒体处理后生成面向控制功能的新BYE，目标取收到的会话identity，PAI为参与功能PSI，复制已有mcptt-info。收到下游200后回客户端200并处理媒体释放。"
+    },
+    {
+      "id": "refer-before-bye",
+      "clause": "6.3.2.1.7；11.1.3.2.1.2",
+      "conditions": [
+        "客户端预建立会话REFER的Refer-To含method=BYE"
+      ],
+      "conclusion": "参与功能先从PAI查身份绑定，无绑定返回403+Warning141并停止。通过后先回REFER的200，再向Refer-To目标发BYE，PAI为参与功能PSI并复制已有mcptt-info；收到BYE的200后处理媒体释放。因此REFER200不能证明下游BYE及全部释放已完成。"
+    },
+    {
+      "id": "no-subscription",
+      "clause": "6.3.2.1.7",
+      "conditions": [
+        "参与功能收到客户端Refer-To含method=BYE的REFER，已找到PAI公共用户身份与MCPTT ID的绑定，且请求同时含Refer-Sub=false及Supported=norefersub"
+      ],
+      "conclusion": "不建立隐式订阅。响应声明Supported=norefersub。响应回Refer-Sub=false只以请求该字段为false为条件，不要求同时具备Supported；两字段联合条件用于不建立隐式订阅，不能仅凭BYE方法推断无订阅。"
+    }
+  ],
+  "limitations": [
+    "TS24.380媒体行为、T4值、最大时长数值、SIP/REFER完整事务及边界竞态未核验。",
+    "§6.3.2.1.6响应段角色称terminating，与所在originating章节不一致，保留该文字疑义。"
+  ],
+  "related": [
+    "release-signalling.md",
+    "without-floor-control.md",
+    "first-to-answer-selection.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

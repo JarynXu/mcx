@@ -6,7 +6,7 @@ TS24.379 V19.4.0 §§11.1.1.4.1–4.2，选定在网、带话权控制的私呼/
 
 适用条件：收到控制功能的private或first-to-answer INVITE。
 
-分别检查Request-URI的PSI是否分配给对应业务，未分配转§6.3.7.1。private分支另校验主叫MCPTT ID并依本地策略授权，未授权403。缺resource-lists或private的resource-lists中一个list含多个entry：403+Warning145；没有至少一条参数及编解码/格式可接受的媒体流：488。不能将private特有的步骤1b当作first-to-answer完整授权规则。
+分别检查Request-URI的PSI是否分配给对应业务，未分配按§6.3.7.1返回404。private分支另校验主叫MCPTT ID并依本地策略授权，未授权403。缺resource-lists或private的resource-lists中一个list含多个entry：403+Warning145；没有至少一条参数及编解码/格式可接受的媒体流：488。不能将private特有的步骤1b当作first-to-answer完整授权规则。
 
 依据：§11.1.1.4.2 步骤1–5。
 

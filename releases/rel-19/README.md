@@ -135,3 +135,5 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 私呼服务器链可从[主叫授权与路由](topics/calls/originating-authorization.md)进入，按问题续读[控制功能的响应含义](topics/calls/control-routing-results.md)、[被叫侧授权](topics/calls/terminating-authorization.md)或[first-to-answer选择与清理](topics/calls/first-to-answer-selection.md)。媒体缓冲条件下存在200/Unconfirmed，不能仅凭200认定被叫已应答。
 
 私呼后续处理可按问题继续：[别名解析与300](topics/calls/functional-alias-selection.md)、[转发触发](topics/calls/forwarding-trigger-limits.md)与[MESSAGE路由](topics/calls/forwarding-message-routing.md)、[取消紧急优先级](topics/emergency/private-downgrade.md)、[结束信令](topics/calls/release-signalling.md)、[无话权控制](topics/calls/without-floor-control.md)。这些页面保留各分支条件，不把信令成功等同于接通或全部资源释放。
+
+判断私呼是否完成某一步，可查[回呼确认](topics/calls/callback-confirmation.md)、[转发客户端续呼](topics/calls/forwarding-client-reorigination.md)与[结果报告](topics/calls/forwarding-client-results.md)、[紧急升级](topics/emergency/private-upgrade.md)、[服务器释放链](topics/calls/server-release-chain.md)。每页按消息、角色和当前状态限定成功含义。

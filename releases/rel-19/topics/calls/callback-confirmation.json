@@ -1,0 +1,74 @@
+{
+  "topic_id": "r19-calls-callback-confirmation",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS24.379 V19.4.0 §11.1.5的选定客户端、参与功能及控制功能流程。回呼请求者与稍后拨回的目标用户是两个角色；不把SIP事务成功等同业务确认。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v19.4.0",
+  "claims": [
+    {
+      "id": "permission",
+      "clause": "11.1.5.2.1；11.1.5.3.1 步骤2a–4",
+      "conditions": [
+        "发起回呼请求或取消请求"
+      ],
+      "conclusion": "客户端相应allow-request-private-call-call-back或allow-cancel-private-call-call-back缺失/false时通知用户并停止。主叫参与功能另查绑定，无绑定或过期404+141；相应请求无许可分别403+151或403+152。客户端检查不替代服务器检查。"
+    },
+    {
+      "id": "pending",
+      "clause": "11.1.5.1；11.1.5.2.1",
+      "conditions": [
+        "客户端获准发回呼请求或取消请求"
+      ],
+      "conclusion": "准备MESSAGE：资源列表为目标MCPTT ID，Request-URI为服务自身的参与功能PSI。回呼请求携urgency与time-of-request；请求者按目标ID存记录，先分别进入confirm-pending或cancel-pending，再发送MESSAGE。它还不是confirmed。"
+    },
+    {
+      "id": "business-confirm",
+      "clause": "11.1.5.2.1",
+      "conditions": [
+        "请求者有对应目标记录"
+      ],
+      "conclusion": "只有收到回呼response类型的MESSAGE，mcptt-calling-user-id匹配记录且状态为confirm-pending，才转confirmed。取消response的MESSAGE须匹配记录且处于cancel-pending，才转no-call-back并删记录。发送请求的MESSAGE收到4xx/5xx/6xx，则目标记录转no-call-back并删除；不能用普通MESSAGE的200替代上述业务确认。"
+    },
+    {
+      "id": "target",
+      "clause": "11.1.5.2.2",
+      "conditions": [
+        "目标客户端收到回呼请求MESSAGE"
+      ],
+      "conclusion": "保存请求者ID、待回呼状态、紧急程度与请求时间并通知用户，再以MESSAGE携回呼response类型回复请求者。回呼本身仍由目标用户随后决定发起，消息确认不等于通话建立。"
+    },
+    {
+      "id": "fulfil",
+      "clause": "11.1.5.2.3",
+      "conditions": [
+        "目标用户决定履行已记录的回呼请求"
+      ],
+      "conclusion": "目标客户端用记录中的请求者MCPTT ID，以manual commencement发起私呼，按有/无话权控制入口执行。原请求者发送通话建立的200且记录原为confirmed时删除其请求记录；目标端收到该呼叫INVITE/REFER的2xx且记录为private-call-pending时删除目标记录。"
+    },
+    {
+      "id": "server-routing",
+      "clause": "11.1.5.3.2；11.1.5.4",
+      "conditions": [
+        "控制功能处理回呼请求、取消或response的MESSAGE，后续送至终接参与功能"
+      ],
+      "conclusion": "缺MCPTT ICSI的Accept-Contact时403；无resource-lists或所有list合计超过一个entry时403+145。控制功能将资源列表用户ID放入mcptt-request-uri，Request-URI指对应终接参与功能PSI。终接参与功能查该用户绑定，无绑定404。下游MESSAGE的2xx使控制功能生成上游200，仍不能替代业务response MESSAGE或真实回呼。"
+    }
+  ],
+  "limitations": [
+    "目标接收段写PCCB-I2而相邻取消/履行段用PCCB-R2，保留本版标签疑义；本页用语义状态，不据此补全Annex G状态机。",
+    "未完整收录所有取消竞态、失败重试与媒体步骤；字段说明不是完整报文模板。§11.1.5.3.2步骤5在MESSAGE流程写outgoing INVITE，保留原文疑义。"
+  ],
+  "related": [
+    "private-client-acceptance.md",
+    "commencement-selection.md",
+    "without-floor-control.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}
