@@ -1,0 +1,50 @@
+{
+  "topic_id": "r19-iwf-location-query",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS23.283 V19.5.0的LMS与IWF之间Stage 2位置流程；IWF按需转换MC与LMR身份。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "mc-to-lmr",
+      "clause": "10.11.4.2.1.1",
+      "conditions": [
+        "MC服务服务器或LMC请求LMR用户位置"
+      ],
+      "conclusion": "LMS依据请求信息及配置检查许可、确定LMR目标，再向IWF请求。IWF可另作授权检查，取得与请求中MC身份对应的LMR位置，报告经LMS返给请求方。"
+    },
+    {
+      "id": "lmr-to-mc",
+      "clause": "10.11.4.2.1.2",
+      "conditions": [
+        "IWF需要MC用户位置"
+      ],
+      "conclusion": "IWF确定MC目标后请求LMS；LMS授权、取得位置并返给IWF。图称返回消息为response，正文称report并引用§10.11.4.1.1，不能据此杜撰两个协议消息。"
+    },
+    {
+      "id": "notification",
+      "clause": "10.11.4.2.2.1–2",
+      "conditions": [
+        "LMS或IWF判断有可通知的位置"
+      ],
+      "conclusion": "双方均可向另一方发送位置通知。该过程未要求每次通知重新测量，不能单凭通知断言位置新鲜。"
+    }
+  ],
+  "limitations": [
+    "§10.11.4.1的信息字段转引TS23.280，本页未核验这些字段或Stage3编码。",
+    "伙伴系统位置限制的配置机制不在§10.11.4.2范围；请求机会不等于无条件授权，也不保证获取新测量。"
+  ],
+  "related": [
+    "location-subscription.md",
+    "location-unsubscribe.md",
+    "../location/privacy.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

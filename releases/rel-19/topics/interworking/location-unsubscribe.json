@@ -1,0 +1,42 @@
+{
+  "topic_id": "r19-iwf-location-unsubscribe",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS23.283 V19.5.0的LMS与IWF之间Stage 2位置流程；IWF按需转换MC与LMR身份。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "forward",
+      "clause": "10.11.4.2.4.1",
+      "conditions": [
+        "MC侧取消先前向LMR侧建立的事件触发位置订阅"
+      ],
+      "conclusion": "MC服务器或LMC向LMS提出取消；LMS检查许可并定位LMR目标后转IWF。IWF可检查许可，取消订阅并响应LMS；LMS可依TS23.280转发响应。仅取消相应订阅，不代表停止全部位置报告。"
+    },
+    {
+      "id": "reverse",
+      "clause": "10.11.4.2.4.2",
+      "conditions": [
+        "IWF取消先前向MC侧建立的位置订阅"
+      ],
+      "conclusion": "IWF确定需取消及MC目标，向LMS请求；LMS检查许可、取消后向IWF响应。此流程处理相应订阅，未规定关闭其他订阅或全部位置报告。"
+    }
+  ],
+  "limitations": [
+    "§10.11.4.1的信息字段转引TS23.280，本页未核验这些字段或Stage3编码。",
+    "伙伴系统位置限制的配置机制不在§10.11.4.2范围；请求机会不等于无条件授权，也不保证获取新测量。"
+  ],
+  "related": [
+    "location-query.md",
+    "location-subscription.md",
+    "../location/privacy.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

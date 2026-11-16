@@ -62,3 +62,9 @@ Release 19 的条款不得静默用于其他 Release；缺失主题不是“规�
 互通 chat [初建](topics/interworking/chat-initiation.md)解释位置转发和媒体建立条件；[预配置重组](topics/interworking/preconfigured-regroup.md)区分配置来源组、实际重组 ID 及与其他重组冲突。
 
 互通归属可按问题直接读：[逐用户与代理表示](topics/interworking/affiliation-representation.md)、[MC定义组](topics/interworking/affiliation-mc-group.md)、[LMR定义组](topics/interworking/affiliation-lmr-group.md)、[请求与逐组结果](topics/interworking/affiliation-results.md)。
+
+
+互通位置可按需读：[查询与通知](topics/interworking/location-query.md)、[订阅及原文冲突](topics/interworking/location-subscription.md)、[取消订阅](topics/interworking/location-unsubscribe.md)。不必先加载基础位置主题；字段编码与反向订阅响应端点仍有明确边界。
+
+
+[LMR安全消息运输](topics/interworking/lmr-security-transport.md)与[加密语音转码](topics/interworking/encrypted-transcoding.md)分别说明透明载荷承载和媒体密钥前提，不能互相替代。
