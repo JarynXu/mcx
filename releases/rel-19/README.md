@@ -19,12 +19,15 @@
 以下为 Stage 1 的要求解释，不是可直接运行的协议实现。
 
 - [身份与认证前访问](topics/identity/authentication-boundary.md)：应用身份、选定预认证能力和授权边界。
+- [访问控制与终端禁用](topics/security/access-disable.md)：配置停用、暂时禁用和永久禁用的区别。
 - [功能别名共享与接管](topics/identity/functional-alias.md)：模式互斥、满额与授权接管。
 - [紧急告警、状态与组通信](topics/emergency/alert-state.md)：自动触发配置、状态持续及取消主体。
 - [MCVideo 发流许可与接收](topics/mcvideo/transmission-admission.md)：邀请、并发传输上限和容量许可。
 - [MCData 下载、已读与取消](topics/mcdata/delivery-evidence.md)：证据含义与取消范围。
 
 ## 位置与网络策略
+
+[位置传播权限与保护要求](topics/location/privacy.md)已核对 Stage 1 原文，不能替代下列 Stage 2 机制核验。
 
 这三篇仍为整理说明，尚未重新核验对应规范原件：
 
