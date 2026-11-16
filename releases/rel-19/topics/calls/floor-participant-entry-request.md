@@ -4,7 +4,7 @@
 
 有界普通流程：非广播、非 system、非 emergency/imminent-peril、非 ambient listening；不采用 pre-emptive priority、dual floor、multi-talker 或 audio cut-in。
 
-每个行为只在 claim 明示的状态和事件下成立；服务器为何准入、拒绝或排队由 §6.3 仲裁负责，本稿不补其策略。
+每个行为只在 claim 明示的状态和事件下成立；服务器为何准入、拒绝或排队由 §6.3 仲裁负责，本页不补其策略。
 
 下述需要 Floor Ack 的接收分支，都以所收消息 subtype 首位为 1 为条件，Ack Source=0；各 claim 保留对应 Message Type，不要求任意收包都确认。
 
@@ -26,7 +26,7 @@
 
 依据：§6.2.1;6.2.4.2.2 steps2–4，印刷页 36、38。
 
-边界：条文只在隐式分支明确写出保存消息的重放步骤；本稿不据此发明无隐式请求 chat 或 rejoin 的缓存重放顺序。
+边界：条文只在隐式分支明确写出保存消息的重放步骤；本页不据此发明无隐式请求 chat 或 rejoin 的缓存重放顺序。
 
 ## 收到媒体不等于获准发送
 
@@ -42,7 +42,7 @@
 
 适用条件：状态为 U: has no permission；用户指示要获得发送媒体许可。
 
-向 floor control server 发 Floor Request，启动 T101、C101=1，进入 pending Request。请求包含位置字段：位置不可用或 profile 不准报告时 type=0（Not provided）；可用且允许报告时，地理坐标无海拔用 Location，有海拔用含坐标和海拔的 List of Locations，非坐标格式按表8.2.3.21-3 编码。若需不同于 normal 的优先级，Floor Priority 不得超过已协商上限；本稿普通范围不触发特殊呼叫类型指示。
+向 floor control server 发 Floor Request，启动 T101、C101=1，进入 pending Request。请求包含位置字段：位置不可用或 profile 不准报告时 type=0（Not provided）；可用且允许报告时，地理坐标无海拔用 Location，有海拔用含坐标和海拔的 List of Locations，非坐标格式按表8.2.3.21-3 编码。若需不同于 normal 的优先级，Floor Priority 不得超过已协商上限；本页普通范围不触发特殊呼叫类型指示。
 
 依据：§6.2.4.3.5，印刷页 40。
 
@@ -66,7 +66,7 @@ Deny 需要确认时回 Ack(type=3)，必须通知拒绝，可按 Reject Cause �
 
 依据：§6.2.4.4.4–.6，印刷页 42、43。
 
-边界：不把超时等同于明确 Floor Deny；本稿不指定计时器时长或计数上限数值，也不添加无穷重试或重建 SIP 呼叫。
+边界：不把超时等同于明确 Floor Deny；本页不指定计时器时长或计数上限数值，也不添加无穷重试或重建 SIP 呼叫。
 
 ## Floor Taken 不是 Floor Granted
 
@@ -90,8 +90,8 @@ Deny 需要确认时回 Ack(type=3)，必须通知拒绝，可按 Reject Cause �
 
 ## 证据边界
 
-- 本稿仅固定 V19.1.0 行为，不与未读取的 V19.3.0 比较，不宣称相同。
-- 完整 RTP/RTCP 编码、SDP 协商、服务器仲裁与媒体安全另有 §8、§14、§6.3、§13 依赖；本批不构造实现级完整状态机。
+- 本页仅固定 V19.1.0 行为，不与未读取的 V19.3.0 比较，不宣称相同。
+- 完整 RTP/RTCP 编码、SDP 协商、服务器仲裁与媒体安全另有 §8、§14、§6.3、§13 依赖；本页不构造实现级完整状态机。
 - §6.2.4.1 要求没有本状态专门处理的 floor message/RTP 被丢弃且状态不变，格式错误包也忽略；不能跨状态复用本页成功分支。
 - Floor release 与整个 MCPTT call release 不同；收队列结果和用户确认见关联主题。
 

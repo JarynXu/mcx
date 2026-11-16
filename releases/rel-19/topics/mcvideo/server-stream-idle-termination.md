@@ -55,7 +55,7 @@ general停止运行中的T4，将原因设为#8（无接收participant），可�
 
 接口按Ack位回Source=2、Message Type=1，停止运行中的T3，转交End Response并转无发送许可Idle。general要求停止该源RTP转发，Cx未到下限时减一；达到下限才转G: Transmit Idle。完成本源结束仍不等于整通话释放。
 
-- 本条只覆盖End Response路径；对方反发End Request的替代终止路径没有在本稿补成同样停止T3。
+- 本条只覆盖End Response路径；对方反发End Request的替代终止路径没有在本页补成同样停止T3。
 - T3表normal stop写Transmission Release，程序此处明确End Response；保留命名差异，不自动改名。
 - 转Idle后的T1/T2启动仍受其独立入态条件约束。
 

@@ -21,7 +21,7 @@ CF须订阅该组文档的xcap-diff事件，而不是把客户端携来的组ID�
 
 preconfigured-group-use-only=true时403/Warning167；on-network-disabled元素存在时403/Warning115；组文档没有匹配主叫MCData ID的成员条目时403/Warning116；mcdata-allow-short-data-service存在且false时403/Warning206。supported-services缺失，或存在且包含enabler非SDS ICSI的service条目，按本版字面回488/Warning207。上述分支均停止，不把元素缺失、元素存在和false混为同一条件。
 
-- supported-services的字面测试不是“找不到任何SDS项”；多个service条目如何与该测试协同未在本稿修正或推断。
+- supported-services的字面测试不是“找不到任何SDS项”；多个service条目如何与该测试协同未在本页修正或推断。
 
 依据：§9.2.2.4.2 steps6c–6g，印刷页 203。
 
@@ -41,7 +41,7 @@ preconfigured-group-use-only=true时403/Warning167；on-network-disabled元素�
 
 §6.3.5要求同时存在匹配组ID、用户MCData ID、客户端ID的三级记录，且该用户信息项的expiration time未到期。静态成员表中的一行不替代此检查；同一用户另一客户端的记录也不能自动替代所检查客户端。普通组主叫不归属时，§9.2.2.4.2 step6j给403/Warning120并停止。
 
-- step6j还混列重组条件且重复ii编号；本稿仅取本普通组适用的主叫归属检查，不补跨重组布尔表达式。
+- step6j还混列重组条件且重复ii编号；本页仅取本普通组适用的主叫归属检查，不补跨重组布尔表达式。
 - 本页不规定归属记录的创建、刷新、撤销和并发同步算法。
 
 依据：§6.3.5;8.3.3.2;9.2.2.4.2 step6j，印刷页 98、179、204。

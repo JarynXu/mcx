@@ -13,7 +13,7 @@ HTTP、SIP 和 FD disposition 分别保留自己的响应与结果含义。只�
 §10.2.1.1 先执行 §11.1，再由客户端选择 HTTP 或媒体面，没有沿用 SDS 控制面 payload 阈值来选择 FD。HTTP 主线先按私聊或组的 FD 文件大小上限检查并请求上传，再发含文件 URL 的 FD 请求。上传客户端收到带 Location URL 的 HTTP 201 后保存存储位置；这说明该上传流程给出了已存文件的地址，不表示接收用户已获悉或已下载文件。
 
 - 只概括成功上传接口，不覆盖网络存储文件搬运、端到端加密上传、大小限制的全部执行点。
-- §10.2.4.1 step2a 把配置来源称为 MCPTT user profile，与其他 MCData 文字不一致；本稿不据此改写配置 schema。
+- §10.2.4.1 step2a 把配置来源称为 MCPTT user profile，与其他 MCData 文字不一致；本页不据此改写配置 schema。
 
 依据：§10.2.1.1;10.2.4.1 steps1–4;10.2.2.1 final paragraph;6.2.2.2 steps1,4,10,11，印刷页 57、58、264、265、273、275、276。
 
@@ -48,7 +48,7 @@ CF 正常分发流程生成上游 SIP 202；排队分支也能回 202，但须�
 下载客户端通过 TLS 发送 HTTP GET，Request-URI 为文件的绝对 URL。§10.2.3.1 的成功事件是收到包含所请求文件的 HTTP 200，随后才向用户或应用通知下载成功。内容服务器仍须按接收控制策略处理下载，用户不获准时返回 HTTP 403；先前拿到 URL、通过 HEAD 或发送 FD ACCEPTED 都不能替代这一步。24.282 还明确引用代理和 bearer token 身份处理，不能写成任意持有 URL 即可匿名下载。
 
 - 没有读取 TS 24.482，因此 TLS/代理/令牌流程的内部实现、部分下载、断点续传、重试、完整性和文件解密未核。
-- §10.2.3.2 保留 Editor’s Note：内容服务器如何通过配置文档执行接收控制仍为 FFS。本稿不补出完整的权限配置获取方案。
+- §10.2.3.2 保留 Editor’s Note：内容服务器如何通过配置文档执行接收控制仍为 FFS。本页不补出完整的权限配置获取方案。
 - HTTP 成功下载不等于文件被用户打开、阅读或应用执行完毕。
 
 依据：§10.2.3.1;10.2.3.2，印刷页 274、275。
@@ -68,7 +68,7 @@ CF 正常分发流程生成上游 SIP 202；排队分支也能回 202，但须�
 ## 原文疑义
 
 - §10.2.3.2：403 reception-policy 分支未显式写停止后续；不能据顺序文字声称一个 GET 必连续发送 403 和 200。Editor’s Note 又明确配置策略取得方式 FFS。
-- §10.2.4.1 step2a：正文将 MCDataContentServerURI 的用户 profile 误称 MCPTT；本稿不更改源规范 schema 名。
+- §10.2.4.1 step2a：正文将 MCDataContentServerURI 的用户 profile 误称 MCPTT；本页不更改源规范 schema 名。
 
 - [文件存入 Message Store 与下载到终端的区别](message-store-file-locality.md)
 

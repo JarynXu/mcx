@@ -50,7 +50,7 @@
 
 ## 证据边界
 
-- 原文 step 1(b) 另列特定主叫 functional alias 的 MaxSimultaneousEmergencyGroupCalls 已达上限；按本主题范围单独排除。该条件原文未另写 incoming emergency-ind=true，因此排除是本稿边界，不能据此断言普通来话永不触发它；也不替换为私呼 MaxCall 或发起侧 N6。
+- 原文 step 1(b) 另列特定主叫 functional alias 的 MaxSimultaneousEmergencyGroupCalls 已达上限；按本主题范围单独排除。该条件原文未另写 incoming emergency-ind=true，因此排除是本页边界，不能据此断言普通来话永不触发它；也不替换为私呼 MaxCall 或发起侧 N6。
 - step 1A 的重组重复受邀/Warning196 不在本普通组范围；step 2 明确指 step 1，不把二者隐式合并。
 - 具体失败原因限制授权、用户配置及全套 SIP 拒绝码仍依所引规范。
 - 本组呼子节未列 Priv-Answer-Mode=Auto 的独立触发，不照搬私呼 step 9(c)。不能由普通 Auto 头推导任意呼叫必须自动接听。
@@ -58,7 +58,7 @@
 - 该条没有要求此客户端 183 带 P-Answer-State=Unconfirmed；不能把它与 T-PF 自动流程生成的 Unconfirmed 183 混同。
 - 183 是可选的确认前响应，不证明用户已经确认；本条不提供用户交互超时秒数。
 - 这是本被叫腿的最终响应，不意味着所有组成员已答复、主叫已收到最终响应或话权获准。
-- NAT 条件下另依 RFC5626；完整 SDP、媒体面和会话定时器实现不在本稿展开。
+- NAT 条件下另依 RFC5626；完整 SDP、媒体面和会话定时器实现不在本页展开。
 - 用户确认怎样驱动发送最终 200 的界面机制不在这些条款中具体定义。
 - 未展开 TS24.229、RFC5373/RFC3262/RFC5626 的全部处理，不给出全部缺头/冲突头默认规则。
 - 未核 TS24.484 设置来源、失败原因限制授权的完整过程；TPF仅消费已经收到的Answer-Mode Indication。

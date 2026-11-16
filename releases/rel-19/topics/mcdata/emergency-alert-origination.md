@@ -1,8 +1,8 @@
 # MCData 紧急告警发起：用户许可、目标组与本地状态
 
-限 TS24.282 V19.7.0 在网 MCData，用户明确给出普通配置组 ID；不是 adhoc、regroup 或 off-network。目标组没有正在进行的组通信，不将本批成员通知覆盖推广到所有已加入会话的成员。
+限 TS24.282 V19.7.0 在网 MCData，用户明确给出普通配置组 ID；不是 adhoc、regroup 或 off-network。目标组没有正在进行的组通信，不将本页成员通知覆盖推广到所有已加入会话的成员。
 
-本批仅展开独立紧急告警 SIP MESSAGE，不等同紧急 SDS/FD 通信建立或升级，也不推出媒体、逐消息送达或人员已读。相关服务授权绑定及用户/profile/组文档是各检查的输入，不从未读的配置规范补默认值。
+本页仅展开独立紧急告警 SIP MESSAGE，不等同紧急 SDS/FD 通信建立或升级，也不推出媒体、逐消息送达或人员已读。相关服务授权绑定及用户/profile/组文档是各检查的输入，不从未读的配置规范补默认值。
 
 ## 客户端发起许可
 
@@ -56,10 +56,10 @@
 
 §16.2.2.1 2xx paragraph：响应段回指step12，实际发送列在step13。 定位为本次转发的业务MESSAGE响应，不编造第二个发送或把它改为PUBLISH响应。
 
-§16.2.3.1 step4b(ii);6.3.7.1.2 opening：主调用说其他已归属成员，helper概述限已归属但未参与成员。 本批限定无正在进行组通信，保留有会话时的范围差异，不推广为所有紧急组通信通知算法。
+§16.2.3.1 step4b(ii);6.3.7.1.2 opening：主调用说其他已归属成员，helper概述限已归属但未参与成员。 本页限定无正在进行组通信，保留有会话时的范围差异，不推广为所有紧急组通信通知算法。
 
 §16.2.2.3 opening,step2,step4b：入口Request-URI为PF PSI，step2从body取目标MCData ID，step4b却称从incoming Request-URI的MCData ID确定公共身份。 保留binding与404证据，不把正文静默修成已验证端到端寻址报文。
 
 §16.2.3.2 step1 versus step2;6.3.7.2.2;16.2.1.2：取消的否定分支错引发起授权helper；肯定分支才引取消helper；CF取消权限路径/缺失值规则也与客户端不完全相同。 明确限制为step2条件成立后的动作；否定分支保留原文和403/alert=true，不凭直觉修成统一准入算法。
 
-§16.2.1.1 step4d;16.2.1.2 step4d;6.3.7.1.2 step6：客户端可选FA字段描述把anyExt/functional-alias-URI包含次序写得与常见用法不同，通知helper头名写P-Asserted-Service-Id。 本批不输出XML/完整报文或以常见名称替换；可选别名与服务头编码仍非本次验收范围。
+§16.2.1.1 step4d;16.2.1.2 step4d;6.3.7.1.2 step6：客户端可选FA字段描述把anyExt/functional-alias-URI包含次序写得与常见用法不同，通知helper头名写P-Asserted-Service-Id。 本页不输出XML/完整报文或以常见名称替换；可选别名与服务头编码仍不在本页已核范围内。

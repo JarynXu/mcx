@@ -36,7 +36,7 @@ serving 另向该组关联的 CF 发送 SUBSCRIBE，在 mcdata-info 中分别放
 
 - 这两个缺席分支均受用户、客户端、handled 组及本地未到期约束，不影响其他用户或组的任意记录。
 - deaffiliated 是 serving 本地状态，随后客户端可见信息还受 per-user 通知过滤；不要求发出 schema 未列的 deaffiliated wire 状态。
-- p-id 不匹配或缺失时不满足 step3；本批不为这类仍在等待的条目补超时拒绝或重试结论。
+- p-id 不匹配或缺失时不满足 step3；本页不为这类仍在等待的条目补超时拒绝或重试结论。
 
 依据：§8.3.2.7 NOTIFY steps2,3，印刷页 171、172。
 
@@ -73,6 +73,6 @@ serving 另向该组关联的 CF 发送 SUBSCRIBE，在 mcdata-info 中分别放
 
 §8.3.2.7 NOTIFY step1：正向确认设置affiliated及next publishing time，未明确用收到的expires覆盖本地expiration time；已affiliated的刷新通知也不满足该分支初态。 保留实际赋值范围，不补完整每轮续期状态机。
 
-§8.2.2 NOTE1;8.3.2.3 opening5,steps9,10,18：客户端零期限可省PIDF与serving入口仍必需PIDF的差异由上一批保留。 本批从已满足相应入口的服务器过程起算，不绕过该限制或宣称端到端零body撤销已闭合。
+§8.2.2 NOTE1;8.3.2.3 opening5,steps9,10,18：客户端零期限可省PIDF，但serving入口仍必需PIDF；该差异尚未消解。 本页从已满足相应入口的服务器过程起算，不绕过该限制或宣称端到端零body撤销已闭合。
 
 §8.3.2.3 steps14a(ii),15;8.3.2.7;8.4.1.2 table8.4.1.2-1：部分serving生成分支写de-affiliating，通知处理和schema写deaffiliating。 不新增wire状态，不静默修成经过实现验证的一致状态机。

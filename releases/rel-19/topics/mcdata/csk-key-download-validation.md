@@ -33,7 +33,7 @@ TS 24.282 V19.7.0 的 7.2.5/7.3.7，限参与功能向 MCData client 下发 CSK�
 
 IDRi 类型为 URI 时，取 initiator URI，与服务该用户的 PF PSI 比较，不一致则 488/Warning136 并停止；一致后转成 UID。IDRi 类型为 UID 时，将预期服务 PF PSI 转成 UID，与收到的 UID 比较，不一致同样 488/136 并停止。身份隐藏不取消对预期服务 PF 的匹配。
 
-- UID 转换算法不在本稿实现；其他类型或所需 PSI 不可得时的完整失败分支未在本段给出。
+- UID 转换算法不在本页实现；其他类型或所需 PSI 不可得时的完整失败分支未在本段给出。
 - 保留本版将 initiator field 标为 IDRi 的文字，不自行换成另一字段名。
 
 依据：§7.2.5 step1a–b，印刷页 142、143。
@@ -77,5 +77,5 @@ IDRi 类型为 URI 时，取 initiator URI，与服务该用户的 PF PSI 比较
 
 ## 原文疑义
 
-- §7.2.5 step1e：客户端解封装 CSK 时文字指向 participating MCData function's KMS-provisioned UID key；本稿不更正密钥所有者，也不据此输出密码实现。
+- §7.2.5 step1e：客户端解封装 CSK 时文字指向 participating MCData function's KMS-provisioned UID key；本页不更正密钥所有者，也不据此输出密码实现。
 - §7.3.7 opening and step2：此前收到 CSK 可以经授权 REGISTER 或 PUBLISH，但下载 Request-URI 一律引用第三方 REGISTER To；没有补列不存在相应 REGISTER 地址时的替代路径。

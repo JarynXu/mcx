@@ -22,7 +22,7 @@
 Request-URI指向服务本用户的originating PF公共服务身份，并携MCData服务标识。按用户查激活别名时，mcdata-request-uri取目标MCData ID，request-type为functional-alias-status-determination；按某个别名查已激活它的用户时，mcdata-request-uri取该功能别名，request-type为fa-user-status-determination。两者虽然共用presence订阅和application/pidf+xml接收类型，却不是把用户ID和别名ID放进同一含义的字段后随意互换。
 
 - 正文step2A把request-type放在mcdata-Params的anyExt中，step2放在mcdata-Params中；保留两分支的编码位置差别，不提供统一XML模板。
-- 本批结果解释以per-user状态通知为主，未完整核per-functional-alias解析、服务器发现或跨域查询流程。
+- 本页结果解释以per-user状态通知为主，未完整核per-functional-alias解析、服务器发现或跨域查询流程。
 - 客户端正文使用Events header字面，服务端入口使用Event；见原文差异，不据此生成改写后的报文。
 
 依据：§22.2.1.3 initial SUBSCRIBE steps1,2,2A,3,6,7，印刷页 478。
@@ -50,7 +50,7 @@ Request-URI指向服务本用户的originating PF公共服务身份，并携MCDa
 
 ## 原文差异
 
-- §22.2.1.3 initial steps6/in-dialog step3;22.2.2.2.4 opening4：客户端段写Events header，服务端入口写Event header。 保留字面差异并引用presence事件意图，不无声修订客户端拼写，不据本批生成完整报文。
+- §22.2.1.3 initial steps6/in-dialog step3;22.2.2.2.4 opening4：客户端段写Events header，服务端入口写Event header。 保留字面差异并引用presence事件意图，不无声修订客户端拼写，不据本页生成完整报文。
 
 - [后续服务器条件与证据](functional-alias-owner-observation.md)
 

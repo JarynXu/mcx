@@ -13,7 +13,7 @@ serving server指服务MCData用户的服务器，owner指拥有该功能别名�
 服务用户服务器从mcdata-request-uri识别served MCData ID，从P-Asserted-Identity公共用户身份识别originating MCData ID。两ID不同，或originating用户无权修改served用户的别名状态时，须403并停止；不是只要报文自报served ID就可修改。Expires缺失，或非零但小于4294967295时，须423并带Min-Expires=4294967295，随后停止。零值另走停用候选期限分支，不属于这一非零过短拒绝。
 
 - 保持本段拒绝条件的OR，不把“ID相同”写成充分授权。终接PF路径的身份来源另有规定，本条不扩展它。
-- candidate interval按RFC3903确定，本批未读取该依赖，不从最大请求值推导永不过期或补完整ETag/刷新处理。
+- candidate interval按RFC3903确定，该依赖未在本页核验，不从最大请求值推导永不过期或补完整ETag/刷新处理。
 
 依据：§22.2.2.2.3 opening and steps1,2,4–7，印刷页 480。
 
@@ -55,5 +55,5 @@ owner先返回带selected expiration的PUBLISH200，之后才检查presence.enti
 ## 原文差异
 
 - §22.2.2.2.3 step12a(ii),15c：客户端接入后的现有deactivating/deactivated条目在step12a(ii)被写为activated，但step15c触发外发时要求candidate为activating。 普通全新activating与明确列出的通知分支可分别核验；不据此补完整重复激活/重新激活状态机或静默统一状态。
-- §22.2.2.2.6 NOTE1 and step10：NOTE1不支持一条PUBLISH携多个served用户的状态变化；step10却用all served MCData user IDs描述body集合。 本批限定单一served用户和单一handled别名，不扩展成多用户批处理接口。
+- §22.2.2.2.6 NOTE1 and step10：NOTE1不支持一条PUBLISH携多个served用户的状态变化；step10却用all served MCData user IDs描述body集合。 本页限定单一served用户和单一handled别名，不扩展成多用户批处理接口。
 - §22.2.2.3.3 step11 versus steps2,12：零selected expiration移除分支写served MCData ID，前文识别与非零更新使用handled MCData ID。 记录变量差异，不能静默把零值分支的删除目标改写成一个已核验的同名变量。

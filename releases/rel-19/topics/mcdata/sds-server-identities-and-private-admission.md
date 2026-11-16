@@ -42,7 +42,7 @@ one-to-one-sds选承载主叫用户one-to-one standalone SDS服务的CF，不是
 
 CF先要求mcdata-info+xml、mcdata-signalling和mcdata-payload三类MIME齐备，否则403/Warning199并停止；再执行私聊SDS服务尺寸检查，超max-data-size-sds-bytes时403/Warning218。目标列表缺失或entry超过1个时403/Warning204；恰好1个entry时按其uri中的MCData ID调用§9.2.2.4.1.1发送。不能把零entry情况补写成原文已规定的统一403分支。
 
-- 已存在但含零entry的resource-lists未落入上述明确分支；本稿不裁决其完整处理。
+- 已存在但含零entry的resource-lists未落入上述明确分支；本页不裁决其完整处理。
 - MIME齐备只说明这项结构条件满足，不证明全部编码、权限或安全校验通过。
 
 依据：§9.2.2.4.2 steps1–3,5a,5b(i),5b(iii);11.1 step3，印刷页 201、202、310、311。

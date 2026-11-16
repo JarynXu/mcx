@@ -81,7 +81,7 @@ conference NOTIFY 来自另建的 conference SUBSCRIBE dialog，不是上述已�
 - 隐式话权请求判断链接已有 calls/implicit-floor-request，不从成功响应推出实际授予。302、优先级 INFO/re-INVITE、完整媒体失败通知与用户界面状态不在本条展开。普通范围没有隐式归属触发；原文条件性的归属完成/撤销不外推为每次必做。
 - 这是基于本条映射对象的身份区分，不声称两个 URI 字符串在任何实现中必须不同，也不定义物理节点黏性。T-PF 初始 INVITE Contact 映射已由 group-terminating-addressing 覆盖，这里仅补 200 路径。
 - 这是业务参与者状态入口，不覆盖 RFC4575 增量合并算法、通知正文全部字段或跨系统非主控组聚合。
-- 正文 §10.1.3.3 的下行 NOTIFY Request-URI 写成 MCPTT user 的 public service identity；本稿保留这个措辞异常，不静默改为 public user identity。主控入口还要求 calling-user-id 是组会话参与者；不以组成员身份或 REFER 200 代替。
+- 正文 §10.1.3.3 的下行 NOTIFY Request-URI 写成 MCPTT user 的 public service identity；本页保留这个措辞异常，不静默改为 public user identity。主控入口还要求 calling-user-id 是组会话参与者；不以组成员身份或 REFER 200 代替。
 - 客户端用 REFER method=BYE 离开普通组呼的程序见 group-participant-leave；服务器移除及保留预建立见 group-participant-removal。TS24.380 的媒体断开细节仍未核。
 
 ## 按需继续

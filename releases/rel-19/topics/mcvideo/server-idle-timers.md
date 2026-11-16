@@ -32,7 +32,7 @@ TS24.581 V19.2.0，controlling MCVideo function，在网普通非广播/system/e
 先在C2未到上限时重启T2并将C2加一；之后仍以C2未到上限为条件，才再次向全体participant发Transmission Idle并递增消息序号，始终留Idle。两次检查不可合成“到期前未达上限就必发一次”。C2默认10且可配置；未配置counter值时必须采用默认值；T2随无线接入特性配置，表未给固定默认秒数。
 
 - 不由此推算所有实现的总发包次数；没有把C2达到上限改成撤权、发送失败或释放通话。
-- T2表提及另一停止监督timer且注明范围外，本稿不补该timer；实际配置取T2-transmission-idle，未核TS24.484取得过程。
+- T2表提及另一停止监督timer且注明范围外，本页不补该timer；实际配置取T2-transmission-idle，未核TS24.484取得过程。
 
 依据：§6.3.4.3.4;11.1.3 Table11.1.3-1 T2 row;11.2.3 Table11.2.3-1 C2 row，印刷页 57、58、219、224。
 

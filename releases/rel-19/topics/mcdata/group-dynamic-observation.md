@@ -24,7 +24,7 @@
 
 - Min-Expires 值为 4294967295；未核 GMS 查询、组资料授权策略或 RFC6665 订阅恢复。
 - 这里不能只用“请求了目标组”替代 handled 用户的动态数据订阅授权；也不能把此授权当成 SDS 发送许可。
-- §8.3.3.10 指向 §8.4.1，但本批不从 per-group affiliation 结构自行外推出完整动态数据字典。
+- §8.3.3.10 指向 §8.4.1，但本页不从 per-group affiliation 结构自行外推出完整动态数据字典。
 
 依据：§8.3.3.9 steps1–6 and final paragraph;8.3.3.10;8.2.7 NOTIFY paragraph，印刷页 162、185、186。
 
@@ -34,8 +34,8 @@
 
 本版 §8.2.7 要求按 §8.4.2 构造 per-group filter，但 §8.4.2 实际只列 per-client 和 per-user 限制，两种 include 都按 tuple.id 选择，分别代入客户端 ID 或用户 ID。§8.3.3.9 的入口又要求 filter 中的组 ID 与 mcdata-calling-user-id 相同，随后却把该字段识别为 handled 用户；前面的转发过程也将该字段填写为 originating 用户 ID。这些不是已经核实的同一身份关系，不能静默把用户字段换成组字段、或自行拼一个 per-group XPath 后宣称编码闭合。
 
-- 业务意图、独立授权及通知结果可以分段说明；这批不声称 group dynamic 的完整 filter/schema 已验证通过。
-- 8.4.1 的正文介绍 per-user/per-group affiliation，未在本批核到另列的完整 group dynamic 编码说明，不据字段名称补数据模型。
+- 业务意图、独立授权及通知结果可以分段说明；本页不声称 group dynamic 的完整 filter/schema 已验证通过。
+- 8.4.1 的正文介绍 per-user/per-group affiliation，未在本页核到另列的完整 group dynamic 编码说明，不据字段名称补数据模型。
 - 保留原文关系待澄清，既不把这一不一致扩为整个 MCData 归属不可用，也不把它藏在泛泛的“外部依赖待核”中。
 
 依据：§8.2.7 initial SUBSCRIBE step7;8.3.3.8 forwarding step4c(B);8.3.3.9 opening5 and steps1,2;8.4.2.1/.2，印刷页 162、184、185、188、189。
@@ -55,4 +55,4 @@
 - §8.2.7 step7;8.3.3.9 opening5;8.4.2：group dynamic 调用 per-group filter，但被调用条款只给 per-client/per-user filter。 不替换 ID 或借用 MCPTT 配方补造过滤器。
 - §8.3.3.8 forwarding step4c(B);8.3.3.9 opening5,steps1,2：owner 入口要求组 ID 与 calling-user-id 一致，转发及后续识别则把 calling-user-id 作为用户 ID。 分别保留组目标与用户授权的业务含义，不声称已证实入口能按这一字面关系闭合。
 - §8.2.7 NOTIFY paragraph;8.3.3.10;8.4.1.1/.2：group dynamic 通知引用8.4.1；该条款介绍与语法实际是 per-user/per-group affiliation。 只报告已有调用和 expires 要求，不扩为完整动态组数据模型。
-- §8.3.3.8 opening2 and step1 versus step4c：转发接收段的 mcdata-info MIME 名称省略 +xml，而新生成的请求使用 application/vnd.3gpp.mcdata-info+xml。 本批只取明确的调用者/组字段语义，不把未修复的入口写成已通过完整报文验证。
+- §8.3.3.8 opening2 and step1 versus step4c：转发接收段的 mcdata-info MIME 名称省略 +xml，而新生成的请求使用 application/vnd.3gpp.mcdata-info+xml。 本页只取明确的调用者/组字段语义，不把未修复的入口写成已通过完整报文验证。

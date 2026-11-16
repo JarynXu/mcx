@@ -1,10 +1,10 @@
 # MCData 自身告警取消：独立许可、匹配反馈与不回滚归属
 
-限 TS24.282 V19.7.0 在网 MCData，用户明确给出普通配置组 ID；不是 adhoc、regroup 或 off-network。目标组没有正在进行的组通信，不将本批成员通知覆盖推广到所有已加入会话的成员。
+限 TS24.282 V19.7.0 在网 MCData，用户明确给出普通配置组 ID；不是 adhoc、regroup 或 off-network。目标组没有正在进行的组通信，不将本页成员通知覆盖推广到所有已加入会话的成员。
 
-本批仅展开独立紧急告警 SIP MESSAGE，不等同紧急 SDS/FD 通信建立或升级，也不推出媒体、逐消息送达或人员已读。相关服务授权绑定及用户/profile/组文档是各检查的输入，不从未读的配置规范补默认值。
+本页仅展开独立紧急告警 SIP MESSAGE，不等同紧急 SDS/FD 通信建立或升级，也不推出媒体、逐消息送达或人员已读。相关服务授权绑定及用户/profile/组文档是各检查的输入，不从未读的配置规范补默认值。
 
-仅取消本用户自己发起且已选定的告警；请求不含 originated-by，也未另行要求取消组的 in-progress emergency 状态，因此本批请求不带 emergency-ind。
+仅取消本用户自己发起且已选定的告警；请求不含 originated-by，也未另行要求取消组的 in-progress emergency 状态，因此该请求不带 emergency-ind。
 
 ## 自身取消的许可和目标
 
@@ -19,24 +19,24 @@
 
 ## CF清缓存及独立反馈
 
-适用条件：CF 已转入 §16.2.3.2；仅描述其 step2 明定的“按 §6.3.7.2.2 已授权”分支，且本批无 originated-by、无 emergency-ind；须保留下述错误回指边界，不能当成已闭合的完整准入算法。
+适用条件：CF 已转入 §16.2.3.2；仅描述其 step2 明定的“按 §6.3.7.2.2 已授权”分支，且该请求无 originated-by、无 emergency-ind；须保留下述错误回指边界，不能当成已闭合的完整准入算法。
 
 §6.3.7.2.2 按调用用户及 profile 的 allow-cancel-emergency-alert 判断 true 为授权、false 为未授权。进入 §16.2.3.2 step2 后，CF 清除发送用户仍有未取消告警的缓存，并向已归属但未加入通信的成员发送 alert-ind=false 通知。随后向取消请求回 200，再另发成功接收取消请求的 MESSAGE，带 alert-ind=false、alert-ind-rcvd=true 和原 client-id。清除的是告警缓存；本分支没有调用归属撤销，也没有把组 in-progress emergency 状态置为 false。
 
 - §16.2.3.2 step1 却用发起授权 §6.3.7.2.1 判取消未授权；在无 emergency-ind 条件下该分支写 403/alert-ind=true 并停止，step2 才引用取消授权 §6.3.7.2.2。不能静默修回指，或声称客户端许可通过就一定能走到 step2。
 - CF 取消 helper 把 allow-cancel-emergency-alert 写在 ruleset 下，而客户端写在 rule/actions 下；helper 只明列 true/false，没有说明元素缺失。未读 schema，不补缺省值或擅自归一化路径。
-- 成员取消通知不等待全员响应才回原请求 200；本批无组通信，因此不扩展已加入会话成员的 re-INVITE 分支。
+- 成员取消通知不等待全员响应才回原请求 200；本页限定无正在进行的组通信，因此不扩展已加入会话成员的 re-INVITE 分支。
 
 依据：§6.3.7.2.2;16.2.3.1 step3;16.2.3.2 step2b,c,e–i,k，印刷页 118、119、400、403、404。
 
 ## 匹配反馈与客户端状态
 
-适用条件：客户端已发本批自身取消 MESSAGE；接收相应反馈时按 §16.2.1.2 的匹配条件处理。
+适用条件：客户端已发本页所述的自身取消 MESSAGE；接收相应反馈时按 §16.2.1.2 的匹配条件处理。
 
 只有该接收分支要求的独立 MESSAGE 带 alert-ind-rcvd=true、client-id 匹配已发送请求，且已发送请求不含 originated-by 时，才按反馈的 alert-ind 处理：false 时置 MDEA1 并清除自身 MCData emergency state；true 且仍处 MDEA4 时退回 MDEA3。另一路是原取消请求收到 4xx/5xx/6xx：在自身取消且 MDEA4 的条件下，若响应未含 alert-ind 或其值为 true，须回到 MDEA3。正文没有把普通 200 响应本身列作这项清除条件。
 
 - 这段匹配列出 client-id 与自身取消条件，未给每条并发取消的额外唯一标识；不据此声称多告警并发关联已验证。对 error 中 alert-ind=false、无反馈或 3xx 不自补状态迁移。
-- 清除自身 MCData emergency state 不等于清除组 MDEG/MDEGC 状态；后两者的本条清除另要求发出与收到的 emergency-ind 都为 false，本批不满足该条件。
+- 清除自身 MCData emergency state 不等于清除组 MDEG/MDEGC 状态；后两者的本条清除另要求发出与收到的 emergency-ind 都为 false，本页所述请求不满足该条件。
 - 告警取消成功不会按本链自动删除 PF/owner 的隐式归属，不能作为退出组或终止 SDS/FD 会话的证据。
 
 依据：§16.2.1.2 notification paragraph,steps1–3 and error-response paragraph;16.2.3.2 step2，印刷页 379、380、403、404。
@@ -60,10 +60,10 @@
 
 §16.2.2.1 2xx paragraph：响应段回指step12，实际发送列在step13。 定位为本次转发的业务MESSAGE响应，不编造第二个发送或把它改为PUBLISH响应。
 
-§16.2.3.1 step4b(ii);6.3.7.1.2 opening：主调用说其他已归属成员，helper概述限已归属但未参与成员。 本批限定无正在进行组通信，保留有会话时的范围差异，不推广为所有紧急组通信通知算法。
+§16.2.3.1 step4b(ii);6.3.7.1.2 opening：主调用说其他已归属成员，helper概述限已归属但未参与成员。 本页限定无正在进行组通信，保留有会话时的范围差异，不推广为所有紧急组通信通知算法。
 
 §16.2.2.3 opening,step2,step4b：入口Request-URI为PF PSI，step2从body取目标MCData ID，step4b却称从incoming Request-URI的MCData ID确定公共身份。 保留binding与404证据，不把正文静默修成已验证端到端寻址报文。
 
 §16.2.3.2 step1 versus step2;6.3.7.2.2;16.2.1.2：取消的否定分支错引发起授权helper；肯定分支才引取消helper；CF取消权限路径/缺失值规则也与客户端不完全相同。 明确限制为step2条件成立后的动作；否定分支保留原文和403/alert=true，不凭直觉修成统一准入算法。
 
-§16.2.1.1 step4d;16.2.1.2 step4d;6.3.7.1.2 step6：客户端可选FA字段描述把anyExt/functional-alias-URI包含次序写得与常见用法不同，通知helper头名写P-Asserted-Service-Id。 本批不输出XML/完整报文或以常见名称替换；可选别名与服务头编码仍非本次验收范围。
+§16.2.1.1 step4d;16.2.1.2 step4d;6.3.7.1.2 step6：客户端可选FA字段描述把anyExt/functional-alias-URI包含次序写得与常见用法不同，通知helper头名写P-Asserted-Service-Id。 本页不输出XML/完整报文或以常见名称替换；可选别名与服务头编码仍不在本页已核范围内。

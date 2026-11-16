@@ -1,8 +1,8 @@
 # MCData 告警准入与结果：请求型隐式归属、CF 接受和成员通知
 
-限 TS24.282 V19.7.0 在网 MCData，用户明确给出普通配置组 ID；不是 adhoc、regroup 或 off-network。目标组没有正在进行的组通信，不将本批成员通知覆盖推广到所有已加入会话的成员。
+限 TS24.282 V19.7.0 在网 MCData，用户明确给出普通配置组 ID；不是 adhoc、regroup 或 off-network。目标组没有正在进行的组通信，不将本页成员通知覆盖推广到所有已加入会话的成员。
 
-本批仅展开独立紧急告警 SIP MESSAGE，不等同紧急 SDS/FD 通信建立或升级，也不推出媒体、逐消息送达或人员已读。相关服务授权绑定及用户/profile/组文档是各检查的输入，不从未读的配置规范补默认值。
+本页仅展开独立紧急告警 SIP MESSAGE，不等同紧急 SDS/FD 通信建立或升级，也不推出媒体、逐消息送达或人员已读。相关服务授权绑定及用户/profile/组文档是各检查的输入，不从未读的配置规范补默认值。
 
 O-PF 指处理发起客户端请求的 participating function；CF/owner 指控制目标组并维护组侧归属记录的功能。二者检查和状态提交不可混用。
 
@@ -49,7 +49,7 @@ CF 的归属检查要求目标组记录、该用户记录、该客户端记录�
 CF 为每个其他已归属组成员生成并发送告警 MESSAGE：带目标用户身份、calling-group-id、发起用户 calling-user-id、alert-ind=true、发起者组织资料，并复制接收的位置信息；如有经上游保留的别名也予以转发。随后 CF 缓存该用户已发起告警的信息，向原请求回 200，再另发成功接收告警的 MESSAGE，其中 alert-ind=true、alert-ind-rcvd=true，mcdata-client-id 复制原请求。此顺序没有把所有成员通知的 2xx 设为原告警 200 或成功接收通知的门槛。
 
 - 独立 alert-ind-rcvd 通知表示发起请求已被成功接收，不是 DELIVERY/READ disposition notification，也不证明任何成员已读或定位资料刚测得。
-- 主调用写 each other affiliated member，而 §6.3.7.1.2 概述以 affiliated but not participating 为对象。本批限定无正在进行组通信，不把这处范围差异静默解决为会话中完整分发规则。
+- 主调用写 each other affiliated member，而 §6.3.7.1.2 概述以 affiliated but not participating 为对象。本页限定无正在进行组通信，不把这处范围差异静默解决为会话中完整分发规则。
 - 本链没有 INVITE/SDP 或媒体建立步骤；不能由告警缓存或 200 推出 SDS/FD/IPCONN 成功。
 
 依据：§16.2.3.1 step4b(ii–vi),final paragraph;6.3.7.1.2;6.3.7.1.3;6.3.7.1.5，印刷页 99、100、101、102、401。
@@ -100,10 +100,10 @@ O-PF 收到 CF 对这次触发隐式归属的业务 MESSAGE 的 2xx 后，才调
 
 §16.2.2.1 2xx paragraph：响应段回指step12，实际发送列在step13。 定位为本次转发的业务MESSAGE响应，不编造第二个发送或把它改为PUBLISH响应。
 
-§16.2.3.1 step4b(ii);6.3.7.1.2 opening：主调用说其他已归属成员，helper概述限已归属但未参与成员。 本批限定无正在进行组通信，保留有会话时的范围差异，不推广为所有紧急组通信通知算法。
+§16.2.3.1 step4b(ii);6.3.7.1.2 opening：主调用说其他已归属成员，helper概述限已归属但未参与成员。 本页限定无正在进行组通信，保留有会话时的范围差异，不推广为所有紧急组通信通知算法。
 
 §16.2.2.3 opening,step2,step4b：入口Request-URI为PF PSI，step2从body取目标MCData ID，step4b却称从incoming Request-URI的MCData ID确定公共身份。 保留binding与404证据，不把正文静默修成已验证端到端寻址报文。
 
 §16.2.3.2 step1 versus step2;6.3.7.2.2;16.2.1.2：取消的否定分支错引发起授权helper；肯定分支才引取消helper；CF取消权限路径/缺失值规则也与客户端不完全相同。 明确限制为step2条件成立后的动作；否定分支保留原文和403/alert=true，不凭直觉修成统一准入算法。
 
-§16.2.1.1 step4d;16.2.1.2 step4d;6.3.7.1.2 step6：客户端可选FA字段描述把anyExt/functional-alias-URI包含次序写得与常见用法不同，通知helper头名写P-Asserted-Service-Id。 本批不输出XML/完整报文或以常见名称替换；可选别名与服务头编码仍非本次验收范围。
+§16.2.1.1 step4d;16.2.1.2 step4d;6.3.7.1.2 step6：客户端可选FA字段描述把anyExt/functional-alias-URI包含次序写得与常见用法不同，通知helper头名写P-Asserted-Service-Id。 本页不输出XML/完整报文或以常见名称替换；可选别名与服务头编码仍不在本页已核范围内。

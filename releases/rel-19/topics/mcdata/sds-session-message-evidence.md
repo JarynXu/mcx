@@ -45,7 +45,7 @@ MCData session identity 是服务器分配的 SIP URI/GRUU，用于客户端—P
 
 该事件要求向MCData server发送BYE，Request-URI为待释放的MCData session identity，Reason使用SIP/cause480及传输失败原因。它不是把先前INVITE的2xx改成失败响应。本session子节没有像§9.2.3 standalone过程那样列出“收到成功传输指示就以cause200发送BYE”的分支；不能把单条standalone的成功收尾搬过来，宣称session每成功一条消息就自动结束。
 
-- 没有对应成功即释放分支，不等于本稿证明session永不自动释放。用户、服务器和计时器等其他释放条件由各自条款维护。
+- 没有对应成功即释放分支，不等于本页证明session永不自动释放。用户、服务器和计时器等其他释放条件由各自条款维护。
 - 本条只确认失败BYE的发起入口，未把它无条件拼接成已核的全体参与者释放流程。
 
 依据：§9.2.4.2.3 unsuccessful-media indication;9.2.3.2.3 successful-media indication (comparison with existing topic)，印刷页 213、214、228、229。

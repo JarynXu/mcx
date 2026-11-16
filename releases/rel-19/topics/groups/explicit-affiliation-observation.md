@@ -55,15 +55,15 @@ per-user PIDF 以用户→客户端→组组织；affiliation 的 status、expir
 ## 证据边界
 
 - 原文要求先 initiate，没有要求等待 SUBSCRIBE 的200或首个NOTIFY之后才发送PUBLISH；不增加这个先后门槛。
-- 初始 SUBSCRIBE 的 Expires=0 在此是一次状态获取，不是 PUBLISH 撤销，也不是本稿未覆盖的取消既有订阅。
+- 初始 SUBSCRIBE 的 Expires=0 在此是一次状态获取，不是 PUBLISH 撤销，也不是本页未覆盖的取消既有订阅。
 - 完整过滤 XML 与命名空间见原条款；不要误用 per-user 过滤中的 MCPTT 用户 ID 代替此处 client ID。
 - 不把 SUBSCRIBE 续订或它的 Expires 与各个 affiliation/expires 合并成同一个计时器。
 - 此条件不能简化为收到任意 NOTIFY 即接受其状态；也不能要求每个 NOTIFY 都必须含 p-id。
 - §9.2.1 没有提供缺失 status/expires、通知中未列组、失败重试或本地持久记录的完整处理算法；须与服务器通知构造和所引 RFC 合并核对，不能自行定义。
 - 已读 §§9.2.1.1–3 没有定义客户端针对 PUBLISH/SUBSCRIBE 各 4xx/5xx/6xx 的专属重试、回滚或统一业务失败码；不把服务器拒绝码编造成客户端新增动作。
-- 客户端以 NOTIFY 的 per-user 信息确定成功/拒绝相关状态；具体服务器拒绝后如何筛选/更新/省略条目由服务器研究补齐，本稿没有把未出现的组一概定义为被拒。
-- 不要求创建某种本地持久表，不把发出请求时的兴趣名单写成已获准 affiliation。消息所表达的用户/client/group及可用状态、到期、p-id各有不同含义；本稿只保留这些关联，不规定具体存储实现。
-- 服务器存储中的 deaffiliated 状态不应直接扩充客户端 XML schema 的 statusType；本稿不研究撤销流程。
+- 客户端以 NOTIFY 的 per-user 信息确定成功/拒绝相关状态；服务器记录清理与通知构造的已核分支见[服务器记录与通知](explicit-affiliation-server-state.md)；这些分支不提供所有拒绝或条目省略的唯一原因映射，不能把未出现的组一概定义为被拒。
+- 不要求创建某种本地持久表，不把发出请求时的兴趣名单写成已获准 affiliation。消息所表达的用户/client/group及可用状态、到期、p-id各有不同含义；本页只保留这些关联，不规定具体存储实现。
+- 服务器存储中的 deaffiliated 状态不应直接扩充客户端 XML schema 的 statusType；本页不展开撤销流程。
 - TS24.229、RFC3903、RFC3856、RFC3863、RFC6665、RFC4661 的完整事务、认证、事件头、ETag/If-Match、订阅终止和重传实现。
 - 显式归属服务器授权、并发N2限制、持久记录更新、跨服务器PUBLISH/NOTIFY以及拒绝通知构造。
 - 撤销/去归属、取消订阅、强制和协商修改他人归属、基于位置/functional alias规则的触发。

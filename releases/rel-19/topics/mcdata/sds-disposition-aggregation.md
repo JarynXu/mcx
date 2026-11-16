@@ -12,7 +12,7 @@ TS24.282 V19.7.0普通在网one-to-one或非重组组SDS带外通知；进入12.
 
 资源不足或拥塞风险可拒绝500并可带Retry-After。Accept-Contact不含原文列出的SDS或FD ICSI-ref服务值时403停止；resource-lists MIME缺失或其list集合中entry多于一个时403加Warning145停止。CF还用通知的Conversation ID及Message ID关联原SDS请求，关联失败则403加Warning216停止。
 
-- entry为零不是step3明列的拒绝条件；本稿不把它静默改成entry数必须恰为1的完整校验算法，也不宣称空列表可成功转发。
+- entry为零不是step3明列的拒绝条件；本页不把它静默改成entry数必须恰为1的完整校验算法，也不宣称空列表可成功转发。
 - 服务检查的SDS/FD备选文字不表示SDS通知可任意冒用FD服务分类；入口分类另见6.3.1.1。
 
 依据：§12.2.3 steps1–5，印刷页 318、319。
@@ -45,7 +45,7 @@ CF按该组ID取得组文档，未缓存时从GMS检索，并识别组成员。m
 
 TDC1未运行时才启动，CF将收到的signalling MIME复制到聚合的出站MESSAGE。TDC1到期或已收到所有组成员的全部MCData disposition通知，均转入step16继续发送。装不进一条MESSAGE时，原文NOTE6要求为剩余通知另建MESSAGE。到期放行不表示全员都已送达或已读。
 
-- 原文使用all group members，不在本稿改为已归属者、实际收件者或某个quorum；如何判定各类型回执已齐、去重和成员变化未给出完整算法。
+- 原文使用all group members，不在本页改为已归属者、实际收件者或某个quorum；如何判定各类型回执已齐、去重和成员变化未给出完整算法。
 - 没有从“copy MIME”推导合并二进制字段、统一改写为READ或把若干回执压成单一成功结果。
 
 依据：§12.2.3 step15c and NOTE6;steps16–17，印刷页 320。

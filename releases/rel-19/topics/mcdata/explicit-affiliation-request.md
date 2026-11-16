@@ -4,7 +4,7 @@
 
 用户希望改变兴趣，不等于服务器已确认归属；要取得变更成功或拒绝的信息，应按 §8.2.1 在变更前启动 §8.2.3 状态确定。此处不增加先等 SUBSCRIBE 成功的条件。
 
-PUBLISH 按 TS24.229、RFC3903 和 presence 事件过程发送；本批仅核 TS24.282 明列的差异，不生成完整可执行 SIP 报文。
+PUBLISH 按 TS24.229、RFC3903 和 presence 事件过程发送；本页仅核 TS24.282 明列的差异，不生成完整可执行 SIP 报文。
 
 ## PUBLISH路由和目标身份
 
@@ -13,7 +13,7 @@ PUBLISH 按 TS24.229、RFC3903 和 presence 事件过程发送；本批仅核 TS
 客户端发送 PUBLISH 到服务该用户的 originating PF 公共服务身份。mcdata-info 的 mcdata-request-uri 填 MCData 用户 ID，P-Preferred-Service 携 MCData ICSI；组 ID 放在兴趣资料里，不替换这两个目的身份。§8.2.2 还将收到 NOTIFY、状态为 affiliated 且归属期限临近列为兴趣刷新触发，所以刷新依据的是观察到的归属期限，不能仅凭先前 PUBLISH 的 200 推定永不过期。
 
 - MCData ICSI 为 urn:urn-7:3gpp-service.ims.icsi.mcdata，mcdata-info MIME 类型为 application/vnd.3gpp.mcdata-info+xml。
-- 这里的服务身份、用户 ID、客户端 ID 和组 ID 作用不同；完整注册、鉴权及路由配置不是本批范围。
+- 这里的服务身份、用户 ID、客户端 ID 和组 ID 作用不同；完整注册、鉴权及路由配置不是本页范围。
 - 未核 RFC3903 条件请求、ETag 和刷新重试；没有从 Expires 最大请求值推导固定获准期限。
 
 依据：§8.2.2 opening and steps1–3;8.2.3 NOTIFY paragraph，印刷页 158、159、160。
@@ -68,6 +68,6 @@ PUBLISH 按 TS24.229、RFC3903 和 presence 事件过程发送；本批仅核 TS
 
 - §8.2.2 NOTE1 versus8.3.2.3 opening5,steps9,10,18：客户端 Expires=0 可不带 PIDF；服务端入口要求 PIDF，后续还从该 body 读取用户、客户端和 p-id。 作为零期限操作的具体可用性边界保留，不构造空 body 例外或目标客户端推断。
 - §8.3.2.3 steps14a(ii),15 versus8.4.1.2 table8.4.1.2-1：服务器撤销过渡状态写 de-affiliating，schema 枚举写 deaffiliating。 语义描述保留出处，不新增 wire 枚举，也不宣称已验证原文状态机与 schema 一致。
-- §8.3.2.3 step14a(iii) versus8.4.1.2 per-user syntax：新组分支将 group 写作 element，而 per-user syntax 把 group 定义成 affiliation 的 attribute。 本批不构造新组 XML 处理算法；发布字段描述依据明确的 syntax，并标出此差异。
+- §8.3.2.3 step14a(iii) versus8.4.1.2 per-user syntax：新组分支将 group 写作 element，而 per-user syntax 把 group 定义成 affiliation 的 attribute。 本页不构造新组 XML 处理算法；发布字段描述依据明确的 syntax，并标出此差异。
 
 - [客户端表达兴趣后，还要按用户和组构造 owner 请求并经过组存在/成员检查。](explicit-affiliation-owner-admission.md)

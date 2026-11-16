@@ -1,6 +1,6 @@
 # MCData 组会话客户端取消：紧急条件、告警与对端状态分开判断
 
-限 TS24.282 V19.7.0，在网、已有 on-demand SDS 预安排组 session；本批核的是客户端过程，不是端到端组服务器升级/取消实现。不是 standalone SDS、pre-established session、FD、IPCONN、adhoc 或 regroup。
+限 TS24.282 V19.7.0，在网、已有 on-demand SDS 预安排组 session；本页说明的是客户端过程，不是端到端组服务器升级/取消实现。不是 standalone SDS、pre-established session、FD、IPCONN、adhoc 或 regroup。
 
 MED 是客户端自身紧急状态，MDEG 是客户端跟踪的组紧急状态，MDEGC 是该客户端的组通信紧急状态，MDEA 是告警状态；CF 的 in-progress emergency group 状态另有维护者。来源为 §4.10 pp45–46，不用任一客户端状态代表全组提交。
 
@@ -15,8 +15,8 @@ MED 是客户端自身紧急状态，MDEG 是客户端跟踪的组紧急状态�
 客户端按 §6.2.8.1.7 的本地策略判断是否可发送组紧急状态取消请求，原文举dispatcher或发起者为例，并未规定这些身份自动足够。未获授权时SHOULD提示、SHALL停止。通过后使用会话内re-INVITE，填session-type=prearranged和目标组mcdata-request-uri，带g.3gpp.mcdata Contact特征、SDS SDP offer以及按helper确定的Resource-Priority。取消的是紧急条件，不是发BYE离开或终止SDS会话。
 
 - 组取消的客户端local policy不等同用户自己的告警取消许可；服务器§6.3.7.2.3又有allow-cancel-group-emergency输入。这里不声称客户端决定已替代服务器授权。
-- §6.2.7.2 NOTE1说明calling user身份由上游PF插入，但本批未核出适用于组re-INVITE的完整PF入口，不由该NOTE补出其每一步行为。
-- 无ongoing通信的MESSAGE分支不在此claim；原文回指16.2.1.4实际是地理区域通知，不能静默替换为本批已有告警取消页。
+- §6.2.7.2 NOTE1说明calling user身份由上游PF插入，但本页未核出适用于组re-INVITE的完整PF入口，不由该NOTE补出其每一步行为。
+- 无ongoing通信的MESSAGE分支不在此claim；原文回指16.2.1.4实际是地理区域通知，不能静默替换为告警取消过程。
 
 依据：§6.2.7.2 opening,steps1,2,4–9;6.2.8.1.7;6.2.8.1.2/.15，印刷页 63、64、70、73、77。
 
@@ -89,8 +89,8 @@ MED 是客户端自身紧急状态，MDEG 是客户端跟踪的组紧急状态�
 
 §6.2.7.2 error step2 versus step3：step2以sent请求无originated-by作条件，step3却以错误响应未含originated-by作条件。 保留各自承载对象，不静默统一。
 
-§6.2.7.2 opening;6.2.7.5;16.2.1.4;16.2.3.1/.2：无通信取消的错误回指、生成步骤未明列client-id、emergency-ind-rcvd与告警取消alert-ind-rcvd不一致、CF入口对alert-ind的条件未闭合。 本批只做ongoing session客户端链，不把专门MESSAGE过程或告警过程强行接上。
+§6.2.7.2 opening;6.2.7.5;16.2.1.4;16.2.3.1/.2：无通信取消的错误回指、生成步骤未明列client-id、emergency-ind-rcvd与告警取消alert-ind-rcvd不一致、CF入口对alert-ind的条件未闭合。 本页只说明ongoing session客户端链，不把专门MESSAGE过程或告警过程强行接上。
 
-§6.2.8.1.17 versus6.2.8.1.1/.3：release helper写MDEG3:confirm-pending，与其他条款MDEG4:confirm-pending/MDEG3:cancel-pending不一致，而且只明确特定建立中状态。 不把该helper推广成所有通信释放都清除组状态的规则；本批取消紧急条件不是release。
+§6.2.8.1.17 versus6.2.8.1.1/.3：release helper写MDEG3:confirm-pending，与其他条款MDEG4:confirm-pending/MDEG3:cancel-pending不一致，而且只明确特定建立中状态。 不把该helper推广成所有通信释放都清除组状态的规则；这里的紧急条件取消不是release。
 
 §4.10;6.2.8.1.8;16.2.2.1/.2;16.2.3.2：概述称支持紧急组流程，告警部分Editor note又保留部分/有限支持；授权服务种类限制另有FFS。 按具体条款给客户端结论，同时公开支持/依赖边界；不因编辑说明抹去已列过程，也不因概述宣称实现全部闭合。

@@ -68,7 +68,7 @@ TS 24.282 V19.7.0 普通 MCData 客户端的第 7 章流程，不把其他版本
 
 ## 原文疑义
 
-- §7.2.1 final integrity-protection step：REGISTER 完整性调用写 6.6.3.3.3；已核 XML 完整性 procedure 在 6.5.3.3.3。本稿标记不一致，不静默改号。
+- §7.2.1 final integrity-protection step：REGISTER 完整性调用写 6.6.3.3.3；已核 XML 完整性 procedure 在 6.5.3.3.3。本页标记不一致，不静默改号。
 - §7.3.3 step3;7.3.4 step3;7.3.1A：两个 PUBLISH 调用条款将 7.3.1A 不成功概括为 403/140；该 helper 又调用有各自错误处理的完整性/解密过程。不自行组合为重复 SIP 响应或覆盖全部失败码。
 
 - [MCData设置刷新、退出与绑定有效期](service-settings-validity.md)

@@ -36,7 +36,7 @@ serving server另向别名关联的CF/owner发送SUBSCRIBE，mcdata-info分别�
 
 - 须保留别名ID、served用户、原状态和本地未到期这些共同条件；不拿其他别名或其他用户的通知清除当前状态。
 - 本条的缺席判定在serving收到owner的per-functional-alias通知时使用，不等于客户端收到per-user列表时可以推断同一失败原因。
-- 状态改变不携一个本节未定义的原因码，本批不把所有缺席归因为容量不足、权限失败或用户主动停用。
+- 状态改变不携一个本节未定义的原因码，本页不把所有缺席归因为容量不足、权限失败或用户主动停用。
 
 依据：§22.2.2.2.7 NOTIFY handling steps2,3，印刷页 487、488。
 
@@ -46,7 +46,7 @@ serving server另向别名关联的CF/owner发送SUBSCRIBE，mcdata-info分别�
 
 serving发送owner PUBLISH时另生成全局唯一的current p-id-fa，写入这一跳的PIDF。只有匹配的本地activating条目尚未设置activating p-id-fa时，才把该值写入条目；而客户端接入分支可已从客户端PUBLISH设置这个字段。owner由PUBLISH触发通知且识别了handled p-id-fa时回填收到的值。必须按各段字段和匹配条件判断，不能默认客户端、serving发布和owner通知永远共享一个端到端同值关联标识。
 
-- 本批所核步骤未给出两跳p-id的完整映射/重关联算法；不为解决可能的不匹配而自行覆盖已设置值。
+- 所列步骤未给出两跳p-id的完整映射/重关联算法；不为解决可能的不匹配而自行覆盖已设置值。
 - 上述限制影响能否将缺席归因于某次仍在activating的请求，但不能据此宣称所有部署必然失败。
 - 客户端侧22.2.2.2.5只在由客户端PUBLISH处理过程调用且识别handled p-id-fa时明确回填；不把owner的p-id自动透传到所有客户端NOTIFY。
 
@@ -65,6 +65,6 @@ serving发送owner PUBLISH时另生成全局唯一的current p-id-fa，写入这
 
 ## 原文差异
 
-- §22.2.2.3.4 step4：接收SUBSCRIBE的过程在别名不存在分支写拒绝SIP PUBLISH及向PUBLISH响应。 不自行修成SUBSCRIBE错误映射；该条不作为本批的确定错误码结论。
+- §22.2.2.3.4 step4：接收SUBSCRIBE的过程在别名不存在分支写拒绝SIP PUBLISH及向PUBLISH响应。 不自行修成SUBSCRIBE错误映射；该条不作为本页的确定错误码结论。
 - §22.2.2.2.3 step12c(iv);22.2.2.2.6 steps7,9,10;22.2.2.2.7 NOTIFY step3：客户端接入可先写activating p-id-fa，owner跳又生成新的current p-id，只有字段未设置才写入；缺席通知却需与activating p-id相等。 分别保留各段赋值/匹配条件，未核到完整两跳映射，不补强制覆盖或关联修复。
 - §22.2.2.2.7;22.2.2.3.4;22.3.1.2：观察方正文Events与接收方Event拼写不同；PIDF语法段与schema的属性挂载/拼写差异已在客户端稿保留。 沿用证据边界，仅描述角色/状态含义，不提供通过XML或SIP解析验证的样例。

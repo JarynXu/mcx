@@ -22,7 +22,7 @@ TS 24.282 V19.7.0 的普通在网 one-to-one 或组通信，处理信令面承�
 发送方按协商方法使用对应 DPPK/DPPK-ID 保护 Data：one-to-one 使用 PCK/PCK-ID，组通信使用 GMK/GMK-ID。接收 protected Data 的客户端按协商方法及对应 DPPK/DPPK-ID 解密并认证该保护消息；不能改用服务器逐段信令密钥作为用户 Data 的通用密钥。
 
 - 此处保留 protected 消息 decrypt and authenticate 的原文职责；它不替代下一条针对 signed Data 的签名验证。
-- 6.6.2 另引用派生 DPCK 的过程；本稿不把角色层 DPPK 描述变成直接将其输入任意密码算法的实现配方。
+- 6.6.2 另引用派生 DPCK 的过程；本页不把角色层 DPPK 描述变成直接将其输入任意密码算法的实现配方。
 
 依据：§6.6.3.2 first and third paragraphs;6.6.1;6.6.2，印刷页 132、133。
 

@@ -55,7 +55,7 @@ TS24.581 V19.2.0，controlling MCVideo function，在网普通组呼，非广播
 接口按请求Ack位回Ack（Source=2、原文Message Type=4），内部转交时清Ack位且暂留permitted。general按下限减Cx、要求停止该participant的RTP转发、停运行中的T4并回End Response；Cx到下限才转Idle。接口转送End Response后转无许可Idle。普通停流不是整通话释放。
 
 - Ack Message Type=4是本程序原文，与此前§9.2.2.1表的End Request subtype值不一致；此处不生成修正编码。
-- Idle入态§6.3.4.3.2的队列外层条件另有异常，本批仅闭合到状态转换，不声称已完整验证队列续传。
+- Idle入态§6.3.4.3.2的队列外层条件另有异常，本页仅覆盖所列状态转换，不声称已完整验证队列续传。
 
 依据：§6.3.5.5.3;6.3.4.4.6;6.3.5.5.3a，印刷页 79、80、59、60。
 
@@ -65,7 +65,7 @@ TS24.581 V19.2.0，controlling MCVideo function，在网普通组呼，非广播
 
 没有接收者时，RTP按本地策略丢弃或缓存，Gr保持Idle。T11到期则通知发送仲裁终止其关联的源，Gr仍Idle；用Revoke还是End Request由本地策略选择。不能把发送者有许可、收到RTP或T11到期，分别等同于已有人观看或SIP通话已释放。
 
-- T11值及Revoke/End Request后的完整宽限重传链未在本批展开；结束命令发出不等于已完成停流。
+- T11值及Revoke/End Request后的完整宽限重传链未在本页展开；结束命令发出不等于已完成停流。
 
 依据：§6.3.6.3.7;6.3.6.3.9，印刷页 89。
 

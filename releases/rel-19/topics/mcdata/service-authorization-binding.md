@@ -22,7 +22,7 @@ REGISTER 分支从第三方 REGISTER 识别 IMS public user identity，从内层
 检查用户 profile 的 user-max-simultaneous-authorizations；该项不存在时，检查服务配置的 max-simultaneous-authorizations。达到适用上限后不能继续授权流程。REGISTER 条款在此只写停止；PUBLISH 明确发送 486/Warning228 并停止。不能给 REGISTER 擅自补上相同响应码。
 
 - 未核 24.484 对两项缺失、取值范围及计数规则的完整定义，不能将缺配置推成无限制或自行定义重授权如何计数。
-- PUBLISH step3A 未像 REGISTER step2A 一样重述 if present；本稿保留 step3B 的明确缺项回退，不由措辞差异构造额外拒绝算法。
+- PUBLISH step3A 未像 REGISTER step2A 一样重述 if present；本页保留 step3B 的明确缺项回退，不由措辞差异构造额外拒绝算法。
 
 依据：§7.3.2 steps2A–2B;7.3.3 steps3A–3B，印刷页 145、146。
 

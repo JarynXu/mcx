@@ -49,7 +49,7 @@ candidate expiration非零时，已存在且尚未到期的别名若本次仍列
 - 这里的范围是served MCData用户的既有功能别名列表，不扩成全系统、所有用户或任意其他终端的名单。
 - 本条说明必要的列表影响，不完整描述服务器状态机、owner授权、跨域消息或后续最终成功。timer F数值及外部SIP定时器机制未核。
 - 步骤13字面使用de-activating，而其他步骤/schema使用deactivating；保留差异，不把该拼写直接当成新的可发送状态枚举。
-- 列表遗漏的服务端效果不表示客户端可以绕过22.2.1.2 NOTE3，在同一PUBLISH混合激活与停用意图；本批不消解两处文字的实施边界。
+- 列表遗漏的服务端效果不表示客户端可以绕过22.2.1.2 NOTE3，在同一PUBLISH混合激活与停用意图；本页不消解两处文字的实施边界。
 
 依据：§22.2.1.2 step6a;22.2.2.2.3 steps10–14，印刷页 477、481、482。
 
@@ -66,10 +66,10 @@ candidate expiration非零时，已存在且尚未到期的别名若本次仍列
 
 ## 原文差异
 
-- §22.2.1.3 initial steps6/in-dialog step3;22.2.2.2.4 opening4：客户端段写Events header，服务端入口写Event header。 保留字面差异并引用presence事件意图，不无声修订客户端拼写，不据本批生成完整报文。
+- §22.2.1.3 initial steps6/in-dialog step3;22.2.2.2.4 opening4：客户端段写Events header，服务端入口写Event header。 保留字面差异并引用presence事件意图，不无声修订客户端拼写，不据本页生成完整报文。
 - §22.2.1.2 step6;22.2.2.2.3 steps12b,13：客户端开头包括停用一个或多个别名，但body step6a按全部请求激活别名描述；服务端nonzero处理漏列条目、zero遍历served list。 不把发布过程解释成任意单条增删补丁；明确完整列表与zero作用范围的边界，不自拟仅停用一个别名的编码。
 - §22.2.2.2.3 step13;22.3.1.2 table22.3.1.2-1：step13状态文字为de-activating，表中枚举为deactivating。 解释为原文列表停用过渡处理时保留拼写差异，不增加一个新的wire状态值。
 - §22.2.1.2 step6c;22.3.1.2 per-user steps7–9 and table22.3.1.2-1：客户端用functionalalias小写，语法段有fucntionalAlias拼写；per-user step9说status属于functionalAliasID元素，schema则将status定义为functionalAliasType的属性。 正文只保留状态/字段业务用途并定位差异，不冒充该文本已通过XML schema一致性或实现验收。
-- §22.2.2.2.3 step12a(ii),step15c：step12a(ii)对现有deactivating/deactivated条目写回activated，step15c后续触发条件则要求candidate为activating。 本批未据此重建完整服务器状态机，列表影响claim只使用没有此冲突的过期更新及遗漏条目分支；不把两处静默统一。
+- §22.2.2.2.3 step12a(ii),step15c：step12a(ii)对现有deactivating/deactivated条目写回activated，step15c后续触发条件则要求candidate为activating。 本页未据此重建完整服务器状态机，列表影响claim只使用没有此冲突的过期更新及遗漏条目分支；不把两处静默统一。
 
 - [后续服务器条件与证据](functional-alias-server-admission.md)

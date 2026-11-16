@@ -46,7 +46,7 @@ PF 的 offer 只保留收到的一个 SDS 媒体段，并保留已有 mikey key-
 发送端在需要端到端安全且上下文不存在，或现有上下文过期的条款条件下，准备 PCK/PCK-ID 与签名的 MIKEY-SAKKE I_MESSAGE，并放入 SDP 的 mikey key-mgmt。接收端从 I_MESSAGE 的 IDRi 取主叫 MCData ID、转成 UID 并验证签名；验证失败必须以 SIP 488 加 Warning136 拒绝 INVITE，停止后续步骤。验证成功才提取并解密 PCK、取得 PCK-ID，再继续接受邀请。服务器还受 §5.3 的跨消息复制 keying material 要求约束。
 
 - 这是本版信令接口中的条件性步骤，不代表每个 INVITE 都新建密钥上下文，也不把签名通过等同于最终用户已收到完整 SDS。
-- 密钥算法、UID 生成、时效与重放处理仍依赖 TS 33.180；本稿不重新核这些算法。
+- 密钥算法、UID 生成、时效与重放处理仍依赖 TS 33.180；本页不重新核这些算法。
 
 依据：§9.2.3.2.1 step2;9.2.3.2.3 step7c;9.2.3.2.4 step3;5.3.0，印刷页 50、51、210、212、214。
 
@@ -79,6 +79,6 @@ O-PF 仍从 PAI 的 public user identity 解析主叫 MCData ID，拒绝无绑�
 
 - §9.2.3.4.4 step6a,6b，印刷页 222、223：私聊明确拒绝无 resource-lists 或超过一个 entry，邀请分支要求恰有一个 entry；已存在但零 entry 的列表未被这些明示分支覆盖。
 - §9.2.3.4.4 step7e，印刷页 223：supported-services 谓词仍是缺失，或存在 service 的 enabler 不等于 SDS ICSI；不能静默改成只在完全不存在匹配 SDS 条目时拒绝。
-- §9.2.3.4.3 step11，印刷页 221、222：此处原文写 P-Asserted-Service-Id；相邻 PF 过程及分类使用 P-Asserted-Service。本稿不将该字段拼写当作经过纠错的完整报文模板。
+- §9.2.3.4.3 step11，印刷页 221、222：此处原文写 P-Asserted-Service-Id；相邻 PF 过程及分类使用 P-Asserted-Service。本页不将该字段拼写当作经过纠错的完整报文模板。
 
 - [SDS session 相关条件](sds-session-establishment.md)

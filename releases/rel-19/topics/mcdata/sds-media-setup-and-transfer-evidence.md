@@ -13,7 +13,7 @@ TS24.582是本版明确调用但本主题尚未核验的媒体面依赖；本主
 CF 按 §9.2.3.4.4 调用 §6.3.7.1.23，以 SDS using media 指示生成并向邀请端发送 200。helper 写入 CF 自身的 MCData session identity、SDS/isfocus Contact 标签、Require:timer 和 Session-Expires，并以 §9.2.3.4.2 生成 SDP answer，还要与媒体面交互。该触发条件不是等齐全组所有 200，也没有声明所有目标的数据都已送达。这里的 session URI 用于会话，不能当作 SDS Message ID。
 
 - 本段没有 first-only 或此前未发最终响应的明确守卫；不据此推出多次发送最终响应、重复建链或完整竞态算法。
-- 响应中缺少或不匹配 MCData ID 时的后续处理未在本段明示，本稿不补成统一失败分支。
+- 响应中缺少或不匹配 MCData ID 时的后续处理未在本段明示，本页不补成统一失败分支。
 - 没有重新核实每个 SIP dialog 的 session identity 映射算法。
 
 依据：§9.2.3.4.3 response to step13;9.2.3.4.4 final response procedure;6.3.7.1.23 steps1–10，印刷页 115、116、222、224。
