@@ -1,0 +1,46 @@
+{
+  "topic_id": "r19-eps-signalling",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS23.280 V19.9.0; EPS bearer considerations, not 5GS mapping"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v19.9.0",
+  "claims": [
+    {
+      "id": "pdn",
+      "clause": "5.2.7.2.1",
+      "conditions": [
+        "Initial-attach PDN uses a different APN from MC services APN"
+      ],
+      "conclusion": "Establish the MC-services PDN before user authentication; a SIP registration request can also trigger PDN establishment."
+    },
+    {
+      "id": "qci",
+      "clauses": [
+        "5.2.7.0 NOTE",
+        "5.2.7.2.1",
+        "5.2.7.2.2"
+      ],
+      "conditions": [
+        "Applying §5.2.7.2 QoS rules"
+      ],
+      "conclusion": "SIP-1 uses QCI69; HTTP-1 uses QCI8 or better. If HTTP-1 does not use QCI8, caution should be used to avoid compromising higher-priority signalling/media by combining traffic. Operator-owned SIP core using IMS APN requires provider/operator agreement on these or GSMA QoS rules."
+    }
+  ],
+  "limitations": [
+    "No QCI numeric ordering inference, media bearer mapping or 5QI equivalence.",
+    "TS23.203/23.401 and GSMA IR.92/IR.88 dependencies not independently checked.",
+    "V19.9.0 only; not a verification of the existing V19.3.0 Rx editorial summary."
+  ],
+  "related": [
+    "../identity/primary-registration.md",
+    "rx-retry.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

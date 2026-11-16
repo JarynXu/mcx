@@ -42,6 +42,10 @@
 
 [LMR安全消息运输](topics/interworking/lmr-security-transport.md)说明透明载荷如何承载；[加密语音转码](topics/interworking/encrypted-transcoding.md)说明媒体处理的密钥前提。运输成功不能证明密钥获取完成；这些主题也不构成完整安全实现。
 
+## 注册、SIP 路由与 EPS 信令
+
+按问题选读：[主系统认证与注册](topics/identity/primary-registration.md)、[注册器寻找及用户绑定](topics/signalling/registrar-routing.md)、[EPS 接入与信令 QoS](topics/network-policy/eps-signalling.md)。这组内容核对的是 TS23.280 V19.9.0 Stage2，不能推定与其他版本等同，也不是完整 REGISTER、分布式黏性或 5GS 映射方案。
+
 ## 身份、紧急行为与媒体业务
 
 以下为 Stage 1 的要求解释，不是可直接运行的协议实现。
