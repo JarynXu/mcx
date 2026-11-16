@@ -249,3 +249,7 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 ### 通信存储启停
 
 [控制请求](topics/mcdata/message-store-control-request.md)、[PF准入](topics/mcdata/message-store-control-admission.md)与[执行结果](topics/mcdata/message-store-control-result.md)解释获准范围、全体开关和指定名单，以及200的含义。停用不是删除历史对象；指定名单body的原文差异尚未裁决。
+
+### 普通 MCVideo 预安排组呼
+
+[发起与准入](topics/mcvideo/prearranged-call-admission.md)连接组文档、归属和发起许可；[终接应答](topics/mcvideo/prearranged-call-terminating.md)解释模式、183和PRACK；[建立结果](topics/mcvideo/prearranged-call-setup-result.md)分开 required 成员、TNG1、缓冲支持与媒体许可，不把某个200当全员已接听。

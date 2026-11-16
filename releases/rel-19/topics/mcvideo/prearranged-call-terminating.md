@@ -1,0 +1,86 @@
+# MCVideo预安排组呼：终接路由、接听模式与183
+
+TS24.281 V19.3.0 的普通在网、带 transmission control、按需预安排组呼初次建立；使用 GMS 维护的普通 MCVideo group ID，不是 TGI、重组、预配置重组、chat、广播、ad hoc、功能别名、远程/ambient 或离网。本页不处理已在进行的组呼加入/重入；CF 以 session identity 已分配且 session active 两项同时成立判断 ongoing。
+
+请求不含 emergency-ind、imminentperil-ind、alert-ind 或优先级/功能别名扩展，发起客户端 emergency state 未置位，该组不处于 MVEG2、MVIG2/MVIG4，响应时不在 MVEGC2/3 或 MVIGC2/3；CF 组 in-progress emergency 和 imminent-peril 均为 false。没有待处理的优先级升级/取消。普通条件不能仅由用户这次未选择紧急推断。
+
+各段均为按需会话，终接客户端没有可供本呼叫复用的空闲预建立会话。精确 helper 分流条件是：存在未绑定业务会话的预建立会话、video media-level sections 匹配、transmission-control media-level section 匹配三项同时满足才走预建立；本页选择没有此可复用组合的分支。
+
+每条 claim 独立继承本主题 common_conditions，并叠加自身 conditions；不继承前一条 claim 的成功。这里核的是信令主干，不代表 IMS/RFC、媒体编码、密钥下发或全部异常已经实现。跨规范条文分别标明实际核读版本。
+
+## CF分别指定目标PF和用户
+
+适用条件：CF已选定某被邀请成员，执行§9.2.1.4.1.1；普通本地系统路径，不展开gateway或NCF。
+
+CF生成 INVITE，Request-URI设为该被邀请用户的 T-PF PSI，PAI设为CF PSI；mcvideo-request-uri改为该终接用户的 MCVideo ID，mcvideo-calling-group-id保留组ID，calling-user-id由所调用的通用生成步骤加入。SDP offer基于发起侧收到的offer。若该组GKTP文档存在且含MKFC-GKTPs，CF按每个GKTP调用§6.3.3.6.2重新生成I_MESSAGE，仅成功者装入发往该用户的GKTP后发送INVITE。
+
+- 目标PF PSI发现算法在规范范围外；组呼不是把同一个原始SIP Request-URI直接透传到所有客户端。
+- 本页只核密钥分支的存在、逐项成功条件和顺序；不展开§6.3.3.6.2算法，不以信令发出证明用户已取得有效GMK或已获媒体发送许可。
+
+依据：§9.2.1.4.1.1 steps1–9，印刷页 223、224。
+
+## 终接PF选择应答模式
+
+适用条件：T-PF收到本组呼INVITE；只覆盖本主干收到的请求不含Answer-Mode，也不含Priv-Answer-Mode的分支。
+
+T-PF可因资源不足/拥塞风险拒绝500并可带Retry-After，拒绝后停止。Contact URI缺isfocus则403/104；尚未收到该客户端poc-settings里的Answer-Mode Indication则480/146；从mcvideo-request-uri中的目标用户ID取public-user-identity绑定，绑定不存在则404。存在MKFC-GKTPs时先调用§6.3.2.3.2。没有Answer-Mode时，已存auto-answer选择自动helper，manual-answer选择手动helper。
+
+- 绑定不存在的404在此没有明写过期或Warning141；不能借私呼规则补上。显式Answer-Mode已到达、设置为其他值等情况不是该组入口这里列出的分支。
+- MKFC-GKTPs解封装/重封装细节仍为外部依赖；设置发布更新及IMS绑定完整生命周期也未重核。
+
+依据：§9.2.1.3.2;6.3.2.2.5.1;6.3.2.2.6.1，印刷页 97、99、220、221。
+
+## 自动183和PRACK先后
+
+适用条件：T-PF已选择自动按需helper；入站INVITE无Answer-Mode/Priv-Answer-Mode且已存设置为auto-answer；不存在可复用预建立组合。
+
+T-PF生成183并设P-Answer-State=Unconfirmed、PAI=PF PSI，183无SDP，可依收到的INVITE可靠或不可靠发送；随后向绑定public user identity发INVITE，PAI为PF PSI，设置Answer-Mode=Auto并提供基于原offer的SDP。客户端200到来后，不可靠183可立即继续；可靠183须已收到PRACK且已发送该PRACK的200，若尚未收到则等PRACK并先回其200。向CF发送INVITE的200时生成对应SDP answer、PAI并先与媒体平面交互再转发。
+
+- PRACK的200和INVITE的200是不同事务。T-PF生成Unconfirmed不表示客户端或用户已应答。
+- 本页不把helper其他Priv-Answer-Mode分支推广成组客户端强制自动接听规则；超时/重传仍依赖TS24.229。
+
+依据：§6.3.2.2.5.2，印刷页 97、98、99。
+
+## 手动模式转带客户端进度
+
+适用条件：T-PF已选择手动按需helper；入站无Answer-Mode/Priv-Answer-Mode，已存设置manual-answer，不存在可复用预建立组合。
+
+T-PF向绑定public user identity发INVITE，PAI为PF PSI，设置Answer-Mode=Manual并提供SDP offer。收到客户端183时生成上行183、设置PF PSI为PAI，并且只在收到P-Answer-State时带上该字段；不是自行把所有手动183标成Unconfirmed。收到客户端INVITE的200后生成上行200/SDP answer/PAI，先与媒体平面交互再转发。
+
+- helper另列180并注明私呼情形，本页不把它变成普通组客户端手动必发180。other无SDP响应的转发仍按本helper和TS24.229。
+
+依据：§6.3.2.2.6.2，印刷页 99、100。
+
+## 客户端拒绝与模式条件
+
+适用条件：终接客户端收到本普通组呼初始INVITE；未进入重组重复邀请或紧急别名上限分支。
+
+客户端资源不足或其他规范外原因任一成立时MAY拒绝。若据此拒绝，返回适当错误码/Warning；只有用户获准限制失败原因时才可用不带Warning的480，并停止后续处理。未拒绝时SHALL检查Resource-Priority是否存在，进一步动作MAY。自动接听要求Answer-Mode=Auto且本地auto，或本地manual但允许auto；手动要求Answer-Mode=Manual且本地manual，或本地auto但允许manual。
+
+- 两种模式各自是“收到指定Answer-Mode AND 本地匹配/允许覆盖”，不是只看本地设置；原文这两条没有Priv-Answer-Mode优先分支，不能照搬私呼。
+- 紧急functional-alias上限不是普通组总会话上限。模式不匹配但未允许覆盖等未列结果，不发明错误码或默认接受。
+
+依据：§9.2.1.2.1.2 steps1–8，印刷页 210、211、212。
+
+## 自动200与手动183
+
+适用条件：客户端已满足本普通组呼的手动或自动模式入口；按各自模式执行其helper。
+
+自动模式按§6.2.3.1.1生成并发送INVITE的200，带MCVideo/ICSI Contact、Require timer、Session-Expires且refresher=uas、相应SDP answer；发送后与媒体平面交互，P-Answer-State=Confirmed是MAY。手动模式可在用户确认前自动生成183，若生成则带MCVideo/ICSI Contact且MAY带Unconfirmed；用户拒绝时SHALL480/110并停止，最终发送200时转用组自动helper。
+
+- 手动183及Unconfirmed都不是无条件必填，收到183不能证明用户已同意；自动200里的Confirmed也不是必填。本页无Replaces，不套替换预建立会话。
+- 客户端发送200后MAY订阅conference，但入口错引9.1.3.1，实际相邻conference章节为9.2.3；不静默替换，完整订阅协议未核。
+
+依据：§6.2.3.1.1;6.2.3.1.2;6.2.3.2.2;9.2.1.2.1.2，印刷页 61、62、63、210、211、212。
+
+## 证据边界
+
+- 限普通初建和所列成功分支；原文错引与门槛差异未裁决，不代替完整组呼实现。
+
+## 按需继续
+
+- [prearranged-call-admission](prearranged-call-admission.md)
+- [prearranged-call-setup-result](prearranged-call-setup-result.md)
+- [participant-transmission-control](participant-transmission-control.md)
+
+[3GPP TS24.281 V19.3.0 / ETSI TS124281 V19.3.0 (2026-01)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf)；仅本版本。
