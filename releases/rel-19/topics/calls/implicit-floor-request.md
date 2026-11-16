@@ -46,3 +46,5 @@ TS24.379 V19.4.0 §6.4的选定普通语音与升级入口；这里只判断请�
 - [../security/group-call-media-boundaries](../security/group-call-media-boundaries.md)
 
 [ETSI官方TS24.379 V19.4.0](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/19.04.00_60/ts_124379v190400p.pdf)，印刷页165、166；仅本版本。
+
+按需核对媒体层指定分支：[floor-participant-entry-request](floor-participant-entry-request.md)。来源版本及条件以该页为准。

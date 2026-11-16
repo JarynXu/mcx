@@ -162,3 +162,12 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 ## 普通在网 Chat
 
 [按需加入入口](topics/calls/chat-ondemand-entry.md)与[控制侧准入](topics/groups/chat-ondemand-control.md)分开判断；已有对话见[会话更新](topics/calls/chat-existing-session-update.md)，离开或移除见[释放链](topics/calls/chat-participant-release.md)。这些是原生 Stage 3 程序，不替换 MC/LMR 互通主题。
+
+### 媒体控制与话权证据
+
+- [预建立 Connect 与客户端接受](topics/calls/mcpc-connect-evidence.md)
+- [Disconnect、超时与保留承载](topics/calls/mcpc-disconnect-evidence.md)
+- [入会、请求与授予](topics/calls/floor-participant-entry-request.md)
+- [排队确认、撤销与释放](topics/calls/floor-participant-queue-release.md)
+
+限 TS24.380 V19.1.0 指定分支；SIP成功、媒体收到、用户接受与发送许可不能互相替代。

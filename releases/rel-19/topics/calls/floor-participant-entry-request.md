@@ -1,0 +1,104 @@
+# 入会与请求话权：SIP 成功、接收媒体和发送许可分别判断
+
+限 TS24.380 V19.1.0 §6.2 的在网 floor participant 基本操作；呼叫已按 TS24.379 协商使用 floor control，本页不适用于无话权控制私呼或离网仲裁。
+
+有界普通流程：非广播、非 system、非 emergency/imminent-peril、非 ambient listening；不采用 pre-emptive priority、dual floor、multi-talker 或 audio cut-in。
+
+每个行为只在 claim 明示的状态和事件下成立；服务器为何准入、拒绝或排队由 §6.3 仲裁负责，本稿不补其策略。
+
+下述需要 Floor Ack 的接收分支，都以所收消息 subtype 首位为 1 为条件，Ack Source=0；各 claim 保留对应 Message Type，不要求任意收包都确认。
+
+## 入会和重入不自动取得话权
+
+适用条件：呼叫按协商初始化 floor participant；分别判断发起的 chat 无隐式请求、重入 ongoing 呼叫、或终接呼叫已建立的情况。
+
+初始化为本呼叫创建基本状态机。发起端已建立 chat 且 INVITE 不是隐式话权请求时进入 U: has no permission。重入 ongoing 组呼的 INVITE 不得当作隐式请求，重入端进入 has no permission。终接端建立呼叫后也进入 has no permission；对该端，此处建立时点是应用/信令层发出 SIP200。故普通 SIP 成功本身不等于发送话权。
+
+依据：§6.2.1;6.2.4.2.1–.3，印刷页 36、38。
+
+边界：原文仅明确 chat 无隐式请求的发起分支，不扩写为所有非 chat 发起且无隐式请求的初始化算法。隐式请求是否协商成功须按呼叫建立判断。
+
+## 隐式请求与提前到达的控制消息
+
+适用条件：发起端已经建立呼叫，且其 INVITE 按协商是隐式话权请求；不是 ongoing 组呼 rejoin。
+
+启动 T101，C101 初始化为 1，进入 U: pending Request。发起端在 SIP200 到达前收到 floor control message 时先保存；若走本隐式请求分支，进入 pending Request 后按该状态接收消息的方式处理已保存消息。该过程是等待请求结果，不是直接进入 has permission。
+
+依据：§6.2.1;6.2.4.2.2 steps2–4，印刷页 36、38。
+
+边界：条文只在隐式分支明确写出保存消息的重放步骤；本稿不据此发明无隐式请求 chat 或 rejoin 的缓存重放顺序。
+
+## 收到媒体不等于获准发送
+
+适用条件：状态为 U: has no permission 或 U: pending Request，且收到 RTP 媒体；另分别判断 no-permission 状态的 T103 到期。
+
+收到 RTP 时请求客户端呈现媒体，并按各状态要求 SHOULD 启动/重启可选 T103，仍留在原状态。no-permission 状态的 T103 到期仅可通知 floor idle，仍无权限；pending Request 的 T103 到期在该状态没有动作。能听见、媒体静默或 idle 提示都不把本端变成被授权发送者。
+
+依据：§6.2.4.3.4;6.2.4.3.6;6.2.4.4.1;6.2.4.4.7，印刷页 39、40、41、43。
+
+边界：不推导媒体解密成功、SSRC 鉴别或最终音频体验；T103 不是 T101 请求超时，也不是 SIP session timer。
+
+## 显式话权请求
+
+适用条件：状态为 U: has no permission；用户指示要获得发送媒体许可。
+
+向 floor control server 发 Floor Request，启动 T101、C101=1，进入 pending Request。请求包含位置字段：位置不可用或 profile 不准报告时 type=0（Not provided）；可用且允许报告时，地理坐标无海拔用 Location，有海拔用含坐标和海拔的 List of Locations，非坐标格式按表8.2.3.21-3 编码。若需不同于 normal 的优先级，Floor Priority 不得超过已协商上限；本稿普通范围不触发特殊呼叫类型指示。
+
+依据：§6.2.4.3.5，印刷页 40。
+
+边界：位置编码数值和协商 §14.3.3 未展开；字段要求不授权超出用户 profile 的位置报告。进入 pending Request 不允许凭按下 PTT 就开始发送。
+
+## 请求中的授予与媒体发送
+
+适用条件：状态为 U: pending Request；收到服务器 Floor Granted，或收到应用/信令层 SIP200 中明确的 floor-granted indication。
+
+需要确认的 Floor Granted 回 Ack(type=1)。普通非 ambient 呼叫须在尚未通知时给用户 granted 通知；停止正在运行的可选 T103，停止 T101，保存 Granted Participant 的 Audio SSRC 并供发送 RTP 使用直到释放，进入 U: has permission。在该状态收到用户编码语音或已有缓冲语音时，请求客户端向服务器转发并维持该状态。
+
+依据：§6.2.4.4.2;6.2.4.5.1–.2，印刷页 41、42、44、45。
+
+边界：不是所有 SIP200 都含 grant indication；也不是只有独立 Floor Granted 才能授予。原文允许提前给用户 granted 提示的实现选项，故提示音/界面文字也不能单独证明已进入授权状态。队列中的 Granted 采用另一个确认程序。
+
+## 拒绝与 T101 超时
+
+适用条件：状态为 U: pending Request；分别收到 Floor Deny 或遇到 T101 到期。
+
+Deny 需要确认时回 Ack(type=3)，必须通知拒绝，可按 Reject Cause 显示原因，停止 T101 并进入 has no permission。T101 到期未达 C101 上限时重发 Floor Request，保留相同的优先级上限和位置规则，重启 T101、C101 加 1，仍 pending Request；达到上限则通知请求超时并进入 has no permission。
+
+依据：§6.2.4.4.4–.6，印刷页 42、43。
+
+边界：不把超时等同于明确 Floor Deny；本稿不指定计时器时长或计数上限数值，也不添加无穷重试或重建 SIP 呼叫。
+
+## Floor Taken 不是 Floor Granted
+
+适用条件：状态为 U: pending Request，收到 Floor Taken；本主题不使用 pre-emptive 请求，不是 dual floor/multi-talker。
+
+需要确认时回 Ack(type=2)，可通知 floor taken；应为该消息中的新 talker 启动可选 T103。若本端 identity 不在 List of Granted Users，原文还要求停止 T100。普通非 pre-emptive 分支随后停止 T101、进入 has no permission。不得把 Floor Taken 当成发给本端的 Floor Granted。
+
+依据：§6.2.4.4.11，印刷页 44。
+
+边界：原文在 pending Request 写停止 T100，而该状态通常运行 T101；保留 T100 条件，不擅改为 T101。pre-emptive/dual/multi-talker 竞态未纳入普通链。
+
+## 请求进入队列
+
+适用条件：状态为 U: pending Request，收到 Floor Queue Position Info；不是 audio cut-in。
+
+需要确认时回 Ack(type=9)；必须通知请求已排队，可展示位置和优先级，停止 T101，进入 U: queued。排队确认不同于授予，也不同于 T101 继续等待。原文说明 audio cut-in 组不会在此收到该消息。
+
+依据：§6.2.4.4.9;Note，印刷页 43。
+
+边界：不从本客户端状态推导服务器排队顺序、公平性、预计等待时间或保证最终获得话权。
+
+## 证据边界
+
+- 本稿仅固定 V19.1.0 行为，不与未读取的 V19.3.0 比较，不宣称相同。
+- 完整 RTP/RTCP 编码、SDP 协商、服务器仲裁与媒体安全另有 §8、§14、§6.3、§13 依赖；本批不构造实现级完整状态机。
+- §6.2.4.1 要求没有本状态专门处理的 floor message/RTP 被丢弃且状态不变，格式错误包也忽略；不能跨状态复用本页成功分支。
+- Floor release 与整个 MCPTT call release 不同；收队列结果和用户确认见关联主题。
+
+## 按需继续
+
+- [implicit-floor-request](implicit-floor-request.md)
+- [floor-participant-queue-release](floor-participant-queue-release.md)
+- [chat-ondemand-entry](chat-ondemand-entry.md)
+
+[ETSI 官方 TS24.380 V19.1.0](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/19.01.00_60/ts_124380v190100p.pdf)；仅所列版本和条款。

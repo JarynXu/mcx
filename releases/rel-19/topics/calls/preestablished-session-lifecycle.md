@@ -88,3 +88,5 @@ TS24.379 V19.4.0 第 8 章的在网 MCPTT 客户端与 participating MCPTT funct
 - [group-participant-removal](group-participant-removal.md)
 
 [ETSI官方TS24.379 V19.4.0](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/19.04.00_60/ts_124379v190400p.pdf)，印刷页95、108、109、164、199、200、201、202、203、204、205；仅本版本。
+
+按需核对媒体层指定分支：[mcpc-disconnect-evidence](mcpc-disconnect-evidence.md)。来源版本及条件以该页为准。

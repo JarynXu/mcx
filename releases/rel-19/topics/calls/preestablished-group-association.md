@@ -97,3 +97,5 @@ conference NOTIFY 来自另建的 conference SUBSCRIBE dialog，不是上述已�
 - [group-participant-leave](group-participant-leave.md)
 
 - [group-participant-removal](group-participant-removal.md)
+
+按需核对媒体层指定分支：[mcpc-connect-evidence](mcpc-connect-evidence.md)。来源版本及条件以该页为准。
