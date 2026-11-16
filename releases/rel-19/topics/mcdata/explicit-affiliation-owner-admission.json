@@ -1,0 +1,145 @@
+{
+  "topic_id": "r19-mcdata-explicit-affiliation-owner-admission",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "限 TS24.282 V19.7.0 普通显式归属；serving 已按 §8.3.2.3 处理本用户的状态变更，并按相应条件调用 owner 请求，或按 §8.3.2.6 刷新临近到期的已发布信息。",
+    "一个请求只涉及一个 served 用户和一个 handled 组，但该用户可以有多个客户端。原文不支持一条此类 PUBLISH 同时携多个 served 用户的归属变化。",
+    "owner 接收分支要求目标 CF 服务身份、MCData 服务标识、presence 事件、包含组/用户字段的 mcdata-info 及符合 §8.4.1 的 per-group PIDF；不能把下列错误码用作所有格式错误报文的通用映射。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.282-v19.7.0",
+  "claims": [
+    {
+      "id": "serving-user-client-group-records-become-owner-group-user-client-list",
+      "clause": "8.3.2.2;8.3.2.6 NOTE1,steps1–10;8.3.3.2;8.4.1.2 per-group syntax",
+      "conditions": [
+        "serving 正在为一个用户向一个 handled 组 owner 发起归属、撤销或刷新。"
+      ],
+      "conclusion": "serving 的记录按用户→客户端→组保存；每个组条目有状态、期限、affiliating p-id 和 next publishing time。发往 owner 的 PUBLISH 以该组关联的 CF PSI 为 Request-URI，mcdata-request-uri 填组 ID，mcdata-calling-user-id 填用户 ID，P-Asserted-Identity 则填发送服务器 PSI。body 按 per-group PIDF 列出该用户在此组处于 affiliating 或 affiliated 且未到期的所有客户端，不携 affiliation.expires；归属请求的 Expires 为 4294967295，撤销请求为 0。owner 的记录方向另为组→用户→客户端列表，期限存在该组下的用户记录中，不是简单复制 serving 的逐客户端组状态表。",
+      "printed_pages": [
+        163,
+        168,
+        169,
+        179,
+        186,
+        187
+      ],
+      "limitations": [
+        "§8.3.2.3 step17 按旧/候选条目的具体状态和期限触发这段发送，不是任意收到客户端 PUBLISH 都无条件向 owner 再发一条。",
+        "当前 owner 请求新建自己的 current p-id 并写入 PIDF；不能把服务器 PSI、用户 ID、客户端 ID、组 ID 或两跳 p-id 当成同一个身份。",
+        "对多客户端部分撤销，原文同时存在“发送该组仍有效的全部客户端”与“撤销请求 Expires=0”的指示；本批没有补一个按剩余客户端数切换请求类型的算法，也不保证单个客户端撤销只影响自身。",
+        "不展开 PSI 发现、跨域信任、完整 SIP/ETag 或组配置获取。"
+      ]
+    },
+    {
+      "id": "owner-rejects-expiry-group-absence-and-nonmember-before-200",
+      "clause": "8.3.3.3 steps1–5",
+      "conditions": [
+        "owner 收到满足 §8.3.3.3 入口的 PUBLISH。"
+      ],
+      "conclusion": "owner 从 mcdata-request-uri 识别 served 组，从 mcdata-calling-user-id 识别 handled 用户。Expires 缺失或非零但低于 4294967295 时返回 423，带 Min-Expires=4294967295 并停止；组在 GMS 中不存在，或 handled 用户不是该组成员时，分别返回 403 并停止。用户在 serving 表达兴趣并不替代这些组侧条件；本段成员检查也不是证明已参加某个组业务会话。",
+      "printed_pages": [
+        180
+      ],
+      "limitations": [
+        "零值不属于非零过短拒绝条件。不能为已存在记录的刷新或撤销自行增加成员检查豁免。",
+        "只报告本条明确的组存在与成员检查，未核 GMS 查询细节、成员资料 schema 或其他流程可能要求的动作权限。",
+        "这里没有把拒绝改写成 silent discard，也不把 403 与某个 Warning 码配对，原文此段未给出该映射。"
+      ]
+    },
+    {
+      "id": "owner-200-before-pidf-consistency-and-nonzero-list-replacement",
+      "clause": "8.3.3.3 steps6–13",
+      "conditions": [
+        "PUBLISH 未被上述前置步骤拒绝，进入 owner 的 §8.3.3.3 step6 以后。"
+      ],
+      "conclusion": "owner 先回带 selected expiration 的 PUBLISH200，然后才检查 presence.entity 是否为目标组，以及 tuple.id 是否等于 handled 用户；不一致即停止后续处理。检查通过且 selected expiration 非零时，owner 找到或创建该组下的 handled 用户记录，按 body 的 affiliation.client 属性设置客户端列表，并设置所选期限；随后识别 p-id 并调用 owner 通知过程。因此这一跳的 200 也不证明客户端列表已更新，更不是客户端收到最终结果的证据。零 selected expiration 分支另要求删除用户记录，但其目标写作 served MCData ID，而前面识别的是 handled MCData ID，不能静默视为已验证的同义变量。",
+      "printed_pages": [
+        180,
+        181
+      ],
+      "limitations": [
+        "本段设置客户端列表，而非明确逐个追加；不能把遗漏的客户端自动保留。",
+        "200 后的 entity/tuple 不一致没有在这里规定第二个最终响应，不自行补 403。",
+        "零期限分支涉及整个用户记录，不得把它改写成已确认只删一个 client 子条目；served/handled 变量差异也限制了精确删除目标的结论。",
+        "selected expiration 的选择依赖 RFC3903，本批不把请求 Expires 直接当成最终归属期限；不展开存在紧急告警时的后续过程。"
+      ]
+    }
+  ],
+  "limitations": [
+    "范围内可以核验角色、记录和分支，但原文多客户端撤销与零值变量边界仍不允许宣称已形成完整实现。"
+  ],
+  "related": [
+    "explicit-affiliation-owner-state.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": true,
+    "independent_source_review": true
+  },
+  "standard_stage": 3,
+  "source_anomalies": [
+    {
+      "clause": "8.3.3.3 step10 versus steps2,11",
+      "printed_pages": [
+        180,
+        181
+      ],
+      "issue": "零selected expiration分支删除MCData ID等于served MCData ID的用户记录，前面识别和非零处理使用handled MCData ID。",
+      "treatment": "不把变量静默统一，不将零值分支表述为已验证的精确删除目标。"
+    },
+    {
+      "clause": "8.3.2.3 step14;8.3.2.6 steps7,9,10;8.3.2.7 NOTIFY step3",
+      "printed_pages": [
+        165,
+        166,
+        169,
+        172
+      ],
+      "issue": "客户端接入已可能设置affiliating p-id，owner跳新建current p-id时仅在字段未设才写本地值，缺席确认却要求相等。",
+      "treatment": "单独标出跨跳关联缺口，不自造覆盖或映射算法。"
+    },
+    {
+      "clause": "8.3.2.6 steps4,5,10;8.3.3.3 steps10,11",
+      "printed_pages": [
+        169,
+        180,
+        181
+      ],
+      "issue": "owner请求按该用户所有有效客户端聚合，撤销却使用Expires0；零值owner处理是用户记录级删除，且有served/handled变量差异。",
+      "treatment": "不推断多客户端部分撤销一定只影响单个客户端，也不补按剩余客户端数切换请求类型的策略。"
+    },
+    {
+      "clause": "8.3.2.7 NOTIFY step1",
+      "printed_pages": [
+        171
+      ],
+      "issue": "正向确认设置affiliated及next publishing time，未明确用收到的expires覆盖本地expiration time；已affiliated的刷新通知也不满足该分支初态。",
+      "treatment": "保留实际赋值范围，不补完整每轮续期状态机。"
+    },
+    {
+      "clause": "8.2.2 NOTE1;8.3.2.3 opening5,steps9,10,18",
+      "printed_pages": [
+        159,
+        164,
+        167
+      ],
+      "issue": "客户端零期限可省PIDF与serving入口仍必需PIDF的差异由上一批保留。",
+      "treatment": "本批从已满足相应入口的服务器过程起算，不绕过该限制或宣称端到端零body撤销已闭合。"
+    },
+    {
+      "clause": "8.3.2.3 steps14a(ii),15;8.3.2.7;8.4.1.2 table8.4.1.2-1",
+      "printed_pages": [
+        165,
+        166,
+        171,
+        172,
+        187
+      ],
+      "issue": "部分serving生成分支写de-affiliating，通知处理和schema写deaffiliating。",
+      "treatment": "不新增wire状态，不静默修成经过实现验证的一致状态机。"
+    }
+  ]
+}

@@ -69,3 +69,5 @@ PUBLISH 按 TS24.229、RFC3903 和 presence 事件过程发送；本批仅核 TS
 - §8.2.2 NOTE1 versus8.3.2.3 opening5,steps9,10,18：客户端 Expires=0 可不带 PIDF；服务端入口要求 PIDF，后续还从该 body 读取用户、客户端和 p-id。 作为零期限操作的具体可用性边界保留，不构造空 body 例外或目标客户端推断。
 - §8.3.2.3 steps14a(ii),15 versus8.4.1.2 table8.4.1.2-1：服务器撤销过渡状态写 de-affiliating，schema 枚举写 deaffiliating。 语义描述保留出处，不新增 wire 枚举，也不宣称已验证原文状态机与 schema 一致。
 - §8.3.2.3 step14a(iii) versus8.4.1.2 per-user syntax：新组分支将 group 写作 element，而 per-user syntax 把 group 定义成 affiliation 的 attribute。 本批不构造新组 XML 处理算法；发布字段描述依据明确的 syntax，并标出此差异。
+
+- [客户端表达兴趣后，还要按用户和组构造 owner 请求并经过组存在/成员检查。](explicit-affiliation-owner-admission.md)

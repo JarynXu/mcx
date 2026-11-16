@@ -292,3 +292,15 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 - [MCData 显式归属变更：完整兴趣列表、刷新与撤销](topics/mcdata/explicit-affiliation-request.md)
 - [MCData 归属结果：先启动观察，再区分 200、状态与请求关联](topics/mcdata/explicit-affiliation-observation.md)
 - [MCData group dynamic：独立组观察，不是归属或会话参加证明](topics/mcdata/group-dynamic-observation.md)
+
+
+### 普通视频chat怎样新建或加入，何时归属和获得发送许可？
+
+- [MCVideo普通chat入口：客户端寻址、PF准入与隐式归属结果](topics/mcvideo/chat-ondemand-entry.md)
+- [MCVideo普通chat控制侧：资格、初建/已有分支与媒体许可](topics/mcvideo/chat-ondemand-admission.md)
+
+### 归属请求怎样到组owner，哪些通知可以确认结果？
+
+- [MCData 显式归属到组 owner：聚合记录、成员检查与接受边界](topics/mcdata/explicit-affiliation-owner-admission.md)
+- [MCData owner 状态回流：独立订阅、匹配确认与缺席条件](topics/mcdata/explicit-affiliation-owner-state.md)
+- [MCData 归属失败与结果回到客户端：清理范围及期限边界](topics/mcdata/explicit-affiliation-lifecycle-results.md)
