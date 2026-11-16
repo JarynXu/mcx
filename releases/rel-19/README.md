@@ -178,7 +178,7 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 
 ### SDS 协议路径与回执证据
 
-[发送准入与控制面/媒体面选择](topics/mcdata/sds-transmission-selection.md)区分大小上限与分流阈值；[回执时序与原消息关联](topics/mcdata/sds-disposition-timing.md)区分 SIP 响应、送达、已读和未送达。依据 TS24.282 V19.7.0 指定 Stage 3 分支；完整服务器路由、媒体交付及配置依赖仍按页注明。
+[发送准入与控制面/媒体面选择](topics/mcdata/sds-transmission-selection.md)区分大小上限与分流阈值；[回执时序与原消息关联](topics/mcdata/sds-disposition-timing.md)区分 SIP 响应、送达、已读和未送达。依据 TS24.282 V19.7.0 指定 Stage 3 分支；普通服务器路径见下文；媒体交付及配置依赖仍按页注明。
 
 ### MCVideo 客户端发送与接收
 
@@ -187,3 +187,7 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 ### MCVideo 服务器发送授权与接收筛选
 
 [发送仲裁](topics/mcvideo/server-transmission-grant.md)连接请求、源标识、许可与无人接收；[接收仲裁和用户接口](topics/mcvideo/server-reception-permission.md)说明普通组手动模式、按 SSRC 筛选以及停止下行。客户端和服务器的同名状态不共用实例；普通组不能依据客户端 Mode=0 分支自行选择自动模式。限 TS24.581 V19.2.0 所列分支，内部路由及编码疑义未以猜测补全。
+
+### SDS 服务器准入与通知
+
+按问题选择[身份与私聊准入](topics/mcdata/sds-server-identities-and-private-admission.md)、[普通组文档与归属](topics/mcdata/sds-group-controller-admission.md)或[路由及202/200](topics/mcdata/sds-server-responses-and-routing.md)。通知另经[参与功能路由与暂存](topics/mcdata/sds-notification-routing.md)、[控制功能关联与聚合](topics/mcdata/sds-disposition-aggregation.md)。TDC1窗口到期允许聚合发送，不证明全员成功；普通原请求与回执的SIP事务不能合并解释。

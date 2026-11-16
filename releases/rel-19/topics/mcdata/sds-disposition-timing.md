@@ -80,3 +80,9 @@ READ相关动作保留原文display indication条件，不把它解释为自然�
 - [sds-transmission-selection](sds-transmission-selection.md)
 
 [ETSI 官方 TS24.282 V19.7.0](https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf)；仅所列版本与条款。
+
+### 相关服务器路径
+
+- [SDS通知经过参与功能：身份绑定、重交付与目标路由](sds-notification-routing.md)
+- [SDS通知控制功能：原消息关联、组成员检查与聚合窗口](sds-disposition-aggregation.md)
+- [SDS服务器链：地址转换与202、200的证据范围](sds-server-responses-and-routing.md)
