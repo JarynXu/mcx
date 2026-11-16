@@ -1,0 +1,77 @@
+{
+  "topic_id": "r19-mcvideo-video-pull-request-and-authorization",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS24.281 V19.3.0，普通在网one-to-one video pull：用户A要求从指定用户B的MCVideo客户端拉取视频；双方按需会话且使用transmission control。",
+    "不含one-from-server、离网、功能别名、跨域、预建立、ambient viewing、组呼或紧急扩展。普通私呼被调用程序的身份、服务准入、安全及拒绝后停止条件仍适用，pull只增加明确澄清。",
+    "本页核信令入口和媒体调用边界，不声称已核pull专属TS24.581媒体状态机、实际首帧或停止播放时刻，也不证明精确跨规范版本组合完整互通。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.281-v19.3.0",
+  "claims": [
+    {
+      "id": "pull-requester-uses-distinct-session-type",
+      "clause": "12.2.2.1",
+      "printed_pages": [
+        400
+      ],
+      "conditions": [
+        "A客户端要从另一MCVideo客户端B拉视频，进入pull发起入口。"
+      ],
+      "conclusion": "A须复用§10.2.2.2.1，mcvideo-info的session-type明确改为one-to-one video pull。A是信令呼叫发起方，不能因它发INVITE就认定它是所拉视频的发送方。",
+      "normative_strength": "SHALL",
+      "short_evidence": "one-to-one video pull",
+      "limitations": [
+        "这是指定字段澄清而非完整INVITE配方；不能使用普通private值替代pull类型，也不套服务器文件URL分支。"
+      ]
+    },
+    {
+      "id": "pull-participating-functions-retain-private-procedures",
+      "clause": "12.2.3.1.1;12.2.3.1.2",
+      "printed_pages": [
+        401
+      ],
+      "conditions": [
+        "O-PF或T-PF分别收到自己角色的INVITE，session-type为one-to-one video pull。"
+      ],
+      "conclusion": "两侧PF须将其识别为私呼，并分别调用§10.2.2.3.1.1和§10.2.2.3.2。pull类型不取消普通私呼服务器链的前置检查。",
+      "normative_strength": "SHALL",
+      "short_evidence": "shall perform",
+      "limitations": [
+        "只确认继承入口，不重建完整PF算法；不要把one-from-server分支的不检查allow-private-call例外移到此处。"
+      ]
+    },
+    {
+      "id": "pull-controller-checks-both-users",
+      "clause": "12.2.3.2.2",
+      "printed_pages": [
+        401,
+        402
+      ],
+      "conditions": [
+        "CF收到其角色的one-to-one video pull INVITE，调用§10.2.2.4.2并执行pull专属检查。"
+      ],
+      "conclusion": "CF须分别检查<mcvideo-calling-user-id>是否获准发起pull、<mcvideo-called-party-id>是否获准接收pull呼叫。任一未授权均须返回403及规定Warning，并停止余下步骤。被叫接收pull呼叫的权限不等于请求方已有媒体画面。",
+      "normative_strength": "SHALL",
+      "short_evidence": "SIP 403 (Forbidden)",
+      "limitations": [
+        "不从普通私呼获准反推pull双边权限；该段未列具体配置叶或Warning数值，本页不补造。"
+      ]
+    }
+  ],
+  "limitations": [
+    "仅所列信令条件与接口，不能替代全部SIP或媒体实现。"
+  ],
+  "related": [
+    "private-call-server-admission.md",
+    "video-pull-start-and-release.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "standard_stage": 3
+}

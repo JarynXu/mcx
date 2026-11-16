@@ -80,9 +80,14 @@ PF 先对列表请求回 SIP 200，再用另一个 SIP MESSAGE 发送 DEFERRED D
 
 ## 证据边界
 
+- 本页的 HTTP 下载决定及完成通知调用不扩展到媒体面 FD。媒体面主题保留客户端 ACK/caller 缺口、SDP/MIME 差异与逐版本未验证完整互通的边界；PF 的报告入口不能补成客户端通知路径。
+
 - 本页没有完整应用消费行为、延期再下载的全部 UI/存储实现或通知聚合算法。
 
 ## 按需继续
+
+- [fd-msrp-hop-ack-and-storage](fd-msrp-hop-ack-and-storage.md)
+- [fd-media-reception-and-signalling-report](fd-media-reception-and-signalling-report.md)
 
 - [fd-http-file-and-signalling-evidence](fd-http-file-and-signalling-evidence.md)
 - [fd-file-availability-and-expiry](fd-file-availability-and-expiry.md)

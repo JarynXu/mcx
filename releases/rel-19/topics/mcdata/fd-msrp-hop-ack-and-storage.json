@@ -1,0 +1,145 @@
+{
+  "topic_id": "r19-mcdata-fd-msrp-hop-ack-and-storage",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "限普通在网直接 one-to-one 或普通组 standalone FD 的单播媒体链；不含紧急/迫近危险、别名、ad hoc、跨域网关、MBMS/MBS或离网。",
+    "各角色实际前序准入、身份、资源、安全与会话检查仍须满足；这里只追踪已进入所列步骤的传输/结果，不提供完整准入表。",
+    "TS24.582 V19.0.0 与 TS24.282 V19.7.0 分别固定版本核查。两份文档交叉引用不等于这两个快照已证明完全兼容；源内错引与MIME差异不作静默修正。",
+    "聚焦O-PF、CF、T-PF实际媒体动作。T-PF暂存仅在它已收到信令面的later-delivery指示时成立。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.582-v19.0.0",
+  "claims": [
+    {
+      "id": "fd-originating-pf-relay",
+      "role": "O-PF",
+      "conditions": [
+        "从主叫收到MSRP SEND，或从CF收到MSRP响应。"
+      ],
+      "conclusion": "没有至CF的连接则建立，已有则复用，并转发SEND。收到CF的200或错误响应，分别转发至主叫。",
+      "clause": "7.2.4.1–7.2.4.3",
+      "printed_pages": [
+        31,
+        32
+      ],
+      "limitations": [
+        "7.2.4.1/.2建会话的一般措辞是should，不概括成无条件shall。",
+        "转发的是CF响应，不能将其签发角色改称目标客户端。"
+      ],
+      "source_references": [
+        {
+          "url": "https://www.etsi.org/deliver/etsi_ts/124500_124599/124582/19.00.00_60/ts_124582v190000p.pdf",
+          "clause": "7.2.4.1–7.2.4.3",
+          "printed_pages": [
+            31,
+            32
+          ],
+          "evidence_paraphrase": "连接建议条款为should；实际收到SEND时建链/复用并转发为shall。",
+          "source_id": "3gpp-ts-24.582-v19.0.0"
+        }
+      ],
+      "normative_strength": "一般建会话should；事件分支shall"
+    },
+    {
+      "id": "fd-controlling-local-ack",
+      "role": "CF",
+      "conditions": [
+        "从O-PF收到MSRP SEND，已建立的下游连接集合已确定。"
+      ],
+      "conclusion": "CF先为收到的SEND生成并向O-PF发送MSRP 200，再向已成功建立MSRP连接的各终止客户端转发；改To-Path为answer给出的MSRP URI，From-Path为CF自己的URI。因此主叫方向的这个200不能证明某个目标已经收齐文件或所有邀请者已建立连接。",
+      "clause": "7.3.3",
+      "printed_pages": [
+        33
+      ],
+      "limitations": [
+        "此结论依据动作与角色顺序，不表示CF等待终端200后才回主叫。",
+        "7.3.3未列下游错误转发/汇总过程；不能把SDS章节逻辑移来补全FD。"
+      ],
+      "source_references": [
+        {
+          "url": "https://www.etsi.org/deliver/etsi_ts/124500_124599/124582/19.00.00_60/ts_124582v190000p.pdf",
+          "clause": "7.3.3",
+          "printed_pages": [
+            33
+          ],
+          "evidence_paraphrase": "step1生成200；step2向成功建链者转发并改路径。",
+          "source_id": "3gpp-ts-24.582-v19.0.0"
+        }
+      ],
+      "normative_strength": "SHALL；结论中的证据边界不新增协议动作。"
+    },
+    {
+      "id": "fd-terminating-pf-store-or-forward",
+      "role": "T-PF",
+      "conditions": [
+        "分别观察两个独立事件：T-PF 从 CF 收到 MSRP SEND；或 T-PF 从终止客户端收到错误 MSRP 响应。每个结论只适用于相应事件，不要求两者同时发生。"
+      ],
+      "conclusion": "T-PF为该SEND向CF生成200。若已收到信令面要求暂存以稍后投递的指示，则接收并存文件，向信令面指示下载完成；否则转发SEND给终止客户端。收到终止客户端错误响应时，按原文向主叫客户端转发错误响应。暂存分支的完成是PF已存文件，不能写成终端已经下载。",
+      "clause": "7.2.5.3; 10.2.5.3.4 final later-delivery indication",
+      "printed_pages": [
+        32,
+        302
+      ],
+      "limitations": [
+        "原文未在此给出终止端200回传主叫的独立步骤；不能造对称响应链。",
+        "24.582的暂存完成指示引用24.282 §10.2.5.3.4；该条末尾还有条件化完成报告。不得据此把任何PF本地完成报告都标作终端完成。",
+        "这里没有逐字建立每一网络跳的错误转发链；CF对应缺段保留。"
+      ],
+      "source_references": [
+        {
+          "url": "https://www.etsi.org/deliver/etsi_ts/124500_124599/124582/19.00.00_60/ts_124582v190000p.pdf",
+          "clause": "7.2.5.3",
+          "printed_pages": [
+            32
+          ],
+          "evidence_paraphrase": "先200；暂存与转发互为分支；终端错误向主叫转发。",
+          "source_id": "3gpp-ts-24.582-v19.0.0"
+        },
+        {
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "10.2.5.3.4 final later-delivery indication",
+          "printed_pages": [
+            302
+          ],
+          "evidence_paraphrase": "收到为later delivery成功下载指示时更新所存文件URL。",
+          "source_id": "3gpp-ts-24.282-v19.7.0"
+        }
+      ],
+      "normative_strength": "SHALL；结论中的证据边界不新增协议动作。"
+    }
+  ],
+  "limitations": [
+    "不覆盖later-delivery全部触发策略、排队、延期检索及存储API。",
+    "不从未出现的CF错误处理段补造端到端错误聚合。"
+  ],
+  "related": [
+    "fd-msrp-start-and-originator-result.md",
+    "fd-media-reception-and-signalling-report.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "standard_stage": 3,
+  "source_issues": [
+    {
+      "id": "pf-client-content-helper",
+      "boundary": "7.1.3.2标题为客户端接收内容，但PF原文显式引用；保留调用事实，不据标题否定它，也不扩大全部客户端规则给PF。",
+      "source_references": [
+        {
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "10.2.5.3.4 step3Bavii and later storage branch",
+          "printed_pages": [
+            299,
+            302
+          ],
+          "evidence_paraphrase": "PF暂存调用24.582 7.2.5.1及7.1.3.2。",
+          "source_id": "3gpp-ts-24.282-v19.7.0"
+        }
+      ]
+    }
+  ]
+}

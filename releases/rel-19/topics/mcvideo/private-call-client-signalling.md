@@ -66,7 +66,11 @@ Auto 分支要求 Answer-Mode=Auto 且本地 auto，或本地 manual 但愿意 a
 
 - 仅指定普通私呼分支；不覆盖全套 SIP、媒体安全、预建立、网关及优先通信行为。来源疑义按下列说明保留。
 
+- 从另一客户端拉取视频另见 video-pull-request-and-authorization；本页普通私呼媒体结论不直接扩展到 pull。pull 专属 TS24.581 媒体依赖仍未核实，隐式请求不据此推断发生在200之前或之后。
+
 ## 按需继续
+
+- [向另一客户端拉视频：请求角色与双边授权](video-pull-request-and-authorization.md)
 
 - [private-call-server-admission](private-call-server-admission.md)
 - [session-media-permission-boundary](session-media-permission-boundary.md)

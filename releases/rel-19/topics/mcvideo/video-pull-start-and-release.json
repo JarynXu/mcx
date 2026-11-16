@@ -1,0 +1,103 @@
+{
+  "topic_id": "r19-mcvideo-video-pull-start-and-release",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS24.281 V19.3.0，普通在网one-to-one video pull：用户A要求从指定用户B的MCVideo客户端拉取视频；双方按需会话且使用transmission control。",
+    "不含one-from-server、离网、功能别名、跨域、预建立、ambient viewing、组呼或紧急扩展。普通私呼被调用程序的身份、服务准入、安全及拒绝后停止条件仍适用，pull只增加明确澄清。",
+    "本页核信令入口和媒体调用边界，不声称已核pull专属TS24.581媒体状态机、实际首帧或停止播放时刻，也不证明精确跨规范版本组合完整互通。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.281-v19.3.0",
+  "claims": [
+    {
+      "id": "pull-target-implicit-request-keeps-rejection-gates",
+      "clause": "12.2.2.2;10.2.2.2.2 steps1–2",
+      "printed_pages": [
+        400,
+        327
+      ],
+      "conditions": [
+        "B收到one-to-one video pull初始INVITE；检查终接程序是否拒绝，只有未被停止的处理路径继续。"
+      ],
+      "conclusion": "B须执行普通终接程序，并发起TS24.581规定的隐式媒体发送请求。终接客户端仍可因资源不足等条件拒绝；选择拒绝后须按规定响应并停止余下步骤。不能把隐式请求写成无条件发送授权或绕过拒绝。",
+      "normative_strength": "隐式请求SHALL；资源拒绝MAY；选择拒绝后的响应/停止SHALL",
+      "short_evidence": "implicit transmit media request",
+      "limitations": [
+        "本页不解析隐式请求的具体编码、grant或排队状态；尤其不把普通主叫隐式请求直接换标签冒充pull被叫实现。",
+        "480不带Warning须另满足用户有权限制失败原因；不是所有拒绝固定480。",
+        "此隐式请求澄清未给出独立时序，不推断它发生在200之前或之后。"
+      ]
+    },
+    {
+      "id": "pull-invite-success-is-not-first-frame",
+      "clause": "12.2.2.1;10.2.2.2.1 response183 and response200",
+      "printed_pages": [
+        400,
+        326
+      ],
+      "conditions": [
+        "A收到对此pull INVITE的183或200；普通无紧急状态，前置程序未拒绝。"
+      ],
+      "conclusion": "183时可提示建立进度；200时须与TS24.581媒体平面交互并告知通话建立成功。这是继承的信令结果，不是实际视频包、首帧解码或用户已看到画面的证明。",
+      "normative_strength": "183提示MAY；200媒体调用和成功通知SHALL",
+      "short_evidence": "successfully established",
+      "limitations": [
+        "没有首帧到达或渲染反馈证据；不定义等待画面的超时、码率、接收许可、停止重试或播放算法。"
+      ]
+    },
+    {
+      "id": "pull-user-release-uses-session-bye",
+      "clause": "12.2.2.3;10.2.4.1.1.1;6.2.5.1",
+      "printed_pages": [
+        400,
+        352,
+        63
+      ],
+      "conditions": [
+        "客户端已处于ongoing one-to-one video pull，用户指示释放该按需呼叫。"
+      ],
+      "conclusion": "须进入§10.2.4.1及其按需helper：先与媒体平面交互，生成并向服务器发送BYE，Request-URI为待释放session identity；收到BYE的200后再与媒体平面交互。不能把用户点击停止或BYE200当作双方播放器已同步停止的证据。",
+      "normative_strength": "SHALL",
+      "short_evidence": "SIP BYE",
+      "limitations": [
+        "非建立前CANCEL；不包含预建立复用。精确媒体停止、缓存显示和资源回收动作仍依赖TS24.581；不复制普通释放页整个算法。"
+      ]
+    },
+    {
+      "id": "pull-controller-release-retains-private-policy",
+      "clause": "12.2.3.2.3;10.2.5.4;6.3.8.2",
+      "printed_pages": [
+        402,
+        353,
+        140
+      ],
+      "conditions": [
+        "CF判定one-to-one video pull会话需要释放，并进入引用的私呼释放政策入口。"
+      ],
+      "conclusion": "CF须复用§10.2.5.4。其§6.3.8.2政策在收到媒体T4(Inactivity)到期指示、会话超过私呼最长持续时间或参与者只剩一人/无人时要求释放。这里只确认政策条件与信令调用，不把无画面直接当任一触发。",
+      "normative_strength": "SHALL",
+      "short_evidence": "shall release",
+      "limitations": [
+        "保留24.281的T4(Inactivity)原称；未核其与固定24.581版本计时器的对应，不套既有排队授权T4或流空闲T11。",
+        "未给私呼最大时长数值，不造默认；§6.3.3.1.5完整发BYE helper及引用差异复用既有私呼释放研究，不在本页重新闭合。"
+      ]
+    }
+  ],
+  "limitations": [
+    "仅所列信令条件与接口，不能替代全部SIP或媒体实现。"
+  ],
+  "related": [
+    "video-pull-request-and-authorization.md",
+    "private-call-client-release.md",
+    "private-call-server-release.md",
+    "session-media-permission-boundary.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "standard_stage": 3
+}

@@ -56,6 +56,8 @@ one-to-one FD 拟发送的数据大小超过服务配置的 max-data-size-fd-byt
 
 ## 按需继续
 
+- [fd-msrp-start-and-originator-result](fd-msrp-start-and-originator-result.md)
+
 - [fd-http-file-and-signalling-evidence](fd-http-file-and-signalling-evidence.md)
 - [fd-download-decision-and-completion](fd-download-decision-and-completion.md)
 - [sds-transmission-selection](sds-transmission-selection.md)

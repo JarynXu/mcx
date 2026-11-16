@@ -55,9 +55,13 @@ CF 正常分发流程生成上游 SIP 202；排队分支也能回 202，但须�
 
 ## 证据边界
 
-- 本页未给出完整 HTTP FD 路由、上传失败恢复或媒体面 FD 协议。
+- 本页限 HTTP FD，未给出完整 HTTP 路由或上传失败恢复。媒体面 FD 的发送、逐段响应和接收完成另见相关主题；两种传输的成功证据不能互换。
 
 ## 按需继续
+
+- [fd-msrp-start-and-originator-result](fd-msrp-start-and-originator-result.md)
+- [fd-msrp-hop-ack-and-storage](fd-msrp-hop-ack-and-storage.md)
+- [fd-media-reception-and-signalling-report](fd-media-reception-and-signalling-report.md)
 
 - [sds-transmission-selection](sds-transmission-selection.md)
 - [fd-download-decision-and-completion](fd-download-decision-and-completion.md)
