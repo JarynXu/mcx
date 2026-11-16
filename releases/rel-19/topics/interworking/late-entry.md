@@ -27,3 +27,5 @@ LMR 定义组的晚加入在 §10.3.3.7.3 step 4 还有媒体条件：指定 E2E
 [组配置](group-configuration.md) · [组呼请求字段](group-call-request.md) · [互通范围](scope.md) · [结构化知识](late-entry.json)
 
 Chat 的显式 join、隐式归属及回覆盖另见 [chat 加入](chat-entry.md)，不要从这里省略其独立前提。
+
+需核对归属本身时见 [归属表示方式](affiliation-representation.md)。

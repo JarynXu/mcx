@@ -1,0 +1,44 @@
+{
+  "topic_id": "r19-iwf-affiliation-lmr-group",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "组定义在 LMR，IWF 已配置 MC/LMR 组及用户身份映射。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "affiliate",
+      "clause": "10.1.2.4",
+      "conditions": [
+        "IWF 已连接且获与 MC 系统互通授权"
+      ],
+      "conclusion": "客户端请求经 server 转 IWF；成功响应后 server 存状态并回复客户端。IWF 可因组 ID 未知或无 LMR 映射而拒绝。隐式归属仅执行跨侧请求、响应及存状态步骤，仍通知 IWF。"
+    },
+    {
+      "id": "deaffiliate",
+      "clause": "10.1.2.5",
+      "conditions": [
+        "先前已执行 §10.1.2.4 归属"
+      ],
+      "conclusion": "显式请求携发起 ID 与组列表；server 按订阅/策略检查归属及互通组，经 IWF 请求/响应后，仅在用户获取消授权时移除状态。隐式取消只执行跨侧请求/响应及有条件移除状态。"
+    }
+  ],
+  "limitations": [
+    "LMR内部归属与TS23.280显隐式基础机制未核验；无完整失败状态机、超时或Stage3编码。"
+  ],
+  "related": [
+    "late-entry.md",
+    "deaffiliation-exit.md",
+    "group-configuration.md",
+    "affiliation-representation.md",
+    "affiliation-mc-group.md",
+    "affiliation-results.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

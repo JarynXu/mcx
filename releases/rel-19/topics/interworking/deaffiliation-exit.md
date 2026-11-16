@@ -21,3 +21,7 @@ MCPTT server 向 IWF 发该用户的 leave 请求；IWF 响应并退出对应呼
 [预安排组呼晚加入](late-entry.md) · [组主控整体释放](group-call-release.md) · [互通范围](scope.md) · [结构化知识](deaffiliation-exit.json)
 
 整体结束呼叫请按类型读：[chat 释放](chat-release.md) 或 [§10.3.3 组呼释放](group-call-release.md)。
+
+需核对归属本身时见 [取消归属的范围](affiliation-mc-group.md)。
+
+本页是 §10.3.6 的呼叫 leave，不能据此缩小 §10.1.2.3 代理取消归属的影响范围：非逐用户模式的归属取消作用于 IWF 所代表的整个 LMR 系统。归属状态变化和呼叫参与变化应分别判断。

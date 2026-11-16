@@ -23,3 +23,5 @@ Join 接纳不是话权授予；也不能把 MC→LMR 的位置隐私处理步�
 只核验所列互通条款；TS23.280/23.379 引用的配置字段、隐私策略及基础过程未独立核验，不能据此形成完整实现。
 
 [进行中呼叫加入与回覆盖](chat-entry.md) · [chat 释放](chat-release.md) · [位置传播权限](../location/privacy.md) · [结构化知识](chat-initiation.json)
+
+需核对归属本身时见 [显隐式归属通知](affiliation-lmr-group.md)。

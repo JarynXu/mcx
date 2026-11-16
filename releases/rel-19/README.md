@@ -60,3 +60,5 @@ Release 19 的条款不得静默用于其他 Release；缺失主题不是“规�
 互通 chat 的 [join 与回覆盖](topics/interworking/chat-entry.md)、[释放后归属保留](topics/interworking/chat-release.md) 与 [取消归属后单用户退出](topics/interworking/deaffiliation-exit.md) 应分别判断，不能把 join、leave 和全组 release 当同一状态变化。
 
 互通 chat [初建](topics/interworking/chat-initiation.md)解释位置转发和媒体建立条件；[预配置重组](topics/interworking/preconfigured-regroup.md)区分配置来源组、实际重组 ID 及与其他重组冲突。
+
+互通归属可按问题直接读：[逐用户与代理表示](topics/interworking/affiliation-representation.md)、[MC定义组](topics/interworking/affiliation-mc-group.md)、[LMR定义组](topics/interworking/affiliation-lmr-group.md)、[请求与逐组结果](topics/interworking/affiliation-results.md)。

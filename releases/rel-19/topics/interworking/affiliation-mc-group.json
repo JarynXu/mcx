@@ -1,0 +1,45 @@
+{
+  "topic_id": "r19-iwf-affiliation-mc-group",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "IWF 已配置 MC/LMR 组及用户身份映射。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "affiliate",
+      "clause": "10.1.2.2",
+      "conditions": [
+        "组定义在 MC，IWF 已连接且获互通授权，拥有组信息"
+      ],
+      "conclusion": "IWF 请求归属；MC server 缺缓存时取组策略，检查组未禁用及给定 ID 的归属授权，按策略/订阅处理并按个人或代理模式存状态，更新 GMS 后响应。"
+    },
+    {
+      "id": "deaffiliate",
+      "clause": "10.1.2.3",
+      "conditions": [
+        "先前已执行 §10.1.2.2 归属",
+        "IWF 请求取消"
+      ],
+      "conclusion": "预期逐用户取消时，server 根据组策略与订阅可取消成员并可存状态；不预期逐用户取消时，该信令取消 IWF、从而取消整个 LMR 系统对此组的归属。随后更新 GMS 并响应。"
+    }
+  ],
+  "limitations": [
+    "LMR内部归属与TS23.280显隐式基础机制未核验；无完整失败状态机、超时或Stage3编码。"
+  ],
+  "related": [
+    "late-entry.md",
+    "deaffiliation-exit.md",
+    "group-configuration.md",
+    "affiliation-representation.md",
+    "affiliation-lmr-group.md",
+    "affiliation-results.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}
