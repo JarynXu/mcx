@@ -12,10 +12,13 @@
 
 组文档主题依据 Stage 3；互通配置主题依据 Stage 2。它们不是同一个完整协议状态机，不能直接把一侧的信息流名称当成另一侧的 HTTP 消息。
 
+- 互通组呼请求字段：[主叫身份与隐式话权](topics/interworking/group-call-request.md)，仅覆盖 Stage 2 信息要素。
+
 ## 身份、紧急行为与媒体业务
 
 以下为 Stage 1 的要求解释，不是可直接运行的协议实现。
 
+- [身份与认证前访问](topics/identity/authentication-boundary.md)：应用身份、选定预认证能力和授权边界。
 - [功能别名共享与接管](topics/identity/functional-alias.md)：模式互斥、满额与授权接管。
 - [紧急告警、状态与组通信](topics/emergency/alert-state.md)：自动触发配置、状态持续及取消主体。
 - [MCVideo 发流许可与接收](topics/mcvideo/transmission-admission.md)：邀请、并发传输上限和容量许可。
