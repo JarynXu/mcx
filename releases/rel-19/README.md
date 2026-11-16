@@ -44,7 +44,7 @@
 - [访问控制与终端禁用](topics/security/access-disable.md)：配置停用、暂时禁用和永久禁用的区别。
 - [功能别名共享与接管](topics/identity/functional-alias.md)：模式互斥、满额与授权接管。
 - [紧急告警、状态与组通信](topics/emergency/alert-state.md)：自动触发配置、状态持续及取消主体。
-- [MCVideo 发流许可与接收](topics/mcvideo/transmission-admission.md)：邀请、并发传输上限和容量许可。
+- MCVideo：[发流许可](topics/mcvideo/transmission-admission.md)、[接受邀请与选流](topics/mcvideo/reception.md)、[无人接收的通知及可选暂停](topics/mcvideo/no-receivers.md)。分别判断每组发送上限和每用户接收上限。
 - [MCData 下载、已读与取消](topics/mcdata/delivery-evidence.md)：证据含义与取消范围。
 
 - [MCData 会话与历史](topics/mcdata/conversation.md)：并行会话、关联超时和回执权限。
