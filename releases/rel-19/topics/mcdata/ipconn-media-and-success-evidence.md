@@ -1,0 +1,68 @@
+# IP Connectivity 的媒体协商、应用信息和失败证据
+
+同版§20普通在网直接IPCONN主线；信令建立与实际IP媒体数据、上层应用结果分别判断。
+
+仅使用24.282所列接口与事件。没有读取24.582，不补齐媒体参数编码、封装、路由、QoS或端到端保护实现。
+
+正常200分支以此前资源/身份/服务/权限等检查未拒绝为前提；发生指定失败时只执行相应失败分支。
+
+## 媒体段与地址独立协商
+
+适用条件：客户端生成或回答IPCONN SDP；PF/CF根据收到的SDP生成相应段的offer或answer。
+
+IPCONN客户端使用单个含IP Connectivity属性的媒体段，并以m=application给出媒体端口和fmtp；端口选择与fmtp内容分别依赖24.582的13.5、13.6。客户端填自己的媒体IP，是否沿用已分配地址或申请新地址由运营者策略决定。PF和CF的媒体IP/端口替换是if required，不等于所有部署都必须经过独立媒体中继。不能把SDS的m=message/MSRP参数套到这里，也不能从业务MCData ID直接推出最终媒体地址。
+
+- 未读24.301地址申请过程，也未读24.582中的端口、fmtp和媒体格式，不能给出具体参数值或报文实现配方。
+- CF answer段开头说基于received answer，step1a却写替换received offer中的地址；保留这个原文差异，不补出确定的SDP处理算法。
+
+依据：§20.2.0a;20.2.0b;20.3.0a;20.3.0b;20.4.0a;20.4.0b，印刷页 443、444、447、451、452。
+
+## 200与ACK各触发媒体入口
+
+适用条件：发起客户端收到INVITE的2xx；或终接客户端已正常接受INVITE、发出含SDP answer的200并收到对应ACK。
+
+发起端收到2xx后发ACK、启动SIP Session timer，再调用24.582 §13.1.2；终接端收到对其200的ACK后才调用§13.1.3。这个顺序给出两端各自的媒体入口，并不证明某IP包已经穿透通路、端到端可达或上层应用完成。客户端终接过程允许资源不足等原因先拒绝；只有未拒绝才走这里的200/ACK主线。
+
+- 不把两个端点的媒体调用时刻合成“收到200即双方已就绪”。
+- PF/CF还各自调用24.582；完整媒体建立条件和IP数据成功判据没有在本页闭合。
+
+依据：§20.2.1 2xx response;20.2.2 steps1,2,4–11 and ACK procedure，印刷页 445、446、447。
+
+## application-data不自带成功语义
+
+适用条件：客户端请求在IPCONN INVITE中加入application-data，或终接客户端在200的mcdata-info/anyExt中加入它。
+
+§20.2.1允许按客户端请求在建立INVITE中携application-data；终接端也可以在200中加入该元素。但本文档明确不定义接收客户端如何处理这些内容，也不定义终接端如何确定返回值。因此“200里有application-data”只能证明这次建立响应携带了相应信息，不能单凭本规范把它解释成应用确认、认证成功或数据传输已完成。
+
+- 上层应用若另有协议须独立核验；本页没有把这些未定义语义补入IPCONN。
+- 不声称建立INVITE完全不能包含应用相关数据，也不把该元素当成SDS SIGNALLING PAYLOAD。
+
+依据：§20.2.1 step8b(iv) and NOTE3 after2xx;20.2.2 NOTE1,step10,NOTE2，印刷页 445、446、447。
+
+## INVITE拒绝与媒体失败分别处理
+
+适用条件：分别观察发起客户端收到INVITE的4xx/5xx/6xx，或之后从媒体面收到IP Connectivity未能建立的指示。
+
+INVITE失败响应要求向用户或应用说明会话无法建立，并发送ACK。媒体面另一个失败事件则要求向MCData server发BYE，Request-URI为待释放session identity，Reason使用FAILURE_CAUSE、cause=1、原文原因Media bearer or QoS lost。这个媒体失败BYE不是把先前INVITE的2xx改成错误响应，也不是SDS传输失败所用的SIP/cause480。
+
+- 这里只核到失败指示与BYE发起，未声称某个BYE/200证明全部网络资源已释放。
+- 没有把媒体无法建立的事件扩大成所有上层应用错误，也不替它设定重试、恢复或最终送达策略。
+
+依据：§20.2.1 4xx/5xx/6xx response and unsuccessful-media indication，印刷页 445、446。
+
+## 证据边界
+
+- 不提供未经依赖核验的VPN、隧道、IP包封装、QoS、重传或应用协议实现。
+
+## 按需继续
+
+- [ipconn-target-and-admission](ipconn-target-and-admission.md)
+- [ipconn-server-path](ipconn-server-path.md)
+- [service-authorization-binding](service-authorization-binding.md)
+- [sds-session-establishment](sds-session-establishment.md)
+
+[3GPP TS 24.282 V19.7.0 / ETSI TS 124 282 V19.7.0 (2026-08)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf)；仅本版本。
+
+## 原文差异
+
+§20.4.0b opening and step1a：开头以received answer为输入，step1a却称替换received offer中地址，且地址短语重复。 只陈述条件化地址替换责任，保留输入描述差异，不写完整处理算法。

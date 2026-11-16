@@ -1,0 +1,59 @@
+# IP Connectivity 的服务器路径与分段响应
+
+限同版§20普通在网直接one-to-one IP Connectivity；别名和跨域不在范围内。
+
+O-PF/T-PF分别是发起侧/终接侧参与功能，CF是控制功能。只在各自前置检查未拒绝时继续。
+
+用户MCData ID、公共用户身份、服务器公共服务身份、MCData session identity用途不同；不能仅因都以URI出现就互换。
+
+## O-PF先核绑定再选CF
+
+适用条件：O-PF处理IPCONN初始INVITE，未因资源问题停止。
+
+O-PF从P-Asserted-Identity中的公共用户身份取得调用者MCData ID并授权；绑定不存在或过期时返回404/Warning141并停止。对于one-to-one-ipconn，它选择为调用者提供IP Connectivity服务的CF，无法确定时返回404/Warning142。继续转发时，Request-URI改为该CF公共服务身份，mcdata-calling-user-id写入已确定的用户ID，新的P-Asserted-Identity则标识O-PF本身。
+
+- 绑定来源复用既有服务授权主题；不把客户端body自报的用户ID当作上述绑定检查的替代。
+- CF服务身份的具体发现算法不在本文档范围；不能根据目标IP推断它必定与某客户端同机。
+
+依据：§20.3.1 steps2–5,11–14;7.3 binding reference，印刷页 447、448、449。
+
+## T-PF解析业务目标和会话映射
+
+适用条件：CF已按§20.4.1向目标用户所在T-PF发邀请；T-PF资源检查未拒绝。
+
+CF把目标MCData ID放在mcdata-request-uri中，SIP Request-URI指向T-PF服务身份。T-PF先要求Contact URI带isfocus，缺失回403/Warning104；再按body中的目标ID查公共用户身份绑定，缺失回404，均停止。继续时把Request-URI换为该公共用户身份，并在Contact提供映射自CF会话标识的本段session identity。业务目标、下一跳服务和客户端路由因此分处不同字段。
+
+- 这里只按§20.3.2的明确检查描述；不把SDS终接侧的IncomingOne-to-OneCommunicationList/Warning230分支无依据移植过来。
+- 本页不把未列出某项检查解释成系统永远不受其他安全或接收策略约束。
+
+依据：§20.4.1 steps7–9;20.3.2 steps2–4,8,10–14;4.2.2，印刷页 34、450、452。
+
+## 逐段200不是业务完成
+
+适用条件：目标邀请返回200；CF观察到响应MCData ID与对应INVITE中的MCData ID匹配。；分别观察T-PF从终接客户端、CF从目标段、O-PF从CF收到并处理相应200。
+
+CF满足目标ID关联条件后，以IP Connectivity为子服务调用§6.3.7.1.23生成上游200，带自己的会话Contact、计时要求和§20.4.0b的SDP answer。两侧PF也各生成本段200并使用自己的SDP answer过程；O-PF会话标识映射自收到的200 Contact，T-PF回传标识映射自CF原INVITE Contact。每个200证明的是对应建立事务段的结果，不能合并成端到端IP数据或应用请求已经成功的证据。
+
+- 保留目标ID匹配条件，不编造响应缺ID时的默认通过规则。
+- 媒体交互仍引用24.582；收到200不是对任意后续IP包、业务请求或应用处理的确认。
+
+依据：§20.4.1 200 response;20.4.2 final200 procedure;6.3.7.1.23 steps1–10;20.3.1 200 response;20.3.2 200 response，印刷页 115、116、449、450、451、453、454。
+
+## 证据边界
+
+- 没有实现跨域路由、完整事务重传或应用成功检查。
+
+## 按需继续
+
+- [ipconn-target-and-admission](ipconn-target-and-admission.md)
+- [ipconn-media-and-success-evidence](ipconn-media-and-success-evidence.md)
+- [service-authorization-binding](service-authorization-binding.md)
+- [sds-session-establishment](sds-session-establishment.md)
+
+[3GPP TS 24.282 V19.7.0 / ETSI TS 124 282 V19.7.0 (2026-08)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf)；仅本版本。
+
+## 原文差异
+
+§20.3.1 200 and failure response openings：成功响应段回指step16，失败响应段回指step15；发送INVITE实际在step17。 按所发对应INVITE的响应理解，并记录编号差异，不自行改原文。
+
+§6.3.7.1.23 step10;20.4.1 200 response：共用200 helper对所有子服务仍引用24.5826.3.1；IPCONN专用CF响应段只笼统引用24.582。 不自行把helper改成13.x或导入SDS媒体过程；媒体依赖未核。

@@ -231,3 +231,7 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 ### SDS session 的建立与逐消息证据
 
 [建立入口](topics/mcdata/sds-session-establishment.md)说明双向媒体协商和两端交接事件；[分段响应与参与者](topics/mcdata/sds-session-responses-and-participants.md)区分目标应答、全组加入和后来归属；[消息证据](topics/mcdata/sds-session-message-evidence.md)连接业务 UUID、释放后回执和未核媒体依赖。不能把 session 建立 200 当作单条数据送达。
+
+### IP Connectivity
+
+[目标与准入](topics/mcdata/ipconn-target-and-admission.md)说明如何从目标 IP 信息取得业务标识及角色权限；[服务器路径](topics/mcdata/ipconn-server-path.md)区分用户、下一跳和会话身份；[媒体与结果证据](topics/mcdata/ipconn-media-and-success-evidence.md)限定 200、ACK、应用字段和失败 BYE 的含义。本版双客户端在网过程明确不兼容 Rel16，未展开媒体规范内部实现。
