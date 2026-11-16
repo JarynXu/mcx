@@ -345,3 +345,5 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 MCVideo授权与设置：[共享注册、服务授权及多client绑定](topics/mcvideo/service-authorization.md)、[设置有效期、退出和私呼准入](topics/mcvideo/service-settings-validity.md)、[CSK更新](topics/mcvideo/csk-key-update.md)。
 
 SDS服务器释放：[无预告释放与归属边界](topics/mcdata/session-server-release.md)、[预告、剩余量与延期结果](topics/mcdata/session-release-extension.md)。
+
+MCVideo显式归属：[完整组集与结果观察](topics/mcvideo/explicit-affiliation-request.md)、[用户侧候选状态和N2](topics/mcvideo/explicit-affiliation-serving-state.md)、[组所有者确认与续期边界](topics/mcvideo/explicit-affiliation-owner-confirmation.md)。
