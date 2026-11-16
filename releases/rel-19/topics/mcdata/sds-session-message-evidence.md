@@ -67,3 +67,5 @@ MCData session identity 是服务器分配的 SIP URI/GRUU，用于客户端—P
 ## 原文差异
 
 §6.3.7.1.23 step10;9.2.4.4.3 200 response;9.2.4.4.4 steps7c,8k：共用200生成helper引用24.5826.3.1，session专属CF调用引用6.3.2。 保留原引用，明确未读媒体依赖；不静默修正、不宣称等价。
+
+媒体失败或单条回执证据之外，服务器另有按策略释放正在进行会话的入口。 [session-server-release](session-server-release.md)。

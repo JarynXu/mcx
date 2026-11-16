@@ -343,3 +343,5 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 - [MCData 组会话客户端取消：紧急条件、告警与对端状态分开判断](topics/mcdata/group-emergency-client-cancellation.md)
 
 MCVideo授权与设置：[共享注册、服务授权及多client绑定](topics/mcvideo/service-authorization.md)、[设置有效期、退出和私呼准入](topics/mcvideo/service-settings-validity.md)、[CSK更新](topics/mcvideo/csk-key-update.md)。
+
+SDS服务器释放：[无预告释放与归属边界](topics/mcdata/session-server-release.md)、[预告、剩余量与延期结果](topics/mcdata/session-release-extension.md)。
