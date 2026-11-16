@@ -56,3 +56,5 @@
 - [只有现有SDS预安排组session，才进入客户端升级路径。](group-emergency-client-upgrade.md)
 
 按需建立之外，先看预建立会话的独立注册/设置/共享资源前提。，见[MCData 预建立会话：SDS 范围、共享资源与准入](pre-established-session-admission.md)。
+
+已有一对一 SDS 会话的服务器紧急升级另见[私聊 SDS 紧急升级：CF 授权、下游请求与告警结果](private-emergency-server-upgrade.md)。

@@ -62,3 +62,5 @@ step2终止本通话对应的basic transmission及basic reception状态机实例
 [3GPP TS24.281 V19.3.0 / ETSI TS124281 V19.3.0 (2026-01)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf)；仅本版本。
 
 媒体释放另据 [TS24.581 V19.2.0](https://www.etsi.org/deliver/etsi_ts/124500_124599/124581/19.02.00_60/ts_124581v190200p.pdf) 的上述具体条款；与信令标准分开追溯，不能据此宣称互通已验证。
+
+取消紧急条件不等于 BYE 结束私呼，另见[私呼本人取消：通话、告警与用户状态分开处理](private-emergency-client-cancellation.md)。

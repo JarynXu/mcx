@@ -124,3 +124,5 @@ CF 构造200及 SDP answer，完成该步触发的媒体平面处理后才向邀
 - [整通话释放及其条件](private-call-server-release.md)
 
 按业务继续：[service-settings-validity](service-settings-validity.md)。
+
+已有私呼的紧急变更及部分成功结果另见[私呼紧急更新的服务器路径：两侧PF、CF权限与部分成功](private-emergency-server-path.md)。

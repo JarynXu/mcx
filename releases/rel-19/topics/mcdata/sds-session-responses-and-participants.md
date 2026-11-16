@@ -58,3 +58,5 @@ PF 指参与功能，CF 指控制功能；观察哪个 SIP 事务段、哪个被
 §9.2.4.4.4 step8j：邀请组成员时回指stepg，目标决定步骤为steph。 引用整个8h–8k连接关系，并记录回指差异，不依据笔误发明目标算法。
 
 §9.2.4.3.3 200 response opening：响应段写为回应step16的INVITE，实际发送列在step17。 按对应INVITE响应理解，不把编号文本改成协议新步骤。
+
+已有一对一 SDS 会话的紧急条件取消及部分接受结果另见[私聊 SDS 紧急取消：权限未决说明与部分接受结果](private-emergency-server-cancellation.md)。

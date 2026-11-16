@@ -66,3 +66,5 @@ O-PF 将 §11.1 step1 的发送权限拒绝映射为 SIP 403/Warning221，将 st
 - §11.1 step9 versus 9.2.4.3.3 step7;11.1 step10 versus 9.2.4.4.4 steps8d,8f：通用 helper 给出 session 特有拒绝义务，但已核调用分支的明示响应对应到 step1、step1A、step2 或显式 false，未给出 step9 和 step10 元素缺失的一一映射。分别保留规范义务和已核响应；不静默把调用分支引用改为 step9/10。
 
 - [SDS session 相关条件](sds-session-establishment.md)
+
+已有一对一 SDS 会话需要紧急升级或取消时，服务器入口另见[已有私聊 SDS 紧急变更：PF 身份与转发边界](private-emergency-server-forwarding.md)。

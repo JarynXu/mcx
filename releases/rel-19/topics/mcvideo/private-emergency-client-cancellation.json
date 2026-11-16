@@ -1,0 +1,100 @@
+{
+  "topic_id": "r19-mcvideo-private-emergency-client-cancellation",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS24.281 V19.3.0（2026-01）；已建立的在网、本地、带 transmission control、直接面向单一 MCVideo ID 的按需私呼，现有 SIP 对话和媒体参数已经存在。排除预建立会话、FTA、功能别名、组呼、远程发起、ambient、离网及无TC私呼。",
+    "每条声明独立继承共同条件并叠加自身条件，不继承前条成功。请求仅由紧急条件发起者对自身条件操作，不含 originated-by；对端声明观察该请求的接收客户端，不要求接收者等于发起者。本页不建立新私呼，也不执行 BYE。",
+    "用户 emergency state、私呼优先级 MVEPP、发起私呼状态 MVEPC、私呼告警 MVPEA、CF 的 originating→target 缓存是不同对象。它们不等于组呼 MVEG/MVEGC/MVEA，也不等于媒体发送许可。",
+    "info MIME 指 application/vnd.3gpp.mcvideo-info+xml。规范中的调用编号、组/私呼用词、状态编号及外部媒体规范不一致均保留；本页不提供已闭合的可运行互操作实现。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.281-v19.3.0",
+  "claims": [
+    {
+      "id": "private-cancel-client-authority-and-choices",
+      "conditions": [
+        "本用户请求取消自己发起的紧急私呼，MVEPC3；按各分支读取MVPEA。"
+      ],
+      "conclusion": "allow-cancel-private-emergency-call=true才获准，其它情况未授权；主条未授权时SHOULD告知并停止。获准后调用6.2.8.3.6：MVPEA1时带emergency=false、清用户emergency state、MVEPP3 cancel-pending；MVPEA非1且仅取消通话时带emergency=false、MVEPP3，保留用户emergency state。若请求同时取消本人告警，则始终带emergency=false、置MVEPP3并清用户emergency state；仅告警取消获准才另带alert=false和置MVPEA4，否则SHOULD告知无告警取消权限。",
+      "clause": "10.2.2.2.4;6.2.8.3.1.2–3;6.2.8.3.6",
+      "printed_pages": [
+        77,
+        78,
+        79,
+        80,
+        330
+      ],
+      "limitations": [
+        "告警取消许可要求allow-cancel-emergency-alert=true，其它情况未授权。此私呼helper在同时请求取消两者时，清用户emergency state不被告警许可条件包住；不可改成组呼规则。",
+        "仅取消通话分支将MVEPC误拼MVEPPC；保留拼写异常，不引入新状态机。"
+      ]
+    },
+    {
+      "id": "private-cancel-request-and-final-response",
+      "conditions": [
+        "客户端已获本人取消许可；不带originated-by。"
+      ],
+      "conclusion": "请求带按6.2.8.3.3选择的Resource-Priority和当前媒体参数SDP；需要隐式发送请求时按6.4指示，再发送re-INVITE。2xx先与原文所指TS24.380用户面交互，再置MVEPP1/MVEPC1；MVPEA4且无Warning149时置MVPEA1。错误响应含emergency=true才由该分支置MVEPP2；含alert=true时置MVPEA3。错误响应完全不含info MIME时，置MVEPP2，并恢复进入取消前的告警状态。",
+      "clause": "10.2.2.2.4;6.2.8.3.3",
+      "printed_pages": [
+        78,
+        330,
+        331
+      ],
+      "limitations": [
+        "完全无info MIME不等于有MIME但无alert元素；不扩大恢复条件，也不自动恢复用户emergency state。",
+        "本条取消紧急条件，不是结束会话；错误响应下的优先级和告警状态分别按所列字段及缺失条件处理。Resource-Priority重叠未裁决；CF还会拒绝带紧急优先级值的取消请求。",
+        "主条声称on-demand，但NOTE提预建立group session，2xx告警段称priority group call；本页严格限定按需私呼并保留异常。"
+      ]
+    },
+    {
+      "id": "private-cancel-info-alert-result",
+      "conditions": [
+        "符合6.2.8.3.7的私呼对话内INFO入口，MVPEA4。"
+      ],
+      "conclusion": "Info-Package须为g.3gpp.mcvideo-info，带关联info MIME，且至少设置alert/emergency/imminentperil之一；MVPEA4时，alert=true将其置3，alert=false将其置1。没有alert时不据这两个分支推导结果。",
+      "clause": "6.2.8.3.7;10.2.2.2.4 INFO paragraph",
+      "printed_pages": [
+        80,
+        81,
+        331
+      ],
+      "limitations": [
+        "取消主条仍写ongoing group session入口，与private helper不一致。149表示告警部分等待，不把它当整个通话取消失败。",
+        "不增添helper未写的MVEPC门槛、originated-by检查或显式先回200步骤；本主题本已排除第三方。"
+      ]
+    },
+    {
+      "id": "private-peer-reinvite-state-and-acceptance",
+      "conditions": [
+        "对端收到既有按需私呼的re-INVITE，不含originated-by。"
+      ],
+      "conclusion": "emergency=true时SHOULD显示升级、发起者及存在的告警，并设置本私呼MVEPP2；emergency=false时SHOULD显示降级及请求者，若alert=false另SHOULD显示告警取消；置MVEPP1，原MVEPC3时再置MVEPC1。已有对话不尝试改变answer-mode；客户端接受re-INVITE，生成带SDP answer的200，发送后才调用TS24.581媒体面。",
+      "clause": "10.2.2.2.3",
+      "printed_pages": [
+        329,
+        330
+      ],
+      "limitations": [
+        "本次不含originated-by，不利用该条第三方告警取消分支清掉接收者自己的MVPEA或用户emergency state。",
+        "对端的MVEPP2不能当发起者MVEPC3，也不能把200或显示告警当已授予发送许可。"
+      ]
+    }
+  ],
+  "limitations": [
+    "本人取消边界之外的第三方操作、释放及故障恢复未展开。"
+  ],
+  "related": [
+    "private-call-client-release.md",
+    "private-emergency-client-upgrade.md",
+    "private-emergency-server-path.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "standard_stage": 3
+}

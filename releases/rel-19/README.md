@@ -363,3 +363,9 @@ MCData授权参与者释放：[媒体通信](topics/mcdata/authorized-user-media
 ### MCData 预建立会话
 
 先看[共享资源与准入](topics/mcdata/pre-established-session-admission.md)，再按需读[私聊SDS的REFER与建立结果](topics/mcdata/pre-established-private-sds-use.md)或[离开业务与销毁预建立会话](topics/mcdata/pre-established-leave-and-release.md)。预建立200、REFER200、具体业务建立和逐消息送达是不同证据。
+
+### 一对一通信中的紧急条件
+
+MCData 已有私聊 SDS 会话按问题读[PF转发](topics/mcdata/private-emergency-server-forwarding.md)、[CF升级](topics/mcdata/private-emergency-server-upgrade.md)和[CF取消](topics/mcdata/private-emergency-server-cancellation.md)。这些one-to-one入口不补齐组re-INVITE的服务器路径。
+
+MCVideo 已有私呼按问题读[客户端升级](topics/mcvideo/private-emergency-client-upgrade.md)、[本人取消和对端](topics/mcvideo/private-emergency-client-cancellation.md)与[PF/CF服务器路径](topics/mcvideo/private-emergency-server-path.md)。紧急通话、附带告警和媒体结果分别判断；规范错引与未闭合字段保持可见。
