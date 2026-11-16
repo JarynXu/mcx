@@ -1,0 +1,64 @@
+{
+  "topic_id": "r19-mcdata-sds-session-inband-notification",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS24.582 V19.0.0，普通在网单播SDS；已满足相应24.282信令准入及本规范发送许可/大小条件。",
+    "不含MBMS/MBS、离网、FD、IPCONN、预建立复用或紧急扩展；不因同属Rel19认定与24.282 V19.7.0已完整互通。",
+    "每项只在自己的角色、业务类型及输入条件成立时使用；完整MSRP/RFC安全、重传和超时尚未核。",
+    "限已建立且满足逐消息发送许可及大小门槛的SDS session。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.582-v19.0.0",
+  "claims": [
+    {
+      "id": "session-notification-is-separate-business-content",
+      "clause": "6.1.2.5.1–.3;6.1.2.6",
+      "printed_pages": [
+        18,
+        19,
+        20
+      ],
+      "conditions": [
+        "收到带处置请求的SDS，需要生成带内通知。"
+      ],
+      "conclusion": "独立SDS NOTIFICATION由MSRP SEND携带，复用原Conversation/Message ID并标明业务结果；无法交付用户或应用时用UNDELIVERED。收到通知须解码并交用户或应用。",
+      "limitations": [
+        "DELIVERED、READ与MSRP200不能互换；各业务触发的完整定义仍须核对应24.282条款。"
+      ]
+    },
+    {
+      "id": "session-reception-and-failure-not-standalone-success-release",
+      "clause": "6.1.2.2.1;6.1.2.3.1;6.1.2.5.1;6.3.2.3",
+      "printed_pages": [
+        17,
+        18,
+        19,
+        26
+      ],
+      "conditions": [
+        "客户端接收入口限已建立SDS session收到数据或通知；通知错误入口限通知SEND收到非200并按RFC处理后进入终止分支。",
+        "CF分支限收到 originating participating MCData function（O-PF）的 MSRP SEND；转发对象仅限已成功建立 MSRP 连接的终接客户端。不从可省略PF的建连叙述推导直接客户端接收入口。"
+      ],
+      "conclusion": "session接收客户端收齐分块后交内容处理；CF先回MSRP200，再向符合本条条件的终接客户端转发。通知错误终止处理须停止剩余分块并告知SDS消息或通知未能发送；此段未列standalone式成功即终止SIP。",
+      "limitations": [
+        "不能从“未列”推导永不释放；发送者、接收者和CF的入口分别成立，不把单一响应作为全局成功。",
+        "“消息或通知未能发送”的提示不证明任何分块均未到达，也不表示已接收数据被撤回。"
+      ]
+    }
+  ],
+  "limitations": [
+    "未核完整回执聚合、MSRP错误恢复或安全验证；通知头域/编码配方不在此提供。"
+  ],
+  "related": [
+    "sds-session-message-evidence.md",
+    "sds-disposition-timing.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "standard_stage": 3
+}

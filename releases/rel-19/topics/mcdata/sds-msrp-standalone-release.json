@@ -1,0 +1,61 @@
+{
+  "topic_id": "r19-mcdata-sds-msrp-standalone-release",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS24.582 V19.0.0，普通在网单播SDS；已满足相应24.282信令准入及本规范发送许可/大小条件。",
+    "不含MBMS/MBS、离网、FD、IPCONN、预建立复用或紧急扩展；不因同属Rel19认定与24.282 V19.7.0已完整互通。",
+    "每项只在自己的角色、业务类型及输入条件成立时使用；完整MSRP/RFC安全、重传和超时尚未核。",
+    "限standalone；不得把本页成功收尾移植为SDS session每条成功都释放。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.582-v19.0.0",
+  "claims": [
+    {
+      "id": "standalone-data-response-triggers-signalling-release",
+      "clause": "6.1.1.2.1",
+      "printed_pages": [
+        13,
+        14
+      ],
+      "conditions": [
+        "主叫完成初始MSRP绑定，正在发送实际SDS。"
+      ],
+      "conclusion": "无分块时数据SEND200、分块时全部SEND的最后一个200触发按24.282终止SIP会话。初始空SEND200用于继续发送，不是数据成功。",
+      "limitations": [
+        "主叫passive路径的首个SEND处理未在此完整闭合；不生成未经RFC复核的状态机。"
+      ]
+    },
+    {
+      "id": "standalone-error-and-signalling-stop-differ",
+      "clause": "6.1.1.2.1;8",
+      "printed_pages": [
+        13,
+        14,
+        36
+      ],
+      "conditions": [
+        "分别发生非200错误后的终止处理，或收到信令面停止指示。"
+      ],
+      "conclusion": "非200按RFC4975处理后，进入错误终止分支时须停止剩余分块、告知该 SDS 消息未能发送并终止SIP。收到信令面终止指示且仍有分块待发时，须停止剩余分块，可以（MAY）告知该 SDS 消息未能发送。通信释放还须释放相关MSRP及其TCP/TLS连接。",
+      "limitations": [
+        "非200先按RFC4975处理，不能把所有错误强行归为同一恢复算法；§8不证明已收数据撤回。",
+        "“该 SDS 消息未能发送”的提示不证明任何分块均未到达，也不表示已接收数据被撤回。"
+      ]
+    }
+  ],
+  "limitations": [
+    "与24.282 V19.7.0的成功/失败媒体指示和BYE原因只是需对照的接口，不已证明为精确版本组合的完整映射。"
+  ],
+  "related": [
+    "sds-media-result-and-release.md",
+    "sds-msrp-response-boundary.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "standard_stage": 3
+}

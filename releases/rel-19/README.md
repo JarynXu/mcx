@@ -369,3 +369,7 @@ MCData授权参与者释放：[媒体通信](topics/mcdata/authorized-user-media
 MCData 已有私聊 SDS 会话按问题读[PF转发](topics/mcdata/private-emergency-server-forwarding.md)、[CF升级](topics/mcdata/private-emergency-server-upgrade.md)和[CF取消](topics/mcdata/private-emergency-server-cancellation.md)。这些one-to-one入口不补齐组re-INVITE的服务器路径。
 
 MCVideo 已有私呼按问题读[客户端升级](topics/mcvideo/private-emergency-client-upgrade.md)、[本人取消和对端](topics/mcvideo/private-emergency-client-cancellation.md)与[PF/CF服务器路径](topics/mcvideo/private-emergency-server-path.md)。紧急通话、附带告警和媒体结果分别判断；规范错引与未闭合字段保持可见。
+
+### SDS 的 MSRP 响应与业务回执
+
+TS24.582 V19.0.0 的有限媒体行为另读[服务器200与终端交付](topics/mcdata/sds-msrp-response-boundary.md)、[standalone收尾](topics/mcdata/sds-msrp-standalone-release.md)和[session带内通知](topics/mcdata/sds-session-inband-notification.md)。CF的响应先于转发，来源侧成功响应不能证明全组收齐或已读。这些主题独立保留媒体规范版本，不表示与TS24.282 V19.7.0的全部接口映射已验证。

@@ -12,7 +12,7 @@ SIP INVITE 的 200、BYE 中 Reason 的 cause=200 和对 BYE 的 SIP 200 是三�
 
 未成功指示要求客户端发送 BYE，Reason 使用 SIP、cause=480、text=transmission failed；成功传输指示也要求 BYE，但使用 SIP、cause=200、text=transmission succeeded。两者的 Request-URI 都是要释放的 MCData session identity，发送方向都是 MCData server。这些值描述媒体接口报告的收尾原因，不是把原始 INVITE 的状态码事后改成 480 或 200。
 
-- 这里没有定义成功指示代表单跳、所有组员还是某种媒体聚合结果；必须继续核 TS 24.582 才能说明其范围。
+- 这里没有定义成功指示代表单跳、所有组员还是某种媒体聚合结果。TS24.582 V19.0.0 的有限响应及收尾主题另行给出媒体条件，但未证明与本页 V19.7.0 成功/失败指示的完整接口映射。
 - 不能从成功 Reason 推出等待全部已读通知后才结束会话。
 
 依据：§9.2.3.2.3 unsuccessful and successful media transfer procedures，印刷页 213、214。
@@ -46,7 +46,7 @@ SIP INVITE 的 200、BYE 中 Reason 的 cause=200 和对 BYE 的 SIP 200 是三�
 CF 先调用媒体释放接口并向需移除的参与者发送 BYE；整组需要释放时才对全部参与者发送。接收客户端收到 BYE 后回 200 并释放本通信的媒体资源；T-PF 收到该 200 后回上游并释放两侧相应资源，CF 收到其 BYE 的 200 后释放与 T-PF 对应的资源。主叫侧 O-PF 也在收到 BYE 的 200 后向客户端转发并释放相应两段资源。原文还允许部分接收数据被存储和处理，所以媒体资源释放不等于撤销已接收内容。
 
 - 按角色和对应通信段陈述，不要求每个角色独占物理资源或部署节点。
-- 不能从允许处理部分数据推出任意 SDS 编码都能安全消费不完整内容；数据解释和媒体完整性判据仍未核。
+- 不能从允许处理部分数据推出任意 SDS 编码都能安全消费不完整内容。本页未核这类数据解释；独立 TS24.582 V19.0.0 接收主题中的收齐重组条件，也不是任意不完整内容可消费的证明。
 
 依据：§13.2.2.2.2.1 response paragraph;13.2.2.2.2.2;13.2.2.2.3.1;13.2.2.2.3.2;13.2.2.2.4.4，印刷页 327、328、329。
 
@@ -56,6 +56,15 @@ CF 先调用媒体释放接口并向需移除的参与者发送 BYE；整组需�
 - 不将信令侧资源释放说明当作完整媒体处理或数据删除保证。
 
 ## 按需继续
+
+### 媒体来源：TS24.582 V19.0.0
+
+以下媒体页面限各自所列条件，不证明与本页 TS24.282 V19.7.0 的完整版本组合。
+
+- [Standalone SDS媒体收尾：最后响应与停止发送](sds-msrp-standalone-release.md)
+- [SDS媒体确认：CF受理与终端交付分开判断](sds-msrp-response-boundary.md)
+
+### 信令与通知来源：TS24.282 V19.7.0
 
 - [sds-media-setup-and-transfer-evidence](sds-media-setup-and-transfer-evidence.md)
 - [sds-disposition-aggregation](sds-disposition-aggregation.md)
