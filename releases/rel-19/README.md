@@ -281,3 +281,8 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 
 - [向功能别名发送 SDS：解析选人、300 与直接 ID 重发](topics/mcdata/sds-functional-alias-target-routing.md)
 - [SDS 别名解析：owner 查询、当前状态与协议缺口](topics/mcdata/sds-functional-alias-resolution.md)
+
+### MCVideo 组成员离开与全组释放
+
+- [MCVideo组成员离开：BYE不等于全组结束](topics/mcvideo/group-participant-leave.md)
+- [MCVideo全组释放：五项策略、TNG3和公共BYE边界](topics/mcvideo/group-release-policy.md)

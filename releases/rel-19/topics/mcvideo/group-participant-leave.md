@@ -1,0 +1,82 @@
+# MCVideo组成员离开：BYE不等于全组结束
+
+TS24.281 V19.3.0，普通在网、带transmission control、按需预安排MCVideo组呼；普通GMS组、客户端-PF-CF路径。本页重点是已建会话离开/释放，TNG3生命周期claim另明确回溯同会话的建立阶段。不含chat、broadcast、ad hoc、NCF/gateway、临时/预配置重组、远程/ambient、预建立会话或离网。
+
+没有紧急/迫近危险状态及其升级、取消或告警处理；不以私呼的最大时长条件替代组呼TNG3，也不将停止一个媒体源、退出一个SIP会话、撤销affiliation、取消conference订阅与释放整个组呼混为一件事。
+
+每条claim独立继承本主题common_conditions和自身conditions，不继承前一条成功。区别离开客户端对应的SIP session、PF-CF/客户端两段资源、CF整个组会话及其每participant的媒体实例。
+
+普通用户选择离开是本页主线；如涉及User migration，仅保留源文Reason条件，不研究迁移流程。地方策略移除高优先级替换者、去affiliation等只作为明确的成员移除入口示例，不额外执行相关状态机。
+
+## 用户离开的是自身会话
+
+适用条件：用户要求离开已经通过按需信令建立的本预安排组会话；进入§9.2.1.2.3.1调用的§6.2.4.1。
+
+客户端先与媒体平面交互，再生成BYE；Request-URI为要离开的MCVideo session identity，随后向MCVideo server发送。收到该BYE的200后再与媒体平面交互。如果离开是由于migration，才按该helper加入Reason：protocol=SIP、cause=200、reason-text=User migration。组呼这里调用的是Leaving helper，而私呼入口调用Releasing helper，不能只因两者都用BYE就说用户已要求所有组成员结束。
+
+- 普通挂断没有由本段要求固定User migration Reason；该Reason行的RFC引用仍写[ref1]，不补参考编号。
+- 客户端两次媒体交互不在24.281本段标成媒体step1/step2；完整BYE失败、超时、重传和并发退出依赖TS24.229。
+- 实际全组存续由CF后续策略判定。这里只证明发出了本会话离开请求，不证明其他成员仍在或全部资源已经回收。
+
+依据：§9.2.1.2.3.1;6.2.4.1;6.2.5.1，印刷页 63、216。
+
+## 组呼入口与公共BYE helper
+
+适用条件：核对本预安排组释放章节对PF及客户端公共BYE过程的调用；不把错误引用自动改为推测的目标。
+
+来自客户端的BYE在§9.2.1.3.3.1指向6.3.2.1.6，但该条实际是Priority call conditions；已核真正PF接收客户端BYE的helper为6.3.2.1.5。CF方向BYE的组章节§9.2.1.3.4.1虽标题写private call，正文明确要求PF收到CF BYE后调用6.3.2.2.8.1。组客户端收到BYE则由§9.2.1.2.3.3明确进入6.2.6，先媒体交互再回BYE的200。
+
+- 公共helper逐字段PAI/MIME复制、PF先回CF200后回收客户端段资源的细节已在private-call-server-release单独核过；本页只核组入口适用及差异，不把其私呼common_conditions直接继承为组呼规则。
+- 客户端BYE到CF的调用错引仍未闭合；不能据公共helper存在就宣称§9.2.1.3.3.1已被规范修正。PF helper响应段terminating MCVideo function主语异常也保留。
+- 收到BYE200只属于该事务；不等于全部participant已收到或确认组释放。
+
+依据：§9.2.1.3.3.1;9.2.1.3.4.1;9.2.1.2.3.3;6.3.2.1.5/.1.6;6.3.2.2.8.1;6.2.6，印刷页 64、91、92、101、216、221、222。
+
+## CF先确认离开再判全组存续
+
+适用条件：CF收到本组呼的BYE，经§9.2.1.4.3进入§6.3.3.2.4；本页不是ad hoc专用User requested release分支。
+
+CF先与媒体平面交互以释放该客户端SIP session关联的资源，生成并发送BYE的200，之后才检查组会话释放策略是否要为全部participants释放会话。若策略不要求释放整会话，CF SHALL向所有仍在会话且订阅conference事件的客户端发送NOTIFY。若策略要求全组释放，转入6.3.3.1.4；原BYE含mcvideo-info时向后续出站BYE复制。
+
+- 这条接收BYE后的决策顺序意味着上行200不能作为剩余成员已释放的证明；也不能凭200断言全组必然存续。
+- 源文未在本段给participant计数更新的具体时刻；政策中的人数按实际评估状态判断，不自行推算BYE到达前后临界值。
+- 未订阅的剩余成员不是本NOTIFY发送义务的收件人。conference通知内容和消费边界见conference-state-notification。
+
+依据：§9.2.1.4.3;6.3.3.2.4 steps1–5，印刷页 124、234、235。
+
+## 主动移除后的可选通知
+
+适用条件：某客户端需要被CF从组会话移除，例如de-affiliation或准入更高优先级用户；按§9.2.1.4.4.3处理且该客户端已经成功移除。
+
+成功移除后，CF MAY生成用户已被移除的conference状态通知并向已有conference订阅者发送NOTIFY。这个专门入口的MAY不同于接收BYE后且整会话无需释放时§6.3.3.2.4的SHALL；不能把所有“成员离开通知”写成统一必发，也不能把通知成功当成移除成功的前置证据。
+
+- 移除动作的入口实际引用6.3.3.1.5（紧急re-INVITE），而BYE helper是6.3.3.1.4；保留错引。此claim仅确认成功移除之后的通知条件，不替源文填补移除实现。
+- 本段没有要求向所有组名单成员通知，也不在此重新定义de-affiliation与移除的关系。不要把de-affiliation示例扩大成每次BYE必撤销affiliation。
+
+依据：§9.2.1.4.4.3;6.3.3.2.4 step5，印刷页 124、235。
+
+## 单成员与全组媒体回收范围
+
+适用条件：使用实际核读的TS24.581 V19.2.0 §6.3.3，分别按“某客户端离开而其他客户端的通话继续”或“整个MCVideo call释放”进入相应分支。
+
+单客户端离开而通话继续时，step1停止向该离开客户端发送transmission control消息和RTP，并丢弃来自它的相应消息/RTP；应用/信令判定与该participant的call已释放后，step2只释放对应basic transmission和basic reception实例。若整个call释放，则step1停止向全体发送，step2在应用/信令判定全call已释放后终止该call的general transmission/reception及所有participant的basic实例。单人退出与全call回收是不同范围。
+
+- 这是transmission control server的实例范围，不是PF实例或客户端实例清单；消息类型保留transmission control，不扩大为本段未列的所有控制消息。
+- 24.281媒体交互和24.581两阶段规则分列证据，不声称不同版本所有接口映射与完整互操作已验证。公共PF释放行为与客户端两阶段不重抄，见既有私呼释放页所核common helper。
+
+依据：§24.581 V19.2.0:6.3.3，印刷页 53、54。
+
+## 证据边界
+
+- 本主题只覆盖所列普通预安排组呼离开或释放条件；原文错引、计时器名称差异与未核事务恢复不由本页修复。
+
+## 按需继续
+
+- [group-release-policy](group-release-policy.md)
+- [private-call-client-release](private-call-client-release.md)
+- [private-call-server-release](private-call-server-release.md)
+- [conference-state-notification](conference-state-notification.md)
+
+[3GPP TS24.281 V19.3.0 / ETSI TS124281 V19.3.0 (2026-01)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf)；仅本版本。
+
+[媒体侧 TS24.581 V19.2.0](https://www.etsi.org/deliver/etsi_ts/124500_124599/124581/19.02.00_60/ts_124581v190200p.pdf)；混合来源按claim的source_references分版追溯，不将媒体页码归给24.281。
