@@ -171,3 +171,7 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 - [排队确认、撤销与释放](topics/calls/floor-participant-queue-release.md)
 
 限 TS24.380 V19.1.0 指定分支；SIP成功、媒体收到、用户接受与发送许可不能互相替代。
+
+### 服务器话权决策
+
+先读[状态所有者](topics/calls/floor-state-ownership.md)，再按问题选择[空闲请求](topics/calls/floor-server-idle-request.md)、[他人持有时的排队](topics/calls/floor-server-queue-admission.md)、[取消与释放后选择](topics/calls/floor-server-release-selection.md)，或[授予后的媒体计时](topics/calls/floor-server-media-timers.md)。规范的条件衔接问题在对应页保留，不以推测补成实现算法。

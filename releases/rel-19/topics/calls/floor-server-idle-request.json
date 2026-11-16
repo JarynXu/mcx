@@ -1,0 +1,94 @@
+{
+  "topic_id": "r19-calls-floor-server-idle-request",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS24.380 V19.1.0，在网、带话权控制的普通非临时组呼；不覆盖广播、system、emergency、imminent-peril、ambient listening、抢占、dual floor、multi-talker 或 audio cut-in。",
+    "区分服务器 §6.3.4 general 仲裁 G 状态与 §6.3.5 面向每个 participant 的 U 状态；本页不重建全部 SIP 初始化和 SDP 协商。",
+    "有效请求及身份、信令准入和安全检查为前置依赖；本页不把组成员资格或已加入通话当作已获发送许可。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v19.1.0",
+  "claims": [
+    {
+      "id": "per-call-and-per-participant-machines",
+      "clause": "6.3.1;6.3.2.2 opening;6.3.4.3.1;6.3.5.3.1",
+      "conditions": [
+        "MCPTT call 建立，并逐个加入客户端，初始化服务器 floor-control 实体。"
+      ],
+      "conclusion": "每通话创建 general 仲裁实例，每个加入客户端再有一个面向该 participant 的 basic 接口实例。G: Floor Idle 表示当前没有用户有发送许可；U: not permitted and Floor Idle 则表示对应 participant 未获许可。二者有关联但不是同一个状态，U 端转交请求并不等于 G 端已经授予。",
+      "printed_pages": [
+        55,
+        59,
+        82
+      ],
+      "limitations": [
+        "新会话 confirmed/unconfirmed、mc_granted 和临时组初始化分支未展开；不能用本条创建动作取代这些条件。"
+      ]
+    },
+    {
+      "id": "rejoin-implicit-request-text-tension",
+      "clause": "6.3.2.2;6.2.1;6.2.4.2.2",
+      "conditions": [
+        "核对初始 INVITE/REFER 建立 chat 或 rejoin ongoing call 是否可作为隐式请求；仅报告两侧原文边界，不生成互通修正规则。"
+      ],
+      "conclusion": "服务器 §6.3.2.2 将 chat 建立或 rejoin 的初始 INVITE/REFER 默认视为非隐式请求，但保留请求中显式声明时的 unless 例外。客户端 §6.2.1 对 rejoin ongoing 组呼却直接要求不得把 INVITE 当隐式请求，§6.2.4.2.2 又令重入端进入 has no permission。两侧措辞不能抹平为统一的“重入显式标志一定授予”或“服务器绝无例外”。",
+      "printed_pages": [
+        55,
+        36,
+        38
+      ],
+      "limitations": [
+        "并未确认一个合规客户端应在 rejoin 中发送该显式指示，不以其他版本替代本版证据。具体 SIP/SDP 协商仅交叉链接既有 implicit-floor-request。"
+      ]
+    },
+    {
+      "id": "idle-interface-forwards-request",
+      "clause": "6.3.5.3.4 step1,3;6.3.5.3.5;6.3.5.3.6",
+      "conditions": [
+        "面向本客户端的接口处于 U: not permitted and Floor Idle，收到其 Floor Request；本通话不是广播。"
+      ],
+      "conclusion": "接口将请求转给 general 仲裁逻辑，自身仍处于 not permitted and Floor Idle。收到仲裁返回的 Deny 后转送客户端并保留该状态；收到仲裁的 Granted 后转送并进入 U: permitted。转送 Deny/Granted 可置请求 Ack 位，Ack 收到或丢失后的处理是实现选项，不把 Ack 设成此处 U: permitted 的强制前置条件。",
+      "printed_pages": [
+        82,
+        83
+      ],
+      "limitations": [
+        "这是服务器接口状态，不等于客户端已收到或接受授予；排队后客户端仍有 T132 用户确认程序。已授予后的发送和媒体计时转交关联稿。"
+      ]
+    },
+    {
+      "id": "idle-arbitration-deny-or-grant",
+      "clause": "6.3.4.3.3",
+      "conditions": [
+        "G: Floor Idle 收到来自允许提出请求 participant 的 Floor Request，执行 §6.3.4.3.3。"
+      ],
+      "conclusion": "本节要求出现任一拒绝条件时拒绝：通话只有一个客户端对应 Deny cause#3；该 participant 的组文档 entry 含 on-network-recvonly 对应 cause#5。可附解释文字；请求带 Track Info 时原样回带；拒绝后仍 G: Floor Idle。若授予，则停止 T4/T7，保存本次获授 participant 的 SSRC直至释放，若有 Track Info 也保存，再进入 G: Floor Taken 的发送授予程序。",
+      "printed_pages": [
+        61
+      ],
+      "limitations": [
+        "on-network-recvonly 的条件是元素存在，不改为值 true；允许提出请求不等于可接收媒体或有发送许可。并列拒绝条件同时出现时的 cause 优先选择未规定，不补优先级。"
+      ]
+    }
+  ],
+  "limitations": [
+    "仅从已定位的空闲 G/U 状态开始闭合普通请求到仲裁结果，不声称全部初始化已覆盖。",
+    "授予后的 T20/T1/T2、Duration/SSRC 编码、媒体分发和可靠交付由关联主题承担。",
+    "安全、用户/组配置取得及消息身份校验未在本页完整验证。",
+    "§6.3.2.2 vs6.2.1（印刷页55、36、38）：服务器对chat建立或rejoin保留显式INVITE/REFER声明的unless；客户端rejoin INVITE不得视为隐式请求。两者不强行裁成一个例外规则。"
+  ],
+  "related": [
+    "floor-participant-entry-request.md",
+    "implicit-floor-request.md",
+    "floor-server-queue-admission.md",
+    "floor-state-ownership.md",
+    "floor-server-media-timers.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  },
+  "standard_stage": 3
+}

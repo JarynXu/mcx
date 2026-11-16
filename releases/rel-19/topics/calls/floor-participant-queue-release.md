@@ -123,3 +123,7 @@ step1 在除 Start-stop、Releasing 外的活动状态停止发送 floor control
 - [implicit-floor-request](implicit-floor-request.md)
 
 [ETSI 官方 TS24.380 V19.1.0](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/19.01.00_60/ts_124380v190100p.pdf)；仅所列版本和条款。
+
+[服务器排队的协商条件](floor-server-queue-admission.md)：仅按该页版本和适用条件衔接。
+
+[服务器授予后计时与客户端等待不同](floor-server-media-timers.md)：仅按该页版本和适用条件衔接。

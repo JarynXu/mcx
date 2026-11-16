@@ -1,0 +1,112 @@
+{
+  "topic_id": "r19-calls-floor-server-queue-admission",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS24.380 V19.1.0；服务器对请求客户端的 U 状态为 not permitted and Floor Taken，已有另一客户端获准发送。",
+    "普通非临时组，非广播/system/emergency/imminent-peril/ambient；非 multi-talker、audio cut-in、dual floor；本请求有效优先级非抢占。",
+    "请求没有 Floor Indicator，或其 D/E 位均为0；各分支保留 queueing 与 mc_priority 的协商条件。",
+    "每条分别声明协商条件；确定性入队子链和协商缺失的规则边界分开读取，不将后者套入前者。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v19.1.0",
+  "claims": [
+    {
+      "id": "busy-denial-negotiation-boundary",
+      "clause": "6.3.5.4.4 first ordinary-rejection paragraph;processing-block step7",
+      "conditions": [
+        "逐字核对 §6.3.5.4.4 的普通请求首个拒绝段和后续 step7；本条为协商边界说明，讨论不满足本主题可用入队子链的请求。"
+      ],
+      "conclusion": "首拒绝段写的是：未协商 queueing，或未在 mc_priority 含 priority，向客户端发送 Floor Deny cause#1并保持当前 U 状态；可附解释及请求中的 Track Info，可要求 Ack。后续处理块 step7 另明确：未协商 queueing 且有效优先级非抢占时，也 Deny#1。不能把队列支持视为无条件接收，也不能把首段 OR 静默改成 AND。",
+      "printed_pages": [
+        86,
+        88
+      ],
+      "limitations": [
+        "首段 OR 与后续“queueing 或 priority 或 both”入口发生重叠；本条报告字面规则，不裁决分支覆盖顺序。"
+      ]
+    },
+    {
+      "id": "effective-priority-is-bounded-input-not-raw-value",
+      "clause": "6.3.5.4.4 processing-block steps1–2;4.1.1.4",
+      "conditions": [
+        "进入 §6.3.5.4.4 的 priority/queueing 处理块；为可用子链已满足两种协商条件，且本地策略允许按该块处理。"
+      ],
+      "conclusion": "Floor Request 带优先级时，用它与协商最高 floor priority 的较低者作输入；协商最高值为 receive only 时，使用 receive-only priority；没有请求优先级且协商最高值不是 receive only 时用 default。D/E 均未置位按 normal 类型。再按 §4.1.1.4 依本地策略形成 effective priority；用户优先级、层级、participant type、当前话权者及组配置是可用输入例子，不是强制每次使用全部参数；不是直接按一个客户端原始数字仲裁。effective priority 为 receive only 时返回 Deny#5，保持 not permitted and Floor Taken。",
+      "printed_pages": [
+        86,
+        87,
+        22
+      ],
+      "limitations": [
+        "§4.1.1.4 给输入例子和本地策略，不给唯一数值公式。§6.3.5.4.4 step1(a)(iv) 另列未协商priority用default，但这与首拒绝段OR有张力，未纳入可执行入队子链。"
+      ]
+    },
+    {
+      "id": "queued-request-identity-and-repeat",
+      "clause": "6.3.5.4.4 processing-block steps3–4",
+      "conditions": [
+        "已协商 queueing 且在 mc_priority fmtp 含 priority，本地策略允许进入处理块；有效优先级不是 receive only 或抢占，检查该 participant 是否已有排队请求。"
+      ],
+      "conclusion": "请求带 Track Info 时以其最上层 Participant Reference 与请求 SSRC 定位；不带时以 SSRC 定位。若已有同 effective priority 请求，step4 要求在客户端已协商 queueing 时返回 Queue Position Info，含位置/priority及请求中的 Track Info，并保持当前 U 状态。",
+      "printed_pages": [
+        87,
+        88
+      ],
+      "limitations": [
+        "step4 没写停止后续步骤；后续 step8 对已有请求又有位置更新文字。本页不将重复同优先级请求解释成保证不重排、必定移到队尾或一定不再检查满队列。"
+      ]
+    },
+    {
+      "id": "new-ordinary-request-enqueue-or-full",
+      "clause": "6.3.5.4.4 processing-block steps8–9",
+      "conditions": [
+        "两种协商条件及本地策略已满足；已确定有效优先级非 receive-only、非抢占；这是尚未在 active queue 中的请求，避免与重复请求 step4 重叠。"
+      ],
+      "conclusion": "最大队列长度尚未达到时，把请求插在所有相同 effective priority 请求之后，发送 Queue Position Info，含 queue position、floor priority及请求中的 Track Info；可要求 Ack，U 状态仍 not permitted and Floor Taken。已达到上限则发送 Deny cause#7，可附解释和请求中的 Track Info，状态不变。入队不撤销当前发言者，也不等于给请求者发 Granted。",
+      "printed_pages": [
+        88,
+        89
+      ],
+      "limitations": [
+        "仅确认同 effective priority 之后的位置规则，不据此构造跨优先级总排序、公平性或等待时限。原文 step8 还允许更新已有请求位置，本条不覆盖该重复/变优先级分支。"
+      ]
+    },
+    {
+      "id": "queue-query-response-and-unpermitted-media",
+      "clause": "6.3.5.4.1;6.3.5.4.6;6.3.5.4.7",
+      "conditions": [
+        "U: not permitted and Floor Taken；分别收到 Queue Position Request 或从对应客户端收到带 payload 的 RTP。"
+      ],
+      "conclusion": "查询位置时返回 Queue Position Info，含位置和 floor priority，可要求 Ack，仍保持 U 状态。若未获许可的客户端反而发送 RTP，则接口不得将其转给 media distributor，发送 Revoke cause#3（无媒体发送许可），进入 U: not permitted but sends media。服务器可以向该监听客户端发送别人的媒体，但不因此接受其上行语音。",
+      "printed_pages": [
+        85,
+        90,
+        91
+      ],
+      "limitations": [
+        "查询响应 step1(b) 的 Track Info 条件把对象写为 Info 而非所收 Request，见 source_issues；不静默修正。未授权发媒体后的 T8 等制止链未在本主题展开。"
+      ]
+    }
+  ],
+  "limitations": [
+    "原文协商 OR 条件、重复请求后续步骤存在重叠；没有依据时不提供可直接运行的完整状态机。",
+    "普通入队链刻意限定 queueing+mc_priority 都具备且是新请求，不能推广到仅协商一项或已在队列中的请求。",
+    "媒体、安全、floor Ack 可靠性、抢占和跨非控制功能路由不在此展开。",
+    "§6.3.5.4.4（印刷页86、87、88）：首拒绝条件为not queueing OR not mc_priority，后续处理入口却为queueing OR priority OR both，且允许未协商priority的default输入。保留重叠，不改AND。",
+    "§6.3.5.4.4 steps4,8–9（印刷页87、88、89）：已有同effective-priority请求step4回复后未写停止，后续step8允许更新已有请求位置且step9另有队满拒绝；本页不裁决并发/重复处理顺序。",
+    "§6.3.5.4.7 step1(b)（印刷页91）：收到Queue Position Request后，对Track Info条件却写Floor Queue Position Info；保留对象不一致，不静默修为Request。"
+  ],
+  "related": [
+    "floor-server-idle-request.md",
+    "floor-participant-queue-release.md",
+    "floor-server-release-selection.md",
+    "floor-state-ownership.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  },
+  "standard_stage": 3
+}

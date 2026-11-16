@@ -102,3 +102,5 @@ Deny 需要确认时回 Ack(type=3)，必须通知拒绝，可按 Reject Cause �
 - [chat-ondemand-entry](chat-ondemand-entry.md)
 
 [ETSI 官方 TS24.380 V19.1.0](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/19.01.00_60/ts_124380v190100p.pdf)；仅所列版本和条款。
+
+[服务器如何处理请求](floor-server-idle-request.md)：仅按该页版本和适用条件衔接。

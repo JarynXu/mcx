@@ -2208,6 +2208,88 @@
       "source_catalog": "sources.json",
       "source_id": "3gpp-ts-24.380-v19.1.0",
       "standard_stage": 3
+    },
+    {
+      "id": "r19-calls-floor-state-ownership",
+      "title": "话权状态归谁：客户端、服务器接口与呼叫仲裁分开读取",
+      "path": "topics/calls/floor-state-ownership.md",
+      "knowledge_record": "topics/calls/floor-state-ownership.json",
+      "state": "clause-checked",
+      "questions": [
+        "为什么客户端和服务器都写 U，但不能当同一个状态？",
+        "服务器发出 Granted 后是否必须等待 Ack 才 permitted？",
+        "Floor Ack 是否必然停止仲裁 T20？",
+        "一个成员退出会销毁整场话权仲裁吗？"
+      ],
+      "source_catalog": "sources.json",
+      "source_id": "3gpp-ts-24.380-v19.1.0",
+      "standard_stage": 3
+    },
+    {
+      "id": "r19-calls-floor-server-idle-request",
+      "title": "服务器空闲话权仲裁：接口转交、接收限制与授予",
+      "path": "topics/calls/floor-server-idle-request.md",
+      "knowledge_record": "topics/calls/floor-server-idle-request.json",
+      "state": "clause-checked",
+      "questions": [
+        "请求已经进入服务器为什么还没有发送许可？",
+        "只有一个客户端或组文档 receive-only 时，空闲话权是否仍可拒绝？",
+        "服务器 U: permitted 是否要等客户端 Ack 才能进入？",
+        "重入的隐式请求例外，两侧原文一致吗？"
+      ],
+      "source_catalog": "sources.json",
+      "source_id": "3gpp-ts-24.380-v19.1.0",
+      "standard_stage": 3
+    },
+    {
+      "id": "r19-calls-floor-server-queue-admission",
+      "title": "他人持有话权时：普通请求的拒绝、优先级输入与入队",
+      "path": "topics/calls/floor-server-queue-admission.md",
+      "knowledge_record": "topics/calls/floor-server-queue-admission.json",
+      "state": "clause-checked",
+      "questions": [
+        "支持排队就一定入队吗，队列满返回什么？",
+        "Floor Priority 字段能超过协商上限吗，有效优先级是否只看这个数字？",
+        "同优先级重复请求是否保证保留原位置？",
+        "能接收他人的语音，服务器是否也会转发我的上行语音？"
+      ],
+      "source_catalog": "sources.json",
+      "source_id": "3gpp-ts-24.380-v19.1.0",
+      "standard_stage": 3
+    },
+    {
+      "id": "r19-calls-floor-server-release-selection",
+      "title": "取消请求与释放现有话权：回到空闲和队首选择的原文边界",
+      "path": "topics/calls/floor-server-release-selection.md",
+      "knowledge_record": "topics/calls/floor-server-release-selection.json",
+      "state": "clause-checked",
+      "questions": [
+        "取消自己的排队请求会不会把当前发言者踢下线？",
+        "服务器回 Floor Ack 后，当前接口是否马上转无权限？",
+        "释放后一定向下一名已排队者授予吗？",
+        "为什么本版不能直接整理成覆盖全部队列情形的可执行伪代码？"
+      ],
+      "source_catalog": "sources.json",
+      "source_id": "3gpp-ts-24.380-v19.1.0",
+      "standard_stage": 3
+    },
+    {
+      "id": "r19-calls-floor-server-media-timers",
+      "title": "服务器授予后的媒体计时：T20 重传、T1 静默与 T2 超时撤销",
+      "path": "topics/calls/floor-server-media-timers.md",
+      "knowledge_record": "topics/calls/floor-server-media-timers.json",
+      "state": "clause-checked",
+      "questions": [
+        "Granted 的 Duration 写了 T2，是否从发送 Granted 就开始算说话时间？",
+        "queued Granted 已发送甚至已 Ack，但用户还没说话，T20 耗尽是否立即撤权？",
+        "服务器收到获授权用户的 RTP 后，T1、T2、T20 分别怎样变化？",
+        "T1 到期是否必须丢弃此前已经缓冲的全部 RTP？",
+        "T2 到期为何先进入 pending Floor Revoke，而不是立即结束通话？",
+        "默认4秒、1秒和计数3能否直接当成当前部署的确定超时？"
+      ],
+      "source_catalog": "sources.json",
+      "source_id": "3gpp-ts-24.380-v19.1.0",
+      "standard_stage": 3
     }
   ],
   "evidence_level": "Topic-specific: consult each knowledge_record and source record."
