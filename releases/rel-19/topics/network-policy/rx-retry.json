@@ -1,7 +1,7 @@
 {
   "topic_id": "r19-rx-retry",
   "release": 19,
-  "state": "editorial-summary",
+  "state": "clause-checked",
   "common_conditions": [
     "Release 19 only"
   ],
@@ -11,13 +11,23 @@
   "claims": [
     {
       "id": "retry-wait",
-      "clause": "5.3.39",
       "conditions": [
         "Temporary rejection",
         "Retry-Interval present",
-        "Same Service Information and IP-CAN session"
+        "Same Service Information and IP-CAN session",
+        "The received Retry-Interval is in the AA-Answer for the applicable rejection"
       ],
-      "conclusion": "Do not resend that information before the interval expires; this does not independently authorize retry."
+      "conclusion": "Do not resend that information before the interval expires; this does not independently authorize retry.",
+      "printed_pages": [
+        18,
+        22,
+        53
+      ],
+      "clauses": [
+        "4.4.1",
+        "4.4.2",
+        "5.3.39"
+      ]
     },
     {
       "id": "permanent-failure",
@@ -25,7 +35,10 @@
       "conditions": [
         "REQUESTED_SERVICE_NOT_AUTHORIZED (5063)"
       ],
-      "conclusion": "The permanent-failure restriction is not overridden by waiting for an interval."
+      "conclusion": "REQUESTED_SERVICE_NOT_AUTHORIZED (5063) is classified as a permanent failure: the request should not be attempted again. Expiry of a waiting interval does not change that classification.",
+      "printed_pages": [
+        71
+      ]
     },
     {
       "id": "missing-interval",
@@ -33,12 +46,19 @@
       "conditions": [
         "Retry-Interval absent"
       ],
-      "conclusion": "This knowledge provides no default retry duration."
+      "conclusion": "This knowledge provides no default retry duration.",
+      "printed_pages": [
+        53
+      ]
     }
   ],
   "related": [],
   "verification": {
-    "original_standard_reopened": false,
-    "independent_usage_acceptance": false
-  }
+    "original_standard_reopened": true,
+    "original_clauses_checked": true,
+    "checked_on": "2026-11-16",
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "standard_stage": 3
 }

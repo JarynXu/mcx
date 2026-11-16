@@ -86,3 +86,5 @@ TS24.281 V19.3.0 第7章的普通在网 MCVideo 客户端与服务该用户的 P
 - [csk-key-update](csk-key-update.md)
 
 [3GPP TS24.281 V19.3.0 / ETSI TS124281 V19.3.0 (2026-01)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf)；仅本版本。
+
+服务授权之后，另行判断发送紧急告警的用户与组权限，见[紧急告警 MESSAGE：权限、组内通知与接收确认](emergency-alert-message.md)。

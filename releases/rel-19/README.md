@@ -82,7 +82,7 @@
 
 进行中组呼另见[当前发言者位置](topics/interworking/talker-location.md)：话权与位置披露权限分别判断。
 
-这三篇仍为整理说明，尚未重新核验对应规范原件：
+以下三篇已核对所标明版本的官方原文：
 
 - [位置报告与组目标](topics/location/reporting.md)：取消订阅、当前归属、测量时间及 UE label 方向。
 - [位置触发覆盖与恢复](topics/location/trigger-override.md)：覆盖对象、期间新请求及恢复内容。
@@ -90,9 +90,9 @@
 
 ## 能回答到哪里
 
-[来源清单](sources.json)固定规范版本、条款和核验范围；[覆盖状态](status.json)列出已收录页面。除上面注明的三篇整理说明外，其余页面已核对所列原文条款，但未验证完整协议实现。
+[来源清单](sources.json)固定规范版本、条款和核验范围；[覆盖状态](status.json)列出已收录页面。各页面已核对所列原文条款，但未验证完整协议实现。
 
-当前没有完整的注册认证、安全密钥、呼叫/媒体状态机、QoS/承载映射和各服务 off-network 实现知识。不能从某个子主题推出这些路径已经覆盖。位置配置取消字段集合仍未核清，本目录不提供该行为的确定规则。
+当前没有完整的注册认证、安全密钥、呼叫/媒体状态机、QoS/承载映射和各服务 off-network 实现知识。不能从某个子主题推出这些路径已经覆盖。位置配置取消的字段集合在 TS23.280 V19.10.1 表10.9.2.1-1与§10.9.3.4之间仍有措辞差异，本目录保留差异，不据此规定可直接编码的取消载荷。
 
 Release 19 的条款不得静默用于其他 Release；缺失主题不是“规范没有要求”。
 
@@ -355,3 +355,11 @@ HTTP FD控制：[主叫终止](topics/mcdata/http-fd-originator-termination.md)�
 MCVideo组动态数据：[订阅授权与路由](topics/mcvideo/group-dynamic-subscription.md)、[通知字段及与conference的区别](topics/mcvideo/group-dynamic-notification.md)。
 
 MCData授权参与者释放：[媒体通信](topics/mcdata/authorized-user-media-release.md)、[HTTP文件分发](topics/mcdata/authorized-user-http-release.md)、[预告及延期决定边界](topics/mcdata/authorized-user-release-intent-and-decision.md)。
+
+### MCVideo 紧急告警与已有组会话
+
+[独立告警](topics/mcvideo/emergency-alert-message.md)区分用户许可、CF准入与接收确认；已有预安排会话的[本人升级和取消](topics/mcvideo/emergency-session-client-path.md)与[CF状态、告警及TNG2](topics/mcvideo/emergency-session-control.md)分别处理。通话状态改变、告警结果和媒体许可不能相互替代。
+
+### MCData 预建立会话
+
+先看[共享资源与准入](topics/mcdata/pre-established-session-admission.md)，再按需读[私聊SDS的REFER与建立结果](topics/mcdata/pre-established-private-sds-use.md)或[离开业务与销毁预建立会话](topics/mcdata/pre-established-leave-and-release.md)。预建立200、REFER200、具体业务建立和逐消息送达是不同证据。

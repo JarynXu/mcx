@@ -1,0 +1,93 @@
+# 紧急告警 MESSAGE：权限、组内通知与接收确认
+
+## 适用范围
+
+- TS24.281 V19.3.0（2026-01）的在网、本地预安排 MCVideo 组；排除广播、chat、重组/NCF、跨系统、功能别名、应用请求优先级、地理触发、临时组和 imminent peril 操作。每条 claim 独立继承本主题 common_conditions，并叠加自身 conditions，不继承前条成功。
+- 发起用户已经取得服务授权，调用身份可由现有绑定识别，且已归属于目标组；不在本页展开隐式归属或 N2 超限处理。目标接收用户的绑定是否存在，仍按对应 claim 检查。预安排只限定组类型，不代表已处于 emergency 状态；具体状态由每条条件指定。
+- 用户 MCVideo emergency state、告警状态 MVEA、客户端所见组 emergency 状态 MVEG、客户端紧急组呼状态 MVEGC 和 CF 的 in-progress emergency state 是不同对象。不能用一项已置位替代其它项。
+- 本文 info MIME 指 application/vnd.3gpp.mcvideo-info+xml；MCVideo ICSI 为 urn:urn-7:3gpp-service.ims.icsi.mcvideo；PSI 指 public service identity。保留本版错引，不把正文流程意图等同于已无歧义闭合的互操作实现。
+- 本页选择用户主动发起、alert-ind=true 的独立告警 MESSAGE：该发起路径不带 emergency-ind，不请求改变通话紧急状态，已有会话不是入口前提。接收者字段对照 claim 另区分含 emergency-ind 的通知；独立告警取消和地理告警不展开。
+
+## 客户端告警许可
+
+适用条件：用户请求向指定组发送 emergency alert；客户端执行 11.2.1.1 和 6.2.8.1.6。
+
+若组文档 list-service/preconfigured-group-use-only 存在且为 true，客户端 SHOULD 告知该组不允许告警，并 SHALL 停止。否则客户端的告警授权要求用户 profile 的 allow-activate-emergency-alert=true，且 EmergencyAlert/entry 的 entry-info 为 DedicatedGroup 并在 uri-entry 包含目标组，或为 UseCurrentlySelectedGroup 且目标组规则的 MCVideo-allow-emergency-alert=true。其它情况视为未授权，不能继续按该授权分支生成告警。
+
+- 这里的 DedicatedGroup 分支没有重复要求组级 MCVideo-allow-emergency-alert=true；CF 的 6.3.3.1.12.1 两种目标选择均要求该组级许可，不能把客户端通过等同 CF 通过。
+- 本页只读本版使用的 profile/group 字段，不展开 TS24.484/24.481 的规则求值、配置来源和权限更新时序。
+
+依据：§11.2.1.1;6.2.8.1.6，印刷页 67、68、368、369。
+
+## 告警请求与本地状态
+
+适用条件：11.2.1.1 的组限制和客户端告警授权已通过，用户请求独立告警。
+
+客户端生成按原文假设在对话外发送的 MESSAGE：P-Preferred-Service 为 MCVideo ICSI，Accept-Contact 带对应 g.3gpp.icsi-ref 和 require/explicit；P-Preferred-Identity 可选。info 中 request-uri 是 group ID、alert-ind=true、client-id 是本客户端 ID。还须带 mcvideo-location-info+xml 的 Report 和为 emergency-alert location trigger 配置的具体位置信息。设置用户 emergency state（若未设置），把 MVEA 设为 2 emergency-alert-confirm-pending，Request-URI 设原文所称“serving the group identity”的 participating function PSI，再发送。收到该 MESSAGE 的 2xx 时 MVEA→3 emergency-alert-initiated；收到 4xx/5xx/6xx 时 MVEA→1 no-alert，但用户 emergency state 仍保留。
+
+- SIP Request-URI 的原文是服务 group identity 的 PF PSI；不静默改为服务 user identity，也不把 XML group ID 当 SIP 目的地址。
+- 本页排除 alias 和 user-requested-priority，因而不展开相应可选元素。位置 MIME 在这个入口是 SHALL，不写成通用可选位置。
+- 2xx 改变告警发起状态，不证明所有组员已收到或阅读，更不证明已建立紧急通话或取得视频发送许可。拒绝并不自动清除用户 emergency state。
+
+依据：§11.2.1.1，印刷页 368、369、370。
+
+## 发起侧 PF 的身份绑定与路由
+
+适用条件：服务客户端的 PF 收到 11.2.2.1 的 emergency-notification MESSAGE；用户已归属于该组，不进入该段隐式归属分支。
+
+PF 可因资源不足或拥塞风险用 500 拒绝，可带 Retry-After；alert=true 时也可依本地策略接受。继续处理时，PF 从 PAI 的 public user identity 解析调用用户 MCVideo ID 并授权，确定目标组 CF PSI；生成新 MESSAGE，把 Request-URI 设 CF PSI，复制收到的 info，calling-user-id 写为经绑定识别出的用户 ID，复制收到的位置 MIME（若有），PAI 设本 PF PSI，再发送。收到下游 2xx 后，PF 生成带本 PF PSI 的 200 发回客户端。
+
+- CF PSI 的发现方法原文明确不在范围内；不能把配置发现视为已实现。
+- 本段对调用用户的授权未给出完整失败响应规则；不能补造 403 或 Warning。其 4xx/5xx/6xx 段主要规定曾调用隐式归属时的取消，不据此编出全部错误转发算法。
+- 隐式归属调用在这里写 9.2.2.2.11–.14，而已核归属 helper 在第 8 章；本页不修编号、不利用此分支建立新归属。成功段将发送点写为 step10，实际发送在 step12。
+
+依据：§11.2.2.1，印刷页 374、375、376。
+
+## CF 另行检查组和告警权限
+
+适用条件：CF 收到 11.2.3.1 的 emergency-notification MESSAGE，alert-ind=true；发送用户已经归属于目标组。
+
+CF 可因资源不足/拥塞风险返回 500，可带 Retry-After；alert=true 可依本地策略接受。Accept-Contact 缺少 MCVideo ICSI 时须 403 并停止；组 preconfigured-group-use-only=true 时须 403、Warning 168 并停止。实际授权 helper 6.3.3.1.12.1 要求用户 allow-activate-emergency-alert=true，且 DedicatedGroup 包含目标组或选择 UseCurrentlySelectedGroup；这两种分支都须目标组 MCVideo-allow-emergency-alert=true。未授权告警按主条返回 403，并在 info 中带 alert-ind=false，然后停止。
+
+- 主条授权调用写 6.3.3.1.13.1，实际标题和正文在 6.3.3.1.12.1；本条把两处分别列出，不宣称已修复规范引用。
+- 未归属入口另有 eligibility/隐式归属以及 403/120，但其第 9 章引用与实际第 8 章 helper 不一致，本页选择已归属范围。
+- 权限是针对告警，而非允许升级通话的 allow-emergency-group-call/allow-MCVideo-emergency-call；两类许可不互换。
+
+依据：§11.2.3.1 steps1–4;6.3.3.1.12.1，印刷页 109、110、377、378。
+
+## 通知分发、200 与独立接收结果
+
+适用条件：CF 的 11.2.3.1 告警请求已通过资源、服务、组限制和告警权限检查；发送用户已归属。
+
+CF 为每个其他已归属组员生成并发送告警通知 MESSAGE，通知中的 calling-user-id 保留收到的真实调用用户 ID。随后生成 200，缓存该用户已发起 emergency alert，并发送 200。之后另发成功接收指示 MESSAGE，带 alert-ind=true、alert-ind-rcvd=true，并回带原请求 client-id。原文没有在发送 200 或接收指示前要求等待所有通知 MESSAGE 的 2xx；各下游 MESSAGE 的 2xx 按引用的 SIP 规范处理。
+
+- 主条写用 .11 生成通知并按 .12 填告警、用 .20 生成成功接收指示；对应实际 helper 分别为 .10、.11、.19。保留调用异常。
+- 成功接收 helper 的目的明写通知 originator 其请求已收到，不是证明全组接收/阅读。此独立告警分支只缓存 alert，没有在所列步骤中设置组 in-progress emergency=true、启动 TNG2 或创建通话。
+- 主条通知范围是每个其他 affiliated member；通用 .10 引言称 affiliated but not participating，存在范围措辞差别，不据 helper 缩掉主条接收者。
+
+依据：§11.2.3.1 step4b and response paragraph;6.3.3.1.19;6.3.3.1.10–11，印刷页 108、109、117、118、378。
+
+## 终接路由与接收者状态
+
+适用条件：T-PF 收到 11.2.2.2 的告警通知，或收到 11.2.2.3 发往自身 PSI 且带 alert-ind-rcvd 的接收指示；客户端实际收到 11.2.1.3 的 emergency notification 时按该段处理字段。
+
+T-PF 可因资源不足/拥塞风险用 500（可带 Retry-After）拒绝；继续时从 info 的 request-uri 取目标用户 MCVideo ID 并查 public user identity 绑定，缺少绑定返回 404。目标侧新 MESSAGE 保留收到的 Accept/Reject-Contact 及参数、info 内容，PAI 改成本 PF PSI，再发送。对普通接收者，alert-ind=true 触发 SHOULD 展示告警及 group ID、originator 和 mc-org；emergency-ind=true 则另将 MVEG 设为 2 in-progress；emergency-ind=false 另将 MVEG→1、MVEGC→1。客户端最后生成并发送 MESSAGE 200。这些字段分支不能互换。
+
+- 目标用户先从 XML request-uri 取值，但 6.3.2.2.11 及 11.2.2.3 的生成步骤却称从 incoming SIP Request-URI 中用户 ID 取绑定；入口又可指向 PF PSI。保留身份层次冲突，不提供臆造的可运行路由样例。
+- 这里不把 absent emergency-ind 当 false；只有 alert=true 的通知不按 emergency=true 分支改变组状态。
+- 绑定缺失规则没有重复 expiry 或 Warning 条件，不从其它业务搬入。一般接收者显示与发起者的 alert-ind-rcvd 相关状态是不同对象；本页不完整展开独立告警取消回执。
+
+依据：§11.2.2.2;11.2.2.3;6.3.2.2.11;11.2.1.3 steps1,3,4,7,8，印刷页 102、371、372、373、376、377。
+
+## 证据边界
+
+- 独立 alert 取消的 MESSAGE 组合分支、地理区域触发/迟到通知、未归属/N2 以及跨系统未形成完整链。本页的成功证据限定为所列事务和告警状态，不能替代紧急通话建立。
+
+## 按需继续
+
+- [MCVideo注册与服务授权：令牌、保护检查和多客户端绑定](service-authorization.md)
+- [显式归属申请与结果观察：完整兴趣组集和两类成功](explicit-affiliation-request.md)
+- [已有预安排会话升级或取消：客户端与两侧 PF 的处理](emergency-session-client-path.md)
+- [CF 的紧急状态更新：独立授权、告警分流与 TNG2](emergency-session-control.md)
+
+[3GPP TS24.281 V19.3.0 / ETSI TS124281 V19.3.0 (2026-01)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf)；仅本版本。

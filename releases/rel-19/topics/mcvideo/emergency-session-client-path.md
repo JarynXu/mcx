@@ -1,0 +1,96 @@
+# 已有预安排会话升级或取消：客户端与两侧 PF 的处理
+
+## 适用范围
+
+- TS24.281 V19.3.0（2026-01）的在网、本地预安排 MCVideo 组；排除广播、chat、重组/NCF、跨系统、功能别名、应用请求优先级、地理触发、临时组和 imminent peril 操作。每条 claim 独立继承本主题 common_conditions，并叠加自身 conditions，不继承前条成功。
+- 发起用户已经取得服务授权，调用身份可由现有绑定识别，且已归属于目标组；不在本页展开隐式归属或 N2 超限处理。目标接收用户的绑定是否存在，仍按对应 claim 检查。预安排只限定组类型，不代表已处于 emergency 状态；具体状态由每条条件指定。
+- 用户 MCVideo emergency state、告警状态 MVEA、客户端所见组 emergency 状态 MVEG、客户端紧急组呼状态 MVEGC 和 CF 的 in-progress emergency state 是不同对象。不能用一项已置位替代其它项。
+- 本文 info MIME 指 application/vnd.3gpp.mcvideo-info+xml；MCVideo ICSI 为 urn:urn-7:3gpp-service.ims.icsi.mcvideo；PSI 指 public service identity。保留本版错引，不把正文流程意图等同于已无歧义闭合的互操作实现。
+- 只处理已建立的 on-demand 预安排会话，客户端与 PF/CF 的会话身份及 SIP 对话已经存在。升级以用户 emergency state 清除、MVEGC1/MVEA1 且尚无组 emergency 为起点；取消限该用户自己的紧急呼叫及可选的本人告警，排除 originated-by 的第三方操作。
+- 本页引用 TS24.581 的媒体交互是信令层交接点；未验证 emergency 的媒体优先级、抢占、发送/接收状态转换或安全算法，不能套用已发布普通 TC 页得出紧急许可结论。
+
+## 升级请求与待确认状态
+
+适用条件：用户请求将已经参与的预安排组会话升级为 emergency；满足本页升级初始状态。 不请求同时发告警，或同时请求且客户端按6.2.8.1.6已判告警获准；其它字段未闭合组合不在本条请求路径。
+
+客户端先按 6.2.8.1.8 检查：用户 allow-emergency-group-call=true，且 EmergencyCall/MCVideoGroupInitiation 选择 DedicatedGroup 并列出目标组，或选择 UseCurrentlySelectedGroup。未授权时 SHOULD 告知并 SHALL 停止。通过后生成 re-INVITE，按 6.2.8.1.1 设置用户 emergency state、emergency-ind=true、MVEGC2 和 MVEG3 confirm-pending；若同时请求且获准发告警，则 alert-ind=true、MVEA2 并执行 emergency-alert location trigger；未请求告警则 alert-ind=false。须带紧急 Resource-Priority 及 on-demand SDP offer；需要 implicit transmission request 时按 6.4 指示，然后发送。
+
+- 客户端紧急呼叫授权没有重复 CF 的组级 allow-MCVideo-emergency-call 检查，不能当服务器授权。
+- “请求告警但本地不获授权”时，本 helper 未给完整 alert-ind 填值替代规则，而 CF 验证要求 emergency=true 时包含 alert-ind；本页请求路径限不请求告警，或同时请求且本地获准告警，保留其它组合缺口。
+- 本条不重新发初始 INVITE、不重新邀请全组；implicit transmission request 也不等于媒体授权。Resource-Priority 数值及 location trigger 编码仍依赖配置与所引 helper，未填造默认值。
+
+依据：§9.2.1.2.1.3;6.2.8.1.1–.2;6.2.8.1.8，印刷页 64、65、68、69、212。
+
+## 响应、Warning 149 与后续 INFO
+
+适用条件：客户端收到其升级 re-INVITE 的最终响应；涉及告警的状态按每个分支明确判断。
+
+2xx 时先与媒体面交互，再执行 6.2.8.1.4：MVEGC2 或 3 时，MVEG→2、MVEGC→3，并将 imminent-peril 两状态复位；只有 MVEA2 且响应没有 Warning 149 时，才由此分支把告警置为 MVEA3。4xx/5xx/6xx 时按 .5：若原 MVEGC 为2或3，则将其置1；在此条件下，原文指定 MVEG3 confirm-pending 时 MVEG→1，所发请求含 alert-ind=true 时 MVEA→1。对话内收到带 g.3gpp.mcvideo-info Info-Package、关联 info MIME 且至少一个 alert/emergency/imminentperil 指示的 INFO，须先回 200；若 MVEGC3 且 MVEA2，再按 alert-ind=false/true 分别把 MVEA 置为 1/3。
+
+- “只有”仅限定本条 2xx→MVEA3 这一个分支，不排除随后 INFO 或其它程序改变该状态。
+- Warning 149 不是整个升级失败：它保留告警结果等待 INFO。4xx 分支没有规定清除用户 emergency state，不补恢复行为。
+- 本版 MVEG3 在这里称 confirm-pending，而取消 helper 称 cancel-pending；保留原名，不凭编号合并两个语义。INFO 的事务 200 先于本地业务状态处理，也不是媒体授权。
+
+依据：§9.2.1.2.1.3 response paragraphs;6.2.8.1.4–.5;6.2.8.1.13，印刷页 67、70、71、212。
+
+## 本人取消时分别选择通话和告警
+
+适用条件：用户要取消已参与预安排组的 in-progress emergency；本用户 MVEGC3，针对本人呼叫及可选本人告警，不带 originated-by；allow-cancel-group-emergency 的真/假已配置可判定。
+
+客户端按 6.2.8.1.7 检查取消权限，false 时 SHOULD 告知并 SHALL 停止。true 时调用本人取消 helper：MVEA1 时放 emergency-ind=false、清用户 emergency state、MVEG→3 cancel-pending；MVEA 非1且只取消呼叫时放 emergency-ind=false、MVEG→3，保留用户 emergency state；还要取消本人告警时，只有获准 allow-cancel-emergency-alert 才加 alert-ind=false、MVEA4 并清用户 emergency state，未获准 SHOULD 告知，仍设置 MVEG3。请求 info 还须 session-type=prearranged、request-uri=group ID，Contact 带 g.3gpp.mcvideo，带 SDP offer 以及按 .2 选择的 Resource-Priority，然后发送 re-INVITE。
+
+- 取消紧急通话与取消告警各有独立许可；不能把请求两者等同两者都进入待取消状态。客户端 .7 的组取消授权只明写 true/false，不为缺失字段补默认拒绝或允许。
+- 6.2.8.1.2 同时有 granted+originating-authorized 的紧急优先级条件和 authorized-cancel+cancel-pending 的 normal 条件；若二者同时命中，原文未给本页可裁决的冲突优先级，不静默声称必然只发 normal。
+- 此处取消的是紧急条件，使用 re-INVITE，不是离开或 BYE；第三方 originated-by 入口另属 .14，未纳入本页。
+
+依据：§9.2.1.2.1.4;6.2.8.1.3;6.2.8.1.6–.7;6.2.8.1.2，印刷页 65、66、68、213。
+
+## 最终响应不一定结束告警结果处理
+
+适用条件：客户端已发送本页本人取消 re-INVITE，不含 originated-by；收到该请求的最终响应或匹配的对话内 INFO。
+
+收到 2xx 后，客户端先与媒体面交互，再设置 MVEG1、MVEGC1；若 MVEA4 且响应无 Warning149，MVEA→1。若随后收到符合 6.2.8.1.13 入口的 INFO，先回200；当 MVEA4 且原请求不含 originated-by 时，alert-ind=true/false 分别把 MVEA 置为3/1。收到取消请求的 4xx/5xx/6xx 时 MVEG→2；响应含 alert-ind=true 且原请求无 originated-by 时 MVEA→3；响应不含 alert-ind 且也不含 originated-by 时，按原文将 MVEA 恢复到进入取消程序前的值。
+
+- 失败段 step2 的 originated-by 检查针对所发 re-INVITE，step3 的语法却同时指收到的错误响应；逐条保留，不把两个条件自动统一。
+- 2xx 不保证本人告警也取消，Warning149 的 INFO 分流仍适用；拒绝取消时通话保持 emergency 级别，不能解释为会话结束。
+- 本页没有推导恢复用户 emergency state 的额外动作，也不补其它 INFO 字段组合的默认处理。
+
+依据：§9.2.1.2.1.4 response paragraphs;6.2.8.1.13，印刷页 70、71、213、214。
+
+## 发起侧 PF 的媒体检查与转发
+
+适用条件：O-PF 在既有 on-demand 预安排会话上收到客户端 re-INVITE，执行 9.2.1.3.1.3。
+
+O-PF 可因资源不足/拥塞风险用500拒绝并可带 Retry-After；emergency=true 时可选择接受。媒体参数不接受或 SDP 未提供 MCVideo codecs 时须488。通过后生成下游 re-INVITE，基于收到 SDP 生成 offer，若收到 Resource-Priority 则原值带入，由 CF 判断有效性，然后转发。下游2xx触发生成200、SDP answer、带入收到的 Warning、PAI设本 PF PSI，先向客户端发送200，再与媒体面交互。下游403则生成403，复制收到的 info（若有）和 Warning，先转发，再与媒体面交互。
+
+- 主条生成 re-INVITE 引 6.3.2.1.9，但该版实际相应 helper 是 .7，正文 .8 后直接进入 6.3.2.2；本条报告原文流程而不修复调用。
+- 响应段写上文 step7，实际发送为 step6，并混称 INVITE/re-INVITE。不得据此制造额外发送步骤。
+- 该段明确展开403，不把相同行为升级成任意4xx/5xx/6xx的专属规范；Warning 是转带收到值，不是 PF 自行发明149。
+
+依据：§9.2.1.3.1.3;6.3.2.1.7，印刷页 94、219、220。
+
+## 终接更新及 200 的顺序
+
+适用条件：T-PF 收到发给本组终接客户端且带 emergency indication 的 re-INVITE；客户端收到既有 on-demand 预安排会话的该请求。
+
+T-PF 检查 Resource-Priority 是否存在，可执行规范范围外的优先级动作；按 6.3.2.2.10 生成并发送给客户端的 re-INVITE，复制相关 MIME/优先级并基于收到的 SDP 生成 offer。客户端 emergency=true 时 SHOULD 显示发起者和紧急通话，告警true时另 SHOULD 显示告警；设置 MVEG2 并复位 imminent-peril 状态。emergency=false 时 SHOULD 显示取消者，设置 MVEG1，原 MVEGC3 时再置 MVEGC1。客户端接受请求，带 MCVideo Contact tags 和 SDP answer 发送200，之后与媒体面交互；T-PF 收到客户端200后生成带 SDP answer 的200，先与媒体面交互，再向上游转发。
+
+- 本页没有把初始呼叫的手动/自动接听门槛搬入已有对话更新；此专段明确 accept。
+- 取消中含 alert-ind=false 的显示及第三方 originated-by 清除告警另有条件，本页主体不带 originated-by，不额外清除接收者自己的告警。
+- 信令200、优先状态更新和各角色媒体交互时点不同；没有据此声称任何 RTP 流已开始或发送许可已获授。
+
+依据：§9.2.1.3.6;6.3.2.2.10;9.2.1.2.1.6，印刷页 101、102、215、216、222。
+
+## 证据边界
+
+- 只覆盖既有按需会话的本用户升级/取消及所列终接通知。预建立会话、第三方取消、priority 私呼/临时组、失败重试与完整 SIP 对话处理未展开。
+- 关键 helper 错引使生成报文仍有真实缺口；本页不称可直接运行的端到端实现。
+
+## 按需继续
+
+- [紧急告警 MESSAGE：权限、组内通知与接收确认](emergency-alert-message.md)
+- [CF 的紧急状态更新：独立授权、告警分流与 TNG2](emergency-session-control.md)
+- [MCVideo预安排组呼：required、最低人数与Unconfirmed成功](prearranged-call-setup-result.md)
+- [MCVideo组成员离开：BYE不等于全组结束](group-participant-leave.md)
+
+[3GPP TS24.281 V19.3.0 / ETSI TS124281 V19.3.0 (2026-01)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf)；仅本版本。

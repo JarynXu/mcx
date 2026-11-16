@@ -70,3 +70,5 @@ TS24.281 V19.3.0，普通在网、带transmission control、按需预安排MCVid
 [媒体侧 TS24.581 V19.2.0](https://www.etsi.org/deliver/etsi_ts/124500_124599/124581/19.02.00_60/ts_124581v190200p.pdf)；混合来源按claim的source_references分版追溯，不将媒体页码归给24.281。
 
 - [chat离开与存续的对应条件](chat-release-policy.md)
+
+需要判断紧急状态及TNG2与组时长计时的关系时，见[CF 的紧急状态更新：独立授权、告警分流与 TNG2](emergency-session-control.md)。
