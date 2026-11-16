@@ -48,3 +48,7 @@ TS33.180 V19.4.0；区分SIP注册与MC用户服务授权。
 - [kms-provisioning](../security/kms-provisioning.md)
 
 [ETSI官方TS33.180 V19.4.0](https://www.etsi.org/deliver/etsi_TS/133100_133199/133180/19.04.00_60/ts_133180v190400p.pdf)，所列条款，印刷页 30、31、32、33、34、35、139；仅本版本，不声明与后续版本等同。
+
+- [profile-selection](profile-selection.md)
+
+配置数据另见：[获取](profile-acquisition.md)、[更新](profile-update.md)。

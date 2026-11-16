@@ -1,0 +1,62 @@
+{
+  "topic_id": "r19-identity-partner-token-exchange",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS33.180 V19.4.0；主系统用户已获得服务授权。",
+    "涉及同一MC系统内伙伴域的组时，主域服务授权已完成且用户配置指明该伙伴域组成员关系；迁移另走相应分支。不把普通服务器间互通等同于此客户端流程。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v19.4.0",
+  "claims": [
+    {
+      "id": "prerequisites",
+      "clause": "5.1.4.2；B.6",
+      "conditions": [
+        "客户端需要伙伴域授权"
+      ],
+      "conclusion": "客户端先在伙伴IdMS注册；伙伴IdMS通过带外配置取得主IdMS签名证书。UE直接通过HTTPS访问伙伴IdMS。"
+    },
+    {
+      "id": "exchange",
+      "clause": "B.7.2–B.7.5",
+      "conditions": [
+        "面向一个指定伙伴IdMS"
+      ],
+      "conclusion": "主域access token作为subject_token送主IdMS，取得面向伙伴的security token（响应字段仍名为access_token）。客户端将该security token作为assertion，以JWT bearer grant送伙伴IdMS，伙伴IdMS验证security token后签发伙伴access token；这些对象不能与ID token互换。"
+    },
+    {
+      "id": "audience",
+      "clause": "B.7.2；B.8表B.8-1；B.7.1；5.1.4.2",
+      "conditions": [
+        "请求伙伴域security token"
+      ],
+      "conclusion": "resource指定伙伴token endpoint；security token的aud包含客户端client_id及与resource相同的目标IdMS。每个伙伴分别换取security token并重复交换，不将一个伙伴令牌当成所有伙伴通行证。"
+    },
+    {
+      "id": "authorization",
+      "clause": "5.1.4.2；5.1.5",
+      "conditions": [
+        "取得伙伴access token后"
+      ],
+      "conclusion": "同系统伙伴域按§5.1.3继续服务授权；迁移场景先完成§5.1.5迁移授权，再执行正常服务授权。图5.1.5-2的初始请求提供伙伴access token并校验；其后步骤3–11不再要求或提供该令牌。"
+    }
+  ],
+  "limitations": [
+    "仅所列MC profile；未提供RFC/OIDC完整校验、aud序列化或通用OAuth实现。",
+    "B.7.4示例2的scope使用逗号，与正文空格分隔规则不一致；按正文识别规则，不复制示例为实现。B.5.1与B.7.5刷新边界见令牌刷新主题。",
+    "与 TS24.482 V19.0.0 的 token 响应字段义务存在未消解差异，见 token-response-obligations.md；不能按跨规范统一规则实施。"
+  ],
+  "related": [
+    "native-authentication.md",
+    "service-authorization.md",
+    "token-refresh.md",
+    "migration-authorization.md",
+    "token-response-obligations.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

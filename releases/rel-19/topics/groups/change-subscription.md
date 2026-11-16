@@ -21,3 +21,5 @@ GMC 在 mcptt-info MIME body 中带认证取得的 access token；要求身份�
 [读取权限](document-access.md) · [跨服务商文档转发](forwarding.md) · [来源](https://www.etsi.org/deliver/etsi_ts/124400_124499/124481/19.03.00_60/ts_124481v190300p.pdf)，印刷页20–22。
 
 后续列表变化和通知处理见[更新订阅](subscription-refresh.md)；若实际调用者是[MCS服务器](server-subscription.md)或[组成组GMS](constituent-subscription.md)，应使用各自请求构造，不照抄GMC身份模板。
+
+进一步核对：[代理和拥有方授权](subscription-proxy.md)、[未知扩展处理](unknown-extensions.md)。

@@ -1,0 +1,60 @@
+{
+  "topic_id": "r19-security-group-key-distribution",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS33.180 V19.4.0 §5.7；GMS和各客户端已按§5.3配置身份密钥。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v19.4.0",
+  "claims": [
+    {
+      "id": "provisioning",
+      "clause": "5.7.1；5.7.2",
+      "conditions": [
+        "GMS向组用户下发GMK"
+      ],
+      "conclusion": "GMK按用户身份封装并由GMS签名；采用端点多样性。组配置通知带GMK、GUK-ID及GMK-ID相关材料，关联参数由GMK加密。"
+    },
+    {
+      "id": "validation",
+      "clause": "5.7.2 step 2",
+      "conditions": [
+        "客户端接收下发通知"
+      ],
+      "conclusion": "验证签名，提取GMK、GUK-ID、GMK-ID并检查GMK-ID不与已有项重复；解密组标识、激活时间和文本；根据用户配置中的Group ID确认GMS URI对应关系。任何检查失败均返回错误，成功才保存密钥和参数并响应。"
+    },
+    {
+      "id": "kms-retry",
+      "clause": "5.7.2 steps 1a–2",
+      "conditions": [
+        "接收方不接受所用KMS"
+      ],
+      "conclusion": "可通过KMS Redirect Response要求重试；这不保证重试成功，也不能绕过签名和组配置校验。"
+    },
+    {
+      "id": "gateway",
+      "clause": "5.7.1；5.7.2",
+      "conditions": [
+        "组有成员由Security Gateway代表"
+      ],
+      "conclusion": "GMS需标示GMK与Security Gateway共享；接收该标志的发起客户端应警告用户，不能宣称媒体只对终端可见。"
+    }
+  ],
+  "limitations": [
+    "不提供完整MIKEY编码、错误码映射或KRR算法。§5.7.1引用E.3存在与GMK格式E.2的交叉引用差异，不据此生成报文。",
+    "取得GMK不能证明归属、入呼或话权已经获准。"
+  ],
+  "related": [
+    "kms-provisioning.md",
+    "group-key-membership.md",
+    "private-key-distribution.md",
+    "group-media-control.md",
+    "kms-redirection.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

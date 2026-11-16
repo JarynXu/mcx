@@ -1,0 +1,59 @@
+{
+  "topic_id": "r19-security-signalling-key-update",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS33.180 V19.4.0 §9.2；MC客户端和MCX服务器信令保护，不是媒体PCK/GMK分发。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v19.4.0",
+  "claims": [
+    {
+      "id": "initial",
+      "clause": "9.2.1.2；9.2.1.3",
+      "conditions": [
+        "客户端已从KMS取得用户专属密钥材料，初次连接MC服务器"
+      ],
+      "conclusion": "客户端随机生成128位CSK并按CSK upload封装，通过用于MC用户授权的初始REGISTER或PUBLISH发往服务器PSI。服务器提取CSK后才能解密该消息中用相应机制保护的用户信息。此密钥建立不替代access token校验。"
+    },
+    {
+      "id": "replace",
+      "clause": "9.2.1.4",
+      "conditions": [
+        "服务器决定更新CSK，客户端成功收到key download中的新CSK"
+      ],
+      "conclusion": "服务器可因撤销、到期等原因在任意时点决定更新，并通过key download分发。客户端从CSK-ID最高4位识别密钥类型，丢弃与该MC Server FQDN关联的旧CSK，并使用新CSK发送上行信令。不能将这一替换解释为删除所有服务器的密钥。"
+    },
+    {
+      "id": "multicast",
+      "clause": "9.2.2",
+      "conditions": [
+        "服务器需要受保护的MBMS组播信令"
+      ],
+      "conclusion": "MuSiK通过key download下发；可采用覆盖普通组播信令的MuSiKAll（不含bearer announcement），也可在需要组相关信令且组配置要求密码保护时下发MuSiKGRP。服务器可以为隐私需求单独分配，不要求每建立一个新承载都重新分配。若客户端拒绝MuSiK，服务器向该客户端分发信令时只能使用单播承载。"
+    },
+    {
+      "id": "usage-end",
+      "clause": "9.2.1.2",
+      "conditions": [
+        "已建立CSK"
+      ],
+      "conclusion": "CSK持续使用至需要新CSK、SIP会话拆除、MC用户退出或其他指示。停止使用与UE安全保存材料是不同判断；不能因为材料仍存在就继续用旧密钥发送信令。"
+    }
+  ],
+  "limitations": [
+    "CSK upload、key download的完整MIKEY报文、服务授权失败映射和服务器重启恢复未覆盖。",
+    "拒绝MuSiK的单播回退是信令规则，不能扩展成所有媒体也自动回退。"
+  ],
+  "related": [
+    "kms-provisioning.md",
+    "group-media-control.md",
+    "ue-key-lifecycle.md",
+    "../identity/service-authorization.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

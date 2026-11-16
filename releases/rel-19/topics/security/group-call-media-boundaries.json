@@ -1,0 +1,58 @@
+{
+  "topic_id": "r19-security-group-call-media-boundaries",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS33.180 V19.4.0；选定MCPTT多发言者及预配置重组安全行为，不代表完整业务准入流程。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v19.4.0",
+  "claims": [
+    {
+      "id": "mixing",
+      "clause": "7.3.10",
+      "conditions": [
+        "MCPTT多发言者组已应用媒体保护"
+      ],
+      "conclusion": "该场景的主控MCPTT服务器不持有组GMK，无法解密或混音；必须把所有受保护且活动的媒体流发送给参与UE。各UE必须解密，之后可以混音并呈现，不把可选混音写成必须混音。"
+    },
+    {
+      "id": "unprotected",
+      "clause": "7.3.10",
+      "conditions": [
+        "多发言者MCPTT组"
+      ],
+      "conclusion": "未应用媒体保护时，混音按TS23.379；启用信令保护时，单播和组播控制分别按§9.4.2和§9.4.3。是否混音、媒体是否加密、控制如何保护是不同判断。"
+    },
+    {
+      "id": "preconfigured",
+      "clause": "7.3.11；7.3.12",
+      "conditions": [
+        "获授权用户使用预配置组进行group regroup或user regroup"
+      ],
+      "conclusion": "group regroup从预定义组的已归属成员组成临时组；user regroup使用指定用户集合。两种流程都要求所有受邀用户已是共同预配置组成员，并已取得该组配置和GMK，不能只凭受邀身份推定密钥可用。"
+    },
+    {
+      "id": "keyselection",
+      "clause": "7.3.11；7.3.12",
+      "conditions": [
+        "按预配置组进行安全重组"
+      ],
+      "conclusion": "初始重组请求标识要使用的预配置组GMK/GMK-ID；按§7.4.2派生媒体材料并按§7.5保护媒体。此分支使用已有组上下文，不能把动态形成临时组一概解释为必须生成新GMK。"
+    }
+  ],
+  "limitations": [
+    "TS23.379和TS23.280的重组授权、归属、话权及加入退出失败流程未在本页验证；本页不承诺呼叫建立成功。",
+    "主控服务器不持GMK的结论限§7.3.10场景，不推为所有MC网关、服务器永远不能取得媒体明文。"
+  ],
+  "related": [
+    "group-media-control.md",
+    "group-key-distribution.md",
+    "../interworking/preconfigured-regroup.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

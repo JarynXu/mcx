@@ -1,0 +1,59 @@
+{
+  "topic_id": "r19-security-kms-redirection",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS33.180 V19.4.0 §5.2.8；为密钥分发选择发起方和接收方KMS。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v19.4.0",
+  "claims": [
+    {
+      "id": "purpose",
+      "clause": "5.2.8.1.1",
+      "conditions": [
+        "KMS选择未知或所选KMS在通信路径上不可接受"
+      ],
+      "conclusion": "KRR传递可接受KMS的政策信息，可由终止实体或路径中的应用服务器发出。它不配置KMS证书；可能需要多次交互，也可能不存在共同可接受选择并导致通信失败。客户端必须支持接收，但可按政策处理或忽略。"
+    },
+    {
+      "id": "lists",
+      "clause": "5.2.8.2.1；5.2.8.2.4",
+      "conditions": [
+        "接收或转发KRR"
+      ],
+      "conclusion": "KRR分别提供发起方和接收方有序KMS列表，优先项在前，也可用ANY表达该列表不加限制。路径实体可依据政策剔除不接受的KMS，列表变空导致失败；替换KRR嵌入收到的KRR。ANY不等于客户端可以信任任意互联网KMS。"
+    },
+    {
+      "id": "trust",
+      "clause": "5.2.8.3；5.2.8.5",
+      "conditions": [
+        "客户端考虑使用KRR指向的外部安全域"
+      ],
+      "conclusion": "只接受Home安全域许可且由Home KMS配置的外部域。若政策允许索取未知证书，向Home KMS请求；KRR本身不是证书可信来源。无签名或签名KMS未识别的KRR是否接受依Home KMS政策决定，不可假定一律接受。"
+    },
+    {
+      "id": "hold",
+      "clause": "5.2.8.3；5.2.8.5",
+      "conditions": [
+        "Home KMS配置hold communication until KMS acceptance"
+      ],
+      "conclusion": "客户端在Home KMS通知重定向是否可接受前不对KRR采取行动。若配置不允许KRR，全部忽略。重定向重试与最终业务会话成功是不同事件。"
+    }
+  ],
+  "limitations": [
+    "§5.2.8.2.5的reduced-list文字使用do not belong，且空列表分支与回退表述存在疑义；本页不擅自修正或生成选择算法。",
+    "§5.2.8.5中Require signed KRRs项的If no与忽略unsigned表述存在疑义；需核对勘误/实现适用规范，不能据本页生成布尔策略。",
+    "未核完整KRR签名验证、嵌套上限实现、Annex D请求/通知编码；签名在内容表中为可选但推荐，不称为所有KRR都强制签名。"
+  ],
+  "related": [
+    "kms-provisioning.md",
+    "private-key-distribution.md",
+    "group-key-distribution.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

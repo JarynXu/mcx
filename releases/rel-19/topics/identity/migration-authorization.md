@@ -38,3 +38,7 @@ TS23.280 V19.9.0 Stage2。普通互联的授权在用户的服务 MC 系统进�
 - [registrar-routing](../signalling/registrar-routing.md)
 
 来源：[ETSI 发布的 3GPP TS23.280 V19.9.0](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/19.09.00_60/ts_123280v190900p.pdf)，§10.6.2、§10.6.3.1、§10.6.3.2.1、§10.6.3.3.1。Stage2 已核所列条款，非完整协议实现。
+
+- [伙伴域令牌交换](partner-token-exchange.md)
+
+配置数据另见：[获取](profile-acquisition.md)、[更新](profile-update.md)。

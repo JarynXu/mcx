@@ -96,8 +96,32 @@
 
 Release 19 的条款不得静默用于其他 Release；缺失主题不是“规范没有要求”。
 
-接入安全补充：[HTTP-1 与 SIP-1](topics/security/access-transport.md)已核 TS33.180 V19.4.0 的选定条款；外部安全 profile 与应用令牌流程仍未核。
+接入安全补充：[HTTP-1 与 SIP-1](topics/security/access-transport.md)已核 TS33.180 V19.4.0 的选定条款；外部安全 profile 尚未完整核验；应用令牌的已核部分见下方主题，不代表完整实现验收。
 
 ## 认证到私呼保护的按需路径
 
 [原生客户端取令牌](topics/identity/native-authentication.md)解释客户端登记、授权码和PKCE；[服务授权与身份绑定](topics/identity/service-authorization.md)回答无token能否注册及逐条位置授权；[令牌刷新](topics/identity/token-refresh.md)限定scope与grant类型。随后按问题选择[KMS密钥获取](topics/security/kms-provisioning.md)或[在网私呼PCK分发](topics/security/private-key-distribution.md)。密钥交换成功不是业务准入或媒体连通证明。
+
+### 伙伴域和组密钥
+
+按问题选择：[伙伴令牌交换](topics/identity/partner-token-exchange.md)、[GMK下发校验](topics/security/group-key-distribution.md)、[成员移除与删钥](topics/security/group-key-membership.md)。三者分别处理授权、密钥接收和成员变化，不能彼此替代。
+
+密钥取得之后，可按问题查看[UE保存与清理](topics/security/ue-key-lifecycle.md)或[组媒体与控制保护边界](topics/security/group-media-control.md)。
+
+### 信令与MCData保护
+
+[信令密钥更新](topics/security/signalling-key-update.md)说明CSK替换与MuSiK拒绝后的信令回退；[XML保护](topics/security/xml-protection.md)区分保护范围和服务器可见性；[MCData保护层次](topics/mcdata/security-layers.md)区分信令密钥和用户payload端到端密钥。
+
+### 配置与通话状态
+
+[预选和活动配置切换](topics/identity/profile-selection.md)区分下次授权生效与当前服务状态清理；[多发言者和预配置重组](topics/security/group-call-media-boundaries.md)说明混音位置和既有GMK前提；[KMS重定向](topics/security/kms-redirection.md)说明政策和信任边界，并保留原文疑义。
+
+[取得主系统或伙伴配置](topics/identity/profile-acquisition.md) → [更新数据](topics/identity/profile-update.md) → [选择生效配置](topics/identity/profile-selection.md)组成用户配置路径。三步的成功不能互相代替。
+
+### 组协议的读取与重组
+
+[默认不取成员表](topics/groups/memberlist-free-retrieval.md)、[临时组检查与通知](topics/groups/temporary-group-lifecycle.md)、[GKTP访问边界](topics/groups/gktp-access.md)分别说明读取范围、形成/拆除条件和密钥资源授权。均限定TS24.481 V19.3.0，不把成功响应扩写为事务或媒体成功。
+
+组协议排障继续看[代理至组拥有方的授权](topics/groups/subscription-proxy.md)和[未知XML条件处理](topics/groups/unknown-extensions.md)；[权限页](topics/groups/document-access.md)同时列出资源联动及所有者仍受限制的操作。
+
+HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-transport-endpoints.md)和[发送者身份分支](topics/identity/http-sender-identity.md)，再进入具体资源授权。两页限定 TS24.482 V19.0.0，不代表后续版本。

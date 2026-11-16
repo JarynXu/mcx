@@ -1,0 +1,50 @@
+{
+  "topic_id": "r19-identity-profile-acquisition",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS23.280 V19.9.0 Stage2；本页讨论MC service user profile，不是组配置或密钥文档。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v19.9.0",
+  "claims": [
+    {
+      "id": "primary",
+      "clause": "10.1.4.3.1",
+      "conditions": [
+        "用户已在IdMS认证，UE能安全访问CMS"
+      ],
+      "conclusion": "配置管理客户端携带MC service ID请求CMS取得用户配置。需要下载时，响应包括与该ID关联的全部用户配置；不能把该过程限制为仅下载当前活动配置。"
+    },
+    {
+      "id": "partner",
+      "clause": "10.1.4.3.2 preconditions and steps 1–5",
+      "conditions": [
+        "双方已配置迁移许可，用户已在伙伴系统认证并取得配置获取和服务授权请求所需凭据，UE已知伙伴CMS地址"
+      ],
+      "conclusion": "客户端向伙伴CMS请求迁移配置，伙伴CMS再向主系统CMS请求。主系统依据目标伙伴系统身份选择迁移配置；伙伴系统按本地配置信息修改并保存，不能假设直接复制主系统当前配置。"
+    },
+    {
+      "id": "validation",
+      "clause": "10.1.4.3.2 steps 4–9",
+      "conditions": [
+        "伙伴系统处理迁移用户配置"
+      ],
+      "conclusion": "主系统可请求验证修改后的配置；若提出请求，原文仍使用may描述伙伴CMS回传修改后配置。发生验证且失败时，不执行向UE下发配置的步骤9。本条不把may改为强制，也不据此发明未回传时的超时、放行或拒绝规则。"
+    }
+  ],
+  "limitations": [
+    "配置取得不等于已完成伙伴服务授权。",
+    "未核对Stage3编码、缓存校验、失败重试及具体服务配置字段。"
+  ],
+  "related": [
+    "profile-selection.md",
+    "service-authorization.md",
+    "migration-authorization.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

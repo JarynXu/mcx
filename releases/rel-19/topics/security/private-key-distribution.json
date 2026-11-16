@@ -39,6 +39,22 @@
         "本节密钥分发完成"
       ],
       "conclusion": "后续会话建立信令仍依MCPTT/MCVideo业务规范进行，因此密钥分发成功本身不能证明被叫接受或媒体已成功建立。若安全网关代表终止用户，发起客户端须向用户警示完整端到端安全可能无法保证。"
+    },
+    {
+      "id": "media-derivation",
+      "clause": "7.4.1；7.5.1",
+      "conditions": [
+        "双方已共享PCK及PCK-ID"
+      ],
+      "conclusion": "PCK作为MIKEY TGK，PCK-ID作为CSB-ID，RAND取自PCK下发，CS-ID按表E.1.3-1选择；由此派生SRTP master key和master salt，而不是直接把PCK当SRTP会话密钥。媒体MKI为32位PCK-ID，purpose tag为1。在网控制仍另按§9.4处理，不能从媒体PCK推出控制也端到端加密。 本派生须支持PRF-HMAC-SHA-256。"
+    },
+    {
+      "id": "direction",
+      "clause": "E.1.3表E.1.3-1",
+      "conditions": [
+        "在网MCPTT/MCVideo私呼SRTP流；双方已共享PCK"
+      ],
+      "conclusion": "CS-ID按流的原始发送方向区分：MCPTT发起方/接收方分别为0/1，MCVideo分别为2/3；这里的发起方和接收方是私呼角色，不随当前哪一端正在收包而互换。"
     }
   ],
   "limitations": [
@@ -48,7 +64,10 @@
   "related": [
     "kms-provisioning.md",
     "../identity/service-authorization.md",
-    "../interworking/private-encryption.md"
+    "../interworking/private-encryption.md",
+    "group-media-control.md",
+    "ue-key-lifecycle.md",
+    "kms-redirection.md"
   ],
   "verification": {
     "original_clauses_checked": true,

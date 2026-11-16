@@ -34,6 +34,14 @@
 
 依据：§7.2.2。
 
+## 从PCK到媒体密钥
+
+双方共享PCK及PCK-ID后，PCK作MIKEY TGK，PCK-ID作CSB-ID，RAND来自PCK下发，CS-ID按表E.1.3-1选择，由此生成SRTP master key与master salt。PCK不直接等于SRTP会话密钥。媒体MKI为32位PCK-ID，purpose tag为1。在网控制仍另按§9.4处理，不能推定与媒体相同。
+
+依据：§7.4.1、§7.5.1，印刷页85–88。
+
+派生须支持PRF-HMAC-SHA-256。表E.1.3-1进一步区分发送方向：MCPTT发起方/接收方为0/1，MCVideo为2/3。这里按私呼角色区分流的原始发送方向，不因当前收包端变化而互换。
+
 ## 证据边界
 
 - TS23.379/23.281业务准入与完整呼叫状态机、SRTP完整profile、KRR列表选择算法未核，不给确定SIP失败码。
@@ -46,3 +54,8 @@
 - [private-encryption](../interworking/private-encryption.md)
 
 [ETSI官方TS33.180 V19.4.0](https://www.etsi.org/deliver/etsi_TS/133100_133199/133180/19.04.00_60/ts_133180v190400p.pdf)，所列条款，印刷页 40、68、69、70；仅本版本，不声明与后续版本等同。
+
+- [组媒体与控制边界](group-media-control.md)
+- [UE密钥清理](ue-key-lifecycle.md)
+
+- [kms-redirection](kms-redirection.md)

@@ -1,0 +1,50 @@
+{
+  "topic_id": "r19-identity-gateway-authentication",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS33.180 V19.4.0 §5.12.1；non-3GPP设备通过MC gateway UE访问MC服务，MC客户端可驻留在任一侧。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v19.4.0",
+  "claims": [
+    {
+      "id": "two-layers",
+      "clause": "5.12.1",
+      "conditions": [
+        "经MC gateway UE接入MC服务"
+      ],
+      "conclusion": "网关UE先完成3GPP网络设备认证以取得网络连接和路由；无论MC客户端在网关还是non-3GPP设备，每个客户端仍须按§5.1完成MC认证与授权。网络接入成功不能替代MC服务授权。"
+    },
+    {
+      "id": "local-link",
+      "clause": "5.12.1 steps 1–2",
+      "conditions": [
+        "建立non-3GPP设备与网关之间的连接"
+      ],
+      "conclusion": "这段连接可以早于网关网络认证建立；其协议和安全不在此3GPP规范范围内。客户端驻留网关时，设备到客户端的数据传输保护同样不由本条保证。"
+    },
+    {
+      "id": "forwarding",
+      "clause": "5.12.1 step 3",
+      "conditions": [
+        "MC客户端驻留non-3GPP设备"
+      ],
+      "conclusion": "网关原样转发客户端与MC系统之间的认证授权消息。客户端授权成功后，实际服务访问仍受IdMS取得的access token及CMS用户配置限制，不能从网关身份推导所有下挂设备的无限权限。"
+    }
+  ],
+  "limitations": [
+    "TS33.501设备认证细节和本地链路实现未核；不据此推荐免认证本地网络。",
+    "MC gateway UE不等于媒体保护中代终端解密的MC Security Gateway，两者角色不能混用。"
+  ],
+  "related": [
+    "native-authentication.md",
+    "service-authorization.md",
+    "../security/access-transport.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

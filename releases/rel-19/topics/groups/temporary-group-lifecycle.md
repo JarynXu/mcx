@@ -1,0 +1,58 @@
+# 临时组形成与拆除：检查、通知和副作用
+
+TS24.481 V19.3.0 Stage3；由GMC发起，将已有MCS组组合为临时组。此过程不保证临时组与每个组成组支持相同MC服务。
+
+## 创建是GMOP POST并受独立授权
+
+适用条件：请求创建尚不存在的临时组文档。
+
+GMC向users树的组创建XUI发送GMOP POST，列出组成组。GMS先认证发送者并检查形成临时组的权限，无权则403停止；请求组ID不符合本地策略则409并提供候选ID。GMC收到带候选alt-value的uniqueness-failure时可改用候选重试，不能把所有409或403当成相同重试条件。
+
+依据：§6.3.14.1–3.1。
+
+## 全部检查成功之后才发送重组通知
+
+适用条件：创建请求通过本地权限和组ID检查。
+
+创建方逐组成组发送regroup check；任一检查得到3xx、4xx、5xx或超时，向发起方返回403并停止。只有全部检查2xx才逐组发送regroup notification；全部通知2xx后，创建临时文档并向GMC返回2xx和新文档ETag。check成功不是临时组已经建立。
+
+依据：§6.3.14.3.1。
+
+## 检查无写入，通知会写入并触发订阅
+
+适用条件：组成组GMS收到相应check或notification，目标是既有组文档的regrouped节点。
+
+目标regrouped节点已存在、目标组成组本身为临时组、断言GMS身份不在授权列表或正文不可接受，均会导致403停止。check通过仅回200；notification通过会写入on-network-regrouped节点、回200，并订阅临时组GKTP变化。GMK不包含在GMOP通知中，规范说明通过SIP提供。
+
+依据：§6.3.14.3.2。
+
+## 拆除等待全部响应，不等同全部成功
+
+适用条件：GMC请求删除临时组文档。
+
+临时组GMS先向每个组成组发送DELETE，定位与该临时组ID匹配的on-network-regrouped节点，并携带自身服务身份。收到所有这些DELETE的HTTP响应后，删除临时组文档并回2xx。原文这里写全部响应而非全部2xx，不能因此声称每个组成组清理都成功。
+
+依据：§6.3.15.2–3.1。
+
+## 不能把两个阶段解释成原子事务
+
+适用条件：评估失败恢复或一致性。
+
+通知阶段已经可能修改组成组。所核条款未给出该阶段失败后的完整回滚或拆除超时恢复规则；因此知识库不提供原子提交保证或自行补造补偿协议。
+
+依据：§6.3.14.3.1–2; 6.3.15.3.1–2。
+
+## 证据边界
+
+- 拆除端§6.3.15.3.2存在“非存在文档中的已存在节点”措辞，保留原文疑义，不据此构造完整错误判定算法。
+- 身份头与HTTP安全依赖TS24.482，SIP及订阅依赖另列规范；本页不是完整可执行协议实现。
+- 临时组文档形成与预配置重组复用既有GMK是不同主题，不能互相替代。
+
+## 按需继续
+
+- [creation](creation.md)
+- [constituent-subscription](constituent-subscription.md)
+- [document-access](document-access.md)
+- [../security/group-call-media-boundaries](../security/group-call-media-boundaries.md)
+
+[ETSI官方TS24.481 V19.3.0](https://www.etsi.org/deliver/etsi_ts/124400_124499/124481/19.03.00_60/ts_124481v190300p.pdf)，印刷页28、29、30、31、32、33；仅本版本。

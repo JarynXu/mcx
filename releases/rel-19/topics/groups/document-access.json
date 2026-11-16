@@ -28,13 +28,44 @@
         "Applicable rule: conditions true or absent; actions includes on-network-allow-getting-member-list"
       ],
       "conclusion": "Membership alone does not satisfy this branch."
+    },
+    {
+      "id": "read-boundaries",
+      "clause": "7.2.12.1",
+      "conditions": [
+        "已认证身份读取组文档"
+      ],
+      "conclusion": "组成员可读list-service及非list后代；自己的entry及后代另有身份匹配分支，匹配entry URI、mcvideo-mcvideo-id URI或mcdata-mcdata-id URI之一。获授权MCS服务器列表中的身份可读整份文档。不要把读取本人entry等同读取全体成员。"
+    },
+    {
+      "id": "owner-limits",
+      "clause": "7.2.12.1",
+      "conditions": [
+        "文档位于本人XUI用户树，或另一XUI用户树且提供方政策允许"
+      ],
+      "conclusion": "创建、读取、修改、删除权限仍受本条其他禁止规则约束：既有组文档的on-network-temporary不能创建、删除或修改；含on-network-regrouped的组文档不能删除。授权GMS可在既有文档创建和删除on-network-regrouped元素。所有者并非无条件管理员。"
+    },
+    {
+      "id": "resource-coupling",
+      "clause": "7.2.11.2",
+      "conditions": [
+        "按组ID寻址本GMS定义的组"
+      ],
+      "conclusion": "byGroupID文档与users树的关联文档内容相同并随其创建；经byGroupID修改或删除会作用于关联文档，不能把它视为可独立清理的缓存副本。此条未给出并发或分布式事务保证。"
     }
   ],
   "limitations": [
-    "Other authorization branches are not enumerated.",
-    "No complete implementation validation."
+    "成员表规则的§7.2.12.1以actions包含元素描述分支；该元素在§7.2.8有true/false语义，false表示不允许。本页不将元素单纯存在解释为无条件放行，也不提供完整OMA政策求值器。",
+    "身份认证、OMA其余授权规则和并发实施未核验。"
   ],
-  "related": [],
+  "related": [
+    "memberlist-free-retrieval.md",
+    "temporary-group-lifecycle.md",
+    "gktp-access.md",
+    "forwarding.md",
+    "subscription-proxy.md",
+    "unknown-extensions.md"
+  ],
   "verification": {
     "original_clauses_checked": true,
     "independent_usage_acceptance": false

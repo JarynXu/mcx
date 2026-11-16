@@ -1,0 +1,51 @@
+{
+  "topic_id": "r19-groups-unknown-extensions",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS24.481 V19.3.0，区分普通组文档、GKTP文档与GMOP。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.481-v19.3.0",
+  "claims": [
+    {
+      "id": "group",
+      "clause": "7.2.8",
+      "conditions": [
+        "元素未在§7.2.2定义"
+      ],
+      "conclusion": "must-understand=true时忽略整个文档。否则，不在conditions后代中的未知元素被忽略；conditions后代则按RFC4745的未知元素规则求值，不能直接删掉再按无条件处理。未定义属性除must-understand外忽略。"
+    },
+    {
+      "id": "gktp",
+      "clause": "7.7.8; 7.3.4.1",
+      "conditions": [
+        "处理GKTP或GMOP中的未知内容"
+      ],
+      "conclusion": "GKTP未知元素带must-understand=true时忽略整个文档，否则忽略元素；未知属性除must-understand外忽略。GMOP则规定忽略未知元素和属性。不要把GMOP的简化规则用于组文档授权条件。"
+    },
+    {
+      "id": "rfc-boundary",
+      "source_id": "ietf-rfc4745",
+      "clause": "7; 7.1.1",
+      "conditions": [
+        "RFC4745 conditions或identity的子元素使用未知或不支持命名空间"
+      ],
+      "conclusion": "该子元素求值为FALSE。identity的各子元素按OR组合，因此未知identity子元素为FALSE并不意味着整个identity必定FALSE，仍须看其他子元素。"
+    }
+  ],
+  "limitations": [
+    "本页不定义忽略文档对应的HTTP/SIP错误码。",
+    "RFC4745明确的是未知或不支持命名空间中的所列子元素；不能推广为任何名字未知、任意嵌套位置都使用相同求值规则。"
+  ],
+  "related": [
+    "document-access.md",
+    "gktp-access.md",
+    "temporary-group-lifecycle.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

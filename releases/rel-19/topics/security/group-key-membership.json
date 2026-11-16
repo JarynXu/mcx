@@ -1,0 +1,60 @@
+{
+  "topic_id": "r19-security-group-key-membership",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS33.180 V19.4.0 §5.7；这里讨论组成员变化导致的密钥处理，不穷尽所有删钥原因。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v19.4.0",
+  "claims": [
+    {
+      "id": "addition",
+      "clause": "5.7.3",
+      "conditions": [
+        "CMS用户配置指示新增组成员"
+      ],
+      "conclusion": "组管理授权和订阅验证通过后，GMS才向UE发送组管理记录和GMK；配置更新和GMK到达不等于话权获准。"
+    },
+    {
+      "id": "removal",
+      "clause": "5.7.3",
+      "conditions": [
+        "已收到移除成员的配置更新",
+        "相关组通信已经结束",
+        "GMK未被用户仍为成员的其他组共享"
+      ],
+      "conclusion": "以上条件同时成立时，UE应立即安全删除该GMK。Group ID关联多个服务（MCPTT、MCData、MCVideo）时，相应GMK处理同样保留通信结束及其他共享组成员资格条件，不能改写成收到移除通知就删掉全部组密钥。"
+    },
+    {
+      "id": "rekey",
+      "clause": "5.7.3",
+      "conditions": [
+        "移除成员"
+      ],
+      "conclusion": "GMS可以依据组安全配置更新GMK；这是可选处理，不是每次成员变化都必须重钥。"
+    },
+    {
+      "id": "revocation",
+      "clause": "5.7.2",
+      "conditions": [
+        "GMS撤销既有GMK"
+      ],
+      "conclusion": "另行撤销通过重复下发流程并设置revoked Status表达；不要把这一操作与成员移除的条件删除混为一谈。"
+    }
+  ],
+  "limitations": [
+    "成员移除不等同于立即终止所有现有通信；本主题不定义完整业务退出状态机。",
+    "其他删钥原因及全套密钥生命周期需另查§5.11；未核的SIP错误码、话权流程不能从本页推导。"
+  ],
+  "related": [
+    "group-key-distribution.md",
+    "kms-provisioning.md",
+    "ue-key-lifecycle.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

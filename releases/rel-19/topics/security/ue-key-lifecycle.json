@@ -1,0 +1,60 @@
+{
+  "topic_id": "r19-security-ue-key-lifecycle",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS33.180 V19.4.0 §5.11；区分静态/半静态材料和业务动态密钥。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v19.4.0",
+  "claims": [
+    {
+      "id": "protected-storage",
+      "clause": "5.11.1",
+      "conditions": [
+        "材料未在使用"
+      ],
+      "conclusion": "长期密钥与私有证书、CSK/GMK/MuSiK、基于身份的密钥材料及ID/access/refresh/security token必须受保护存储；本条不指定保护实现。"
+    },
+    {
+      "id": "persistence",
+      "clause": "5.11.2 paragraphs 1–2",
+      "conditions": [
+        "静态或半静态材料跨UE开关机、同一用户退出再登录"
+      ],
+      "conclusion": "CSK、GMK、TrK、InK、TLS/IPsec私有证书、KMS Key Set及ID/access/refresh/security token等静态或半静态材料必须安全保存，并跨这些转换维持。若随后登录的是另一用户，前用户材料必须安全删除或安全分区；保留材料仅允许其所属用户访问。不能将同一用户重启一概当成全部删钥。"
+    },
+    {
+      "id": "dynamic",
+      "clause": "5.11.1；5.11.2 paragraph 3",
+      "conditions": [
+        "MKFC、MSCCK、PCK及其派生动态密钥"
+      ],
+      "conclusion": "应按业务需要安全存储（SHOULD）；不再需要时必须安全删除（SHALL）。UE关机、当前用户退出、关联access token因技术或认证原因到期，以及业务需要规定的时点，都触发相应动态密钥删除。"
+    },
+    {
+      "id": "refresh-failure",
+      "clause": "5.11.2 paragraph 4",
+      "conditions": [
+        "access token到期，且IdMS因技术或认证原因不能或不愿刷新"
+      ],
+      "conclusion": "UE必须安全删除CSK、GMK、MuSiK、MKFC、MSCCK、KFC、DPPK、PCK及access/refresh/security token。此明确清单不能推广成普通到期就删除一切，也不因未列TrK、InK、KMS Key Set、证书和ID token而推定它们可永久保留。"
+    }
+  ],
+  "limitations": [
+    "不规定安全分区、密钥擦除实现或刷新失败重试阈值。",
+    "本页保留原文DPPK标识；不擅自替换为其他派生密钥缩写。成员变化的条件删除仍见独立主题。",
+    "保存不等于仍可使用：§9.2.1.2把SIP会话拆除、用户退出等列为CSK停止使用条件；保留材料不能作为继续用旧CSK的授权。"
+  ],
+  "related": [
+    "group-key-membership.md",
+    "kms-provisioning.md",
+    "../identity/token-refresh.md",
+    "signalling-key-update.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

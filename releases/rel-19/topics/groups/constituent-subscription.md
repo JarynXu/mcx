@@ -21,3 +21,5 @@ P-Asserted-Identity为自己的文档访问公共服务身份；mcptt-info的mcp
 GKTP文档内容和密钥处理不由本页定义；只描述资源寻址。
 
 [server-subscription](server-subscription.md) · [forwarding](forwarding.md) · [change-subscription](change-subscription.md) · [结构化条件](constituent-subscription.json)
+
+进一步核对：[代理和拥有方授权](subscription-proxy.md)、[未知扩展处理](unknown-extensions.md)。

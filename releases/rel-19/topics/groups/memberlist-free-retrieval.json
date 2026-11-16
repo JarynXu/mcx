@@ -1,0 +1,50 @@
+{
+  "topic_id": "r19-groups-memberlist-free-retrieval",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS24.481 V19.3.0 Stage3；GMC向GMS读取组文档。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.481-v19.3.0",
+  "claims": [
+    {
+      "id": "default",
+      "clause": "6.3.16.1",
+      "conditions": [
+        "MCS用户需要组文档"
+      ],
+      "conclusion": "GMC默认采用不含成员信息的获取过程；用户需要成员信息时，才转入完整文档读取过程§6.3.3.2.1。这不是声明用户天然拥有读取完整成员表的权限。"
+    },
+    {
+      "id": "request",
+      "clause": "6.3.16.2; 7.3.4.2",
+      "conditions": [
+        "请求不含成员表的组文档"
+      ],
+      "conclusion": "GMC向按组ID寻址的组文档XCAP URI发送HTTP POST，body类型为application/vnd.3gpp.GMOP+xml；GMOP的request含get-excluding-memberlist元素。不能仅凭使用XCAP URI就把该操作改为GET。"
+    },
+    {
+      "id": "result",
+      "clause": "6.3.16.2–3",
+      "conditions": [
+        "GMS收到针对既有组文档、包含规定GMOP请求的POST"
+      ],
+      "conclusion": "服务器以HTTP 2xx返回指定文档，但不包含group/list-service/list元素；客户端只有在2xx同时带有§7.2.6所定MIME类型body时，才按不含成员表的文档处理。缺少list不能据此判断该组没有成员。"
+    }
+  ],
+  "limitations": [
+    "此过程不替代§7.2.12授权；HTTP认证依赖TS24.482，本页不声称已核其报文。",
+    "未核RFC9110完整POST语义、缓存及错误恢复；不把这一裁剪结果当全量文档进行覆盖写入。"
+  ],
+  "related": [
+    "document-access.md",
+    "resource-operations.md",
+    "xcap-addressing.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

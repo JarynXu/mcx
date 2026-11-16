@@ -415,9 +415,13 @@
         {
           "condition": "需要主系统认证和SIP注册基础",
           "read": "topics/identity/primary-registration.md"
+        },
+        {
+          "condition": "伙伴IdMS令牌交换与迁移授权的安全前置",
+          "read": "topics/identity/partner-token-exchange.md"
         }
       ],
-      "boundary": "仅V19.9.0 Stage2；没有提供TS33.180安全协议或在途通话无损切换方案。"
+      "boundary": "Stage2业务流程使用TS23.280 V19.9.0；伙伴令牌另见TS33.180 V19.4.0对应主题。未提供在途通话无损切换方案。"
     },
     {
       "id": "authentication-to-private-media",
@@ -442,9 +446,154 @@
         {
           "condition": "PCK怎样分发；为什么还不能宣布通话建立",
           "read": "topics/security/private-key-distribution.md"
+        },
+        {
+          "condition": "non-3GPP设备经MC网关接入的认证边界",
+          "read": "topics/identity/gateway-authentication.md"
         }
       ],
       "boundary": "TS33.180 V19.4.0选定有界链；各主题自含前提，不要求顺读全库。不涵盖完整业务呼叫/媒体状态机。"
+    },
+    {
+      "id": "partner-and-group-security",
+      "question": "伙伴授权与组密钥：授权对象、接收验证及移除条件",
+      "select_one_by_question": [
+        {
+          "condition": "主域令牌能直接访问伙伴域吗？",
+          "read": "topics/identity/partner-token-exchange.md"
+        },
+        {
+          "condition": "收到组密钥为什么还不能直接使用？",
+          "read": "topics/security/group-key-distribution.md"
+        },
+        {
+          "condition": "用户被移出组是否立即删除GMK？",
+          "read": "topics/security/group-key-membership.md"
+        },
+        {
+          "condition": "重启或退出登录会删除全部密钥吗？",
+          "read": "topics/security/ue-key-lifecycle.md"
+        },
+        {
+          "condition": "接收组媒体要用谁的GUK-ID？",
+          "read": "topics/security/group-media-control.md"
+        }
+      ],
+      "boundary": "TS33.180 V19.4.0选定流程；不代表完整OAuth/MIKEY实现或业务状态机。"
+    },
+    {
+      "id": "signalling-versus-data-protection",
+      "question": "信令保护、端到端数据和密钥更新如何分工",
+      "select_one_by_question": [
+        {
+          "condition": "CSK更新会删除其他服务器的CSK吗？",
+          "read": "topics/security/signalling-key-update.md"
+        },
+        {
+          "condition": "加密XML后SIP代理和MC服务器都看不到内容吗？",
+          "read": "topics/security/xml-protection.md"
+        },
+        {
+          "condition": "DPPK和PCK/GMK/CSK是什么关系？",
+          "read": "topics/mcdata/security-layers.md"
+        }
+      ],
+      "boundary": "仅TS33.180 V19.4.0所列条件；不是完整Stage3报文或密码实现。"
+    },
+    {
+      "id": "profile-and-call-security",
+      "question": "配置切换、加密多发言者与安全域重定向对通话有什么影响",
+      "select_one_by_question": [
+        {
+          "condition": "改变预选用户配置会立刻影响当前呼叫吗？",
+          "read": "topics/identity/profile-selection.md"
+        },
+        {
+          "condition": "加密多发言者组能让服务器混音吗？",
+          "read": "topics/security/group-call-media-boundaries.md"
+        },
+        {
+          "condition": "收到KRR就能信任新KMS吗？",
+          "read": "topics/security/kms-redirection.md"
+        }
+      ],
+      "boundary": "各页使用其明确记录的TS23.280 V19.9.0或TS33.180 V19.4.0；关联不是跨规范版本等同或完整状态机证明。"
+    },
+    {
+      "id": "profile-lifecycle",
+      "question": "认证之后如何取得、更新和切换用户配置",
+      "select_one_by_question": [
+        {
+          "condition": "主系统或迁移伙伴系统怎样给UE配置？",
+          "read": "topics/identity/profile-acquisition.md"
+        },
+        {
+          "condition": "通知取回、用户提交更新有什么区别？",
+          "read": "topics/identity/profile-update.md"
+        },
+        {
+          "condition": "改预选和改当前活动配置何时影响业务？",
+          "read": "topics/identity/profile-selection.md"
+        }
+      ],
+      "boundary": "仅TS23.280 V19.9.0 Stage2；配置下载、数据保存、服务授权和活动状态改变不可互相替代。"
+    },
+    {
+      "id": "group-protocol-lifecycle",
+      "question": "组配置读取、临时重组与密钥分发怎样衔接",
+      "select_one_by_question": [
+        {
+          "condition": "只需配置，不需要成员列表",
+          "read": "topics/groups/memberlist-free-retrieval.md"
+        },
+        {
+          "condition": "组成组检查成功就能认为重组成功吗",
+          "read": "topics/groups/temporary-group-lifecycle.md"
+        },
+        {
+          "condition": "重组之后如何区分GKTP访问与密钥校验",
+          "read": "topics/groups/gktp-access.md"
+        }
+      ],
+      "boundary": "TS24.481 V19.3.0；HTTP操作结果、业务状态和密钥保护不是同一成功条件。"
+    },
+    {
+      "id": "group-authorization-chain",
+      "question": "组管理请求沿途如何授权和解释扩展",
+      "select_one_by_question": [
+        {
+          "condition": "读取、修改、删除是否真有权限",
+          "read": "topics/groups/document-access.md"
+        },
+        {
+          "condition": "代理身份与业务用户身份怎么传到组拥有方",
+          "read": "topics/groups/subscription-proxy.md"
+        },
+        {
+          "condition": "未来XML扩展或未知条件怎样处理",
+          "read": "topics/groups/unknown-extensions.md"
+        }
+      ],
+      "boundary": "TS24.481 V19.3.0加明确列出的RFC4745依赖，未验证完整OMA策略与SIP实现。"
+    },
+    {
+      "id": "http-identity-to-resource",
+      "question": "HTTP 请求经过代理后，以谁的身份访问组资源？",
+      "select_one_by_question": [
+        {
+          "condition": "连谁以及验证谁的证书",
+          "read": "topics/identity/http-transport-endpoints.md"
+        },
+        {
+          "condition": "UE 断言、token 与网络身份如何选",
+          "read": "topics/identity/http-sender-identity.md"
+        },
+        {
+          "condition": "已识别的用户或服务器能访问哪些内容",
+          "read": "topics/groups/document-access.md"
+        }
+      ],
+      "boundary": "24.482 V19.0.0 与 24.481 V19.3.0 分别支撑本地规则，未宣称完整版本组合兼容。"
     }
   ]
 }

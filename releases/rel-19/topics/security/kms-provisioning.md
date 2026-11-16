@@ -43,3 +43,5 @@ KMSInit和KMSKeyProv可发给Home或Migration KMS；KMSCertCache请求与KRR上�
 - [primary-registration](../identity/primary-registration.md)
 
 [ETSI官方TS33.180 V19.4.0](https://www.etsi.org/deliver/etsi_TS/133100_133199/133180/19.04.00_60/ts_133180v190400p.pdf)，所列条款，印刷页 53、54、55、56、57；仅本版本，不声明与后续版本等同。
+
+- [组密钥下发校验](group-key-distribution.md)

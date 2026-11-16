@@ -36,3 +36,7 @@ B.7.4–B.7.5的伙伴jwt-bearer交换另列可选refresh token，与B.5.1概括
 - [service-authorization](service-authorization.md)
 
 [ETSI官方TS33.180 V19.4.0](https://www.etsi.org/deliver/etsi_TS/133100_133199/133180/19.04.00_60/ts_133180v190400p.pdf)，所列条款，印刷页 132、133、134；仅本版本，不声明与后续版本等同。
+
+- [伙伴域令牌交换](partner-token-exchange.md)
+
+- [UE密钥保存与清理](../security/ue-key-lifecycle.md)

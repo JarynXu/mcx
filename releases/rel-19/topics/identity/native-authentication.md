@@ -36,3 +36,7 @@ ID token由客户端消费，用于识别用户/MC service ID；access token交�
 - [access-transport](../security/access-transport.md)
 
 [ETSI官方TS33.180 V19.4.0](https://www.etsi.org/deliver/etsi_TS/133100_133199/133180/19.04.00_60/ts_133180v190400p.pdf)，所列条款，印刷页 27、28、29、30、128、129、130、131、132；仅本版本，不声明与后续版本等同。
+
+## 跨规范使用前
+
+[令牌响应义务差异](token-response-obligations.md)列出 TS24.482 V19.0.0 与本页安全规范版本的不同措辞。不要把 ID/refresh 字段必选性静默统一。

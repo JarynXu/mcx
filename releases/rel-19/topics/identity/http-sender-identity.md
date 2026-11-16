@@ -1,0 +1,42 @@
+# HTTP 请求如何取得可信发送者身份
+
+仅适用于 TS24.482 V19.0.0 的 Annex A。身份确定之后，具体资源仍须执行其访问授权规则；本页不授予组文档读取权限。
+
+## UE 不能自行写可信身份头
+
+适用条件：HTTP 客户端位于 UE。
+
+已有 bearer access token 时，请求须携带 Bearer Authorization。UE 入口代理若收到 X-3GPP-Asserted-Identity，须返回 403 并停止，不能把该头转成可信用户身份。
+
+依据：§A.2.1.2; A.2.2.2。
+
+## 网络侧断言有发送方与信任域前提
+
+适用条件：HTTP 客户端位于网络实体。
+
+网络客户端经 home proxy 发消息并断言自身身份，可为 PSI、MC service group ID 或 MC service ID。信任域内转发有其连接前提；仅有该头不能证明任意来源可信。
+
+依据：§A.2.1.3; A.2.2.3。
+
+## 服务器按 token 是否存在选择身份来源
+
+适用条件：HTTP 服务器收到请求。
+
+Bearer token 与断言头都没有时返回 403。有 Bearer token 时先验证，再以其派生的 MC service ID 识别发送方；只有无 Bearer token 而有断言头时，才使用头内 URI。两者都有仍走 token 分支，不能把验证失败当作未提供 token 而回退断言。
+
+依据：§A.2.3。
+
+## 证据边界
+
+- RFC6750 的部分失败和传输规则见[Bearer失败](bearer-errors.md)；完整验证与 TS24.109 尚未核查，不能一概将失败写成403。
+- A.2.2.3 配置称 trusted entities 的 FQDN/port，接收前提却称 UEs 的 FQDN/port，原文不一致，未自行改成部署规则。
+- 关联的组授权知识采用 TS24.481 V19.3.0；导航连接不表示两个版本已做完整兼容验证。
+
+## 按需继续
+
+- [../groups/document-access](../groups/document-access.md)
+- [../groups/forwarding](../groups/forwarding.md)
+- [http-transport-endpoints](http-transport-endpoints.md)
+- [service-authorization](service-authorization.md)
+
+[ETSI 官方 TS24.482 V19.0.0](https://www.etsi.org/deliver/etsi_ts/124400_124499/124482/19.00.00_60/ts_124482v190000p.pdf)，印刷页15、16；仅本版本。
