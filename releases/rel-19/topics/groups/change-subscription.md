@@ -19,3 +19,5 @@ GMC 在 mcptt-info MIME body 中带认证取得的 access token；要求身份�
 完整处理还涉及本节服务标识/Contact 要求，以及 TS24.229、RFC5875；access token 获取和身份隐藏保护分别引用 TS24.482、TS24.379，本页未核验这些依赖，不提供认证或加密实现。代理授权和 NOTIFY 内容处理也未在此页展开。
 
 [读取权限](document-access.md) · [跨服务商文档转发](forwarding.md) · [来源](https://www.etsi.org/deliver/etsi_ts/124400_124499/124481/19.03.00_60/ts_124481v190300p.pdf)，印刷页20–22。
+
+后续列表变化和通知处理见[更新订阅](subscription-refresh.md)；若实际调用者是[MCS服务器](server-subscription.md)或[组成组GMS](constituent-subscription.md)，应使用各自请求构造，不照抄GMC身份模板。

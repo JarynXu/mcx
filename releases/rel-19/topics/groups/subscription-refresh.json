@@ -1,0 +1,50 @@
+{
+  "topic_id": "r19-group-subscription-refresh",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "GMC已有由初始SIP SUBSCRIBE建立的组文档或GKTPs元素订阅。",
+    "MCPTT ICSI值：urn:urn-7:3gpp-service.ims.icsi.mcptt；Contact标签：g.3gpp.icsi-ref。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.481-v19.3.0",
+  "claims": [
+    {
+      "id": "notify",
+      "clause": "6.3.13.2.1 notification paragraph",
+      "conditions": [
+        "收到与该订阅关联的SIP NOTIFY"
+      ],
+      "conclusion": "需要身份隐藏时先按TS24.379执行保密及完整性保护程序，再按RFC5875处理NOTIFY；不能把收到通知直接等同于可以无条件使用未校验内容。"
+    },
+    {
+      "id": "refresh",
+      "clause": "6.3.13.2.1 re-subscription paragraph",
+      "conditions": [
+        "修改所订阅的文档或GKTPs元素列表"
+      ],
+      "conclusion": "发送re-SUBSCRIBE，resource-lists中按每个待订阅对象放entry，以GMC配置XCAP root为相对URI基址；GKTPs还需对应节点选择器。Contact保留MCPTT ICSI媒体特征标签。"
+    },
+    {
+      "id": "key",
+      "clause": "6.3.13.2.1 re-subscription item b",
+      "conditions": [
+        "修改订阅列表且需要身份隐藏"
+      ],
+      "conclusion": "对mcptt-info和resource-lists正文按TS24.379保护，并使用初始SUBSCRIBE所含CSK；本条不要求每次列表更新重新协商一把CSK。"
+    }
+  ],
+  "limitations": [
+    "引用的TS24.229、TS24.379及RFC5875完整处理规则未核验；此处不提供订阅到期、终止、重传或xcap-diff应用算法。"
+  ],
+  "related": [
+    "change-subscription.md",
+    "server-subscription.md",
+    "xcap-addressing.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

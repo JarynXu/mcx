@@ -6,7 +6,7 @@
 
 - 先判断操作对象：[文档、元素与属性的方法表](topics/groups/resource-operations.md)；并发冲突见[ETag与412](topics/groups/conditional-update.md)。
 - 构造请求与排错：[地址和命名空间](topics/groups/xcap-addressing.md)、[替换范围与409校验](topics/groups/xcap-write-validation.md)。
-- 持续跟踪文档变化：[订阅者、资源与SIP地址](topics/groups/change-subscription.md)。
+- 持续跟踪文档变化：GMC先看[初始订阅](topics/groups/change-subscription.md)，随后[列表更新与NOTIFY](topics/groups/subscription-refresh.md)；服务端按角色选[MCS服务器订阅](topics/groups/server-subscription.md)或[组成组GMS订阅临时组](topics/groups/constituent-subscription.md)，不要混用身份与Request-URI。
 - 创建请求被拒：[建组地址、403 与 409](topics/groups/creation.md)。
 - 已知组 ID，要判断能读什么：[文档与成员表权限](topics/groups/document-access.md)。
 - HTTP 请求要访问另一服务商：[跨服务商转发](topics/groups/forwarding.md)。

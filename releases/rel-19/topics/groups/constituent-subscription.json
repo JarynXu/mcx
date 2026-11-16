@@ -1,0 +1,43 @@
+{
+  "topic_id": "r19-group-constituent-subscription",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "订阅方GMS拥有临时MCS组的一个组成组；目标临时组有MCS group ID。",
+    "MCPTT ICSI值：urn:urn-7:3gpp-service.ims.icsi.mcptt；Contact标签：g.3gpp.icsi-ref。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.481-v19.3.0",
+  "claims": [
+    {
+      "id": "target",
+      "clause": "6.3.13.2.3 items a/c",
+      "conditions": [
+        "订阅临时组文档、该组GKTP文档的GKTPs元素或两者"
+      ],
+      "conclusion": "初始SUBSCRIBE含application/resource-lists+xml正文，每个目标文档或元素一个entry；GKTPs目标由对应GKTP文档选择器加GKTPs节点选择器定位。采用AS发起SUBSCRIBE。目标组属于本服务商时，相对entry基址用本方XCAP root，Request-URI用本GMS文档访问公共服务身份；目标属于其他服务商时，两者分别从组ID路由库与目标组ID导出，不能一律发给本方订阅代理。"
+    },
+    {
+      "id": "identity",
+      "clause": "6.3.13.2.3 items d–g",
+      "conditions": [
+        "构造该组成组GMS的初始SUBSCRIBE"
+      ],
+      "conclusion": "P-Asserted-Identity为自己的文档访问公共服务身份；mcptt-info的mcptt-calling-group-id标识组成组，而非目标临时组。P-Asserted-Service及Contact携带规定的MCPTT ICSI信息。"
+    }
+  ],
+  "limitations": [
+    "仅覆盖组成组GMS充当订阅者的初始请求；不覆盖GMS代表GMC代理订阅，两种角色不可混用。",
+    "GKTP文档内容和密钥处理不由本页定义；只描述资源寻址。"
+  ],
+  "related": [
+    "server-subscription.md",
+    "forwarding.md",
+    "change-subscription.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}
