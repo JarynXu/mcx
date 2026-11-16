@@ -19,6 +19,8 @@
 
 - 互通组呼请求字段：[主叫身份与隐式话权](topics/interworking/group-call-request.md)，仅覆盖 Stage 2 信息要素。
 
+- 既有互通组呼：[晚加入与话权状态](topics/interworking/late-entry.md)、[整体释放与请求粒度](topics/interworking/group-call-release.md)、[加密语音转码](topics/interworking/encrypted-transcoding.md)。
+
 ## 身份、紧急行为与媒体业务
 
 以下为 Stage 1 的要求解释，不是可直接运行的协议实现。

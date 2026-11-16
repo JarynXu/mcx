@@ -1,0 +1,69 @@
+{
+  "topic_id": "r19-iwf-late-entry",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "正在进行互通组呼；双方已知组配置，IWF 已配置组及用户身份映射。",
+    "参与侧成功完成组归属。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "trigger",
+      "clause": "10.3.3.7.1",
+      "conditions": [
+        "参与侧成功完成组归属"
+      ],
+      "conclusion": "触发正在进行的互通组呼晚加入；适用于包括紧急、迫近危险和广播在内的组呼类型。"
+    },
+    {
+      "id": "mc-host",
+      "clause": "10.3.3.7.2",
+      "conditions": [
+        "组定义在 MCPTT 系统",
+        "LMR 用户加入"
+      ],
+      "conclusion": "首名 LMR 用户适用两种 IWF 归属方式；后续用户仅在 IWF 逐个透传成员归属时触发此流程。MCPTT server 向 IWF 发组呼请求，IWF 响应后加入，并接收已占用或空闲话权状态。"
+    },
+    {
+      "id": "lmr-host",
+      "clause": "10.3.3.7.3",
+      "conditions": [
+        "组定义在 LMR 系统",
+        "MCPTT 用户加入"
+      ],
+      "conclusion": "流程适用于首名及后续 MCPTT 用户。IWF 向 MCPTT server 发组呼请求，后者为新用户建立呼叫并响应；IWF 提供话权状态，经 server 转交新用户。"
+    },
+    {
+      "id": "floor-status",
+      "clause": "10.3.3.7.2 step 6; 10.3.3.7.3 steps 6–7",
+      "conditions": [
+        "晚加入后同步当前话权状态"
+      ],
+      "conclusion": "floor taken/idle 表示他人持有或当前空闲，不是新加入用户的话权授予。"
+    },
+    {
+      "id": "lmr-media-condition",
+      "clause": "10.3.3.7.3 step 4",
+      "conditions": [
+        "组定义在 LMR 系统",
+        "晚加入建立呼叫"
+      ],
+      "conclusion": "指定 E2EE 时两侧须使用相同编解码；未指定时可以不同，不同编解码需要 IWF 转码。加密转码专门流程不能作为忽略本分支条件的通用许可。"
+    }
+  ],
+  "limitations": [
+    "本页只核验 TS23.283 的互通段；TS23.379 基础呼叫过程、LMR 内部信令及完整失败状态机未核验。"
+  ],
+  "related": [
+    "scope.md",
+    "group-configuration.md",
+    "group-call-request.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

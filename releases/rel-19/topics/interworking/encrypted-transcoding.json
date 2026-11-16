@@ -1,0 +1,49 @@
+{
+  "topic_id": "r19-iwf-encrypted-transcoding",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "MCPTT 会话已建立且媒体正在传输；IWF/server 已协商编解码及安全参数；IWF 配置支持转码，并按 TS33.180 取得 MCPTT 密钥材料。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "mc-to-lmr",
+      "clause": "10.3.3.6 steps 1–4",
+      "conditions": [
+        "MCPTT 客户端持有话权并发媒体"
+      ],
+      "conclusion": "IWF 解密 MCPTT 语音、转为 LMR 编解码，必要时按 LMR 安全过程重新加密后发往 LMR。"
+    },
+    {
+      "id": "lmr-to-mc",
+      "clause": "10.3.3.6 steps 5–10",
+      "conditions": [
+        "话权空闲后 IWF 请求并获授话权"
+      ],
+      "conclusion": "LMR 语音若已加密，先按 LMR 过程解密；转为 MCPTT 编解码，再按 TS33.180 加密，经 MCPTT server 转发。"
+    },
+    {
+      "id": "placement",
+      "clause": "10.3.3.6 NOTE",
+      "conditions": [
+        "理解部署位置"
+      ],
+      "conclusion": "该流程假设转码位于 IWF 内部，但转码实际位置不由本规范规定；不能把示例假设当部署强制要求。"
+    }
+  ],
+  "limitations": [
+    "本页没有核验 TS33.180 密钥过程或 LMR 安全过程；不能据此推断端到端密文透传或任意加密组都允许转码。"
+  ],
+  "related": [
+    "scope.md",
+    "group-configuration.md",
+    "group-call-request.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

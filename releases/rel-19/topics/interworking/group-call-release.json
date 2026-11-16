@@ -1,0 +1,51 @@
+{
+  "topic_id": "r19-iwf-group-call-release",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "组配置双方已知、IWF 身份映射已配置，组呼正在进行且包含 IWF 与 MCPTT 客户端。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "scope",
+      "clause": "10.3.3.8.1",
+      "conditions": [
+        "组主控服务释放呼叫"
+      ],
+      "conclusion": "该流程释放所有参与者的组呼，不是单用户退出。MCPTT 侧释放条件引用 TS23.379；LMR 侧释放条件不在本规范范围。"
+    },
+    {
+      "id": "mc-release",
+      "clause": "10.3.3.8.2",
+      "conditions": [
+        "组定义在 MCPTT 系统",
+        "MCPTT server 发起释放"
+      ],
+      "conclusion": "MCPTT server 向 IWF 发送释放请求：IWF 代表 LMR 用户统一归属时只发一个；收到逐用户归属时，按每名已归属 LMR 用户各发一个。向 IWF 和 MCPTT 用户发送的先后不限。"
+    },
+    {
+      "id": "lmr-release",
+      "clause": "10.3.3.8.3",
+      "conditions": [
+        "组定义在 LMR 系统",
+        "LMR 发起释放"
+      ],
+      "conclusion": "IWF 按呼叫中每个 MCPTT 用户发释放请求，server 转发；客户端响应后 server 向 IWF 确认，最终释放相关话权和媒体资源。"
+    }
+  ],
+  "limitations": [
+    "本页只核验 TS23.283 的互通段；TS23.379 基础呼叫过程、LMR 内部信令及完整失败状态机未核验。"
+  ],
+  "related": [
+    "scope.md",
+    "group-configuration.md",
+    "group-call-request.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}
