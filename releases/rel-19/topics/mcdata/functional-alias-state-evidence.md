@@ -56,6 +56,6 @@
 
 ## 别名状态之后能否发送并确认收到
 
-别名状态不替代SDS业务准入或送达证据。[私聊身份与准入](sds-server-identities-and-private-admission.md)只核直接MCData ID，不补功能别名解析和目标选择；[送达与已读证据](sds-disposition-timing.md)解释SIP响应与带外回执的区别。不能把别名直接代入已核的直接ID链。
+别名状态不替代SDS业务准入或送达证据。[私聊身份与准入](sds-server-identities-and-private-admission.md)只核直接MCData ID，不补功能别名解析和目标选择；[送达与已读证据](sds-disposition-timing.md)解释SIP响应与带外回执的区别。不能把别名直接代入已核的直接ID链。[功能别名目标SDS](sds-functional-alias-target-routing.md)另列CF选人和客户端300后新请求；该链仍保留中间响应传递与过滤语法依赖。
 
 - [后续服务器条件与证据](functional-alias-lifecycle-results.md)

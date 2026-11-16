@@ -271,3 +271,13 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 - [功能别名服务器准入：用户身份、owner 许可与两段 200](topics/mcdata/functional-alias-server-admission.md)
 - [功能别名状态回流：owner 订阅、匹配状态与请求关联](topics/mcdata/functional-alias-owner-observation.md)
 - [功能别名失效与对外结果：发布失败、到期和通知边界](topics/mcdata/functional-alias-lifecycle-results.md)
+
+### MCVideo 会议状态
+
+- [MCVideo会议状态订阅：会话寻址、授权、转发与终止](topics/mcvideo/conference-subscription.md)
+- [MCVideo会议状态通知：何时发送、字段含义与成功证据](topics/mcvideo/conference-state-notification.md)
+
+### MCData 功能别名目标SDS
+
+- [向功能别名发送 SDS：解析选人、300 与直接 ID 重发](topics/mcdata/sds-functional-alias-target-routing.md)
+- [SDS 别名解析：owner 查询、当前状态与协议缺口](topics/mcdata/sds-functional-alias-resolution.md)

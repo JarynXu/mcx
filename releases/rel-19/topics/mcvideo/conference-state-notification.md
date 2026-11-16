@@ -1,0 +1,77 @@
+# MCVideo会议状态通知：何时发送、字段含义与成功证据
+
+TS24.281 V19.3.0 普通在网、非broadcast的预安排MCVideo组呼，客户端—participating MCVideo function(PF)—controlling MCVideo function(CF)路径。排除NCF、临时/重组/预配置重组、gateway、多系统聚合、chat特殊建立、优先通信状态处置；不把MCPTT同名章节当MCVideo证据。
+
+本页关注conference event package，不是REFER事件订阅、组文档xcap-diff订阅、affiliation/presence订阅或媒体发送/按源接收控制。功能别名如已在通知中存在，只讨论其可选显示，不扩展激活/绑定流程。
+
+各claim独立继承本主题common_conditions及自身conditions，不继承前条成功；订阅入口要求ongoing且客户端参与，通知在建立/加入/离开时的具体发送时刻分别按被引正文判断。
+
+仅正常官方web正文，未展开RFC6665/4575/24.229全部状态机、版本合并与定时器实现；原文异常字段和身份名称保留，不根据通用SIP知识静默修复。
+
+## 通知的三个触发
+
+适用条件：CF处于本普通预安排组的conference通知路径；发生以下任一入口：按§9.2.3.4.1接收订阅、从组会话participant收到BYE、或有新participant被加入。
+
+任一所列事件触发§9.2.3.4.2。CF按§6.3.3.4生成通知包并发送NOTIFY给已订阅conference事件的客户端/participants，而不是所有组名单成员。组文档较大时原文允许content-indirection。
+
+- 这里的订阅触发仍须通过§9.2.3.4.1权限检查，不把被403拒绝的请求也当必发状态通知。
+- BYE与新participant的业务时刻取决于各调用流程；本页不补创建/删除participant的完整时序，也不把NOTIFY发送视为每个收件人已接收。
+
+依据：§9.2.3.4.2;6.3.3.4，印刷页 127、278、279。
+
+## 外层身份和默认Expires
+
+适用条件：CF按§6.3.3.4生成发往本普通组某MCVideo用户的conference NOTIFY。
+
+NOTIFY中PAI是CF PSI，Event=conference，P-Preferred-Service是MCVideo ICSI。原文明确要求Expires header的默认值为3600秒。mcvideo-info体中mcvideo-calling-group-id为MCVideo group ID，而mcvideo-request-uri为被通知目标用户的MCVideo ID。这些字段不都使用同一session URI或group ID。
+
+- 3600是此NOTIFY生成helper对Expires header的原文默认值；不改写成Subscription-State参数，也不据它断定客户端请求的4294967295必被接受/缩短为3600。
+- 本页未核RFC对这项写法的适用或冲突；若实现需决定字段/寿命，以独立规范复核处理，不能由本文静默修正。
+
+依据：§6.3.3.4 header and mcvideo-info paragraphs，印刷页 127。
+
+## 参与者与会话状态字段
+
+适用条件：CF按§6.3.3.4生成application/conference-info+xml MIME体；本页不含NCF。
+
+conference-info的entity是MCVideo group ID。每个participant有user元素，user/entity为其MCVideo ID：主动发起/加入/重入者取发起INVITE的用户ID，被邀请者取被邀请用户ID。每个user含一个endpoint，endpoint带entity和按RFC4575表示会话状态的status；可带与该组绑定的functional-alias。roles是MAY且原文注明只供人阅读。
+
+- endpoint/entity在本段仅要求存在，未指定其取值算法，不将client ID、user ID、group ID或session URI任意填进去。
+- 不把roles当授权字段；不把显示functional-alias等同于完成别名绑定。
+- 完整/增量通知、version比较、丢包重同步及status全部取值依RFC4575，本页未核。不能由helper的participant字段清单推断每条NOTIFY必是全量快照。
+
+依据：§6.3.3.4 conference-info paragraphs，印刷页 127。
+
+## 处理状态与可选显示
+
+适用条件：客户端收到与先前SUBSCRIBE对应的NOTIFY。
+
+客户端SHALL按RFC6665/4575处理请求；可依据NOTIFY body处理当前状态，也可向用户显示参与者MCVideo ID及可用的组绑定functional alias。显示属于MAY，不是用户界面必须列出所有人或所有别名；订阅事务成功也不能替代实际收到并处理状态内容。
+
+- 本页不发明缺少NOTIFY时的本地成员清单、确认对话框或自动重订阅。NOTIFY的200处理规则与显示/MAY是不同层次，不能据200断言人已看见状态。
+- 媒体发送授权与按源接收许可另见participant-transmission-control和participant-reception-control；conference状态并不是那些控制消息。
+
+依据：§9.2.3.2 NOTIFY paragraph，印刷页 276。
+
+## 早期通知不证明组呼成功
+
+适用条件：CF在预安排组邀请流程§9.2.1.4.1.1收到某受邀客户端INVITE的200，并按该流程向已订阅者发送conference通知。
+
+原文明确此通知可以早于向发起客户端发送组呼INVITE的200，且这些通知不表示组会话会成功建立。因此参与状态通知、订阅/NOTIFY事务响应、组呼最终建立结果必须分别记录；收到某人的状态不能替代required/minimum/TNG1或buffering分支的完整成立条件。
+
+- 这里只说明原文确认的早期通知边界，不把一个状态名称推断成人类已接受、正在发送、正在接收或媒体已到达。组呼成功前提另见prearranged-call-setup-result。
+
+依据：§9.2.1.4.1.1 response paragraphs and NOTE7;9.2.3.2;9.2.3.3，印刷页 224、276、277。
+
+## 证据边界
+
+
+
+## 按需继续
+
+- [conference-subscription](conference-subscription.md)
+- [prearranged-call-setup-result](prearranged-call-setup-result.md)
+- [participant-transmission-control](participant-transmission-control.md)
+- [participant-reception-control](participant-reception-control.md)
+
+[3GPP TS24.281 V19.3.0 / ETSI TS124281 V19.3.0 (2026-01)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf)；仅本版本。

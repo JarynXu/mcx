@@ -53,3 +53,5 @@ Request-URI指向服务本用户的originating PF公共服务身份，并携MCDa
 - §22.2.1.3 initial steps6/in-dialog step3;22.2.2.2.4 opening4：客户端段写Events header，服务端入口写Event header。 保留字面差异并引用presence事件意图，不无声修订客户端拼写，不据本批生成完整报文。
 
 - [后续服务器条件与证据](functional-alias-owner-observation.md)
+
+- [功能别名目标的解析与路由边界](sds-functional-alias-resolution.md)

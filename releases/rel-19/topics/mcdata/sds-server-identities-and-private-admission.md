@@ -83,3 +83,5 @@ T-PF使用mcdata-request-uri中的目标MCData ID查找其public user identity�
 这些指定程序依据TS24.282 V19.7.0；不从其他安全架构页的可选机制表述推导MCData配置缺项即关闭。
 
 - [授权绑定建立与多客户端](service-authorization-binding.md)
+
+- [功能别名目标的解析与路由边界](sds-functional-alias-target-routing.md)

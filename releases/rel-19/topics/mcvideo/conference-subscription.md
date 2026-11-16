@@ -1,0 +1,90 @@
+# MCVideo会议状态订阅：会话寻址、授权、转发与终止
+
+TS24.281 V19.3.0 普通在网、非broadcast的预安排MCVideo组呼，客户端—participating MCVideo function(PF)—controlling MCVideo function(CF)路径。排除NCF、临时/重组/预配置重组、gateway、多系统聚合、chat特殊建立、优先通信状态处置；不把MCPTT同名章节当MCVideo证据。
+
+本页关注conference event package，不是REFER事件订阅、组文档xcap-diff订阅、affiliation/presence订阅或媒体发送/按源接收控制。功能别名如已在通知中存在，只讨论其可选显示，不扩展激活/绑定流程。
+
+各claim独立继承本主题common_conditions及自身conditions，不继承前条成功；订阅入口要求ongoing且客户端参与，通知在建立/加入/离开时的具体发送时刻分别按被引正文判断。
+
+仅正常官方web正文，未展开RFC6665/4575/24.229全部状态机、版本合并与定时器实现；原文异常字段和身份名称保留，不根据通用SIP知识静默修复。
+
+## 谁可以请求会议状态
+
+适用条件：客户端正在参与ongoing组会话，该组呼不是以broadcast发起；用户/客户端决定获取会议参与状态。
+
+客户端MAY订阅conference state event package以获取组会话参与者状态，不是每个组呼客户端必须订阅。生成SUBSCRIBE时使用新的SIP dialog；目标是该组会话的MCVideo session identity，而不是直接以group ID代替SIP Request-URI。
+
+- 参与该会话与仅是组名单成员/已affiliated不同；本入口不授予未参与者订阅资格。
+- broadcast在§9.2.3.4.1另有480/Warning105拒绝规则，不在本页普通路径；不能因一般说明说any time而抹掉具体入口限制。
+
+依据：§9.2.3.1;9.2.3.2，印刷页 275、276。
+
+## 会话URI、组ID与订阅期限意图
+
+适用条件：客户端按§9.2.3.2新建conference订阅或一次性当前状态获取请求。
+
+SUBSCRIBE的Request-URI为session identity；P-Preferred-Service为MCVideo ICSI，Accept-Contact含同ICSI且带require/explicit，Accept含application/conference-info+xml。mcvideo-info MIME体内mcvideo-request-uri却是该会话的MCVideo group ID。若要当前及后续通知，Expires设4294967295；若只取当前状态，Expires设0。两种都使用新dialog发送。
+
+- 4294967295是客户端请求值，不是CF保证接受的订阅寿命；本段将响应处理交给RFC6665/4575与24.229，没有在这里给实际接受期限。
+- 新dialog的Expires=0当前状态fetch不能仅凭数值被描述成退出组呼或取消另一个既有订阅。结束既有订阅另按9.2.3.4.4/RFC流程。
+- 本段没有逐项展开Event等RFC通用字段，不把这个最小字段表称为完整编码模板。
+
+依据：§9.2.3.2 steps1–9，印刷页 276。
+
+## PF会话解析与映射
+
+适用条件：PF收到conference订阅SUBSCRIBE，P-Asserted-Service含MCVideo ICSI，Accept含conference-info MIME，mcvideo-info中的mcvideo-request-uri是MCVideo group ID。
+
+这三个入口条件同时满足后，PF尝试把收到的Request-URI解析为已有session identity；不能解析时返回404/Warning137并跳过余下步骤。可解析时生成转发SUBSCRIBE，Request-URI使用映射后的session identity，XML加入served用户的mcvideo-calling-user-id，并插入指向PF自己地址的Record-Route后发送。
+
+- 客户端发的是P-Preferred-Service，PF入口检查P-Asserted-Service；两者之间的IMS处理不在本页补写。缺少入口字段时如何拒绝，本段未明确，不擅自给403/400。
+- 原文失败句写reject the SIP SUBSCRIBE response，虽上下文处理收到的request，仍保留其文本异常。映射失败404/137不是组文档获取失败113。
+
+依据：§9.2.3.3 request paragraph，印刷页 277。
+
+## CF订阅权限
+
+适用条件：CF收到非broadcast组会话的SUBSCRIBE；mcvideo-info中group ID与该组会话相符，calling-user-id为组会话participant的MCVideo ID；P-Asserted-Service含MCVideo ICSI，Accept含conference-info MIME。
+
+CF检查组文档on-network-allow-conference-state是否允许该calling-user-id订阅。若不允许，返回403/Warning138并停止；允许时先按RFC6665/4575处理请求，再缓存订阅信息，然后按§9.2.3.4.2发送conference状态通知。被许可参加组呼不等于自动被许可订阅成员状态。
+
+- 本页排除calling-user-id为NCF constituent group ID及其首订阅向NCF扩展的分支。
+- 身份不是participant、group ID不符或服务/MIME字段不满足入口条件时，本段没有给出统一错误动作；不能把这些情况都归入403/138。
+- 本段没有定义SUBSCRIBE响应与NOTIFY到达客户端的唯一先后顺序，不凭列项顺序补出网络时序保证。
+
+依据：§9.2.3.4.1，印刷页 278。
+
+## PF响应与NOTIFY转发
+
+适用条件：PF收到前述SUBSCRIBE的响应，或该订阅dialog内发往served客户端的NOTIFY及其响应。
+
+对SUBSCRIBE响应，PF复制内容；若是200，把收到Contact中的session identity映射为客户端侧identity放入发出响应的Contact，再转发。对dialog内NOTIFY，PF复制内容并按原文把Request-URI置为MCVideo用户的public service identity后发送。对NOTIFY响应再复制内容并转发；若是200，原文要求纳入由收到Contact里的session identity构造的MCVideo session identity。
+
+- NOTIFY下发目的地原文写public service identity of the MCVideo user，不是public user identity；此处不静默纠正，也不据它扩展任意用户PSI发现机制。
+- NOTIFY的200分支未像SUBSCRIBE的200那样明确写出构造identity在发出消息哪个字段，不擅自指定为Contact。
+- SUBSCRIBE的200、NOTIFY的200与呼叫INVITE的200是不同事务；不可互相替代来判断用户接听或媒体授权。
+
+依据：§9.2.3.3 response/NOTIFY paragraphs，印刷页 277。
+
+## 终止订阅不是释放呼叫
+
+适用条件：客户端需要终止conference订阅，且CF收到按RFC6665终止该订阅的SUBSCRIBE。
+
+客户端按RFC6665终止并指示订阅已终止；CF对该终止SUBSCRIBE发送200。该段结束的是conference订阅，不是要求客户端发送组呼BYE、撤销affiliation或释放整个MCVideo session。
+
+- 本页未展开RFC终止NOTIFY、刷新、expiry、重试及失败恢复细节；不可把本条200扩成全组释放成功。
+- 临时组最后订阅消失/计时器到期后解除向所有NCF订阅的分支被排除；不能把它推成普通组无订阅者即结束通话。
+
+依据：§9.2.3.2 closing paragraph;9.2.3.4.4，印刷页 276、280。
+
+## 证据边界
+
+
+
+## 按需继续
+
+- [conference-state-notification](conference-state-notification.md)
+- [prearranged-call-setup-result](prearranged-call-setup-result.md)
+- [rejoin-session](rejoin-session.md)
+
+[3GPP TS24.281 V19.3.0 / ETSI TS124281 V19.3.0 (2026-01)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf)；仅本版本。
