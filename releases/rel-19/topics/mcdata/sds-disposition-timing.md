@@ -90,3 +90,5 @@ READ相关动作保留原文display indication条件，不把它解释为自然�
 ## 媒体面SDS的对应路径
 
 - [SDS 媒体面结果：建链 200、媒体接口与交付证据](sds-media-setup-and-transfer-evidence.md)
+
+离网TFS3不是本页在网TDU1，另见[离网SDS接收：重复消息与已读等待](offnetwork-sds-reception-and-read.md)。

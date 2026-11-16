@@ -1,0 +1,86 @@
+{
+  "topic_id": "r19-mcdata-offnetwork-sds-reception-and-read",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "固定 TS24.282 V19.7.0，Stage 3，§9.3 离网 standalone SDS 信令控制面；不套用在网 SIP/MSRP、MBMS/MBS、FD 或 SDS session 过程。",
+    "各结论仅在所列客户端角色与事件成立时使用；发送前授权、安全上下文、承载及地址配置应满足各自规范。本页不提供完整编码、安全或发现实现。",
+    "组发送请求在 AllowedSDS=false 时须拒绝并停止余下发送程序；其余初始发送参数和安全处理仍按§9.3.2.2，不以重试结论跳过。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.282-v19.7.0",
+  "claims": [
+    {
+      "id": "offnetwork-duplicate-reception-strength",
+      "clause": "9.3.2.4 and NOTE",
+      "printed_pages": [
+        263,
+        264
+      ],
+      "conditions": [
+        "接收客户端收到带SDS disposition request type IE的SDS OFF-NETWORK MESSAGE；重复接收指重传的消息。"
+      ],
+      "conclusion": "客户端须保存发送者作为通知目标及消息关联标识、当前UTC通知时间；按请求类型进入通知程序。重复消息不应再次处理，原文是NOTE中的should，不升级为shall。",
+      "normative_strength": "步骤shall；NOTE should",
+      "short_source_evidence": "should not",
+      "limitations": [
+        "未给出去重键、缓存保留时间、重启后的恢复或是否补发已发送通知的算法；不得编造精确一次交付保证。",
+        "没有请求IE时不能从本入口推出仍须发成功通知。"
+      ]
+    },
+    {
+      "id": "offnetwork-read-request-is-event-dependent",
+      "clause": "9.3.2.4;12.3.2;12.3.3",
+      "printed_pages": [
+        263,
+        264,
+        321,
+        322
+      ],
+      "conditions": [
+        "接收客户端收到仅DELIVERY或仅READ请求，并分别进入被引用通知程序。"
+      ],
+      "conclusion": "DELIVERY进入送达通知；READ虽由接收分支引用，但须遵守§12.3.3显示指示或目标应用处理的触发条件，不能在刚收到消息时无条件发READ。",
+      "normative_strength": "shall，READ须满足被调用程序入口",
+      "short_source_evidence": "display indication",
+      "limitations": [
+        "READ不证明自然人理解、业务办理成功或应用副作用全部完成；不把显示等同于人工确认。"
+      ]
+    },
+    {
+      "id": "offnetwork-combined-read-window",
+      "clause": "9.3.2.4–9.3.2.6;12.3.4;F.3.1",
+      "printed_pages": [
+        263,
+        264,
+        322,
+        641
+      ],
+      "conditions": [
+        "接收客户端收到DELIVERY AND READ请求并启动TFS3；观察到期前显示事件或到期事件。"
+      ],
+      "conclusion": "须启动TFS3。到期前收到显示指示则进入§12.3.4，先保存合并类型并停TFS3，再生成发送合并通知；先到期则先发DELIVERED，后来收到显示指示再发READ。TFS3默认120毫秒且可配置，不是阅读期限或重传计时器。",
+      "normative_strength": "shall；默认值可配置",
+      "short_source_evidence": "DELIVERED AND READ",
+      "limitations": [
+        "不补同时到期与显示事件的竞争优先级；未出现显示事件时不能因时间经过自动认定READ。",
+        "§12.3.4入口另包含目标应用处理；§9.3.2.5/.6按display indication叙述，保留各入口措辞，不擅定事件等价映射。"
+      ]
+    }
+  ],
+  "limitations": [
+    "只核本页问题，不等于完整离网协议或所有结束情形已覆盖。"
+  ],
+  "related": [
+    "offnetwork-sds-retransmission.md",
+    "offnetwork-sds-notification-retry.md",
+    "sds-disposition-timing.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "standard_stage": 3
+}

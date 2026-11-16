@@ -45,6 +45,9 @@ CF满足目标ID关联条件后，以IP Connectivity为子服务调用§6.3.7.1.
 
 ## 按需继续
 
+- [服务器无预告释放与Reason传播](session-server-release.md)
+- [用户主动释放的第13章逐段步骤](sds-media-result-and-release.md)
+- [IPCONN隧道与数据交付边界](ipconn-tunnel-and-delivery.md)
 - [ipconn-target-and-admission](ipconn-target-and-admission.md)
 - [ipconn-media-and-success-evidence](ipconn-media-and-success-evidence.md)
 - [service-authorization-binding](service-authorization-binding.md)
@@ -56,4 +59,4 @@ CF满足目标ID关联条件后，以IP Connectivity为子服务调用§6.3.7.1.
 
 §20.3.1 200 and failure response openings：成功响应段回指step16，失败响应段回指step15；发送INVITE实际在step17。 按所发对应INVITE的响应理解，并记录编号差异，不自行改原文。
 
-§6.3.7.1.23 step10;20.4.1 200 response：共用200 helper对所有子服务仍引用24.5826.3.1；IPCONN专用CF响应段只笼统引用24.582。 不自行把helper改成13.x或导入SDS媒体过程；媒体依赖未核。
+§6.3.7.1.23 step10;20.4.1 200 response：共用200 helper对所有子服务仍引用24.5826.3.1；IPCONN专用CF响应段只笼统引用24.582。 不自行把helper改成13.x或导入SDS媒体过程。TS 24.582 V19.0.0的IPCONN媒体过程另见ipconn-tunnel-and-delivery；该独立核查不消除这里的引用差异，也不证明它与TS 24.282 V19.7.0的版本组合已验证互通。

@@ -1,0 +1,156 @@
+{
+  "topic_id": "r19-mcdata-ipconn-tunnel-and-delivery",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "普通在网、两个MCData客户端之间的直接IPCONN；目标已确定且相应信令准入未拒绝。排除组、离网、功能别名、跨域、预建立复用、SDS/FD和紧急扩展。",
+    "媒体结论固定TS24.582 V19.0.0，信令结论固定TS24.282 V19.7.0，每条分别标明来源；同属Rel19不证明该版本组合完整互通。",
+    "每条独立继承共同条件并叠加自身角色、状态和触发条件；SIP响应、媒体建立、实际IP数据到达、应用处理结果和逐段资源释放分别判断。",
+    "未读取RFC8086、2784、791、8200及完整SIP/RFC状态机，不补隧道探测、超时、重传、安全或应用确认算法。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.582-v19.0.0",
+  "claims": [
+    {
+      "id": "ipconn-tunnel-start-is-not-application-delivery",
+      "conditions": [
+        "发起客户端收到用户请求或IP应用数据并经20.2.1处理；终接客户端成功完成20.2.2；发送/接收数据分支以IP隧道已经建立为条件。"
+      ],
+      "conclusion": "媒体§13.1.2要求发起端按20.2.1处理，并以200 SDP中的IP地址/端口建立GRE-in-UDP隧道；§13.1.3将终接信令过程成功作为开始建隧道的触发。隧道建立后，发起端向answer地址/端口、终接端向offer地址/端口发送封装UDP；收到隧道数据时，客户端须先去掉UDP/GRE封装再交IP应用。信令20.2.1的2xx后是ACK、Session timer、媒体调用，终接20.2.2则收到ACK才调用媒体；两端调用点不能当作已经交换数据或应用完成的证明。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v19.0.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124500_124599/124582/19.00.00_60/ts_124582v190000p.pdf",
+          "clause": "13.1.1–3",
+          "printed_pages": [
+            54,
+            55
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "20.2.1 2xx;20.2.2 ACK",
+          "printed_pages": [
+            445,
+            447
+          ]
+        }
+      ],
+      "clause": "13.1.1–3;20.2.1 2xx;20.2.2 ACK",
+      "printed_pages": [
+        54,
+        55,
+        445,
+        447
+      ],
+      "short_evidence": "start the establishment",
+      "normative_strength": "SHALL：使用协商地址建隧道及封装/解封装；应用能够交换数据以隧道已建立为前提。",
+      "limitations": [
+        "IP应用可在UE内或外部非3GPP主机；该接口为实现相关。未推导外部主机自动路由、探测成功或应用应答。",
+        "这补充已发布200/ACK入口的媒体含义，不另造信令准入结论。"
+      ]
+    },
+    {
+      "id": "ipconn-relay-is-conditional-on-media-path",
+      "conditions": [
+        "分别对O-PF、T-PF或CF判断：该功能实际处于客户端间的数据交换路径中。"
+      ],
+      "conclusion": "仅在此条件下，该功能须提供面向两个相邻方向的UDP端点，按SDP offer/answer交换的IP和端口中继UDP流量。O-PF一端面向主叫，T-PF一端面向被叫，CF两端面向两个方向的下一跳。不能从信令路经某服务器推导媒体必经它，也不能把relay解释为终端应用已经处理数据。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v19.0.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124500_124599/124582/19.00.00_60/ts_124582v190000p.pdf",
+          "clause": "13.2.1–2;13.3",
+          "printed_pages": [
+            55
+          ]
+        }
+      ],
+      "clause": "13.2.1–2;13.3",
+      "printed_pages": [
+        55
+      ],
+      "short_evidence": "If the controlling MCData function",
+      "normative_strength": "条件SHALL，不是所有部署无条件中继。",
+      "limitations": [
+        "此处未写服务器终止并重新创建应用层事务，也未给旁路选择算法。两侧端点/地址按实际SDP，不把目标MCData ID当IP地址。"
+      ]
+    },
+    {
+      "id": "ipconn-encapsulation-constraints-not-msrp",
+      "conditions": [
+        "IPCONN客户端执行13.4的GRE-in-UDP封装；以该条对RFC8086的澄清为限。"
+      ],
+      "conclusion": "IPv4和IPv6封装都须使用UDP checksum，不能使用GRE keys；UDP端口可自由选择并通过SDP交换。该媒体不是SDS的MSRP SEND/200链，不能用SDS最后一个MSRP200来判断IPCONN应用成功或自动结束隧道。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v19.0.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124500_124599/124582/19.00.00_60/ts_124582v190000p.pdf",
+          "clause": "4.1.4;13.4",
+          "printed_pages": [
+            11,
+            55,
+            56
+          ]
+        }
+      ],
+      "clause": "4.1.4;13.4",
+      "printed_pages": [
+        11,
+        55,
+        56
+      ],
+      "short_evidence": "GRE keys shall not be used.",
+      "normative_strength": "SHALL使用checksum；SHALL NOT使用GRE keys；端口自由选择为原文can。",
+      "limitations": [
+        "未读取RFC8086/2784，故不提供完整包格式、分片、MTU、拥塞处理或安全配置。checksum不是应用确认或保密保证。"
+      ]
+    },
+    {
+      "id": "ipconn-sdp-port-syntax-remains-unresolved",
+      "conditions": [
+        "客户端/服务器协商GRE-in-UDP媒体的SDP offer/answer，关注13.5–13.6的媒体描述和源端口参数。"
+      ],
+      "conclusion": "表13.5.2.1-1规定媒体为application、端口为UDP端口、协议为udp、格式为MCDATA。13.6.2.2将mcdata-ipconn-sport解释为隧道UDP源端口；但13.6.2.3的attr-param使用mcdata-ipconn-s-port，而下一产生式命名又写mcdata-ipconn-sport，字符串写mcdata-ipconn-s-port。示例还只给mcdata-ipconn。因此只能分别报告语义和原文字面，不能宣布已有无歧义可复制的fmtp编码。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v19.0.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124500_124599/124582/19.00.00_60/ts_124582v190000p.pdf",
+          "clause": "13.5.2.1;13.6.2.1–3",
+          "printed_pages": [
+            56,
+            57
+          ]
+        }
+      ],
+      "clause": "13.5.2.1;13.6.2.1–3",
+      "printed_pages": [
+        56,
+        57
+      ],
+      "short_evidence": "UDP source port",
+      "normative_strength": "媒体m=值为SHALL；fmtp处保留语义/语法差异，不新增规范要求。",
+      "limitations": [
+        "20032只是示例，不是固定或默认端口；不静默统一sport/s-port或补正ABNF引号。",
+        "应与现有ipconn-media-and-success-evidence的未核fmtp边界关联；单纯补此来源不解决24.282 CF answer对offer/answer的另一措辞冲突。"
+      ]
+    }
+  ],
+  "limitations": [
+    "GRE-in-UDP完整RFC处理不在已核范围内，不提供可运行封装器。"
+  ],
+  "related": [
+    "ipconn-media-and-success-evidence.md",
+    "ipconn-server-path.md",
+    "session-server-release.md",
+    "sds-media-result-and-release.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "standard_stage": 3
+}

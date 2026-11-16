@@ -1,27 +1,29 @@
 # MCData 会话的服务器释放：无预告 BYE、原因与参与者范围
 
-本页使用 TS24.282 V19.7.0 §13.2.3 的服务器发起入口，限已有在网 on-demand SDS session、普通直接私聊或预安排组。不是 §9.2.3 standalone 每条传输完成即收尾的过程，也不是用户主动发 BYE。
+本页使用 TS24.282 V19.7.0 §13.2.3 的服务器发起入口。前两条结论适用于已有在网 on-demand SDS session（普通直接私聊或预安排组），以及普通在网、直接双客户端IPCONN；归属与历史数据结论仍限普通组SDS session。不是 §9.2.3 standalone 每条传输完成即收尾的过程，也不是用户主动发 BYE。
 
 服务器依据本地策略及 §13.2.2.2.4.1/.2 所列条件决定释放，并按配置采用无预告分支。不将组策略与私聊策略混用，不覆盖 ad hoc 特殊授权分支。
 
-本页核信令和资源释放的调用点；未读取 TS24.582，不据 BYE、200 或 Reason 宣称媒体全部成功、所有参与端同时完成或既有数据已撤销。
+本页核信令和资源释放的调用点；TS24.582 V19.0.0的IPCONN媒体边界另见ipconn-tunnel-and-delivery。不据 BYE、200 或 Reason 宣称媒体全部成功、所有参与端同时完成或既有数据已撤销；分别核读固定版本不证明版本组合已验证互通。
 
 ## 服务器无预告释放的入口
 
-适用条件：服务器正在判断是否释放某个 ongoing SDS session。
+适用条件：服务器正在判断是否释放某个 ongoing SDS session（普通直接私聊或预安排组），或普通在网、直接双客户端IPCONN；IPCONN只使用one-to-one策略，不采用组专属条件。
 
 §13.2.3.1 允许服务器按配置不先通知客户端就释放，入口不以主叫先发 BYE 为条件。它明确复用 §13.2.2.2.4.1/.2 的释放策略：媒体面报告达到传输时间或单次数据上限、参与者只剩一人或无人；普通组还包括本地策略规定的发起者离开，以及未达到最小 affiliated 成员数。对应 helper 用 SHALL 要求在其列出的条件下释放；不能把一项用户离开无条件写成全组立即结束，也不能把“未收到预告”单独当作协议违规。
 
 - 最小 affiliated 人数、时间/数据上限及发起者离开策略的具体值不在本页给定；不从另一服务或媒体假设补默认值。
 - 参与者数量与 affiliated 成员数是原文分列的条件，不把静态组成员、归属成员与当前会话参与者视为同一集合。
-- 是否先预告与最终释放条件分开判断；已采用 §13.2.4 预告流程时，还须按该流程处理其等待及延期分支。
+- 是否先预告与最终释放条件分开判断；适用且已采用 §13.2.4 预告流程时，还须按该流程处理等待及延期分支。IPCONN纳入§13.2.3.2无预告入口，不因此无条件获得§13.2.4预告或延期能力。
 - §13.2.2.2.4.1 的标题与主句为 group MCData communication，并未将整个 helper 的适用范围明定为仅预安排组；本页的“普通组”只指 common_conditions 已限定的预安排组案例，不据此推广到 chat/ad hoc，也不反推其他组类型一律不适用。
 
 依据：§13.2.3.1;13.2.3.2.1;13.2.2.2.4.1/.2，印刷页 328、330、331。
 
+IPCONN适用入口依据：§13.2.3.2.1，印刷页331。
+
 ## BYE原因与逐段释放
 
-适用条件：CF 已按策略/配置选择 §13.2.3.2 的无预告媒体通信释放。
+适用条件：已有本页范围内的SDS session或普通在网、直接双客户端IPCONN；CF已按策略/配置选择§13.2.3.2的无预告媒体通信释放。
 
 CF SHOULD 按 §13.2.2.2.4.4 发送释放，并 SHALL 加入适当的 Reason 文本，例如数据量上限或时间到期。PF 收到 CF 的 BYE 后 SHOULD 按 §13.2.2.2.3.2 处理；若入站有 Reason，SHALL 复制到出站 BYE。客户端收到服务器 BYE 后 SHOULD 按 §13.2.2.2.2.2 处理，且在 BYE 含 Reason 时 SHALL 将释放原因告知用户。被调用的 helper 分别规定 BYE/200、媒体接口和该通信段资源释放，不能把这些 SHOULD 调用改写成无例外的 SHALL。
 
@@ -46,10 +48,12 @@ CF SHOULD 按 §13.2.2.2.4.4 发送释放，并 SHALL 加入适当的 Reason 文
 ## 证据边界
 
 - 只接 §13.2.3 服务器实际入口，不把初始 INVITE、one-to-one 紧急 re-INVITE 或 pre-established 离开包装成普通组释放链。
-- §13.2.3.2也列FD媒体与IPCONN，但本页选择SDS使用场景；尤其不能把下一页§13.2.4的预告能力无条件推广到IPCONN。
+- §13.2.3.2.1明确列出IPCONN，本页只将普通直接双客户端IPCONN纳入前两条无预告释放结论；FD仍未纳入，归属与历史数据结论仍限SDS。不能把§13.2.4预告和延期能力无条件推广到IPCONN。
 
 ## 按需继续
 
+- [ipconn-tunnel-and-delivery](ipconn-tunnel-and-delivery.md)
+- [ipconn-media-and-success-evidence](ipconn-media-and-success-evidence.md)
 - [sds-media-result-and-release](sds-media-result-and-release.md)
 - [session-release-extension](session-release-extension.md)
 - [explicit-affiliation-observation](explicit-affiliation-observation.md)

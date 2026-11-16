@@ -1,0 +1,67 @@
+{
+  "topic_id": "r19-mcdata-offnetwork-sds-notification-retry",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "固定 TS24.282 V19.7.0，Stage 3，§9.3 离网 standalone SDS 信令控制面；不套用在网 SIP/MSRP、MBMS/MBS、FD 或 SDS session 过程。",
+    "各结论仅在所列客户端角色与事件成立时使用；发送前授权、安全上下文、承载及地址配置应满足各自规范。本页不提供完整编码、安全或发现实现。",
+    "组发送请求在 AllowedSDS=false 时须拒绝并停止余下发送程序；其余初始发送参数和安全处理仍按§9.3.2.2，不以重试结论跳过。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.282-v19.7.0",
+  "claims": [
+    {
+      "id": "offnetwork-notification-identities-and-time",
+      "clause": "9.3.2.4 steps1–7;12.3.2–12.3.4",
+      "printed_pages": [
+        263,
+        321,
+        322
+      ],
+      "conditions": [
+        "接收客户端按请求和显示/处理事件进入对应离网通知生成程序，相关原消息状态已保存。"
+      ],
+      "conclusion": "通知须采用已保存的Conversation ID和Message ID，发送者字段是本客户端用户ID。DELIVERED使用接收时保存的通知时间；READ或合并通知先更新为当前UTC时间。应用ID或扩展应用ID在这些通知程序中为may，不将其改为无条件必填。",
+      "normative_strength": "标识和时间shall；应用字段may",
+      "short_source_evidence": "may set",
+      "limitations": [
+        "仅保存原消息关联，不证明通知已到达原发送者。§12.3.2目标称stored notification target，§12.3.3/.4称stored sender，未给出后者在本链的显式赋值；不据此生成无歧义完整路由实现。"
+      ]
+    },
+    {
+      "id": "offnetwork-notification-retry-independent-counter",
+      "clause": "12.3.2 steps4–5;12.3.3 steps5–6;12.3.4 steps5–6;12.3.5;F.3.1;G.3.1",
+      "printed_pages": [
+        321,
+        322,
+        323,
+        641,
+        643
+      ],
+      "conditions": [
+        "通知发送客户端已发离网通知，随后TFS2到期。"
+      ],
+      "conclusion": "首次发通知后须将CFS2置1并启动TFS2；到期须按已存标识、通知时间和通知类型重新生成发送，CFS2加1，未达上限才再启动。TFS2默认40毫秒、CFS2默认上限5，均可配置，与消息的TFS1/CFS1分别维护。",
+      "normative_strength": "shall；默认值可配置",
+      "short_source_evidence": "shall increment",
+      "limitations": [
+        "达到上限只结束这轮通知重发计时，不是通知接收确认，也不证明全部组成员已读。",
+        "§12.3.5同样使用stored sender称谓；本页保留上述状态命名缺口。未核通知接收端去重、ACK、全组聚合或并发通知状态隔离。"
+      ]
+    }
+  ],
+  "limitations": [
+    "只核本页问题，不等于完整离网协议或所有结束情形已覆盖。"
+  ],
+  "related": [
+    "offnetwork-sds-reception-and-read.md",
+    "offnetwork-sds-retransmission.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "standard_stage": 3
+}

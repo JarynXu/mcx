@@ -1,0 +1,65 @@
+{
+  "topic_id": "r19-mcdata-offnetwork-sds-retransmission",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "固定 TS24.282 V19.7.0，Stage 3，§9.3 离网 standalone SDS 信令控制面；不套用在网 SIP/MSRP、MBMS/MBS、FD 或 SDS session 过程。",
+    "各结论仅在所列客户端角色与事件成立时使用；发送前授权、安全上下文、承载及地址配置应满足各自规范。本页不提供完整编码、安全或发现实现。",
+    "组发送请求在 AllowedSDS=false 时须拒绝并停止余下发送程序；其余初始发送参数和安全处理仍按§9.3.2.2，不以重试结论跳过。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.282-v19.7.0",
+  "claims": [
+    {
+      "id": "offnetwork-transport-not-msrp",
+      "clause": "9.3.1.1;9.3.1.2;9.3.2.2 step1",
+      "printed_pages": [
+        260,
+        261
+      ],
+      "conditions": [
+        "客户端向指定用户或组发送离网SDS；组发送已通过AllowedSDS检查。"
+      ],
+      "conclusion": "须以MONP载体经UDP发送：用户使用其本地IP，组使用组播IP；端口8809、IP TTL为255。此处TTL是IP字段，不是消息有效期。",
+      "normative_strength": "shall",
+      "short_source_evidence": "as a UDP message",
+      "limitations": [
+        "TS24.379载体及TS24.483地址配置未展开；本条不是可以运行的完整报文配方。"
+      ]
+    },
+    {
+      "id": "offnetwork-message-retry-counter",
+      "clause": "9.3.2.2 steps13–14;9.3.2.3;F.3.1;G.3.1",
+      "printed_pages": [
+        262,
+        263,
+        641,
+        643
+      ],
+      "conditions": [
+        "发送客户端完成初始SDS发送，或其TFS1到期。"
+      ],
+      "conclusion": "初发后须将CFS1置1并启动TFS1；到期须按存储的Conversation ID、Message ID及传输时间重新生成发送，计数加1，未达上限才再启动TFS1。TFS1默认40毫秒、CFS1默认上限5，均可配置；计数包括初发，不能解读为额外重发5次。",
+      "normative_strength": "shall；默认值可配置",
+      "short_source_evidence": "has not reached",
+      "limitations": [
+        "停止条件是该计数程序的边界，不证明收件人收到或已读；所核程序未给出收到回执就停止TFS1的规则，不自行补入。",
+        "不推导固定总耗时、所有部署的发送次数或终止整个业务会话。"
+      ]
+    }
+  ],
+  "limitations": [
+    "只核本页问题，不等于完整离网协议或所有结束情形已覆盖。"
+  ],
+  "related": [
+    "off-network-private.md",
+    "offnetwork-sds-reception-and-read.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "standard_stage": 3
+}

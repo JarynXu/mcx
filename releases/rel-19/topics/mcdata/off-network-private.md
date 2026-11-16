@@ -11,3 +11,5 @@
 仅为 Stage1 离网私聊边界；不规定发现、认证、寻址和建立消息序列，也不把在网规则自动迁移过来。
 
 [transmission-options.md](transmission-options.md) · [来源](https://www.etsi.org/deliver/etsi_ts/122200_122299/122282/19.00.00_60/ts_122282v190000p.pdf)，印刷页16–17。
+
+离网SDS的Stage 3传输和重发另见[离网SDS重发：次数上限不是送达确认](offnetwork-sds-retransmission.md)。

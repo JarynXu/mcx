@@ -373,3 +373,9 @@ MCVideo 已有私呼按问题读[客户端升级](topics/mcvideo/private-emergen
 ### SDS 的 MSRP 响应与业务回执
 
 TS24.582 V19.0.0 的有限媒体行为另读[服务器200与终端交付](topics/mcdata/sds-msrp-response-boundary.md)、[standalone收尾](topics/mcdata/sds-msrp-standalone-release.md)和[session带内通知](topics/mcdata/sds-session-inband-notification.md)。CF的响应先于转发，来源侧成功响应不能证明全组收齐或已读。这些主题独立保留媒体规范版本，不表示与TS24.282 V19.7.0的全部接口映射已验证。
+
+### 离网SDS与IPCONN媒体
+
+离网SDS分别查看[重发次数](topics/mcdata/offnetwork-sds-retransmission.md)、[接收与已读等待](topics/mcdata/offnetwork-sds-reception-and-read.md)和[通知独立重发](topics/mcdata/offnetwork-sds-notification-retry.md)。这些UDP离网过程不使用在网MSRP的成功判据。
+
+普通直接IPCONN另见[隧道、逐跳中继与IP交付](topics/mcdata/ipconn-tunnel-and-delivery.md)、[信令及失败边界](topics/mcdata/ipconn-media-and-success-evidence.md)和[服务器释放](topics/mcdata/session-server-release.md)。源端口语法差异和媒体失败/销毁接口缺口保持可见，不据SIP200宣称应用成功。
