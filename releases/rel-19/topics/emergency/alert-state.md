@@ -9,3 +9,5 @@ UE 保留紧急状态直到取消；该状态未在 UE 取消前，用户的组�
 UE 本地取消紧急状态的入口仅给该 UE 的授权用户；告警取消也须支持授权 MCX 用户，取消通知送往取消消息所标识组的全部已归属成员（§5.6.2.4.2 R-001–003，p21）。
 
 这是要求层边界，不替代组内 In-progress Emergency 的独立状态机、远端取消协议或认证流程。[来源](../../sources.json) · [结构化条件](alert-state.json)
+
+- [private-downgrade](private-downgrade.md)

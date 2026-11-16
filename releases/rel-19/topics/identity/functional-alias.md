@@ -9,3 +9,5 @@
 尝试激活另一用户已使用的别名，且允许接管、未配置共享、请求者获授权时，系统提供接管选项；实际接管后激活给新用户，并通知原用户已停用（R-008/009，p23）。这不是无条件自动抢占。
 
 [来源](../../sources.json) · [结构化条件](functional-alias.json)。授权配置、并发事务和 Stage 3 消息未在此展开。
+
+- [../calls/functional-alias-selection](../calls/functional-alias-selection.md)

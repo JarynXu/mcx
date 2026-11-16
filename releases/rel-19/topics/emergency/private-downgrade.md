@@ -1,0 +1,57 @@
+# 紧急私呼取消：降级、告警与失败恢复
+
+TS24.379 V19.4.0的紧急私呼取消链，适用于所列按需/预建立过程；取消紧急优先级是降为普通私呼，不是挂断。
+
+## 先检查客户端取消许可
+
+适用条件：用户请求取消紧急私呼状态。
+
+allow-cancel-private-emergency-call=true才授权；否则停止。成功进入取消流程使用re-INVITE，不用BYE替代。
+
+依据：§6.2.8.3.1.2；11.1.1.2.1.4。
+
+## 呼叫优先级与告警分别处理
+
+适用条件：客户端获准取消紧急私呼。
+
+请求emergency-ind=false并进入MEPP cancel-pending。一起取消告警还须另获授权；取消他人发起的告警携带originated-by，不能清空所有参与者告警。
+
+依据：§6.2.8.3.6、6.2.8.3.8。
+
+## 成功响应也要检查告警结果
+
+适用条件：收到取消re-INVITE的2xx。
+
+依该分支复位MEPP、MEPC。只有自身MPEA原为cancel-pending、请求没有originated-by、响应没有Warning149时，才据此将自身告警置为no-alert。不能从2xx推断同时请求的告警也已取消。
+
+依据：§11.1.1.2.1.4。
+
+## 拒绝时保留紧急状态
+
+适用条件：取消re-INVITE收到4xx、5xx或6xx。
+
+响应没有mcptt-info MIME body时，MEPP回in-progress，MPEA恢复进入取消过程前的值；有该消息体时，仅已核明确分支为：emergency-ind=true使MEPP回in-progress；alert-ind=true且原请求无originated-by使MPEA回alert-initiated。有消息体但缺相应元素，不能套无消息体规则或自行补false分支。
+
+依据：§11.1.1.2.1.4。
+
+## 服务器授权仍有未决项
+
+适用条件：实现服务器侧紧急私呼取消授权。
+
+正文使用allow-cancel-private-emergency-call，但紧随编辑注仍将使用该配置还是本地策略标为FFS。不能把本版该处写成无争议、完结的服务器授权算法。
+
+依据：§6.3.3.1.13.4。
+
+## 证据边界
+
+- 未完整核验Annex G、24.229、24.380、24.484及相关RFC，不提供完整状态机或重试算法。
+- §6.2.8.3.6出现MEPPC 3拼写，§11.1.1.2.1.4夹有group用语，保留原文疑义。
+- 本页不证明私呼支持imminent-peril；已核该状态的其他条款属于组呼。
+
+## 按需继续
+
+- [../calls/release-signalling](../calls/release-signalling.md)
+- [../calls/control-routing-results](../calls/control-routing-results.md)
+- [alert-state](alert-state.md)
+
+[ETSI官方TS24.379 V19.4.0](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/19.04.00_60/ts_124379v190400p.pdf)，印刷页89、91、92、93、138、139、426、427、461、462；仅本版本。

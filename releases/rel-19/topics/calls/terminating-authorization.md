@@ -48,3 +48,7 @@ TS24.379 V19.4.0 §11.1.1.3.2；本页沿在网按需、带话权控制的私呼
 - [../identity/migration-authorization](../identity/migration-authorization.md)
 
 [ETSI 官方 TS24.379 V19.4.0](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/19.04.00_60/ts_124379v190400p.pdf)，印刷页448、449、450、451；仅本版本。
+
+- [forwarding-trigger-limits](forwarding-trigger-limits.md)
+
+- [forwarding-message-routing](forwarding-message-routing.md)

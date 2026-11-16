@@ -14,7 +14,7 @@
 
 适用条件：检查请求资源和用户配置。
 
-缺resource-lists，或普通私呼的resource-lists中一个list包含多个entry，返回403+145。allow-private-call缺失或false返回403+107。普通私呼收到Answer-Mode: Auto/Manual而相应allow-automatic/manual-commencement缺失或false，分别403+125/126。未转接、未转发、非功能别名的普通私呼，若非空PrivateCall名单不匹配且未允许名单外呼叫，则403+144。
+缺resource-lists，或普通私呼的resource-lists中一个或多个list含多个entry，返回403+145。allow-private-call缺失或false返回403+107。普通私呼收到Answer-Mode: Auto/Manual而相应allow-automatic/manual-commencement缺失或false，分别403+125/126。未转接、未转发、非功能别名的普通私呼，若非空PrivateCall名单不匹配且未允许名单外呼叫，则403+144。
 
 依据：§11.1.1.3.1.1 步骤8–11e。
 
