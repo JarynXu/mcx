@@ -175,3 +175,11 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 ### 服务器话权决策
 
 先读[状态所有者](topics/calls/floor-state-ownership.md)，再按问题选择[空闲请求](topics/calls/floor-server-idle-request.md)、[他人持有时的排队](topics/calls/floor-server-queue-admission.md)、[取消与释放后选择](topics/calls/floor-server-release-selection.md)，或[授予后的媒体计时](topics/calls/floor-server-media-timers.md)。规范的条件衔接问题在对应页保留，不以推测补成实现算法。
+
+### SDS 协议路径与回执证据
+
+[发送准入与控制面/媒体面选择](topics/mcdata/sds-transmission-selection.md)区分大小上限与分流阈值；[回执时序与原消息关联](topics/mcdata/sds-disposition-timing.md)区分 SIP 响应、送达、已读和未送达。依据 TS24.282 V19.7.0 指定 Stage 3 分支；完整服务器路由、媒体交付及配置依赖仍按页注明。
+
+### MCVideo 客户端发送与接收
+
+[发送控制](topics/mcvideo/participant-transmission-control.md)区分请求、排队、授予及结束；[接收控制](topics/mcvideo/participant-reception-control.md)区分来流通知、自动许可、主动接收与单源结束。依据 TS24.581 V19.2.0 指定 Stage 3 分支，不代表完整 MCVideo 信令或服务器策略。

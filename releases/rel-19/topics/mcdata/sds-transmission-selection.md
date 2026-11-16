@@ -1,0 +1,77 @@
+# SDS发送准入与承载选择：控制面阈值不是发送上限
+
+TS24.282 V19.7.0在网SDS；主要限定one-to-one standalone及发送到pre-arranged group的standalone。不得直接推广到离网、ad hoc或预建立session。
+
+本主题定位客户端准入、控制面/媒体面分流及选定下游拒绝点；通过这些检查不等于完整端到端准入成功。服务器鉴权、组文档、归属及目标检查仍按相应分支执行。
+
+## 先做发送权限检查
+
+适用条件：用户请求发送one-to-one或组standalone SDS。
+
+客户端先执行§11.1。one-to-one的allow-transmit-data缺失或false即不允许；若One-to-One-Communication存在且列有entry，目标不匹配也不允许。组发送的mcdata-allow-transmit-data-in-this-group缺失或false同样阻断。相关步骤要求停止余下准入检查，不能先因报文小而选择控制面后跳过权限。
+
+依据：§9.2.1.1 steps 1–2;11.1 steps 1,1A,2，印刷页 189、190、310。
+
+## 分别核对大小上限
+
+适用条件：执行§11.1中适用于当前one-to-one或组SDS的大小检查。
+
+one-to-one分别检查服务配置max-data-size-sds-bytes和用户profile的MaxData1To1；组发送分别检查组文档mcdata-on-network-max-data-size-for-SDS及该成员entry的mcdata-max-data-in-single-request。相应比较均为超过时不允许并停止。任何一个命中都不能靠改用媒体面规避；恰好等于某一上限只表示该项未超限，其他权限和限制仍适用。
+
+依据：§11.1 steps 3,5,7,8，印刷页 310、311。
+
+## 选择控制面或媒体面
+
+适用条件：§11.1成功；用户发送one-to-one standalone SDS或到pre-arranged group的standalone SDS。
+
+以MCData服务配置的max-payload-size-sds-cplane-bytes为分流阈值：payload小于或等于该值调用§9.2.2.2.1，大于调用§9.2.3.2.3。前者生成SIP MESSAGE，后者以SIP INVITE建立媒体面路径。因此超过分流阈值本身不等于超过允许发送的最大数据量。SDS session另由§9.2.1.1导向§9.2.4.2.3，不把standalone比较套作session选择规则。
+
+依据：§9.2.1.1;9.2.2.2.1 opening;9.2.3.2.3 opening，印刷页 189、190、192、211。
+
+边界：未核TS24.484本身的阈值缺省/缺失处理，不编造固定字节数、阈值层级或各阈值间大小关系。
+
+## 所选分支仍有组限制
+
+适用条件：已依据§9.2.1.1选定某个group standalone SDS客户端子过程。
+
+控制面§9.2.2.2.1 step3a在该组AllowedSDS为false时拒绝继续。媒体面§9.2.3.2.3另外先检查list-service下preconfigured-group-use-only，存在且true时SHOULD提示组上不允许standalone SDS，且SHALL停止；其step8a也在AllowedSDS为false时拒绝继续。选中媒体面不豁免组能力限制。
+
+依据：§9.2.2.2.1 step3a;9.2.3.2.3 opening and step8a，印刷页 193、211、212。
+
+边界：两个分支对AllowedSDS的表示和引用不同，见本页证据边界。§9.1的mcdata-allow-short-data-service=false采用should措辞，不提升为本条同一字段的shall。
+
+## 控制面超阈值的服务器防线
+
+适用条件：originating participating MCData function处理控制面standalone SDS MESSAGE，执行到§9.2.2.3.1 step8。
+
+若payload size大于max-payload-size-sds-cplane-bytes，服务器要求以403加Warning 203拒绝该控制面请求，而不是在本条替客户端自动转媒体面。NOTE4将此处payload size解释为DATA PAYLOAD中Payload IE的Length of Payload contents减1，扣掉Payload content type；不能用整个SIP/MIME报文长度替代。
+
+依据：§9.2.2.3.1 step8 and NOTE4，印刷页 197。
+
+边界：step8写了reject但未像相邻拒绝分支再写skip/not continue，保留原文差异，不自行补完整服务器后续状态机。 该NOTE按单个Payload IE表述；多Payload IE聚合和保护封装后的计算不得据此自行扩展。
+
+## 会话建立与传输完成
+
+适用条件：媒体面standalone SDS主叫按§9.2.3.2.3处理INVITE响应。
+
+INVITE的2xx触发ACK、session timer及向TS24.582 §6.1.1.2的媒体面交互；真正的媒体传输成功/失败是另一个输入事件，分别触发带cause=200/480的BYE。即使媒体层报告传输成功，也不能把该事件当作READ回执；也不能把INVITE的2xx直接当作传输完成。
+
+依据：§9.2.3.2.3 response handling;12.1，印刷页 213、214、314。
+
+边界：未核TS24.582本版全文，不据此定义其媒体成功判据、重传、修复或端到端最终送达。
+
+## 证据边界
+
+- 并非完整MCData admission矩阵或实现配方；未覆盖媒体协商全部字段、服务器全链、跨域路由、别名解析和所有组模式。
+- 被调用TS24.481/24.483/24.484/24.582/33.180仅作为依赖标识，未将其未读取的具体版本内容并入本主题。
+- 不从Stage 1自动发送/接收邀请能力推导本Stage 3分流选择。
+- §9.2.2.2.1 step3a vs9.2.3.2.3 step8a（印刷页193、212）：控制面AllowedSDS引用TS24.484的group document；媒体面写MO leaf路径并引用TS24.483。本页照各自条款识别拒绝条件，不断言它们是同一XML字段。
+- §9.2.2.3.1 step8（印刷页197）：要求reject而未复述相邻分支的停止余下步骤措辞；不据此编造继续转发或统一停止状态机。
+
+## 按需继续
+
+- [transmission-options](transmission-options.md)
+- [security-layers](security-layers.md)
+- [sds-disposition-timing](sds-disposition-timing.md)
+
+[ETSI 官方 TS24.282 V19.7.0](https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf)；仅所列版本与条款。

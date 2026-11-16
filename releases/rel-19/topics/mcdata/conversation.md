@@ -13,3 +13,5 @@
 不定义 Hang Time 数值或线级编码；未把历史提供能力解释为无限期保留或离线终端即时同步。
 
 来源：[TS 22.282 V19.0.0](https://www.etsi.org/deliver/etsi_ts/122200_122299/122282/19.00.00_60/ts_122282v190000p.pdf)，§6.1.1.2，印刷页 11–12。相关：[送达证据](delivery-evidence.md)。
+
+[在网 SDS 的指定 Stage 3 程序](sds-disposition-timing.md)另依 TS24.282 V19.7.0 核验，不把本页业务要求直接当作报文规则。

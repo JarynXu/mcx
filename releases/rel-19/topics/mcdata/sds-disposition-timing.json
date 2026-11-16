@@ -1,0 +1,137 @@
+{
+  "topic_id": "r19-mcdata-sds-disposition-timing",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS24.282 V19.7.0在网SDS；回执时序主线为§9.2.1.2/9.2.1.3及§12.2的带外通知。带内回执由TS24.582处理，离网TFS3不在本主题范围。",
+    "READ相关动作保留原文display indication条件，不把它解释为自然人的理解、应用执行成功或业务完成。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.282-v19.7.0",
+  "claims": [
+    {
+      "id": "sip-ok-precedes-payload-handling",
+      "clause": "9.2.2.2.2 steps1–6;9.2.1.2 steps6–8",
+      "conditions": [
+        "接收客户端收到控制面standalone SDS的SIP MESSAGE并执行§9.2.2.2.2。"
+      ],
+      "conclusion": "资源不足时客户端可以拒绝并回480；存在MIKEY-SAKKE I_MESSAGE时须先按TS33.180验证，验证失败回606加Warning136并停止。通过适用前置步骤后，客户端先发送SIP200，再调用§9.2.1.2处理内容。该处理可面向用户渲染，也可送往指定应用，未知Application ID/Extended application ID会丢弃消息。因此SIP200不是DELIVERED或READ通知，不能据此断言用户已看到内容。",
+      "printed_pages": [
+        190,
+        191,
+        195
+      ],
+      "limitations": [
+        "不是说所有SIP200均由最终用户客户端产生；其他事务和服务器响应须按其生成点判断。",
+        "保留资源不足为may reject，不改成一律必须480。"
+      ]
+    },
+    {
+      "id": "requested-notifications-and-tdu1",
+      "clause": "6.2.2.1 steps8–10;9.2.1.2 step10;9.2.1.3;Table15.1.2.1-1",
+      "conditions": [
+        "客户端收到的SIP request同时含application/vnd.3gpp.mcdata-signalling和application/vnd.3gpp.mcdata-payload两种MIME body，进入§9.2.1.2；其中SDS SIGNALLING PAYLOAD含SDS disposition request type IE。"
+      ],
+      "conclusion": "发送端通过§6.2.2.1按需要写DELIVERY、READ或DELIVERY AND READ。接收端仅DELIVERY请求发送送达通知；仅READ请求等display indication再发已读通知。两者均请求时启动TDU1：到期前收到display indication则停表并发送合并通知；先到期则发送送达通知，以后收到display indication再发已读通知。没有该IE不能从这条请求分支推出仍必须发成功回执。",
+      "printed_pages": [
+        57,
+        191,
+        192,
+        352
+      ],
+      "limitations": [
+        "本条不自行消除UNDELIVERED路径；发送失败通知有独立条件。",
+        "未规定display indication与计时到期同时发生的竞争仲裁，也不补默认执行顺序。"
+      ]
+    },
+    {
+      "id": "tdu1-value-and-purpose",
+      "clause": "9.2.1.3;F.2.3 TableF.2.3-1 and NOTE",
+      "conditions": [
+        "在网MCData UE为DELIVERY AND READ请求使用TDU1。"
+      ],
+      "conclusion": "表F.2.3-1给TDU1默认120毫秒且可配置；其正常停止事件是收到SDS display indication。表注建议在无法合并时不要让DELIVERED通知被延迟。120毫秒不是阅读截止时间：到期后仍在后来出现display indication时发送READ，也不是SIP事务超时、重传或数据TTL。",
+      "printed_pages": [
+        191,
+        192,
+        640
+      ],
+      "limitations": [
+        "未从未读配置规范推导具体部署值；没有把default误报为所有部署固定值。"
+      ]
+    },
+    {
+      "id": "notification-correlates-original-message",
+      "clause": "6.2.3.1;15.1.5.1 Table15.1.5.1-1;15.2.5",
+      "conditions": [
+        "客户端按§6.2.3.1生成SDS NOTIFICATION。"
+      ],
+      "conclusion": "§6.2.3.1的客户端生成过程在此覆盖DELIVERED、READ、DELIVERED AND READ及UNDELIVERED，不是完整类型枚举；其Conversation ID和Message ID取原SDS的对应值，而Date and time取生成通知的当前时间。面向用户的消息不带应用ID；面向应用时回带原Application ID或Extended application ID。通知关联的是原消息，不能给它另造Message ID而失去关联。",
+      "printed_pages": [
+        59,
+        60,
+        354,
+        363,
+        364
+      ],
+      "limitations": [
+        "§6.2.3.1 step9a把Application ID指向15.2.3，表15.1.5.1-1指向15.2.7；保留引用异常，不按错误交叉引用改写字段语义。",
+        "表15.2.5-1还列DISPOSITION PREVENTED BY SYSTEM，其TS29.582用途未在本页展开。"
+      ]
+    },
+    {
+      "id": "out-of-band-notification-is-separate-request",
+      "clause": "12.1;12.2.1.1;12.2.1.2;6.2.4.1;6.2.3.1",
+      "conditions": [
+        "发送带外SDS disposition notification，或原发送客户端收到该通知。"
+      ],
+      "conclusion": "§12.2.1.1发送的是新的SIP MESSAGE，不是把回执塞进原事务的200。客户端从原请求mcdata-calling-user-id确定通知目标；组请求另取mcdata-calling-group-id。调用§6.2.4.1时Request-URI指向服务本用户的participating function，目标用户放resource-lists，SDS NOTIFICATION放mcdata-signalling MIME body。接收通知的客户端解码并交给用户或应用。",
+      "printed_pages": [
+        59,
+        61,
+        314,
+        315
+      ],
+      "limitations": [
+        "没有把Request-URI中的participating function PSI与最终通知接收用户ID混为同一地址。",
+        "组回执在服务器侧可能聚合，本条不承诺发送一条就向发起者原样、立即传递一条。"
+      ]
+    },
+    {
+      "id": "undelivered-is-not-no-sip-response",
+      "clause": "6.2.3.1 step4;12.2.1.1 opening;12.2.2.1 steps1–5",
+      "conditions": [
+        "SDS未能交给用户或应用，例如存储不足；或participating function收到该失败通知。"
+      ],
+      "conclusion": "§6.2.3.1要求把通知类型设为UNDELIVERED；这与未收到SIP响应不是同一个事件。§12.2.2.1在适用资源与身份绑定检查后，对UNDELIVERED要求暂存并启动重交付计时然后停止其余通知转发步骤；不能当成普通成功通知直接向源用户转发，也不能据此保证后来一定送达。",
+      "printed_pages": [
+        60,
+        314,
+        315,
+        316
+      ],
+      "limitations": [
+        "§12.2.2.1写TD1而F.2.1表写TDP1；未把这个名字差异悄悄修正成完整重交付算法。"
+      ]
+    }
+  ],
+  "limitations": [
+    "不是完整服务器聚合、重交付或安全状态机；应用数据的display indication具体语义未扩展。",
+    "此主题的SIP200称事务响应，不称TCP/UDP传输层ACK。",
+    "TS22.282 Stage 1的已读隐含送达要求另保留在delivery-evidence，不由本主题反推所有部署的UI行为。",
+    "§6.2.3.1 step9a;Table15.1.5.1-1（印刷页60、354）：Application ID交叉引用分别为15.2.3和15.2.7。",
+    "§12.2.2.1 step5;F.2.1（印刷页316、638）：重交付计时正文称TD1，计时表称TDP1；没有静默统一。"
+  ],
+  "related": [
+    "delivery-evidence.md",
+    "conversation.md",
+    "security-layers.md",
+    "sds-transmission-selection.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  },
+  "standard_stage": 3
+}

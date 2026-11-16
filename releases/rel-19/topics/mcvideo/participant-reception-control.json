@@ -1,0 +1,141 @@
+{
+  "topic_id": "r19-mcvideo-participant-reception-control",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS24.581 V19.2.0，在网普通非广播、非 system、非紧急/迫近危险客户端；控制通道、信令准入和所需安全已满足。",
+    "仅跟踪一个发送者的视频及伴随音频源，不展开多流选择/混合、抢占或 override、远程控制、MBMS/MBS 和离网。",
+    "区分每通话的 general 接收控制器与每个接收请求的 basic 实例；basic 结束不是整通话结束。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.581-v19.2.0",
+  "claims": [
+    {
+      "id": "call-and-stream-state-ownership",
+      "clause": "6.2.5.1;6.2.5.2.2;6.2.5.2.3;6.2.5.3.1",
+      "conditions": [
+        "MCVideo call 建立，初始化接收控制。"
+      ],
+      "conclusion": "终接发送 SIP200、发起收到 SIP200 后，建立通话级 general 实例并进入 U: reception controller；每个接收请求另有 basic 实例。该控制器负责通知和用户接收请求，不等于已授予某个源的 RTP 接收许可。",
+      "printed_pages": [
+        45,
+        46
+      ],
+      "limitations": [
+        "本条以正文明确区分实例归属；不把两个 U 状态当一个状态变量。"
+      ]
+    },
+    {
+      "id": "notification-and-automatic-reception",
+      "clause": "6.2.5.3.2",
+      "conditions": [
+        "U: reception controller 收到 Media transmission notification。"
+      ],
+      "conclusion": "必须通知用户并保存发送者 User ID、Audio SSRC、Video SSRC；带 Functional Alias ID 时也保存。要求 Ack 则答 Source=0、Message Type=6。只有 Reception Mode=0 的自动接收分支，才新建 basic 实例、映射这三个源标识并进入 U: has permission to receive；general 控制器仍保持原态。媒体详情展示是可选。",
+      "printed_pages": [
+        46
+      ],
+      "limitations": [
+        "接收通知不总是自动许可；不能省掉 Reception Mode 条件。自动接收分支不是凭本地已有 SIP200 直接播放。"
+      ]
+    },
+    {
+      "id": "explicit-selection-and-pending-entry",
+      "clause": "6.2.5.3.3;6.2.5.4.1",
+      "conditions": [
+        "general 控制器收到用户针对已存储源的接收请求；另核对应 basic 实例进入 U: pending request to receive 的规则。"
+      ],
+      "conclusion": "发送 Receive Media Request，建立 basic 实例并映射所存 User ID 和音视频 SSRC；general 控制器不退出。basic 等待响应态的进入动作是启动 T103、C103=1，在响应到来前也允许取消请求。",
+      "printed_pages": [
+        47
+      ],
+      "limitations": [
+        "本主题只用普通 Reception Priority；非普通请求必须带该字段且不得高于协商值。",
+        "§6.2.5.3.3 文字没有逐项重述 basic 初态，图6.2.5.1-2 的视觉转移本次未成功取回；不宣称所有图形箭头已核。"
+      ]
+    },
+    {
+      "id": "receive-response-or-timeout",
+      "clause": "6.2.5.4.2–6.2.5.4.5",
+      "conditions": [
+        "basic 为 U: pending request to receive；收到 Receive media response 或 T103 到期。"
+      ],
+      "conclusion": "响应要求 Ack 时答 Source=0、Message Type=7。granted：通知成功、停 T103、进入接收许可态；rejected：通知拒绝，可显示原因，停 T103 并进入 terminated。T103 未达 C103 上限则重发、重启并加一；达上限通知超时并进入 terminated。",
+      "printed_pages": [
+        47,
+        48,
+        49
+      ],
+      "limitations": [
+        "T103 表格有 C105 字样，正文此处及 counter 表均指 C103；保留差异，不把它变成额外 C105 控制链。"
+      ]
+    },
+    {
+      "id": "rtp-permission-and-unexpected-packet",
+      "clause": "6.2.5.1;6.2.5.5.1;6.2.5.5.2",
+      "conditions": [
+        "basic 已在 U: has permission to receive，服务器指示源的已编码视频到达；或 RTP 到达一个没有对应接收处理的状态。"
+      ],
+      "conclusion": "有接收许可时接收服务器转发的视频并保持该态；尚未实际收到媒体也可请求结束。若当前状态没有对应 RTP/接收控制消息处理，则丢弃并不改变状态；格式错误同样不引起转移。RTP 偶然到达不是自行获得许可的事件。",
+      "printed_pages": [
+        45,
+        49
+      ],
+      "limitations": [
+        "多源以 SSRC 区分，但混流方法原文明确不在本规范范围；本页不补播放器算法。"
+      ]
+    },
+    {
+      "id": "local-cancel-or-reception-end",
+      "clause": "6.2.5.4.6;6.2.5.5.3;6.2.5.6.2–6.2.5.6.4",
+      "conditions": [
+        "用户在 basic 等待响应时取消，或已有接收许可时结束本源接收；不存在 override-without-revoke 标志。"
+      ],
+      "conclusion": "发送 Media reception end request，携带目标发送者 User ID 与音视频 SSRC，启动 T104、C104=1，进入 U: pending reception release；等待响应取消还停止 T103。T104 未达上限则重发、重启并加一，达上限进入 terminated。收到 MRE response 时按 Ack 位答 Source=0、Message Type=3，可通知结束，停 T104，再进入 terminated。",
+      "printed_pages": [
+        49,
+        50,
+        51
+      ],
+      "limitations": [
+        "本地请求步骤没有逐项写立即丢弃缓存/停止显示，不能把下条服务器结束分支的动作直接搬过来。"
+      ]
+    },
+    {
+      "id": "server-end-versus-whole-call-release",
+      "clause": "6.2.5.5.5;6.2.5.8.1;6.2.2;6.2.5.3.5;6.2.5.9.2",
+      "conditions": [
+        "basic 有接收许可且收到 Media reception end request；或任意已核路径进入 basic terminated。"
+      ],
+      "conclusion": "服务器结束请求要求通知用户、丢弃剩余 RTP 缓存、停止显示并回 MRE response，随后 basic terminated；要求 Ack 时另发 Source=0、Message Type=2、Message Name=MCV2 的 Ack。进入 terminated 删除该 basic 实例。普通非广播业务没有因此自动关闭 general 控制器；通话级 release step1/step2 是另外的信令协作过程。",
+      "printed_pages": [
+        34,
+        47,
+        50,
+        51,
+        52
+      ],
+      "limitations": [
+        "本节 Ack 名称写 Reception control Ack 且引用8.3.2，与邻接分支不同，保留原文命名/交叉引用，不静默规范化。",
+        "一般控制器收到 Transmission end notify 只通知发送者结束并保持自身状态，不能据此补造当前 basic 的自动删除动作（§6.2.5.3.4 p47）。"
+      ]
+    }
+  ],
+  "limitations": [
+    "服务器接收许可仲裁、最大流数和接收优先级不在本页。",
+    "安全失败、丢包修复、编解码和 UI 播放策略未展开。",
+    "TS24.281信令建立、完整媒体安全及字段编码另有依赖，本页不证明跨版本完整互操作。",
+    "§6.2.3（印刷页34）增加/删除媒体流对控制程序的影响仍为FFS；单源范围不填补该空白。",
+    "§11.1.1的T103行到达上限格写C105，程序§6.2.5.4.4和counter表§11.2.1写C103，保留原文差异。"
+  ],
+  "related": [
+    "reception.md",
+    "participant-transmission-control.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  },
+  "standard_stage": 3
+}

@@ -19,3 +19,5 @@
 不提供邀请、媒体建立、暂停或恢复的线级消息和定时器；配置能力不等于任意部署已开启。
 
 [transmission-admission](transmission-admission.md) · [no-receivers](no-receivers.md) · [结构化条件](reception.json)
+
+[普通在网客户端 Stage 3 程序](participant-reception-control.md)按 TS24.581 V19.2.0 的独立条件读取，不将本页要求层内容当成报文规则。
