@@ -1,0 +1,58 @@
+{
+  "topic_id": "r19-xcap-write-validation",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "XCAP referenced by TS24.481 V19.3.0; RFC4825 rules"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "ietf-rfc-4825",
+  "claims": [
+    {
+      "id": "body-type",
+      "clause": "7.1, 7.4, 7.7",
+      "conditions": [
+        "PUT document, element or attribute"
+      ],
+      "conclusion": "Document PUT uses application-usage MIME and whole-document replacement; element body contains the complete element and its content, not a partial merge, and uses application/xcap-el+xml, attribute body uses application/xcap-att+xml and XML AttValue without URI percent encoding."
+    },
+    {
+      "id": "selector-stability",
+      "clause": "7.4, 7.7",
+      "conditions": [
+        "Element/attribute PUT"
+      ],
+      "conclusion": "Creation selector is currently no-match but must select inserted object afterwards; replacement must select both old and new object. Changing an identifying attribute selected by its old value can fail with 409."
+    },
+    {
+      "id": "delete-stability",
+      "clause": "7.5, 8.4",
+      "conditions": [
+        "Node DELETE"
+      ],
+      "conclusion": "After deletion the selector must not select a different remaining element; server rejects such deletion with 409 and must not delete."
+    },
+    {
+      "id": "validation",
+      "clause": "8.2.5",
+      "conditions": [
+        "Validating proposed resulting document"
+      ],
+      "conclusion": "Schema, uniqueness and other application-usage constraints can independently cause 409 rejection. 409 alone does not identify a group-ID collision."
+    }
+  ],
+  "limitations": [
+    "Referenced RFC is not itself a Release19 standard.",
+    "MCX application schema, complete request headers and authorization are not established by these generic rules."
+  ],
+  "related": [
+    "resource-operations.md",
+    "conditional-update.md",
+    "creation.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

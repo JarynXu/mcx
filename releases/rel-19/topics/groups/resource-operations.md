@@ -16,3 +16,5 @@ namespace selector 不得用于 PUT 或 DELETE（[RFC4825 §7.10](https://www.rf
 实现时必须继续满足所引 RFC4825 的 selector、MIME和服务器处理约束。本页没有核完完整组文档 schema、MIME及所有寻址规则，不提供可执行请求模板。知道 URI 或选对方法，也不意味着已获[读取权限](document-access.md)。并发修改先读 [ETag与412](conditional-update.md)，持续跟踪变化则读[订阅资源与SIP地址](change-subscription.md)。
 
 [TS24.481 V19.3.0](https://www.etsi.org/deliver/etsi_ts/124400_124499/124481/19.03.00_60/ts_124481v190300p.pdf)，印刷页16–20。
+
+需要构造地址时读 [XCAP 寻址](xcap-addressing.md)；需要判断请求正文、替换范围或 409 时读 [写入校验](xcap-write-validation.md)。
