@@ -1,0 +1,123 @@
+{
+  "release": 19,
+  "topics": [
+    {
+      "id": "r19-location-reporting",
+      "title": "位置报告与组目标",
+      "path": "candidate/location/reporting.md",
+      "state": "candidate",
+      "questions": [
+        "取消一个位置订阅会不会停止目标用户的全部报告？",
+        "组位置目标使用静态成员还是当前归属成员？",
+        "收到位置通知是否代表刚测量？",
+        "位置报告必须有经纬度和准确度吗？",
+        "UE label 能发给 MC service server 吗？"
+      ],
+      "claims": [
+        {
+          "id": "recipient-cancellation",
+          "clause": "10.9.1",
+          "conditions": [
+            "A subscribed MC service user cancels its subscription"
+          ],
+          "conclusion": "Stop delivery to that subscriber; do not infer cancellation for all recipients."
+        },
+        {
+          "id": "measurement-data",
+          "clause": "10.9.2.2",
+          "conditions": [
+            "Location report"
+          ],
+          "conclusion": "Measurement time accompanies location information; accuracy is optional and at least one listed location element is supplied."
+        },
+        {
+          "id": "group-affiliation",
+          "clause": "10.9.3.3",
+          "conditions": [
+            "Single MC system",
+            "Group-targeted reporting trigger"
+          ],
+          "conclusion": "Track current affiliation and cancel the relevant group trigger when a user de-affiliates."
+        },
+        {
+          "id": "report-not-fresh-measurement",
+          "clause": "10.9.3.6.1",
+          "conditions": [
+            "Event-triggered location notification"
+          ],
+          "conclusion": "Notification is not proof of a newly performed measurement."
+        },
+        {
+          "id": "ue-label-direction",
+          "clauses": [
+            "10.9.2.2",
+            "10.9.3.6.1"
+          ],
+          "conditions": [
+            "Applicable non-null UE-label configuration",
+            "Message direction matters"
+          ],
+          "conclusion": "Do not include the UE label in location notification to the MC service server."
+        }
+      ],
+      "related": [
+        {
+          "topic": "r19-location-trigger-override",
+          "relation": "configuration-interaction",
+          "required": false
+        }
+      ],
+      "source_catalog": "sources.json",
+      "source_id": "3gpp-ts-23.280-v19.10.1"
+    },
+    {
+      "id": "r19-location-trigger-override",
+      "title": "位置触发覆盖与恢复",
+      "path": "candidate/location/trigger-override.md",
+      "state": "candidate",
+      "questions": [
+        "用户能覆盖服务器的位置触发吗？",
+        "覆盖期间收到新位置请求怎么办？",
+        "取消覆盖应该恢复什么？"
+      ],
+      "claims": [
+        {
+          "id": "override-boundary",
+          "clause": "10.9.3.12.1",
+          "conditions": [
+            "Authorized user",
+            "Single MC system"
+          ],
+          "conclusion": "Only user-configured triggers are overridden; MC service server triggers remain unaffected."
+        },
+        {
+          "id": "stored-configuration-updates",
+          "clause": "10.9.3.12.2",
+          "conditions": [
+            "Override active",
+            "New trigger request arrives"
+          ],
+          "conclusion": "Apply the new request to stored configuration until override ends."
+        },
+        {
+          "id": "restore-configuration",
+          "clause": "10.9.3.12.3",
+          "conditions": [
+            "Authorized cancellation of prior override"
+          ],
+          "conclusion": "Retrieve and restore the stored trigger configuration; do not infer fresh measurement or end-to-end delivery."
+        }
+      ],
+      "related": [
+        {
+          "topic": "r19-location-reporting",
+          "relation": "reporting-context",
+          "required": false
+        }
+      ],
+      "source_catalog": "sources.json",
+      "source_id": "3gpp-ts-23.280-v19.10.1"
+    }
+  ],
+  "evidence_level": "Existing candidate-page internal consistency; original standard not reopened; no independent usage acceptance"
+}
