@@ -1,0 +1,61 @@
+{
+  "topic_id": "r19-iwf-floor-filtering",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS23.283 V19.5.0、Release19、Stage2。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "lmr-filter",
+      "clause": "10.5.5",
+      "conditions": [
+        "组归属LMR",
+        "MC侧配置本地过滤；双方用户已归属，互通组呼进行中且话权空闲"
+      ],
+      "conclusion": "示例先在MC侧选中客户端1并拒绝客户端2，再将选中的请求交IWF作最终决定；须待最终granted传回客户端1后才开始发送。"
+    },
+    {
+      "id": "mc-filter",
+      "clause": "10.5.6",
+      "conditions": [
+        "组归属MCPTT且已在GMS定义",
+        "LMR侧本地过滤；双方用户已归属，互通组呼进行中且话权空闲"
+      ],
+      "conclusion": "多个LMR请求先依本地策略仲裁，只向MC侧呈现一个请求。MC服务器仍作最终仲裁；示例MC用户胜出并不构成MC用户永远优先的规则。"
+    },
+    {
+      "id": "lmr-pass",
+      "clause": "10.5.7",
+      "conditions": [
+        "组定义在LMR，MC配置不本地过滤而转交竞争请求",
+        "双方用户已归属，互通组呼进行中且话权空闲"
+      ],
+      "conclusion": "MC服务器把竞争请求都交IWF作最终决定，再把针对各用户的授予、拒绝和占用通知送回；不在MC侧先淘汰一个请求。"
+    },
+    {
+      "id": "mc-pass",
+      "clause": "10.5.8 preconditions",
+      "conditions": [
+        "组定义在MCPTT，LMR侧配置转交全部竞争请求",
+        "双方用户已归属，互通组呼进行中且话权空闲"
+      ],
+      "conclusion": "此过程还要求IWF不代理LMR用户归属，所有LMR组归属均透传给MC服务器；不能把它直接套到IWF代理归属模式。"
+    }
+  ],
+  "limitations": [
+    "只核指定空闲话权示例及前提；不把示例胜者或到达时间变成固定调度算法。"
+  ],
+  "related": [
+    "floor-control-owner.md",
+    "affiliation-representation.md",
+    "floor-signals.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

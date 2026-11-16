@@ -36,6 +36,8 @@
 
 [话权信息流](topics/interworking/floor-signals.md)区分授予、占用、排队、取消及单播控制；这些状态不是呼叫释放。
 
+话权机制按问题选：[主控归属](topics/interworking/floor-control-owner.md)、[组请求本地过滤](topics/interworking/floor-filtering.md)、[无法通知旧发言者的覆盖](topics/interworking/floor-override.md)。本地预选通过不等于最终获授话权；私呼主控不能一概按组规则推定。
+
 ## 互通安全
 
 [LMR安全消息运输](topics/interworking/lmr-security-transport.md)说明透明载荷如何承载；[加密语音转码](topics/interworking/encrypted-transcoding.md)说明媒体处理的密钥前提。运输成功不能证明密钥获取完成；这些主题也不构成完整安全实现。

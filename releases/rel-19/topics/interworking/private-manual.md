@@ -33,3 +33,5 @@ LMR归属的别名（例如GSM-R）的最终解析在LMR系统内；不把MC侧�
 §10.4.3.2 step9的媒体支持描述出现IWF主体，step10省略完整MCPTT主体；本主题不据这些表述建立精确线级端点契约。
 
 [释放](private-release.md) · [私呼加密](private-encryption.md) · [别名](../identity/functional-alias.md) · [结构化条件](private-manual.json)
+
+若问一般主控分配而非本页手动建立示例，见[主控规则](floor-control-owner.md)；§10.5.3允许按发起侧或其他方式分配，不能由示例推出全局唯一规则。
