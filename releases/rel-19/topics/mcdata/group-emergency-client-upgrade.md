@@ -1,0 +1,94 @@
+# MCData 组会话客户端升级：权限、待确认状态与 149/INFO
+
+限 TS24.282 V19.7.0，在网、已有 on-demand SDS 预安排组 session；本批核的是客户端过程，不是端到端组服务器升级/取消实现。不是 standalone SDS、pre-established session、FD、IPCONN、adhoc 或 regroup。
+
+MED 是客户端自身紧急状态，MDEG 是客户端跟踪的组紧急状态，MDEGC 是该客户端的组通信紧急状态，MDEA 是告警状态；CF 的 in-progress emergency group 状态另有维护者。来源为 §4.10 pp45–46，不用任一客户端状态代表全组提交。
+
+本版 §16.2.2.1 p383、§16.2.2.2 p385、§16.2.3.2 p402 的编辑说明保留紧急组/组通信支持可能缺失、部分提供或仅为告警服务的限制。这里仅说明具体已列出的客户端步骤，不将全部步骤抹为FFS，也不保证服务器、媒体或实际优先承载已经完成。
+
+用户请求把现有SDS预安排组session升级到emergency，不在本批发起或取消imminent-peril。对附带告警只处理本用户的告警，不含第三方originated-by。
+
+## 升级权限与服务范围
+
+适用条件：用户触发 §6.2.7.1 的组会话升级，客户端执行 §6.2.8.1.8 的 emergency 分支。
+
+客户端要求用户profile的 ruleset/rule/actions/allow-emergency-group-call=true，还须满足 MCData-group-call/EmergencyCall/MCDataGroupInitiation/entry 的 entry-info：DedicatedGroup 时 uri-entry 包含目标组，或值为 UseCurrentlySelectedGroup。正文把这种授权限于 SDS session、SDS pre-established session 或媒体面 FD；其他情况未授权。升级调用点对未授权规定 SHOULD 提示用户、SHALL 停止余下步骤。此客户端许可不等同服务器准入。
+
+- §6.2.8.1.8 p73 的 FFS 编辑说明专指上述服务类型限制，不能据此取消正文限制、加入HTTP FD/IPCONN，或将整条客户端过程说成仅有FFS占位。
+- 不能把独立告警的 allow-activate-emergency-alert、组告警许可或implicit资格替代 allow-emergency-group-call。服务器 §6.3.7.2.6 另有组文档条件，但其存在不证明本组re-INVITE完整调用链。
+
+依据：§6.2.7.1 step1;6.2.8.1.8 emergency branch，印刷页 62、63、73。
+
+## 初次待确认与附带告警
+
+适用条件：客户端升级已获授权，执行 §6.2.8.1.1；本条限进入helper时 MDEGC1（可发起）且 MDEA1（无告警），MED可已设置或未设置。
+
+升级在mcdata-info中加入 emergency-ind=true，并把 MDEGC1 改为 MDEGC2（已请求）；MED原本未设置时同时设置MED，已经设置时沿用。若组的客户端视图还不是 MDEG2（进行中），置 MDEG4（待确认）。只有用户另要求发送告警且告警授权也通过，才加入 alert-ind=true、置 MDEA2 并按告警位置helper携带资料；用户没有要求告警时，本条起始状态下写 alert-ind=false。发出紧急指示和本地待确认状态，不是收到服务器成功的证据。
+
+- 本条刻意限MDEGC1/MDEA1的初次状态变更，不概括已有告警或多个在途请求的重入规则。
+- “要求了告警但未获告警许可”与“没有要求告警”是不同分支。helper对前者未直接给出统一alert-ind默认值，不能为了满足下游参数校验而自行填false。
+- §6.2.7.1调用的实际请求是re-INVITE；被调helper标题/正文常写INVITE或REFER，按调用关系保留，不将其扩写成另起一个初始INVITE。
+
+依据：§6.2.7.1 step3;6.2.8.1.1 both MED branches，印刷页 63、69、70。
+
+## re-INVITE的SDP、位置及优先头
+
+适用条件：客户端在已有on-demand SDS session中生成 §6.2.7.1 的升级re-INVITE，未被授权步骤阻断。
+
+客户端须按 §9.2.4.2.1 给re-INVITE加入SDS SDP offer，按 §6.2.8.1.2 携带Resource-Priority，并加入location-info的Report及紧急告警位置触发配置要求的资料后发送。即使没有附带告警，§6.2.7.1 step7仍明确要求该Report。紧急优先参数来自服务配置 emergency-resource-priority 中的namespace和priority值；正常级参数则来自 normal-resource-priority，不由本页指定固定数字。SDP协商、优先头和位置资料都不是媒体或QoS实际成功的证明。
+
+- §6.2.8.1.2紧急头的条件为MDEGC2/3且已授权，或客户端MDEG2；不可仅因请求是SDS就无条件设置紧急优先。
+- SDP字段与SDS安全上下文复用已核session主题；9.2.4.2.1的one-to-one MIKEY条件不擅自推广到组会话。位置配置内容、缺少定位资料时的编码以及外部RFC/24.484 schema未核。
+- 本批不扩pre-established分支。其正文使用既有协商参数，不能据本on-demand结论替代。
+
+依据：§6.2.7.1 steps3,5,7,8;6.2.8.1.2;6.2.8.1.15;9.2.4.2.1，印刷页 63、70、77、224。
+
+## 2xx、149与INFO
+
+适用条件：客户端收到本次升级re-INVITE的2xx，执行 §6.2.8.1.4，且MDEGC为2或3。
+
+客户端调用24.582用户面接口，然后把MDEG置2、MDEGC置3；同时将imminent-peril的通信及组状态复位为相应的1。若附带告警处MDEA2，只有2xx没有Warning149时，才在该2xx分支把MDEA改为3。带149不阻止上述组通信状态迁移，却使这项告警结果不能由2xx直接确认。随后若收到本对话内、Request-URI含标识ongoing group session的MCData session ID，并符合g.3gpp.mcdata-info包及MIME/指示条件的INFO，须先回200；在MDEGC3且MDEA2时，alert-ind=false令MDEA1，true令MDEA3。
+
+- MDEG/MDEGC是客户端响应处理结果；未核的24.582接口和服务器组re-INVITE caller使本页不能证明媒体优先承载或每个参与者已完成升级。
+- INFO的Request-URI须含标识ongoing group session的MCData session ID；还须位于优先通信对话内，Info-Package含g.3gpp.mcdata-info、有与该package关联的mcdata-info MIME及至少一个指定指示。不是任意INFO或任意200都能改变告警状态。
+- INFO的200先于本地指示处理，不是所有告警已读的确认；本批不推导149一定会在何时收到INFO，也不补INFO超时默认结果。
+
+依据：§6.2.7.1 2xx and INFO paragraphs;6.2.8.1.4 step1;6.2.8.1.13 opening,steps1,2，印刷页 63、71、75、76。
+
+## 升级失败的局部状态回退
+
+适用条件：本次升级re-INVITE收到4xx、5xx或6xx，执行 §6.2.8.1.5 的emergency分支，MDEGC为2或3。
+
+客户端把MDEGC置1；只有MDEG仍为4（待确认）时，才把MDEG置1。若发出的优先请求含alert-ind=true，还须把MDEA置1。该失败helper没有要求把MED一并清除，也没有要求把已经是MDEG2的组视图改为无紧急。不能写成“升级失败便清空所有紧急状态”。
+
+- 不为3xx、无响应、重试或并发请求补状态表；也不借失败SIP事务推断原SDS会话已结束。
+- 本页只覆盖客户端明列的错误后状态；不证明CF、其他客户端或媒体侧已经执行同样的恢复。
+
+依据：§6.2.7.1 error-response paragraph;6.2.8.1.5 step1，印刷页 63、72。
+
+## 证据边界
+
+- 公开可核链止于客户端请求、反馈和状态处理。已检查§6.3.1.2 pp93–95、§9.2.4.3.5/.6 p236与§9.2.4.4.5–.8 p242：相邻升级/取消wrappers明确用于one-to-one，不能替代组服务器caller。§6.3.7.1.1/.14的组通知生成helper也不能单独填补客户端组re-INVITE→CF授权/提交/分发的缺段。
+- §4.10 pp45–46描述这些状态与支持，不构成替代缺失调用关系的实现证据；本批未声称标准全书完全没有其他组路径。
+
+## 按需继续
+
+- [emergency-alert-origination](emergency-alert-origination.md)
+- [group-emergency-client-cancellation](group-emergency-client-cancellation.md)
+- [sds-session-responses-and-participants](sds-session-responses-and-participants.md)
+
+[3GPP TS24.282 V19.7.0 / ETSI TS124282 V19.7.0 (2026-08)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf)；仅本版本。
+
+## 原文差异
+
+§6.2.7.1 step3;6.2.7.2 step8;6.2.8.1.1/.2：调用方发送re-INVITE，被调紧急指示/Resource-Priority helper正文多写INVITE或REFER。 按明确调用关系陈述客户端义务，不增发一个初始INVITE/REFER，不宣称完整编码互通已经验证。
+
+§6.2.7.2 step8;6.2.8.1.2/.3/.7/.8：取消准备后的MDEGC3/MDEG3本身不足以判定Resource-Priority分支重叠。紧急分支除MDEGC2/3外还要求本请求满足§6.2.8.1.8紧急通信授权（另有MDEG2入口）；正常分支要求§6.2.8.1.7取消授权及no-emergency/cancel-pending组状态。只有两种请求授权条件也同时成立时，文字条件才可能重叠；原文未闭合§6.2.8.1.8如何适用于取消请求及如何裁决重叠。 完整保留两分支条件及配置值来源，不把状态组合写成实际必现冲突，也不自行确定取消请求必定满足紧急请求授权或补分支优先级。
+
+§6.2.7.2 error step2 versus step3：step2以sent请求无originated-by作条件，step3却以错误响应未含originated-by作条件。 保留各自承载对象，不静默统一。
+
+§6.2.7.2 opening;6.2.7.5;16.2.1.4;16.2.3.1/.2：无通信取消的错误回指、生成步骤未明列client-id、emergency-ind-rcvd与告警取消alert-ind-rcvd不一致、CF入口对alert-ind的条件未闭合。 本批只做ongoing session客户端链，不把专门MESSAGE过程或告警过程强行接上。
+
+§6.2.8.1.17 versus6.2.8.1.1/.3：release helper写MDEG3:confirm-pending，与其他条款MDEG4:confirm-pending/MDEG3:cancel-pending不一致，而且只明确特定建立中状态。 不把该helper推广成所有通信释放都清除组状态的规则；本批取消紧急条件不是release。
+
+§4.10;6.2.8.1.8;16.2.2.1/.2;16.2.3.2：概述称支持紧急组流程，告警部分Editor note又保留部分/有限支持；授权服务种类限制另有FFS。 按具体条款给客户端结论，同时公开支持/依赖边界；不因编辑说明抹去已列过程，也不因概述宣称实现全部闭合。

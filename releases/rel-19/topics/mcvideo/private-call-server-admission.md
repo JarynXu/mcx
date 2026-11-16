@@ -122,3 +122,5 @@ CF 构造200及 SDP answer，完成该步触发的媒体平面处理后才向邀
 - 6.3.2.2.5.1/.6.1 引向.5.3/.6.3的可复用预建立分支不在本页闭合；仅核其选择门槛与按需fallback。
 
 - [整通话释放及其条件](private-call-server-release.md)
+
+按业务继续：[service-settings-validity](service-settings-validity.md)。

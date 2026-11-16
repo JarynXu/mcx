@@ -52,3 +52,5 @@ TS33.180 V19.4.0；区分SIP注册与MC用户服务授权。
 - [profile-selection](profile-selection.md)
 
 配置数据另见：[获取](profile-acquisition.md)、[更新](profile-update.md)。
+
+按业务继续：[../mcvideo/service-authorization](../mcvideo/service-authorization.md)。

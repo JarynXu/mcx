@@ -335,3 +335,11 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 
 - [MCVideo广播退出与发送结束：BYE、CF策略和发送侧状态](topics/mcvideo/broadcast-call-exit.md)
 - [MCVideo广播接收结束：停止单源为何还会进入Call releasing](topics/mcvideo/broadcast-reception-ending.md)
+
+
+### MCData 已有组会话的客户端紧急条件
+
+- [MCData 组会话客户端升级：权限、待确认状态与 149/INFO](topics/mcdata/group-emergency-client-upgrade.md)
+- [MCData 组会话客户端取消：紧急条件、告警与对端状态分开判断](topics/mcdata/group-emergency-client-cancellation.md)
+
+MCVideo授权与设置：[共享注册、服务授权及多client绑定](topics/mcvideo/service-authorization.md)、[设置有效期、退出和私呼准入](topics/mcvideo/service-settings-validity.md)、[CSK更新](topics/mcvideo/csk-key-update.md)。

@@ -52,3 +52,5 @@
 - [sds-disposition-timing](sds-disposition-timing.md)
 
 [3GPP TS 24.282 V19.7.0 / ETSI TS 124 282 V19.7.0 (2026-08)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf)；仅本版本。
+
+- [只有现有SDS预安排组session，才进入本批客户端升级路径。](group-emergency-client-upgrade.md)
