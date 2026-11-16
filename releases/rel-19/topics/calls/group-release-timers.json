@@ -48,11 +48,33 @@
         "控制功能处理组呼的紧急计时器切换"
       ],
       "conclusion": "启动TNG2时不启动TNG3。TNG3运行中的组呼升级为紧急时，停TNG3并按服务配置emergency-call/group-time-limit启动TNG2；TNG2运行期间取消紧急时，停TNG2并按组文档maximum-duration启动TNG3。TNG2到期后也启动TNG3；不据此把TNG2到期直接等同整个组呼已结束。"
+    },
+    {
+      "id": "chat-tng3-configuration-and-may-shall-boundary",
+      "clause": "10.1.2.4.1.1 step11(a);6.3.3.5.1 opening paragraphs and Note1",
+      "conditions": [
+        "TS24.379 V19.4.0，普通在网、非广播、非重组的 chat 组会话；不涉及紧急、imminent peril 或临时组计时器切换。",
+        "按每条条件区分进行中的释放判断与发起时的计时器调用，不重做建立准入。",
+        "控制功能已通过适用前置步骤，收到发起普通 chat 的 INVITE，chat 尚未 ongoing，并已为新会话分配身份。"
+      ],
+      "conclusion": "须并列保留两处文字：chat 建立入口 §10.1.2.4.1.1 step11(a) 写 may 按 §6.3.3.5 处理 TNG3；通用 §6.3.3.5.1 则规定有 on-network-maximum-duration 时按该值启动、缺失时不启动，且注释说明 chat 配置可选而预安排必配。",
+      "printed_pages": [
+        342,
+        153
+      ],
+      "limitations": [
+        "不把入口 may 默改成 shall，也不据 may 推导可任意忽略已配置的时长；两处措辞衔接未进一步规范化解释。",
+        "不为缺失值编造默认秒数；缺少 TNG3 不表示免除人数、归属等其他释放条件。",
+        "所核新会话入口不构成每次加入既有 chat 都重置 TNG3 的依据。"
+      ]
     }
   ],
   "limitations": [
     "T4及媒体行为依赖TS24.380；TNG2到期的其他紧急状态处理、数值范围、组文档验证及计时竞态未在本页展开。",
-    "不为缺失配置、重启与合并拆分补剩余时长继承算法；TNG1是建立确认等待，非本页时长计时器。"
+    "不为缺失配置、重启与合并拆分补剩余时长继承算法；TNG1是建立确认等待，非本页时长计时器。",
+    "不把入口 may 默改成 shall，也不据 may 推导可任意忽略已配置的时长；两处措辞衔接未进一步规范化解释。",
+    "不为缺失值编造默认秒数；缺少 TNG3 不表示免除人数、归属等其他释放条件。",
+    "所核新会话入口不构成每次加入既有 chat 都重置 TNG3 的依据。"
   ],
   "related": [
     "server-release-chain.md",
@@ -60,10 +82,12 @@
     "../interworking/group-call-release.md",
     "group-acknowledged-start.md",
     "../groups/explicit-deaffiliation-state.md",
-    "group-participant-leave.md"
+    "group-participant-leave.md",
+    "chat-participant-release.md"
   ],
   "verification": {
     "original_clauses_checked": true,
     "independent_usage_acceptance": false
-  }
+  },
+  "standard_stage": 3
 }

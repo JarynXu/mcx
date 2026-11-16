@@ -60,3 +60,19 @@ TS24.379 V19.4.0 §6.3.8.1及§6.3.3.5；控制功能的组呼释放策略。各
 - [归属变更不等于呼叫释放完成](../groups/explicit-deaffiliation-state.md)
 
 - [group-participant-leave](group-participant-leave.md)
+
+## Chat 新建入口的计时措辞
+
+适用条件：TS24.379 V19.4.0，普通在网、非广播、非重组的 chat 组会话；不涉及紧急、imminent peril 或临时组计时器切换。 按每条条件区分进行中的释放判断与发起时的计时器调用，不重做建立准入。 控制功能已通过适用前置步骤，收到发起普通 chat 的 INVITE，chat 尚未 ongoing，并已为新会话分配身份。
+
+须并列保留两处文字：chat 建立入口 §10.1.2.4.1.1 step11(a) 写 may 按 §6.3.3.5 处理 TNG3；通用 §6.3.3.5.1 则规定有 on-network-maximum-duration 时按该值启动、缺失时不启动，且注释说明 chat 配置可选而预安排必配。
+
+不把入口 may 默改成 shall，也不据 may 推导可任意忽略已配置的时长；两处措辞衔接未进一步规范化解释。
+
+不为缺失值编造默认秒数；缺少 TNG3 不表示免除人数、归属等其他释放条件。
+
+所核新会话入口不构成每次加入既有 chat 都重置 TNG3 的依据。
+
+依据：§10.1.2.4.1.1 step11(a);6.3.3.5.1 opening paragraphs and Note1，印刷页342、153。
+
+[Chat退出与移除](chat-participant-release.md)

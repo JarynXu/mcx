@@ -1,0 +1,75 @@
+{
+  "topic_id": "r19-calls-chat-existing-session-update",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS24.379 V19.4.0 在网chat组呼。各claim独立写明入口，不把预安排组呼的被叫自动/手动选择和session-ID重入原样搬来。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v19.4.0",
+  "claims": [
+    {
+      "id": "client-reinvite-baseline",
+      "clause": "10.1.2.2.1.2 introduction and steps6–11",
+      "conditions": [
+        "chat客户端收到既有按需或预建立会话内re-INVITE；本条仅不含emergency-ind、imminentperil-ind、alert-ind和优先级扩展的普通情形。"
+      ],
+      "conclusion": "10.1.2.2.1.2适用于两种承载。客户端生成200，Contact带g.3gpp.mcptt和MCPTT ICSI；按需分支的SDP answer按6.2.2，预建立分支根据已经协商的参数生成answer；发送200。它是既有对话更新，不是10.1.1预安排初始来呼的自动/手动接听选择。",
+      "printed_pages": [
+        319,
+        320
+      ]
+    },
+    {
+      "id": "participating-reinvite-dispatch",
+      "clause": "10.1.2.3.1.4",
+      "conditions": [
+        "参与功能收到面向chat终接客户端的re-INVITE；本条不含Resource-Priority扩展。"
+      ],
+      "conclusion": "若发给客户端的请求将在预建立对话内发送，进入10.1.2.3.2.2并跳过剩余步骤。否则按6.3.2.2.10生成re-INVITE，SDP offer由收到的offer按6.3.2.2.1生成，并发给客户端。收到该请求的200后按6.3.2.2.4.2生成上游200，以收到的SDP answer按6.3.2.2.2.1构造answer并转送。",
+      "printed_pages": [
+        334
+      ]
+    },
+    {
+      "id": "preestablished-reinvite-waits-client",
+      "clause": "10.1.2.3.2.2",
+      "conditions": [
+        "终接参与功能已进入10.1.2.3.2.2的chat预建立分支，所收为相应INVITE或re-INVITE；本条不含Resource-Priority扩展。"
+      ],
+      "conclusion": "在预建立对话内向客户端生成re-INVITE，SDP offer由收到offer按6.3.2.1.1.2构造；收到客户端对该re-INVITE的200后，才按6.3.2.2.4.2生成上游200并按6.3.2.2.2.2附answer。不要把预安排Auto分支不等客户端最终响应的行为移到这里。",
+      "printed_pages": [
+        339
+      ]
+    },
+    {
+      "id": "initial-invite-reuse-not-forced",
+      "clause": "10.1.2.3.1.3 step4",
+      "conditions": [
+        "参与功能按10.1.2.3.1.3处理chat终接INVITE，前序资源/isfocus检查未拒绝。"
+      ],
+      "conclusion": "当客户端有无关联业务呼叫的预建立会话，且speech和floor-control两媒体段分别匹配时，参与功能MAY按本地策略转10.1.2.3.2.2；不是只匹配speech即可，也不是匹配就必须复用。此服务器入口没有授权把客户端10.1.2.2.1.6的优先范围扩成普通chat被叫接受算法。",
+      "printed_pages": [
+        333
+      ]
+    }
+  ],
+  "limitations": [
+    "终接initial INVITE完整客户端链不纳入普通范围；尤其不为缺少普通接听说明自造默认Auto/Manual。",
+    "6.3.2.2.10、6.3.2.2.4.2等共用生成helper沿原引用，未重新核全部头字段、MIKEY、失败和RFC事务流程；上面不是完整消息模板。",
+    "未核24.380媒体、实际话权、自动回覆盖检测或自动恢复。",
+    "优先指示true/false各有状态副作用，本主题明确排除，不能在收到这些指示时只执行普通baseline。"
+  ],
+  "related": [
+    "preestablished-session-lifecycle.md",
+    "../groups/conference-state.md",
+    "chat-ondemand-entry.md",
+    "../groups/chat-ondemand-control.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  },
+  "standard_stage": 3
+}

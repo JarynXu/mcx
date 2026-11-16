@@ -158,3 +158,7 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 
 - [建立、空闲修改和拆除](topics/calls/preestablished-session-lifecycle.md)
 - [预建立承载组呼：REFER、Contact 与通知](topics/calls/preestablished-group-association.md)
+
+## 普通在网 Chat
+
+[按需加入入口](topics/calls/chat-ondemand-entry.md)与[控制侧准入](topics/groups/chat-ondemand-control.md)分开判断；已有对话见[会话更新](topics/calls/chat-existing-session-update.md)，离开或移除见[释放链](topics/calls/chat-participant-release.md)。这些是原生 Stage 3 程序，不替换 MC/LMR 互通主题。
