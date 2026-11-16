@@ -1,0 +1,178 @@
+{
+  "topic_id": "r19-mcvideo-broadcast-reception-ending",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "本页核 TS24.281 V19.3.0 与 TS24.581 V19.2.0 的普通在网、有 transmission control、on-demand 广播组呼结束路径。会话从开始即按 broadcast 发起，signalling session-type=prearranged、broadcast-ind=true；不是普通会话后续升级为广播。排除离网、chat、system、ad hoc、临时/预配置重组、NCF/gateway、远程/ambient、预建立、功能别名和优先通信。",
+    "客户端和 CF 的紧急/迫近危险状态均未置位，也不处理其升级/取消、抢占、多发送源扩展。发起者、接收者、各自 basic 状态、客户端 general 接收状态、服务器 per-call 仲裁和 per-participant 接口不是同一个状态机。",
+    "每条 claim 仅继承本主题 common_conditions 和自身 conditions。SIP BYE、Transmission End Request/Response、Media Reception End Request/Response、Transmission End Notify 是不同事件；媒体状态进入 Call releasing 不等于信令已完成断开，更不等于所有参与者已释放。",
+    "这里只确认所列状态/事件和公共 helper 调用，不声称两版完整接口、所有失败恢复或端到端互操作已经验证。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.581-v19.2.0",
+  "claims": [
+    {
+      "id": "broadcast-receiver-voluntary-end-identifies-one-source",
+      "clause": "6.2.5.5.1/.5.3;6.2.5.6.1;6.3.7.4.4",
+      "conditions": [
+        "广播接收者的某 basic reception 实例处于 U: has permission to receive，用户要求结束 RTP 接收；不是仅停止界面显示，也不是直接假定用户已发 SIP BYE。"
+      ],
+      "conclusion": "客户端发送 Media Reception End Request，带入发送源 User ID、Audio SSRC 和 Video SSRC；存在已存的 overriding/overridden without revoke 标记则删除。启动 T104，将 C104 初始化为 1，转入 pending reception release。源文同样保留 broadcast call 且 established as a normal call 才置 A-bit=1 的条件。该请求首先指明要结束哪个源的接收，不能据此认定整个服务器会话已经释放。",
+      "printed_pages": [
+        49,
+        50,
+        99
+      ],
+      "limitations": [
+        "广播从开始建立与后续由 normal 升级的区分保持原文条件；本页不自行将 A-bit 的双条件简化为所有普通广播都应带。",
+        "服务器 basic 接口 §6.3.7.4.4 实际把 MRE Request 转到 general transmission 仲裁并暂留 permitted to receive，而不是本段直接停流；该主语/目标与接收仲裁结构有张力，本页不改成 general reception，也不补未核审批顺序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v19.2.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124500_124599/124581/19.02.00_60/ts_124581v190200p.pdf",
+          "clause": "6.2.5.5.1/.5.3;6.2.5.6.1;6.3.7.4.4",
+          "printed_pages": [
+            49,
+            50,
+            99
+          ]
+        }
+      ],
+      "source_id": "3gpp-ts-24.581-v19.2.0"
+    },
+    {
+      "id": "broadcast-reception-response-and-timeout-both-reach-terminated-with-different-evidence",
+      "clause": "6.2.5.6.1/.6.2/.6.3/.6.4",
+      "conditions": [
+        "接收者某 basic reception 实例处于 U: pending reception release，已运行 T104；分别收到 MRE Response 或遇到 T104 到期。"
+      ],
+      "conclusion": "收到 MRE Response 时，若要求 Ack 则回 Message Type=3、Source=0；可向用户通知接收结束，若 Receive Media Indicator 有 B-bit=1 则 SHALL 通知广播类型；随后停 T104 并进入 terminated。未达配置上限的 T104 到期则重发 MRE Request、重启 T104、C104 加 1，保持 pending。达到 C104 上限的到期也直接进入 terminated，但不是已收到服务器成功 Response 的证据。",
+      "printed_pages": [
+        50,
+        51
+      ],
+      "limitations": [
+        "这两个入口都可触发随后原生广播的 basic terminated 特例，但只有响应路径具有该响应的证据；不能把超时改写成服务器已确认或已停止全部媒体。",
+        "本页不填 T104/C104 默认值，也不补源文没有在达上限分支逐项写出的服务器状态或 SIP 结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v19.2.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124500_124599/124581/19.02.00_60/ts_124581v190200p.pdf",
+          "clause": "6.2.5.6.1/.6.2/.6.3/.6.4",
+          "printed_pages": [
+            50,
+            51
+          ]
+        }
+      ],
+      "source_id": "3gpp-ts-24.581-v19.2.0"
+    },
+    {
+      "id": "broadcast-server-ordered-reception-end-stops-downlink-before-client-response",
+      "clause": "6.3.7.4.8;6.2.5.5.5",
+      "conditions": [
+        "服务器 per-participant basic reception 为 U: permitted to receive，服务器已决定结束向该 participant 的下行 RTP；接收者对应 basic reception 仍为 U: has permission to receive 并实际收到 MRE Request。"
+      ],
+      "conclusion": "服务器先停止向该 participant 发送 RTP，发送包含源 SSRC 的 Media Reception End Request，转入 not permitted to receive。客户端收到后，若请求要求 Ack，则按原文发 Reception control Ack（Message Type=2、Source=0、Message Name=MCV2）；告知用户接收将结束，可提供原因，要求丢弃剩余缓存并停止显示，再发送 MRE Response。若 Receive Media Indicator 有 B-bit=1，还须通知广播类型，随后进入 terminated。",
+      "printed_pages": [
+        50,
+        100
+      ],
+      "limitations": [
+        "触发前提是服务器已作出停止该 participant 下行的决定；本页不把任何接收者 MRE Request 或某包丢失自动视为这一决定。",
+        "客户端本条把 Ack 条件引用写为 §8.3.2，并称 Reception control Ack、MCV2；其他相邻条文用 Transmission control Ack/§9.2.2.1。本页保留原字段/引用，不默改成相邻条文格式。",
+        "停止该接收者的下行与停止广播源、向全体接收者停流不同；没有从该条推出全组已结束。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v19.2.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124500_124599/124581/19.02.00_60/ts_124581v190200p.pdf",
+          "clause": "6.3.7.4.8;6.2.5.5.5",
+          "printed_pages": [
+            50,
+            100
+          ]
+        }
+      ],
+      "source_id": "3gpp-ts-24.581-v19.2.0"
+    },
+    {
+      "id": "broadcast-basic-terminated-also-moves-general-reception-to-call-releasing",
+      "clause": "6.2.5.8.1;6.2.5.9.1/.9.2;6.2.2",
+      "conditions": [
+        "客户端某 basic reception 实例实际进入 U: terminated，且该 session 从开始即作为 broadcast group call 建立。可由已列 MRE Response、达到 T104/C104 上限或服务器 MRE Request 处理触发。"
+      ],
+      "conclusion": "进入 terminated 时 SHALL 删除该 basic reception 实例；对从开始即广播的 session，还 SHALL 指示 general reception 状态机进入 Call releasing。因此广播不能套用“只删除一个源实例而 general 一直留在 reception controller”的普通分支。Call releasing 仍在等待应用/信令最终完成断开；收到该层 release step2 后，才释放本 call 资源与计时器、终止全部 basic reception 实例，并将 general 回到 Start-stop 后终止。",
+      "printed_pages": [
+        34,
+        51,
+        52
+      ],
+      "limitations": [
+        "这是本接收客户端的 general 状态，不是服务器全组 general 仲裁的状态；不能从一个客户端的 Call releasing 推导其他接收者已离开或 CF 已向全体发 BYE。",
+        "媒体可发起 release step1，但应用/信令始终发起 step2。24.281/24.581 在这里没有给出可据以补写全部 SIP 触发时点、超时恢复与竞态的完整回调契约。",
+        "本条件使用 session was initiated as a broadcast group call；只在当前消息有 B-bit=1 不替代这一会话历史条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v19.2.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124500_124599/124581/19.02.00_60/ts_124581v190200p.pdf",
+          "clause": "6.2.5.8.1;6.2.5.9.1/.9.2;6.2.2",
+          "printed_pages": [
+            34,
+            51,
+            52
+          ]
+        }
+      ],
+      "source_id": "3gpp-ts-24.581-v19.2.0"
+    },
+    {
+      "id": "broadcast-transmission-end-notify-alone-is-not-basic-terminated-or-call-release",
+      "clause": "6.2.5.3.4;6.3.7.4.7",
+      "conditions": [
+        "客户端 general reception 处于 U: reception controller 并收到 Transmission End Notify；另作服务器侧对照时，服务器该接收者 basic reception 为 U: permitted to receive，且已停止从另一 participant 接收上行 RTP，或收到 reception 仲裁的 Transmission End Notify。"
+      ],
+      "conclusion": "客户端 general 收到 Transmission End Notify 只要求向用户报告另一用户的媒体发送结束，并保持 reception controller；该条没有直接令 basic terminated 或 general Call releasing。服务器上述接口则向接收者发送含源 SSRC 的 Notify；若源 Audio SSRC 和/或 Video SSRC 在 Active SSRC List 中，且 C9 未达下限，则减 C9；从列表移除其中存在的该源 Audio/Video SSRC；C9 未达下限留 permitted，达到下限转 not permitted。不要把源结束通知、MRE Request 和客户端 basic terminated 三个事件合成一个。",
+      "printed_pages": [
+        47,
+        100
+      ],
+      "limitations": [
+        "这里不是承诺广播源结束后所有接收者仍能无限留在会话，而是限定该条 Notify 的直接动作；其他真实事件仍可进入 MRE/信令释放路径。",
+        "Active SSRC List/C9 是服务器关联接收者的状态，不是客户端 basic 实例计数，也不是全组成员数；不能据 C9=下限判断 CF 必须因“只剩一人”释放。",
+        "未补源端 End Request 到所有接收者通知的完整内部调度，也不把客户端收到 Notify 作为实际接收到此前全部 RTP 的证明。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v19.2.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124500_124599/124581/19.02.00_60/ts_124581v190200p.pdf",
+          "clause": "6.2.5.3.4;6.3.7.4.7",
+          "printed_pages": [
+            47,
+            100
+          ]
+        }
+      ],
+      "source_id": "3gpp-ts-24.581-v19.2.0"
+    }
+  ],
+  "limitations": [
+    "不重做准入、required/TNG1、缓冲、Mode0建立或发送权限。未研究离网广播结束消息、升级广播、完整内部仲裁调度、所有 SIP 失败及安全编码。"
+  ],
+  "related": [
+    "broadcast-call-exit.md",
+    "broadcast-media-roles.md",
+    "private-call-client-release.md",
+    "server-reception-permission.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": true,
+    "independent_source_review": true
+  },
+  "standard_stage": 3
+}

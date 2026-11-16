@@ -329,3 +329,9 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 - [MCData 紧急告警发起：用户许可、目标组与本地状态](topics/mcdata/emergency-alert-origination.md)
 - [MCData 告警准入与结果：请求型隐式归属、CF 接受和成员通知](topics/mcdata/emergency-alert-admission-and-results.md)
 - [MCData 自身告警取消：独立许可、匹配反馈与不回滚归属](topics/mcdata/emergency-alert-self-cancellation.md)
+
+
+### MCVideo 广播结束链
+
+- [MCVideo广播退出与发送结束：BYE、CF策略和发送侧状态](topics/mcvideo/broadcast-call-exit.md)
+- [MCVideo广播接收结束：停止单源为何还会进入Call releasing](topics/mcvideo/broadcast-reception-ending.md)
