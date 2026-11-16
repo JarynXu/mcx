@@ -1,0 +1,97 @@
+# MCData 授权预告释放：延期决定归属与接口边界
+
+同版§13.2.6，授权参与用户是释放过程发起者，原通信发起者是收到预告并可求延期的一方；CF负责权限检查、转发和实际释放。本文以已有普通SDS session与HTTP FD为例，逐段条件成立才使用其结论。
+
+这是授权者先预告的分支，不是CF独自按本地策略决定延期。媒体用INFO与对话/包匹配，HTTP用MESSAGE和文件传输标识；两类载荷及字段不可互换。
+
+本版客户端与CF入口类型、HTTP caller和转发字段存在具体不一致。以下保留可核的局部处理义务与选择权，不将各handler拼成已证明的端到端实现。
+
+## 媒体预告与CF入口类型冲突
+
+适用条件：授权用户选择媒体通信预告释放；比较§13.2.6.2.2.1发送与§13.2.6.2.4.1 CF接收。
+
+客户端在对应dialog内生成带g.3gpp.mcdata-com-release包、关联signalling MIME和自身client-id的INFO，类型设INTENT TO RELEASE；需要剩余量时可带REMAINING AMOUNT OF DATA查询，Reason可带。但CF的授权检查入口写AUTH USER RELEASE REQ，而§15.2.20把这两个类型编码为不同值。CF在其实际授权入口满足时，配置校验失败回403停止，成功回200后调用服务器预告helper并复制收到的Reason；这不能证明客户端所发INTENT已自动满足该入口。
+
+- 发送小节opening仍写without prior indication，与本节标题/general及INTENT类型不同；不静默删改，也不据此把整段改作无预告流程。
+- CF SHOULD保存释放发起者信息；原通信发起者与这位授权者不因此合并。
+- PF从授权客户端收到INFO时SHOULD调用§13.2.4.3.2，反向从CF收到时SHALL调用§13.2.4.3.1；403有专门回传。Reason从客户端到CF仍缺PF显式复制义务，不能因CF复制到出站而保证全程保真。
+
+依据：§13.2.6.1;13.2.6.2.2.1;13.2.6.2.4.1;13.2.4.4.1;15.2.20;13.2.6.2.3.1/.2;13.2.4.3.1/.2，印刷页 334、335、342、343、344、345、371。
+
+## 延期决定归属授权释放者
+
+适用条件：相关预告处理已进入已定义的媒体资料/延期入口；CF不是该释放过程的发起者。每段INFO均满足其dialog、g.3gpp.mcdata-com-release包及关联payload/signalling MIME条件。
+
+CF对收到的剩余资料或延期请求先回200，并SHOULD转给发起此次释放的授权用户。资料转发复制Number of payloads及每个Payload；授权客户端对资料先回200再保存。授权客户端收到类型EXTENSION REQUEST后先回200，再把延期请求及先前资料呈现给授权用户；随后依据该用户决定生成EXTENSION RESPONSE，写ACCEPTED或REJECTED。这里的选择权不自动回到CF本地策略，任一资料/请求200也不等于同意延期。
+
+- CF两段转发的目标XML步骤写在outgoing SIP INVITE中，但同段生成/发送的是INFO；生成主体还写MCData client。资料转发生成步骤未明确加入Info-Package头，而授权客户端接收要求该头。保留这些不一致，不补全正确报文。
+- 客户端§13.2.6.2.2.3将应答回指13.2.6.2.4（实际为CF procedures），实际发送小节为13.2.6.2.2.4；本条分别按实际两段行为陈述，不把错引当作完整调用证明。
+- 此处CF延期请求接收段未像服务器主导§13.2.4.4.3那样显式解码核EXTENSION REQUEST并停止TDC3；入口包/MIME不能被额外改成正文未列的默认值。不能由“已转授权者”推导TDC3停止或无限等待用户。
+
+依据：§13.2.6.2.4.2/.3;13.2.6.2.2.2–.4;15.2.21，印刷页 343、344、345、346、371、372。
+
+## 转交决定与本分支释放时点
+
+适用条件：CF收到同dialog、对应包及关联signalling MIME中的COMMUNICATION RELEASE，类型EXTENSION RESPONSE；CF不是本次释放发起者。
+
+CF先对授权者的结果INFO回200，随后SHOULD把决定转给原通信发起者，并在生成过程中复制授权客户端的决定字段，而不是重新按自己的本地策略选择。§13.2.6.2.4.4末尾写：给原发起者发送结果后，若授权用户拒绝延期则调用BYE释放helper。这个明确触发点是发送结果后，不是本段明文要求先收到原发起者的结果200。
+
+- 被调服务器结果helper§13.2.4.4.4另写在收到结果200后、若CF决定拒绝才释放；caller却依据授权用户拒绝并在发送后释放。两段时序/决策主体没有在本节协调，不将其改成单一已验证等待算法。
+- 正文称extension request type IE，而定义§15.2.21标题为Extension response type；本页保留字段命名差异，用ACCEPTED/REJECTED区分具体决定。
+- 接受延期没有指定延长时长，拒绝与实际各段BYE/资源完成仍要分开观察；不把授权者回应200当成全组结束。
+
+依据：§13.2.6.2.4.4;13.2.6.2.2.4;13.2.4.4.4;13.2.2.2.4.4;15.2.21，印刷页 329、335、336、343、344、346、371、372。
+
+## HTTP预告授权及回指缺口
+
+适用条件：授权用户选择HTTP FD预告释放，比较§13.2.6.3.2.1发出请求与§13.2.6.3.4.1 CF实际接收条件。
+
+客户端按§13.2.1.2生成FD HTTP TERMINATION，类型为INTENT TO RELEASE COMM OVER HTTP，并携带先前MESSAGE取得的controller-psi和自身client-id。CF接收段却写INTENT TO RELEASE FOR COMM OVER HTTP；其实际校验分支按配置检查用户，未授权回403停止，授权回200。随后caller回指§13.2.4.5.3.1，这实际是O-PF处理而非CF发送预告；因而不能仅凭该200断言原主叫已收到预告，或自动开始服务器预告的TDC3。
+
+- §15.2.22只有不含FOR的INTENT枚举；发送opening仍说without prior indication。CF身份字段也写mcdata-calling-userid，区别于O-PF的mcdata-calling-user-id。不得静默统一这些文字后声称已互通。
+- CF SHOULD保存释放发起者信息，并要求复制入站Reason，但上述caller没有闭合它如何发预告。正常PF身份绑定和路由检查仍适用。
+- 客户端对200、403/404的用户反馈为SHOULD；本CF授权段没有像无预告§13.2.5.3.4.1那样列三元匹配404分支，不能直接复制过去。
+
+依据：§13.2.6.3.1;13.2.6.3.2.1;13.2.6.3.4.1;13.2.1.2;13.2.4.5.3.1;15.2.22，印刷页 326、337、346、347、348、349、372。
+
+## HTTP延期决定和独立终止结果
+
+适用条件：实际进入§13.2.6.3的延期处理段；CF不是释放过程发起者。HTTP客户端的入站含FD HTTP TERMINATION及对应Termination information type，各段前置身份/路由条件另行满足。
+
+授权客户端收到EXTENSION REQUEST FOR COMM OVER HTTP后回200并交用户决定，再用MESSAGE发送EXTENSION RESPONSE FOR COMM OVER HTTP及ACCEPTED/REJECTED。CF的结果接收段对该类型回200，并SHOULD把授权者决定复制给原通信发起者；文字随后规定发送给原发起者后，若授权者拒绝便执行HTTP停止。另有面向授权者的TERMINATION RESPONSE成功/失败结果，生成helper为SHOULD。原发起者的延期决定与授权者的终止结果是不同消息，均不能由请求200代替。
+
+- CF的延期请求接收段§13.2.6.3.4.2却要求COMMUNICATION RELEASE及Comm release information type=EXTENSION REQUEST FOR COMM OVER HTTP；媒体类型表15.2.20没有该值，真正HTTP客户端发FD HTTP TERMINATION。其转发出站才写HTTP终止消息，因此不能把CF接收类型静默修成HTTP并称链已闭合。
+- CF转发延期结果回指13.2.4.2.3.2；同版目录/正文§13.2.4.2.3为客户端接收媒体结果，无该子小节。保留不可用的生成回指，不替换为13.2.4.5.4.3。
+- 出站授权目标XML有覆盖，但被调服务器生成§13.2.1.1的Request-URI仍写 originating MCData ID user 所属PF；本次转发没有明列两处用户身份如何对应或PF路由覆盖。只核授权用户是业务接收者，不把这一未展开身份关系修成已验证的跨用户转发。
+- 此分支写发送结果后拒绝即停止，不搬服务器自行决定§13.2.4.5.4.3的“收到结果200后”条件。HTTP的Extension response type适用性措辞差异继续保留。
+- 未给ACCEPTED的时长、文件可用期刷新、TDC3完整协调、物理删除或全员结果确认算法。
+
+依据：§13.2.6.3.2.2–.4;13.2.6.3.4.2/.3;13.2.3.3.4;6.3.6.1;13.2.2.3.2.1.2;15.2.20–.23;13.2.1.1;13.2.4.2.3;13.2.4.5.4.3，印刷页 98、325、326、330、332、333、334、338、347、348、349、350、371、372、373。
+
+## 证据边界
+
+- §13.2.6.2.1列SDS、媒体FD和IPCONN，但所调服务器预告总则§13.2.4.1只列SDS/媒体FD；本页不据此扩成IPCONN预告闭环。
+- 具体字段/回指缺口必须与业务判断一同使用，不能只摘“支持授权预告”作为可直接实现结论。
+
+## 按需继续
+
+- [session-release-extension](session-release-extension.md)
+- [http-fd-release-extension](http-fd-release-extension.md)
+
+[3GPP TS24.282 V19.7.0 / ETSI TS124282 V19.7.0 (2026-08)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf)；仅本版本。
+
+## 原文差异
+
+§13.2.5.3.4.1;13.2.6.3.4.1 versus10.2.4.3.1 step11：授权CF接收写mcdata-calling-userid；O-PF实际写mcdata-calling-user-id。 保留字段拼写差异，授权对象不改成原通信发起者或任意client-id。
+
+§13.2.1.2;13.2.5.3.4.1;13.2.6.3.4.1/.3 versus15.1.11/.13：多处FD HTTP TERMINATION仍回指15.1.11，实际定义在15.1.13。 按实际消息名称/表定位，同时保留回指不一致，不声称编码验证。
+
+§13.2.6.2.2.1 versus13.2.6.2.4.1;15.2.20：预告客户端发INTENT TO RELEASE，CF授权检查却以AUTH USER RELEASE REQ为条件；opening还写without prior indication。 不能无条件串联；在实际CF入口满足时才引用授权/后续预告handler。
+
+§13.2.6.2.2.3;13.2.6.2.4.2/.3：客户端应答caller回指CF procedures；CF两段写向outgoing SIP INVITE放目标却实际生成INFO、主体写client，资料INFO未明列Info-Package。 独立核可见收发和决定归属，不默补正确caller/头域/主语。
+
+§13.2.6.2.4.3/.4 versus13.2.4.4.3/.4：授权转发延期请求段未明列TDC3停止；结果caller写发送后且按授权者拒绝释放，被调服务器helper写收到200后且按CF拒绝。 保留具体起停和时点缺口，不拼装唯一等待/释放算法。
+
+§13.2.6.3.2.1/.4.1;13.2.4.5.3.1;15.2.22：HTTP预告CF的INTENT字面多FOR；caller回指O-PF处理，不是CF发预告。 不声称请求200必然触发原主叫预告或TDC3。
+
+§13.2.6.3.4.2/.3;13.2.4.2.3;13.2.1.1;15.2.20/.22：HTTP延期请求接收用媒体消息/类型名；结果生成回指不存在子节；授权用户业务目标覆盖与helper中 originating MCData ID user 所属PF的Request-URI身份关系未被展开。 业务角色可核，编码与路由不闭合；不修复后冒充完整流程。

@@ -79,3 +79,5 @@ O-PF从PAI关联取主叫MCData ID；无绑定或已过期回404/141，找不到
 §10.2.4.4.2 step17a;13.2.3.3.4 step1;12.4.2.1：取消/停止要求FILE DELETED，停止caller还明确写删除文件；被调helper仅生成SIP通知，没有删除API和结果判据。 保留删除义务，区分信令意图/声明与物理完成证明，不由通知类型填出实现。
 
 §15.1.13.1;15.2.21;13.2.4.5.4.3：HTTP消息表/专属过程使用Extension response type，但IE用途句只写Comm release Information type=EXTENSION RESPONSE。 按HTTP专属业务分支解释ACCEPTED/REJECTED，记录字段适用措辞的局限。
+
+原主叫取消不能替代其他用户的专门授权类型和 CF 校验。 [authorized-user-http-release](authorized-user-http-release.md)。

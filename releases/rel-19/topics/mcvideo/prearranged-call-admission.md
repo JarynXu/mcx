@@ -100,3 +100,5 @@ CF从组文档名单中按§6.3.6找 affiliated 成员，只邀请 affiliated �
 - [广播调用入口与额外边界](broadcast-ondemand-admission.md)
 
 需要核归属确认的独立证据，读取[组所有者确认与续期边界](explicit-affiliation-owner-confirmation.md)。
+
+需要区分动态ongoing信息与呼叫准入时，读取[group-dynamic-notification](group-dynamic-notification.md)。

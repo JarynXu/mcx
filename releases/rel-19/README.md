@@ -351,3 +351,7 @@ MCVideo显式归属：[完整组集与结果观察](topics/mcvideo/explicit-affi
 MCVideo隐式归属：[业务候选的建立、完成及取消](topics/mcvideo/implicit-affiliation-lifecycle.md)、[配置触发、N2与owner结果](topics/mcvideo/configured-implicit-affiliation.md)。
 
 HTTP FD控制：[主叫终止](topics/mcdata/http-fd-originator-termination.md)、[服务器停止与文件通知](topics/mcdata/http-fd-server-stop.md)、[预告和延期](topics/mcdata/http-fd-release-extension.md)。
+
+MCVideo组动态数据：[订阅授权与路由](topics/mcvideo/group-dynamic-subscription.md)、[通知字段及与conference的区别](topics/mcvideo/group-dynamic-notification.md)。
+
+MCData授权参与者释放：[媒体通信](topics/mcdata/authorized-user-media-release.md)、[HTTP文件分发](topics/mcdata/authorized-user-http-release.md)、[预告及延期决定边界](topics/mcdata/authorized-user-release-intent-and-decision.md)。

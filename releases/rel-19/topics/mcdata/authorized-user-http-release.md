@@ -1,0 +1,64 @@
+# HTTP FD 授权释放：三元定位与三类结果接收者
+
+同版 §13.2.5.1/.3，已有普通在网 HTTP FD，由原发起者之外、参与通信且获授权的用户要求无预告释放。参与建议仍为 SHOULD，CF 配置授权须另行验证。
+
+本页使用 FD HTTP TERMINATION / SIP MESSAGE，不是媒体 INFO/BYE，也不是原主叫的 TERMINATION REQUEST。客户端已取得对应分发的标识、FILEURL及本节所需输入身份；这些值的上游取得不因本页成立而被默认保证。
+
+直接 CF handler 的行为与通用 HTTP FD 入口分开陈述。前序绑定/资源/格式条件仍按各入口适用；不将通用202与专属200拼成同一已验证事务。
+
+## HTTP授权用户专用请求
+
+适用条件：授权客户端进入 §13.2.5.3.2.1 发起无预告 HTTP FD 释放。
+
+客户端按授权用户专用 §13.2.1.2 生成 SIP MESSAGE，使用 FD ICSI、P-Preferred-Service、服务 PF 的 Request-URI 和目标用户信息。FD HTTP TERMINATION 携带 Conversation ID、Message ID及原FD的同一 FILEURL Payload；本次类型设 AUTH USER TERMINATION REQUEST FOR COMM OVER HTTP，并在 mcdata-info 中带从入站 MESSAGE 取得的 controller-psi 和授权客户端自身 client-id，Reason 可带。原主叫的 TERMINATION REQUEST 类型及主叫身份不能代替这些输入。
+
+- §13.2.1.2 把消息定义回指15.1.11，实际 FD HTTP TERMINATION 在15.1.13；旧回指未被视为编码验证。
+- 本 caller 要从先前入站 MESSAGE 取得 controller-psi，却未在此闭合该消息来源和取得条件。已核普通 FD 下发 §10.2.4.4.1 没有单列设置 controller-psi 的步骤；不能宣称每次普通 FD 自动供齐授权释放所需身份。
+- §13.2.1.2 的 target user 与服务PF、CF PSI 是不同字段；本页不擅自把目标字段统一替换成授权者、原主叫或组ID。
+
+依据：§13.2.5.3.2.1;13.2.1.2;15.1.13;15.2.22;10.2.4.4.1，印刷页 280、281、326、340、341、359、372。
+
+## 权限和三元传输识别
+
+适用条件：CF 实际进入 §13.2.5.3.4.1，mcdata-signalling 含 FD HTTP TERMINATION，Termination information type 为授权用户 HTTP 请求类型。
+
+CF 首先依据配置验证请求用户是否获授权；失败回403并停止。授权成功仍须用 Conversation ID、Message ID和file URL识别传输，无法识别回404/224并停止；匹配后才回200并调用 §13.2.3.3.4 的HTTP停止。权限和“有这条传输”是两道不同条件，不能只凭合法URL就获准释放。
+
+- 此 CF 段身份元素写 mcdata-calling-userid，而 O-PF §10.2.4.3.1 step11 写 mcdata-calling-user-id；保留两端字面差异，不静默证明它们编码相同。成功200的发送对象还写 MCData server，不能由此重建路由。
+- O-PF 按 §10.2.4.3.1 仍做身份绑定、CF选择及11.1；controller-psi 优先路由不免除全部检查。
+- 通用CF §10.2.4.4.2 在step18把非普通TERMINATION REQUEST交13.2.5和13.2.6，但之前steps15/16已回202，且未列二者的选择算法。这里仅核专属handler的200/403/404，不构造同一事务202后再200的实现。
+- 通用入口已有文件存在等检查，可能先拒绝；这里的404/224不是所有失败的唯一结果。
+
+依据：§13.2.5.3.4.1;13.2.5.3.3.1;10.2.4.3.1 steps2–7,11;10.2.4.4.2 steps15–18，印刷页 277、278、279、285、286、341、342。
+
+## 授权者、原主叫与接收者的结果
+
+适用条件：授权HTTP handler已到执行/结果阶段，或授权客户端收到其专属请求响应、另行结果MESSAGE。
+
+HTTP停止helper分别向原通信发起者发TRANSMISSION STOPPED、向参与接收者发FILE DELETED通知。除此之外，CF SHOULD 用§6.3.6.1生成面向授权客户端的TERMINATION RESPONSE，再按释放请求成功与否写RELEASE SUCCESS或RELEASE FAILED并发送。授权客户端对原请求200只SHOULD告知“已接受”，对403/404只SHOULD告知拒绝；收到独立结果则按§13.2.2.3.2.1.2先回200，再按TERMINATION RESPONSE及存在的Release Response Type处理成功/失败。三种接收对象和各自200不能合并成一个全局成功。
+
+- SHOULD调用结果helper与其使用时的结果字段/发送SHALL分别保留；不把所有路径都写成必有第二条业务结果。
+- 原文未给释放成功的存储API或全员确认判据；RELEASE SUCCESS与FILE DELETED不能单独证明文件字节已删除、已下载副本撤回或Message Store对象删除。
+- 这里复用结果接收时交应用和按结果通知用户的独立步骤，不把存在应用ID改成跳过用户结果处理。
+
+依据：§13.2.5.3.2.1/.2;13.2.5.3.4.1 final paragraph;6.3.6.1;13.2.3.3.4;13.2.2.3.2.1.2;15.2.23，印刷页 98、330、332、341、342、372、373。
+
+## 证据边界
+
+- 媒体/存储实现和配置载荷未展开；成功字段不替代物理删除或所有接收者确认。
+- 保留用户字段拼写、旧消息回指和通用分流的具体缺口。
+
+## 按需继续
+
+- [http-fd-server-stop](http-fd-server-stop.md)
+- [authorized-user-release-intent-and-decision](authorized-user-release-intent-and-decision.md)
+
+[3GPP TS24.282 V19.7.0 / ETSI TS124282 V19.7.0 (2026-08)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf)；仅本版本。
+
+## 原文差异
+
+§13.2.5.2.4.1 step4b;13.2.5.3.4.1 step2c：成功200写发向MCData server，而周边CF/PF流程以PF为对应角色。 不据此重建响应路由；只核授权通过后生成/发送200的行为及后续释放调用。
+
+§13.2.5.3.4.1;13.2.6.3.4.1 versus10.2.4.3.1 step11：授权CF接收写mcdata-calling-userid；O-PF实际写mcdata-calling-user-id。 保留字段拼写差异，授权对象不改成原通信发起者或任意client-id。
+
+§13.2.1.2;13.2.5.3.4.1;13.2.6.3.4.1/.3 versus15.1.11/.13：多处FD HTTP TERMINATION仍回指15.1.11，实际定义在15.1.13。 按实际消息名称/表定位，同时保留回指不一致，不声称编码验证。

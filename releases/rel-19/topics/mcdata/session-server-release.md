@@ -63,3 +63,5 @@ CF SHOULD 按 §13.2.2.2.4.4 发送释放，并 SHALL 加入适当的 Reason 文
 §13.2.4.4.4;13.2.4.2.3;15.1.10.1;15.2.21：CF生成过程使用extension request type一词，消息表/客户端/IE标题使用Extension response type；IE用途文字也夹有request。 保留同一接受/拒绝决定的可核语义与字面名称差异，不自行创造新IE，也不声称编码问题已被修复。
 
 §13.2.4.4.1;13.2.4.3.1;13.2.4.2.1 step3 versus13.2.3.2.3：预告CF可带Reason、客户端有原因展示步骤，但中间PF INFO转发明列复制项仅包和MIME；无预告BYE反而明确要求复制Reason。 不保证可选原因跨所有INFO段已由这些条款保证，也不反推PF必须删除Reason。
+
+区分服务器自行释放与另一授权参与者提出的释放。 [authorized-user-media-release](authorized-user-media-release.md)。

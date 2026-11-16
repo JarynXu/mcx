@@ -1,0 +1,134 @@
+{
+  "topic_id": "r19-mcvideo-group-dynamic-notification",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS24.281 V19.3.0第8章MCVideo在网per-group dynamic data的presence订阅：client经serving/O-PF访问拥有目标组的owner/CF。以普通本地组和所列转发入口为范围，不展开跨系统/gateway、NCF、重组/别名操作、优先业务状态转换、离网或完整IMS/RFC实现。可选数据字段的出现不代表这些扩展业务已核实。",
+    "每条claim独立继承本主题common_conditions并叠加自己的conditions，不继承前条成功。本版owner入口存在组ID/用户ID匹配冲突，编码和filter也有拼写/namespace异常，均保留；不把条件条款等同已验证可直接互操作的报文实现。",
+    "这里的组动态数据订阅、显式归属结果观察及conference会话状态订阅是不同入口。获取信息不自动建立归属、加入通话或取得媒体许可；不复制显式归属/会议订阅的完整流程。",
+    "本页MCVideo ICSI指urn:urn-7:3gpp-service.ims.icsi.mcvideo；public service identity简称PSI。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.281-v19.3.0",
+  "claims": [
+    {
+      "id": "mcvideo-dynamic-owner-notifies-group-record-and-client-reads-pidf",
+      "clause": "8.2.2.3.10;8.2.1.6",
+      "conditions": [
+        "owner需按8.2.2.3.10向handled用户的有效订阅通知served组动态变化，且该group ID的owner记录可定位；client接收端另须收到符合8.2.1.6引用过程的per-group dynamic-data PIDF。"
+      ],
+      "conclusion": "owner定位8.2.2.3.2中的组记录，按8.3.1生成per-group dynamic-data PIDF，并要求其中affiliation元素包含expires，再向8.2.2.3.9创建的订阅发送NOTIFY。client收到相应per-group PIDF时，从正文确定该MCVideo组的动态数据。PF的返回转发见group-dynamic-subscription主题。",
+      "printed_pages": [
+        178,
+        202
+      ],
+      "limitations": [
+        "通用PIDF编码中affiliation expires可选，但这个通知过程明确要求包含；不把两种强度混成一条无条件编码规则。",
+        "所核步骤没有给出第9章每次呼叫建立/释放到该通知的逐项发送时点、所有字段变化触发或失败重试算法；本页不承诺固定延迟或收到200后即已收到首份通知。",
+        "本NOTIFY是组动态presence信息，不是显式归属的per-user p-id回执，也不是conference-info。"
+      ]
+    },
+    {
+      "id": "mcvideo-dynamic-pidf-lists-affiliated-users-and-client-identities-not-call-participants",
+      "clause": "8.3.1.2 per-user/per-group dynamic data;8.3.2.2 per-group filters;9.2.3.1;9.2.3.2",
+      "conditions": [
+        "构造或读取8.3.1.2定义的per-group dynamic-data PIDF，限其归属成员相关结构。"
+      ],
+      "conclusion": "presence entity为group ID；每个affiliated用户有一个tuple，tuple id为该用户MCVideo ID。每个tuple下有status，对该用户感兴趣的每个client列affiliation，client属性取MCVideo client ID，通用编码可带该归属的expires。此结构是在组下列用户及client，不是以client ID作tuple id的per-user affiliation格式，也不等于当前已参加某会话的participant名单。",
+      "printed_pages": [
+        203,
+        204,
+        207,
+        208,
+        275,
+        276
+      ],
+      "limitations": [
+        "functionalAlias也是该per-group格式的可选扩展，本页不处理其激活/绑定或把返回别名当新的通话授权。",
+        "filter段把某选项称为“Contact address for all affiliated users”，但所选字段及本编码是client ID；不能未经另核将其当SIP Contact地址、session identity或媒体SSRC。",
+        "归属名单不保证用户已接听、已joined或可发送视频；当前会话participant信息走另一个conference入口。"
+      ]
+    },
+    {
+      "id": "mcvideo-dynamic-status-and-ongoing-fields-are-optional-and-separate",
+      "clause": "8.3.1.2 and Tables8.3.1.2-1/3",
+      "conditions": [
+        "构造或解释per-group dynamic-data PIDF中的groupStatus及additionalData，未扩展到改变优先状态、广播或重组的业务过程。"
+      ],
+      "conclusion": "编码允许可选groupStatus和ModifiedBy，也允许可选additionalData。groupStatus表列in-peril、emergency两值；additionalData schema列可选groupBroadcastAlias/groupRegroupAlias（anyURI）和groupCallOngoing（boolean）。groupStatus不是通话是否进行的同名开关。groupCallOngoing缺失没有在此定义为false；正文列表将该字段拼为groupCallOnoing，而schema与filter写groupCallOngoing，保留差异。",
+      "printed_pages": [
+        204,
+        205
+      ],
+      "limitations": [
+        "本段未定义normal的默认groupStatus值，也未给遗漏ongoing字段时的客户端缓存/清除规则；不自行推值。groupStatus schema底层为string，与ABNF指定值分别保留，不扩为任意自定义状态协议。",
+        "这些可选字段只能描述此数据格式，不能代替别名解析、重组/广播创建或本次INVITE授权。通知新鲜度与完整状态版本控制未在本页验证。"
+      ]
+    },
+    {
+      "id": "mcvideo-dynamic-filter-selects-fields-but-source-xpaths-are-not-repaired",
+      "clause": "8.3.2.2 per-group dynamic data restrictions;8.3.1.2 schema",
+      "conditions": [
+        "client按8.3.2.2为per-group dynamic-data构造application/simple-filter+xml。"
+      ],
+      "conclusion": "filter-set中声明pidf和mcvideoPI10两个namespace绑定；filter有id，不带uri或domain，what下有一个或多个不带type的include。所列选择项分别用于groupStatus、广播别名、重组别名、group-call-ongoing信息及affiliated用户的client字段。只需普通组通话是否进行的读者应定位ongoing这一项，而不是把groupStatus或conference事件当同一数据。",
+      "printed_pages": [
+        204,
+        205,
+        207,
+        208
+      ],
+      "limitations": [
+        "源文include路径把groupStatus、additionalData及扩展属性写成pidf前缀，而schema在mcvideoPresInfo namespace定义这些扩展且filter同时声明了mcvideoPI10；本页不提供悄悄修复namespace的可运行XPath。",
+        "groupStatus选项的原路径终止于ModifiedBy属性；affiliated选项的路径终止于client属性并带status谓词。这里不补RFC滤器语义来保证它们会返回完整状态文本或真实SIP联系地址。",
+        "所列路径没有显式选择某group ID的entity谓词；与client“指明group ID”及owner入口匹配条件之间的完整编码关系未闭合。保留字段选项的意图，不称完整筛选报文已验证。"
+      ]
+    },
+    {
+      "id": "mcvideo-dynamic-ongoing-observation-does-not-replace-conference-or-call-admission",
+      "clause": "8.2.1.6;8.3.1.2;9.2.1.4.2 step9;9.2.3.1;9.2.3.2",
+      "conditions": [
+        "读者已获得某组的dynamic-data通知，拟用于普通在网预安排组呼相关操作；比较范围为第8章信息观察与已核第9章普通会话入口。"
+      ],
+      "conclusion": "动态订阅面向group ID，经PF PSI路由并接受PIDF；conference订阅则针对client已参与、正在进行且非broadcast的组会话，SIP Request-URI为session identity，Accept为conference-info。普通预安排CF仍在处理INVITE时独立以“已分配session identity且session active”判断ongoing。dynamic-data的可选ongoing布尔信息不能代替这些会话身份、参与条件或呼叫准入，也没有自动发INVITE/取得媒体许可的步骤。",
+      "printed_pages": [
+        177,
+        178,
+        204,
+        205,
+        228,
+        275,
+        276
+      ],
+      "limitations": [
+        "这是一项入口区分，不重复conference完整授权/通知或预安排初建/重入算法。观察到true并未在该PIDF格式中同时提供可直接用于conference订阅的session identity。",
+        "不把动态数据订阅受理条件扩大为无需权限，也不据普通conference的非broadcast限制推断广播组绝不能使用第8章动态订阅；两入口各按实际条件。"
+      ]
+    }
+  ],
+  "limitations": [
+    "可选字段、省略值、过滤namespace与精确通知时点不能靠常识补全；本页不提供修正后的XPath实现。"
+  ],
+  "related": [
+    "group-dynamic-subscription.md",
+    "explicit-affiliation-request.md",
+    "conference-subscription.md",
+    "conference-state-notification.md",
+    "prearranged-call-admission.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": true,
+    "independent_source_review": true
+  },
+  "standard_stage": 3,
+  "source_anomalies": [
+    "8.2.2.3.9入口5要求filter的MCVideo group ID等于calling-user-id；PF该字段装originating用户ID，owner step2也将其解释为handled用户。未改成request-uri。",
+    "8.2.2.2.16入口MIME缺+xml、SUBCRIBE拼写和重复step4；路由主步骤是CF，注释却称terminating function/target user。",
+    "8.2.2.3.9订阅期间通知对象写served MCVideo ID，下一通知专段是served group ID；RFC编号也有3903[37]等差别，未移用作新处理算法。",
+    "8.3.1.2叙述groupCallOnoing与schema/filter groupCallOngoing不同；groupStatus schema string与ABNF两值分开记录。",
+    "8.3.2.2 per-group filter把MCVideo扩展节点/属性写pidf前缀；groupStatus路径取ModifiedBy，affiliated Contact address选项取client属性及status谓词；不静默修XPath或联系人类型。",
+    "per-group filter所列路径不显式嵌入group-ID entity选择，与client和owner入口所称group ID匹配关系未闭合。"
+  ]
+}
