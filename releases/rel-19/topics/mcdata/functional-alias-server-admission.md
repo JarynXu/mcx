@@ -1,0 +1,59 @@
+# 功能别名服务器准入：用户身份、owner 许可与两段 200
+
+限TS24.282V19.7.0普通非take-over功能别名状态变更；只讨论一个served MCData用户和一个handled别名，不展开代表其他用户修改或多用户批处理。
+
+serving server指服务MCData用户的服务器，owner指拥有该功能别名的服务器；两者是功能角色，即使在同一系统也不能合并身份字段、授权与事务结果。
+
+各接收过程须满足Request-URI、MCData服务标识、presence事件及相应mcdata-info/PIDF body的入口条件；下列错误和记录动作不用于所有格式错误报文。
+
+## 用户身份和发布期限的服务端检查
+
+适用条件：客户端PUBLISH进入服务本用户的originating PF路径，满足22.2.2.2.3入口条件。
+
+服务用户服务器从mcdata-request-uri识别served MCData ID，从P-Asserted-Identity公共用户身份识别originating MCData ID。两ID不同，或originating用户无权修改served用户的别名状态时，须403并停止；不是只要报文自报served ID就可修改。Expires缺失，或非零但小于4294967295时，须423并带Min-Expires=4294967295，随后停止。零值另走停用候选期限分支，不属于这一非零过短拒绝。
+
+- 保持本段拒绝条件的OR，不把“ID相同”写成充分授权。终接PF路径的身份来源另有规定，本条不扩展它。
+- candidate interval按RFC3903确定，本批未读取该依赖，不从最大请求值推导永不过期或补完整ETag/刷新处理。
+
+依据：§22.2.2.2.3 opening and steps1,2,4–7，印刷页 480。
+
+## owner激活许可与容量
+
+适用条件：服务用户服务器向handled别名关联的CF/owner发PUBLISH；owner入口条件满足，普通激活请求不含接管。
+
+这一跳的mcdata-request-uri是别名ID，mcdata-calling-user-id是served用户ID，P-Asserted-Identity则是发出请求的服务器PSI；不能把三者当成同一身份。owner对Expires缺失或非零低于4294967295返回423/Min-Expires并停止，别名不存在则403。激活时，原文4a把“用户不匹配mcdata-user-list任一项”与“无本地策略授权该请求”用OR连接为403拒绝条件，不能改写成名单或本地策略任一通过即可。激活数量恰等于max-simultaneous-activations时也403并停止。
+
+- 容量条件是equal，未把它替换成大于等于，也未为已有激活的刷新自行增加豁免。缺失配置的默认值或越界数量处理未核。
+- 只读本版明确的OR条件，不依据Stage1政策或其他Release静默改成AND。
+- owner PSI的发现和跨域网关路由在原文另标范围外；本页不补解析算法。
+
+依据：§22.2.2.2.6 steps1–6;22.2.2.3.3 opening and steps1–5，印刷页 484、491。
+
+## owner的200与后续记录更新
+
+适用条件：owner未在前置检查拒绝，进入22.2.2.3.3步骤7之后。
+
+owner先返回带selected expiration的PUBLISH200，之后才检查presence.entity是否为served别名ID、tuple.id是否与handled MCData ID一致；任一不符就停止后续处理。通过这些检查后，非零selected expiration分支找到或插入该handled用户在别名下的条目并设置期限；零值分支另有移除条目步骤。最后识别p-id-fa并调用owner通知过程。因此客户端侧serving200与这一跳owner200都不是已经完成全部状态更新或客户端已获知结果的充分证据。
+
+- 零值分支step11字面使用served MCData ID，而此前输入识别为handled MCData ID；保留该变量差异，不默认为已经证明两者总是同一对象。
+- 不把200后的entity/tuple失败改成200前403，也不补第二个最终响应。
+- selected expiration的完整选择规则依赖RFC3903，未核；记录写入也不证明通知已收到或客户端已完成处理。
+
+依据：§22.2.2.3.3 steps7–14;22.2.2.2.3 steps8,9，印刷页 480、491、492。
+
+## 证据边界
+
+- 不覆盖take-over授权、共享容量并发一致性、所有SIP解析失败或跨域身份信任建立。
+
+## 按需继续
+
+- [functional-alias-owner-observation](functional-alias-owner-observation.md)
+- [functional-alias-change-request](functional-alias-change-request.md)
+
+[3GPP TS 24.282 V19.7.0 / ETSI TS 124 282 V19.7.0 (2026-08)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf)；仅本版本。
+
+## 原文差异
+
+- §22.2.2.2.3 step12a(ii),15c：客户端接入后的现有deactivating/deactivated条目在step12a(ii)被写为activated，但step15c触发外发时要求candidate为activating。 普通全新activating与明确列出的通知分支可分别核验；不据此补完整重复激活/重新激活状态机或静默统一状态。
+- §22.2.2.2.6 NOTE1 and step10：NOTE1不支持一条PUBLISH携多个served用户的状态变化；step10却用all served MCData user IDs描述body集合。 本批限定单一served用户和单一handled别名，不扩展成多用户批处理接口。
+- §22.2.2.3.3 step11 versus steps2,12：零selected expiration移除分支写served MCData ID，前文识别与非零更新使用handled MCData ID。 记录变量差异，不能静默把零值分支的删除目标改写成一个已核验的同名变量。

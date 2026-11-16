@@ -1,0 +1,136 @@
+{
+  "topic_id": "r19-mcdata-functional-alias-owner-observation",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "限serving server为一个served用户观察一个handled别名在owner的状态；不同于客户端订阅自己的per-user别名列表。",
+    "下列状态转移要求收到按22.3.1构造的per-functional-alias PIDF通知，并满足对应本地条目的状态、别名ID、用户ID和未到期条件；不得只看一段200或任意条目缺席。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.282-v19.7.0",
+  "claims": [
+    {
+      "id": "owner-observation-is-a-separate-authorized-per-user-subscription",
+      "clause": "22.2.2.2.7 initial SUBSCRIBE;22.2.2.3.4 opening and steps1–3,5,6;22.3.2.2",
+      "conditions": [
+        "serving server要确定该served用户是否已在owner成功激活handled别名。"
+      ],
+      "conclusion": "serving server另向别名关联的CF/owner发送SUBSCRIBE，mcdata-info分别携别名ID和served用户ID，并用simple-filter限制到该用户；owner入口要求filter所指用户与mcdata-calling-user-id相同。请求当前和后续状态的Expires为4294967295，只取当前为0。owner对缺失或非零过短Expires要求423/Min-Expires；本地策略不允许该用户获得此别名通知时403并停止。通过后返回SUBSCRIBE200，并在订阅期间通知相关状态变化。修改获准不自动替代这段观察授权。",
+      "printed_pages": [
+        485,
+        486,
+        492,
+        493,
+        497,
+        498
+      ],
+      "limitations": [
+        "本版明确不支持一个SUBSCRIBE观察数个served用户的此类状态；本条不扩为批量订阅。",
+        "22.2.2.3.4 step4的不存在别名分支把响应对象写成PUBLISH而非当前SUBSCRIBE；不静默改成已确认的SUBSCRIBE错误映射。",
+        "未核RFC4661过滤器转义、完整presence订阅生命周期或自动建立此订阅的调度时点；不能假定PUBLISH自动创建观察通路。"
+      ]
+    },
+    {
+      "id": "matching-owner-entry-confirms-activation-only-for-live-activating-local-state",
+      "clause": "22.2.2.2.7 NOTIFY handling step1;22.2.2.3.5 step3a",
+      "conditions": [
+        "owner NOTIFY含对应served用户的tuple.id、status下functionalAlias以及其expires属性；serving本地存在相同handled别名、该用户、状态activating且未到期的条目。"
+      ],
+      "conclusion": "满足这些条件时，serving将本地条目置为activated，并按当前时间加上到别名到期时间差的一半设置next publishing time。owner通知过程要求携别名expires；这是owner状态证据参与本地确认，而不是把PUBLISH200直接映射成activated。这里的未到期条件检查本地条目，不能只看到通知中有一个同名别名就改任意状态。",
+      "printed_pages": [
+        486,
+        487,
+        493
+      ],
+      "limitations": [
+        "本分支没有明确把本地expiration time一并替换为收到的expires；不自补该赋值。",
+        "next publishing time是被记录的下一发布时点；所核步骤未给出完整定时调度、重试或每轮自动刷新算法，不能说设了中点就保证续期成功。",
+        "不把本条推广为通知中缺expires也可确认，或本地已过期的activating条目也必须转activated。"
+      ]
+    },
+    {
+      "id": "owner-notify-omission-has-state-specific-correlation-guards",
+      "clause": "22.2.2.2.7 NOTIFY handling steps2,3",
+      "conditions": [
+        "serving收到相应owner通知，但通知中没有该served用户的匹配tuple/functionalAlias结构；本地handled别名条目仍未到期。"
+      ],
+      "conclusion": "本地条目为activated或deactivating时，§22.2.2.2.7 step2要求置为deactivated，并把本地期限设为当前时间。若本地仍是activating，step3另要求NOTIFY带p-id-fa，且它与该条目的activating p-id-fa相同，才用同样动作处理缺席。因此“未出现在通知里”不是一条无条件通用失败规则；首次激活等待中的条目尤其不能略掉请求关联检查。",
+      "printed_pages": [
+        487,
+        488
+      ],
+      "limitations": [
+        "须保留别名ID、served用户、原状态和本地未到期这些共同条件；不拿其他别名或其他用户的通知清除当前状态。",
+        "本条的缺席判定在serving收到owner的per-functional-alias通知时使用，不等于客户端收到per-user列表时可以推断同一失败原因。",
+        "状态改变不携一个本节未定义的原因码，本批不把所有缺席归因为容量不足、权限失败或用户主动停用。"
+      ]
+    },
+    {
+      "id": "two-publish-hops-do-not-share-a-proven-single-p-id-mapping",
+      "clause": "22.2.2.2.3 steps12a(ii),12c(iv);22.2.2.2.6 steps7,9,10;22.2.2.3.5 step3b;22.2.2.2.7 NOTIFY step3",
+      "conditions": [
+        "客户端PUBLISH已生成p-id-fa，serving再按22.2.2.2.6向owner发PUBLISH并等待状态观察。"
+      ],
+      "conclusion": "serving发送owner PUBLISH时另生成全局唯一的current p-id-fa，写入这一跳的PIDF。只有匹配的本地activating条目尚未设置activating p-id-fa时，才把该值写入条目；而客户端接入分支可已从客户端PUBLISH设置这个字段。owner由PUBLISH触发通知且识别了handled p-id-fa时回填收到的值。必须按各段字段和匹配条件判断，不能默认客户端、serving发布和owner通知永远共享一个端到端同值关联标识。",
+      "printed_pages": [
+        481,
+        482,
+        484,
+        485,
+        487,
+        493
+      ],
+      "limitations": [
+        "本批所核步骤未给出两跳p-id的完整映射/重关联算法；不为解决可能的不匹配而自行覆盖已设置值。",
+        "上述限制影响能否将缺席归因于某次仍在activating的请求，但不能据此宣称所有部署必然失败。",
+        "客户端侧22.2.2.2.5只在由客户端PUBLISH处理过程调用且识别handled p-id-fa时明确回填；不把owner的p-id自动透传到所有客户端NOTIFY。"
+      ]
+    }
+  ],
+  "limitations": [
+    "不重建缺省状态、完整定时器调度、丢通知恢复、跨域关联表或可执行PIDF/filter模型。"
+  ],
+  "related": [
+    "functional-alias-lifecycle-results.md",
+    "functional-alias-observation.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": true
+  },
+  "standard_stage": 3,
+  "source_anomalies": [
+    {
+      "clause": "22.2.2.3.4 step4",
+      "printed_pages": [
+        493
+      ],
+      "issue": "接收SUBSCRIBE的过程在别名不存在分支写拒绝SIP PUBLISH及向PUBLISH响应。",
+      "treatment": "不自行修成SUBSCRIBE错误映射；该条不作为本批的确定错误码结论。"
+    },
+    {
+      "clause": "22.2.2.2.3 step12c(iv);22.2.2.2.6 steps7,9,10;22.2.2.2.7 NOTIFY step3",
+      "printed_pages": [
+        482,
+        484,
+        485,
+        487
+      ],
+      "issue": "客户端接入可先写activating p-id-fa，owner跳又生成新的current p-id，只有字段未设置才写入；缺席通知却需与activating p-id相等。",
+      "treatment": "分别保留各段赋值/匹配条件，未核到完整两跳映射，不补强制覆盖或关联修复。"
+    },
+    {
+      "clause": "22.2.2.2.7;22.2.2.3.4;22.3.1.2",
+      "printed_pages": [
+        486,
+        487,
+        493,
+        495,
+        496
+      ],
+      "issue": "观察方正文Events与接收方Event拼写不同；PIDF语法段与schema的属性挂载/拼写差异已在客户端稿保留。",
+      "treatment": "沿用证据边界，仅描述角色/状态含义，不提供通过XML或SIP解析验证的样例。"
+    }
+  ]
+}

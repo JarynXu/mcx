@@ -71,3 +71,5 @@ candidate expiration非零时，已存在且尚未到期的别名若本次仍列
 - §22.2.2.2.3 step13;22.3.1.2 table22.3.1.2-1：step13状态文字为de-activating，表中枚举为deactivating。 解释为原文列表停用过渡处理时保留拼写差异，不增加一个新的wire状态值。
 - §22.2.1.2 step6c;22.3.1.2 per-user steps7–9 and table22.3.1.2-1：客户端用functionalalias小写，语法段有fucntionalAlias拼写；per-user step9说status属于functionalAliasID元素，schema则将status定义为functionalAliasType的属性。 正文只保留状态/字段业务用途并定位差异，不冒充该文本已通过XML schema一致性或实现验收。
 - §22.2.2.2.3 step12a(ii),step15c：step12a(ii)对现有deactivating/deactivated条目写回activated，step15c后续触发条件则要求candidate为activating。 本批未据此重建完整服务器状态机，列表影响claim只使用没有此冲突的过期更新及遗漏条目分支；不把两处静默统一。
+
+- [后续服务器条件与证据](functional-alias-server-admission.md)

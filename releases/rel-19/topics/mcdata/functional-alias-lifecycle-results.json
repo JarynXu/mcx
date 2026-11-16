@@ -1,0 +1,89 @@
+{
+  "topic_id": "r19-mcdata-functional-alias-lifecycle-results",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "限普通非接管功能别名生命周期，分开serving本地条目、owner持有的用户关联和客户端可见per-user通知。",
+    "若要让客户端观察结果，客户端观察通路必须另行建立并在有效期内；服务端数据改变和对端已处理通知不是同一事件。服务端本地清理不以客户端订阅为前提。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.282-v19.7.0",
+  "claims": [
+    {
+      "id": "owner-publication-failure-cleans-local-entry-without-proving-owner-rollback",
+      "clause": "22.2.2.2.6 final failure handling",
+      "conditions": [
+        "serving为served用户/handled别名向owner发送激活或停用PUBLISH。"
+      ],
+      "conclusion": "若该PUBLISH的timer F到期，或收到3xx、4xx、5xx、6xx响应，§22.2.2.2.6要求移除served用户本地列表中对应handled别名的条目。这个动作不等于已经向owner成功提交撤销，也不证明owner先前的激活关联已被回滚；尤其本地超时不能独立证明远端未处理请求。",
+      "printed_pages": [
+        485
+      ],
+      "limitations": [
+        "这里只按本条明列的响应类和timer F处理，不把所有1xx、所有2xx或任意网络事件统一写成失败清理。",
+        "未核RFC3903/RFC3261重试、重定向或幂等恢复；不因3xx列入这里而另发规范未授权的重试算法。",
+        "本节没有在这一失败段返回客户端第二个PUBLISH最终响应，也未携专门业务拒绝原因；不补。"
+      ]
+    },
+    {
+      "id": "owner-expiry-or-admin-trigger-removes-association-and-notifies",
+      "clause": "22.2.2.3.2;22.2.2.3.6;22.2.2.3.5",
+      "conditions": [
+        "owner因关联到期等内部触发，或管理员经标准范围外机制触发，要自动停用一个目标MCData用户的别名关联。"
+      ],
+      "conclusion": "§22.2.2.3.6要求从相应功能别名条目的用户列表移除目标MCData ID，再调用§22.2.2.3.5通知过程。这是owner改变用户与别名的关联，不是只更改客户端显示。管理员触发机制本身不在标准范围内；自动到期路径也不依赖客户端恰好同时发来停用PUBLISH。",
+      "printed_pages": [
+        490,
+        493,
+        494
+      ],
+      "limitations": [
+        "通知仍受已有订阅和其目标上下文约束，不把调用通知过程说成所有客户端立即都已收到。",
+        "本条没有展开owner的时钟实现、到期竞态或删除后缺席结构的完整PIDF生成算法；收到通知后的状态处理仍按上一页的匹配条件。",
+        "owner主动停用不等于删除功能别名本身，也不等于结束所有使用过该别名的SDS、FD或IPCONN会话。"
+      ]
+    },
+    {
+      "id": "client-observation-reflects-serving-state-not-a-forwarded-owner-result-code",
+      "clause": "22.2.2.2.4 final paragraph;22.2.2.2.5;22.2.1.3 NOTIFY handling",
+      "conditions": [
+        "serving的用户别名信息发生改变，且客户端对该served用户的状态订阅仍有效。"
+      ],
+      "conclusion": "§22.2.2.2.4规定订阅期间通知served用户信息变化，§22.2.2.2.5则从serving自己的列表生成per-user PIDF，并排除已过期或deactivated条目。客户端因此观察到的是这段订阅所呈现的状态，不是owner200、403或NOTIFY的无条件原样转发。正向activated状态、被过滤后的缺席和p-id关联各有边界，不能把客户端看到的缺席唯一解释为一次主动停用成功或某个特定owner拒绝原因。",
+      "printed_pages": [
+        479,
+        483
+      ],
+      "limitations": [
+        "22.2.2.2.7列出本地状态更新，但未在每个分支显式逐步调用2.5；本条依据2.4的订阅期通知义务连接业务，不补同步时点、转发顺序或一次owner通知必对应一次客户端通知。",
+        "此结论不把字段缺席等同永久不可再激活，也不把别名已激活等同任意后续MCData通信可达。",
+        "仍未证明跨域完整状态机、XML schema或客户端最终收敛实现通过验证。"
+      ]
+    }
+  ],
+  "limitations": [
+    "未给出自动恢复、跨域事务回滚、重试安全、通知重建或别名与既有通信会话的完整关联生命周期。"
+  ],
+  "related": [
+    "functional-alias-state-evidence.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": true
+  },
+  "standard_stage": 3,
+  "source_anomalies": [
+    {
+      "clause": "22.2.2.2.3 step12c(iv);22.2.2.2.6 steps7,9,10;22.2.2.2.7 NOTIFY step3",
+      "printed_pages": [
+        482,
+        484,
+        485,
+        487
+      ],
+      "issue": "客户端接入可先写activating p-id-fa，owner跳又生成新的current p-id，只有字段未设置才写入；缺席通知却需与activating p-id相等。",
+      "treatment": "分别保留各段赋值/匹配条件，未核到完整两跳映射，不补强制覆盖或关联修复。"
+    }
+  ]
+}

@@ -265,3 +265,9 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 - [MCVideo重入：session identity寻址、加入许可与TC边界](topics/mcvideo/rejoin-session.md)
 - [MCVideo按组ID进入已有呼叫：join检查与Warning123](topics/mcvideo/active-call-entry.md)
 - [MCVideo服务器主动晚进入邀请：触发、接受与媒体许可](topics/mcvideo/server-late-entry.md)
+
+### MCData 功能别名服务器与结果回流
+
+- [功能别名服务器准入：用户身份、owner 许可与两段 200](topics/mcdata/functional-alias-server-admission.md)
+- [功能别名状态回流：owner 订阅、匹配状态与请求关联](topics/mcdata/functional-alias-owner-observation.md)
+- [功能别名失效与对外结果：发布失败、到期和通知边界](topics/mcdata/functional-alias-lifecycle-results.md)
