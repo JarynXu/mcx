@@ -1,0 +1,50 @@
+{
+  "topic_id": "r19-group-creation",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS24.481 V19.3.0; group document creation"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.481-v19.3.0",
+  "claims": [
+    {
+      "id": "creation-address",
+      "clause": "6.3.2.2.1",
+      "page": 15,
+      "conditions": [
+        "GC creation"
+      ],
+      "conclusion": "PUT XML; Request-URI is a users-tree XCAP URI with configured group-creation XUI."
+    },
+    {
+      "id": "creation-rejection",
+      "clause": "6.3.2.3",
+      "page": 16,
+      "conditions": [
+        "GMS handles creation PUT"
+      ],
+      "conclusion": "Determine sender identity. Unauthorized: 403 and stop. XML group/list-service/@uri violates local policy: 409 uniqueness-failure with acceptable alt-value(s), then stop."
+    },
+    {
+      "id": "suggested-id-retry",
+      "clause": "6.3.2.2.2",
+      "page": 15,
+      "conditions": [
+        "GMC receives 409 with uniqueness-failure containing at least one alt-value"
+      ],
+      "conclusion": "May retry using a suggested group ID, not a replacement addressing XUI; not mandatory or successful creation."
+    }
+  ],
+  "limitations": [
+    "Not complete XML, authentication or RFC4825 behavior."
+  ],
+  "related": [
+    "document-access.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

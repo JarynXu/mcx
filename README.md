@@ -4,7 +4,7 @@
 
 ## 阅读入口
 
-- [Release 19](releases/rel-19/README.md)：位置报告、触发覆盖、Rx 重试和组文档授权边界。
+- [Release 19](releases/rel-19/README.md)：位置报告、触发覆盖、Rx 重试、组文档授权和创建。
 - [Agent 使用说明](AGENTS.md)与[版本目录](catalog.json)：按版本和问题逐层定位。
 - [编写与维护约定](CONTRIBUTING.md)：内容、来源和核验状态的含义。
 
