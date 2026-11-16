@@ -23,3 +23,5 @@ NOTIFY按RFC5875处理；更新列表以re-SUBSCRIBE携带逐文档resource-list
 这里只描述请求角色与构造；不提供GMS代理端授权分支或RFC5875完整通知状态机。
 
 [change-subscription](change-subscription.md) · [subscription-refresh](subscription-refresh.md) · [constituent-subscription](constituent-subscription.md) · [结构化条件](server-subscription.json)
+
+- [组文档获取之后的呼叫准入](prearranged-admission.md)

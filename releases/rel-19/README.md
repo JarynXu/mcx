@@ -137,3 +137,5 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 私呼后续处理可按问题继续：[别名解析与300](topics/calls/functional-alias-selection.md)、[转发触发](topics/calls/forwarding-trigger-limits.md)与[MESSAGE路由](topics/calls/forwarding-message-routing.md)、[取消紧急优先级](topics/emergency/private-downgrade.md)、[结束信令](topics/calls/release-signalling.md)、[无话权控制](topics/calls/without-floor-control.md)。这些页面保留各分支条件，不把信令成功等同于接通或全部资源释放。
 
 判断私呼是否完成某一步，可查[回呼确认](topics/calls/callback-confirmation.md)、[转发客户端续呼](topics/calls/forwarding-client-reorigination.md)与[结果报告](topics/calls/forwarding-client-results.md)、[紧急升级](topics/emergency/private-upgrade.md)、[服务器释放链](topics/calls/server-release-chain.md)。每页按消息、角色和当前状态限定成功含义。
+
+普通预安排组呼可从[发起寻址](topics/groups/prearranged-origination.md)进入，按需核对[成员、归属与权限](topics/groups/prearranged-admission.md)、[已有会话加入许可](topics/groups/join-authorization.md)、[确认与人数门槛](topics/calls/group-acknowledged-start.md)、[超时或拒绝](topics/calls/group-acknowledgement-failure.md)、[释放定时器](topics/calls/group-release-timers.md)和[隐式话权请求](topics/calls/implicit-floor-request.md)。这条路径区分准入、信令应答、媒体与话权，不把组密钥或单个成功码当成完整接通证明。

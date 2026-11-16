@@ -47,3 +47,5 @@ GMS可以依据组安全配置更新GMK；这是可选处理，不是每次成�
 [ETSI官方TS33.180 V19.4.0](https://www.etsi.org/deliver/etsi_TS/133100_133199/133180/19.04.00_60/ts_133180v190400p.pdf)，印刷页 61–62；仅本版本。
 
 - [UE密钥保存与清理](ue-key-lifecycle.md)
+
+- [成员、客户端归属与呼叫发起许可](../groups/prearranged-admission.md)
