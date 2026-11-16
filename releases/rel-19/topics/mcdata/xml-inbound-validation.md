@@ -72,3 +72,9 @@ EncryptedData 或规范所述子元素缺失时发送 SIP 403 加 Warning 140 �
 
 - §6.5.3.1;6.5.3.4.1，印刷页 128、129、131：前者规定独立 mcptt-signed MIME body 的签名指向各 XML bodies；后者以 XML MIME body 中有无 Signature 判断保护。不能只取后一语句发明嵌入每个目标 body 的解析规则。
 - §6.5.1.4;6.5.2.4.3，印刷页 124、127：通用入口解密引用元素 helper 6.5.2.4.2，URI helper 有独立条款；该 URI helper 的错误分支未展开。
+
+## TLV信令与用户数据
+
+- [用户 Data 的保护与认证：服务器转发不替代客户端验证](protected-data-client-verification.md)
+
+本组职责依据TS24.282 V19.7.0，不用XML程序替代TLV或用户Data验证。

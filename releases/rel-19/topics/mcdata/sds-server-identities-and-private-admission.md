@@ -81,3 +81,5 @@ T-PF使用mcdata-request-uri中的目标MCData ID查找其public user identity�
 - [xml-inbound-validation](xml-inbound-validation.md)
 
 这些指定程序依据TS24.282 V19.7.0；不从其他安全架构页的可选机制表述推导MCData配置缺项即关闭。
+
+- [授权绑定建立与多客户端](service-authorization-binding.md)

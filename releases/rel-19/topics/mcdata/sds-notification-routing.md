@@ -90,3 +90,11 @@ PF调用6.3.2.1：出站Request-URI为目标MCData用户所绑定的public user 
 - [xml-server-forwarding](xml-server-forwarding.md)
 
 这些指定程序依据TS24.282 V19.7.0；不从其他安全架构页的可选机制表述推导MCData配置缺项即关闭。
+
+## TLV信令与用户数据
+
+- [MCData TLV 信令逐段保护：谁解密，何时为下一段重新加密](tlv-signalling-hop-protection.md)
+
+本组职责依据TS24.282 V19.7.0，不用XML程序替代TLV或用户Data验证。
+
+- [设置刷新、退出与绑定失效](service-settings-validity.md)

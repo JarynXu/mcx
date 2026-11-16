@@ -1,0 +1,71 @@
+# HTTP 文件分发：文件已存、URL 已通知与下载成功
+
+限普通在网 one-to-one 或预安排组 FD using HTTP；直接用户/组目标，不含别名、重组、ad hoc、跨域网关和优先通信扩展。
+
+发送前 §11.1 传输控制已成功，各角色适用的资源、身份、权限和组检查未拒绝；本主题不是完整服务器准入表。
+
+HTTP、SIP 和 FD disposition 分别保留自己的响应与结果含义。只在 claim 指定的角色和步骤判断成功。
+
+## 选择HTTP和取得上传地址
+
+适用条件：发送用户选择 HTTP FD；文件符合本次发送和 HTTP 上传的配置限制。
+
+§10.2.1.1 先执行 §11.1，再由客户端选择 HTTP 或媒体面，没有沿用 SDS 控制面 payload 阈值来选择 FD。HTTP 主线先按私聊或组的 FD 文件大小上限检查并请求上传，再发含文件 URL 的 FD 请求。上传客户端收到带 Location URL 的 HTTP 201 后保存存储位置；这说明该上传流程给出了已存文件的地址，不表示接收用户已获悉或已下载文件。
+
+- 只概括成功上传接口，不覆盖网络存储文件搬运、端到端加密上传、大小限制的全部执行点。
+- §10.2.4.1 step2a 把配置来源称为 MCPTT user profile，与其他 MCData 文字不一致；本稿不据此改写配置 schema。
+
+依据：§10.2.1.1;10.2.4.1 steps1–4;10.2.2.1 final paragraph;6.2.2.2 steps1,4,10,11，印刷页 57、58、264、265、273、275、276。
+
+## URL存在检查
+
+适用条件：CF 处理未排队的 HTTP FD 请求，前序资源和 MIME 检查通过；内容为 FD SIGNALLING PAYLOAD。
+
+CF 要求恰好一个 FD SIGNALLING PAYLOAD 和恰好一个 Payload IE；Payload 类型不是 FILEURL，回 403/Warning211 并停止。URL 指向的文件经 §6.7.3 判断不存在，回 403/Warning212 并停止。该 helper 使用带访问令牌的 HTTP HEAD：200 进入文件可用的后续过程，404 进入不可用过程。HEAD 的可用性结果不能替代接收端之后的 GET 和文件内容取得。
+
+- FD HTTP TERMINATION 是同一 CF 入口可处理的另一类消息，但不在本 claim 的 FD 请求范围。
+- HEAD 还可因操作者策略返回 403，或返回操作结果所需的其他响应；不能把所有非 200 都改成文件不存在。
+- 有效访问令牌及服务器验证的具体方法交给未读取的 TS 24.482。
+
+依据：§10.2.4.4.2 steps3–7;6.7.3.1;6.7.3.2，印刷页 135、282。
+
+## 分段SIP响应
+
+适用条件：分别观察 CF 对 HTTP FD 请求的 SIP 202，及接收客户端资源检查未拒绝后对 FD SIP MESSAGE 的 SIP 200。
+
+CF 正常分发流程生成上游 SIP 202；排队分支也能回 202，但须带 Warning215 且暂不继续处理。接收客户端先回 SIP 200，再按 §10.2.1.2 处理 FD 内容、决定自动下载或等待用户。由此，SIP 202 不是文件已下载，接收客户端的 SIP 200 也不代表用户已接受下载；FD 的接受通知和实际下载发生在后续业务处理。
+
+- 本条不把 CF 202 与接收端 200 拼成原始事务的两个最终响应；它们位于不同事务段。
+- 客户端资源不足时可回 480 并停止。正常 200 后的内容处理仍可能退出，不能从 200 推出 FD 结构全部通过。
+- 排队管理依赖 TS 23.282 Annex B，未在本批展开。
+
+依据：§10.2.4.4.2 steps1,2,15,16;10.2.4.2.2，印刷页 277、281、282、285。
+
+## 实际下载成功
+
+适用条件：接收端已进入下载尝试，media storage client 按 §10.2.3.1 请求 URL 所指文件。
+
+下载客户端通过 TLS 发送 HTTP GET，Request-URI 为文件的绝对 URL。§10.2.3.1 的成功事件是收到包含所请求文件的 HTTP 200，随后才向用户或应用通知下载成功。内容服务器仍须按接收控制策略处理下载，用户不获准时返回 HTTP 403；先前拿到 URL、通过 HEAD 或发送 FD ACCEPTED 都不能替代这一步。24.282 还明确引用代理和 bearer token 身份处理，不能写成任意持有 URL 即可匿名下载。
+
+- 没有读取 TS 24.482，因此 TLS/代理/令牌流程的内部实现、部分下载、断点续传、重试、完整性和文件解密未核。
+- §10.2.3.2 保留 Editor’s Note：内容服务器如何通过配置文档执行接收控制仍为 FFS。本稿不补出完整的权限配置获取方案。
+- HTTP 成功下载不等于文件被用户打开、阅读或应用执行完毕。
+
+依据：§10.2.3.1;10.2.3.2，印刷页 274、275。
+
+## 证据边界
+
+- 本批未给出完整 HTTP FD 路由、上传失败恢复或媒体面 FD 协议。
+
+## 按需继续
+
+- [sds-transmission-selection](sds-transmission-selection.md)
+- [fd-download-decision-and-completion](fd-download-decision-and-completion.md)
+- [fd-file-availability-and-expiry](fd-file-availability-and-expiry.md)
+
+[3GPP TS 24.282 V19.7.0 / ETSI TS 124 282 V19.7.0 (2026-08)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf)；仅本版本。
+
+## 原文疑义
+
+- §10.2.3.2：403 reception-policy 分支未显式写停止后续；不能据顺序文字声称一个 GET 必连续发送 403 和 200。Editor’s Note 又明确配置策略取得方式 FFS。
+- §10.2.4.1 step2a：正文将 MCDataContentServerURI 的用户 profile 误称 MCPTT；本稿不更改源规范 schema 名。

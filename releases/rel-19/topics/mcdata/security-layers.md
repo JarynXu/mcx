@@ -64,3 +64,10 @@ Date and Time明文保留，使服务器能排序并判断是否过期；Payload
 - [xml-protection-activation](xml-protection-activation.md)
 
 这些指定程序依据TS24.282 V19.7.0；不从其他安全架构页的可选机制表述推导MCData配置缺项即关闭。
+
+## TLV信令与用户数据
+
+- [MCData TLV 信令逐段保护：谁解密，何时为下一段重新加密](tlv-signalling-hop-protection.md)
+- [用户 Data 的保护与认证：服务器转发不替代客户端验证](protected-data-client-verification.md)
+
+本组职责依据TS24.282 V19.7.0，不用XML程序替代TLV或用户Data验证。

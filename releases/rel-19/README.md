@@ -203,3 +203,15 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 ### SDS 按需媒体面的信令与结果
 
 超过控制面阈值后，按[INVITE与SDP建链](topics/mcdata/sds-media-session-setup.md)、[建链和传输证据](topics/mcdata/sds-media-setup-and-transfer-evidence.md)、[结果BYE与资源释放](topics/mcdata/sds-media-result-and-release.md)选择问题。TS24.282指定的媒体接口不展开TS24.582内部成功判据，不能据此断言全组数据交付已核；用户主动释放也不无条件替代自动结果收尾。
+
+### MCData TLV信令与用户Data
+
+[逐段信令保护](topics/mcdata/tlv-signalling-hop-protection.md)说明PF/CF如何按各段条件处理；[用户Data与客户端验证](topics/mcdata/protected-data-client-verification.md)说明服务器安全透明转发和客户端签名职责。两类内容不可互换，CPK/CSK原文差异仍待裁决。
+
+### HTTP 文件分发的接收与可用期
+
+从[分段响应与实际文件取得](topics/mcdata/fd-http-file-and-signalling-evidence.md)区分URL、SIP成功和下载成功；按[自动/接受/延期及完成通知](topics/mcdata/fd-download-decision-and-completion.md)处理用户决定，再看[文件可用期与删除条件](topics/mcdata/fd-file-availability-and-expiry.md)。等待用户的TDU2和文件可用期TDC2不互相续期，过期通知也不证明文件已被物理删除。
+
+### MCData 注册、授权绑定与设置
+
+[REGISTER/PUBLISH入口](topics/mcdata/service-authorization-entry.md)区分能力标签和授权请求；[绑定建立与并发上限](topics/mcdata/service-authorization-binding.md)说明多client及处理顺序；[设置刷新和退出](topics/mcdata/service-settings-validity.md)连接后续SDS有效绑定检查。设置Expires不等于令牌或绑定寿命，200响应也不证明后续隐式归属全部完成。
