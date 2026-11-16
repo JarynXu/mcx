@@ -253,3 +253,9 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 ### 普通 MCVideo 预安排组呼
 
 [发起与准入](topics/mcvideo/prearranged-call-admission.md)连接组文档、归属和发起许可；[终接应答](topics/mcvideo/prearranged-call-terminating.md)解释模式、183和PRACK；[建立结果](topics/mcvideo/prearranged-call-setup-result.md)分开 required 成员、TNG1、缓冲支持与媒体许可，不把某个200当全员已接听。
+
+### MCData 功能别名客户端
+
+- [功能别名观察：变更前订阅与当前状态查询](topics/mcdata/functional-alias-observation.md)
+- [功能别名变更：PUBLISH、续期与位置约束](topics/mcdata/functional-alias-change-request.md)
+- [功能别名结果：PUBLISH 200、NOTIFY 与后续归属](topics/mcdata/functional-alias-state-evidence.md)
