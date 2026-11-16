@@ -77,3 +77,5 @@
 §7.3.4 step12;8.3.2.15 opening,steps1,2：settings-only调用该过程，过程身份提取却仍按服务授权请求描述。 保留既有授权有效前提，不编造上下文切换或重新授权行为。
 
 §8.3.2.15 steps8b,11;8.3.2.6 steps7,9,10;8.3.2.7 NOTIFY step3：配置新增分支只列状态/期限赋值，未写客户端p-id；owner发送过程对未过期affiliating且affiliating p-id未设的条目赋current p-id，已设则不覆盖。 未设条件满足者可获得owner跳关联值；既有条目已设时仍按实际值检查缺席关联。不将显式两跳冲突无条件推广到新配置条目，也不补所有新增的初始化默认值或完整续期闭环。
+
+- [请求型 helper 在紧急告警中有明确调用，业务结果才决定本地完成或取消。](emergency-alert-admission-and-results.md)

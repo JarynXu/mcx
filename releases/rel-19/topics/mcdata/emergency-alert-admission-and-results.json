@@ -1,0 +1,214 @@
+{
+  "topic_id": "r19-mcdata-emergency-alert-admission-and-results",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "限 TS24.282 V19.7.0 在网 MCData，用户明确给出普通配置组 ID；不是 adhoc、regroup 或 off-network。目标组没有正在进行的组通信，不将本批成员通知覆盖推广到所有已加入会话的成员。",
+    "本批仅展开独立紧急告警 SIP MESSAGE，不等同紧急 SDS/FD 通信建立或升级，也不推出媒体、逐消息送达或人员已读。相关服务授权绑定及用户/profile/组文档是各检查的输入，不从未读的配置规范补默认值。",
+    "O-PF 指处理发起客户端请求的 participating function；CF/owner 指控制目标组并维护组侧归属记录的功能。二者检查和状态提交不可混用。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.282-v19.7.0",
+  "claims": [
+    {
+      "id": "originating-pf-binds-caller-and-only-conditionally-attempts-implicit-affiliation",
+      "clause": "16.2.2.1 steps1–4,8–13 and NOTES1–4;8.3.2.11;8.3.2.12 steps1–11",
+      "conditions": [
+        "O-PF 接到告警 MESSAGE，资源/拥塞分支未终止请求。"
+      ],
+      "conclusion": "O-PF 从 P-Asserted-Identity 中的公共用户身份确定 MCData ID 并授权该用户，转发时把 mcdata-calling-user-id 设成这一绑定值。其归属判断调用 §8.3.2.11：查用户、客户端与目标组，本地状态为 affiliating 或 affiliated 均被该 helper 当作已归属；不符合时才调用 §8.3.2.12。该请求型 helper 构造候选并按同一用户各客户端尚未到期的 affiliating/affiliated 不同组计算 N2；若目标因 N2 不能加入则丢弃整个候选，否则写回目标客户端列表。§16.2.2.1 对因 N2 未成功的路径规定 486/Warning102 并停止，同时 NOTE4 保留紧急服务可选择接受的例外。",
+      "printed_pages": [
+        175,
+        176,
+        177,
+        383,
+        384
+      ],
+      "limitations": [
+        "资源/拥塞可回 500 并可附 Retry-After；alert=true 的本地接受例外不等于所有许可和归属检查均被跳过。N2 NOTE 也未给出越限记录如何构造的完整算法。",
+        "§8.3.2.11 本身没有明确期限判定，不能将其本地 affiliating 结论当作 CF 的未到期归属证据。候选期限未在 §8.3.2.12 内赋来源，过期同组旧副本与新增条目的唯一性疑点沿用既有边界。",
+        "本条只描述 helper 实际条件，不假定调用必有新增条目；其完成/取消步骤随后指向“由该 helper 新增的条目”。"
+      ]
+    },
+    {
+      "id": "controlling-alert-permission-is-not-the-client-permission-or-membership-test",
+      "clause": "6.3.7.2.1 group branches;16.2.3.1 steps1–4b(i)",
+      "conditions": [
+        "CF 接到 alert-ind=true 的组告警，资源/拥塞分支未终止，并通过所要求的 Accept-Contact ICSI 检查。"
+      ],
+      "conclusion": "CF 先按 §6.3.7.2.1 检查告警授权。preconfigured-group-use-only=true 在 helper 中直接对应 403/Warning168。其余组发起授权要求用户 allow-activate-emergency-alert=true；原文使用 MCData-group-call/EmergencyAlert/entry 配置，DedicatedGroup 须匹配 uri-entry 且组文档 mcdata-allow-emergency-alert=true，UseCurrentlySelectedGroup 也须该组许可为 true。其他情况未授权，调用点 §16.2.3.1 要求 403 并带 alert-ind=false，随后停止。成员资格和隐式归属检查在这项告警许可通过之后才进行。",
+      "printed_pages": [
+        117,
+        118,
+        400,
+        401
+      ],
+      "limitations": [
+        "Accept-Contact 须含 MCData、MCData SDS 或 MCData FD 所列 ICSI 值之一，否则 403 停止；CF 也有资源/拥塞 500 与 alert=true 本地接受 NOTE。",
+        "客户端使用 Common/GroupEmergencyAlert，CF 使用 MCData-group-call/EmergencyAlert；DedicatedGroup 的组许可条件也不相同。保留这些字面差异，不根据未读 profile schema 修成同一路径。",
+        "helper 的 403/168 与调用点未授权 403/alert=false 分别保留，不编造同一失败发送两次最终响应的算法。"
+      ]
+    },
+    {
+      "id": "owner-eligibility-and-record-update-precede-alert-distribution",
+      "clause": "6.3.5;8.3.3.6;8.3.3.7;16.2.3.1 step4b(i)",
+      "conditions": [
+        "CF 已判告警授权通过，但 §6.3.5 判发起用户在该客户端尚未归属目标组。"
+      ],
+      "conclusion": "CF 的归属检查要求目标组记录、该用户记录、该客户端记录均匹配，且用户记录期限尚未届满。未满足时，§8.3.3.6 还须确认 GMS 中组存在、calling-user-id 指出的用户是成员、以及 owner 本地目标组信息条目已存在；不合资格则调用点回 403/Warning120 并停止。合资格后才执行 §8.3.3.7：必要时建立该组下的用户记录，加入尚未记录的客户端 ID，按本地策略设用户记录期限，并调用 §8.3.3.5 发出组侧归属状态通知，然后继续告警分发。资格本身不等于记录已写入或告警成功。",
+      "printed_pages": [
+        98,
+        182,
+        183,
+        401
+      ],
+      "limitations": [
+        "这条路径由业务请求直接调用 owner helper，不是 serving 向 owner 发 PUBLISH 的流程；不能要求先收到一个本路径未发出的 owner PUBLISH200。",
+        "owner 期限在用户记录层并由本地策略确定，PF 候选期限在客户端组记录层；不推定二者相等。调用 NOTIFY 过程不证明所有订阅者已接收。",
+        "GMS 存在及成员条件仍不够，owner 本地组信息条目缺失也不合资格；不把 profile 中配置过该组视为满足全部条件。"
+      ]
+    },
+    {
+      "id": "cf-success-response-does-not-wait-for-all-notification-recipients",
+      "clause": "16.2.3.1 step4b(ii–vi),final paragraph;6.3.7.1.2;6.3.7.1.3;6.3.7.1.5",
+      "conditions": [
+        "CF 的告警授权及必要的隐式归属步骤均通过，进入 §16.2.3.1 step4b(ii)。"
+      ],
+      "conclusion": "CF 为每个其他已归属组成员生成并发送告警 MESSAGE：带目标用户身份、calling-group-id、发起用户 calling-user-id、alert-ind=true、发起者组织资料，并复制接收的位置信息；如有经上游保留的别名也予以转发。随后 CF 缓存该用户已发起告警的信息，向原请求回 200，再另发成功接收告警的 MESSAGE，其中 alert-ind=true、alert-ind-rcvd=true，mcdata-client-id 复制原请求。此顺序没有把所有成员通知的 2xx 设为原告警 200 或成功接收通知的门槛。",
+      "printed_pages": [
+        99,
+        100,
+        101,
+        102,
+        401
+      ],
+      "limitations": [
+        "独立 alert-ind-rcvd 通知表示发起请求已被成功接收，不是 DELIVERY/READ disposition notification，也不证明任何成员已读或定位资料刚测得。",
+        "主调用写 each other affiliated member，而 §6.3.7.1.2 概述以 affiliated but not participating 为对象。本批限定无正在进行组通信，不把这处范围差异静默解决为会话中完整分发规则。",
+        "本链没有 INVITE/SDP 或媒体建立步骤；不能由告警缓存或 200 推出 SDS/FD/IPCONN 成功。"
+      ]
+    },
+    {
+      "id": "terminating-binding-and-client-display-are-separate-from-cf-receipt",
+      "clause": "16.2.2.2;16.2.2.3;16.2.1.3 step1,steps5–6",
+      "conditions": [
+        "成员通知或带 alert-ind-rcvd 的独立确认 MESSAGE 到达终接 PF。"
+      ],
+      "conclusion": "终接 PF 分别按 §16.2.2.2 或 §16.2.2.3 用 mcdata-request-uri 中的 MCData ID 查公共用户身份绑定；缺绑定均回 404 并停止，资源/拥塞也可在相应入口造成 500。成员通知用 §6.3.2.1 生成下行请求，成功接收确认路径则复制 mcdata-info 后发向客户端。客户端收到其他用户 alert-ind=true 的告警通知，SHOULD 显示告警及组 ID、发起用户 ID、组织资料，别名显示是 MAY；接收通知后还须回 200。这个通知事务响应和界面显示义务不构成人员看见、理解或处置的证明。",
+      "printed_pages": [
+        380,
+        382,
+        385,
+        386
+      ],
+      "limitations": [
+        "终接普通通知的资源接受 NOTE 不能直接套在 §16.2.2.3 确认入口；不宣称后者同样允许忽略拥塞。",
+        "§16.2.2.3 step4b 又称 incoming Request-URI 中的 MCData ID，而该入口先写 Request-URI 为 PF PSI、step2 从 body 找 ID。保留寻址字面差异，不提供已验证路由报文。",
+        "没有补所有终接响应如何聚合、重试、离线补发或多客户端去重；本条也不将起始请求的 200 与某个成员下行 MESSAGE 的 200 混为一跳。"
+      ]
+    },
+    {
+      "id": "only-triggering-business-response-completes-pf-added-affiliation",
+      "clause": "16.2.2.1 response paragraphs;8.3.2.13;8.3.2.14",
+      "conditions": [
+        "本次告警在 O-PF 确实调用过 §8.3.2.12，且 helper 实际新增了对应条目。"
+      ],
+      "conclusion": "O-PF 收到 CF 对这次触发隐式归属的业务 MESSAGE 的 2xx 后，才调用 §8.3.2.13，把该 helper 新增的条目改为 affiliated，并调用 §8.3.2.5 通知 served 用户的归属状态；然后向发起客户端发 200。若 O-PF 决定拒绝该触发请求，或收到 CF 对它的 4xx/5xx/6xx，§8.3.2.14 删除的只是该次新增且匹配用户、客户端、目标组的条目。这里的完成证据是原业务请求这一跳的 CF 响应，不是 owner PUBLISH200、归属 NOTIFY 的 200 或成员告警通知的 2xx。",
+      "printed_pages": [
+        177,
+        384
+      ],
+      "limitations": [
+        "§16.2.2.1 正文按“本次调用过 helper”触发完成；helper 自身只处理新增条目。若调用但未新增，不能凭空选择旧条目改为 affiliated。",
+        "该失败删除不等于恢复候选处理前的整个列表，也没有在本调用链要求撤销 owner §8.3.3.7 已写记录；3xx、事务超时、通知失败或 CF200 丢失后的补偿未在这些段落闭合。",
+        "响应段写 step12，但发送是 step13；保持其指向本次转发 MESSAGE 的语境并记录编号错误，不虚构另一事务。"
+      ]
+    }
+  ],
+  "limitations": [
+    "本页定位正常告警主链与可读来源的失败范围，不构成全部 emergency 功能、重试策略或跨域实现验收。",
+    "本版 §16.2.2.1、§16.2.2.2、§16.2.3.2 的编辑说明（印刷页383、385、402）指出，紧急组及紧急组通信的支持可能缺失、部分提供，或仅限于支持紧急告警。本主题仅说明已列明的告警流程；不能由这些 MESSAGE、200 或告警状态推定完整紧急组通信、emergency-ind 处理或媒体能力已经定义并验证。"
+  ],
+  "related": [
+    "service-authorization-binding.md",
+    "implicit-affiliation-entry-and-lifecycle-boundaries.md",
+    "explicit-affiliation-observation.md",
+    "emergency-alert-self-cancellation.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": true,
+    "independent_source_review": true
+  },
+  "standard_stage": 3,
+  "source_anomalies": [
+    {
+      "clause": "6.2.8.1.6 versus6.3.7.2.1",
+      "printed_pages": [
+        72,
+        118
+      ],
+      "issue": "客户端与CF使用不同告警profile路径，且DedicatedGroup的组许可条件不完全一致。",
+      "treatment": "按各角色原文保留，不以客户端通过推定服务器通过；未核配置schema，不据此消解差异。"
+    },
+    {
+      "clause": "8.3.2.11 step1a;8.3.2.12 step7;8.3.2.2",
+      "printed_pages": [
+        163,
+        175,
+        176
+      ],
+      "issue": "本地判定先找用户却在缺席分支称group entry；候选期限未赋来源；复制旧过期同组后再新增的唯一性疑点仍在。",
+      "treatment": "只总结明确的查找/状态与新增条件，不自补缺省期限、清理或去重。"
+    },
+    {
+      "clause": "16.2.2.1 2xx paragraph",
+      "printed_pages": [
+        384
+      ],
+      "issue": "响应段回指step12，实际发送列在step13。",
+      "treatment": "定位为本次转发的业务MESSAGE响应，不编造第二个发送或把它改为PUBLISH响应。"
+    },
+    {
+      "clause": "16.2.3.1 step4b(ii);6.3.7.1.2 opening",
+      "printed_pages": [
+        99,
+        401
+      ],
+      "issue": "主调用说其他已归属成员，helper概述限已归属但未参与成员。",
+      "treatment": "本批限定无正在进行组通信，保留有会话时的范围差异，不推广为所有紧急组通信通知算法。"
+    },
+    {
+      "clause": "16.2.2.3 opening,step2,step4b",
+      "printed_pages": [
+        385,
+        386
+      ],
+      "issue": "入口Request-URI为PF PSI，step2从body取目标MCData ID，step4b却称从incoming Request-URI的MCData ID确定公共身份。",
+      "treatment": "保留binding与404证据，不把正文静默修成已验证端到端寻址报文。"
+    },
+    {
+      "clause": "16.2.3.2 step1 versus step2;6.3.7.2.2;16.2.1.2",
+      "printed_pages": [
+        118,
+        119,
+        378,
+        402,
+        403
+      ],
+      "issue": "取消的否定分支错引发起授权helper；肯定分支才引取消helper；CF取消权限路径/缺失值规则也与客户端不完全相同。",
+      "treatment": "明确限制为step2条件成立后的动作；否定分支保留原文和403/alert=true，不凭直觉修成统一准入算法。"
+    },
+    {
+      "clause": "16.2.1.1 step4d;16.2.1.2 step4d;6.3.7.1.2 step6",
+      "printed_pages": [
+        100,
+        378,
+        379
+      ],
+      "issue": "客户端可选FA字段描述把anyExt/functional-alias-URI包含次序写得与常见用法不同，通知helper头名写P-Asserted-Service-Id。",
+      "treatment": "本批不输出XML/完整报文或以常见名称替换；可选别名与服务头编码仍非本次验收范围。"
+    }
+  ]
+}

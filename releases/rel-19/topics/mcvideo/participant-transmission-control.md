@@ -99,3 +99,5 @@ SIP 建立、身份准入、控制通道和所需安全处理已按各自规范�
 这些路径依据TS24.581 V19.2.0指定Stage3程序，不把业务要求、发出命令和完成停止视为同一事件。
 
 - [先定位私呼会话与媒体协商边界](session-media-permission-boundary.md)
+
+- [广播初建的角色许可规则](broadcast-media-roles.md)

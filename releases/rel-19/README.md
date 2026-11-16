@@ -315,3 +315,17 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 
 - [MCData 配置触发隐式归属：候选组、N2 与 owner 结果](topics/mcdata/configured-implicit-affiliation.md)
 - [MCData 隐式归属边界：普通发送、请求型提交与退出不能混用](topics/mcdata/implicit-affiliation-entry-and-lifecycle-boundaries.md)
+
+
+### MCVideo 普通在网广播
+
+- [MCVideo在网广播发起：指示字段、服务准入与邀请范围](topics/mcvideo/broadcast-ondemand-admission.md)
+- [MCVideo广播自动接听与缓冲结果：Unconfirmed 200不证明收看](topics/mcvideo/broadcast-auto-setup-result.md)
+- [MCVideo广播媒体角色：发起者发送、接收者Mode0与拒绝反向发送](topics/mcvideo/broadcast-media-roles.md)
+
+
+### MCData 紧急告警与自身取消
+
+- [MCData 紧急告警发起：用户许可、目标组与本地状态](topics/mcdata/emergency-alert-origination.md)
+- [MCData 告警准入与结果：请求型隐式归属、CF 接受和成员通知](topics/mcdata/emergency-alert-admission-and-results.md)
+- [MCData 自身告警取消：独立许可、匹配反馈与不回滚归属](topics/mcdata/emergency-alert-self-cancellation.md)

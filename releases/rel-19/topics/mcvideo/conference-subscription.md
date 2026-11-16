@@ -88,3 +88,5 @@ CF检查组文档on-network-allow-conference-state是否允许该calling-user-id
 - [rejoin-session](rejoin-session.md)
 
 [3GPP TS24.281 V19.3.0 / ETSI TS124281 V19.3.0 (2026-01)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf)；仅本版本。
+
+- [广播conference订阅的拒绝条件](broadcast-auto-setup-result.md)

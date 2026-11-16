@@ -96,3 +96,5 @@ CF从组文档名单中按§6.3.6找 affiliated 成员，只邀请 affiliated �
 - [private-call-server-admission](private-call-server-admission.md)
 
 [3GPP TS24.281 V19.3.0 / ETSI TS124281 V19.3.0 (2026-01)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf)；仅本版本。
+
+- [广播调用入口与额外边界](broadcast-ondemand-admission.md)
