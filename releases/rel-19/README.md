@@ -139,3 +139,9 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 普通预安排组呼可从[发起寻址](topics/groups/prearranged-origination.md)进入，按需核对[成员、归属与权限](topics/groups/prearranged-admission.md)、[已有会话加入许可](topics/groups/join-authorization.md)、[确认与人数门槛](topics/calls/group-acknowledged-start.md)、[超时或拒绝](topics/calls/group-acknowledgement-failure.md)、[释放定时器](topics/calls/group-release-timers.md)和[隐式话权请求](topics/calls/implicit-floor-request.md)。这条路径区分准入、信令应答、媒体与话权，不把组密钥或单个成功码当成完整接通证明。
 
 组呼被邀请侧可从[参与功能寻址与检查](topics/calls/group-terminating-addressing.md)进入，按需读[模式与预建立选择](topics/calls/group-terminating-mode.md)、[客户端接收与应答](topics/groups/terminating-client-acceptance.md)或[183、PRACK、200的含义](topics/calls/group-terminating-responses.md)。客户端手动183与参与功能自动Unconfirmed不是同一个条件，单腿Confirmed也不证明全组完成。
+
+## 显式归属与加入进行中组呼
+
+从[兴趣组PUBLISH](topics/groups/explicit-affiliation-publish.md)请求建立或刷新，[SUBSCRIBE/NOTIFY](topics/groups/explicit-affiliation-observation.md)用于观察结果。部分[退组请求](topics/groups/explicit-deaffiliation-request.md)必须保留其他兴趣组；[服务器撤销状态](topics/groups/explicit-deaffiliation-state.md)说明失败清理及同用户多客户端的未闭合处。PUBLISH200不能单独证明逐组变更成功。
+
+已归属后，按[组ID加入及服务器late entry](topics/groups/active-call-entry.md)或[已有会话身份重入](topics/groups/rejoin-session.md)选择入口；两者还须通过各自通话准入。本文不把归属成功、被邀请与通话已建立合成一个状态。

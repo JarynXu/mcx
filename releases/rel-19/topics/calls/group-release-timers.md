@@ -56,3 +56,5 @@ TS24.379 V19.4.0 §6.3.8.1及§6.3.3.5；控制功能的组呼释放策略。各
 [ETSI官方TS24.379 V19.4.0](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/19.04.00_60/ts_124379v190400p.pdf)，印刷页153、164；仅本版本。
 
 - [建立时的 TNG1 不同于存续时长](group-acknowledged-start.md)
+
+- [归属变更不等于呼叫释放完成](../groups/explicit-deaffiliation-state.md)
