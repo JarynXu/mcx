@@ -18,3 +18,5 @@ Referenced TS23.502/23.503/24.501 mechanisms remain unchecked; V19.9.0 equivalen
 
 - [EPS 信令承载](eps-signalling.md)
 - [GBR 通知控制](5gs-notification-control.md)
+
+普通 MCPTT 的有限业务用途另见[语音 QoS 与 SIP 信令的边界](mcptt-5gs-voice-qos-scope.md)。该页独立依据 TS23.289 V19.7.0（Stage2），不扩大本页 TS23.501 V19.8.0 的已核条款，也不证明两者精确版本组合的完整互通、Stage3 流绑定或实际语音交付。

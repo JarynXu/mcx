@@ -1,0 +1,184 @@
+{
+  "topic_id": "r19-calls-floor-revoke-observation",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "限在网普通组呼叫：非广播、非ambient listening、非紧急/迫近危险、非system/temporary group；不含离网、dual floor、multi-talker或audio cut-in。",
+    "请求者同时协商queueing和mc_priority，最大许可不是receive only，显式Floor Request携带priority；有效优先级由服务端判定，不由数字大小自行推定。",
+    "仅追踪有效优先级为pre-emptive、当前持有人非pre-emptive、队列无其他pre-emptive请求，并由本地策略选择撤销旧持有人的分支。不把override without revoke混入本链。",
+    "规范状态机动作与实际终端/网络观察分开：发送通知、转发请求、排到队首均不证明终端已停止、已授予新持有人或首个媒体包已成功。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v19.1.0",
+  "claims": [
+    {
+      "id": "revoke-two-server-machines",
+      "role": "仲裁者及旧持有人对应的服务端接口",
+      "conditions": [
+        "仲裁者进入G: pending Floor Revoke；接口原在U: permitted。"
+      ],
+      "conclusion": "仲裁者发Revoke并启动T3；接口转发Revoke，若含Track Info则保存，再进入自己的pending Floor Revoke并启动T8。两个计时器不属于同一状态机。",
+      "clause": "6.3.4.5.2;6.3.5.5.5;6.3.5.6.1;6.3.5.6.2",
+      "printed_pages": [
+        71,
+        95,
+        97
+      ],
+      "limitations": [
+        "发送动作不是远端收到证据；不自行补普通呼叫必含Floor Indicator的义务。"
+      ],
+      "source_references": [
+        {
+          "url": "https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/19.01.00_60/ts_124380v190100p.pdf",
+          "clause": "6.3.4.5.2;6.3.5.5.5;6.3.5.6.1;6.3.5.6.2",
+          "printed_pages": [
+            71,
+            95,
+            97
+          ],
+          "source_id": "3gpp-ts-24.380-v19.1.0"
+        }
+      ],
+      "normative_strength": "shall；证据边界为本文分析"
+    },
+    {
+      "id": "revoke-t8-retry",
+      "role": "旧持有人对应的服务端接口 U: pending Floor Revoke",
+      "conditions": [
+        "T8到期。"
+      ],
+      "conclusion": "重传Revoke时保留前次Rejection Cause和Floor Indicator，重新启动T8并留在原状态。重传次数及放弃动作由实现选择；断开呼叫只是推荐。",
+      "clause": "6.3.5.6.3",
+      "printed_pages": [
+        97,
+        98
+      ],
+      "limitations": [
+        "不造固定次数、固定截止时间或必断开义务。"
+      ],
+      "source_references": [
+        {
+          "url": "https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/19.01.00_60/ts_124380v190100p.pdf",
+          "clause": "6.3.5.6.3",
+          "printed_pages": [
+            97,
+            98
+          ],
+          "source_id": "3gpp-ts-24.380-v19.1.0"
+        }
+      ],
+      "normative_strength": "重传/字段/计时器/状态shall；断开为recommended"
+    },
+    {
+      "id": "revoke-media-not-yet-stop",
+      "role": "接口 U: pending Floor Revoke 与仲裁者 G: pending Floor Revoke",
+      "conditions": [
+        "接口收到关联参与者带payload的RTP；仲裁者收到来自permitted participant的RTP指示。"
+      ],
+      "conclusion": "接口仍把RTP送到分发器；仲裁者重启T1并按本地策略要求转发。撤销已发出不等于服务器已停止接受或分发该媒体，更不能证明终端已停。",
+      "clause": "6.3.5.6.4;6.3.4.5.3",
+      "printed_pages": [
+        71,
+        98
+      ],
+      "limitations": [
+        "这不赋予已收到Revoke的终端继续发送的许可。T3上限小于T1时的注释不能泛化为所有配置T1均不超时。"
+      ],
+      "source_references": [
+        {
+          "url": "https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/19.01.00_60/ts_124380v190100p.pdf",
+          "clause": "6.3.5.6.4;6.3.4.5.3",
+          "printed_pages": [
+            71,
+            98
+          ],
+          "source_id": "3gpp-ts-24.380-v19.1.0"
+        }
+      ],
+      "normative_strength": "shall；证据边界为本文分析"
+    },
+    {
+      "id": "revoke-endpoint-and-release",
+      "role": "旧持有人终端 U: has permission；对应服务端接口 U: pending Floor Revoke",
+      "conditions": [
+        "终端实际收到Floor Revoke，且收到的Floor Indicator中G-bit=0；随后接口收到该终端含G-bit=0的Floor Release。"
+      ],
+      "conclusion": "终端必须请求丢弃余下缓存、停止语音转发并通知用户；原因可提示。终端发G-bit=0的Release，可请求Ack，启动T100/C100=1并转pending Release。接口按Ack请求位回应后，把G-bit=0的Release交给仲裁者，仍留pending Floor Revoke。",
+      "clause": "6.2.4.5.4;6.3.5.6.5",
+      "printed_pages": [
+        45,
+        98
+      ],
+      "limitations": [
+        "Ack为Message Type 4、Source 2，若Release含Track Info则回带。不能把Ack解释成下一位已获话权。",
+        "终端义务是向媒体组件提出停止/丢弃请求；仅靠服务器Revoke日志不能验收这些动作已完成。",
+        "此处与旧floor-participant-queue-release只作跨角色衔接，不另扩终端释放重试全流程。",
+        "收到的Floor Indicator存在且G-bit=0是本分支的额外前提；不能由普通组呼推定该字段存在，也不对缺字段补默认0。"
+      ],
+      "source_references": [
+        {
+          "url": "https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/19.01.00_60/ts_124380v190100p.pdf",
+          "clause": "6.2.4.5.4;6.3.5.6.5",
+          "printed_pages": [
+            45,
+            98
+          ],
+          "source_id": "3gpp-ts-24.380-v19.1.0"
+        }
+      ],
+      "normative_strength": "停止请求/通知/Release/计时器/转发shall；原因/Ack请求may"
+    },
+    {
+      "id": "revoke-exit-observation",
+      "role": "旧持有人对应的服务端接口 U: pending Floor Revoke",
+      "conditions": [
+        "从仲裁逻辑实际收到Floor Idle或Floor Taken。"
+      ],
+      "conclusion": "接口转发对应消息，再进入not permitted and Floor Idle或not permitted and Floor Taken；请求Ack是may，Ack处理和缺Ack动作由实现选择。这是接口状态证据，不是终端停止或新持有人首包成功证据。",
+      "clause": "6.3.5.6.6;6.3.5.6.7",
+      "printed_pages": [
+        98,
+        99
+      ],
+      "limitations": [
+        "不自行补这两条未写出的stop T8动作。",
+        "不从两条NOTE推导T3/T1的唯一组合条件。T3到期的6.3.4.5.5在multi条件外列Release Multi Talker，且后续依赖当前talker列表；仍保留疑点，不据此构建已验证单话权超时交接闭环。"
+      ],
+      "source_references": [
+        {
+          "url": "https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/19.01.00_60/ts_124380v190100p.pdf",
+          "clause": "6.3.5.6.6;6.3.5.6.7",
+          "printed_pages": [
+            98,
+            99
+          ],
+          "source_id": "3gpp-ts-24.380-v19.1.0"
+        }
+      ],
+      "normative_strength": "转发/转状态shall；请求Ack may"
+    }
+  ],
+  "limitations": [
+    "不声称复杂话权全部覆盖；dual floor、multi-talker、audio cut-in须另核。"
+  ],
+  "related": [
+    "floor-preemption-decision.md",
+    "floor-server-media-timers.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "standard_stage": 3,
+  "source_issues": [
+    {
+      "clause": "6.3.4.5.5",
+      "pages": [
+        72
+      ],
+      "issue": "multi条件与后续Release Multi Talker及列表动作未完全同层限定；不另造单话权超时流程。"
+    }
+  ]
+}

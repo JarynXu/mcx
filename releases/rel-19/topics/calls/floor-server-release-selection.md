@@ -48,12 +48,15 @@ TS24.380 V19.1.0 的普通单话权在网组呼，不含广播/system/emergency/
 
 ## 证据边界
 
+- 仅按各页的状态与条件衔接；撤销发出不证明终端已停，排到队首不证明新 Granted，下一持有人首包成功也须独立观察。
 - 队首出队的外层条件和多处OR重叠未被纠正，不能把本文称为完整无歧义仲裁实现。
-- 主动清空其他用户队列的权限、Revoke/T3、临时组和非控制角色切换未覆盖。
+- 本页不覆盖主动清空其他用户队列的权限、Revoke/T3、临时组和非控制角色切换；有限抢占撤销见关联主题，队列入口守卫及 T3 疑点仍不因此消失。
 - 这里的floor释放不同于SIP通话释放，成员/归属/密钥也不会仅凭这些消息自动删除。
 
 ## 按需继续
 
+- [优先请求与撤销的有限分支](floor-preemption-decision.md)
+- [撤销传递、宽限与停止证据](floor-revoke-observation.md)
 - [floor-server-queue-admission](floor-server-queue-admission.md)
 - [floor-server-idle-request](floor-server-idle-request.md)
 - [floor-participant-queue-release](floor-participant-queue-release.md)

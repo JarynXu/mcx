@@ -100,9 +100,10 @@ T1 的最小取值 SHOULD 大于服务器至远端 participant 的预期往返�
 
 ## 证据边界
 
+- 仅按各页的状态与条件衔接；撤销发出不证明终端已停，排到队首不证明新 Granted，下一持有人首包成功也须独立观察。
 - 不包含请求准入、优先级比较、排队排序、下一请求选择或从非控制服务器切换的队列迁移。
 - 不把 G:Floor Taken、服务器接口 U:permitted 和客户端 U:has permission 视为同一时点。
-- T2 到期后的研究边界到进入撤销宽限及其 RTP 行为；T3 结束、T8 重复 Revoke 与违规媒体发送的完整接口状态链未在本页闭合。
+- T2 到期后的本页边界仍到进入撤销宽限及其 RTP 行为；关联主题补充有限撤销传递、T8 重传与接口退出观察，不补齐 T3 单话权退出或违规媒体发送的完整状态链。
 - 未核消息字段二进制编码、完整媒体安全、部署值或计时器同时到期的调度顺序。
 - TS24.380 V19.1.0 与既有 TS24.379 V19.4.0 主题只作条件关联，不宣称完整版本互操作。
 - §6.3.4.4.9 versus 6.3.4.4.2（印刷页63、64、68）：T20 重发段仅重列部分 Granted 字段，不据此删掉初次发送字段，也不自行补完整重发报文模板。
@@ -111,6 +112,7 @@ T1 的最小取值 SHOULD 大于服务器至远端 participant 的预期往返�
 
 ## 按需继续
 
+- [撤销传递、宽限与停止证据](floor-revoke-observation.md)
 - [floor-participant-entry-request](floor-participant-entry-request.md)
 - [floor-participant-queue-release](floor-participant-queue-release.md)
 - [group-release-timers](group-release-timers.md)

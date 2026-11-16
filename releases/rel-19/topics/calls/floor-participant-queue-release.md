@@ -76,7 +76,7 @@ Deny 需要时 Ack(type=3)，必须通知拒绝、可显示 Reject Cause；Idle 
 
 依据：§6.2.4.5.4，印刷页 45。
 
-边界：本条限定原文 G-bit=0 分支，不为缺失 Floor Indicator 的消息补默认解析；服务器何时撤销及消息安全校验另核。
+边界：本条限定原文 G-bit=0 分支，不为缺失 Floor Indicator 的消息补默认解析；优先请求触发撤销及服务器接口的有限处理见关联主题；消息安全校验仍未在本页展开。
 
 ## T100 重试与释放完成
 
@@ -110,6 +110,7 @@ step1 在除 Start-stop、Releasing 外的活动状态停止发送 floor control
 
 ## 证据边界
 
+- 仅按各页的状态与条件衔接；撤销发出不证明终端已停，排到队首不证明新 Granted，下一持有人首包成功也须独立观察。
 - 只解释接收者的状态与动作，不提供服务器队列公平性、抢占、dual floor、multi-talker 或 audio cut-in 的完整流程。
 - T100/T101/T104/T132 数值与可配置范围未核，不给默认秒数；§8 消息编码、§13 安全处理未完整展开。
 - 队列 Deny/Idle/Cancel 与 grant 后 T132 的竞态未补充；条文明写的不同转态保持原样。
@@ -117,6 +118,8 @@ step1 在除 Start-stop、Releasing 外的活动状态停止发送 floor control
 
 ## 按需继续
 
+- [优先请求与撤销的有限分支](floor-preemption-decision.md)
+- [撤销传递、宽限与停止证据](floor-revoke-observation.md)
 - [floor-participant-entry-request](floor-participant-entry-request.md)
 - [group-participant-leave](group-participant-leave.md)
 - [server-release-chain](server-release-chain.md)

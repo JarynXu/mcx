@@ -76,7 +76,7 @@ Deny 需要确认时回 Ack(type=3)，必须通知拒绝，可按 Reject Cause �
 
 依据：§6.2.4.4.11，印刷页 44。
 
-边界：原文在 pending Request 写停止 T100，而该状态通常运行 T101；保留 T100 条件，不擅改为 T101。pre-emptive/dual/multi-talker 竞态未纳入普通链。
+边界：原文在 pending Request 写停止 T100，而该状态通常运行 T101；保留 T100 条件，不擅改为 T101。pre-emptive 的有限请求分支见关联主题；本页普通链仍不纳入抢占、dual floor 或 multi-talker 竞态。
 
 ## 请求进入队列
 
@@ -90,6 +90,7 @@ Deny 需要确认时回 Ack(type=3)，必须通知拒绝，可按 Reject Cause �
 
 ## 证据边界
 
+- 仅按各页的状态与条件衔接；撤销发出不证明终端已停，排到队首不证明新 Granted，下一持有人首包成功也须独立观察。
 - 本页仅固定 V19.1.0 行为，不与未读取的 V19.3.0 比较，不宣称相同。
 - 完整 RTP/RTCP 编码、SDP 协商、服务器仲裁与媒体安全另有 §8、§14、§6.3、§13 依赖；本页不构造实现级完整状态机。
 - §6.2.4.1 要求没有本状态专门处理的 floor message/RTP 被丢弃且状态不变，格式错误包也忽略；不能跨状态复用本页成功分支。
@@ -97,6 +98,7 @@ Deny 需要确认时回 Ack(type=3)，必须通知拒绝，可按 Reject Cause �
 
 ## 按需继续
 
+- [优先请求与撤销的有限分支](floor-preemption-decision.md)
 - [implicit-floor-request](implicit-floor-request.md)
 - [floor-participant-queue-release](floor-participant-queue-release.md)
 - [chat-ondemand-entry](chat-ondemand-entry.md)

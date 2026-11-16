@@ -1,0 +1,96 @@
+{
+  "topic_id": "r19-network-policy-mcptt-5gs-server-resource-request",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "固定 TS23.289 V19.7.0，Stage2；在网 5GS 普通 MCPTT 单播语音会话建立。",
+    "不涵盖 MBS、离网、紧急升级、预建立/聊天模式独立媒体资源流程、漫游或 EPS 互通。",
+    "这是架构和信息流要求，不是 Stage3 可运行报文、PCF 授权响应、PCC 规则至 QFI/包过滤器的完整绑定实现，也不是语音已接收的证据。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.289-v19.7.0",
+  "claims": [
+    {
+      "id": "server-model-needs-client-and-anchor-details",
+      "clause": "7.2.3.1;7.2.3.2 steps 1,5",
+      "printed_pages": [
+        44,
+        45
+      ],
+      "conditions": [
+        "选择 MC-service-server-based 建立；客户端与媒体锚点信息须区分。"
+      ],
+      "conclusion": "客户端提供资源详情：初始请求含 SDP offer 及客户端 IP/端口；建立确认含最终协商媒体参数，包括来自 SIP core 的 SDP answer 中媒体锚点 IP/端口。",
+      "normative_strength": "Stage2 规定的信息流",
+      "short_evidence": "final negotiated media parameters",
+      "limitations": [
+        "不是仅凭 MCPTT ID 就能绑定；具体 SDP 字段、NAT 和 IP 改变未核。"
+      ]
+    },
+    {
+      "id": "server-model-qos-request-fields-and-route",
+      "clause": "7.2.3.1;7.2.3.2 steps 6,7",
+      "printed_pages": [
+        44,
+        45
+      ],
+      "conditions": [
+        "服务器模型；已取得流程中的媒体参数。"
+      ],
+      "conclusion": "服务器向 PCF（N5/Rx）或 NEF（N33）请求资源；QoS 信息包括媒体类型、带宽、优先级、应用标识、资源共享及网络切片信息。并发会话资源共享可用。",
+      "normative_strength": "Stage2 信息流；共享 MAY",
+      "short_evidence": "network slice information",
+      "limitations": [
+        "不补造字段编码、切片选择值、5QI 到 ARP/GFBR 数值或授权决策算法。"
+      ]
+    },
+    {
+      "id": "server-model-progress-does-not-delegate-qos",
+      "clause": "7.2.3.2 steps 3–5 and NOTE",
+      "printed_pages": [
+        45
+      ],
+      "conditions": [
+        "服务器模型的 session progress 经 SIP core 转发。"
+      ],
+      "conclusion": "该 session progress 不请求 SIP core 代为申请网络通信资源；不能把它读成 §7.2.2 的代理资源申请。",
+      "normative_strength": "NOTE（流程解释）",
+      "short_evidence": "does not include",
+      "limitations": [
+        "图中 transmission-control-resources 标签不能推翻该正文注释；不推定具体 SIP 方法/状态码。"
+      ]
+    },
+    {
+      "id": "establishment-ack-precedes-resource-outcome",
+      "clause": "7.2.3.2 steps 5–8",
+      "printed_pages": [
+        45
+      ],
+      "conditions": [
+        "完整服务器模型的信息流。"
+      ],
+      "conclusion": "客户端建立确认之后才有服务器资源请求和 PCC 程序；第 8 步才描述会话建立且资源已分配。",
+      "normative_strength": "Stage2 顺序与终态描述",
+      "short_evidence": "resources have been allocated",
+      "limitations": [
+        "客户端确认、请求发出或授权概念均不能单独证明第 8 步，更不能证明 RTP 到达、可听语音或完整端到端质量；失败码与失败分支需另核。"
+      ]
+    }
+  ],
+  "limitations": [
+    "TS23.503/23.502/23.228 的完整授权、拒绝、流绑定、规则安装及接口编码未核。无法提供可运行 N5/Rx/N33 请求或验证 QFI 与 SDP 五元组映射。",
+    "TS23.289 引用其他规范不等于已核精确组合；不声称与既有 TS23.501 V19.8.0 或 TS23.280 V19.10.1 完整互通。",
+    "普通会话认证、MCPTT 业务权限、floor grant 与媒体收发仍须分别核验，资源管理页不取代它们。"
+  ],
+  "related": [
+    "5gs-qos-model.md",
+    "mcptt-5gs-voice-qos-scope.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "standard_stage": 2
+}
