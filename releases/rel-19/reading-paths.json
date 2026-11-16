@@ -1,0 +1,62 @@
+{
+  "release": 19,
+  "purpose": "Question-driven entry points; optional reads are conditional, not mandatory.",
+  "paths": [
+    {
+      "id": "interworking-config",
+      "question": "MC/LMR 跨侧获取及跟踪组配置",
+      "start": "topics/interworking/group-configuration.md",
+      "next_if": [
+        {
+          "condition": "需要持续更新",
+          "read": "topics/interworking/configuration-updates.md"
+        },
+        {
+          "condition": "需要厘清IWF身份/范围",
+          "read": "topics/interworking/scope.md"
+        }
+      ],
+      "boundary": "Stage2 flow; no implicit Stage3 encoding."
+    },
+    {
+      "id": "group-document",
+      "question": "操作组文档",
+      "select_one_by_question": [
+        {
+          "condition": "创建地址或403/409",
+          "read": "topics/groups/creation.md"
+        },
+        {
+          "condition": "文档或成员表读取授权",
+          "read": "topics/groups/document-access.md"
+        },
+        {
+          "condition": "另一服务商的组ID路由",
+          "read": "topics/groups/forwarding.md"
+        }
+      ],
+      "boundary": "Independent bounded Stage3 procedures, not a complete state machine."
+    },
+    {
+      "id": "delivery-evidence",
+      "question": "业务动作成功是否代表接收端完成",
+      "select_one_by_question": [
+        {
+          "condition": "MCVideo发流许可",
+          "read": "topics/mcvideo/transmission-admission.md"
+        },
+        {
+          "condition": "SDS或文件送达、已读、取消",
+          "read": "topics/mcdata/delivery-evidence.md"
+        }
+      ],
+      "boundary": "Stage1 evidence semantics; not wire-level completion tests."
+    },
+    {
+      "id": "emergency",
+      "question": "告警与紧急状态是否等同呼叫建立",
+      "start": "topics/emergency/alert-state.md",
+      "boundary": "Stage1 only; group In-progress Emergency state machine not covered."
+    }
+  ]
+}
