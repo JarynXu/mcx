@@ -1,0 +1,49 @@
+{
+  "topic_id": "r19-dialog-routing",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "RFC3261 baseline dialog rules; not a complete MCX SIP profile"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "ietf-rfc-3261",
+  "claims": [
+    {
+      "id": "dialog-key",
+      "clause": "12",
+      "conditions": [
+        "Identifying a dialog at a UA"
+      ],
+      "conclusion": "Dialog ID consists of Call-ID, local tag and remote tag; Call-ID alone is not the full key."
+    },
+    {
+      "id": "route-construction",
+      "clause": "12.2.1.1",
+      "conditions": [
+        "Generating an in-dialog request as UAC"
+      ],
+      "conclusion": "Empty route set: remote target is Request-URI, no Route. First route has lr: remote target is Request-URI, ordered full route set is Route. Otherwise: first route becomes Request-URI with disallowed parameters removed, remaining routes followed by remote target form Route."
+    },
+    {
+      "id": "refresh",
+      "clause": "12.2",
+      "conditions": [
+        "Requests within an established dialog"
+      ],
+      "conclusion": "Target refresh can change remote target, not the route set. Non-target-refresh requests do not change remote target; ACK is not a target refresh."
+    }
+  ],
+  "limitations": [
+    "Baseline RFC3261 only; extension updates, MCX profile, transaction matching, transport reuse and failover not fully checked.",
+    "RFC has no 3GPP Release; placement under Rel19 is navigational, not a new Rel19 rule."
+  ],
+  "related": [
+    "registrar-routing.md",
+    "../identity/primary-registration.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

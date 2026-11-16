@@ -46,6 +46,8 @@
 
 按问题选读：[主系统认证与注册](topics/identity/primary-registration.md)、[注册器寻找及用户绑定](topics/signalling/registrar-routing.md)、[EPS 接入与信令 QoS](topics/network-policy/eps-signalling.md)。这组内容核对的是 TS23.280 V19.9.0 Stage2，不能推定与其他版本等同，也不是完整 REGISTER、分布式黏性或 5GS 映射方案。
 
+对话内请求另读 [SIP 对话标识及路由集](topics/signalling/dialog-routing.md)：外部 RFC 基线，不冒充已核完整 MCX profile。5GS 则读 [QFI、5QI 与 ARP](topics/network-policy/5gs-qos-model.md)，需要判断 GBR 失保留流时再读 [通知控制](topics/network-policy/5gs-notification-control.md)。
+
 ## 身份、紧急行为与媒体业务
 
 以下为 Stage 1 的要求解释，不是可直接运行的协议实现。
@@ -67,6 +69,8 @@
 互通SDS的Stage2补充见[地址映射与代理回执](topics/interworking/sds-addressing.md)，不要把代理disposition当作终端已读。
 
 ## 位置与网络策略
+
+单系统按需查询可先读[取得位置与回报的顺序](topics/location/on-demand-usage.md)，已核 V19.9.0；不据此升级下列其他版本摘要。
 
 [位置传播权限与保护要求](topics/location/privacy.md)已核对 Stage 1 原文，不能替代下列 Stage 2 机制核验。
 

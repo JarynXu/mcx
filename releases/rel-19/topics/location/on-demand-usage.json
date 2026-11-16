@@ -1,0 +1,43 @@
+{
+  "topic_id": "r19-location-on-demand-usage",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS23.280 V19.9.0 §10.9.3.6.2; single MC system",
+    "Target LMCs already provisioned with location-reporting configuration"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v19.9.0",
+  "claims": [
+    {
+      "id": "permission",
+      "clause": "10.9.3.6.2",
+      "conditions": [
+        "Requester is LMC or MC service server"
+      ],
+      "conclusion": "For an LMC requester, LMS checks requester authorization and target LMC's authorization to share with that requester. MC service server is implicitly trusted and need not undergo that server authorization check."
+    },
+    {
+      "id": "acquire-report",
+      "clause": "10.9.3.6.2",
+      "conditions": [
+        "Authorized on-demand usage"
+      ],
+      "conclusion": "LMS acquires latest location using on-demand reporting depending on requested information, or PLMN source, then immediately reports the acquired location. Optional UE label is not sent to the MC service server."
+    }
+  ],
+  "limitations": [
+    "No guaranteed positioning latency or accuracy is established.",
+    "Underlying §10.9.3.2 reporting and PLMN LCS details not checked by this topic.",
+    "V19.9.0 is independent of existing V19.10.1 editorial summaries; no version-equivalence claim."
+  ],
+  "related": [
+    "privacy.md",
+    "../interworking/location-query.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

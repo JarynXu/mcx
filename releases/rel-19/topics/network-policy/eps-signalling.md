@@ -14,3 +14,5 @@
 
 - [主系统认证及 SIP 注册](../identity/primary-registration.md)
 - [Rx 重试边界（未复核原文的整理说明）](rx-retry.md)
+
+另见[5GS QoS 模型（独立于 EPS）](5gs-qos-model.md)。

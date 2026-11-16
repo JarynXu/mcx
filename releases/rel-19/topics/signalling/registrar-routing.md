@@ -14,3 +14,5 @@
 
 - [主系统认证及 SIP 注册](../identity/primary-registration.md)
 - [组文档订阅的 SIP 目标与资源地址](../groups/change-subscription.md)
+
+另见[SIP 对话内路由](dialog-routing.md)。

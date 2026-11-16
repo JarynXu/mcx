@@ -1,0 +1,47 @@
+{
+  "topic_id": "r19-5gs-notification-control",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS23.501 V19.8.0; GBR QoS Flow; Notification control without Alternative QoS Profiles",
+    "Application traffic can adapt to QoS changes"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.501-v19.8.0",
+  "claims": [
+    {
+      "id": "enable",
+      "clause": "5.7.2.4.1",
+      "conditions": [
+        "SMF enables Notification control"
+      ],
+      "conclusion": "Only enable when its parameter is set in the PCF-provided PCC rule bound to this flow; this optional GBR mechanism can be used when application traffic can adapt to QoS changes."
+    },
+    {
+      "id": "retain",
+      "conditions": [
+        "Notification control enabled",
+        "NG-RAN cannot fulfil GFBR, PDB or PER",
+        "Assessment considers Averaging Window and, for Delay-critical GBR, MDBV",
+        "If NG-RAN has received PSDB and PSER and applies PDU Set QoS handling in a direction, use PSDB/PSER instead of PDB/PER for that direction; otherwise retain PDB/PER"
+      ],
+      "conclusion": "Notify SMF and keep flow unless specific RAN conditions require resource release, e.g. radio link failure or internal congestion; should try to fulfil the profile again.",
+      "clauses": [
+        "5.7.2.4.1",
+        "5.7.2.4.1a"
+      ]
+    }
+  ],
+  "limitations": [
+    "Detailed PDU Set behavior beyond the stated directional substitution is not covered.",
+    "Alternative QoS Profiles and complete restoration/PCF/AF signaling are not covered."
+  ],
+  "related": [
+    "5gs-qos-model.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}
