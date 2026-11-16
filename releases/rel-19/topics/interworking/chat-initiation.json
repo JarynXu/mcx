@@ -1,0 +1,53 @@
+{
+  "topic_id": "r19-iwf-chat-initiation",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS23.283 §10.3.5.1–3 的初建路径；与已在进行中呼叫的新成员加入分开。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "mc-init",
+      "clause": "10.3.5.2",
+      "conditions": [
+        "组定义在 LMR，server 与 IWF 已知组配置，IWF 身份映射已配置",
+        "MCPTT 用户发起 join"
+      ],
+      "conclusion": "server 将 join 转往 IWF，IWF 接纳并选择媒体参数；server 转回响应。请求发言/发送媒体且媒体面尚未建立时，server 建立媒体面。"
+    },
+    {
+      "id": "privacy",
+      "clause": "10.3.5.2 steps 2–3",
+      "conditions": [
+        "组定义在 LMR，server 与 IWF 已知组配置，IWF 身份映射已配置",
+        "MCPTT 用户发起 join，且 join 携主叫位置"
+      ],
+      "conclusion": "server 核对请求用户的位置隐私策略，判断能否向其他 MCPTT 用户及 IWF 提供位置，依结果决定转给 IWF 的请求是否携位置，不能仅因原请求有位置就无条件转发。"
+    },
+    {
+      "id": "lmr-init",
+      "clause": "10.3.5.3",
+      "conditions": [
+        "组定义在 MCPTT，IWF 已知配置且身份映射已配置，MCPTT 用户已加入/归属",
+        "LMR 用户发起 join"
+      ],
+      "conclusion": "IWF 向 server 请求 join；server 核验 MCPTT ID 的归属授权，未归属时生成隐式归属，接纳并选媒体参数。IWF 请求发言/发送媒体且媒体未建时，server 才建立媒体面。"
+    }
+  ],
+  "limitations": [
+    "只核验所列互通条款；TS23.280/23.379 引用的配置字段、隐私策略及基础过程未独立核验，不能据此形成完整实现。",
+    "Join acceptance is not a floor grant. No symmetric privacy-check step is inferred for the LMR-originated direction."
+  ],
+  "related": [
+    "chat-entry.md",
+    "chat-release.md",
+    "../location/privacy.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

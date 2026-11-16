@@ -23,3 +23,5 @@ IWF 以 LMR 成员对应 ID 或代理用预配置 ID 发 join；server 对尚未
 仅核对列出的 Stage 2 互通段，不覆盖底层注册认证、完整失败处理、超时及 LMR 内部过程。
 
 [预安排组呼晚加入](late-entry.md) · [chat 整体释放](chat-release.md) · [互通范围](scope.md) · [结构化知识](chat-entry.json)
+
+若是初次发起而非加入进行中的呼叫，先读 [chat 初建](chat-initiation.md)。

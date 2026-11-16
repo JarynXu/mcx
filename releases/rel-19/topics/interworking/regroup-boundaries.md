@@ -11,3 +11,5 @@ MC 发起的重组要求客户端已取得组成组配置，且 MC 与 IWF 各�
 本页仅覆盖互通差异，不提供完整重组状态机。§10.2.2.1/.3 依赖 TS23.280，未在本页独立核验。
 
 [group-configuration.md](group-configuration.md) · [regroup-media.md](regroup-media.md) · [来源](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf)，印刷页26–29。
+
+MCPTT 专用的预配置方式有独立规则，见 [预配置重组](preconfigured-regroup.md)，不要直接混用本页流程。
