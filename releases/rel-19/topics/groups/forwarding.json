@@ -1,0 +1,42 @@
+{
+  "topic_id": "r19-group-forwarding",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS24.481 V19.3.0"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.481-v19.3.0",
+  "claims": [
+    {
+      "id": "foreign-group-route",
+      "clause": "6.2.5.2",
+      "page": 14,
+      "conditions": [
+        "GMS configured for other-provider group IDs"
+      ],
+      "conclusion": "Map group ID to provider XCAP root URI and document-access public service identity."
+    },
+    {
+      "id": "forward-http",
+      "clause": "6.2.5.3",
+      "page": 14,
+      "conditions": [
+        "Request-URI addresses group document by group ID per 7.2.10.2",
+        "Group belongs to another MCS provider"
+      ],
+      "conclusion": "Replace XCAP root using route. Insert absent X-3GPP-Asserted-Identity using sender identity determined per TS24.482; remove present Authorization; forward."
+    }
+  ],
+  "limitations": [
+    "Authentication, missing-route errors and TLS details not covered; no permission to trust arbitrary identity headers."
+  ],
+  "related": [
+    "document-access.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}
