@@ -56,6 +56,8 @@ REGISTER 分支从第三方 REGISTER 识别 IMS public user identity，从内层
 
 ## 按需继续
 
+- [MBMS公告与终端监听条件](mbms-announcement-and-listening-conditions.md)
+- [MBMS监听反馈的身份校验与证据边界](mbms-listening-feedback-boundary.md)
 - [../identity/service-authorization](../identity/service-authorization.md)
 - [../identity/token-refresh](../identity/token-refresh.md)
 - [sds-server-identities-and-private-admission](sds-server-identities-and-private-admission.md)
