@@ -65,3 +65,5 @@ CF 先调用媒体释放接口并向需移除的参与者发送 BYE；整组需�
 ## 来源中的未解细节
 
 - §9.2.3.2.3 media-result procedures;13.2.2.2.1，印刷页 213、214、327：第 9 章自动结果 BYE 没有在本段显式调用第 13 章用户主动释放链；不能凭同为 BYE 就宣称已证实全组收尾顺序。
+
+- [SDS session 相关条件](sds-session-message-evidence.md)

@@ -12,7 +12,7 @@
 
 按 §10.2.4.4.2，有 Metadata IE 时，CF 以其中的 file availability 信息与 max-file-availability 的较小值形成可用期计时值；没有 Metadata IE 时使用 default-file-availability。之后启动 TDC2，并关联 Conversation ID、Message ID 和可选应用标识。同一物理文件可有多个计时器，各按 Conversation ID/Message ID 唯一关联；延期或接受动作本身没有被本条规定为延长文件可用期。
 
-- 不造统一 TDC2 数值。metadata 的 file-availability 编码为截止日期时间；本批未核配置 schema、单位转换和时钟异常规则。
+- 不造统一 TDC2 数值。metadata 的 file-availability 编码为截止日期时间；本页未核配置 schema、单位转换和时钟异常规则。
 - §12.4.1.1/F.2.2 概述为 metadata 或本地策略，HTTP 专用 step9 给出了 max/default 配置算法；不只引用概述来略掉该限制。
 
 依据：§10.2.4.4.2 steps9,13,14 and NOTE4;12.4.1.1;15.2.17;F.2.2 Table F.2.2-1 NOTES2,3，印刷页 282、283、285、323、370、639。
@@ -67,4 +67,4 @@ PF 按 HTTP FD 终止侧过程处理；收到 FILE EXPIRED 时，§10.2.4.3.2 �
 
 - §12.4.2.2 step2a;10.2.4.3.2 first step5;15.2.18：FILE EXPIRED 的交叉引用指向 15.2.6，实际网络通知编码表在 15.2.18；不把 FD disposition 枚举与网络通知枚举合并。
 - §10.2.4.3.2 first step5;12.4.1.1;12.4.2.2：PF 清理列表只写 Conversation ID，CF 计时器与到期通知按 Conversation ID/Message ID 关联。保留差异，不声称已经核出安全的存储键实现。
-- §F.2.2 Table F.2.2-1;12.4.1.1;12.4.2.2：定时器表列 HTTP 或媒体面，12.4 明示 HTTP 文件分发目标；本批刻意只取 HTTP 子集，不从该差异扩展媒体面到期全链。
+- §F.2.2 Table F.2.2-1;12.4.1.1;12.4.2.2：定时器表列 HTTP 或媒体面，12.4 明示 HTTP 文件分发目标；本页刻意只取 HTTP 子集，不从该差异扩展媒体面到期全链。

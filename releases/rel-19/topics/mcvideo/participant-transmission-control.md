@@ -97,3 +97,5 @@ SIP 建立、身份准入、控制通道和所需安全处理已按各自规范�
 - [某个源无人接收：T11到期、停止命令与T3确认](server-stream-idle-termination.md)
 
 这些路径依据TS24.581 V19.2.0指定Stage3程序，不把业务要求、发出命令和完成停止视为同一事件。
+
+- [先定位私呼会话与媒体协商边界](session-media-permission-boundary.md)

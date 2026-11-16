@@ -13,7 +13,7 @@
 one-to-one FD 拟发送的数据大小超过服务配置的 max-data-size-fd-bytes，或组 FD 超过该组的 mcdata-on-network-max-data-size-for-FD 时，客户端与 CF 都须判定因文件大小而不允许发送，并停止 §11.1 后续步骤。比较符为严格大于；刚好等于上限不触发本项拒绝，但不代表其他检查通过。§10.2.1.1 在选择 HTTP 或媒体面之前调用 §11.1。
 
 - 这是 FD 文件大小限制，不是 SDS 控制面阈值，也不是 §11.2 自动接收阈值。
-- 配置值来自相应配置/组文档；本批未读取 TS 24.484 或 TS 24.481 来核 schema、默认值或缺失数值的处置。
+- 配置值来自相应配置/组文档；本页未读取 TS 24.484 或 TS 24.481 来核 schema、默认值或缺失数值的处置。
 
 依据：§11.1 steps4,6;10.2.1.1 steps1,2，印刷页 264、265、311。
 
@@ -24,7 +24,7 @@ one-to-one FD 拟发送的数据大小超过服务配置的 max-data-size-fd-byt
 文件上限没有替代单次请求额度。one-to-one 的 payload 大于用户配置 MaxData1To1，由客户端与 PF 判定不允许并停止；组 payload 大于组文档相应 entry 的 mcdata-max-data-in-single-request，由客户端与 CF 判定不允许并停止。两项也是严格大于才触发。这使私聊 FD 的文件上限与单次额度由不同服务器角色承担。
 
 - 源文 steps4/6 写拟发送的数据/文件大小，steps7/8 写 payload。不能未经依据把 HTTP FD 的 URL 字符串长度、信令体长度和实际文件字节数视为同一个计量值。
-- 本批没有核出 HTTP FD 在服务器侧计算该 payload 大小的统一算法，不把两种上限合并成一个 min 值公式。
+- 本页没有核出 HTTP FD 在服务器侧计算该 payload 大小的统一算法，不把两种上限合并成一个 min 值公式。
 
 依据：§11.1 steps4,6,7,8，印刷页 311。
 
@@ -35,7 +35,7 @@ one-to-one FD 拟发送的数据大小超过服务配置的 max-data-size-fd-byt
 此分支由 O-PF 返回 SIP 403、Warning202，并停止该调用过程。Warning202 在这里对应单次请求额度超限，不能据此改写为 FD 文件大小服务上限超限；该错误映射还受 mcdata-controller-psi 缺失的外层条件约束。
 
 - mcdata-controller-psi 存在时不能照抄这个 step7 映射；也不能据此声称 §11.1 的传输控制义务被取消。
-- §11.1 step4 的私聊 FD 文件上限责任仍在客户端与 CF；本批已核 HTTP 调用分支未为该项核出专用 Warning 映射，不编造对应码。
+- §11.1 step4 的私聊 FD 文件上限责任仍在客户端与 CF；本页已核 HTTP 调用分支未为该项核出专用 Warning 映射，不编造对应码。
 
 依据：§10.2.4.3.1 steps6,7b;11.1 step7，印刷页 278、311。
 

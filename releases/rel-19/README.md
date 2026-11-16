@@ -223,3 +223,11 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 ### 发送额度与 SDS session 的独立门槛
 
 [FD大小准入](topics/mcdata/fd-size-admission.md)区分文件上限与单次额度，以及PF/CF各自责任；组HTTP的同一403/208不唯一对应一个根因。[SDS session准入](topics/mcdata/sds-session-admission.md)保留later-use的双方发送许可和组服务元素缺失时的拒绝，不能套用单条standalone SDS媒体传输流程。
+
+### MCVideo 私呼从信令到媒体许可
+
+[客户端邀请和应答](topics/mcvideo/private-call-client-signalling.md)、[服务器逐段准入和响应](topics/mcvideo/private-call-server-admission.md)使用TS24.281 V19.3.0普通单ID按需私呼。再从[会话与媒体许可边界](topics/mcvideo/session-media-permission-boundary.md)进入既有TS24.581 V19.2.0发送/接收状态机；200、PCK、SDP控制通道和隐式请求均不能单独证明发送或接收许可。
+
+### SDS session 的建立与逐消息证据
+
+[建立入口](topics/mcdata/sds-session-establishment.md)说明双向媒体协商和两端交接事件；[分段响应与参与者](topics/mcdata/sds-session-responses-and-participants.md)区分目标应答、全组加入和后来归属；[消息证据](topics/mcdata/sds-session-message-evidence.md)连接业务 UUID、释放后回执和未核媒体依赖。不能把 session 建立 200 当作单条数据送达。

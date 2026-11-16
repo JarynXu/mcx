@@ -1,0 +1,86 @@
+{
+  "topic_id": "r19-mcdata-sds-session-establishment",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "限 §9.2.4 的在网 on-demand one-to-one 或配置组 SDS session；不是 §9.2.3 standalone SDS 的媒体传输，也不是 §9.2.5 pre-established session。",
+    "普通直接用户/组目标；§11.1 及本入口适用的身份、权限、组、资源与安全检查已按各自条件执行。只在未被要求停止的分支继续。",
+    "不含紧急或迫近危险状态、别名、重组、ad hoc 和跨域；本主题只解释已核建立主线，不替代完整准入。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.282-v19.7.0",
+  "claims": [
+    {
+      "id": "on-demand-session-establishment-does-not-require-a-message-record",
+      "clause": "9.2.1.1 SDS session branch;9.2.4.1;9.2.4.2.3 steps7a,7b,8b,9,11,12;11.1 step9",
+      "conditions": [
+        "用户发起 §9.2.4 的 SDS session，准入通过后客户端生成初始 INVITE。"
+      ],
+      "conclusion": "§9.2.4.1 把本过程用于按需建立私聊或组 SDS session。客户端使用 one-to-one-sds-session 或 group-sds-session，给出目标信息并加入 SDP offer，再向服务自己的 PF 发 INVITE。§9.2.4.2.3 没有要求调用 SDS SIGNALLING PAYLOAD 生成过程，也没有在该建立步骤要求先生成某条消息的 Conversation ID、Message ID 或具体数据。因此该入口可以核验的是会话建立请求，不能据 INVITE 已发就认定一条 SDS 已产生或送达。",
+      "printed_pages": [
+        190,
+        224,
+        225,
+        226,
+        227,
+        311
+      ],
+      "limitations": [
+        "这是对本入口所列建立要求的限定，不是“INVITE 明文禁止携带 payload”的断言。",
+        "私聊目标为 resource-lists 中的直接 MCData ID；组在 mcdata-info 中给出 group identity 与发起 client ID。这里只说明建立输入，不展开任意子集选择或别名。"
+      ]
+    },
+    {
+      "id": "session-sdp-negotiates-sendrecv-not-a-delivery-result",
+      "clause": "9.2.4.2.1 step1;9.2.4.2.2 step1;9.2.4.4.1 step1;9.2.4.4.2 step1",
+      "conditions": [
+        "客户端生成或接受 SDS session 的 SDP；CF 为相应 session 生成 offer/answer。"
+      ],
+      "conclusion": "客户端和 CF 的 session SDP 都使用 m=message、sendrecv、自身 MSRP path，以及 mcdata-signalling 和 mcdata-payload 两种 accept-types；传输为 TCP/MSRP，使用 TLS 时为 TCP/TLS/MSRP。客户端与 CF 的 offer 使用 actpass；CF answer 使用 passive，客户端 answer 按 RFC 6135 生成。sendrecv 表示这里协商双向媒体流，不能从方向属性推出某条数据已被接收或应用已处理。",
+      "printed_pages": [
+        224,
+        225,
+        237
+      ],
+      "limitations": [
+        "standalone 媒体 SDS 的 sendonly/recvonly 由已有 §9.2.3 主题维护，不能套到这里。",
+        "实际连接建立、媒体传输及 RFC 的完整行为未在本页核验；协商了类型不等于该类型的消息已经发送。"
+      ]
+    },
+    {
+      "id": "endpoint-media-handoffs-have-different-triggers",
+      "clause": "9.2.4.2.3 2xx response steps2,4,5;9.2.4.2.4 steps5–11 and ACK procedure",
+      "conditions": [
+        "发起客户端收到 session INVITE 的 2xx；或终接客户端正常接受 INVITE、已发送 200 且随后收到对应 ACK。",
+        "终接分支的资源/安全检查没有拒绝；若已收到关联 CANCEL，仍应转 §6.2.8.4.1，不能强行按无 CANCEL 路径发送 200。"
+      ],
+      "conclusion": "发起端收到 2xx 后须发 ACK、启动 SIP Session timer，并转入 TS 24.582 §6.1.2.2。终接端的 200 包含 SDP answer 和会话计时参数；只有已发送这个 200 且收到 ACK 后，才在本条规定的事件上转入 §6.1.2.3。两端的媒体交接条件不同。INVITE/200/ACK 建立的是该段会话过程，不是单条 payload 已完整传输、DELIVERED 或 READ 的证明。",
+      "printed_pages": [
+        227,
+        228,
+        230,
+        231
+      ],
+      "limitations": [
+        "准确可核的是媒体接口触发点，不是“发起端收到 200 的同一时刻所有参与端都已可收发数据”。",
+        "CANCEL helper 内部过程未扩展；本条仅保留该条件分流。MIKEY 验证失败时本入口另为 488/Warning136，不套用 standalone 的失败码。"
+      ]
+    }
+  ],
+  "limitations": [
+    "未核24.582内部的媒体就绪条件、后续发送API或逐消息协议。"
+  ],
+  "related": [
+    "sds-session-responses-and-participants.md",
+    "sds-session-message-evidence.md",
+    "sds-session-admission.md",
+    "sds-media-session-setup.md",
+    "sds-disposition-timing.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  },
+  "standard_stage": 3
+}

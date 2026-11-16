@@ -1,0 +1,116 @@
+{
+  "topic_id": "r19-mcvideo-session-media-permission-boundary",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS24.281 V19.3.0 普通在网、有 transmission control、直接单用户按需私呼；不含组呼、FTA、功能别名、远程/ambient、预建立、紧急/迫近危险或重入。",
+    "初始 INVITE 及相应 SDP offer/answer 的媒体参数协商；身份和服务准入、安全要求另须满足。本文不从协商成功推出媒体许可。",
+    "相关的 participant 状态机页面依据 TS24.581 V19.2.0；引用它们作为分层后的下一步，而不宣称24.281与24.581版本相同或完整互操作已经验证。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.281-v19.3.0",
+  "claims": [
+    {
+      "id": "media-and-control-are-separate-negotiated-sections",
+      "clause": "6.2.1 opening and steps1–4;6.2.2 steps1–5;10.2.2.2.1 step9",
+      "conditions": [
+        "客户端生成本范围 SDP offer，或根据收到的 initial offer 构造 answer。"
+      ],
+      "conclusion": "offer 分开提供 m=audio、m=video；使用 transmission control 时另有 m=application 控制实体。answer 按收到的 offer 处理媒体，在已提供控制实体时也包含相应控制部分。视频 codec/端口与控制通道参数是不同内容；配置 mc_transmission_ssrc 等控制字段不等于已经获准发送媒体。",
+      "printed_pages": [
+        58,
+        59,
+        60,
+        61,
+        326
+      ],
+      "limitations": [
+        "NAT场景中 SDP 地址/端口可以不同于客户端真实地址/端口；不据字段推定直接点对点路径。",
+        "TS24.229 offer/answer规则、TS24.581 §§12/14完整编码和端口规则未在本页展开。控制字段RTCP SSRC与 NOTE 中 RTP SSRC文字差异保留，不据此提供二进制实现。"
+      ]
+    },
+    {
+      "id": "implicit-request-is-not-implicit-permission",
+      "clause": "6.4;6.2.1 steps2d,3e and corresponding NOTES",
+      "conditions": [
+        "本范围非远程 ambient 的 initial INVITE 在 SDP offer 或 answer 中，对 UDP transmission-control stream 带 mc_implicit_request fmtp。"
+      ],
+      "conclusion": "服务器把该属性视为 originating client 的隐式发送请求，不是自动授予。客户端以隐式请求发起时可在 audio/video offer 各给首选 a=ssrc；只有获授后才使用最终 SSRC，来源为隐式 grant 的 SDP answer mc-ssrc，或显式 Transmission Granted 的对应字段。首选值不能取代最终授予。",
+      "printed_pages": [
+        59,
+        140,
+        141
+      ],
+      "limitations": [
+        "6.4 另有远程 ambient 及组紧急/迫近危险 re-INVITE条件，本范围不借用。其他情况不因存在一个相似属性就纳入本隐式请求链。",
+        "此处保留24.281描述的隐式/显式 grant证据位置；不把所有 SDP200 都当带grant，也不据此补写24.581所有隐式grant实现。"
+      ]
+    },
+    {
+      "id": "handoff-to-distinct-transmit-and-receive-state-machines",
+      "clause": "10.2.2.2.1 response200;6.2.3.1.1 step10",
+      "conditions": [
+        "本范围 SIP 通话已建立，要判断何时能发流或接收某个源，而非仅确认INVITE事务结果。"
+      ],
+      "conclusion": "24.281把成功后的处理交给24.581。participant-transmission-control（24.581 V19.2.0）说明终接发送200后并不因此有发送许可，普通隐式请求发起端仍需进入其许可程序；participant-reception-control 把每通话一个 general 与每个接收媒体请求一个 basic 接收实例分开。因此 SIP成功、媒体格式协商、发流许可、某源收流许可和实际显示均须分开判断，不能互作替代证据。",
+      "printed_pages": [
+        62,
+        326
+      ],
+      "limitations": [
+        "本 claim 的24.281页码只对应交接点；24.581证据印刷页36、45–46在现有 participant-transmission-control/participant-reception-control 页面，已回读，未在本页重新宣称全文独立核验。",
+        "不把排队、Ack、RTP偶然到达、接收控制器已创建或 PCK 已共享当许可；具体 Granted、接收自动/显式分支与队列用户确认继续查关联主题。",
+        "服务器传输/接收仲裁、完整加密、播放器和多流行为仍是独立依赖。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v19.3.0",
+          "clauses": [
+            "10.2.2.2.1 response200",
+            "6.2.3.1.1 step10"
+          ],
+          "printed_pages": [
+            62,
+            326
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v19.2.0",
+          "clauses": [
+            "6.2.4.2.2",
+            "6.2.4.2.3",
+            "6.2.5.1",
+            "6.2.5.2.2",
+            "6.2.5.2.3",
+            "6.2.5.3.1"
+          ],
+          "printed_pages": [
+            36,
+            45,
+            46
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "仅指定普通私呼分支；不覆盖全套 SIP、媒体安全、预建立、网关及优先通信行为。来源疑义按下列说明保留。"
+  ],
+  "related": [
+    "private-call-client-signalling.md",
+    "private-call-server-admission.md",
+    "participant-transmission-control.md",
+    "participant-reception-control.md",
+    "server-transmission-grant.md",
+    "server-reception-permission.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  },
+  "standard_stage": 3,
+  "source_issues": [
+    "6.2.1/6.2.2的mc_transmission_ssrc正文写RTCP SSRC，相邻NOTE对发送控制消息所用值写RTP SSRC；此稿不裁决。"
+  ]
+}

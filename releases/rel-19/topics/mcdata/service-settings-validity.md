@@ -34,7 +34,7 @@ Request-URI 指向服务该用户的 PF 的 PSI，Event 为 poc-settings；非�
 服务器缓存 service settings 至设置到期并发送 200；后续按 selected-user-profile-index 识别 active profile，必要时下载。缺 index 且有多个 profiles 时选含 Pre-selected-indication 的 profile，只有一个时默认它为预选项。profile 中有配置的 ImplicitAffiliations group entries 才调用 8.3.2.15，不是任意 200 都代表所有组已归属。
 
 - 200 表示本设置通信的成功边界，profile 下载失败、预选标记缺失或冲突、隐式归属失败的完整处理不在本条补写。
-- 8.3.2.15 的具体归属建立与结果本批未展开；不得把调用该过程写成归属已经成功。
+- 8.3.2.15 的具体归属建立与结果本页未展开；不得把调用该过程写成归属已经成功。
 
 依据：§7.3.3 steps7–12 and NOTE3–4;7.3.4 steps7–12 and NOTE1–2;7.2.3 final paragraph，印刷页 141、147、148。
 

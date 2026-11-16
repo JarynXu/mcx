@@ -23,7 +23,7 @@ TS 24.282 V19.7.0 的 7.2.5/7.3.7，限参与功能向 MCData client 下发 CSK�
 该入口要求 P-Asserted-Service 含 MCData ICSI、存在 application/mikey body，并且 MIKEY CSB-ID 内的 key identifier 为 CSK-ID，其最高 4 位值为 2。满足这些条件只是进入 CSK 验证流程，不是可信服务 PF 身份或新密钥可立即采用的证明。
 
 - 不满足该特定入口不等于本条已要求统一拒绝所有 MIKEY；其他密钥类型和分类另有过程。
-- 完整 MIKEY 编码、字段长度和 key identifier 解码依赖未在本批核验。
+- 完整 MIKEY 编码、字段长度和 key identifier 解码依赖未在本页核验。
 
 依据：§7.2.5 opening，印刷页 142。
 
@@ -45,7 +45,7 @@ IDRi 类型为 URI 时，取 initiator URI，与服务该用户的 PF PSI 比较
 客户端还必须用该 UID 验证 I_MESSAGE 签名；authentication verification 失败则 488/Warning136 并停止余下步骤。因此匹配服务 PSI、带有正确服务标签或拥有 CSK-ID 都不能代替签名验证。
 
 - 不把 XML 403/139、standalone SDS 的 606/136 或其他 MIKEY 流程响应码复制到此下载入口。
-- 签名算法、时间/重放等完整安全校验依赖 TS 33.180 §9.2.1，本批未重新展开。
+- 签名算法、时间/重放等完整安全校验依赖 TS 33.180 §9.2.1，本页未重新展开。
 
 依据：§7.2.5 step1c–d，印刷页 143。
 

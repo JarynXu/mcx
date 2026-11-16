@@ -1,0 +1,122 @@
+# MCVideo 私呼服务器链：身份准入、终接设置与逐段应答
+
+同一 TS24.281 V19.3.0 的普通在网、有 transmission control、单一直接 MCVideo ID 按需私呼；session-type=private。非组呼/FTA/功能别名/远程/ambient/无控制私呼。
+
+本次无紧急/alert 请求或紧急 Resource-Priority；客户端 MVEPC 2/3、MVEPP 2 及控制侧 originating→target 已在 in-progress emergency private call 状态均不在范围。
+
+终接端不具备同时满足空闲预建立会话、video media-level sections 相同、transmission-control media-level section 相同的可复用会话；因此只讨论6.3.2.2.5.2/.6.2按需分支。满足全部复用条件时的后续程序不由本页推导。
+
+每条规则只在指明的功能角色和命名 SIP 入口适用；进入后续步骤须未被此前适用检查拒绝。不是完整可执行报文处理器。
+
+## 主叫绑定与控制服务地址
+
+适用条件：O-PF 收到面向 originating participating function 且 mcvideo-info session-type=private 的 INVITE。
+
+O-PF 从 P-Asserted-Identity 的 public user identity 确定 calling MCVideo ID 并授权；无绑定或绑定已过期，404/141并停止。随后确定与发起 MCVideo ID 关联的私呼 CF PSI；不能确定，404/142并停止。继续转发时 Request-URI 使用该 CF PSI，mcvideo-calling-user-id 使用已确定的 MCVideo ID。
+
+- 绑定来自7.3服务授权，非本次 XML 自称身份；本页不展开第7章全链。CF PSI 发现及跨域网关路由算法原文说明不在规范范围。
+- Resource-Priority 可触发 RFC4412 拒绝；资源/拥塞可触发500及可选 Retry-After并停止（steps1–2 p332）。不因身份绑定有效就保证获准。
+
+依据：§10.2.2.3.1.1 steps3–7,14–15，印刷页 332、333、334。
+
+## 私呼与应答模式权限
+
+适用条件：O-PF 正在本范围入口判定发起用户 profile 权限；相应 Answer-Mode/Priv-Answer-Mode 请求存在时再叠加其条件。
+
+allow-private-call 缺失或 false：403/107。请求 Answer-Mode=Auto 且 allow-automatic-commencement 缺失或 false：403/125；Manual 对应 allow-manual-commencement 缺失或 false：403/126。请求 Priv-Answer-Mode=Auto 且 allow-force-auto-answer 缺失或 false：403/143。以上拒绝均停止；获准 force-auto 才向后传递该值。收到 Priv-Answer-Mode=Manual 则不在出站 INVITE 包含它。
+
+- 各权限独立，不能用普通私呼权限代替自动开始或强制自动权限。profile schema/配置下发仍依赖 TS24.484。
+- step16d 在未传 Priv-Auto 时复制 Answer-Mode，但引用 step17 above 与实际编号不符；保留疑义，不自行重排或定义冲突 header 优先级。
+
+依据：§10.2.2.3.1.1 steps10,11a–b,16a–c，印刷页 333、334、335。
+
+## 目标名单与codec门槛
+
+适用条件：O-PF 本范围 initial INVITE 的被叫表达、发起用户被叫名单权限及 offer codec 待检查。
+
+缺 resource-lists 或 private 列表 entry 总数多于1，403/145并停止。仅当 profile 的 PrivateCall 存在且含条目、被叫不匹配其中任何条目、也没有允许呼叫名单外用户的配置时，403/144并停止。MCVideo video codec 未提供则488；提供则继续。本范围成功路径限定一个直接 ID，不据此给空列表补规则。
+
+- 名单限制是三项合取，不把 PrivateCall 缺失解释为此步必拒绝，也不能据名单通过跳过其他授权。
+- step13a/b 的列表过滤引用 step12，但 step12 实为 codec 校验。保留原文引用异常，不能声称已得到可实现的完整列表裁剪算法。
+
+依据：§10.2.2.3.1.1 steps8–9,11c,12;step13a–b，印刷页 333、334。
+
+## CF准入和下一段邀请
+
+适用条件：CF 收到命名的 private-call INVITE，且本范围前置检查未拒绝；后续邀请限定一个直接 MCVideo ID。
+
+CF 检查 Request-URI PSI 是否分配给私呼；未分配转6.3.7.1并停止。CF 验证 XML calling MCVideo ID 并按本地策略授权，不获准则403并停止。缺 resource-lists 或 entry 多于1则403/145；offer 没有至少一个参数及至少一个 codec/media format 可接受的媒体流则488，均停止。继续时缓存收到且受支持的 Contact feature tags、分配 session identity，再邀请目标。发往 T-PF 的 Request-URI 是其 PSI，被叫 ID 放在 mcvideo-request-uri，PAI 是 CF PSI。
+
+- CF 本地策略的验证算法及6.3.7.1详细拒绝行为未在本页展开，不补固定 Warning。
+- 邀请只说明发起下一段 SIP 请求，不说明 T-PF/客户端已经接受。收到前段身份授权不保证后段准入通过。
+- 跨域 PSI 发现与网关路线不在本页闭合；组呼 required/minimum/TNG1 门槛不得移入私呼。
+
+依据：§10.2.2.4.2 steps1–4,9–11;6.3.3.2.2;10.2.2.4.1 steps1,3–5,7–8，印刷页 123、343、344、345、346。
+
+## T-PF设置与来电权限
+
+适用条件：T-PF 收到命名的 terminating participating function INVITE，session-type=private；调用者身份和被叫身份分别取规定 XML 字段。
+
+Contact 缺 isfocus 则403/104并停止；还未收到被叫 client 的 Answer-Mode Indication，则480/146并停止。用 mcvideo-request-uri 的被叫 ID 查 public user identity 绑定，无绑定则404。profile 不允许被叫参与私呼则403/127；仅当 IncomingPrivateCallList 存在且非空、calling-user-id 不匹配且未配置允许名单外来电时，403/159并停止。
+
+- 资源/拥塞的500是可选拒绝分支（steps1），并可带 Retry-After；有效身份不消除该门槛。
+- 此处 binding 步骤只写不存在，不写过期或 Warning141；不得从 O-PF 复制。step6 的403/127未逐字写停止，不补统一停止声明。
+- 没有收到 Answer-Mode 设置不能自行默认 auto；IncomingPrivateCallList 三项合取也不能倒置。
+
+依据：§10.2.2.3.2 steps1–6A，印刷页 340、341。
+
+## 终接设置不是全局默认
+
+适用条件：T-PF 已通过本范围准入，选择 commencement 模式；没有相互冲突的 Answer-Mode 和 Priv-Answer-Mode；不进入预建立复用分支。
+
+显式 Answer-Mode=Auto，或缺 Answer-Mode 且已收到的 client 设置为 auto-answer，或 Priv-Answer-Mode=Auto，进入 automatic helper；Manual 对应进入 manual helper。按需 helper 将 Request-URI 设为被叫 public user identity，并携带基于入站 offer 的 SDP。缺相应 header 时，依已收到的 auto-answer/manual-answer 设置在出站补 Auto/Manual，不是全局默认自动。
+
+- automatic helper 的无头补值条件要求 Answer-Mode 与 Priv-Answer-Mode 均未收到；manual helper 对应文字只检查缺 Answer-Mode，不能合并成完全对称算法。
+- 发起 O-PF 的权限、T-PF 模式选择和客户端愿意/允许应答是不同检查；本页不把请求 mode 当作客户端人工同意。
+- 6.3.2.2.5.1/.6.1 指向的预建立 .5.3/.6.3 后续未在本页核验，不以此提供预建立实现。
+
+依据：§10.2.2.3.2 steps7–8;6.3.2.2.5.1;6.3.2.2.5.2 steps3–11;6.3.2.2.6.1;6.3.2.2.6.2 steps1–10，印刷页 97、98、99、100、342。
+
+## 临时响应与最终接通
+
+适用条件：T-PF 已选择按需 automatic helper；满足其 step1 的任一条件：收到 Priv-Auto，或两个 mode header 均无且 client 设置 auto-answer，或 Answer-Auto 且设置 auto-answer。
+
+此条件分支生成不含 SDP、P-Answer-State=Unconfirmed 的183；它不是客户端最终接受。若183不可靠发送，收到被叫 INVITE 200 后立即发送对应上行 INVITE 200；若183可靠发送，须先完成 PRACK/其200交换，未收到 PRACK 则等待。200(PRACK) 与200(INVITE)是不同证据。上行 INVITE 200带相应 SDP answer，并调用媒体平面后转发。
+
+- 不能把全部 automatic 路径都说成必发此183：例如 Answer-Auto 但 client 设置 manual 的情形不满足这里三个条件；不补原文未写的 timing 分支。
+- manual helper 的180及最终200另见6.3.2.2.6.2 pp100；不要求它套用此183/PRACK条件。
+- 本 claim 不把可靠临时响应确认当用户接听或媒体许可。
+
+依据：§6.3.2.2.5.2 step1 and response183/PRACK/200 branches，印刷页 98、99。
+
+## CF与O-PF的媒体处理顺序
+
+适用条件：CF 收到其发出的 INVITE 200，dialog 源于 session-type=private，尚未向邀请方发最终响应；或 O-PF 随后收到该链上的200。
+
+CF 构造200及 SDP answer，完成该步触发的媒体平面处理后才向邀请方发送200；Contact 表示 CF 的 session identity。O-PF 构造含 SDP answer 和其 PSI 身份的200，并带上收到的 Warning（若有），带与收到 Contact 中 session identity 对应的映射身份，然后先向客户端发200，再调用媒体平面并启动 SIP session timer。不能把两角色的先后顺序合成一个通用模板。
+
+- CF 私呼200的 SDP 步骤引用6.3.3.2.2，但该条实际仅缓存 feature tags；6.3.3.2.1才是 SDP answer generation。此处保留差异，不静默修正交叉引用。
+- Contact 会话身份映射不是用户 MCVideo ID，也不是同一 URI 全程透传。O-PF 本段只写 include 映射 identity，完整字段构造仍依6.3.2.1.4.2。
+- CF 呼出侧收到200还缓存 Contact并调用媒体平面（10.2.2.4.1 p344）；不能由此推导所有用户媒体已被接收/显示。
+
+依据：§10.2.2.4.2 private-response200 steps1–5 and NOTE3;6.3.3.2.3.2;10.2.2.3.1.1 response200 steps1–8，印刷页 123、124、335、346。
+
+## 证据边界
+
+- 仅指定普通私呼分支；不覆盖全套 SIP、媒体安全、预建立、网关及优先通信行为。来源疑义按下列说明保留。
+
+## 按需继续
+
+- [private-call-client-signalling](private-call-client-signalling.md)
+- [session-media-permission-boundary](session-media-permission-boundary.md)
+- [participant-transmission-control](participant-transmission-control.md)
+- [participant-reception-control](participant-reception-control.md)
+
+[3GPP TS 24.281 V19.3.0 / ETSI TS 124 281 V19.3.0 (2026-01)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf)；仅本版本。
+
+## 原文疑义
+
+- 10.2.2.3.1.1 step13a/b 的 step12 引用指向 codec 校验，而文字讨论名单匹配/裁剪；不擅改编号或推导完整过滤算法。
+- 10.2.2.3.1.1 step16d 引 step17 above，而实际17是SDP；不擅改成16c。
+- 10.2.2.4.2 私呼200步骤2以6.3.3.2.2作为SDP answer依赖；该条实际为收到INVITE时缓存feature tags，SDP answer标题在6.3.3.2.1。
+- 6.3.2.2.5.1/.6.1 引向.5.3/.6.3的可复用预建立分支不在本页闭合；仅核其选择门槛与按需fallback。

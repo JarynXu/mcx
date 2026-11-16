@@ -64,7 +64,7 @@ O-PF 仍从 PAI 的 public user identity 解析主叫 MCData ID，拒绝无绑�
 
 ## 证据边界
 
-- 依赖 TS 24.229 的 SIP/SDP 和 RFC 4975、6135、6714 的细节未在本批展开。
+- 依赖 TS 24.229 的 SIP/SDP 和 RFC 4975、6135、6714 的细节未在本页展开。
 - 没有据字段存在推断完整 XML/TLV 完整性校验、端到端加密或媒体鉴权成功。
 
 ## 按需继续
@@ -80,3 +80,5 @@ O-PF 仍从 PAI 的 public user identity 解析主叫 MCData ID，拒绝无绑�
 - §9.2.3.4.4 step6a,6b，印刷页 222、223：私聊明确拒绝无 resource-lists 或超过一个 entry，邀请分支要求恰有一个 entry；已存在但零 entry 的列表未被这些明示分支覆盖。
 - §9.2.3.4.4 step7e，印刷页 223：supported-services 谓词仍是缺失，或存在 service 的 enabler 不等于 SDS ICSI；不能静默改成只在完全不存在匹配 SDS 条目时拒绝。
 - §9.2.3.4.3 step11，印刷页 221、222：此处原文写 P-Asserted-Service-Id；相邻 PF 过程及分类使用 P-Asserted-Service。本稿不将该字段拼写当作经过纠错的完整报文模板。
+
+- [SDS session 相关条件](sds-session-establishment.md)

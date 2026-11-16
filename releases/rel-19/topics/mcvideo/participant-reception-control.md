@@ -96,3 +96,5 @@ TS24.581 V19.2.0，在网普通非广播、非 system、非紧急/迫近危险�
 - [participant-transmission-control](participant-transmission-control.md)
 
 [ETSI 官方 TS24.581 V19.2.0](https://www.etsi.org/deliver/etsi_ts/124500_124599/124581/19.02.00_60/ts_124581v190200p.pdf)；仅所列版本和条款。
+
+- [先定位私呼会话与媒体协商边界](session-media-permission-boundary.md)

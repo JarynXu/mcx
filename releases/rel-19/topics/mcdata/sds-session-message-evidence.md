@@ -1,0 +1,69 @@
+# SDS session 后续使用：会话标识、消息证据与媒体边界
+
+限同版24.282可直接核验的session标识、媒体接口及带外通知；不从未读24.582补出逐消息发送或确认流程。
+
+普通在网直接私聊或配置组 SDS session；相关建立或通知过程已按各自条件到达本条触发事件。
+
+session是否存在、某段INVITE是否成功、单条SDS是否送达/已读分别记录，不能以一类成功覆盖其他类。
+
+## 会话URI与消息UUID分离
+
+适用条件：比较建立时通过Contact提供的MCData session identity与SDS消息/通知使用的Conversation ID、Message ID。
+
+MCData session identity 是服务器分配的 SIP URI/GRUU，用于客户端—PF和PF—CF之间的会话；CF建立时分配，PF维护自己标识与CF标识之间的映射。Conversation ID 则唯一标识业务conversation，Message ID标识其中一条消息，两者各为16字节UUID。它们的对象与编码不同；会话建立的Contact不能替代单条消息回执中的两个ID，也不能据本页条款假设一个session恰好等于一个conversation。
+
+- 没有核出session URI与业务conversation/message的通用一对一映射，也不创造这种映射。
+- 消息UUID生成、重传与媒体帧之间的具体关联属于未展开的发送/媒体流程。
+
+依据：§4.2.2;15.2.9;15.2.10;6.2.3.1 steps6,7，印刷页 34、60、365、366。
+
+## 媒体调用不证明内部就绪
+
+适用条件：session建立已达到相应角色的媒体交互触发点；问题是后续具体消息何时可发送、如何确认。
+
+24.282把发起客户端、终接客户端、O-PF、T-PF的session媒体过程分别交给24.582的6.1.2.2、6.1.2.3、6.2.2.4、6.2.2.5；CF的session邀请和处理过程引用6.3.2。这里能核到建立后的接口交接，尚不能仅凭这些调用证明后续消息已具备全部媒体发送条件。逐条数据封装、发送前控制、MSRP确认、重传和成功范围，仍须该媒体依赖的可用原文才能闭合。
+
+- 本页未读取24.582，不把“调用媒体过程”改成“此时可无条件发送任意后续数据”。
+- 共用200 helper的step10仍引用24.5826.3.1，与session调用点的6.3.2不同。保留两处原引用，不替标准修正或证明二者等价。
+
+依据：§9.2.4.2.3 2xx response;9.2.4.2.4 ACK procedure;9.2.4.3.3 200 response step10;9.2.4.3.4 200 response step9;9.2.4.4.3 200 response;9.2.4.4.4 steps7c,8k;6.3.7.1.23 step10，印刷页 116、228、231、234、236、239、241、242。
+
+## 媒体释放后仍可关联回执
+
+适用条件：SDS session 媒体面已释放，终接客户端还需发送disposition notification；例如已请求的消息回执需要较晚发出。
+
+§9.2.4.2.4明确要求媒体释放后的通知走§12.2.1.1，即独立的带外SIP MESSAGE。SDS NOTIFICATION按§6.2.3.1复制原消息的Conversation ID与Message ID，并标明相应通知类型。因而媒体session结束不等于此前每条消息的业务回执已经完成；后到的通知仍须对应原消息，而不是只按session Contact归成一个会话级“成功”。
+
+- 这里没有规定媒体仍活动时所有通知都必须带外；§12.1把in-band dispositions交给24.582。
+- 没有给出session媒体下的READ触发细节或通知聚合算法；复用已有带外通知主题，不把session200视作READ。
+
+依据：§9.2.4.2.4 post-media disposition paragraph;12.1;12.2.1.1 steps1–8;6.2.3.1 steps1–9，印刷页 59、60、231、314、315。
+
+## 失败BYE不是成功即释放
+
+适用条件：§9.2.4.2.3发起端收到媒体面指示某SDS未成功发送。
+
+该事件要求向MCData server发送BYE，Request-URI为待释放的MCData session identity，Reason使用SIP/cause480及传输失败原因。它不是把先前INVITE的2xx改成失败响应。本session子节没有像§9.2.3 standalone过程那样列出“收到成功传输指示就以cause200发送BYE”的分支；不能把单条standalone的成功收尾搬过来，宣称session每成功一条消息就自动结束。
+
+- 没有对应成功即释放分支，不等于本稿证明session永不自动释放。用户、服务器和计时器等其他释放条件由各自条款维护。
+- 本条只确认失败BYE的发起入口，未把它无条件拼接成已核的全体参与者释放流程。
+
+依据：§9.2.4.2.3 unsuccessful-media indication;9.2.3.2.3 successful-media indication (comparison with existing topic)，印刷页 213、214、228、229。
+
+## 证据边界
+
+- 不声称已核完整SDS session数据使用协议。该证据边界是本页结果的一部分，不用推测补齐。
+
+## 按需继续
+
+- [sds-session-establishment](sds-session-establishment.md)
+- [sds-session-responses-and-participants](sds-session-responses-and-participants.md)
+- [sds-session-admission](sds-session-admission.md)
+- [sds-media-session-setup](sds-media-session-setup.md)
+- [sds-disposition-timing](sds-disposition-timing.md)
+
+[3GPP TS 24.282 V19.7.0 / ETSI TS 124 282 V19.7.0 (2026-08)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf)；仅本版本。
+
+## 原文差异
+
+§6.3.7.1.23 step10;9.2.4.4.3 200 response;9.2.4.4.4 steps7c,8k：共用200生成helper引用24.5826.3.1，session专属CF调用引用6.3.2。 保留原引用，明确未读媒体依赖；不静默修正、不宣称等价。

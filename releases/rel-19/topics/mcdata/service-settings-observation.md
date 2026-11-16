@@ -11,7 +11,7 @@
 Request-URI 指向服务该用户的 originating PF 的 PSI；mcdata-info 中的 mcdata-request-uri 才是该 MCData 用户的 ID。客户端还设置 P-Preferred-Service 为 MCData ICSI、Event=poc-settings、Accept=application/poc-settings+xml。不能把目标 PF 地址当作被观察用户 ID，也不能借此查询任意其他用户。
 
 - 此处客户端 ICSI 为 urn:urn-7:3gpp-service.ims.icsi.mcdata；与服务器入口的字面差异不在本文修正。
-- TS 24.229、RFC 6665/4354/6050 及完整 XML 安全/事件包实现未在本批展开。
+- TS 24.229、RFC 6665/4354/6050 及完整 XML 安全/事件包实现未在本页展开。
 
 依据：§7.2.4 opening and initial SUBSCRIBE steps1–5，印刷页 141。
 

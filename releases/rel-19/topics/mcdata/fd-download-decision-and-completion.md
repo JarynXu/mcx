@@ -80,7 +80,7 @@ PF 先对列表请求回 SIP 200，再用另一个 SIP MESSAGE 发送 DEFERRED D
 
 ## 证据边界
 
-- 本批没有完整应用消费行为、延期再下载的全部 UI/存储实现或通知聚合算法。
+- 本页没有完整应用消费行为、延期再下载的全部 UI/存储实现或通知聚合算法。
 
 ## 按需继续
 
@@ -91,7 +91,7 @@ PF 先对列表请求回 SIP 200，再用另一个 SIP MESSAGE 发送 DEFERRED D
 
 ## 原文疑义
 
-- §10.2.1.2.2 step9/NOTE3;10.2.1.2.3 step8f/NOTE5：外层条件为原请求要求完成更新，内层又描述未请求时省略目标，Note 称不论请求与否都发送，且称为 disposition request。未请求场景的发送义务不能由本批无声裁决；已请求且下载成功的分支可独立保留。
+- §10.2.1.2.2 step9/NOTE3;10.2.1.2.3 step8f/NOTE5：外层条件为原请求要求完成更新，内层又描述未请求时省略目标，Note 称不论请求与否都发送，且称为 disposition request。未请求场景的发送义务不能由本页无声裁决；已请求且下载成功的分支可独立保留。
 - §6.2.2.2 step8;6.2.3.2 step3;15.2.4;15.2.6：生成段落出现 FILE DOWNLOAD COMPLETE UPDATE、FILE DOWNLOAD REQUEST DEFERRED，编码表分别为 FILE DOWNLOAD COMPLETED UPDATE、FILE DOWNLOAD DEFERRED。本稿用业务中文指代，不把不一致的标签伪装成逐字相同枚举。
 - §6.2.3.2 step6b;15.1.6.1：Message ID 在 FD NOTIFICATION 格式中为必选，但生成 helper 仅在 completed 分支明确设置。未补出接受/拒绝/延期消息标识生成步骤。
 - §11.3.2.1 steps2,3;11.3.2.2;11.3.3.2：请求生成处写 DEFERRED DATA REQUEST，加入 MIME 又称 DEFERRED DATA GROUP COMM；客户端入口称 SIP MESSAGE response，却回 SIP 200，而 PF 实际用新 SIP MESSAGE request 发送 DEFERRED DATA RESPONSE。按明确的新请求/回执两事务描述，不修正文法。

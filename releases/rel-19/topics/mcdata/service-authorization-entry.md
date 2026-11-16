@@ -35,7 +35,7 @@ TS 24.282 V19.7.0 普通 MCData 客户端的第 7 章流程，不把其他版本
 - 使用 MCData gateway UE 时另须 gw-mcdata-usage=true；本文不是省略该条件的完整模板。
 - PUBLISH 还调用 7.2.1A 设置目标 PF 的 PSI、poc-settings 事件及 Expires。
 - REGISTER 完整性调用文号写成 6.6.3.3.3，见原文疑义；不据此自造算法。
-- 用户认证及 token 格式/验证在本批未重新核，不能要求客户端自行解码所有 access token。
+- 用户认证及 token 格式/验证在本页未重新核，不能要求客户端自行解码所有 access token。
 
 依据：§7.2.1;7.2.2，印刷页 138、139、140。
 
@@ -46,8 +46,8 @@ TS 24.282 V19.7.0 普通 MCData 客户端的第 7 章流程，不把其他版本
 服务器先识别并验证所施加的 XML 完整性，再处理机密性。token 与 client ID 都受保护时，使用所收 MIKEY-SAKKE I_MESSAGE 的密钥信息解密，成功才从明文识别 MCData ID/client ID；仅其中一个受保护也被判为机密性处理不成功；两者都未加密则从相应明文元素识别。识别身份不等于随后服务授权已通过。
 
 - 无保护的识别分支不是普遍允许绕过保护配置，仍须结合第 7 章调用及 6.5 依赖。
-- 对 settings-only PUBLISH，成对字段改为 mcdata-request-uri/client-id，见第三主题。
-- MIKEY-SAKKE 本身的认证、解封装及 token 中 MCData ID 的获取算法依赖其他规范，未在本批完整核验。
+- 对 settings-only PUBLISH，成对字段改为 mcdata-request-uri/client-id，见“MCData 设置刷新、退出与绑定有效期”。
+- MIKEY-SAKKE 本身的认证、解封装及 token 中 MCData ID 的获取算法依赖其他规范，未在本页完整核验。
 
 依据：§7.3.1A integrity block and access-token/client-id block，印刷页 143、144。
 
@@ -70,3 +70,5 @@ TS 24.282 V19.7.0 普通 MCData 客户端的第 7 章流程，不把其他版本
 
 - §7.2.1 final integrity-protection step：REGISTER 完整性调用写 6.6.3.3.3；已核 XML 完整性 procedure 在 6.5.3.3.3。本稿标记不一致，不静默改号。
 - §7.3.3 step3;7.3.4 step3;7.3.1A：两个 PUBLISH 调用条款将 7.3.1A 不成功概括为 403/140；该 helper 又调用有各自错误处理的完整性/解密过程。不自行组合为重复 SIP 响应或覆盖全部失败码。
+
+- [MCData设置刷新、退出与绑定有效期](service-settings-validity.md)
