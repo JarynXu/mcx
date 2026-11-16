@@ -1,0 +1,125 @@
+{
+  "topic_id": "r19-mcvideo-implicit-affiliation-lifecycle",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS24.281 V19.3.0在网MCVideo的serving/PF隐式归属helper与配置入口。每条claim独立继承本主题common_conditions和自己的conditions，不继承前条成功；所需serving用户/client记录及已有service authorization按各入口成立。",
+    "本页不展开跨系统迁移/gateway、NCF、重组、功能别名/地理规则、第三方强制或协商归属、完整紧急/迫近危险状态机、GMS/IMS/RFC事务或媒体控制实现。业务触发类型可按第8章概览辨认，具体已闭合普通业务链接到既有on-demand有TC chat页，不把概览当全部优先业务实现。",
+    "service authorization、显式PUBLISH兴趣集合、业务请求隐式候选、profile配置归属和媒体implicit transmission request是不同入口。不用MCData/MCPTT或其它版本补省略项。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.281-v19.3.0",
+  "claims": [
+    {
+      "id": "mcvideo-implicit-entry-is-business-specific-not-every-invite-or-registration",
+      "clause": "8.1;9.2.2.3.1.1 steps1–7",
+      "conditions": [
+        "判定一个在网MCVideo操作是否进入第8章隐式归属；仅按8.1实际列出的入口和已核普通chat调用点。"
+      ],
+      "conclusion": "serving侧概览列出：未归属client加入chat的INVITE/REFER；未归属client发起紧急或迫近危险组呼的INVITE/REFER；未归属client对组发起紧急告警的MESSAGE；以及由用户profile决定的service-authorization REGISTER/PUBLISH。owner侧概览对应列的是chat/紧急或迫近危险组呼INVITE、组告警MESSAGE，而非把serving收到的REFER原样列为owner触发。普通chat O-PF在前置业务检查通过后，按8.2.2.2.11判断未affiliated即调用.12；不要求本次是priority call。",
+      "printed_pages": [
+        173,
+        174,
+        256,
+        257
+      ],
+      "limitations": [
+        "这是已列入口，不推成任意INVITE、任意REGISTER或普通预安排组呼都会隐式归属；具体优先业务权限和状态前提未在本页展开。",
+        "8.1把授权及设置PUBLISH都引用7.3.2；实际已核PUBLISH调用在7.3.3/7.3.4 step13，保留错引。普通chat完整准入、owner eligibility/提交和响应顺序复用既有两页。"
+      ]
+    },
+    {
+      "id": "mcvideo-pf-status-determination-is-not-owner-expiration-check",
+      "clause": "8.2.2.2.11;6.3.6",
+      "conditions": [
+        "某业务明确调用8.2.2.2.11，由PF判定发起用户在请求client上对目标组的状态。"
+      ],
+      "conclusion": "PF按用户、请求mcvideo-client-id、目标group ID定位记录。匹配组状态为affiliating或affiliated时，helper将该用户/client判为affiliated；状态为deaffiliating/deaffiliated或组记录找不到时判未affiliated。client记录找不到也判未affiliated。此helper所列状态判断未写owner 6.3.6的用户记录expiration检查，不以owner算法替换PF算法。",
+      "printed_pages": [
+        139,
+        140,
+        191,
+        192
+      ],
+      "limitations": [
+        "helper step1引用9.2.2.2.2，且查user记录后失败条件写group information entry；两处异常保留，不修成完整缺user恢复算法。",
+        "affiliating在此局部检查中被视作affiliated，不等于owner已确认、client已收到成功或所有通话准入通过。其它过程可检查期限，不能从本helper未列expiry推成系统全局永不检查。"
+      ]
+    },
+    {
+      "id": "mcvideo-business-implicit-candidate-adds-missing-or-expired-not-every-inactive-record",
+      "clause": "8.2.2.2.12 steps1–7",
+      "conditions": [
+        "业务已实际触发8.2.2.2.12；PF从请求mcvideo-client-id、mcvideo-request-uri及PAI绑定用户确定client/group/user，且相应serving用户/client记录可定位。"
+      ],
+      "conclusion": "PF复制该client全部既有组记录到candidate。目标组没有原记录或原记录已过期时，加入新条目，置affiliating，期限设current time+candidate expiration interval。原未过期deaffiliating/deaffiliated条目会被复制，但本helper没有显式把它重置成affiliating；不能借用显式PUBLISH的重置规则。该helper本身也没有设置affiliating p-id或调用向owner发PUBLISH的8.2.2.2.6。",
+      "printed_pages": [
+        192,
+        193
+      ],
+      "limitations": [
+        "candidate expiration interval的来源/默认值未在该helper确定。它先复制全部条目再对已过期目标加入new entry，没有明确旧过期同组条目删除/替换步骤；不重写为已验证的唯一键替换实现。",
+        "未过期deaffiliating/deaffiliated经.11判未归属，但.12没有新建条件；随后completion/cancellation又以added entry为对象，该组合不在本页强行补齐。原记录/候选存储初始化与并发处理也未核。",
+        "业务owner侧可由原业务请求另行提交隐式归属；不因为PF没有在此调用PUBLISH而宣称owner永远不会记录。普通chat实例如既有chat-ondemand-admission。"
+      ]
+    },
+    {
+      "id": "mcvideo-business-n2-discard-is-before-commit-not-an-unconditional-count-rejection",
+      "clause": "8.2.2.2.12 steps8–11;9.2.2.3.1.1 steps6–7",
+      "conditions": [
+        "8.2.2.2.12已完成candidate构造，进入N2处理；本条描述helper本身，不引入priority调用者的地方策略例外。"
+      ],
+      "conclusion": "N2数量按同用户当前client candidate与其他client记录中未过期、状态affiliating/affiliated的不同group ID计算。超过N2先按服务商策略缩减candidate组至N2；若目标组因超过N2仍不能加入，则丢弃candidate并停止本helper，不执行后面的存储替换。否则用candidate替换本client组列表。普通chat在确实调用该helper且因N2不成功时，由业务主条返回486/Warning102。",
+      "printed_pages": [
+        193,
+        257
+      ],
+      "limitations": [
+        "不是达到N2就立即无条件拒绝；也不是每client独立计数。具体缩减选择和N2默认仍取决于外部配置/服务策略，不补算法。",
+        "丢弃candidate发生在替换之前；但一旦已替换，后来的.14取消只列删除此次新增目标，没有恢复被N2策略缩减的其它旧组步骤。不能宣传全列表事务回滚；也不反向断言其他流程绝不恢复。"
+      ]
+    },
+    {
+      "id": "mcvideo-business-completion-and-cancellation-are-bound-to-the-triggering-request",
+      "clause": "8.2.2.2.13;8.2.2.2.14;9.2.2.3.1.1 response paragraphs",
+      "conditions": [
+        "一个收到的业务SIP请求确已触发8.2.2.2.12，且该过程实际加入了目标group entry；PF处理该请求的后续结果。"
+      ],
+      "conclusion": "PF收到CF对这个触发请求的2xx时，8.2.2.2.13将此次added entry置affiliated，并调用8.2.2.2.5用户归属状态通知。若PF判定这个请求需本地拒绝，或收到CF对它的4xx/5xx/6xx，8.2.2.2.14删除本次新增、匹配请求group/client及发送用户的条目。它不是删除该用户所有client同组条目的显式owner PUBLISH失败清理。普通chat成功在向client发200前完成该helper；4xx/5xx/6xx先向client转发响应再取消，完整字段/媒体顺序见既有chat入口页。",
+      "printed_pages": [
+        193,
+        194,
+        258,
+        259
+      ],
+      "limitations": [
+        "完成依据是CF对原触发业务请求的2xx，不是service settings PUBLISH 200、SUBSCRIBE 200或任意成功响应。这里没有要求client先收齐所有通知或已获得媒体发送许可。",
+        "取消helper未把3xx或timer F到期列为这项触发；chat的302另有重定向段，不能照搬显式owner PUBLISH的3xx/F清理。未展开重定向、其他事务失败或全部本地拒绝调用点。",
+        "本条只作用于确实added的entry；旧条目重用和N2修改其它条目的完整恢复未由此定义。取消段未显式再调用状态NOTIFY helper，不伪造同步步骤。"
+      ]
+    }
+  ],
+  "limitations": [
+    "本页是共用helper的实际入口与状态边界，不是新的完整chat/优先业务流程；完整普通chat链用关联页，不复制媒体许可条件。"
+  ],
+  "related": [
+    "chat-ondemand-entry.md",
+    "chat-ondemand-admission.md",
+    "configured-implicit-affiliation.md",
+    "explicit-affiliation-serving-state.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": true,
+    "independent_source_review": true
+  },
+  "standard_stage": 3,
+  "source_anomalies": [
+    "8.1的service authorization/settings PUBLISH引用7.3.2，与实际7.3.3/7.3.4调用位置不同。8.2.2.2.15以已完成service authorisation及该request标识输入，7.3.4 settings-only仍显式调用；不改源。",
+    "8.2.2.2.11 step1存储引用9.2.2.2.2，且查user记录后失败项写group entry；PF该helper未列owner6.3.6的expiry检查。",
+    ".12/.15都先复制旧列表，再对缺失或已过期组加入new entry；candidate expiration interval来源和旧过期同组记录移除未明写，不推唯一键实现。",
+    "未过期deaffiliating/deaffiliated条目不满足.12/.15新建条件，业务completion/cancellation以added entry为对象；不填状态转换缺口。",
+    "owner .6/.7公共helper的错引、两层p-id保留、selected expiration/续期缺口沿用显式稿已核边界，不从配置入口静默修复。"
+  ]
+}

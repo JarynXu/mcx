@@ -13,3 +13,5 @@
 [transmission-options.md](transmission-options.md) · [delivery-evidence.md](delivery-evidence.md) · [来源](https://www.etsi.org/deliver/etsi_ts/122200_122299/122282/19.00.00_60/ts_122282v190000p.pdf)，印刷页16。
 
 Stage 1 要求之后用本版 Stage 3 核预告、查询、计时与结果的具体承载。 [session-release-extension](session-release-extension.md)。
+
+Stage1概览之后按HTTP分支核Stage3条件。 [http-fd-release-extension](http-fd-release-extension.md)。

@@ -1,0 +1,174 @@
+{
+  "topic_id": "r19-mcdata-http-fd-release-extension",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "同版§13.2.4.5的服务器发起HTTP FD释放预告与原发起者延期，不是媒体session INFO/BYE，不含授权第三人§13.2.5/.6。",
+    "Conversation ID、Message ID和FILEURL定位对应HTTP传输；mcdata-controller-psi用于后续CF路由。保留其发送/读取MIME不一致，不宣称现有文字自动组成完整实现。",
+    "以下主干描述在相应已定义客户端、PF或CF入口被满足时的行为。通用CF入口分流回指差异单列，不能据直接handler存在就证明所有入站消息必然到达它。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.282-v19.7.0",
+  "claims": [
+    {
+      "id": "http-intent-ack-requires-matching-file-transmission-and-preserves-psi-gap",
+      "clause": "13.2.4.5.1;13.2.4.5.2.1;13.2.4.5.4.1 steps1–5;13.2.1.1",
+      "conditions": [
+        "CF按配置决定先预告；原发起者收到含FD HTTP TERMINATION的mcdata-signalling MESSAGE，类型为INTENT TO RELEASE COMM OVER HTTP。"
+      ],
+      "conclusion": "CF按§13.2.1.1生成预告，把自己的controller-psi放入mcdata-info XML，Reason可带。客户端先用Conversation ID、Message ID和FILEURL识别本地传输，识别成功的分支才回200、保存CF身份，并在原文所列Reason条件下通知用户/展示原因。此处没有媒体对话或Info-Package匹配条件；不能用任意同URL的通知或媒体INFO响应替代这三个标识的识别。",
+      "printed_pages": [
+        325,
+        326,
+        336,
+        337,
+        338
+      ],
+      "limitations": [
+        "客户端保存controller-psi的句子写从mcdata-signalling MIME中的XML元素读取，CF却明确放在mcdata-info XML；两端承载位置不一致，不能悄悄将读取目标改成info并宣称互通通过。",
+        "没有识别到相应传输时，本段未列200/404等替代动作；不从主叫取消的CF404/224搬来客户端。",
+        "本段仍旧回指消息定义15.1.11；实际FD HTTP TERMINATION表在15.1.13。"
+      ]
+    },
+    {
+      "id": "http-tdc3-is-an-extension-window-not-file-availability-renewal",
+      "clause": "13.2.4.5.4.1 final paragraphs;13.2.3.3.4;F.2.2 TableF.2.2-1 TDC3",
+      "conditions": [
+        "CF已发送HTTP预告并收到其200，或对应TDC3到期。"
+      ],
+      "conclusion": "CF收到预告200后启动TDC3。F.2.2的默认值为15秒且可配置；若在收到延期请求前到期，CF按§13.2.3.3.4执行HTTP停止及通知，而不是按媒体BYE helper释放。TDC3等待的是延长通信请求，不是下载完成；本条也没有把它等同TDC2文件可用期或承诺已下载文件自动延长保留。",
+      "printed_pages": [
+        332,
+        338,
+        639
+      ],
+      "limitations": [
+        "未收到预告200时本条没有给出TDC3起点；不自动改成预告发送时开始。",
+        "§13.2.4.5.1泛称可请求更多资料，但本HTTP子节没有与媒体§13.2.4.2.1/.4.2同样的剩余字节DATA PAYLOAD回传过程；不把该媒体INFO分支移植过来。",
+        "默认15秒不是用户看到UI后保证有15秒，也不是所有HTTP连接在到期同一瞬间被中断的实现证明。"
+      ]
+    },
+    {
+      "id": "http-extension-request-uses-stored-controller-with-binding-still-required",
+      "clause": "13.2.4.5.2.2;13.2.4.5.3.1;6.2.2.4;10.2.4.3.1 steps2–7,8–14",
+      "conditions": [
+        "用户因预告请求延长HTTP FD，客户端已取得本分支所需保存的controller-psi；后续MESSAGE按§13.2.4.5.3.1进入O-PF过程。"
+      ],
+      "conclusion": "客户端调用§6.2.2.4生成FD HTTP TERMINATION，但按caller的clarification把类型设为EXTENSION REQUEST FOR COMM OVER HTTP，并在mcdata-info XML中带保存的controller-psi后向O-PF发MESSAGE。O-PF优先用这个PSI确定CF；它仍须从PAI绑定确定并授权主叫、检查绑定有效性，且执行§11.1。step7的具体403映射只在controller-psi缺失时适用，存在PSI不等于所有身份或权限检查都被跳过。",
+      "printed_pages": [
+        59,
+        277,
+        278,
+        279,
+        337
+      ],
+      "limitations": [
+        "这依赖预告中CF身份已被正确取得；前条指出发送/读取MIME位置不同，不能无条件写成存取链已闭合。",
+        "§13.2.4.5.2.2未另列§6.2.4.1的完整FD外层构造调用；本页不补全部SIP头域或宣称编码级入口分类已经验证。",
+        "helper默认TERMINATION REQUEST由caller明确改成延期类型；这不是同时发送两个业务请求或新传文件。"
+      ]
+    },
+    {
+      "id": "http-extension200-is-not-acceptance-and-rejection-follows-result200",
+      "clause": "13.2.4.5.4.2/.3;13.2.4.5.2.3;13.2.3.3.4;15.1.13.1;15.2.21/.22",
+      "conditions": [
+        "CF实际进入§13.2.4.5.4.2，解码FD HTTP TERMINATION且类型为EXTENSION REQUEST FOR COMM OVER HTTP；随后发送相应决定。"
+      ],
+      "conclusion": "CF按Conversation ID、Message ID和FILEURL停止对应传输的TDC3，先回200，再另发MESSAGE决定。决定由本地策略产生，类型为EXTENSION RESPONSE FOR COMM OVER HTTP，Extension response type为ACCEPTED或REJECTED。客户端识别这种结果后回200并按结果通知用户；若CF拒绝延期，它在收到这个结果MESSAGE的200后才调用§13.2.3.3.4。于是请求200、业务延期决定、对决定的200以及实际停止通知是不同事件。",
+      "printed_pages": [
+        332,
+        337,
+        338,
+        359,
+        371,
+        372
+      ],
+      "limitations": [
+        "通用§10.2.4.4.2 step18把非TERMINATION REQUEST指向§13.2.5和§13.2.6，未直接指本服务器延期handler。保留这一实际分流回指缺口，不自行把第三人授权释放替换为§13.2.4.5，也不把通用202后再handler200拼成已验证同事务双最终响应。",
+        "§15.1.13表把Extension response type用于HTTP TERMINATION，但§15.2.21用途句限定Comm release Information type=EXTENSION RESPONSE；HTTP使用的是Termination information type。本页按HTTP专属过程陈述决定，保留字段适用性措辞差异，不声称二进制互通已验证。",
+        "ACCEPTED未给出具体延长秒数、TDC2重启、存储TTL增加或新下载权限；不能把它解读为文件永久可用。",
+        "本链未规定拒绝结果MESSAGE无200时的替代释放时限，也未给保留IE值/缺失决定字段的默认成功规则。"
+      ]
+    }
+  ],
+  "limitations": [
+    "可核直接handler的请求、计时和结果行为；controller-psi承载、通用CF分流与旧回指仍阻止把它描述为完整编码/路由闭环。",
+    "不把媒体SDS的剩余量查询、Info-Package、BYE或其应答条件复制到HTTP。"
+  ],
+  "related": [
+    "http-fd-server-stop.md",
+    "session-release-extension.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": true,
+    "independent_source_review": true
+  },
+  "standard_stage": 3,
+  "source_anomalies": [
+    {
+      "clause": "13.2.2.3.1/.2.1.1 versus6.2.2.4",
+      "printed_pages": [
+        59,
+        329,
+        330
+      ],
+      "issue": "概述称上传后发送SDS message，生成caller称standalone FD；被调6.2.2.4实为FD HTTP TERMINATION生成。",
+      "treatment": "按明确helper写终止请求，同时记录caller措辞，不因此新发SDS或普通FD。"
+    },
+    {
+      "clause": "13.2.1.1;13.2.3.3.2.1;13.2.4.5.2.1/.3;15.1.11/.13",
+      "printed_pages": [
+        326,
+        331,
+        336,
+        337,
+        358,
+        359
+      ],
+      "issue": "服务器生成helper引用15.1.3.1，多处接收过程引用15.1.11；实际FD HTTP TERMINATION在15.1.13，15.1.11是DEFERRED DATA REQUEST。",
+      "treatment": "保留准确实际定义和各处错回指，不把旧编号静默修复成已验证编码。"
+    },
+    {
+      "clause": "13.2.4.5.2.1 step2a(iii);13.2.4.5.4.1 step2",
+      "printed_pages": [
+        336,
+        337
+      ],
+      "issue": "controller-psi由CF放mcdata-info XML，客户端句子却写从mcdata-signalling MIME中的该XML元素读取。",
+      "treatment": "直接暴露两端不一致；依赖成功保存PSI的延期发送保持条件化。"
+    },
+    {
+      "clause": "10.2.4.4.2 step18 versus13.2.4.5.4.2",
+      "printed_pages": [
+        286,
+        338
+      ],
+      "issue": "通用CF入口把非TERMINATION REQUEST引到13.2.5/.6，不是服务器预告的13.2.4.5。通用入口此前还已发送202，而直接延期handler回200。",
+      "treatment": "不修改caller、不拼装同一事务双最终响应；只陈述各自实际入口条件和已核handler行为。"
+    },
+    {
+      "clause": "10.2.4.4.2 step17a;13.2.3.3.4 step1;12.4.2.1",
+      "printed_pages": [
+        285,
+        323,
+        324,
+        332
+      ],
+      "issue": "取消/停止要求FILE DELETED，停止caller还明确写删除文件；被调helper仅生成SIP通知，没有删除API和结果判据。",
+      "treatment": "保留删除义务，区分信令意图/声明与物理完成证明，不由通知类型填出实现。"
+    },
+    {
+      "clause": "15.1.13.1;15.2.21;13.2.4.5.4.3",
+      "printed_pages": [
+        338,
+        359,
+        371,
+        372
+      ],
+      "issue": "HTTP消息表/专属过程使用Extension response type，但IE用途句只写Comm release Information type=EXTENSION RESPONSE。",
+      "treatment": "按HTTP专属业务分支解释ACCEPTED/REJECTED，记录字段适用措辞的局限。"
+    }
+  ]
+}

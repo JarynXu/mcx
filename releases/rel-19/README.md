@@ -347,3 +347,7 @@ MCVideo授权与设置：[共享注册、服务授权及多client绑定](topics/
 SDS服务器释放：[无预告释放与归属边界](topics/mcdata/session-server-release.md)、[预告、剩余量与延期结果](topics/mcdata/session-release-extension.md)。
 
 MCVideo显式归属：[完整组集与结果观察](topics/mcvideo/explicit-affiliation-request.md)、[用户侧候选状态和N2](topics/mcvideo/explicit-affiliation-serving-state.md)、[组所有者确认与续期边界](topics/mcvideo/explicit-affiliation-owner-confirmation.md)。
+
+MCVideo隐式归属：[业务候选的建立、完成及取消](topics/mcvideo/implicit-affiliation-lifecycle.md)、[配置触发、N2与owner结果](topics/mcvideo/configured-implicit-affiliation.md)。
+
+HTTP FD控制：[主叫终止](topics/mcdata/http-fd-originator-termination.md)、[服务器停止与文件通知](topics/mcdata/http-fd-server-stop.md)、[预告和延期](topics/mcdata/http-fd-release-extension.md)。

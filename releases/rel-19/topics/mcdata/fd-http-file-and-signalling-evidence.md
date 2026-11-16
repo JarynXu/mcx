@@ -71,3 +71,5 @@ CF 正常分发流程生成上游 SIP 202；排队分支也能回 202，但须�
 - §10.2.4.1 step2a：正文将 MCDataContentServerURI 的用户 profile 误称 MCPTT；本稿不更改源规范 schema 名。
 
 - [文件存入 Message Store 与下载到终端的区别](message-store-file-locality.md)
+
+已上传并分发后，查看主叫取消而非初次发送或下载拒绝。 [http-fd-originator-termination](http-fd-originator-termination.md)。

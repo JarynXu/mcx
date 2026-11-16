@@ -108,3 +108,5 @@ O-PF按组ID确定CF PSI，生成INVITE并把Request-URI设为该CF PSI；在mcv
 依据：§9.2.2.2.1.1;9.2.2.2.1.6;9.2.2.4.1.1 steps10–11;9.2.1.2.4.1;9.2.1.4.6，印刷页216、236、248、249、254、262、263。
 
 - [chat离开与存续的对应条件](chat-participant-leave.md)
+
+需要区分业务候选建立、完成与取消时，读取[implicit-affiliation-lifecycle](implicit-affiliation-lifecycle.md)。
