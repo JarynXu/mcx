@@ -309,3 +309,9 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 
 - [MCVideo chat离开与移除：BYE确认不等于全组结束](topics/mcvideo/chat-participant-leave.md)
 - [MCVideo chat存续：三项释放条件与可选组时长](topics/mcvideo/chat-release-policy.md)
+
+
+### MCData 配置归属与普通发送
+
+- [MCData 配置触发隐式归属：候选组、N2 与 owner 结果](topics/mcdata/configured-implicit-affiliation.md)
+- [MCData 隐式归属边界：普通发送、请求型提交与退出不能混用](topics/mcdata/implicit-affiliation-entry-and-lifecycle-boundaries.md)
