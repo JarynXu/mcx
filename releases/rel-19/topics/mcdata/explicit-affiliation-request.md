@@ -1,0 +1,71 @@
+# MCData 显式归属变更：完整兴趣列表、刷新与撤销
+
+限 TS24.282 V19.7.0 普通在网客户端为自身用户、当前目标客户端表达组兴趣；不覆盖代表他人操作、隐式归属或协商/强制模式。
+
+用户希望改变兴趣，不等于服务器已确认归属；要取得变更成功或拒绝的信息，应按 §8.2.1 在变更前启动 §8.2.3 状态确定。此处不增加先等 SUBSCRIBE 成功的条件。
+
+PUBLISH 按 TS24.229、RFC3903 和 presence 事件过程发送；本批仅核 TS24.282 明列的差异，不生成完整可执行 SIP 报文。
+
+## PUBLISH路由和目标身份
+
+适用条件：准备表达、撤销或刷新本用户在目标客户端对组的兴趣。
+
+客户端发送 PUBLISH 到服务该用户的 originating PF 公共服务身份。mcdata-info 的 mcdata-request-uri 填 MCData 用户 ID，P-Preferred-Service 携 MCData ICSI；组 ID 放在兴趣资料里，不替换这两个目的身份。§8.2.2 还将收到 NOTIFY、状态为 affiliated 且归属期限临近列为兴趣刷新触发，所以刷新依据的是观察到的归属期限，不能仅凭先前 PUBLISH 的 200 推定永不过期。
+
+- MCData ICSI 为 urn:urn-7:3gpp-service.ims.icsi.mcdata，mcdata-info MIME 类型为 application/vnd.3gpp.mcdata-info+xml。
+- 这里的服务身份、用户 ID、客户端 ID 和组 ID 作用不同；完整注册、鉴权及路由配置不是本批范围。
+- 未核 RFC3903 条件请求、ETag 和刷新重试；没有从 Expires 最大请求值推导固定获准期限。
+
+依据：§8.2.2 opening and steps1–3;8.2.3 NOTIFY paragraph，印刷页 158、159、160。
+
+## 非零请求携完整兴趣集合
+
+适用条件：目标用户在目标客户端仍对至少一个组感兴趣。
+
+客户端设置 Expires=4294967295，并附按 §8.4.1 构造的 per-user PIDF，列出该用户在目标客户端仍感兴趣的全部组及该客户端 ID。presence.entity 标识用户，tuple.id 标识客户端，affiliation.group 标识组；presence 下的 p-id 取全局唯一值。客户端不得在 affiliation 上附 status 或 expires 属性，不能自己在请求中宣布归属已经成功。这是完整兴趣集合，不是只发新增组的补丁；原文也允许在刷新时携 PIDF，以一条消息刷新或撤销多个组。
+
+- 不得附的是 affiliation 的 status/expires 属性，不是禁止 PIDF 的 status 元素。
+- 4294967295 是请求的 Expires 值，不是已确认归属期限。
+- 此处只覆盖目标客户端，不能据此把单个用户所有客户端的兴趣合并成一个可任意覆盖的列表。
+
+依据：§8.2.2 step5 and NOTE3;8.4.1.2 per-user syntax，印刷页 159、186。
+
+## 规则触发归属的手动撤销限制
+
+适用条件：用户手动表示对一个或多个组不再感兴趣。
+
+客户端先检查用户配置中是否有 manual-deaffiliation-not-allowed-if-affiliation-rules-are-met。若该组归属是因某条规则满足而激活，且此元素存在并为 true，则须抑制用户的手动撤销请求。向用户显示说明是可选动作，不是同一条 SHALL 义务；不能把规则产生的所有归属一概写成禁止手动撤销。
+
+- 保留“规则触发的激活”和“元素存在且为 true”两个条件；未核配置文档的缺省值或完整 schema。
+- 此限制针对用户手动请求，不能据它阻止 §8.2.6 的规则驱动撤销。地理范围/FA 规则本身沿用已有主题，不在此重新定义。
+
+依据：§8.2.2 manual-deaffiliation paragraph and NOTE0，印刷页 158、159。
+
+## 部分撤销和零期限的差异
+
+适用条件：客户端要撤销部分组兴趣，或目标用户在目标客户端已不对任何组感兴趣。
+
+仍有兴趣组时，非零 PUBLISH 保留完整剩余列表。服务用户服务器对原来未过期、却在新列表中遗漏的组，若原状态为 affiliated 或 affiliating，会转入原文所称 de-affiliating，并设置当前时间加两倍 timer F 的期限。若目标客户端已无任何兴趣组，客户端设置 Expires=0；§8.2.2 NOTE1 明说这时可不带 PIDF。服务端零候选期限分支则遍历该目标客户端原列表，设置撤销过渡状态和同样期限。两者都不能由发请求这一刻就判为撤销已完成。
+
+- 必须保留可用性缺口：§8.3.2.3 入口仍要求 per-user PIDF，之后还读取 entity、tuple.id 和 p-id。不能把客户端 NOTE1 自动改造成服务器的空 body 例外，也不擅自补目标客户端识别办法。
+- 服务器正文此处分写 de-affiliating，§8.4.1.2 schema 枚举是 deaffiliating；不新增一个 wire 状态值。
+- 未核 timer F 的数值或完整组 owner 撤销/超时全链；不能把本段期限写成保证撤销完成的时限。
+- 这里没有证明任何既有 SDS session 已被 BYE 释放或数据已经停止；会话离开须另看相应业务过程。
+
+依据：§8.2.2 steps4,5 and NOTE1;8.3.2.3 opening5,steps9,10,14a(ii),15,16,18，印刷页 159、164、165、166、167。
+
+## 证据边界
+
+- 没有构造完整状态机或消息样例；客户端零期限说明与服务端 PIDF 入口不一致仍影响实现可用性。
+
+## 按需继续
+
+- [explicit-affiliation-observation](explicit-affiliation-observation.md)
+
+[3GPP TS 24.282 V19.7.0 / ETSI TS 124 282 V19.7.0 (2026-08)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf)；仅本版本。
+
+## 原文差异
+
+- §8.2.2 NOTE1 versus8.3.2.3 opening5,steps9,10,18：客户端 Expires=0 可不带 PIDF；服务端入口要求 PIDF，后续还从该 body 读取用户、客户端和 p-id。 作为零期限操作的具体可用性边界保留，不构造空 body 例外或目标客户端推断。
+- §8.3.2.3 steps14a(ii),15 versus8.4.1.2 table8.4.1.2-1：服务器撤销过渡状态写 de-affiliating，schema 枚举写 deaffiliating。 语义描述保留出处，不新增 wire 枚举，也不宣称已验证原文状态机与 schema 一致。
+- §8.3.2.3 step14a(iii) versus8.4.1.2 per-user syntax：新组分支将 group 写作 element，而 per-user syntax 把 group 定义成 affiliation 的 attribute。 本批不构造新组 XML 处理算法；发布字段描述依据明确的 syntax，并标出此差异。

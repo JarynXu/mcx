@@ -1,0 +1,110 @@
+{
+  "topic_id": "r19-mcdata-explicit-affiliation-observation",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "限 TS24.282 V19.7.0 本用户在本客户端的归属状态确定；观察其他用户的授权和转发不在本批范围。",
+    "按所收 NOTIFY 的用户、客户端、组和可用期限解释状态；不把任意一条通知推广到该用户所有终端或所有业务会话。",
+    "服务器辅助条款只用于解释事务响应、列表处理和输出过滤，不代替完整组 owner 协调与失败恢复。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.282-v19.7.0",
+  "claims": [
+    {
+      "id": "start-status-determination-before-change-and-keep-subscription-separate",
+      "clause": "8.2.1;8.2.3 initial and in-dialog SUBSCRIBE;8.4.2.2 per-client syntax",
+      "conditions": [
+        "要知道 §8.2.2 引发的归属改变是否成功或被拒绝。"
+      ],
+      "conclusion": "§8.2.1 要求先启动 §8.2.3 状态确定，再启动状态变更，并没有写成必须先等 SUBSCRIBE 的 200 或第一条 NOTIFY。初始 SUBSCRIBE 发给本用户的 originating PF；mcdata-request-uri 是目标用户 ID，携 MCData ICSI 和 Accept: application/pidf+xml。查询本客户端时还须带以本客户端 ID 限制的 per-client simple-filter。当前及后续状态用 Expires=4294967295，仅取当前用 0；对话内重新订阅同样用 4294967295，取消订阅用 0，且仍带 PIDF Accept。取消观察与用 PUBLISH 撤销兴趣是不同操作。",
+      "printed_pages": [
+        158,
+        159,
+        160,
+        188
+      ],
+      "limitations": [
+        "simple-filter MIME 类型为 application/simple-filter+xml；本版 per-client 选择的是 tuple.id 所指客户端，不是把用户 ID 或组 ID塞入同一个过滤条件。",
+        "§8.2.1 的前置是启动状态确定，不是启动 group dynamic 订阅。未核 RFC6665 的首条通知时序、失败恢复或有效订阅时长协商。",
+        "不因初始 Expires=0 只取当前就保证后续变更结果一定会被观察到；本条不补标准未列的等待算法。"
+      ]
+    },
+    {
+      "id": "publish-200-precedes-entity-and-candidate-group-processing",
+      "clause": "8.3.2.3 steps5–14,16–19",
+      "conditions": [
+        "PUBLISH 满足 §8.3.2.3 入口并未在前置步骤被拒绝；本条描述这一跳的服务用户服务器响应。"
+      ],
+      "conclusion": "服务用户服务器先确定候选期限并发送带 Expires 的 PUBLISH 200，之后才检查 PIDF 的 presence.entity 是否与 served 用户相符；不符即停止后续步骤。其后还要确定目标客户端并处理候选组列表。候选期限非零时，候选不同组数量按 §8.3.2.3 step14b 计入该客户端候选列表及该用户其他客户端的相应记录；超过该用户 N2 时，须按服务提供者策略缩减到 N2。因此这一跳的 200 不是请求中每个组已获准归属的充分证据，也不能直接映射为 affiliated。",
+      "printed_pages": [
+        164,
+        165,
+        166,
+        167
+      ],
+      "limitations": [
+        "N2 统计按原文 affiliating/affiliated 及未到期条件理解；不是简单计 PUBLISH 内元素数，也不在本批决定优先保留哪些组。",
+        "Expires 缺失，或非零且小于 4294967295 时，服务器在 step5 返回 423，带 Min-Expires=4294967295 并停止。零值不属于这一非零过短条件。",
+        "200 后的 entity 不符没有在本条原文补一个第二最终错误响应；不得自造。",
+        "完整 N2 配置、策略和组 owner 接受/拒绝原因未核，本条只解释为何必须继续看状态证据。"
+      ]
+    },
+    {
+      "id": "notify-state-is-client-scoped-correlated-and-filtered-not-universal-absence",
+      "clause": "8.2.3 NOTIFY paragraph;8.3.2.4 step5 and final paragraph;8.3.2.5;8.4.1.2 per-user syntax and table8.4.1.2-1",
+      "conditions": [
+        "收到按 §8.2.3 处理、含 §8.4.1 per-user PIDF 的 NOTIFY。"
+      ],
+      "conclusion": "客户端从 presence.entity 的用户、tuple.id 的客户端及 affiliation.group 的组 ID 确定所观察的归属。schema 的 status 值为 affiliating、affiliated、deaffiliating，expires 若出现是 dateTime；p-id 若出现，表示触发该通知的 PUBLISH。服务用户服务器生成此类通知时排除已过期和本地 deaffiliated 条目，并应用建立订阅时的 per-client filter；若由 §8.3.2.3 调用且识别出 handled p-id，才按该分支写入关联值。因而条目缺席不能无条件解释为某次请求被拒绝，p-id 本身也不能证明归属成功。",
+      "printed_pages": [
+        160,
+        167,
+        168,
+        186,
+        187
+      ],
+      "limitations": [
+        "本版 per-user syntax 允许 status、expires、p-id 可选；不把缺失属性擅自赋为成功、失败或无限期。deaffiliated 是本地过滤条件，未列为该 schema 的 wire 枚举。",
+        "SUBSCRIBE 200 与订阅期间发通知是观察通路的行为，不是任何特定组变更已经成功。",
+        "即便通知给出 affiliated，也只成立相应用户/客户端/组的归属证据；不能由此证明已成为某个 SDS session 的实际参加者、媒体已就绪或一条消息已送达。",
+        "本批不定义各类省略如何唯一映射为拒绝原因，也不补所有请求与异步通知之间的完整重放/丢失恢复。"
+      ]
+    }
+  ],
+  "limitations": [
+    "状态、请求关联与列表过滤可以分别核验，但这里尚不是从组 owner 到客户端的全部接受/拒绝状态机。"
+  ],
+  "related": [
+    "explicit-affiliation-request.md",
+    "sds-group-controller-admission.md",
+    "sds-session-responses-and-participants.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": true
+  },
+  "standard_stage": 3,
+  "source_anomalies": [
+    {
+      "clause": "8.2.2 NOTE1 versus8.3.2.3 opening5,steps9,10,18",
+      "printed_pages": [
+        159,
+        164,
+        167
+      ],
+      "issue": "客户端 Expires=0 可不带 PIDF；服务端入口要求 PIDF，后续还从该 body 读取用户、客户端和 p-id。",
+      "treatment": "作为零期限操作的具体可用性边界保留，不构造空 body 例外或目标客户端推断。"
+    },
+    {
+      "clause": "8.3.2.3 steps14a(ii),15 versus8.4.1.2 table8.4.1.2-1",
+      "printed_pages": [
+        165,
+        166,
+        187
+      ],
+      "issue": "服务器撤销过渡状态写 de-affiliating，schema 枚举写 deaffiliating。",
+      "treatment": "语义描述保留出处，不新增 wire 枚举，也不宣称已验证原文状态机与 schema 一致。"
+    }
+  ]
+}

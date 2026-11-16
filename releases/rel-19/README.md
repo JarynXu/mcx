@@ -286,3 +286,9 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 
 - [MCVideo组成员离开：BYE不等于全组结束](topics/mcvideo/group-participant-leave.md)
 - [MCVideo全组释放：五项策略、TNG3和公共BYE边界](topics/mcvideo/group-release-policy.md)
+
+### MCData 显式归属与组观察
+
+- [MCData 显式归属变更：完整兴趣列表、刷新与撤销](topics/mcdata/explicit-affiliation-request.md)
+- [MCData 归属结果：先启动观察，再区分 200、状态与请求关联](topics/mcdata/explicit-affiliation-observation.md)
+- [MCData group dynamic：独立组观察，不是归属或会话参加证明](topics/mcdata/group-dynamic-observation.md)
