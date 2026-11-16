@@ -4,7 +4,7 @@
 
 ## 阅读入口
 
-- [Release 19](releases/rel-19/README.md)：MCPTT 呼叫信令、预建立媒体控制与话权、身份和安全、组文档与 LMR 互通，以及位置、网络策略、部分 MCVideo/MCData 业务要求与客户端协议路径。各主题覆盖范围和证据强度不同，详见版本入口。
+- [Release 19](releases/rel-19/README.md)：MCPTT 呼叫信令、预建立媒体控制与话权、身份和安全、组文档与 LMR 互通，以及位置、网络策略、部分 MCVideo/MCData 业务要求与指定客户端、服务器协议路径。各主题覆盖范围和证据强度不同，详见版本入口。
 - [Agent 使用说明](AGENTS.md)与[版本目录](catalog.json)：按版本和问题逐层定位。
 - [编写与维护约定](CONTRIBUTING.md)：内容、来源和核验状态的含义。
 

@@ -183,3 +183,7 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 ### MCVideo 客户端发送与接收
 
 [发送控制](topics/mcvideo/participant-transmission-control.md)区分请求、排队、授予及结束；[接收控制](topics/mcvideo/participant-reception-control.md)区分来流通知、自动许可、主动接收与单源结束。依据 TS24.581 V19.2.0 指定 Stage 3 分支，不代表完整 MCVideo 信令或服务器策略。
+
+### MCVideo 服务器发送授权与接收筛选
+
+[发送仲裁](topics/mcvideo/server-transmission-grant.md)连接请求、源标识、许可与无人接收；[接收仲裁和用户接口](topics/mcvideo/server-reception-permission.md)说明普通组手动模式、按 SSRC 筛选以及停止下行。客户端和服务器的同名状态不共用实例；普通组不能依据客户端 Mode=0 分支自行选择自动模式。限 TS24.581 V19.2.0 所列分支，内部路由及编码疑义未以猜测补全。

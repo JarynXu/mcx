@@ -1,0 +1,165 @@
+{
+  "topic_id": "r19-mcvideo-server-reception-permission",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS24.581 V19.2.0，controlling MCVideo function，在网普通非广播/system/emergency/imminent-peril、非临时组；不请求privacy。",
+    "跟踪一个已获授发送源和一个目标接收participant；目标接口初始U: not permitted to receive，general初始Gr: Reception Idle；C7/C9/C11有容量，不展开多流及override。",
+    "接收general和该participant的basic已按信令初始化；SIP/SDP协商及安全是依赖，不把接通或组成员资格视作接收许可。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.581-v19.2.0",
+  "claims": [
+    {
+      "id": "server-reception-scope-is-per-participant",
+      "clause": "6.3.6.1;6.3.7.1;6.3.7.3.2;6.3.6.3.3;6.3.6.3.6",
+      "conditions": [
+        "识别接收仲裁、客户端接口及源的计数/列表归属。"
+      ],
+      "conclusion": "服务器接收general按通话；basic接收接口按participant，不是客户端§6.2.5那种每接收请求新建basic。每个服务器接口的Active SSRC List记录应向本客户端送哪些音视频流；C9属于该接收方，C11关联发送者/源，C7是general接收计数。进入无接收许可态会清空该列表并令C9=0。",
+      "printed_pages": [
+        86,
+        95,
+        96,
+        87,
+        88
+      ],
+      "limitations": [
+        "§6.3.6.1这句原文把实例名称写成general transmission；此处根据本节角色/标题标接收general并显式保留笔误，不改原文。",
+        "多个源时C7不可简单说成唯一人数，本批单源避免把全局、每接收方和每源计数混用。"
+      ]
+    },
+    {
+      "id": "ordinary-group-notification-stays-manual",
+      "clause": "6.3.6.3.3;6.3.7.3.3",
+      "conditions": [
+        "Gr: Reception Idle收到发送侧Media Transmission Notification；目标接口U: not permitted to receive接到需要发送该通知的事件。"
+      ],
+      "conclusion": "普通组向其他participant通知时设Reception Mode=1，按发送者User ID关联启动T11并将本源C11初始化0，Gr仍Idle。接口转送通知，包含发送者标识/SSRC及收到的Functional Alias ID，可要求Ack；Mode=1时仍无接收许可。",
+      "printed_pages": [
+        87,
+        88,
+        96,
+        97
+      ],
+      "limitations": [
+        "本规范Mode=0自动分支列给广播/system/emergency/imminent-peril组。客户端能处理Mode=0不构成普通组服务器任意发送该值的授权。",
+        "T11按源，而非每次通知都代表整个通话都无人接收。"
+      ]
+    },
+    {
+      "id": "request-forwarding-and-rejection",
+      "clause": "6.3.7.3.4;6.3.6.3.6 step1",
+      "conditions": [
+        "目标接口U: not permitted to receive收到该participant的Receive Media Request；会话非广播。"
+      ],
+      "conclusion": "接口把请求交接收仲裁；若仲裁决定不能接收，返回Result=0并带cause#0（下行带宽不足）或cause#1（无接收权限），可附解释及请求Ack，仍无许可。请求若带Reception Priority，实际接收优先级取请求值与协商最高值的较低者。Gr的拒绝分支同样返回Result=0并保持Idle。",
+      "printed_pages": [
+        97,
+        98,
+        88
+      ],
+      "limitations": [
+        "带宽估计与业务授权判定算法未规定在这条路径内，本稿不补。",
+        "§6.3.6.3.6响应内部Ack句式异常另记；不将其改写成接口必须等Ack才能判定结果。"
+      ]
+    },
+    {
+      "id": "first-receiver-grant-and-active-list",
+      "clause": "6.3.6.3.6 step2;6.3.7.3.6",
+      "conditions": [
+        "Gr: Reception Idle收到请求且决定授予；目标接口此前U: not permitted to receive。"
+      ],
+      "conclusion": "general停止T5及运行中的T11，本源C11加一，保存音视频SSRC，回Result=1；C7未达上限时加一，并转Gr: Reception accepted。接口发Granted响应，可要求Ack；C9未达上限时加一，将源的音视频SSRC加入Active SSRC List，再转U: permitted to receive。",
+      "printed_pages": [
+        88,
+        89,
+        98
+      ],
+      "limitations": [
+        "首次从Gr Idle授予的文字未启动T6；不得搬用已Accepted时新授予的§6.3.6.4.3步骤。",
+        "Ack处置是接口实现选项，不能说服务器许可必须等Ack。"
+      ]
+    },
+    {
+      "id": "active-list-is-a-media-filter",
+      "clause": "6.3.7.1;6.3.7.4.3;6.3.6.4.7",
+      "conditions": [
+        "目标接口U: permitted to receive，接收仲裁已决定允许该媒体；检查到达RTP的头部SSRC。"
+      ],
+      "conclusion": "SSRC为Active SSRC List中保存的音频或视频值时按该条要求转发；不在列表内则丢弃，接口状态不变。general的本地媒体分发策略不能被解释为向所有在会者发所有源，某用户已获一个源的许可也不等于获所有源。",
+      "printed_pages": [
+        95,
+        98,
+        99,
+        91
+      ],
+      "limitations": [
+        "§6.3.7.4.3标题是Send RTP，步骤却写network media interface向media distributor转发；这里只保留SSRC筛选要求，不静默倒转箭头或称已核完整下行接线。"
+      ]
+    },
+    {
+      "id": "client-end-request-is-not-immediate-interface-exit",
+      "clause": "6.3.7.4.4;6.3.7.4.9",
+      "conditions": [
+        "U: permitted to receive收到客户端Media Reception End Request；随后服务器决定结束向该participant下行并发送End Response。"
+      ],
+      "conclusion": "接请求时接口转交且暂留permitted，原文目的地写general transmission。独立的发送End Response事件要求先停下行再发响应，可请求Ack；若该源音频和/或视频SSRC在列表内，C9未到下限则减一并删除该源标识。C9到下限转无许可，否则保留接收许可。",
+      "printed_pages": [
+        99,
+        100
+      ],
+      "limitations": [
+        "收到请求与后续结束决策分开陈述。原文转交目的地与接收general的对应处理不一致，不能声称这两段已无歧义闭合。",
+        "general §6.3.6.4.4的response Message Type='y'仍为未解占位符，本稿不赋新码。"
+      ]
+    },
+    {
+      "id": "server-ends-downlink-before-end-request",
+      "clause": "6.3.7.4.8;6.3.7.3.2;6.3.7.3.5",
+      "conditions": [
+        "U: permitted to receive；服务器决定结束向该participant发送本单源RTP，主动发Media Reception End Request。"
+      ],
+      "conclusion": "先停止下行，再向participant发带发送源SSRC的End Request，进入无接收许可态，因入态规则C9归零且列表清空。该态收到客户端End Response后释放对应participant的下行资源，仍无许可。这不是等待客户端应答后才停流。",
+      "printed_pages": [
+        100,
+        96,
+        98
+      ],
+      "limitations": [
+        "此处只覆盖单源，不能将主动End Request的清全表行为擅改为多源逐条删除。",
+        "应用层整通话释放另见§6.3.3，停止该客户端下行不等于所有参与者退出。"
+      ]
+    },
+    {
+      "id": "source-ended-notify-updates-two-scopes",
+      "clause": "6.3.6.4.11;6.3.7.4.7",
+      "conditions": [
+        "Gr: Reception accepted收到Transmission End Notify；目标接口U: permitted to receive收到对应通知或源上行停止事件。"
+      ],
+      "conclusion": "general转通知，停本源T11，C7减去本源C11；到下限才转Gr Idle。接口发带源SSRC的通知；该源音频和/或视频SSRC在列表时，按下限减C9并删除对应音视频标识，C9到下限才转无许可。源结束、某用户失去最后一个源、整通话结束是三个层次。",
+      "printed_pages": [
+        92,
+        100
+      ],
+      "limitations": [
+        "未把未加入列表的源结束重复计为C9减少；原文C7/C11计算与多流唯一人数的关系不在本批扩展。"
+      ]
+    }
+  ],
+  "limitations": [
+    "本链从第一个接收者的授权开始，不展开已Accepted状态的新源准入与T6重传。",
+    "容量上限、配置取得、完整安全校验、编解码、MBMS/MBS及跨系统映射仍是依赖。"
+  ],
+  "related": [
+    "server-transmission-grant.md",
+    "participant-reception-control.md",
+    "reception.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  },
+  "standard_stage": 3
+}
