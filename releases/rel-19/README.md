@@ -239,3 +239,7 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 ### MCVideo 私呼释放
 
 [客户端BYE](topics/mcvideo/private-call-client-release.md)区分停流和信令判定后的资源回收；[服务器逐段释放](topics/mcvideo/private-call-server-release.md)说明各段200、私呼策略及未消解的原文错引。不能将某一段200或某个源停止发送视为全部会话已释放。
+
+### Message Store
+
+[访问与对象](topics/mcdata/message-store-access-and-objects.md)区分客户端认证与服务器存入；[文件落点](topics/mcdata/message-store-file-locality.md)说明 retrieveFile 缺省获取和重复 retrieve 的结果；[通知同步](topics/mcdata/message-store-notification-sync.md)区分创建通道、变更订阅和本地对象更新。这里的文件“本地保存”指 Message Store，不是用户终端。

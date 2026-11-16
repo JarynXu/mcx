@@ -69,3 +69,5 @@ CF 正常分发流程生成上游 SIP 202；排队分支也能回 202，但须�
 
 - §10.2.3.2：403 reception-policy 分支未显式写停止后续；不能据顺序文字声称一个 GET 必连续发送 403 和 200。Editor’s Note 又明确配置策略取得方式 FFS。
 - §10.2.4.1 step2a：正文将 MCDataContentServerURI 的用户 profile 误称 MCPTT；本稿不更改源规范 schema 名。
+
+- [文件存入 Message Store 与下载到终端的区别](message-store-file-locality.md)

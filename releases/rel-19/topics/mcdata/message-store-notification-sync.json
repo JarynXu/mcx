@@ -1,0 +1,108 @@
+{
+  "topic_id": "r19-mcdata-message-store-notification-sync",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "限第21章的Message Store变更同步；这里的notification不是第12章SDS/FD disposition。",
+    "创建订阅、创建通道和接收通知分别有自己的调用与认证前提。成功完成其中一步不等于其他步骤已完成。",
+    "OMA定义的资源结构、通道内部行为、游标和恢复算法未在本页读取；只保留24.282明确规定的选择与结果。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.282-v19.7.0",
+  "claims": [
+    {
+      "id": "channel-creation-and-change-subscription-are-separate",
+      "clause": "21.1 MCData-11 paragraph;21.2.19.1/.2 and NOTES1,2;21.2.12A.1/.2;21.2.22.1",
+      "conditions": [
+        "客户端选择经MCData notification server接收Message Store变更，而不是让Message Store直接回调客户端。"
+      ],
+      "conclusion": "消息通知客户端先向notification server创建通道；成功响应含Callback URL，并可能依channelType包含Channel URL。消息存储客户端随后把Callback URL用于向Message Store创建变更订阅，两个POST面向不同服务并分别验证MCData token。Callback URL供Message Store推送变更，Channel URL供通知客户端按通道类型接收，不能将它们互换或把通道创建成功当成订阅已存在。",
+      "printed_pages": [
+        455,
+        462,
+        467,
+        469
+      ],
+      "limitations": [
+        "不强制所有通道类型都返回Channel URL；依据创建结果和channelType处理。",
+        "本页不制定订阅过滤器、期限、续订和通道删除策略。"
+      ]
+    },
+    {
+      "id": "callback-destination-selects-the-delivery-path",
+      "clause": "21.2.16.1;21.2.16.2;21.2.16.3",
+      "conditions": [
+        "Message Store要通知已订阅的变更，使用对应订阅创建时提供的Callback URL。"
+      ],
+      "conclusion": "Message Store以POST向Callback URL送出通知。URL指向消息存储客户端时，客户端作为HTTP服务器处理该请求，随后采用两种同步方式之一：依据通知内容、restartToken和index更新本地库，或把通知当作随后查询变更的触发。URL指向notification server时，该服务器处理POST，再通过此前创建、按需打开的关联通道让客户端取得通知。这是两条路径，不能假设任何客户端都直接接受服务器HTTP回调。",
+      "printed_pages": [
+        465,
+        466
+      ],
+      "limitations": [
+        "服务器间MCData-11认证/授权见§21.1的33.180引用；不把客户端Bearer流程未经核验复制成此接口全貌。",
+        "“通知可取得”不等于客户端已处理全部变更，也不等于文件内容已下载。"
+      ]
+    },
+    {
+      "id": "opening-a-channel-depends-on-its-type",
+      "clause": "21.2.22.1;21.2.22.2",
+      "conditions": [
+        "通知通道已创建，客户端按返回的channelType决定是否及如何打开它。"
+      ],
+      "conclusion": "LongPolling使用Channel URL发送含有效MCData token的POST；notification server验证成功并处理后，成功响应包含存储变更通知。WebSocket类型通过Channel URL建立WebSocket连接，这个建立过程不是RESTful。NativeChannel不要求执行本节Open notification channel过程。因此不能把“打开通道”统一实现为一个GET、POST或WebSocket动作。",
+      "printed_pages": [
+        469,
+        470
+      ],
+      "limitations": [
+        "WebSocket握手、NativeChannel交付以及LongPolling超时/重试依赖OMA，未在本页核验。",
+        "创建通道的成功响应与一次LongPolling成功返回通知是不同操作结果。"
+      ]
+    },
+    {
+      "id": "notification-and-search-sync-do-not-prove-file-delivery",
+      "clause": "21.2.16.2;21.2.22.1 PULL response handling;21.2.17.1/.2;21.2.2.1/.2",
+      "conditions": [
+        "客户端已收到存储变更通知，选择用其更新本地对象状态，或另行搜索变更。"
+      ],
+      "conclusion": "直接回调路径及LongPolling接收路径均给出两条同步路径：用通知内容、restartToken和index更新本地库，或再按§21.2.17搜索。搜索分别用CreatedObjects、VanishedObjects或Flag取得新建、消失对象及标志变更；CreatedObjects响应须含creationCursor。变更通知和列表描述的是存储对象状态，不能单凭它们认定对象关联文件已在终端，或原SDS/FD已送达、已读。",
+      "printed_pages": [
+        456,
+        465,
+        466,
+        469
+      ],
+      "limitations": [
+        "不要求所有搜索类型都返回creationCursor，也不自行定义restartToken/index与creationCursor的互换规则。",
+        "本页未核去重、丢通知恢复和全量同步收敛算法，不把一次查询成功当成全库同步完成。"
+      ]
+    }
+  ],
+  "limitations": [
+    "不展开所有订阅更新/删除过程、通道生命周期与OMA完整同步协议。"
+  ],
+  "related": [
+    "message-store-access-and-objects.md",
+    "message-store-file-locality.md",
+    "fd-http-file-and-signalling-evidence.md",
+    "../identity/http-sender-identity.md",
+    "../identity/http-transport-endpoints.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  },
+  "standard_stage": 3,
+  "source_issues": [
+    {
+      "clause": "21.2.12A.2 opening",
+      "printed_pages": [
+        462
+      ],
+      "issue": "服务器段回指21.2.12.1，但现行创建订阅客户端段为21.2.12A.1，21.2.12为Void。",
+      "treatment": "记录回指差异，以明确的创建订阅客户端/服务器过程为本批范围，不凭旧编号补另一流程。"
+    }
+  ]
+}
