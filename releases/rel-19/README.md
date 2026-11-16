@@ -10,6 +10,8 @@
 - MC/LMR 缺少组配置：[向谁获取](topics/interworking/group-configuration.md)；需要继续跟踪变化，再读[订阅与通知](topics/interworking/configuration-updates.md)。
 - 不确定 IWF 是什么或规范管到哪里：[LMR/IWF 范围](topics/interworking/scope.md)。
 
+- [跨系统重组边界](topics/interworking/regroup-boundaries.md)：接纳、用户信息和临时组所有权；语音兼容另见 [LMR 加密与编解码](topics/interworking/regroup-media.md)。
+
 组文档主题依据 Stage 3；互通配置主题依据 Stage 2。它们不是同一个完整协议状态机，不能直接把一侧的信息流名称当成另一侧的 HTTP 消息。
 
 - 互通组呼请求字段：[主叫身份与隐式话权](topics/interworking/group-call-request.md)，仅覆盖 Stage 2 信息要素。
@@ -24,6 +26,13 @@
 - [紧急告警、状态与组通信](topics/emergency/alert-state.md)：自动触发配置、状态持续及取消主体。
 - [MCVideo 发流许可与接收](topics/mcvideo/transmission-admission.md)：邀请、并发传输上限和容量许可。
 - [MCData 下载、已读与取消](topics/mcdata/delivery-evidence.md)：证据含义与取消范围。
+
+- [MCData 会话与历史](topics/mcdata/conversation.md)：并行会话、关联超时和回执权限。
+- [MCData 自动转发与接收邀请](topics/mcdata/transmission-options.md)：在网发送能力、大小上限与可选 TTL。
+
+- [在网取数与无其他归属成员](topics/mcdata/receiving-data.md)：近期邀请列表、通知后发送选择。
+- [在网终止通知](topics/mcdata/termination.md)：预告、原因和响应义务。
+- [离网私聊](topics/mcdata/off-network-private.md)：授权、距离和生命周期能力，不含建立协议。
 
 ## 位置与网络策略
 
