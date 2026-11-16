@@ -1,0 +1,188 @@
+{
+  "topic_id": "r19-mcvideo-rejoin-session",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS24.281 V19.3.0，普通在网、带 transmission control、按需预安排组呼的进行中会话进入路径；普通 GMS 组，不含TGI/重组/预配置重组、NCF/gateway、chat、广播、ad hoc、功能别名、远程/ambient、离网或预建立会话。目标会话是否仍存在/active由各入口实际检查，客户端认为会话还在不代表CF一定找到它。",
+    "客户端 emergency state 未置位，组不处于MVEG2、MVIG2/MVIG4，客户端响应时不在MVEGC2/3或MVIGC2/3；请求不含emergency-ind、imminentperil-ind、alert-ind、用户请求优先级扩展或优先通信Resource-Priority；CF组的in-progress emergency与imminent-peril均为false。没有待处理的优先升级/取消。",
+    "每条claim只继承本主题common_conditions及自身conditions，不继承前条成功。以下三个入口必须分开：客户端用session identity重入、组ID发起链到CF后发现ongoing、CF收到通知后主动邀请晚进入者；不能把一个入口的检查/Warning自动移到另一个入口。",
+    "本页保留正文错引及独立版本边界；只把真实正文列出的状态与顺序当结论。IMS/RFC、媒体编码/密钥、配置schema及完整失败恢复依赖未全部闭合。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.281-v19.3.0",
+  "claims": [
+    {
+      "id": "rejoin-is-initial-invite-to-session-uri",
+      "clause": "9.2.1.2.4.1;9.2.1.2.1.1",
+      "conditions": [
+        "用户要求重入ongoing会话，或客户端因从覆盖外返回而触发重入；客户端已有要重入的MCVideo session identity。"
+      ],
+      "conclusion": "客户端生成的是initial SIP INVITE，不是沿原对话发送re-INVITE。按§9.2.1.2.1.1处理，但Request-URI使用要重入的MCVideo session identity URI，而不是普通初建的serving PF PSI。所继承的mcvideo-info仍含session-type=prearranged、mcvideo-request-uri=组ID、mcvideo-client-id=本客户端ID，并带相应feature tags、SDP offer；原有preconfigured-group-use-only=true停止条件未被此重入段豁免。",
+      "printed_pages": [
+        208,
+        209,
+        216
+      ],
+      "limitations": [
+        "重入段称修改§9.2.1.2.1.1 step9，但实际step9是Session-Expires，Request-URI在step10；保留错号，同时依据重入段明确的URI文字说明寻址。",
+        "如何检测回到覆盖范围不在该规范范围；无session identity时如何发现它、失败后是否改为新建不在本段定义。§6.4隐式发送请求须与下述TC角色差异一起读，不把继承发起模板视作自动授予。"
+      ]
+    },
+    {
+      "id": "rejoin-pf-translates-session-identity",
+      "clause": "9.2.1.3.5.1;9.2.1.3.1.1",
+      "conditions": [
+        "PF收到本重入initial INVITE，mcvideo-info session-type=prearranged；其Request-URI带客户端侧session identity。"
+      ],
+      "conclusion": "PF按§9.2.1.3.1.1执行，但发往CF的Request-URI必须使用映射自收到的session identity的会话URI。引用的通用过程仍包括从PAI的public user identity确定MCVideo ID、地方策略不准发起预安排组呼时403/109、缺MCVideo codecs时488、N6 exceeded时486/103，以及不复制Answer-Mode/Priv-Answer-Mode。重入条款没有把这些PF入口条件改成CF的join-handling规则。",
+      "printed_pages": [
+        217,
+        218,
+        219,
+        222
+      ],
+      "limitations": [
+        "重入段称修改通用过程step10，但该段普通组转发Request-URI的动作位于无associated-group-id分支step3；response段step10是SIP session timer。这里只采用明确的session identity映射文字，不静默修正编号。",
+        "普通范围仍不触发priority专用implicit affiliation/N2失败分支；映射不存在如何处理未在此重入段单列，不编造错误码。CF的join许可不会自动取消O-PF地方策略检查。"
+      ]
+    },
+    {
+      "id": "rejoin-cf-rejects-missing-session-before-join",
+      "clause": "9.2.1.4.5.1 steps1–6",
+      "conditions": [
+        "CF收到Request-URI为MCVideo session identity的重入INVITE。"
+      ],
+      "conclusion": "CF可因资源不足或拥塞风险返回500并可带Retry-After；目标session identity所代表的组呼不存在时返回404。随后检查媒体参数和MCVideo codecs，不可接受时488；Accept-Contact缺MCVideo tag或相应ICSI tag任一成立时403且不再处理剩余步骤。再确定主叫MCVideo ID并进行加入许可检查。此入口查既有会话，不在404分支创建替代会话。",
+      "printed_pages": [
+        235
+      ],
+      "limitations": [
+        "不把session不存在404改成组文档不存在404/113，后者属于另一个初步处理入口。本段没有给该404附加Warning，也未定义自动重呼。",
+        "普通范围排除资源不足时的priority例外；拒绝策略和SIP事务细节仍依赖TS24.229。"
+      ]
+    },
+    {
+      "id": "join-permission-is-different-from-initiation-permission",
+      "clause": "6.3.5.3;6.3.5.4 CF branch;9.2.1.4.5.1 step6;9.2.1.4.2 step14b",
+      "conditions": [
+        "CF对已有普通组会话执行§6.3.5.3的join授权，且能读取适用组文档；重入入口或ongoing组ID入口引用此helper。"
+      ],
+      "conclusion": "join许可要求组文档list有该用户entry，并有适用规则将join-handling设为true：规则可用is-list-member条件，或identity匹配INVITE中的MCVideo ID。supported-services若存在才要求其中service的enabler为MCVideo ICSI；在此前提下group-media若存在才要求含MCVideo video media。不能用allow-initiate-conference代替join-handling，也不能把初建要求supported-services必须存在照搬为加入门槛。未获join许可时两个入口均返回403/121。",
+      "printed_pages": [
+        137,
+        138,
+        139,
+        230,
+        235
+      ],
+      "limitations": [
+        "§9.2.1.4.5.1的Warning121文字为not authorised；§9.2.1.4.2为not allowed，保留同码不同文字。",
+        "重入入口本身未列组文档重新订阅/获取过程；不以本页补充缓存刷新或资料缺失处理。该helper只检查join许可，不替代独立affiliation与容量。"
+      ]
+    },
+    {
+      "id": "rejoin-affiliation-check-has-broken-reference",
+      "clause": "9.2.1.4.5.1 steps7–8;6.3.3.2.2;6.3.3.5",
+      "conditions": [
+        "CF重入流程已确定主叫并通过join许可，执行§9.2.1.4.5.1 step7–8。"
+      ],
+      "conclusion": "CF先按§6.3.3.2.2缓存收到且支持的Contact feature tags；随后若用户未affiliated到session identity关联的MCVideo group ID，返回403/120。原文将这个affiliation检查引用到§6.3.3.5，但该实际章节处理TNG3，并非affiliation。可以分别确认拒绝条件与错引，不能说这条引用已经闭合为计时器检查。",
+      "printed_pages": [
+        123,
+        128,
+        235,
+        236
+      ],
+      "limitations": [
+        "真实通用affiliation helper是§6.3.6（组记录、用户记录、client ID、用户记录expiry），已在prearranged-call-admission核过；本页不静默把step8的号换成6.3.6。",
+        "本步原文未重复写skip-rest，不增造专用后续恢复规则；成功路径仍要求没有以失败响应拒绝本请求。"
+      ]
+    },
+    {
+      "id": "rejoin-capacity-refusal-is-not-warning123",
+      "clause": "9.2.1.4.5.1 steps9–10;9.2.1.4.4.3",
+      "conditions": [
+        "CF重入流程到容量步骤，on-network-max-participant-count已经reached；本条限定CF未执行地方策略允许的可选移除已有participant分支。"
+      ],
+      "conclusion": "CF返回486/Warning122。源文另允许：地方策略认为请求用户比某现有用户优先级更高时，MAY移除一个participant并跳过该拒绝步骤；因此人数已满不是无例外的绝对拒绝，也不是仅在用户主动发紧急请求时才可能替换。",
+      "printed_pages": [
+        235,
+        236
+      ],
+      "limitations": [
+        "本页不实施或推导被排除的替换流程。源文移除入口§9.2.1.4.4.3引用6.3.3.1.5，而已核该条是紧急re-INVITE生成；真正BYE helper是6.3.3.1.4，此错引不消解。",
+        "reached不改成exceeded。高优先级比较可参考user-priority、participant-type等地方策略数据，不能将普通呼叫等同于不存在相对优先级。"
+      ]
+    },
+    {
+      "id": "rejoin-success-does-not-repeat-initial-group-setup",
+      "clause": "9.2.1.4.5.1 steps11–16;9.2.1.3.5.1;9.2.1.2.4.1",
+      "conditions": [
+        "CF重入请求已通过资源、目标session存在、媒体/codecs、Accept-Contact、主叫识别、join许可和affiliation处理；容量未到上限，且本页普通条件持续成立。"
+      ],
+      "conclusion": "CF生成INVITE的200和SDP answer，先完成24.581媒体平面处理再发送200，随后向conference订阅者通知该用户加入并发送NOTIFY。此重入入口没有要求重新等待所有required成员回答，也没有规定加入Warning123；123是在按组ID请求发现ongoing的另一个分支。PF/客户端继续按各自被引用的通用响应过程处理。",
+      "printed_pages": [
+        216,
+        222,
+        236
+      ],
+      "limitations": [
+        "这是重入成功顺序，不表示整个组会话被重新创建或TNG1/TNG3全部重启；本页不把“本段未列”扩大为全规范绝对禁止。",
+        "CF正确引用6.3.3.2.3.2的final-response helper；其GKTP逐项成功封装与完整SDP/Session-Expires字段仍适用，不把媒体接口当密钥校验成功。"
+      ]
+    },
+    {
+      "id": "rejoin-transmission-permission-and-role-tension",
+      "clause": "9.2.1.2.4.1;6.4",
+      "conditions": [
+        "客户端在本页session-identity路径重入ongoing有TC组呼；对照实际核读的TS24.581 V19.2.0角色规则。"
+      ],
+      "conclusion": "participant的§6.2.1明确重入INVITE不得视为implicit Transmission request，§6.2.4.2.2明确重入后进入U:has no permission to transmit，不能凭重入200恢复旧发送许可。另一方面server的§6.3.2.2写重入INVITE/REFER不作implicit处理，除非请求中explicitly stated。两处必须按各自角色保留；不把server的unless删除，也不将它解释为participant可以自动越过no-permission。",
+      "printed_pages": [
+        140,
+        141,
+        216
+      ],
+      "limitations": [
+        "24.281重入复用发起模板、§6.4的一般implicit条件，与24.581这两处角色文字之间不由本页裁决优先级。没有测试同版互操作，不提供“发一个特殊flag即可重获发送”的实现建议。",
+        "后续显式发送请求、授予、拒绝、排队和接收许可沿既有participant/server主题；本页不让会话200代替那些事件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v19.3.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf",
+          "clause": "9.2.1.2.4.1;6.4",
+          "printed_pages": [
+            140,
+            141,
+            216
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v19.2.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124500_124599/124581/19.02.00_60/ts_124581v190200p.pdf",
+          "clause": "6.2.1;6.2.4.2.2;6.3.2.2",
+          "printed_pages": [
+            34,
+            36,
+            52,
+            53
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [],
+  "related": [
+    "prearranged-call-admission.md",
+    "prearranged-call-setup-result.md",
+    "active-call-entry.md",
+    "participant-transmission-control.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": true
+  },
+  "standard_stage": 3
+}

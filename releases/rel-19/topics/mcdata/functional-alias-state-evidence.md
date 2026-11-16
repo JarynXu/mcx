@@ -53,3 +53,7 @@
 
 - §22.2.2.2.3 step13;22.3.1.2 table22.3.1.2-1：step13状态文字为de-activating，表中枚举为deactivating。 解释为原文列表停用过渡处理时保留拼写差异，不增加一个新的wire状态值。
 - §22.2.1.2 step6c;22.3.1.2 per-user steps7–9 and table22.3.1.2-1：客户端用functionalalias小写，语法段有fucntionalAlias拼写；per-user step9说status属于functionalAliasID元素，schema则将status定义为functionalAliasType的属性。 正文只保留状态/字段业务用途并定位差异，不冒充该文本已通过XML schema一致性或实现验收。
+
+## 别名状态之后能否发送并确认收到
+
+别名状态不替代SDS业务准入或送达证据。[私聊身份与准入](sds-server-identities-and-private-admission.md)只核直接MCData ID，不补功能别名解析和目标选择；[送达与已读证据](sds-disposition-timing.md)解释SIP响应与带外回执的区别。不能把别名直接代入已核的直接ID链。

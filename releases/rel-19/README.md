@@ -259,3 +259,9 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 - [功能别名观察：变更前订阅与当前状态查询](topics/mcdata/functional-alias-observation.md)
 - [功能别名变更：PUBLISH、续期与位置约束](topics/mcdata/functional-alias-change-request.md)
 - [功能别名结果：PUBLISH 200、NOTIFY 与后续归属](topics/mcdata/functional-alias-state-evidence.md)
+
+### MCVideo 进入已有组呼
+
+- [MCVideo重入：session identity寻址、加入许可与TC边界](topics/mcvideo/rejoin-session.md)
+- [MCVideo按组ID进入已有呼叫：join检查与Warning123](topics/mcvideo/active-call-entry.md)
+- [MCVideo服务器主动晚进入邀请：触发、接受与媒体许可](topics/mcvideo/server-late-entry.md)
