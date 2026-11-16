@@ -1,11 +1,11 @@
-# 使用这个知识库
+# Agent 使用说明
 
-先读 [知识入口](catalog.json)，选定问题要求的 Release 和主题，不加载整个仓库。
+1. 从 [catalog.json](catalog.json) 选择问题所需 Release；版本不明确且会影响结论时先澄清。
+2. 读该 Release 的轻量主题索引，根据问题定位正文。通常只需读取命中主题。
+3. 需要结构化条件、关系及条款时，读取该主题的 knowledge_record；需要核验来源身份时读取 sources.json 对应记录。
 
-- 用户未指定 Release 时，应先明确版本范围；不要自动拿最高版本回答所有问题。
-- 轻量主题索引给出正文和 knowledge_record。通常先读命中正文；需要结构化条件、条款和关联时，只读该主题的 knowledge_record。每条 claim 都继承记录的 common_conditions，并叠加自己的 conditions，不得孤立摘取。
-- 状态为 candidate 的内容尚未完成原文复核及独立使用验收。使用时明确限制，不能称为已发布的确定结论。
-- 引用时写明标准编号、精确版本和条款。来源目录仅确认文件身份，不等于已核验条款。
-- 没有命中或条件不满足时，说明知识缺口，不从另一 Release 静默补齐。
+每条 claim 继承主题的全部 common_conditions，再叠加自身 conditions。不要孤立摘取 claim，或把可选关联当作必做流程。
 
-维护者沿用 [维护与验收](CONTRIBUTING.md)。不要把本文当作来源证据。
+回答保留标准编号、版本、条款及影响结论的条件。原文复核尚未完成时如实说明，不把公开可读理解为完整验收。
+
+没有命中或条件不满足时说明缺口，不从另一个 Release 静默补齐。编写规则见 [CONTRIBUTING.md](CONTRIBUTING.md)。

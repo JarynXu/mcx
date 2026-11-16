@@ -1,16 +1,15 @@
 # Release 19
 
-## 当前范围
+## 按问题查找
 
-本目录是公开候选摘编，不是 Rel19 整版完成声明。当前整理 TS 23.280 V19.10.1 的位置报告、组目标及触发覆盖边界，以及 TS 29.214 V19.3.0 的 Rx 重试限制。
+- [位置报告与组目标](topics/location/reporting.md)：订阅取消、当前组归属、测量时间与 UE label 方向。
+- [位置触发覆盖与恢复](topics/location/trigger-override.md)：哪些触发可被覆盖，覆盖期间的新请求及取消后的恢复。
+- [Rx 临时拒绝与重试间隔](topics/network-policy/rx-retry.md)：Retry-Interval 的等待义务和永久失败边界。
 
-- [位置报告与组目标](candidate/location/reporting.md)
-- [位置触发覆盖与恢复](candidate/location/trigger-override.md)
-- [Rx 临时拒绝与重试间隔](candidate/network-policy/rx-retry.md)
-- [来源清单](sources.json)
-- [状态清单](status.json)
-- [首批公开核查](reviews/2026-11-16-publication-review.md)
+Agent 可使用[轻量主题索引](topics.json)定位问题，需要结构化条件时再读取该主题旁的 JSON，不必加载其他主题。
 
-此前有限用途基线 `rel19-r2-20261113-priorityfix01` 与本目录不是同一交付。其完整载荷及验收记录尚未迁入，不能用它证明本目录已通过验收。
+## 证据与覆盖
 
-下一步先补核本批对应原文与依赖，再处理其他 Rel19 主题。位置配置“取消报告”的字段集合尚有歧义，暂不将该结论收入正文。
+[来源清单](sources.json)固定所用标准版本和条款。[覆盖与核验状态](status.json)列明当前范围。
+
+以上内容是限定范围的规范解释，尚未独立复核指定版本原文，也不代表整个 Release 或可直接运行的协议实现。位置配置取消条件的字段集合尚待核清，本目录不提供该行为的确定规则。
