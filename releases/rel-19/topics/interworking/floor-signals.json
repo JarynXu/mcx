@@ -1,0 +1,59 @@
+{
+  "topic_id": "r19-iwf-floor-signals",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS23.283 V19.5.0 Stage2 IWF与MCPTT话权控制服务器的信息流；非完整状态机或线级编码。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "grant-state",
+      "clause": "10.5.2.3, 10.5.2.8, 10.5.2.10",
+      "conditions": [
+        "解释授予、空闲或占用通知"
+      ],
+      "conclusion": "granted表示相应请求获准可传媒体，并含允许发送时长；idle表示无人获授话权；taken表示另一用户获授。收到taken不等于自己获准发送。"
+    },
+    {
+      "id": "release-cancel",
+      "clause": "10.5.2.5, 10.5.2.9, 10.5.2.11",
+      "conditions": [
+        "区分取消请求、释放与撤销"
+      ],
+      "conclusion": "request cancel针对队列中的话权请求；release表示媒体传输完成并释放话权；revoked撤销当前持有者的话权。它们都不能直接当作全呼叫释放。"
+    },
+    {
+      "id": "queue",
+      "clause": "10.5.2.13–14",
+      "conditions": [
+        "MCPTT服务器和客户端支持话权请求排队"
+      ],
+      "conclusion": "须支持查询队列位置的信息流；queue position info说明请求已排队及其位置，不是话权授予。"
+    },
+    {
+      "id": "unicast",
+      "clause": "10.5.2.15–16",
+      "conditions": [
+        "停止或恢复指定通信对指定客户端的单播媒体"
+      ],
+      "conclusion": "stop表示该单播媒体不需再发给指定客户端；resume由话权控制服务器请求恢复向该客户端发送。作用域不是停止整个组呼或撤销所有参与者话权。"
+    }
+  ],
+  "limitations": [
+    "身份可代表LMR用户、IWF或MC用户，需结合互通模式及消息方向解释（§10.5.2.1）。",
+    "未覆盖排队算法、优先级仲裁、本地过滤及完整话权转换；MCPTT基础机制依赖TS23.379。"
+  ],
+  "related": [
+    "late-entry.md",
+    "talker-location.md",
+    "private-manual.md",
+    "group-call-release.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

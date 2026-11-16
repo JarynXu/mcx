@@ -32,6 +32,10 @@
 - 同一个 LMR 用户涉及多个活跃组：[同时互通呼叫及实现边界](topics/interworking/simultaneous-calls.md)。
 - 使用预配置方式重组：[配置来源组、实际重组及冲突](topics/interworking/preconfigured-regroup.md)，不要与§10.2.2重组混用。
 
+互通私呼单独选：[手动建立与振铃/接受](topics/interworking/private-manual.md)、[三种发起方的释放确认](topics/interworking/private-release.md)、[两类加密及密钥前提](topics/interworking/private-encryption.md)。不要套用组呼加入或释放路径。
+
+[话权信息流](topics/interworking/floor-signals.md)区分授予、占用、排队、取消及单播控制；这些状态不是呼叫释放。
+
 ## 互通安全
 
 [LMR安全消息运输](topics/interworking/lmr-security-transport.md)说明透明载荷如何承载；[加密语音转码](topics/interworking/encrypted-transcoding.md)说明媒体处理的密钥前提。运输成功不能证明密钥获取完成；这些主题也不构成完整安全实现。

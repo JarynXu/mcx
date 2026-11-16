@@ -1,0 +1,48 @@
+{
+  "topic_id": "r19-iwf-private-release",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "MC用户已注册且正与经IWF接入的LMR用户私呼；可为自动或手动模式，有或无话权控制。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "client",
+      "clause": "10.4.4.1",
+      "conditions": [
+        "MC客户端发起释放"
+      ],
+      "conclusion": "客户端向服务器请求结束，服务器转IWF；收到IWF确认后，服务器再确认客户端请求。客户端和IWF释放媒体资源；若有话权控制，也释放相关资源，客户端不得再请求话权或发送媒体。"
+    },
+    {
+      "id": "server",
+      "clause": "10.4.4.2",
+      "conditions": [
+        "服务器因结束条件决定终止"
+      ],
+      "conclusion": "最大通话时长或无收发超时是示例条件，并非本页给定的固定时长。服务器向MC客户端和IWF发结束请求，双方确认并释放媒体及适用的话权资源，用户获得结束通知。"
+    },
+    {
+      "id": "lmr",
+      "clause": "10.4.4.3",
+      "conditions": [
+        "LMR用户或系统发起释放"
+      ],
+      "conclusion": "IWF请求服务器，服务器转MC客户端；收到客户端确认后再确认IWF。双方释放媒体及适用的话权资源。附加应用数据可选，客户端如何反应不在该规范范围。"
+    }
+  ],
+  "limitations": [
+    "LMR端如何通知用户不在范围内；不提供超时值、丢包重传或SIP编码。"
+  ],
+  "related": [
+    "private-manual.md",
+    "private-encryption.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}
