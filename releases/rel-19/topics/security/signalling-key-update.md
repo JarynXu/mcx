@@ -43,3 +43,5 @@ MuSiK通过key download下发；可采用覆盖普通组播信令的MuSiKAll（�
 ## 停用不等于物理删除
 
 §9.2.1.2规定CSK使用至需要新CSK、SIP会话拆除、用户退出或其他指示。停止使用与UE材料保存分别判断，不能因密钥仍在存储中就继续使用。
+
+- [MCData的CSK下载验证与替换入口](../mcdata/csk-key-download-validation.md)

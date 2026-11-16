@@ -1,0 +1,117 @@
+{
+  "topic_id": "r19-mcdata-fd-size-admission",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "限在网、普通 one-to-one 或已配置组的 FD。HTTP 错误映射只适用于 claim 指定的 HTTP FD SIP MESSAGE 分支。",
+    "逐项检查按 §11.1 的顺序及各步骤适用条件执行；前序若已要求停止，则不继续后面的检查。角色名 client、PF、CF 分别指 MCData 客户端、参与功能、控制功能。",
+    "不包含别名解析、重组、ad hoc、跨域网关、紧急或迫近危险扩展；不声称覆盖全部 FD 准入。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.282-v19.7.0",
+  "claims": [
+    {
+      "id": "fd-file-cap-belongs-to-client-and-controller",
+      "clause": "11.1 steps4,6;10.2.1.1 steps1,2",
+      "conditions": [
+        "用户拟发送 FD；已执行前序适用的传输控制，尚未被拒绝。"
+      ],
+      "conclusion": "one-to-one FD 拟发送的数据大小超过服务配置的 max-data-size-fd-bytes，或组 FD 超过该组的 mcdata-on-network-max-data-size-for-FD 时，客户端与 CF 都须判定因文件大小而不允许发送，并停止 §11.1 后续步骤。比较符为严格大于；刚好等于上限不触发本项拒绝，但不代表其他检查通过。§10.2.1.1 在选择 HTTP 或媒体面之前调用 §11.1。",
+      "printed_pages": [
+        264,
+        265,
+        311
+      ],
+      "limitations": [
+        "这是 FD 文件大小限制，不是 SDS 控制面阈值，也不是 §11.2 自动接收阈值。",
+        "配置值来自相应配置/组文档；本批未读取 TS 24.484 或 TS 24.481 来核 schema、默认值或缺失数值的处置。"
+      ]
+    },
+    {
+      "id": "fd-also-has-shared-single-request-allowance",
+      "clause": "11.1 steps4,6,7,8",
+      "conditions": [
+        "FD 继续进入 §11.1 的 one-to-one 或组 MCData 单次请求额度检查。"
+      ],
+      "conclusion": "文件上限没有替代单次请求额度。one-to-one 的 payload 大于用户配置 MaxData1To1，由客户端与 PF 判定不允许并停止；组 payload 大于组文档相应 entry 的 mcdata-max-data-in-single-request，由客户端与 CF 判定不允许并停止。两项也是严格大于才触发。这使私聊 FD 的文件上限与单次额度由不同服务器角色承担。",
+      "printed_pages": [
+        311
+      ],
+      "limitations": [
+        "源文 steps4/6 写拟发送的数据/文件大小，steps7/8 写 payload。不能未经依据把 HTTP FD 的 URL 字符串长度、信令体长度和实际文件字节数视为同一个计量值。",
+        "本批没有核出 HTTP FD 在服务器侧计算该 payload 大小的统一算法，不把两种上限合并成一个 min 值公式。"
+      ]
+    },
+    {
+      "id": "http-private-allowance-error-has-controller-psi-guard",
+      "clause": "10.2.4.3.1 steps6,7b;11.1 step7",
+      "conditions": [
+        "O-PF 收到 HTTP FD 请求并已到达 §10.2.4.3.1 steps6,7；application/vnd.3gpp.mcdata-info+xml 中不含 mcdata-controller-psi。",
+        "§11.1 step7 判定因 one-to-one 单次请求额度超限而不允许发送。"
+      ],
+      "conclusion": "此分支由 O-PF 返回 SIP 403、Warning202，并停止该调用过程。Warning202 在这里对应单次请求额度超限，不能据此改写为 FD 文件大小服务上限超限；该错误映射还受 mcdata-controller-psi 缺失的外层条件约束。",
+      "printed_pages": [
+        278,
+        311
+      ],
+      "limitations": [
+        "mcdata-controller-psi 存在时不能照抄这个 step7 映射；也不能据此声称 §11.1 的传输控制义务被取消。",
+        "§11.1 step4 的私聊 FD 文件上限责任仍在客户端与 CF；本批已核 HTTP 调用分支未为该项核出专用 Warning 映射，不编造对应码。"
+      ]
+    },
+    {
+      "id": "http-group-warning208-does-not-distinguish-two-size-causes",
+      "clause": "10.2.4.4.2 steps12f(ii),12f(iii);11.1 steps6,8",
+      "conditions": [
+        "CF 正在处理 HTTP FD 的 FD SIGNALLING PAYLOAD，request-type 为 group-fd，前序检查通过并到达 §10.2.4.4.2 step12f。"
+      ],
+      "conclusion": "若 §11.1 step8 判定组单次额度超限，CF 返回 SIP 403、Warning208 并停止；若 step6 判定该组 FD 文件大小上限超限，源文也要求 SIP 403、Warning208 并停止。两个分支使用同一代码，后者的 Warning 说明仍描述单次额度。排障时只有 403/208 不足以唯一定位超的是哪一种上限，须结合命中分支和配置值。",
+      "printed_pages": [
+        284,
+        311
+      ],
+      "limitations": [
+        "保留 V19.7.0 的代码和说明，不把文件上限分支自动修成另一个 Warning。",
+        "本条只说明两个大小拒绝分支，不复述组文档取得、组禁用、成员、服务许可和归属的全部前置检查。"
+      ]
+    }
+  ],
+  "limitations": [
+    "没有覆盖媒体面 FD 的具体 SIP 错误映射、上传协议内部限制或错误重试。"
+  ],
+  "related": [
+    "fd-http-file-and-signalling-evidence.md",
+    "fd-download-decision-and-completion.md",
+    "sds-transmission-selection.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  },
+  "standard_stage": 3,
+  "source_issues": [
+    {
+      "clause": "10.2.4.4.2 steps12f(ii),12f(iii)",
+      "printed_pages": [
+        284
+      ],
+      "issue": "组单次额度和组 FD 文件大小拒绝都使用 403/Warning208，第二分支仍带单次额度说明。",
+      "treatment": "按原文保留；不宣称一条 Warning 唯一对应一个根因。"
+    },
+    {
+      "clause": "11.1 step4;10.2.4.3.1 step7;10.2.4.4.2",
+      "printed_pages": [
+        278,
+        281,
+        282,
+        283,
+        284,
+        285,
+        311
+      ],
+      "issue": "私聊 FD 文件上限在 helper 约束客户端与 CF；已核 HTTP O-PF step7 为其他拒绝定义响应，CF 的私聊分支未给出该上限的专用响应映射。",
+      "treatment": "不虚构码，也不把 O-PF 单次额度检查当成该 CF 文件上限检查。"
+    }
+  ]
+}

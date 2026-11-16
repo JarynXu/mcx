@@ -215,3 +215,11 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 ### MCData 注册、授权绑定与设置
 
 [REGISTER/PUBLISH入口](topics/mcdata/service-authorization-entry.md)区分能力标签和授权请求；[绑定建立与并发上限](topics/mcdata/service-authorization-binding.md)说明多client及处理顺序；[设置刷新和退出](topics/mcdata/service-settings-validity.md)连接后续SDS有效绑定检查。设置Expires不等于令牌或绑定寿命，200响应也不证明后续隐式归属全部完成。
+
+### 观察设置与验证 CSK 更新
+
+[设置订阅](topics/mcdata/service-settings-observation.md)按同一用户及client标识获取通知，不把SUBSCRIBE取消当作服务退出。[CSK下载验证](topics/mcdata/csk-key-download-validation.md)要求匹配服务PF、验签并成功提取后才替换该PF关联密钥；服务器切换确认和失败恢复的完整时序仍未核。
+
+### 发送额度与 SDS session 的独立门槛
+
+[FD大小准入](topics/mcdata/fd-size-admission.md)区分文件上限与单次额度，以及PF/CF各自责任；组HTTP的同一403/208不唯一对应一个根因。[SDS session准入](topics/mcdata/sds-session-admission.md)保留later-use的双方发送许可和组服务元素缺失时的拒绝，不能套用单条standalone SDS媒体传输流程。

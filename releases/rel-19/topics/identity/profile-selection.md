@@ -49,3 +49,5 @@ MC服务客户端向MC服务服务器提交用户ID和选中index；服务器按
 [ETSI官方TS23.280 V19.9.0](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/19.09.00_60/ts_123280v190900p.pdf)，印刷页87、92、93、94、95；仅本版本。
 
 配置数据另见：[获取](profile-acquisition.md)、[更新](profile-update.md)。
+
+- [观察同用户其他MCData客户端设置](../mcdata/service-settings-observation.md)

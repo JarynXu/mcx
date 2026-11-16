@@ -1,0 +1,81 @@
+# MCData CSK 下载更新：识别消息、验证服务 PF，成功提取后才替换
+
+TS 24.282 V19.7.0 的 7.2.5/7.3.7，限参与功能向 MCData client 下发 CSK；不把此入口用于 PCK、GMK、MuSiK 或任意 application/mikey 消息。
+
+密钥下载关联的服务 PF PSI 和必要 KMS 材料须可供相应验证步骤使用；UID 转换、签名和解封装算法仍依赖 TS 33.180，本文不替标准修正异常文字。
+
+## 何时发送密钥更新
+
+适用条件：按 6.5.2.3.1 机密性保护已开启，且 PF 曾在服务授权 REGISTER 或 PUBLISH 中收到 CSK；PF 现在决定更新它。
+
+在上述前提下 PF 可以决定更新；一旦决定，必须执行 CSK key download。它发送 SIP MESSAGE，Request-URI 使用第三方 REGISTER 的 To URI，Accept-Contact 使用 MCData ICSI 并带 require/explicit，P-Asserted-Service 也标识 MCData；application/mikey body 携带用于 MCData signalling fields 的算法、CSK-ID 和面向客户端加密的 CSK。
+
+- 不得把 may 决定更新改成每次服务授权后必更新，也不把本入口的 confidentiality 条件改成只需 integrity 开启。
+- 原文允许此前由 PUBLISH 收到 CSK，但此寻址步骤仍引用第三方 REGISTER 的 To；如果该地址不可用，本段未给替代寻址算法。
+- 发出 MESSAGE 不证明客户端已验证和替换；本段未展开成功确认、服务器切换时机、超时和重传规则。
+
+依据：§7.3.7 opening and steps1–6，印刷页 149、150。
+
+## 识别CSK下载入口
+
+适用条件：客户端收到 SIP MESSAGE，判断是否进入 7.2.5 的 CSK 下载处理。
+
+该入口要求 P-Asserted-Service 含 MCData ICSI、存在 application/mikey body，并且 MIKEY CSB-ID 内的 key identifier 为 CSK-ID，其最高 4 位值为 2。满足这些条件只是进入 CSK 验证流程，不是可信服务 PF 身份或新密钥可立即采用的证明。
+
+- 不满足该特定入口不等于本条已要求统一拒绝所有 MIKEY；其他密钥类型和分类另有过程。
+- 完整 MIKEY 编码、字段长度和 key identifier 解码依赖未在本批核验。
+
+依据：§7.2.5 opening，印刷页 142。
+
+## 匹配预期服务PF
+
+适用条件：已满足 CSK 下载入口，客户端执行 7.2.5 step1 的 initiator 身份检查。
+
+IDRi 类型为 URI 时，取 initiator URI，与服务该用户的 PF PSI 比较，不一致则 488/Warning136 并停止；一致后转成 UID。IDRi 类型为 UID 时，将预期服务 PF PSI 转成 UID，与收到的 UID 比较，不一致同样 488/136 并停止。身份隐藏不取消对预期服务 PF 的匹配。
+
+- UID 转换算法不在本稿实现；其他类型或所需 PSI 不可得时的完整失败分支未在本段给出。
+- 保留本版将 initiator field 标为 IDRi 的文字，不自行换成另一字段名。
+
+依据：§7.2.5 step1a–b，印刷页 142、143。
+
+## 匹配身份后仍须验签
+
+适用条件：客户端 CSK 下载入口成立，适用 URI/UID 比较已经通过并取得所需 UID。
+
+客户端还必须用该 UID 验证 I_MESSAGE 签名；authentication verification 失败则 488/Warning136 并停止余下步骤。因此匹配服务 PSI、带有正确服务标签或拥有 CSK-ID 都不能代替签名验证。
+
+- 不把 XML 403/139、standalone SDS 的 606/136 或其他 MIKEY 流程响应码复制到此下载入口。
+- 签名算法、时间/重放等完整安全校验依赖 TS 33.180 §9.2.1，本批未重新展开。
+
+依据：§7.2.5 step1c–d，印刷页 143。
+
+## 成功提取后定向替换
+
+适用条件：客户端 CSK 下载已通过入口、预期 PF 身份及 I_MESSAGE 认证检查，并成功提取消息内的新密钥信息。
+
+客户端按所引安全过程提取并解密 CSK，提取并保存 MCData signalling fields 所用算法，取得 CSK-ID。成功提取后才用新 CSK/CSK-ID 替换与该 PF 关联的现有 CSK/CSK-ID；不是收到 MESSAGE 即替换，也不是替换所有服务器的密钥。
+
+- step1e 的密钥所有者原文写 participating MCData function 的 KMS-provisioned UID key；此处不据常识更正为客户端 UID key，解封装实现仍有未解依赖。
+- 提取失败、算法不支持和保留旧密钥的完整处理未由本段给出；不能自行补为默认回退旧密钥继续发送。
+- 本段未规定客户端成功响应或服务器收到确认才切换的完整时序。保存、替换及停止使用仍须分别看既有生命周期条款。
+
+依据：§7.2.5 step1e–g and step2，印刷页 143。
+
+## 证据边界
+
+- 限本页所列 MCData 协议分支；外部事件包、SIP 状态机及密码算法依赖不因接口引用而视为完整核验。
+
+## 按需继续
+
+- [../security/signalling-key-update](../security/signalling-key-update.md)
+- [../security/ue-key-lifecycle](../security/ue-key-lifecycle.md)
+- [../security/kms-provisioning](../security/kms-provisioning.md)
+- [service-authorization-entry](service-authorization-entry.md)
+- [xml-protection-activation](xml-protection-activation.md)
+
+[3GPP TS 24.282 V19.7.0 / ETSI TS 124 282 V19.7.0 (2026-08)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf)；仅本版本。
+
+## 原文疑义
+
+- §7.2.5 step1e：客户端解封装 CSK 时文字指向 participating MCData function's KMS-provisioned UID key；本稿不更正密钥所有者，也不据此输出密码实现。
+- §7.3.7 opening and step2：此前收到 CSK 可以经授权 REGISTER 或 PUBLISH，但下载 Request-URI 一律引用第三方 REGISTER To；没有补列不存在相应 REGISTER 地址时的替代路径。

@@ -80,3 +80,5 @@ O-PF 从 P-Asserted-Identity 中的 public user identity 确定 MCData ID；该�
 
 - §7.3.4 steps1,4 versus 7.2.1A step1：step1 从 PAI 取 IMS public user identity；step4 却指定 Request-URI 中的该 identity；客户端将 Request-URI 设为 PF 的 PSI。未裁决字段优先级或修正算法。
 - §7.2.1A NOTE2;7.3.2 step4a;7.3.3 step5b;7.3.5 NOTE：client settings timer 有 Instance Identifier 范围，服务授权允许保留多 client 绑定；显式移除又称 all group affiliations，且绑定移除未细化 client 选择。保留原文，不推导跨全部设备或仅单设备的完整清理算法。
+
+- [设置订阅与取消订阅，不是服务退出](service-settings-observation.md)
