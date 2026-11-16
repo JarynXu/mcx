@@ -22,7 +22,7 @@
 
 适用条件：自动应答终接端已按接受分支进入P5；收到发起用户的PRIVATE CALL ACCEPT ACK或RTP媒体。
 
-实际处理者是自动接收端P5。该接收端须停TFP4，按本段引用启动transmission control；step2字面称originating MCVideo client并指向24.581 clause a.b，保留该角色称谓差异，不改成终接。随后启动TFP5并进P4。这两种触发是替代关系：ACK路径无需先证明RTP到达；RTP路径只表明相应媒体接收事件，不等于完成解码、展示或应用验收。
+实际处理者是自动接收端P5。该接收端须停TFP4，以terminating MCVideo client启动transmission control，指向24.581 clause a.b。随后启动TFP5并进P4。这两种触发是替代关系：ACK路径无需先证明RTP到达；RTP路径只表明相应媒体接收事件，不等于完成解码、展示或应用验收。
 
 - 本段仍引用24.581 clause a.b；没有完整媒体资格判据。
 - 本入口未重述call-id相等检查，不自行加成原文强制字段校验；完整消息分派仍未核。
@@ -43,8 +43,6 @@
 ## 原文差异与未核边界
 
 §10.3.2.4.2.8 step7，印刷页 359：发起端接收ACCEPT后的媒体调用字面为terminating transmission participant且引用clause a.b；不自行修正角色或引用。
-
-§10.3.2.4.3.4 step2，印刷页 362：实际入口为自动接收端P5，媒体调用字面却称originating MCVideo client并引用clause a.b；并列保留实际处理者及源文角色，不裁决。
 
 §10.3.2.4.2.2/.4;10.3.2.4.3.3/.5;10.3.2.4.5.2/.3，印刷页 357、358、361、362、366、367：一般超时重传与计数上限出口并列，未写完整优先级，不裁决同时满足的执行调度。
 

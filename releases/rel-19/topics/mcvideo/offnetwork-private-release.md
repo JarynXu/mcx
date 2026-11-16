@@ -19,12 +19,12 @@
 
 ## 接收端与请求端分别停止
 
-适用条件：分别观察P4客户端收到来自originating MCVideo user的PRIVATE CALL RELEASE，或发送RELEASE后处于P3且收到对应RELEASE ACK的端。
+适用条件：分别观察P4客户端收到PRIVATE CALL RELEASE，或发送RELEASE后处于P3且收到对应RELEASE ACK的端。
 
-P4客户端收到来自originating MCVideo user的RELEASE后，先发RELEASE ACK，再终止本地媒体、启动TFP7并进P1；P3请求端收到ACK则停运行中的TFP3、终止媒体、启动TFP7并进P1。两端按各自事件处理，不存在由单一ACK证明两个播放器同步清空的结论。
+P4客户端收到RELEASE后，先发RELEASE ACK，再终止本地媒体、启动TFP7并进P1；P3请求端收到ACK则停运行中的TFP3、终止媒体、启动TFP7并进P1。两端按各自事件处理，不存在由单一ACK证明两个播放器同步清空的结论。
 
 - 未核缓冲帧、应用显示及底层资源释放过程；不能把terminate media解释为已撤回历史视频。
-- 接收分支保留原文originating发送者限定，不扩成任意对端，不据此补双向释放算法。
+- 本段未写完整消息分派或鉴权规则；不能据此认定任意收到的消息均有效，也不据此补完整双向释放算法。
 
 依据：3GPP TS24.281 V19.3.0 §10.3.2.4.5.4;10.3.2.4.5.5，印刷页 367。
 
