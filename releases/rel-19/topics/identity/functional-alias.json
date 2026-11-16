@@ -1,0 +1,57 @@
+{
+  "topic_id": "r19-functional-alias-policy",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3gpp-ts-22.280-v19.7.0"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-22.280-v19.7.0",
+  "claims": [
+    {
+      "id": "exclusive-modes",
+      "clause": "5.9a.1;5.9a.2 R-5.9a-005",
+      "pages": [
+        22,
+        23
+      ],
+      "conditions": [
+        "Per-alias administrator configuration"
+      ],
+      "conclusion": "Sharing with limit, takeover, or neither; sharing/takeover are mutually exclusive."
+    },
+    {
+      "id": "shared-activation",
+      "clause": "5.9a.2 R-5.9a-006/007/008a",
+      "page": 23,
+      "conditions": [
+        "User signed in with MCX User ID (§5.9a.1)",
+        "User attempts activation",
+        "Alias already active for at least one other user"
+      ],
+      "conclusion": "Sharing below limit: activate and notify existing users. Disallowed sharing or full: inform occupied; full-limit authorized request rejected."
+    },
+    {
+      "id": "takeover",
+      "clause": "5.9a.2 R-5.9a-008/009",
+      "page": 23,
+      "conditions": [
+        "Alias already active for another user",
+        "Authorized requester",
+        "Takeover permitted",
+        "Not configured for simultaneous activation",
+        "User attempts activation after signing in with MCX User ID (§5.9a.1)"
+      ],
+      "conclusion": "Offer takeover; when taken over, activate for new user and notify former user of deactivation."
+    }
+  ],
+  "limitations": [
+    "Stage1 requirements; no concurrency algorithm or Stage3 messages."
+  ],
+  "related": [],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_usage_acceptance": false
+  }
+}

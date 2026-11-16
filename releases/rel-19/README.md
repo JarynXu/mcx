@@ -16,10 +16,16 @@
 
 - [互通组配置：向谁获取](topics/interworking/group-configuration.md)：两向拉取前提、请求对象和 MC 侧分发责任。
 
+- [互通组配置：订阅与通知](topics/interworking/configuration-updates.md)。
+
+- [功能别名：共享与接管](topics/identity/functional-alias.md)。
+
+- [MCVideo：发流许可不等于接收](topics/mcvideo/transmission-admission.md)：邀请接收、并发上限与容量许可。
+
 Agent 可使用[轻量主题索引](topics.json)定位问题，需要结构化条件时再读取该主题旁的 JSON，不必加载其他主题。
 
 ## 证据与覆盖
 
 [来源清单](sources.json)固定所用标准版本和条款。[覆盖与核验状态](status.json)列明当前范围。
 
-以上内容是限定范围的规范解释。组文档主题及 LMR 互通主题已对照所列原文条款核对；其他主题仍为整理说明。任何单页核对均不代表整个 Release 或可直接运行的协议实现。位置配置取消条件的字段集合尚待核清，本目录不提供该行为的确定规则。
+以上内容是限定范围的规范解释。组文档、LMR 互通、功能别名及 MCVideo 发流主题已对照所列原文条款核对；其他主题仍为整理说明。任何单页核对均不代表整个 Release 或可直接运行的协议实现。位置配置取消条件的字段集合尚待核清，本目录不提供该行为的确定规则。
