@@ -74,3 +74,5 @@ general停止运行中的T4，将原因设为#8（无接收participant），可�
 - [server-idle-timers](server-idle-timers.md)
 
 [3GPP TS24.581 V19.2.0 / ETSI TS124581 V19.2.0 (2026-08), Release19](https://www.etsi.org/deliver/etsi_ts/124500_124599/124581/19.02.00_60/ts_124581v190200p.pdf)；仅本版本。
+
+- [整通话释放及其条件](private-call-server-release.md)

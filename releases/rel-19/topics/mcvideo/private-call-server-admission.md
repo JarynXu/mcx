@@ -120,3 +120,5 @@ CF 构造200及 SDP answer，完成该步触发的媒体平面处理后才向邀
 - 10.2.2.3.1.1 step16d 引 step17 above，而实际17是SDP；不擅改成16c。
 - 10.2.2.4.2 私呼200步骤2以6.3.3.2.2作为SDP answer依赖；该条实际为收到INVITE时缓存feature tags，SDP answer标题在6.3.3.2.1。
 - 6.3.2.2.5.1/.6.1 引向.5.3/.6.3的可复用预建立分支不在本页闭合；仅核其选择门槛与按需fallback。
+
+- [整通话释放及其条件](private-call-server-release.md)

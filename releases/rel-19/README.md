@@ -235,3 +235,7 @@ HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-tr
 ### IP Connectivity
 
 [目标与准入](topics/mcdata/ipconn-target-and-admission.md)说明如何从目标 IP 信息取得业务标识及角色权限；[服务器路径](topics/mcdata/ipconn-server-path.md)区分用户、下一跳和会话身份；[媒体与结果证据](topics/mcdata/ipconn-media-and-success-evidence.md)限定 200、ACK、应用字段和失败 BYE 的含义。本版双客户端在网过程明确不兼容 Rel16，未展开媒体规范内部实现。
+
+### MCVideo 私呼释放
+
+[客户端BYE](topics/mcvideo/private-call-client-release.md)区分停流和信令判定后的资源回收；[服务器逐段释放](topics/mcvideo/private-call-server-release.md)说明各段200、私呼策略及未消解的原文错引。不能将某一段200或某个源停止发送视为全部会话已释放。

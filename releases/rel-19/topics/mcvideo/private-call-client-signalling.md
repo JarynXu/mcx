@@ -78,3 +78,5 @@ Auto 分支要求 Answer-Mode=Auto 且本地 auto，或本地 manual 但愿意 a
 ## 原文疑义
 
 - 10.2.2.2.2 step4d没有显式stop，而step4e限定成功验签才解封；错误Warning文字使用MIKEY-SAKE拼写，不据此改认证机制。
+
+- [整通话释放及其条件](private-call-client-release.md)
