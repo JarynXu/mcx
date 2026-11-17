@@ -1,0 +1,386 @@
+{
+  "topic_id": "r16-calls-private-callback",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 私呼回电：对方确认了“请回电”，通话建立了吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "common_conditions": [
+    "Rel-16 TS 24.379 V16.14.0 中普通在网 MCPTT 私呼回电的客户端流程；甲为请求回电的用户，乙为回电目标用户。"
+  ],
+  "condition_rule": "发起、确认、取消、失败和履约是不同事件；各条分别满足对应的角色、标识与本地状态，不以两端均成功为共同前提。",
+  "claims": [
+    {
+      "id": "request-and-cancel-permissions",
+      "title": "发起和取消分别受本机配置许可约束",
+      "conditions": [
+        "甲用户请求发起回电或取消回电；分别判断本次操作。"
+      ],
+      "conclusion": "甲端检查用户配置 ruleset 中本次操作的许可。allow-request-private-call-call-back 或 allow-cancel-private-call-call-back 中对应项缺失或为 false，就告知用户并退出该操作；授权通过才生成 SIP MESSAGE。",
+      "normative_strength": "§11.1.5.2.1 的条件性 SHALL。",
+      "limitations": [
+        "允许发起不能推出允许取消；本机许可也不是对端已确认。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.2.1, separate request/cancel permissions and items 5–8"
+          ],
+          "printed_pages": [
+            391,
+            392
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "pending-entry-and-target-label",
+      "title": "乙端登记回电待办，不因此发起私呼",
+      "conditions": [
+        "区分甲发起回电请求与乙收到请求两个事件；原请求回电者为甲，稍后拨回的是乙。"
+      ],
+      "conclusion": "甲按乙的 MCPTT ID 保存请求端状态 I2（等确认），请求带紧急程度和时间。乙按甲的 MCPTT ID 登记目标端状态、紧急程度、请求时间，通知乙用户，再生成并发送回电答复 MESSAGE。§11.1.5.2.2 的步骤 1(b) 将目标端待办印作 PCCB-I2: private-call-pending；同节取消分支、§11.1.5.2.3 履约分支及表 G.13-2 的状态行则为 PCCB-R2: private-call-pending。",
+      "normative_strength": "记录、通知与发送为程序要求；附录 G 仅作资料性对读。",
+      "limitations": [
+        "保留原版代码不一致，不断言应如何勘误。目标端登记的含义不同于请求端的 PCCB-I2: confirm-pending；通知乙不证明乙本人已决定拨号。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.1, requesting and target roles and stored entries"
+          ],
+          "printed_pages": [
+            390,
+            391
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.2.1, separate request/cancel permissions and items 5–8"
+          ],
+          "printed_pages": [
+            391,
+            392
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.2.2, request items 1(a–d) and 2 and matching cancel branch"
+          ],
+          "printed_pages": [
+            392
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.2.2, outgoing SIP MESSAGE items 1 and 6–8"
+          ],
+          "printed_pages": [
+            392,
+            393
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.2.3, user decision, manual commencement, requesting/target entry deletion"
+          ],
+          "printed_pages": [
+            393
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "G.13, Table G.13-2 (target client), informative"
+          ],
+          "printed_pages": [
+            593,
+            594
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "business-response-confirms-only-pending-request",
+      "title": "回电业务答复须匹配对方标识和 I2，仅使请求端进入等待来电的 I3",
+      "conditions": [
+        "甲收到了回电业务答复的 SIP MESSAGE 请求，mcptt-calling-user-id 对应本地为乙保存的条目，且条目在 I2。"
+      ],
+      "conclusion": "在上述条件下甲端转 I3（已确认）并仍保留条目。原请求事务的成功响应不是上述业务答复；接到来自别的 ID 的答复，或该条目不在 I2，均不能依据此规则推进。",
+      "normative_strength": "§11.1.5.2.1 的条件性 SHALL；资料性表 G.13-1 说明 I3 是等待对方来电。",
+      "limitations": [
+        "业务确认不是已拨号、已接听、媒体已通或必然会回拨的证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.2.1, failure response and matching service response paragraphs after item 8"
+          ],
+          "printed_pages": [
+            392
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.2.2, outgoing SIP MESSAGE items 1 and 6–8"
+          ],
+          "printed_pages": [
+            392,
+            393
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "G.13, Table G.13-1 (requesting client), informative"
+          ],
+          "printed_pages": [
+            593,
+            594
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "cancel-and-failure-cleanup",
+      "title": "撤回有两端各自的成功清理点；失败时只知道请求端的清理",
+      "conditions": [
+        "甲在已确认路径上获准取消，或甲收到针对自己发出的回电请求/取消 MESSAGE 的规定失败响应。"
+      ],
+      "conclusion": "发取消时甲端记 I4。乙收到取消，若甲的条目匹配且处于该段的 R2，则转 R1 并删除甲的条目；取消业务答复用另一条 MESSAGE 返回。甲须在 I4 收到与乙标识匹配的取消答复，才按成功取消路径转 I1、删乙条目。若原请求或取消事务返回 4xx、5xx 或 6xx，甲需将匹配的条目置 I1、删掉并退出。",
+      "normative_strength": "程序条款按事件与匹配条件规定；表 G.13-1 提供 I3 到 I4 的背景。",
+      "limitations": [
+        "甲发出取消不等于两端同步删除；甲因失败而清理不等于乙已处理取消。这里撤回的是待办，不是挂断通话。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.2.1, separate request/cancel permissions and items 5–8"
+          ],
+          "printed_pages": [
+            391,
+            392
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.2.1, failure response and matching service response paragraphs after item 8"
+          ],
+          "printed_pages": [
+            392
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.2.2, request items 1(a–d) and 2 and matching cancel branch"
+          ],
+          "printed_pages": [
+            392
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.2.2, outgoing SIP MESSAGE items 1 and 6–8"
+          ],
+          "printed_pages": [
+            392,
+            393
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "G.13, Table G.13-1 (requesting client), informative"
+          ],
+          "printed_pages": [
+            593,
+            594
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "manual-callback-and-role-specific-cleanup",
+      "title": "乙决定回拨后另行建呼，双方按不同的成功事件清理待办",
+      "conditions": [
+        "乙用户想回拨并有对应甲的目标端条目；清理时另须乙条目在该段的 R2、或甲条目在 I3，按各自角色分别判断。"
+      ],
+      "conclusion": "乙按条目中甲的 MCPTT ID 向甲以手动应答模式建私呼；有话权用 §11.1.1.2.1.1 或 §11.1.1.2.2.1，无话权用 §11.1.2.2。甲发送针对本次私呼建立请求的 SIP 200 (OK)，且该对端条目在 I3，就转 I1 并删除。乙收到本次建呼 INVITE 或 REFER 的 SIP 2xx，且对应甲的条目在 R2，就转 R1 并删除。",
+      "normative_strength": "§11.1.5.2.3 的条件性 SHALL；资料性表 G.13-2 的 R1 行写收到 200，程序正文为 2xx。",
+      "limitations": [
+        "发起建呼、收到建呼成功响应与实际媒体传输是不同事件。回电 MESSAGE 的事务响应不能充当对 INVITE/REFER 的成功响应。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.1, requesting and target roles and stored entries"
+          ],
+          "printed_pages": [
+            390,
+            391
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.2.3, user decision, manual commencement, requesting/target entry deletion"
+          ],
+          "printed_pages": [
+            393
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "G.13, Table G.13-1 (requesting client), informative"
+          ],
+          "printed_pages": [
+            593,
+            594
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "G.13, Table G.13-2 (target client), informative"
+          ],
+          "printed_pages": [
+            593,
+            594
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.5.1, requesting and target roles and stored entries"
+      ],
+      "printed_pages": [
+        390,
+        391
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.5.2.1, separate request/cancel permissions and items 5–8"
+      ],
+      "printed_pages": [
+        391,
+        392
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.5.2.1, failure response and matching service response paragraphs after item 8"
+      ],
+      "printed_pages": [
+        392
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.5.2.2, request items 1(a–d) and 2 and matching cancel branch"
+      ],
+      "printed_pages": [
+        392
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.5.2.2, outgoing SIP MESSAGE items 1 and 6–8"
+      ],
+      "printed_pages": [
+        392,
+        393
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.5.2.3, user decision, manual commencement, requesting/target entry deletion"
+      ],
+      "printed_pages": [
+        393
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "G.13, Table G.13-1 (requesting client), informative"
+      ],
+      "printed_pages": [
+        593,
+        594
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "G.13, Table G.13-2 (target client), informative"
+      ],
+      "printed_pages": [
+        593,
+        594
+      ]
+    }
+  ],
+  "related": [
+    "r16-calls-private-client-answer-evidence",
+    "r16-calls-private-server-admission-routing",
+    "r16-mcptt-first-to-answer-on-demand-client"
+  ],
+  "limitations": [
+    "不覆盖服务端逐跳分类、路由、完整消息头、错误重试、离网回电、首接呼叫或实际媒体交付；未采用其他 Release 勘误本版。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
