@@ -1,0 +1,96 @@
+# 离网远程推视频：三方请求、接通通知与释放边界
+
+## 适用范围
+
+- 固定 TS24.281 V19.3.0 Rel19，离网、单一用户到单一用户的远程发起 video push。A 为请求者，B 为实际视频推送呼叫发起者，C 为接收者。
+- 仅说明已授权角色的信令责任与条件接口；排除组推送、在网 SIP、ambient viewing、紧急和功能别名，不从这些过程借权限。
+- 各项只在相应主体收到所列事件时适用；不同消息的出现不预设其他端成功。未核 TS24.581 媒体、TS24.483 配置 schema 与安全协议，不提供完整互通实现。
+
+## A 请求 B 向 C 推视频，不把请求者当媒体发送者
+
+适用主体：已授权请求者 A。
+
+适用条件：A 要求从另一用户 B 向用户 C 推视频。
+
+A 保存自身为 remote push requester、B 为 caller、C 为 callee，生成随机 call identifier，发 PRIVATE REMOTE VIDEO PUSH REQUEST；Video Information 可选。消息通过 §13.3.1.1.1 的 MONP carrier/UDP 规则发送。
+
+- 授权是入口前提，本段未给远程请求者授权配置叶或拒绝响应。
+- 三方身份是业务角色，地址发现、身份认证和来源控制不由本段补全。
+
+规范强度：shall；明确可选行为为 may。
+
+依据：TS24.281 V19.3.0 §13.3.2.2.1；§13.3.1.1.1；§17.1.20.1，印刷页 408, 406, 456, 457。
+
+## TRYING 只说明接受请求并尝试建呼
+
+适用主体：收到远程请求的 B。
+
+适用条件：B 收到 PRIVATE REMOTE VIDEO PUSH REQUEST。
+
+B 生成 VIDEO PUSH TRYING RESPONSE，并重新随机生成 call identifier；消息定义表示请求已接受、正在建立 push 呼叫，不表示 C 已接听。
+
+- §13.3.2.2.2 可携 Video Information，但 §17.1.22.1 消息表只列 message identity 与 call identifier；不能自行补编码。
+- 请求、TRYING 和最终通知各有随机生成 call identifier 的步骤；不能假定沿用同一号码关联，也不能据本段另造关联算法。
+
+规范强度：shall；明确可选行为为 may。
+
+依据：TS24.281 V19.3.0 §13.3.2.2.1 step2；§13.3.2.2.2；§13.3.2.2.6 step2；§17.1.22.1，印刷页 408, 409, 457, 458。
+
+## 远程请求调用私呼过程，但不能抹去被调用条件
+
+适用主体：B 发起端；C 手动终接端。
+
+适用条件：B 收到远程请求；或 C 收到 MANUAL COMMENCEMENT MODE 且类型为 PRIVATE VIDEO PUSH CALL 的 SETUP REQUEST。
+
+B 调用 §10.3.2.4.2.1，类型改存 PRIVATE VIDEO PUSH CALL；未携 Video Information 时用摄像头作视频来源。C 的手动入口调用 §10.3.2.4.4.1，同样改存 push 类型。
+
+- 发起 helper 的入口仍写 P0/P1、用户发起指示及 Common/PrivateCall/Authorised=true；远程 caller 没有明写如何替代用户指示，不把收到请求等同于无条件授权。
+- helper 模式选择仍有 AutoCommence/ManualCommence 条件。手动终接 helper 仍要求 P0/P1 且 call identifier 不同于所存值，再发 RINGING、启动 TFP2、进入 P5；不能把任意忙状态推成强制接听。
+- 远程段未逐项定义 B 如何从请求恢复 requester/callee 等存储，不能补造字段映射和状态覆盖顺序。摄像头默认值是本业务的条件规则，不是一般录制许可。
+
+规范强度：shall；明确可选行为为 may。
+
+依据：TS24.281 V19.3.0 §13.3.2.2.3；§13.3.2.2.4；§10.3.2.4.2.1 opening and steps1–5；§10.3.2.4.4.1，印刷页 409, 356, 362, 363。
+
+## 接通通知与完整失败闭环分开
+
+适用主体：发起实际 push 私呼的 B；请求者 A。
+
+适用条件：B 从私呼接收者收到 PRIVATE CALL ACCEPT；A 实际收到 NOTIFY VIDEO PUSH。
+
+B 生成 NOTIFY VIDEO PUSH，结果按 B 与 C 的建立结果设 SUCCESS 或 FAILURE，失败时携 Reason；通知发回发起远程请求的客户端 A。A 可以提示用户视频正推给另一用户。
+
+- §13.3.2.2.6 入口是收到 ACCEPT，但步骤允许 FAILURE，没有在此定义 REJECT/超时如何触发失败通知；因此不能保证所有失败都有通知。
+- step4 保存 notification recipient ID，step9d 却使用 stored video push requester ID；不自行改写存储变量或补出 requester 恢复程序。
+- 通知表达呼叫建立结果，不证明首帧、完整视频交付、保存文件或额外媒体权限。
+
+规范强度：shall；明确可选行为为 may。
+
+依据：TS24.281 V19.3.0 §13.3.2.2.6；§13.3.2.2.7；§17.1.23.1，印刷页 409, 410, 458。
+
+## 实际通话参与者释放，不扩展为 A 远程结束
+
+适用主体：处于 ongoing push 私呼的客户端。
+
+适用条件：用户要求释放已进行的 private video push call。
+
+§13.3.2.2.5 调用私呼释放 §10.3.2.4.5。P4 的本端发送 RELEASE 后进入 P3 等响应；收到 RELEASE ACK 时停止运行中的 TFP3、终止媒体并进入 P1。
+
+- 这是实际私呼客户端的用户事件，不是 A 发送远程结束命令的定义。
+- 无 RELEASE ACK 的上限到期另有本地终止规则；进入 P3 本身不是释放完成证据。
+
+规范强度：shall；明确可选行为为 may。
+
+依据：TS24.281 V19.3.0 §13.3.2.2.5；§10.3.2.4.5.1；§10.3.2.4.5.3；§10.3.2.4.5.5，印刷页 409, 366, 367。
+
+## 使用边界
+
+请求到私呼 helper 的用户指示与存储接口、消息关联、TRYING 编码和失败通知触发仍有上述边界；不把导航拼成完整闭环。
+
+## 按需继续
+
+- [video-push-request-and-authorization](video-push-request-and-authorization.md)
+- [offnetwork-private-manual-answer](offnetwork-private-manual-answer.md)
+- [offnetwork-private-release](offnetwork-private-release.md)
+
+[ETSI 官方 TS24.281 V19.3.0](https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf)。

@@ -253,6 +253,14 @@
 
 入口：[独立紧急告警取消：本人、他人及不同成功证据](topics/mcvideo/standalone-emergency-alert-cancellation.md)。
 
+### 离网远程发起 MCVideo 视频推送
+
+- **能回答：**可查请求者 A、实际 caller B、接收者 C 的控制消息、TRYING、私呼调用、结果通知与实际通话端释放责任。
+- **只到条件或接口：**固定本版离网单用户到单用户、已授权角色的事件接口；各端按实际收到消息或用户事件读取。调用私呼 helper 不抹去 P0/P1、用户指示、授权、模式及关联守卫。
+- **尚未建立的结论：**不将 TRYING 当接通、NOTIFY 当首帧或完整失败通知，也不把 A 的请求权当远程释放权；随机 call identifier 关联、存储恢复、TRYING 编码和失败触发缺口保留，不借在网 push 或未核媒体/配置来源闭合。
+
+入口：[离网远程推视频：三方请求、接通通知与释放边界](topics/mcvideo/offnetwork-remote-video-push.md)。
+
 ## MCPTT通话与话权
 
 [查看本域全部主题](topics-calls.json)
@@ -346,6 +354,14 @@
 入口：[普通离网MCPTT手动私呼：等待、人工应答与控制完成](topics/calls/offnetwork-private-manual-answer.md)。
 
 所列入口的来源：3GPP TS24.379 V19.4.0。具体条款及边界以主题为准。
+
+### 远程请求另一用户发起普通 MCPTT 私呼
+
+- **能回答：**可查 A 请求 B 向 C 起呼时的角色、请求许可、PF/CF 控制消息路由、B 的实际按需私呼调用及结果返回；A=C 且起呼成功时另有免发结果条件。
+- **只到条件或接口：**主系统在网普通按需私呼；角色和 request/response 分支分别适用，B 本地策略选择按需后才调用相应起呼过程。A、B、C 不要求是三个不同身份。
+- **尚未建立的结论：**不把控制 MESSAGE 的 200 当作 C 已接听或媒体可听；私呼 helper 仅到本页所列调用契约，排除预建立、组呼、紧急、ambient listening 及优先级/接续覆盖，不把相关私呼页串成完整实现。
+
+入口：[远程请求私呼：谁发起、拨给谁、结果回给谁](topics/calls/remotely-initiated-private.md)。
 
 ## 组管理与MCPTT组呼入口
 
