@@ -1,0 +1,98 @@
+# 私聊媒体面FD：控制侧邀请与建会响应证据
+
+## 适用范围
+
+- 固定TS24.282 V19.7.0及对照TS24.582 V19.0.0，普通在网本地、直接单一目标的one-to-one媒体面FD，关注CF接收INVITE、邀请与生成上游结果的责任。
+- 不含组、别名、预建立会话、紧急/迫近危险、跨系统；入站不含emergency-ind、imminentperil-ind或Resource-Priority，也不请求alert。各角色此前身份、安全、资源及授权仍须满足。
+- 这里不是完整client/PF/CF端到端建会手册。前序拒绝后不继续；未完成的构造/分类及跨媒体引用边界不据常识补全。
+
+## 媒体面FD的排队和准入使用INVITE规则
+
+适用主体：控制 MCData 功能（CF）。
+
+适用条件：收到已分类的FD INVITE，或决定处理此前排队的该请求；本页普通私聊范围成立。
+
+§6.3.1.2的CF分类要求路由到CF、FD ICSI-ref Accept-Contact、FD P-Asserted-Service及one-to-one-fd或group-fd类型。CF资源不足或拥塞时可500并可带Retry-After，或排队；排队回100/Warning215且停止。继续时，媒体参数不接受或SDP缺MSRP URI则488停止；缺FD SIGNALLING PAYLOAD须用适当拒绝码；缺任一所需FD标签则403停止。
+
+- 本页仅走one-to-one-fd。没有emergency-ind、imminentperil-ind、alert请求和Resource-Priority，不绕过普通前序检查。
+- 缺载荷分支没有给定具体拒绝码，不擅写403。两个标签是g.3gpp.mcdata.fd以及g.3gpp.icsi-ref的FD ICSI值。
+- HTTP排队使用202/215，不能搬到这里的100/215。
+
+规范强度：shall；明确可选或建议项按 may/should。
+
+依据：3gpp-ts-24.282-v19.7.0 §6.3.1.2 FD controlling-function classification；§10.2.5.4.4 opening,steps1–7，印刷页 94, 305, 306。
+依据：3gpp-ts-24.282-v19.7.0 §10.2.4.4.2 steps1–2 (comparison only)，印刷页 282。
+
+## 文件大小和单目标列表通过后才邀请
+
+适用主体：控制 MCData 功能（CF）。
+
+适用条件：前序准入未停止，request-type=one-to-one-fd且未请求功能别名解析。
+
+step8a把§11.1 step4的文件上限失败映射为403/Warning220并停止，文件大小取入站SDP file-selector的size。随后资源列表MIME缺失或entry多于一个，回403/Warning205并停止；恰有一个entry时，按其中uri调用§10.2.5.4.3邀请目标，并与24.582 §7.3媒体接口交互。
+
+- 上限责任及严格大于比较沿用fd-size-admission，不把220当用户单次额度拒绝。
+- 列表存在但零entry没有触发这里的“缺失/多于一个”拒绝，也不满足恰好一个的邀请条件；不补拒绝码或成功结果。
+- 只确认§7.3调用，不把进入接口视为MSRP连接或文件传输已完成。
+
+规范强度：shall；明确可选或建议项按 may/should。
+
+依据：3gpp-ts-24.282-v19.7.0 §10.2.5.4.4 steps8a,8b and NOTE2；§11.1 step4，印刷页 307, 311。
+
+## 业务用户、路由地址与会话身份分别生成
+
+适用主体：控制 MCData 功能（CF）。
+
+适用条件：§10.2.5.4.4 step8b(ii)实际调用4.3，目标是一个直接MCData ID。
+
+CF生成INVITE：XML mcdata-request-uri为目标用户ID，calling-user-id为主叫ID；SIP Request-URI指向目标PF的PSI，PAI为CF自身PSI。Contact携CF会话身份与FD/isfocus标签，Referred-By携邀请客户端public user identity；复制入站signalling MIME，按4.1生成offer并发送。
+
+- Session-Expires是should且省略refresher，不把全部字段一律升级为shall。缺Mandatory download IE时，4.3 step9A要求调用§11.2。本页只确认该实际调用，不展开§11.2的媒体面分支算法；既有HTTP下载决策页不适用于这条媒体链，不能借其规则补全。
+- 本版step12写P-Asserted-Service-Id，而分类段写P-Asserted-Service；普通4.3也未像紧急1A(e)显式列出request-type复制。保留构造与分类接口边界，不自行纠正字段或宣称完整可互通INVITE配方。
+- 目标PF发现算法与跨系统路由未提供；本页不覆盖PF/客户端各自的准入。
+
+规范强度：shall；明确可选或建议项按 may/should。
+
+依据：3gpp-ts-24.282-v19.7.0 §10.2.5.4.3 opening,steps1,1A(e),2–14；§6.3.1.2 FD terminating-PF classification，印刷页 303, 304, 305, 94。
+
+## CF的出站offer和上游answer不是同一方向
+
+适用主体：控制 MCData 功能（CF）。
+
+适用条件：生成4.3邀请offer；或经FD专属指示进入上游200的SDP answer生成。
+
+4.1 offer为sendonly/actpass，4.2 answer为recvonly/passive；两者path都用CF自己的MSRP URI、accept-types都写mcdata-signalling，均带文件name/type/size/hash。answer由CF针对入站offer生成，不是原样转发目标端answer。
+
+- 4.1标题属于CF，正文却称MCData client；按明确caller记录用途，不静默修正文内角色。
+- 与固定24.582 §7.1.2.1文件SEND的mcdata-file MIME不同；这是已知跨快照差异，不宣称协商兼容已闭合。
+
+规范强度：shall；明确可选或建议项按 may/should。
+
+依据：3gpp-ts-24.282-v19.7.0 §10.2.5.4.1；§10.2.5.4.2；§10.2.5.4.3 step13；§6.3.7.1.23 step7c，印刷页 302, 303, 305, 116。
+依据：3gpp-ts-24.582-v19.0.0 §7.1.2.1 (comparison only: file MIME)，印刷页 29, 30。
+
+## 目标响应匹配与暂存响应分别进入上游200
+
+适用主体：控制 MCData 功能（CF）。
+
+适用条件：CF实际收到4.3所发INVITE的200；分别判断正常匹配ID入口或Warning232入口。
+
+正常入口要求响应中的MCData ID匹配对应邀请的目标ID，才以File Distribution指示调用§6.3.7.1.23并向邀请侧发送200。另有200带Warning232的暂存入口，同样调用该helper，不应把此响应解释为终端已经下载。helper生成CF会话Contact、FD/isfocus标签、Require:timer与Session-Expires/refresher=uac，选择FD answer，复制收到的Warning及存在的mcdata-info。
+
+- Warning232段未重复正常入口的ID匹配守卫；不擅自合并两个段落的条件或发明重复响应仲裁规则。
+- helper step10固定调用24.582 §6.3.1，而该固定媒体版条款是standalone SDS；4.3的200处理及4.4 step8b另写§7.3。保留引用差异，不据此补成FD媒体算法。
+- 200只说明这些信令事件；下载完成、MSRP逐跳200和用户读取另有证据，不能从单个CF片段推出完整端到端建立。
+
+规范强度：shall；明确可选或建议项按 may/should。
+
+依据：3gpp-ts-24.282-v19.7.0 §10.2.5.4.4 response200 and Warning232 branches；§10.2.5.4.3 response200；§10.2.5.4.4 step8b；§6.3.7.1.23，印刷页 309, 305, 307, 115, 116。
+依据：3gpp-ts-24.582-v19.0.0 §6.3.1.1 (comparison only: standalone SDS scope)，印刷页 23。
+
+## 按条件继续
+
+- [fd-size-admission](fd-size-admission.md)
+- [fd-msrp-start-and-originator-result](fd-msrp-start-and-originator-result.md)
+- [fd-msrp-hop-ack-and-storage](fd-msrp-hop-ack-and-storage.md)
+- [fd-media-reception-and-signalling-report](fd-media-reception-and-signalling-report.md)
+
+[ETSI TS24.282 V19.7.0](https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf)；[ETSI TS24.582 V19.0.0](https://www.etsi.org/deliver/etsi_ts/124500_124599/124582/19.00.00_60/ts_124582v190000p.pdf)。

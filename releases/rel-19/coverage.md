@@ -129,6 +129,14 @@
 
 入口：[普通组 HTTP 文件分发：控制侧业务准入与目标身份](topics/mcdata/http-group-fd-controller-admission.md)。
 
+### 私聊媒体面 FD 的 CF 邀请与建会证据
+
+- **能回答：**可查普通单目标媒体面FD的INVITE排队/准入、大小门槛后的唯一目标邀请、出站身份、CF offer/answer方向及正常匹配与暂存200的不同入口。
+- **只到条件或接口：**普通在网本地、直接单目标one-to-one媒体面FD，无紧急/迫近危险、Resource-Priority或alert请求；各前序检查未停止才继续，文件大小仍查已有owner。
+- **尚未建立的结论：**不搬HTTP202或HTTP-only下载决定到媒体链；§11.2只确认实际caller，保留P-Asserted-Service-Id、request-type复制、角色及跨快照SDS引用/MIME差异，不把CF200当下载完成或完整端到端接通。
+
+入口：[私聊媒体面FD：控制侧邀请与建会响应证据](topics/mcdata/media-fd-private-controller-setup.md)。
+
 ## MCVideo视频业务
 
 [查看本域全部主题](topics-mcvideo.json)
@@ -402,6 +410,14 @@
 - **尚未建立的结论：**不套预安排组呼 required/最少人数门槛，不把名单、隐式归属或 Unconfirmed200当全员确认；保留显式名单成功响应 criteria 字段来源缺口，不补完整媒体、安全、失败回滚或 criteria 过程。
 
 入口：[显式名单建立 ad hoc 组呼：资格、邀请与应答证据](topics/groups/adhoc-explicit-list-establishment.md)。
+
+### MCPTT ad hoc 按条件选人与持续变化
+
+- **能回答：**可查 criteria 初建的实际调用入口、CF本地选人或PF查询、独立名单结果、持续增删通知及停止确定的状态责任。
+- **只到条件或接口：**单主系统普通在网按需 criteria 初建，各角色前序准入仍适用；PF查询列表是可选选择。结果快照、增删通知与释放策略触发的停止是不同事件，不共同继承成功。
+- **尚未建立的结论：**不把criteria变成显式名单初建的必经后续，也不修复旧页响应字段来源缺口；保留req-type/resp-type差异、增员历史OR条件及多PF结果边界，不补全局原子替换、实际criteria算法或完整释放。
+
+入口：[按条件建立 ad hoc 组呼：选人、持续变化与停止](topics/groups/adhoc-criteria-membership-lifecycle.md)。
 
 ## 身份、注册与配置
 
