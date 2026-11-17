@@ -1,0 +1,170 @@
+{
+  "topic_id": "r16-mcptt-onnetwork-floor-media-timeouts",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 话权已授予：收不到 RTP 和一次发言超时，服务器都要发撤销吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 24.380 V16.9.0（Rel-16，Stage 3），普通在网呼叫，服务器的一般话权仲裁已向一个参与者授予话权。",
+    "服务器不支持多发言人话权控制；排除环境监听、双话权、音频切入和抢占场景。以下 RTP 到达与计时器事件均指服务器一侧，不是听众的观测。"
+  ],
+  "claims": [
+    {
+      "id": "grant-versus-media-arrival",
+      "title": "授予启动 T1，来自获准者的 RTP 才触发 T2 的启动条件",
+      "conditions": [
+        "区分进入 G: Floor Taken 时的授予动作与其后媒体分发器报告收到获准者 RTP 的动作。后者只在指示到达时适用；此前是否排队是 T20 的另一个条件。"
+      ],
+      "conclusion": "授予时将 T2 的时长值填入 Floor Granted 的 Duration，启动获准者的 T1，进入 G: Floor Taken。此前排队的请求获准时启动 T20、C20 置 1；定时器表指明该请求者已协商排队。分发器报告收到获准者的 RTP 后，仲裁在 T2 未运行时启动 T2，重启 T1，并在 T20 正运行时停止 T20；按本地策略指示分发器向客户端转送这些包，仍留在 Taken。后续到包不会重启已运行的 T2。",
+      "normative_strength": "列举的字段、计时器、转送指示和状态动作均是相应条件下的 shall；T1/T2 时值可配置。",
+      "limitations": [
+        "Duration 不证明 T2 已经启动；听众无声不能证明服务器没有收到包。转送指示不能证明终端收到或播放；定时器默认值不是所有呼叫的实测值。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.4.2, items 1(a), 2, 4–5"
+          ],
+          "printed_pages": [
+            59,
+            60
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.4.5, items 1–5"
+          ],
+          "printed_pages": [
+            60,
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "11.1.3, Table 11.1.3-1, T1 and T2 rows"
+          ],
+          "printed_pages": [
+            218
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "11.1.3, Table 11.1.3-1, T20 row and NOTE 5"
+          ],
+          "printed_pages": [
+            220
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "t1-ends-media",
+      "title": "T1 到期：停止分发并进入话权空闲，保留正在缓冲时的已缓冲包例外",
+      "conditions": [
+        "G: Floor Taken 中获准者的 T1 到期。此前可能一次也没收到其 RTP，也可能在上次收包后不再收到新包。"
+      ],
+      "conclusion": "仲裁须停止该参与者仍在运行的 T2 和 T20，要求分发器停止向其他客户端分发来自该参与者的 RTP；如果正在缓冲 RTP，已经在缓冲区里的包不在该停止要求之列。不支持多发言人时进入 G: Floor Idle 的进入规程。",
+      "normative_strength": "步骤 1–4 在各自条件下均为 shall；缓存例外是步骤 3 对停止分发范围的限定。",
+      "limitations": [
+        "本分支不要求先发 Floor Revoke。缓存例外既不要求清空缓存，也不保证余包送达；进入 Idle 不证明通话结束或已有下一个人获准。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.4.2, items 1(a), 2, 4–5"
+          ],
+          "printed_pages": [
+            59,
+            60
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.4.5, items 1–5"
+          ],
+          "printed_pages": [
+            60,
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.4.3, items 1–4, no multi-talker support"
+          ],
+          "printed_pages": [
+            60
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "t2-initiates-floor-revoke",
+      "title": "T2 到期：带原因 #2 撤销原获准者，先进入待撤销",
+      "conditions": [
+        "G: Floor Taken 中获准者的 T2 到期，不以出现另一人的请求为前提。"
+      ],
+      "conclusion": "仲裁须停止该参与者的 T1，按待撤销入口向原获准者发送 Floor Revoke，在 Reject Cause 中填 #2（Media burst too long，本次发言过长）；为该参与者启动宽限计时器 T3，并将一般仲裁状态设为 G: pending Floor Revoke。",
+      "normative_strength": "停 T1、设置原因码、调用待撤销进入规程、发送给获准者、启动 T3 及设置状态均为 shall。",
+      "limitations": [
+        "此时不是直接进入 Idle，不是拒绝别人的请求，亦不证明原获准者已收到撤销、已停发或回送释放。T3 到期和其他后续事件不在本文范围。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.4.4, items 1–3"
+          ],
+          "printed_pages": [
+            60
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.5.2, items 1–3, ordinary call"
+          ],
+          "printed_pages": [
+            65
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcptt-onnetwork-idle-floor-server",
+    "r16-mcptt-onnetwork-preemption-revoke"
+  ],
+  "limitations": [
+    "本页限于话权已授予后的三个事件；不重建完整 Idle 进入、排队推进、抢占、D 状态机或待撤销后的完整收尾。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
