@@ -1,12 +1,16 @@
 # Release 16
 
-当前仅覆盖两项固定规范版本的 Stage 3 局部流程，整版尚未完成。
+当前仅覆盖三项固定规范版本的 Stage 3 局部流程，整版尚未完成。
 
 - [普通按需私呼：客户端应答与建立证据](topics/calls/private-client-answer-evidence.md)：TS 24.379 V16.14.0。
 - [普通私聊 SDS 控制面：发送资格、请求与接收证据](topics/mcdata/sds-control-client.md)：TS 24.282 V16.13.0。
 
 - [普通按需私呼：服务器准入与身份路由](topics/calls/private-server-admission-routing.md)：与对应客户端主题分开核对实际角色和事件。
 - [普通私聊SDS控制面：服务器准入、目标路由与响应证据](topics/mcdata/sds-control-server.md)：与对应客户端主题分开核对实际角色和事件。
+
+- [普通按需预安排组呼：客户端发起与应答证据](topics/calls/prearranged-client-establishment.md)：按该业务的实际角色和事件读取，不借其他业务闭合流程。
+- [私聊HTTP文件分发客户端：上传、URL通知、下载决定与完成证据](topics/mcdata/http-fd-client.md)：按该业务的实际角色和事件读取，不借其他业务闭合流程。
+- [普通按需 MCVideo 私呼：客户端请求、应答与结果证据](topics/mcvideo/private-client-answer-evidence.md)：按该业务的实际角色和事件读取，不借其他业务闭合流程。
 
 先读主题共同条件，再按实际角色与事件选取结论；不把拒绝、应答、取消或后续数据处理拼成同时必备的条件。这些主题均不构成完整端到端实现，也不证明版本组合互通。
 
