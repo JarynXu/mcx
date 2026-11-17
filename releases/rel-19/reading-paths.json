@@ -1802,8 +1802,12 @@
     },
     {
       "id": "mcdata-offnetwork-sds",
-      "question": "离网SDS的重发、接收与通知分别证明什么",
+      "question": "离网SDS的首次上下文、重发、接收与通知分别证明什么",
       "select_one_by_question": [
+        {
+          "condition": "普通初发未被AllowedSDS守卫停止，按目标、已有conversation、回复和应用条件生成上下文",
+          "read": "topics/mcdata/offnetwork-sds-initial-context.md"
+        },
         {
           "condition": "消息载体、次数上限与停止重发",
           "read": "topics/mcdata/offnetwork-sds-retransmission.md"
@@ -1817,7 +1821,7 @@
           "read": "topics/mcdata/offnetwork-sds-notification-retry.md"
         }
       ],
-      "boundary": "固定24.282 V19.7.0的离网standalone SDS；不套在网MSRP，不把重发结束当送达或已读。"
+      "boundary": "固定24.282 V19.7.0的离网standalone SDS；不套在网MSRP，不把重发结束当送达或已读。 存储与IE携带强度分别适用，表O不替代过程SHALL；不把初发上下文变成完整安全报文。"
     },
     {
       "id": "mcdata-ipconn-media-boundary",
@@ -2090,7 +2094,7 @@
           "read": "topics/mcvideo/offnetwork-group-merge.md"
         }
       ],
-      "boundary": "既定普通BASIC GROUP CALL；主动/自动加入与需用户应答的终接按不同主题条件读取，同组另一BASIC呼叫的条件合并另列；其他类型/优先级、紧急升级和跨过程调度未闭合。S/T状态分开，probe初值、媒体a.b与发送错引保留；不证明首帧或全组同步。"
+      "boundary": "既定普通BASIC GROUP CALL；主动/自动加入与需用户应答的终接按不同主题条件读取，同组另一BASIC呼叫的条件合并另列；本路径只覆盖普通类型；本地T2且用户配置授权的紧急升级另见独立入口，其他类型/优先级、升级传播/降级和跨过程调度未闭合。S/T状态分开，probe初值、媒体a.b与发送错引保留；不证明首帧或全组同步。"
     },
     {
       "id": "mcdata-mbs-multicast-reception-intent",
@@ -2108,7 +2112,39 @@
       "id": "mcptt-offnetwork-auto-private",
       "question": "普通已知双用户离网自动私呼如何建立，P和Q各自何时完成",
       "start": "topics/calls/offnetwork-private-auto-control.md",
-      "boundary": "固定24.379 V19.4.0普通PRIVATE CALL自动模式且发起关联紧急状态false。基本P与类型Q按独立事件读取，不将RTP到P4当作Q1；MONP接收port TBD、位置IE条件及话权内部许可不得借组呼、Video或旧24.380主题补齐。"
+      "boundary": "固定24.379 V19.4.0普通PRIVATE CALL自动模式且发起关联紧急状态false。基本P与类型Q按独立事件读取，不将RTP到P4当作Q1；MONP接收port TBD、位置IE条件及话权内部许可不得借组呼、Video或旧24.380主题补齐。 正常释放另区分请求、ACK和本地清理；P/Q不补执行顺序，超时重传与失败不由正常链闭合。",
+      "next_if": [
+        {
+          "condition": "普通自动私呼已建立，按本地P4用户释放、P4收RELEASE或P3收对应ACK；Q1类型清理另按自身事件",
+          "read": "topics/calls/offnetwork-private-release.md"
+        },
+        {
+          "condition": "普通自动发起端仍在P2，判断TFP1到期、匹配REJECT或用户取消；取消仅到P3，不借已建释放主题续接",
+          "read": "topics/calls/offnetwork-private-auto-setup-exits.md"
+        },
+        {
+          "condition": "普通自动终接端已发ACCEPT并在P5，判断TFP4一般重传及等于上限失败；不得借P2小于上限守卫",
+          "read": "topics/calls/offnetwork-private-auto-accept-wait.md"
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-offnetwork-local-emergency-upgrade",
+      "question": "已在会的普通离网MCVideo组呼，本用户何时可以升级紧急类型",
+      "start": "topics/mcvideo/offnetwork-group-emergency-type-upgrade.md",
+      "boundary": "仅本地类型T2、用户请求且EmergencyCallChange=true；不是初始紧急建呼或接收端传播。TFG13先启后更新时间及helper Z衔接未闭合，不补完整X时长、配置默认或全组结果。"
+    },
+    {
+      "id": "mcvideo-offnetwork-basic-emergency-reception",
+      "question": "BASIC在会客户端收到同组同呼叫紧急公告时如何区分改变者守卫",
+      "start": "topics/mcvideo/offnetwork-group-emergency-announcement.md",
+      "boundary": "仅T2且stored BASIC、同组同call紧急公告。同改变者须时间严格更新，不同改变者step2b不继承时间条件；不借本地升级配置或不同call合并。TFG13仅helper接口，不证明所有状态或全组传播。 本路径仅接收紧急公告；类型降级另按独立降级入口，不把其用户资格移植到END接收或计时到期。"
+    },
+    {
+      "id": "mcvideo-offnetwork-emergency-downgrade",
+      "question": "离网紧急组呼怎样按本地事件回到普通类型",
+      "start": "topics/mcvideo/offnetwork-group-emergency-downgrade.md",
+      "boundary": "分别判断T1用户降级、T1收END、T1的TFG13到期；明确降级后的T2重发另按TFG11事件。用户资格只限制用户入口，不要求三个触发同时成立。类型T2不等于媒体、告警或全组结束，接收关联/安全及helper消息命名差异保留。"
     }
   ]
 }

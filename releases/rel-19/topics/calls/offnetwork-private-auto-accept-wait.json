@@ -1,0 +1,101 @@
+{
+  "topic_id": "r19-calls-offnetwork-private-auto-accept-wait",
+  "release": 19,
+  "state": "clause-checked",
+  "standard_stage": 3,
+  "common_conditions": [
+    "固定ETSI TS124379 V19.4.0，对应3GPP TS24.379 V19.4.0 Release19 Stage3。仅两个已确定用户的普通自动离网私呼终接端，已经按§11.2.2.4.3.2成功生成并发送ACCEPT、保存answer并进入P5；此前安全与媒体可建立条件已经满足。",
+    "这里只解释等待阶段的TFP4重传和达上限失败。成功ACK/RTP完成、发起端取消、手动等待及紧急过程不属于本页；不将手动§11.2.2.4.4.8当作自动P5的取消处理。",
+    "基本控制和类型控制并行，释放call-type状态机不等于已经证明一个Q状态转换；不规定两机调度顺序或原子性。消息传输仍依赖§11.2.1.1.1，内部安全、媒体与话权流程未闭合。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v19.4.0",
+  "claims": [
+    {
+      "id": "auto-accept-retransmit",
+      "title": "TFP4到期时重发所存接受响应",
+      "conditions": [
+        "普通自动离网私呼的终接MCPTT客户端已经发送ACCEPT，基本控制仍处于P5；发生TFP4到期事件。"
+      ],
+      "conclusion": "生成PRIVATE CALL ACCEPT，将Call identifier、caller的MCPTT user ID、callee的MCPTT user ID及SDP answer分别设为所存call identifier、caller ID、callee ID及answer SDP。按§11.2.1.1.1回应请求发送后，将CFP4加1，启动TFP4，保持P5。",
+      "clause": "11.2.2.4.3.3",
+      "printed_pages": [
+        521
+      ],
+      "normative_strength": "列明过程动作均为SHALL；不补两个条款之间的调度优先级。",
+      "limitations": [
+        "本条没有CFP4小于上限的入口条件，不能从发起端TFP1重传规则补入。重发使用所存answer，不是重新接受一通呼叫，也不要求新的用户点击。",
+        "CFP4已等于上限时，失败条款也匹配该事件；本条不能单独用于推导无限重传或先重传再失败。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/19.04.00_60/ts_124379v190400p.pdf",
+          "clause": "11.2.2.4.3.3",
+          "printed_pages": [
+            521
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "auto-accept-failure",
+      "title": "达到上限的失败出口只列控制清理",
+      "conditions": [
+        "普通自动离网私呼的终接MCPTT客户端基本控制处于P5，TFP4到期，且CFP4等于其上限。"
+      ],
+      "conclusion": "启动TFP7，释放call-type控制状态机，然后进入P1。",
+      "clause": "11.2.2.4.3.5",
+      "printed_pages": [
+        521
+      ],
+      "normative_strength": "列明过程动作均为SHALL；不补两个条款之间的调度优先级。",
+      "limitations": [
+        "本条未列终止媒体、发送REJECT或RELEASE、显式停止TFP4或立即清除call identifier。不能把这些动作自行加入，也不能据未列动作断言实现永远不清理媒体。",
+        "一般重传条款没有排除这个上限事件；两条的入口重叠不构成已核验的执行次序。上限值、参数取得及完整失败恢复不在此给出。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/19.04.00_60/ts_124379v190400p.pdf",
+          "clause": "11.2.2.4.3.5",
+          "printed_pages": [
+            521
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [
+    "两条规范动作必须连同入口重叠限制阅读，不是可直接执行的完整计时器调度算法。P5等待不等于还未发送接受响应，P1退出也不证明媒体资源已全部回收。"
+  ],
+  "related": [
+    "offnetwork-private-auto-control.md",
+    "offnetwork-private-auto-setup-exits.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "source_issues": [
+    {
+      "clause": "11.2.2.4.3.3;11.2.2.4.3.5",
+      "printed_pages": [
+        521
+      ],
+      "issue": "一般TFP4到期与CFP4等于上限的失败入口重叠；未补小于上限守卫或处理先后。"
+    }
+  ]
+}

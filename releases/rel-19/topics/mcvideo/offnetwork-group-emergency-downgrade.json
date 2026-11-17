@@ -1,0 +1,136 @@
+{
+  "topic_id": "r19-mcvideo-offnetwork-group-emergency-downgrade",
+  "release": 19,
+  "standard_stage": 3,
+  "state": "clause-checked",
+  "common_conditions": [
+    "固定TS24.281 V19.3.0 Rel19 Stage3，范围为已参与普通离网MCVideo紧急组呼的本地类型降级及其END重发。各分支分别判断状态与事件，不要求同时发生。",
+    "只核紧急类型回到BASIC；不含IMMINENT PERIL、初建、不同呼叫合并、在网或广播流程。基本呼叫机、类型机与用户紧急告警分别判断。",
+    "24.483配置只保留24.281引用的接口与条件，配置schema及优先级数值未核；24.581媒体细节未核，接收身份/安全和完整报文分派仍为依赖。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.281-v19.3.0",
+  "claims": [
+    {
+      "id": "offvideo-explicit-emergency-end",
+      "role": "离网MCVideo组呼客户端类型控制器",
+      "conditions": [
+        "分别判断两个独立入口，任一入口成立即使用相应动作，并不要求同时成立：①T1时收到降级紧急组呼的用户指示，且用户是升级该组呼的人，或者是获授权且用户配置 /<x>/<x>/Common/MCVideoGroupCall/EmergencyCall/CancelMCVideoGroup=true 的MCVideo用户；两种用户资格为或关系，均须满足T1及用户指示。②客户端已在T2且TFG11到期，进入后续重发，不要求仍在T1或再次收到用户指示；①的用户资格与配置权限只用于①，不是②的附加条件。"
+      ],
+      "conclusion": "明确降级先将保存类型及ProSe逐包优先级改为普通组呼，记录当前UTC时间和自身MCVideo user ID为最后变化时间及改变者。生成GROUP CALL EMERGENCY END：call ID、原始发起者ID、group ID沿用基本呼叫机保存值，时间和最后改变者取刚保存的值。按§9.3.1.1.1发送后停止TFG13，将CFG11置1、启动TFG11并进入T2。T2的TFG11到期时，按相同字段来源重新生成并发送END，CFG11加1；仅当增加后的计数小于上限才再次启动TFG11，状态保持T2。",
+      "clause": "9.3.3.4.8.1;9.3.3.4.8.2;17.1.13.1",
+      "printed_pages": [
+        314,
+        315,
+        453
+      ],
+      "normative_strength": "在各自事件和状态条件下，正文列明动作均为SHALL；未列条件或效果不补造。",
+      "limitations": [
+        "标题中的Originating不把资格缩成仅原始发起者；升级者与获授权用户是正文两种入口。自身最后改变者不替换消息中的原始发起者ID。",
+        "小于上限仅限定重启TFG11，不能前移为本次发送的守卫；此处不确定计时值和计数上限的配置取值。",
+        "这里发送END而非重新构造GROUP CALL ANNOUNCEMENT；不因此断言其他独立公告过程被禁止。发送和重发不证明每个成员收到或已降级。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v19.3.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf",
+          "clause": "9.3.3.4.8.1;9.3.3.4.8.2;17.1.13.1",
+          "printed_pages": [
+            314,
+            315,
+            453
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "offvideo-received-emergency-end",
+      "role": "离网MCVideo组呼客户端类型控制器",
+      "conditions": [
+        "客户端类型机在T1，收到进入该类型控制处理的GROUP CALL EMERGENCY END。消息与本呼叫关联及安全接收前提仍须成立；本页未建立完整接收分派或身份验证算法。"
+      ],
+      "conclusion": "客户端从END取最后类型变化时间和最后改变者，保存为本地记录；将类型和ProSe逐包优先级改为普通组呼，停止TFG13并进入T2。§9.3.3.4.8.3本身没有重复公告接收分支的组ID/call ID相等、改变者相同或时间更新比较，不能把这些公告守卫移植为本条明示条件，也不能据此认定任意外来消息均可作用于本呼叫。§17.1.13.1将END定义为组呼紧急模式结束通知，并将call ID、group ID、原始发起者ID、最后改变者和变化时间列为必需字段；字段存在不等于已完成身份或新鲜度验证。",
+      "clause": "9.3.3.4.8.3;17.1.13.1",
+      "printed_pages": [
+        315,
+        316,
+        453
+      ],
+      "normative_strength": "在各自事件和状态条件下，正文列明动作均为SHALL；未列条件或效果不补造。",
+      "limitations": [
+        "本入口不含END确认、再转发或启动TFG11的动作；不能由此证明全组收敛。",
+        "未闭合接收关联、认证和重放处理，不能制定“旧时间一律拒绝”或“跨呼叫一律接受”的策略。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v19.3.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf",
+          "clause": "9.3.3.4.8.3;17.1.13.1",
+          "printed_pages": [
+            315,
+            316,
+            453
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "offvideo-implicit-emergency-end",
+      "role": "离网MCVideo组呼客户端类型控制器",
+      "conditions": [
+        "客户端类型机在T1且TFG13到期，不要求同时收到用户降级请求或END。"
+      ],
+      "conclusion": "客户端把当前UTC时间存为最后变化时间，把originating MCVideo user ID存为最后改变者，然后将类型和ProSe逐包优先级改为普通组呼并进入T2。这里保存原始发起者ID，不是明确用户降级分支的own user ID。该到期条文没有要求生成END、启动TFG11或即时发送公告。TFG13计算helper规定X−(Y−Z)秒：X来自组配置 /<x>/<x>/OffNetwork/MCVideo/EmergencyCallCancel，Y为当前UTC纪元秒（不计闰秒），Z取ANNOUNCEMENT或原文字面GROUP CALL PRIORITY ENDED的最后类型变化时间；不能一概解释为从启动时开始完整X秒。",
+      "clause": "9.3.3.4.8.7;9.3.3.4.1.1;9.3.3.3.2;9.3.3.3.3",
+      "printed_pages": [
+        308,
+        317
+      ],
+      "normative_strength": "在各自事件和状态条件下，正文列明动作均为SHALL；未列条件或效果不补造。",
+      "limitations": [
+        "helper中的PRIORITY ENDED与§.8.1–.8.3及§17.1.13的EMERGENCY END命名不同；本页未建立两者的消息等价或独立PRIORITY ENDED接收入口。",
+        "配置schema、X取值及负值/零剩余时间策略未核；不能凭helper补出它们。",
+        "类型状态T2表示仍在普通组呼中，不是基本呼叫机退出或媒体释放证明；到期动作未更新用户紧急告警状态。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v19.3.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf",
+          "clause": "9.3.3.4.8.7;9.3.3.4.1.1;9.3.3.3.2;9.3.3.3.3",
+          "printed_pages": [
+            308,
+            317
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [
+    "这里结束的是组呼紧急类型，不是结束整通组呼、关闭媒体或取消用户紧急告警的完整流程。三种入口的本地T2结果不证明其他组员同步。"
+  ],
+  "related": [
+    "offnetwork-group-emergency-type-upgrade.md",
+    "offnetwork-group-emergency-announcement.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

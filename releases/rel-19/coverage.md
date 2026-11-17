@@ -23,11 +23,11 @@
 
 ### 离网SDS：消息与通知各自重发
 
-- **能回答：**可区分TFS1/CFS1消息重发、TFS2/CFS2通知重发、TFS3等待显示及原消息关联。
-- **只到条件或接口：**仅离网standalone SDS所列信令分支；计数含初发、停止重发不是收到确认，READ仍需相应事件。
+- **能回答：**可区分TFS1/CFS1消息重发、TFS2/CFS2通知重发、TFS3等待显示及原消息关联。 普通初发另可查目标、conversation与新消息标识、UTC时间及可选回复/应用/处置上下文。
+- **只到条件或接口：**仅离网standalone SDS所列信令分支；计数含初发、停止重发不是收到确认，READ仍需相应事件。 初发须通过适用的AllowedSDS守卫；保存SHALL与携带MAY分开，表O不取消目标字段的过程SHALL。
 - **尚未建立的结论：**不覆盖完整发现、地址配置、安全、通知聚合或可靠交付；目标状态名称缺口不补成完整路由。
 
-入口：[离网SDS重发：次数上限不是送达确认](topics/mcdata/offnetwork-sds-retransmission.md)；[离网SDS接收：重复消息与已读等待](topics/mcdata/offnetwork-sds-reception-and-read.md)；[离网SDS通知：原消息关联与独立重发](topics/mcdata/offnetwork-sds-notification-retry.md)。
+入口：[离网SDS重发：次数上限不是送达确认](topics/mcdata/offnetwork-sds-retransmission.md)；[离网SDS接收：重复消息与已读等待](topics/mcdata/offnetwork-sds-reception-and-read.md)；[离网SDS通知：原消息关联与独立重发](topics/mcdata/offnetwork-sds-notification-retry.md)。 另查[离网SDS：首次发送的目标与关联上下文](topics/mcdata/offnetwork-sds-initial-context.md)。
 
 所列入口的来源：3GPP TS24.282 V19.7.0。具体Stage、条款及跨源差异以各主题为准。
 
@@ -165,6 +165,36 @@
 
 所列入口的来源：3GPP TS24.281 V19.3.0。具体Stage、条款及边界以主题为准。
 
+### 离网MCVideo组呼：本地授权紧急升级
+
+- **能回答：**可查已在会T2本用户请求且EmergencyCallChange=true时的BASIC到EMERGENCY类型动作、优先级引用、TFG13/TFG14及公告身份字段。
+- **只到条件或接口：**仅本地类型控制的正向授权分支；基本控制并行，原发起用户与本次改变者分开。TFG13先启后更新时间，helper Z如何衔接仍未闭合。
+- **尚未建立的结论：**不覆盖初始紧急建立、接收传播、降级、迫近危险或完整告警；不承诺完整X时长、配置默认、媒体许可或全组结果。
+
+入口：[离网MCVideo组呼：已在会用户请求紧急升级](topics/mcvideo/offnetwork-group-emergency-type-upgrade.md)。
+
+所列入口的来源：3GPP TS24.281 V19.3.0。具体条款及边界以主题为准。
+
+### 离网MCVideo组呼：BASIC在会接收紧急公告
+
+- **能回答：**可查T2且保存BASIC收到同组同call紧急公告时，同改变者与不同改变者两分支的时间守卫、类型/优先级更新及计时器调用。
+- **只到条件或接口：**同改变者须公告时间严格更新；不同改变者step2b不继承step1或2a时间比较。TFG13只保留helper调用，不借本地升级配置或不同call合并。
+- **尚未建立的结论：**不覆盖初建T0、T1/T3其他接收、转发确认、降级或告警；不证明完整配置时长、媒体许可、所有状态或全组传播。
+
+入口：[离网组呼：BASIC参与者收到紧急类型公告](topics/mcvideo/offnetwork-group-emergency-announcement.md)。
+
+所列入口的来源：3GPP TS24.281 V19.3.0。具体条款及边界以主题为准。
+
+### 离网MCVideo组呼：紧急类型降级
+
+- **能回答：**可查T1用户明确降级、T1接收END、T1的TFG13到期三类独立入口，及明确降级后T2的TFG11重发；区分自身、原始发起者及接收改变者字段来源。
+- **只到条件或接口：**用户资格和配置只用于明确用户降级，不限制END接收或TFG13到期；小于上限只限制重启TFG11。保留END关联、安全依赖以及helper中的PRIORITY ENDED命名差异。
+- **尚未建立的结论：**不证明完整接收鉴权、配置默认、重放策略、全组同步、媒体释放或用户紧急告警取消；T2仍是普通组呼类型，不等于整通呼叫结束。
+
+入口：[离网MCVideo紧急组呼：谁触发降级，以及降级结束什么](topics/mcvideo/offnetwork-group-emergency-downgrade.md)。
+
+所列入口的来源：3GPP TS24.281 V19.3.0。具体条款及边界以主题为准。
+
 ## MCPTT通话与话权
 
 [查看本域全部主题](topics-calls.json)
@@ -241,11 +271,11 @@
 
 ### 普通离网MCPTT自动私呼
 
-- **能回答：**可查已知双用户普通自动私呼的发起、自动接受、列明验签失败及基本P/类型Q各自完成事件。
-- **只到条件或接口：**固定24.379 V19.4.0 PRIVATE CALL、自动模式且发起关联紧急状态false；位置IE按本业务守卫，媒体/话权仅到所引接口。P5因RTP进P4不等于Q0进Q1。
+- **能回答：**可查已知双用户普通自动私呼的发起、自动接受、列明验签失败及基本P/类型Q各自完成事件。 已建呼叫另可查用户释放、RELEASE/ACK正常确认、各端本地清理及P1定时清标识。 发起端P2另可查TFP1/CFP1小于或等于上限、匹配拒绝及用户取消到P3；不闭合取消对端或后续P3算法。 自动终接已发ACCEPT后的P5等待另可查TFP4一般重传与等于上限失败；两入口重叠，不补调度、媒体清理或Q0转换。
+- **只到条件或接口：**固定24.379 V19.4.0 PRIVATE CALL、自动模式且发起关联紧急状态false；位置IE按本业务守卫，媒体/话权仅到所引接口。P5因RTP进P4不等于Q0进Q1。 正常释放按基本P与类型Q各自状态和事件，Q0或ACK不证明媒体和所有资源已清理。
 - **尚未建立的结论：**MONP接收port TBD及8809 messages措辞、发现/配置、安全和话权内部许可未闭合；不覆盖手动、紧急、完整重传/取消/释放，也不与组呼、在网私呼或MCVideo拼成同一状态机。
 
-入口：[离网MCPTT自动私呼：建立、终接等待与两种控制状态](topics/calls/offnetwork-private-auto-control.md)。
+入口：[离网MCPTT自动私呼：建立、终接等待与两种控制状态](topics/calls/offnetwork-private-auto-control.md)。 另查[普通离网MCPTT私呼：已建呼叫的释放与本地清理](topics/calls/offnetwork-private-release.md)。 另查[普通自动离网MCPTT私呼：建立等待中的重传、失败与取消](topics/calls/offnetwork-private-auto-setup-exits.md)。 另查[普通自动离网MCPTT私呼：接受响应的重传与等待失败](topics/calls/offnetwork-private-auto-accept-wait.md)。
 
 所列入口的来源：3GPP TS24.379 V19.4.0。具体Stage、条款及边界以主题为准。
 

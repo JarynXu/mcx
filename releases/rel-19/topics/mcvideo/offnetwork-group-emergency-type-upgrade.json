@@ -1,0 +1,68 @@
+{
+  "topic_id": "r19-mcvideo-offnetwork-group-emergency-type-upgrade",
+  "release": 19,
+  "standard_stage": 3,
+  "state": "clause-checked",
+  "common_conditions": [
+    "固定TS24.281 V19.3.0 Rel19 Stage3，仅已参加普通离网MCVideo组呼的本地客户端从BASIC升级为EMERGENCY；不含在网SIP、广播、初始紧急建立、合并、迫近危险升级或完整告警状态机。",
+    "基本呼叫控制与类型控制并行；本页只核类型控制动作，不能从T1证明全组一致、媒体发送/接收许可或安全验证完成。",
+    "所需身份、配置和承载已具备；24.483配置只保留24.281明确引用的接口和值条件，相关配置schema未核；24.581媒体细节未核。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.281-v19.3.0",
+  "claims": [
+    {
+      "id": "offvideo-basic-user-emergency-upgrade",
+      "role": "本地MCVideo客户端类型控制器",
+      "conditions": [
+        "处于T2: in-progress basic group call，收到本用户将当前呼叫升级为EMERGENCY GROUP CALL的指示。",
+        "用户配置OffNetwork/EmergencyCallChange为true；本条仅覆盖此正向授权分支，不判定false或缺失时后续通用步骤的行为。"
+      ],
+      "conclusion": "客户端须将保存的当前类型改为EMERGENCY GROUP CALL，将保存的ProSe逐包优先级设为离网紧急组呼对应值，按§9.3.3.4.1.1启动TFG13，停止运行中的TFG14，并进入T1。随后保存当前UTC为最后类型变化时间、自己的用户ID为最后改变类型者，生成并发送GROUP CALL ANNOUNCEMENT。公告沿用基本控制保存的call identifier、refresh interval、SDP、原发起用户ID、组ID和call start time，携带更新后的类型、最后变化时间及改变者。原发起用户与本次改变者不是必须相同的字段；这不是重新建立一个呼叫。",
+      "clause": "9.3.3.1;9.3.3.3.3;9.3.3.4.7.1 opening,step1,steps3–6;9.3.3.4.1.1",
+      "printed_pages": [
+        306,
+        308,
+        312
+      ],
+      "normative_strength": "所列正向守卫成立时，正文动作为SHALL；不将接口调用或本地状态扩为全组结果。",
+      "limitations": [
+        "§9.3.3.4.7.1先启动TFG13，之后step3才更新最后变化时间。计算helper给TFG13=X−(Y−Z)，X为组配置EmergencyCallCancel，Y为当前UTC秒，Z字面取ANNOUNCEMENT或GROUP CALL PRIORITY ENDED消息的最后变化时间；本地升级的精确Z选取与先后解释未在这些段落闭合，不默改顺序、不声称每次重新获得完整X秒。",
+        "不设配置默认值、ProSe数值或负计时处理；相关配置schema未核。",
+        "不因标题Originating user额外添加本用户必须等于原呼叫发起者的守卫；本条正文入口只按所列状态、指示及配置判断。",
+        "接收端传播、主动/隐式降级、重传和紧急告警状态变化不在本条；不把本地T1当其他客户端已更新。",
+        "§17.1.3消息编码及§9.3.1.1.1载体在此只保留调用，不提供完整可运行报文。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v19.3.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf",
+          "clause": "9.3.3.1;9.3.3.3.3;9.3.3.4.7.1;9.3.3.4.1.1",
+          "printed_pages": [
+            306,
+            308,
+            312
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [
+    "只核本地授权升级，不建立完整优先通信状态机。"
+  ],
+  "related": [
+    "offnetwork-group-probe-and-join.md",
+    "offnetwork-group-merge.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
