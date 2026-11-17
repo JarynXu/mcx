@@ -1,0 +1,376 @@
+{
+  "topic_id": "r16-groups-partner-group-configuration",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "伙伴系统怎样首次取得组配置，又怎样获知后续更新？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "各声明继承同一固定版和跨系统 GMS 角色；分别按初取、订阅和更新通知的前提判读，不将三次往返视为每次必发生的单一流程。",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0，Release 16，Stage 2。在互连 MC 系统间讨论目标组的组配置：主、伙伴均相对于该组；GMS 是组管理服务器，和 MC 业务服务器、成员客户端是不同角色。"
+  ],
+  "claims": [
+    {
+      "id": "initial-request-roles",
+      "title": "首次主动取配置的前提、请求方及本地处理",
+      "conditions": [
+        "目标组在主系统定义，并列入伙伴系统至少一名 MC 业务用户的用户配置；在伙伴系统该组的名册成员中，已有至少一人在伙伴业务服务器获得 MC 业务授权。",
+        "伙伴 GMS 尚未存有本组配置，伙伴系统已配置主 GMS 的寻址信息，也有权向主系统请求组配置。图示假定能按组 ID 寻址 GMS、各 GMS 知晓自己管理的组、系统间已交换适当的授权信息。"
+      ],
+      "conclusion": "伙伴业务服务器先向本地 GMS 要配置；由伙伴 GMS 向主 GMS 请求。收到主 GMS 发回的配置后，伙伴 GMS 依伙伴策略和本地配置调整，保存调整后的配置，再向本地业务服务器通知。不是成员终端直接向主 GMS 发起请求。",
+      "normative_strength": "§10.2.7.3 的六项前提及所示步骤 1–6；寻址与系统间授权另见注 1–2。",
+      "limitations": [
+        "不把用户的业务授权等同于伙伴的系统间请求权限；末步不是成员终端回执。主系统主动提供初始配置属于另一流程。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.1, primary and partner roles (context only)"
+          ],
+          "printed_pages": [
+            104
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.2, introduction and Figure 10.2.7.2-1 (alternate initial provision, contrast only)"
+          ],
+          "printed_pages": [
+            105
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.3, introduction, preconditions and NOTES 1–3"
+          ],
+          "printed_pages": [
+            106
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.3, Figure 10.2.7.3-1 and steps 1–6"
+          ],
+          "printed_pages": [
+            107
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.26, Table 10.2.2.26-1"
+          ],
+          "printed_pages": [
+            93
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "initial-response-fields",
+      "title": "初取请求、配置范围及条件必带的密钥材料",
+      "conditions": [
+        "§10.2.7.3 的伙伴主动取配置流程；跨系统一跳是两个 GMS 之间的请求和响应。"
+      ],
+      "conclusion": "伙伴发出的请求必带组 ID。主 GMS 返回组 ID 和组配置，两项均为必带；主 GMS 可按请求方身份和权限返回完整配置的子集。初取响应中组相关密钥材料为 C：若伙伴负责向以它为服务系统的该组成员供应组配置，就必须携带。§10.2.7.3 注 3 说明伙伴 GMS 对这些成员的供配职责。",
+      "normative_strength": "表 10.2.2.26-1 的组 ID、表 10.2.2.27-1 的组 ID 与组配置均为 M；后表的密钥材料为 C，表注规定条件成立时须带。程序步骤 3 的可携带表述不取消表注。",
+      "limitations": [
+        "子集不等于省略整个配置项；请求方身份和权限用于决定范围，表 10.2.2.26-1 没有把它们另列为请求信息项。初取表不列成功或失败的 Result。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.3, introduction, preconditions and NOTES 1–3"
+          ],
+          "printed_pages": [
+            106
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.3, Figure 10.2.7.3-1 and steps 1–6"
+          ],
+          "printed_pages": [
+            107
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.26, Table 10.2.2.26-1"
+          ],
+          "printed_pages": [
+            93
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.27, Table 10.2.2.27-1 and NOTE"
+          ],
+          "printed_pages": [
+            93
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "subscribe-after-reception",
+      "title": "已有配置才可订阅，成功订阅不表示收到更新",
+      "conditions": [
+        "组在主系统定义；至少一名组成员在伙伴系统定义；伙伴 GMS 已从主 GMS 收到组配置。此前不一定由伙伴主动索取。"
+      ],
+      "conclusion": "伙伴 GMS 向主 GMS 请求订阅指定组的配置。请求必带组 ID；主 GMS 在请求方获准时确认订阅，回复必带组 ID 和结果，表示订阅请求成功或失败。",
+      "normative_strength": "图 10.2.7.4-1 有独立订阅往返；表 10.2.2.28-1 和 10.2.2.29-1 所列项均为 M。",
+      "limitations": [
+        "不能凭已取过配置推定订阅成立，也不能用订阅成功证明已收到新的配置；不得把失败当作获准订阅。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.2, introduction and Figure 10.2.7.2-1 (alternate initial provision, contrast only)"
+          ],
+          "printed_pages": [
+            105
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.4, preconditions"
+          ],
+          "printed_pages": [
+            107
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.4, Figure 10.2.7.4-1 and steps 1–2"
+          ],
+          "printed_pages": [
+            108
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.28, Table 10.2.2.28-1"
+          ],
+          "printed_pages": [
+            93
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.29, Table 10.2.2.29-1"
+          ],
+          "printed_pages": [
+            94
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "update-notification-trigger-and-result",
+      "title": "后续通知的触发条件、必带配置与回执范围",
+      "conditions": [
+        "伙伴 GMS 已向主 GMS 订阅此组配置。主 GMS 已取得并保存新配置，或已生成并保存新的组相关密钥材料，或二者兼有。"
+      ],
+      "conclusion": "主 GMS 向伙伴 GMS 发通知请求：组 ID 和组配置必带，组相关密钥材料可选。即使仅密钥材料变更触发通知，也不要把密钥材料改为必带或把配置改成可省。伙伴 GMS 向主 GMS 回报组 ID 和结果。程序步骤 2 简称接收成功或失败；表 10.2.2.31-1 的结果描述涵盖配置的接收、修改和保存。",
+      "normative_strength": "触发前提是两类变化至少一项且已保存；表 10.2.2.30-1 为 M、M、O；表 10.2.2.31-1 两项均为 M。",
+      "limitations": [
+        "回报是 GMS 间对本次通知的结果：失败不能作成功接收、修改并保存的凭据，成功不是所有终端已采用配置的证明。通知不表示成员名单变更、也不等于任一客户端订阅组动态数据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.5, preconditions, Figure 10.2.7.5-1 and steps 1–2"
+          ],
+          "printed_pages": [
+            108
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.30, Table 10.2.2.30-1"
+          ],
+          "printed_pages": [
+            94
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.31, Table 10.2.2.31-1"
+          ],
+          "printed_pages": [
+            94
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.7.1, primary and partner roles (context only)"
+      ],
+      "printed_pages": [
+        104
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.7.2, introduction and Figure 10.2.7.2-1 (alternate initial provision, contrast only)"
+      ],
+      "printed_pages": [
+        105
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.7.3, introduction, preconditions and NOTES 1–3"
+      ],
+      "printed_pages": [
+        106
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.7.3, Figure 10.2.7.3-1 and steps 1–6"
+      ],
+      "printed_pages": [
+        107
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.2.26, Table 10.2.2.26-1"
+      ],
+      "printed_pages": [
+        93
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.2.27, Table 10.2.2.27-1 and NOTE"
+      ],
+      "printed_pages": [
+        93
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.7.4, preconditions"
+      ],
+      "printed_pages": [
+        107
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.7.4, Figure 10.2.7.4-1 and steps 1–2"
+      ],
+      "printed_pages": [
+        108
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.2.28, Table 10.2.2.28-1"
+      ],
+      "printed_pages": [
+        93
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.2.29, Table 10.2.2.29-1"
+      ],
+      "printed_pages": [
+        94
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.7.5, preconditions, Figure 10.2.7.5-1 and steps 1–2"
+      ],
+      "printed_pages": [
+        108
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.2.30, Table 10.2.2.30-1"
+      ],
+      "printed_pages": [
+        94
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.2.31, Table 10.2.2.31-1"
+      ],
+      "printed_pages": [
+        94
+      ]
+    }
+  ],
+  "limitations": [
+    "不规定 Stage 3 消息编码、密钥处理细节或终端逐人签收；§10.2.7.2 的主系统主动供配只用于区分初取途径。"
+  ],
+  "related": [
+    "r16-groups-group-membership-notification",
+    "r16-mcptt-group-dynamic-data"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
