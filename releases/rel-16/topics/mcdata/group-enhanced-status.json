@@ -1,0 +1,184 @@
+{
+  "topic_id": "r16-mcdata-group-enhanced-status",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "向选定的 MCData 组共享增强状态",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "TS 23.282 V16.8.0，Release 16，Stage 2；向选定的 MCData 组共享表示用户活动的增强状态。"
+  ],
+  "claims": [
+    {
+      "id": "group-status-values",
+      "title": "管理员按组预配，用户从选定组中选值",
+      "conditions": [
+        "配置或选择表示用户活动的增强状态。"
+      ],
+      "conclusion": "MCData 管理员按组配置可能的状态值，保存在 MCData 组配置数据中；在网和离网用户均先选组，再从该组的预设列表选值。机制须允许配置至少 32 个可能值并能配置多达 65,536 个不同值。可分为 3GPP 定义且在各 MCData 系统通用的固定值和可自由配置的值。",
+      "normative_strength": "按组配置、纳入组配置数据和配置机制的容量为 shall；按固定值与自由配置值拆分为 may。",
+      "limitations": [
+        "容量指配置机制，不是每组已启用的值数。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.9.1",
+            "7.9.2"
+          ],
+          "printed_pages": [
+            137
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.9.3.1.1, step 1",
+            "7.9.4.1.1, step 1"
+          ],
+          "printed_pages": [
+            138
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "on-network-sharing",
+      "title": "在网经 MCData 服务器转发",
+      "conditions": [
+        "在网的发起用户与接收用户已注册以接收 MCData 服务，是同一 MCData 组的成员，并已归属 MCData 服务。",
+        "该组已预配可选增强状态值。"
+      ],
+      "conclusion": "发起用户选组并从组列表选值后，按 §7.4.2.5 的信令控制面组 standalone SDS 传送状态。该过程假定载荷小于配置的控制面 SDS 载荷上限；发起客户端向 MCData 服务器发送，服务器检查发送授权，解析组身份以确定接收对象，再向确定的客户端转发。",
+      "normative_strength": "§7.9.3.1.1 列场景前提及步骤；载荷大小是 §7.4.2.5.1 的假定。",
+      "limitations": [],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.9.3.1.1, preconditions and steps 1–3"
+          ],
+          "printed_pages": [
+            137,
+            138
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.5.1 (payload-size assumption)",
+            "7.4.2.5.2, steps 2–4 (server routing and authorization only)"
+          ],
+          "printed_pages": [
+            61,
+            62,
+            63
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "off-network-sharing",
+      "title": "离网由发起客户端直接向组传送",
+      "conditions": [
+        "参与的 MCData 客户端属于同一 MCData 组，且该组已预配可选增强状态值。",
+        "发起客户端已预配与该组对应的 ProSe 直接通信信息和该组到 ProSe Layer-2 Group ID 的映射。"
+      ],
+      "conclusion": "用户选择目标组和该组的预配置状态后，按 §7.4.3.4 的离网信令控制面组 standalone SDS 传送；发起客户端检查该用户的组发送权限，获准后直接向组发送请求。",
+      "normative_strength": "§7.9.4.1.1 列场景前提及步骤；§7.4.3.4.2 的发送取决于授权。",
+      "limitations": [],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.9.4.1.1, preconditions and steps 1–3"
+          ],
+          "printed_pages": [
+            138
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.4.2, steps 1–2 (off-network authorization and group request)"
+          ],
+          "printed_pages": [
+            78
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "status-notification-vs-read-report",
+      "title": "区分接收用户获通知、送达报告与已读报告",
+      "conditions": [
+        "判断以上任一分支交付增强状态后所能证明的结果。"
+      ],
+      "conclusion": "状态共享末步是通知接收客户端上的用户。送达报告取决于发起用户是否请求送达报告；已读报告取决于发起用户是否请求已读报告、接收用户是否已实际阅读，由接收客户端发起。仅凭状态通知或送达报告，不能推定组员已读。",
+      "normative_strength": "§7.9 描述接收用户获通知；承载的送达及已读处置报告按各自条件触发。",
+      "limitations": [],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.9.3.1.1, step 3",
+            "7.9.4.1.1, step 3"
+          ],
+          "printed_pages": [
+            138
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.5.2, steps 6–7"
+          ],
+          "printed_pages": [
+            63
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.4.2, steps 5–6"
+          ],
+          "printed_pages": [
+            79
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcdata-service-capability-and-functional-roles"
+  ],
+  "limitations": [],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
