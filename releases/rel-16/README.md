@@ -12,6 +12,10 @@
 - [私聊HTTP文件分发客户端：上传、URL通知、下载决定与完成证据](topics/mcdata/http-fd-client.md)：按该业务的实际角色和事件读取，不借其他业务闭合流程。
 - [普通按需 MCVideo 私呼：客户端请求、应答与结果证据](topics/mcvideo/private-client-answer-evidence.md)：按该业务的实际角色和事件读取，不借其他业务闭合流程。
 
+- [显式组归属：本客户端的建立、解除与状态观察](topics/groups/explicit-affiliation-client.md)：按该业务的实际角色和事件读取，不借其他业务闭合流程。
+- [私聊HTTP文件分发服务端：准入、目标转送与受理证据](topics/mcdata/http-fd-server.md)：按该业务的实际角色和事件读取，不借其他业务闭合流程。
+- [普通按需 MCVideo 私呼：服务器准入、路由与响应边界](topics/mcvideo/private-server-admission-routing.md)：按该业务的实际角色和事件读取，不借其他业务闭合流程。
+
 先读主题共同条件，再按实际角色与事件选取结论；不把拒绝、应答、取消或后续数据处理拼成同时必备的条件。这些主题均不构成完整端到端实现，也不证明版本组合互通。
 
 [业务域](domains.json) · [主题索引](topics.json) · [条件阅读路径](reading-paths.json) · [覆盖边界](coverage.md) · [来源](sources.json) · [状态](status.json)
