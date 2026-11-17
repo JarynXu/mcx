@@ -1,0 +1,325 @@
+{
+  "topic_id": "r16-groups-temporary-regroup-teardown",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "拆除临时重组：谁能提出，正在进行的组呼和两侧成员怎么处理？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "各声明继承共同适用范围；发起方操作响应和通知响应按各自方向判读，跨系统步骤只在相应条件成立时使用。",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0 Release 16 Stage 2；§10.2.4.3 多组宿主拆除图以按 §10.2.4.2 形成的跨系统临时组为例，仅依该条的注界定不跨系统时省略的分支。"
+  ],
+  "claims": [
+    {
+      "id": "request-target-and-policy",
+      "title": "请求谁处理，能否拆除",
+      "conditions": [
+        "组管理客户端请求拆除一个此前通过重组建立的临时组；图示发起客户端属于主系统。"
+      ],
+      "conclusion": "请求发给创建并保存临时组的组管理服务器（图中的 GMS1），必带待拆临时组的 MC 业务组 ID。GMS1 按组策略检查发起用户的权限，并核实该 ID 指向临时组；若指向的不是临时组，请求被拒绝。",
+      "normative_strength": "请求 ID 为 M；步骤 1 另有 shall。步骤 2 明确拒绝非临时组。",
+      "limitations": [
+        "身份是普通成员、已归属或持有某一职称均不能代替策略授权；本条没有指定权限不足时的协议错误码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.3, introduction and preconditions 1–4, Figure 10.2.4.3-1"
+          ],
+          "printed_pages": [
+            100
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.5, Table 10.2.2.5-1"
+          ],
+          "printed_pages": [
+            88
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.3, steps 1–2"
+          ],
+          "printed_pages": [
+            100,
+            101
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "finish-calls-before-cleanup",
+      "title": "现有组呼与清理的先后",
+      "conditions": [
+        "授权和目标检查通过，进入拆除流程。"
+      ],
+      "conclusion": "先完成该临时组上的任何活跃组呼，然后由 GMS1 拆除临时组并移除其相关信息。对象是临时组；本步没有要求一并删除组成组、移除组成组成员或结束其他组的通话。",
+      "normative_strength": "图和步骤 3、4 给出先后次序；不规定以何种手段完成呼叫。",
+      "limitations": [
+        "未说明必须自然挂机或立即强拆，也未指定执行呼叫释放的一方、信令或定时器。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.3, Figure 10.2.4.3-1 and steps 3–4"
+          ],
+          "printed_pages": [
+            100,
+            101
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "notify-main-and-partner",
+      "title": "两侧的通知对象与跨系统条件",
+      "conditions": [
+        "在成功拆除的图示路径上。步骤 7–9 仅在组成组来自不同 MC 系统时执行。"
+      ],
+      "conclusion": "GMS1 通知主侧 MC 业务服务器和主侧已归属的组成员。若组成组跨系统，GMS1 向伙伴 GMS2 发拆除通知（7a），GMS2 向 GMS1 回通知响应（7b）；GMS2 再通知伙伴业务服务器及伙伴侧已归属的组成员（8、9）。发给业务服务器和发给 GMS 或成员客户端的拆除通知均以临时组 ID 为必选项。",
+      "normative_strength": "步骤 5–9 描述各方动作；注限定义务分支。两份通知表均将临时组 ID 列为 M。",
+      "limitations": [
+        "不是通知两侧的所有注册用户或全体名册成员；组成组属于同一系统时不加步骤 7–9，不能仅靠删掉三个步骤，就声称已从此得到完整且独立的同系统程序。图例假设伙伴不向主侧共享用户信息；共享安全受双方服务商协议约束，并非一律禁止共享。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.3, introduction and preconditions 1–4, Figure 10.2.4.3-1"
+          ],
+          "printed_pages": [
+            100
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.3, steps 5–6"
+          ],
+          "printed_pages": [
+            101
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.3, steps 7a–7b, 8–9 and NOTE after 8–9"
+          ],
+          "printed_pages": [
+            101
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.9, Table 10.2.2.9-1"
+          ],
+          "printed_pages": [
+            89
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.10, Table 10.2.2.10-1"
+          ],
+          "printed_pages": [
+            89
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "notification-reply-vs-operation-result",
+      "title": "伙伴回执和发起端结果回答不同问题",
+      "conditions": [
+        "识别拆除通知的回执，或判断发起客户端所收操作响应；须核对方向。"
+      ],
+      "conclusion": "跨系统步骤 7b 是 GMS2 给 GMS1 的通知响应。步骤 10 则由 GMS1 向获授权发起用户的客户端回复本次拆除。两种响应各自的表都要求临时组 ID 和成功/失败结果。只见 7b 不能充当步骤 10；只凭最终结果也不能判断每个成员都已确认。",
+      "normative_strength": "两张响应表各列 ID 和结果为 M；操作响应没有按成功或失败省略 ID 的条件。",
+      "limitations": [
+        "表 10.2.2.11-1 的方向也包括成员客户端向 GMS 回复通知；图的步骤 5–10 没有把收齐全员回执写成返回操作结果的前提，也没有规定对伙伴失败的重试或回滚策略。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.3, steps 7a–7b, 8–9 and NOTE after 8–9"
+          ],
+          "printed_pages": [
+            101
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.11, Table 10.2.2.11-1"
+          ],
+          "printed_pages": [
+            89
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.3, step 10"
+          ],
+          "printed_pages": [
+            101
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.6, Table 10.2.2.6-1"
+          ],
+          "printed_pages": [
+            88
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.4.3, introduction and preconditions 1–4, Figure 10.2.4.3-1"
+      ],
+      "printed_pages": [
+        100
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.2.5, Table 10.2.2.5-1"
+      ],
+      "printed_pages": [
+        88
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.4.3, steps 1–2"
+      ],
+      "printed_pages": [
+        100,
+        101
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.4.3, Figure 10.2.4.3-1 and steps 3–4"
+      ],
+      "printed_pages": [
+        100,
+        101
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.4.3, steps 5–6"
+      ],
+      "printed_pages": [
+        101
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.4.3, steps 7a–7b, 8–9 and NOTE after 8–9"
+      ],
+      "printed_pages": [
+        101
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.2.9, Table 10.2.2.9-1"
+      ],
+      "printed_pages": [
+        89
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.2.10, Table 10.2.2.10-1"
+      ],
+      "printed_pages": [
+        89
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.2.11, Table 10.2.2.11-1"
+      ],
+      "printed_pages": [
+        89
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.4.3, step 10"
+      ],
+      "printed_pages": [
+        101
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.2.6, Table 10.2.2.6-1"
+      ],
+      "printed_pages": [
+        88
+      ]
+    }
+  ],
+  "limitations": [
+    "不提供独立的同系统拆除完整规范、跨系统建组、组呼释放协议、结果失败后的恢复策略或全员送达证明。"
+  ],
+  "related": [
+    "r16-groups-single-system-temporary-regroup",
+    "r16-groups-group-membership-notification"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
