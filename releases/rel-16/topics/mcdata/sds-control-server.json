@@ -1,0 +1,279 @@
+{
+  "topic_id": "r16-mcdata-sds-control-server",
+  "title": "普通私聊SDS控制面：服务器准入、目标路由与响应证据",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "common_conditions": [
+    "固定 TS24.282 V16.13.0（2026-02），普通在网、直接目标 MCData ID 的 one-to-one standalone SDS 控制面服务器职责；不含组、功能别名、媒体面或 SDS session。",
+    "各服务器角色仅在收到相应请求或响应时适用本页对应分支；不要求其他角色先成功，也不把绑定或业务准入已通过设为拒绝分支的共同前提。",
+    "实际请求须按6.3.1.1分类：路由到相应O-PF、CF或T-PF，Accept-Contact的g.3gpp.icsi-ref与P-Asserted-Service均为MCData SDS标识。分类不替代后续body、身份和业务检查；不符合该条所列任何MESSAGE类型的请求回403。",
+    "6.5.1.4要求在其他处理前进行适用的XML完整性验证及解密；失败不能继续。发送/复制还须遵循6.4和6.5.1.2–3，不能以业务路由存在证明安全处理已通过。"
+  ],
+  "condition_rule": "Inherit all common_conditions and add claim conditions; role/event alternatives apply separately.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.282-v16.13.0",
+  "claims": [
+    {
+      "id": "originating-pf-gates-and-upstream-response",
+      "title": "O-PF先核主叫绑定、选择服务CF，再查发送资格",
+      "conditions": [
+        "O-PF实际收到对应standalone SDS请求，request-type为one-to-one-sds；或O-PF实际收到自己step15所发MESSAGE的响应。请求与响应是替代事件。"
+      ],
+      "conclusion": "请求资源不足或有拥塞风险时可回500，可附Retry-After并停止。O-PF由PAI中的公有用户身份确定主叫MCData ID并授权；绑定不存在或已过期回404/141并停止。选择为该主叫提供私聊SDS服务的CF，无法确定回404/142并停止。随后调用11.1：发送许可缺失或false对应403/200，出站名单有条目且目标不匹配对应403/229，超过MaxData1To1对应403/202，均停止。控制面payload超过max-payload-size-sds-cplane-bytes另回403/203。继续发送的路径把Request-URI设为CF公有服务身份，复制全部MIME bodies、加入主叫MCData ID、SDS P-Asserted-Service并保留PAI。收到下游202或200时分别生成同码上游响应；收到4xx/5xx/6xx则生成响应并携收到的Warning转给客户端。",
+      "normative_strength": "业务检查、构造及响应shall；资源拒绝及Retry-After为may",
+      "limitations": [
+        "203检查的payload size为DATA PAYLOAD中Payload IE的Length of Payload contents减1；不能拿完整SIP报文长度代替。step8给出拒绝，但未像前序分支重复停止措辞；本页不据此补造失败后的继续算法。",
+        "403/202中的202是Warning标识，不是SIP 202 Accepted；O-PF支持200与202两个响应入口，不说明CF一定等到目标终端200。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "9.2.2.3.1"
+          ],
+          "printed_pages": [
+            110,
+            111
+          ],
+          "scope": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "11.1 steps1,1A,3,7,12; other branches comparison"
+          ],
+          "printed_pages": [
+            187,
+            188,
+            189
+          ],
+          "scope": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "6.3.1.1"
+          ],
+          "printed_pages": [
+            45,
+            46,
+            47
+          ],
+          "scope": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "6.4",
+            "6.5.1.1–4"
+          ],
+          "printed_pages": [
+            55,
+            56,
+            57
+          ],
+          "scope": "规范依据"
+        }
+      ]
+    },
+    {
+      "id": "controlling-function-one-target-and-accepted",
+      "title": "CF选唯一直接目标并返回受理，不把202当交付",
+      "conditions": [
+        "CF实际收到对应standalone SDS请求，且本页业务为one-to-one-sds；收到请求时尚未假定资源、MIME或大小检查通过。发送helper只在该CF实际通过相应分支并调用9.2.2.4.1时适用。"
+      ],
+      "conclusion": "CF资源不足或拥塞风险时可回500并可附Retry-After。step2检查mcdata-info+xml、mcdata-signalling和mcdata-payload三类body，欠缺按该步回403/199并停止。继续时解码信令；含处置请求IE则保存Conversation ID和Message ID供通知关联。私聊按11.1 step3检查max-data-size-sds-bytes，超限回403/218并停止。资源列表缺失或多于一个entry回403/204并停止；恰好一个entry才调用9.2.2.4.1，向该MCData用户发送。helper保留SDS服务标识与主叫PAI，把mcdata-request-uri设为目标MCData ID，将Request-URI设为对应T-PF的公有服务身份。CF的step7–8生成202并送O-PF，没有以收到目标终端200为触发条件，故202不能证明目标已接收、呈现或已读。",
+      "normative_strength": "检查、发送与202响应shall；资源拒绝及Retry-After为may",
+      "limitations": [
+        "step5b字面MIME名为application/resource-lists，客户端构造条款写application/resource-lists+xml；本页保留差异，不生成修正后的报文。列表存在但零entry的处理未在该分支明确，不推定与缺失同码。",
+        "9.2.2.4.1 step4列出三类复制body，未单列MIKEY；但5.3另要求需要分发密钥材料的服务器将其从入站复制到出站，不能把局部清单当作丢弃密钥材料许可。完整保护和SIP实现不在本页验证。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "9.2.2.4.1",
+            "9.2.2.4.2 steps1–5,7–8; step6 group comparison"
+          ],
+          "printed_pages": [
+            112,
+            113,
+            114,
+            115
+          ],
+          "scope": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "11.1 step3"
+          ],
+          "printed_pages": [
+            188
+          ],
+          "scope": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "9.2.2.2.1 step2a"
+          ],
+          "printed_pages": [
+            108
+          ],
+          "scope": "资源列表命名比较，不替代服务器条件"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "5.3"
+          ],
+          "printed_pages": [
+            37
+          ],
+          "scope": "密钥材料复制通用义务"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "6.3.1.1"
+          ],
+          "printed_pages": [
+            45,
+            46,
+            47
+          ],
+          "scope": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "6.4",
+            "6.5.1.1–4"
+          ],
+          "printed_pages": [
+            55,
+            56,
+            57
+          ],
+          "scope": "规范依据"
+        }
+      ]
+    },
+    {
+      "id": "terminating-pf-route-and-response",
+      "title": "T-PF另查目标绑定和入站许可，终端200仍不是已读",
+      "conditions": [
+        "T-PF实际收到对应standalone SDS请求；或T-PF实际收到其转给终端的MESSAGE响应。两个事件分别适用；不能把目标绑定存在或入站许可通过继承到拒绝分支。"
+      ],
+      "conclusion": "T-PF资源不足或有拥塞风险可回500，可附Retry-After并停止。用mcdata-request-uri中的目标MCData ID取得终端公有用户身份绑定；不存在则404并停止。只有IncomingOne-to-OneCommunicationList存在且有条目、主叫MCData ID不匹配其中任一entry，并且配置没有允许来自任意用户的私聊时，才按step3a回403/230并停止。继续路径调用6.3.2.1：保留收到的Accept-Contact/Reject-Contact及参数，Request-URI改为目标公有用户身份，按6.4填MIME并复制PAI，再加入SDS P-Asserted-Service后发送。收到终端200则生成200送CF；收到4xx/5xx/6xx则生成响应并保留收到的Warning转给CF。终端自身是先发送200再处理消息内容，故此200不是已读或应用处理成功的证明。",
+      "normative_strength": "绑定、许可、路由及响应shall；资源拒绝及Retry-After为may",
+      "limitations": [
+        "T-PF此处缺绑定只写404，没有O-PF的141或绑定过期措辞，不把前者复制到目标侧。入站名单的三个条件须同时成立，不把缺名单或允许任意来源自动解释为230。",
+        "本条明确的响应转送目标为CF；9.2.2.4.1–2没有在此展开CF如何处理这些返回响应，不据O-PF的200响应入口拼出完整200端到端回传链。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "9.2.2.3.2"
+          ],
+          "printed_pages": [
+            111,
+            112
+          ],
+          "scope": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "6.3.2.1"
+          ],
+          "printed_pages": [
+            49
+          ],
+          "scope": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "9.2.2.2.2"
+          ],
+          "printed_pages": [
+            109,
+            110
+          ],
+          "scope": "终端200与内容处理时序比较"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "9.2.2.4.1",
+            "9.2.2.4.2"
+          ],
+          "printed_pages": [
+            112,
+            113,
+            114,
+            115
+          ],
+          "scope": "CF返回路径范围比较"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "6.3.1.1"
+          ],
+          "printed_pages": [
+            45,
+            46,
+            47
+          ],
+          "scope": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "6.4",
+            "6.5.1.1–4"
+          ],
+          "printed_pages": [
+            55,
+            56,
+            57
+          ],
+          "scope": "规范依据"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "本页是各实际接收事件下的服务器责任，不是完整SIP核心路由、事务或安全实现证明；配置文档的schema和未列默认值不另推定。",
+    "客户端发送资格、构造及内容处理见相关页，仅在其自身角色/事件条件下适用；不以该页通过代替服务器独立准入。"
+  ],
+  "related": [
+    "sds-control-client"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

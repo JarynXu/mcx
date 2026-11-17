@@ -1,0 +1,94 @@
+# 普通按需私呼：服务器准入与身份路由
+
+## 适用条件
+
+- 固定 TS24.379 V16.14.0 的主系统在网、带话权控制、直接 MCPTT ID 普通 private 私呼；不含 first-to-answer、功能别名、环境监听、转发或转接。
+- 本页限定无 emergency-ind/alert-ind 的普通初始请求、无紧急 Resource-Priority 值，且主叫不处于与目标用户的进行中紧急私呼状态；终端使用按需会话，不覆盖预建立或 Replaces 替换。
+- 各角色的接收、准入失败、继续构造与响应是分别适用的事件入口，不以全链许可、成功响应或被叫接受作为全页前提。
+
+## 先识别发送者，再选择主叫的私呼服务
+
+适用：O-PF 收到 session-type=private 的初始 INVITE；拒绝与继续构造分别依其到达的步骤适用。
+
+O-PF 由入站 P-Asserted-Identity 的公共用户身份查主叫 MCPTT ID，再确定与该主叫身份关联的私呼 CF 服务 PSI，而不是按资源列表中的被叫身份选择主叫服务。无法确定 CF 时返回 404+Warning142 并停止；缺少资源列表正文或 private 列表多于一个 entry，分别返回 403+Warning145 并停止。到达构造步骤后，Request-URI 写所选 CF PSI，mcptt-calling-user-id 写确定的主叫 MCPTT ID；通用 INVITE helper 复制入站 P-Asserted-Identity。服务目的地址、主叫业务身份和被叫列表不是同一标识。
+
+规范强度：所述身份确定、构造、条件拒绝及停止为 SHALL。
+
+- 边界：主叫绑定与基本私呼/模式许可仍须经过前序检查，见客户端应答页；这里不以通过这些检查作为拒绝分支的共同前提。
+- 边界：所列资源列表错误明确是正文缺失或多于一个 entry，不将它改写为所有“非恰好一个 entry”均按同一规则拒绝；这也不证明零 entry 有效。
+
+依据：TS24.379 V16.14.0 §6.3.1.1 O-PF/private-CF classification；§11.1.1.3.1.1 opening,steps3–10,15–17,22；§6.3.2.1.3 steps4,7–8；§11.1.1.4.2 steps6–9 (ordinary scope comparison)；§11.1.1.4.1 step7 (existing emergency state comparison)，印刷页 77, 78, 84, 85, 366, 367, 368, 369, 379, 380, 381。
+
+## 通用私呼许可不代替目标名单和媒体准入
+
+适用：O-PF 到达普通 private 的名单检查或后续 SDP 检查；各检查依程序顺序发生，不要求后续检查已成功。
+
+当主叫配置的 PrivateCall 存在且含 entry、请求目标 URI 不匹配其中任何 entry、又未配置允许呼叫名单外用户时，O-PF 返回 403+Warning144 并停止。这是三项同时成立的拒绝，不把名单缺失等同于禁止所有目标。后续若 SDP offer 未提供任何 MCPTT speech codec，则返回 488；有相应 codec 才继续。CF 还有自己的媒体检查：收到的 offer 须至少有一个媒体流，其参数以及至少一种 codec 或媒体格式可由 CF 接受，否则返回 488 并停止，不能用 O-PF 的检查替代。
+
+规范强度：所述名单条件拒绝、codec 检查及 CF 条件拒绝为 SHALL。
+
+- 边界：未触发某一名单拒绝不等于其余服务许可、CF 授权或被叫入向名单均通过。
+- 边界：配置文档如何创建和更新不在此展开；这里依据本版呼叫控制程序使用配置的条件，不补配置缺省。
+
+依据：TS24.379 V16.14.0 §11.1.1.3.1.1 steps10–14 (FTA steps12–13 comparison)；§11.1.1.4.2 step5，印刷页 367, 368, 380。
+
+## 强制自动应答有独立许可，Manual 不照搬
+
+适用：O-PF 已到达 §11.1.1.3.1.1 step18 的 private 头处理；按实际收到的模式头分别适用。
+
+收到 Priv-Answer-Mode=Manual 时，O-PF 不在出站请求包含该 Priv-Answer-Mode。收到 Priv-Answer-Mode=Auto 且 allow-force-auto-answer 缺失或 false 时，返回 403+Warning143 并停止；该配置为 true 且收到 Auto 时，出站才包含 Priv-Answer-Mode=Auto。若出站未包含该 Auto 头且入站存在 Answer-Mode，则复制其内容。这项强制许可不同于普通 Answer-Mode 的 Auto/Manual 发起许可。
+
+规范强度：所述头处理、条件拒绝和停止均为 SHALL。
+
+- 边界：step18(d) 原文把“未包含 Auto”的前序回指为 step17，而 step17 实际设置 calling-user-id；此处保留该号次差异，不默改规范引用。
+- 边界：本页不补冲突模式头的通用优先算法，也不把主叫有强制许可解释为已经完成客户端应答。
+
+依据：TS24.379 V16.14.0 §11.1.1.3.1.1 steps11(a–b),17–18；§6.3.3.1.2 steps8–10 (downstream and ambient comparison)，印刷页 367, 368, 369, 106。
+
+## CF 分开校验服务、授权主叫与邀请被叫
+
+适用：CF 收到 private 初始 INVITE，或通过其前序检查而到达实际邀请动作；这两个阶段分别适用。
+
+CF 检查 Request-URI 的 PSI 是否分配给私呼，未分配则调用未分配 PSI 错误过程返回 404 并停止；同时按 calling-user-id 验证主叫并作本地授权，未获授权返回带 Warning 的 403 并停止。资源列表缺失或 private 多 entry 各为 403+Warning145 并停止。通过相应前序检查后，CF 按接收 helper 缓存收到且支持的 Contact feature tags，分配会话身份，并由 §11.1.1.4.2 step12 的 otherwise 分支调用 §11.1.1.4.1 邀请列表中的用户。下行 mcptt-request-uri 写被叫 MCPTT ID，Request-URI 写服务该被叫的 T-PF PSI；P-Asserted-Identity 仍复制主叫公共身份。CF 通用 INVITE helper 在 Contact 放会话身份及 isfocus，并复制 mcptt-info，因此 calling-user-id 得以随请求传递。
+
+规范强度：所述校验、条件拒绝、缓存、会话身份分配及邀请字段构造为 SHALL。
+
+- 边界：§11.1.1.4.2 step4 在 CF 程序内将被拒请求称为 originating participating function 的请求；这是本版称谓差异，不据此迁移执行角色。
+- 边界：§11.1.1.4.1 NOTE2 明确 T-PF 地址如何发现不在本 Release 范围；本页不提供发现算法。
+- 边界：通用 helper 及 caller 还涉及 SDP、计时等责任；本节说明身份与实际调用，不是可直接照抄的完整 INVITE 模板。
+
+依据：TS24.379 V16.14.0 §6.3.1.1 private-CF classification；§11.1.1.4.2 steps1–12 (FTA/emergency comparison)；§6.3.7.1；§6.3.3.2.2 full；§11.1.1.4.1 opening,steps1,4–6,NOTE1–3；§6.3.3.1.2 steps1,11，印刷页 77, 78, 105, 106, 120, 136, 378, 379, 380, 381。
+
+## T-PF 看被叫绑定和入向主叫名单
+
+适用：T-PF 收到本页 private 初始 INVITE；模式选择前的各拒绝入口分别适用，不以被叫已接受为前提。
+
+T-PF 检查 Contact 的 isfocus，缺失则返回 403+Warning104 并停止；从 mcptt-request-uri 取被叫 MCPTT ID 来查公共用户身份绑定。被叫绑定和服务设置的前置检查之后，入向名单检查比较的是 calling-user-id：IncomingPrivateCallList 存在且非空、主叫不匹配任何 entry、又未配置允许名单外主叫呼入时，返回 403+Warning159 并停止。出向 Warning144 与入向 Warning159 检查不同用户的配置和不同对象，不能因主叫名单允许目标便跳过被叫的入向限制。到达模式分派后才调用自动或手动 helper；按需承载选择与最终客户端应答见客户端应答页。
+
+规范强度：所述 isfocus 检查、绑定检索、条件名单拒绝和模式 helper 调用为 SHALL。
+
+- 边界：不存在或空的入向名单不满足本条 Warning159 守卫，但不据此推导呼入必然成功。
+- 边界：§11.1.1.3.2 step6 的不能参与配置拒绝为 403+Warning127，原段未另写停止；不从相邻步骤补出停止措辞。
+
+依据：TS24.379 V16.14.0 §6.3.1.1 T-PF classification；§11.1.1.3.2 steps2–8；§11.1.1.3.1.1 step11(c) (outgoing comparison)；§6.3.2.2.5.1 full;6.3.2.2.6.1 full (on-demand selection dependency)，印刷页 77, 78, 95, 96, 98, 367, 368, 376, 377。
+
+## O-PF 重建响应并映射会话身份，不是一律透传
+
+适用：替代事件：O-PF 收到该 INVITE 的 180；收到 200；或收到其他不含 SDP 的响应。不要求三类响应都出现，也不以被叫人工接受为共同前提。
+
+收到 180 时，O-PF 调用临时响应 helper，带入收到的 P-Asserted-Identity 和 Warning 后返回主叫。收到 200 时，调用最终响应与 SDP answer helper，带入收到的 Warning 和 P-Asserted-Identity，并包含与收到的 Contact 会话身份相映射的 MCPTT 会话身份；收到 P-Answer-State 时也带入其值，发送后交接媒体并启动会话计时。其他响应的通用转发规则明确限于不含 SDP，并包含其中的 MIME 正文，不是所有响应无条件原样透传。最终 helper 还要求 timer/Session-Expires、Contact tags、tdialog/norefersub 及条件复制 mcptt-info，Resource-Share 则可选。
+
+规范强度：所述条件响应构造、身份/状态携带、发送、媒体交接和计时为 SHALL；helper 中 Resource-Share 为 MAY。
+
+- 边界：会话身份映射不把业务用户 ID、服务器 PSI 和 Contact 会话身份变为同一值。200 与被叫人工接受的证据区别由客户端应答页说明，本条不替代该判断。
+- 边界：CF 在 private、收到 200 且尚未向主叫发送最终响应的分支，将 SDP answer 回指 §6.3.3.2.2；该段实际为接收 INVITE 时缓存 feature tags，SDP answer 专节是 §6.3.3.2.1。此处保留引用差异，不替规范补出完整 CF SDP 实现。
+- 边界：不据这条 O-PF 规则推导其他角色、含 SDP 错误响应或完整恢复流程。
+
+依据：TS24.379 V16.14.0 §11.1.1.3.1.1 response branches；§6.3.2.1.5.1 full;6.3.2.1.5.2 full；§6.3.2.1.2.1 full；§11.1.1.4.2 private 183/Unconfirmed and private 200 branches (response evidence comparison)；§6.3.3.2.1;6.3.3.2.2 (SDP reference comparison)，印刷页 84, 86, 87, 119, 120, 370, 381, 382。
+
+## 关联与边界
+
+[普通按需私呼：客户端应答与建立证据](private-client-answer-evidence.md)
+
+- 本页回答服务器准入、身份路由和 O-PF 响应接口问题；客户端模式、取消与成功证据见关联页，不在此重述完整客户端过程。
+- 不是完整 SIP/SDP、媒体、安全、配置管理或恢复实现。被调用 TS24.229、TS24.380、TS24.484 与相关 RFC 的全部实现不在此展开；未以其他 Release 补本版条件或引用差异。
