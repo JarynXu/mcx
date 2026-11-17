@@ -58,6 +58,8 @@
 
 - [同用户多客户端的服务设置：读取、观察与停止观察](topics/calls/settings-observation.md)：按同用户设置读取、观察或停止观察的实际事件进入，不把通知缓存当作设置发布或呼叫采用。
 
+- [普通在网组显式抢占：满容量撤销、等待与 End 证据](topics/mcvideo/onnetwork-preemption-revoke.md)：各角色按实际状态和事件进入，撤销、入队与 End 不证明完整抢占成功。
+
 先读主题共同条件，再按实际角色与事件选取结论；不把拒绝、应答、取消或后续数据处理拼成同时必备的条件。这些主题均不构成完整端到端实现，也不证明版本组合互通。
 
 [业务域](domains.json) · [主题索引](topics.json) · [条件阅读路径](reading-paths.json) · [覆盖边界](coverage.md) · [来源](sources.json) · [状态](status.json)
