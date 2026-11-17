@@ -272,6 +272,16 @@ Stage 2 功能与信息流说明不替代 Stage 3；许可、媒体可用、实�
 
 [读取主题](topics/mcvideo/prearranged-group-reception-server.md)
 
+## 普通离网组：single 参与者的请求、媒体与本地结束
+
+普通离网组single终接/晚加入参与者的请求等待、身份条件许可、实际媒体与本地结束。
+
+许可、实际RTP、取消等待、发送结束、T230控制空闲与call release分别取证；重发与到限自任仲裁不保证全组独占。
+
+尚未建立：不覆盖私呼、在网、主叫完整仲裁、self模式、完整离网call-control或安全实现；竞争超限和交接转仲裁保留为退出，不补身份字段映射或Indicator编码差异。
+
+[读取主题](topics/mcvideo/offnetwork-single-participant.md)
+
 ## 显式组归属：本客户端的建立、解除与状态观察
 
 本客户端显式兴趣发布、解除、订阅观察及必要服务器接收和状态证据。
