@@ -339,6 +339,93 @@
         "independent_source_review": false,
         "independent_usage_acceptance": false
       }
+    },
+    {
+      "id": "fd-group-completion-aggregation-release",
+      "role": "CF",
+      "conditions": [
+        "CF 实际收到本页媒体面 FD 的完成通知，并已通过资源、服务、resource-lists、Conversation ID/Message ID 原请求关联及组成员检查；mcdata-info 带 mcdata-calling-group-id，通知目标可确定。",
+        "所需 XML 入站验证/解密及出站保护仍适用；上游合法完成事件及请求守卫沿用本页，不以聚合补齐 PF 获知终端完成的接口。",
+        "需要聚合 MCData disposition 通知，且尚未发送该聚合通知。"
+      ],
+      "conclusion": "CF 仅在 TDC1 未运行时启动它，并把收到的 signalling MIME 复制到聚合出站 MESSAGE。TDC1 到期，或已收到所有组成员的全部 MCData disposition 通知，均进入后续发送步骤。NOTE6 说明：装不进一条 MESSAGE 时另建消息容纳剩余通知。聚合沿通知目标继续路由，不向全组广播：本页 PF 报告的目标由原 FD 主叫确定，经 resource-lists 转入 mcdata-request-uri，再由目标 PF 处理。CF 发送后回 202，这不证明目标已收到，也不证明全部成员文件下载完成。",
+      "normative_strength": "§12.2.3 正文所列条件动作 SHALL；容量分包来自 NOTE6 的说明，不将该注升级为正文 SHALL；结果边界不新增协议义务。",
+      "source_id": "3gpp-ts-24.282-v19.7.0",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "12.2.3 steps1–5,7–19, especially15c and NOTE6",
+          "printed_pages": [
+            318,
+            319,
+            320,
+            321
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "12.2.2.3 notification target;12.2.2.2 target PF",
+          "printed_pages": [
+            317,
+            318
+          ]
+        }
+      ],
+      "limitations": [
+        "是否需要聚合是此分支的前提；所读段落没有给出完整的聚合策略选择算法，不把带组 ID 等同于一律聚合。",
+        "原文的放行条件是全部 disposition 通知到齐，不是每份都为 FILE DOWNLOAD COMPLETED；计时到期也能放行，不能把聚合包改写成单一全员成功结果。",
+        "all group members 按原文字面保留，不改为已归属者、实际邀请者或多数门槛；去重、成员变动、各通知类型如何算齐未形成完整算法。",
+        "发送目标仍须通过本页目标 PF 的绑定和资源检查；关联成功或 202 都不是文件内容、用户阅读或应用执行的证据。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "fd-group-aggregation-timer-and-late-boundary",
+      "role": "CF",
+      "conditions": [
+        "CF 实际收到本页媒体面 FD 的完成通知，并已通过资源、服务、resource-lists、Conversation ID/Message ID 原请求关联及组成员检查；mcdata-info 带 mcdata-calling-group-id，通知目标可确定。",
+        "所需 XML 入站验证/解密及出站保护仍适用；上游合法完成事件及请求守卫沿用本页，不以聚合补齐 PF 获知终端完成的接口。",
+        "解释 §12.2.3 step15c 对 TDC1 的引用，或判断已发聚合通知后的后续通知；不从 SDS/HTTP 主题补写 FD 规则。"
+      ],
+      "conclusion": "§12.2.3 的入口同时列 SDS 与 FD，聚合段要求按 F.2.2 取 TDC1 值。表 F.2.2-1 列默认 5 秒且可配置，但启动、正常停止及 NOTE1 的实例关联字面均限定 SDS。此处保留这项范围差异：正文给出 FD 可进入的条件化聚合动作，却不足以据该表宣称每个 FD 文件有完整独立的启停实例规则。需要聚合但已发送过聚合通知时，15c 的未发送条件不成立，15d 的无需聚合条件也不成立；本段未补出晚到通知的完整处理策略。",
+      "normative_strength": "§12.2.3 正文所列条件动作 SHALL；规范性附录 F（Annex F，normative）的 TDC1 表与正文作范围对照，保留其 SDS 字面限定；范围差异及晚到处理缺口不新增协议义务。",
+      "source_id": "3gpp-ts-24.282-v19.7.0",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "12.2.3 opening and step15c–d",
+          "printed_pages": [
+            318,
+            320
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "F.2.2 TableF.2.2-1 TDC1 and NOTE1;TDC2 comparison",
+          "printed_pages": [
+            639
+          ]
+        }
+      ],
+      "limitations": [
+        "不把表中 SDS 的正常停止条件和每消息实例规则无声替换为 FD；也不否定正文明确列出的 FD 入口。",
+        "5 秒是被引用计时器表的可配置默认值，不是所有 FD 通知固定延迟、文件下载期限或全组完成承诺。",
+        "不推导每条新通知都重启 TDC1，也不推导已聚合后的晚到通知必转发、必丢弃或必开第二窗口；这里只指出所读分支的缺口。",
+        "TDC2 文件可用期计时器另有定义，不用于修补 TDC1 的范围差异。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "limitations": [

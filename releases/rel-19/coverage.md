@@ -33,11 +33,11 @@
 
 ### FD：HTTP与MSRP媒体面分别判断
 
-- **能回答：**可查文件上限、HTTP存入/可用/下载证据，以及MSRP空SEND、分块收尾、服务器先响应、暂存和终端重组。 另可查PF条件完成通知的关联键、CF非聚合转发/202、目标PF绑定及客户端收到后的通知交付。
+- **能回答：**可查文件上限、HTTP存入/可用/下载证据，以及MSRP空SEND、分块收尾、服务器先响应、暂存和终端重组。另可查PF条件完成通知、CF直接或条件聚合路由、目标PF及客户端通知交付；普通媒体面FD服务器无预告释放另按类型策略及CF/PF/客户端事件区分BYE、原因与逐段资源收尾。
 - **只到条件或接口：**终端内部下载完成指示不同于PF有条件的完成通知；PF暂存完成不等于终端下载。HTTP调用不能补到媒体面。 路由从实际PF完成事件及完成更新请求起，CF/目标PF各按实际收到与入口守卫执行；不补helper未逐项列出的CF入口字段。
-- **尚未建立的结论：**媒体面ACK错引、SDP/MIME差异及普通转发中PF如何获知终端完整下载仍未闭合；未给完整文件系统、断点续传或全端交付保证。 需聚合/晚到通知、PSI发现、完整事务恢复及客户端专门200/关联算法不由有限路由闭合；202不证明原主叫已看到结果。
+- **尚未建立的结论：**媒体面ACK错引、SDP/MIME差异及普通转发中PF如何获知终端完整下载仍未闭合；未给完整文件系统、断点续传或全端交付保证。聚合策略选择、TDC1表的SDS实例范围与FD正文差异、晚到通知、PSI发现、完整事务恢复及客户端专门200/关联算法仍未闭合；NOTE6为容量说明，聚合放行及202不证明全员下载或原主叫已看到结果。
 
-入口：[FD 发送准入：文件上限、单次额度与拒绝来源](topics/mcdata/fd-size-admission.md)；[HTTP 文件分发：文件已存、URL 已通知与下载成功](topics/mcdata/fd-http-file-and-signalling-evidence.md)；[FD 接收决定：自动下载、接受、延期与完成通知](topics/mcdata/fd-download-decision-and-completion.md)；[媒体面 FD：何时能发文件，响应如何触发收尾](topics/mcdata/fd-msrp-start-and-originator-result.md)；[媒体面 FD：服务器 200、转发与暂存分别证明什么](topics/mcdata/fd-msrp-hop-ack-and-storage.md)；[媒体面 FD：收齐文件、信令面完成指示与业务通知](topics/mcdata/fd-media-reception-and-signalling-report.md)。
+入口：[FD 发送准入：文件上限、单次额度与拒绝来源](topics/mcdata/fd-size-admission.md)；[HTTP 文件分发：文件已存、URL 已通知与下载成功](topics/mcdata/fd-http-file-and-signalling-evidence.md)；[FD 接收决定：自动下载、接受、延期与完成通知](topics/mcdata/fd-download-decision-and-completion.md)；[媒体面 FD：何时能发文件，响应如何触发收尾](topics/mcdata/fd-msrp-start-and-originator-result.md)；[媒体面 FD：服务器 200、转发与暂存分别证明什么](topics/mcdata/fd-msrp-hop-ack-and-storage.md)；[媒体面 FD：收齐文件、信令面完成指示与业务通知](topics/mcdata/fd-media-reception-and-signalling-report.md)。 另查[媒体面FD的服务器主动释放：BYE、原因与逐段资源收尾](topics/mcdata/media-fd-server-release.md)。
 
 所列入口的来源：3GPP TS24.282 V19.7.0；3GPP TS 24.582 V19.0.0。具体Stage、条款及跨源差异以各主题为准。
 
@@ -53,11 +53,11 @@
 
 ### MBMS：公告与监听反馈
 
-- **能回答：**可查按TMGI保存/取消公告、SDP关联、保护验证、listening两分支、not-listening三分支及PF身份校验。
-- **只到条件或接口：**仅24.282第19章所列在网MBMS信令；公告、监听、映射、业务数据到达分别判断。
-- **尚未建立的结论：**本项仍仅§19 MBMS；§19A multicast join/leave通知另见独立有限主题。完整承载创建、Map/Unmap、媒体处理、无线检测和端到端交付链未建立。
+- **能回答：**可查按TMGI保存/取消公告、SDP关联、保护验证、listening/not-listening分支及PF身份校验；NOTE5另说明初始映射交集与映射后接收区域。MB2组FD另可查Map/Unmap角色、关联字段和MSRP仍进行时的单播回归。
+- **只到条件或接口：**公告与监听仅按24.282 V19.7.0第19章；MB2组FD映射按24.582 V19.0.0第7.4节的终止侧、MSRP/SDP及公告前提。两版本分别取证，公告、监听、映射、业务数据到达分别判断。
+- **尚未建立的结论：**§19A multicast join/leave通知仍见独立有限主题；MB2组FD映射不扩为SDS或5GS MBS。完整承载创建、媒体处理、密钥、重传修复、无线检测及端到端交付链未建立，也不保证两个固定快照完整互通。
 
-入口：[MBMS公告与终端监听条件](topics/mcdata/mbms-announcement-and-listening-conditions.md)；[MBMS监听反馈：触发、对象与证据边界](topics/mcdata/mbms-listening-feedback-boundary.md)。
+入口：[MBMS公告与终端监听条件](topics/mcdata/mbms-announcement-and-listening-conditions.md)；[MBMS监听反馈：触发、对象与证据边界](topics/mcdata/mbms-listening-feedback-boundary.md)。 另查[FD MBMS：组到承载的映射与解除](topics/mcdata/fd-mbms-group-bearer-mapping.md)。
 
 所列入口的来源：3GPP TS24.282 V19.7.0。具体Stage、条款及跨源差异以各主题为准。
 
@@ -119,7 +119,7 @@
 
 - **能回答：**可查已确定两用户间的自动建立、拒绝、P2/P5到P4的端点事件，以及RELEASE、超时、P1保留标识与P0清理。
 - **只到条件或接口：**MONP信令入口；发起端媒体调用角色称谓及clause a.b占位引用保留。自动终接端按原文以terminating MCVideo client调用；RELEASE接收分支不另加originating发送者限制，完整消息分派和鉴权未核。
-- **尚未建立的结论：**本项仅自动路径；手动等待/应答另列，但其完整释放与建立前取消未闭合。不是离网组呼或完整发现/安全/媒体控制实现；未闭合发送与接收许可、首帧、双端同步停止或重叠超时优先级。
+- **尚未建立的结论：**本项仅自动路径；手动等待、应答、建立前取消及有限本地释放另按手动主题条件读取，不自动继承本项。不是离网组呼或完整发现/安全/媒体控制实现；未闭合发送与接收许可、首帧、双端同步停止或重叠超时优先级。
 
 入口：[离网自动私呼：发起资格、接受与拒绝](topics/mcvideo/offnetwork-private-auto-setup.md)；[离网私呼接通：双方状态和媒体许可缺口](topics/mcvideo/offnetwork-private-media-entry.md)；[离网私呼结束：逐端响应、超时和清除标识](topics/mcvideo/offnetwork-private-release.md)。
 
@@ -157,9 +157,9 @@
 
 ### 普通离网手动私呼：等待与应答
 
-- **能回答：**可查manual commencement发起授权、RINGING等待、终接P5用户接受/拒绝或超时、TFP与CFP有限处理，以及按ACCEPT/ACK/RTP等各自事件推进的本地完成。
+- **能回答：**可查manual commencement发起授权、RINGING等待、终接P5用户接受/拒绝或超时及本地完成；另分P2建立前取消、终接P5/P1接收取消、P4释放及后续P3/P1有限出口。
 - **只到条件或接口：**两个已确定用户的普通PRIVATE CALL，MONP而非SIP；逐端状态、call id、模式和事件条件分别判断。用户接受仍留P5，RINGING不启动自行补造的等待算法。
-- **尚未建立的结论：**手动已建立通话的释放及建立前取消未展开；不能把自动相关页的claims继承到手动模式。媒体a.b、安全、完整异常分派、双端计时同步和首帧未闭合。
+- **尚未建立的结论：**P2取消与P4释放不互补CFP3初始化或清理步骤；取消路径完整重传次数、重叠超时调度、媒体a.b、安全、完整异常分派、双端计时同步和首帧未闭合。自动相关页的适用条件不自动继承到手动模式。
 
 入口：[离网手动私呼：响铃等待、用户应答与有限失败](topics/mcvideo/offnetwork-private-manual-answer.md)。
 
@@ -211,11 +211,11 @@
 
 ### 普通离网MCPTT组呼
 
-- **能回答：**可查每组状态机的PROBE、超时发起/加入已有呼叫、用户应答与Confirm mode、周期公告、本端退出和忽略窗口。 话权另可查终接者初始化、silence 请求、T201/C201 竞争与本地许可，以及无排队释放、取消和呼叫停止。
-- **只到条件或接口：**呼叫控制按 TS 24.379 V19.4.0，有限 O 话权路径按 TS 24.380 V19.1.0，各自条件不可省略；话权要求离网呼叫已成功建立。本地状态或已发送消息不是全员一致的证明。
-- **尚未建立的结论：**不覆盖离网私呼、广播、类型变化、并呼合并、完整 ProSe、安全或话权排队实现；发起者隐式与显式请求入口差异保留，本端退出不等于全组结束。不能与离网 MCVideo 自动私呼合成一个状态机。
+- **能回答：**可查每组状态机的PROBE、超时发起/加入已有呼叫、用户应答与Confirm mode、周期公告、本端退出和忽略窗口。 话权另可查终接者初始化、silence 请求、T201/C201 竞争与本地许可，以及无排队释放、取消和呼叫停止。 普通BASIC到BASIC合并另可查身份与时间排序守卫、所选SDP与本地话权调用、TFG6/TFG2及独立类型信息存储。
+- **只到条件或接口：**呼叫控制按 TS 24.379 V19.4.0，有限 O 话权路径按 TS 24.380 V19.1.0，各自条件不可省略；话权要求离网呼叫已成功建立。本地状态或已发送消息不是全员一致的证明。 合并的S3与T2各自检查完整守卫；话权重启仅到24.379引用接口，不证明旧许可延续或取得新许可。
+- **尚未建立的结论：**不覆盖离网私呼、广播、类型变化、普通BASIC有限合并以外的合并、完整 ProSe、安全或话权排队实现；发起者隐式与显式请求入口差异保留，本端退出不等于全组结束。不能与离网 MCVideo 自动私呼合成一个状态机。 跨状态机调度、时钟异常、配置细节及合并后全网收敛未闭合。
 
-入口：[离网MCPTT组呼：先探测，已有则加入、超时则发起](topics/calls/offnetwork-group-probe-and-start.md)；[离网MCPTT组呼：用户接受、确认消息与周期公告](topics/calls/offnetwork-group-acceptance-and-announcement.md)；[离网MCPTT组呼：本端退出、忽略窗口与最大时长](topics/calls/offnetwork-group-local-leave.md)；[离网话权入口：组呼参与者与临时仲裁者](topics/calls/offnetwork-floor-entry.md)；[离网请求竞争：重试、计数复位与本地取得话权](topics/calls/offnetwork-floor-request-contention.md)；[离网停止边界：空队列释放、静默与呼叫退出](topics/calls/offnetwork-floor-release-boundary.md)。
+入口：[离网MCPTT组呼：先探测，已有则加入、超时则发起](topics/calls/offnetwork-group-probe-and-start.md)；[离网MCPTT组呼：用户接受、确认消息与周期公告](topics/calls/offnetwork-group-acceptance-and-announcement.md)；[离网MCPTT组呼：本端退出、忽略窗口与最大时长](topics/calls/offnetwork-group-local-leave.md)；[离网话权入口：组呼参与者与临时仲裁者](topics/calls/offnetwork-floor-entry.md)；[离网请求竞争：重试、计数复位与本地取得话权](topics/calls/offnetwork-floor-request-contention.md)；[离网停止边界：空队列释放、静默与呼叫退出](topics/calls/offnetwork-floor-release-boundary.md)。 另查[离网MCPTT普通组呼合并：选择另一呼叫与本地切换](topics/calls/offnetwork-group-basic-merge.md)。
 
 所列入口的来源：3GPP TS24.379 V19.4.0；3GPP TS 24.380 V19.1.0。具体Stage、条款及跨源差异以各主题为准。
 
@@ -238,6 +238,16 @@
 入口：[离网排位查询与等待失效：重试后是否还在排队](topics/calls/offnetwork-floor-queue-query-and-exit.md)。
 
 所列入口的来源：3GPP TS24.380 V19.1.0。具体Stage、条款及边界以主题为准。
+
+### 普通离网MCPTT自动私呼
+
+- **能回答：**可查已知双用户普通自动私呼的发起、自动接受、列明验签失败及基本P/类型Q各自完成事件。
+- **只到条件或接口：**固定24.379 V19.4.0 PRIVATE CALL、自动模式且发起关联紧急状态false；位置IE按本业务守卫，媒体/话权仅到所引接口。P5因RTP进P4不等于Q0进Q1。
+- **尚未建立的结论：**MONP接收port TBD及8809 messages措辞、发现/配置、安全和话权内部许可未闭合；不覆盖手动、紧急、完整重传/取消/释放，也不与组呼、在网私呼或MCVideo拼成同一状态机。
+
+入口：[离网MCPTT自动私呼：建立、终接等待与两种控制状态](topics/calls/offnetwork-private-auto-control.md)。
+
+所列入口的来源：3GPP TS24.379 V19.4.0。具体Stage、条款及边界以主题为准。
 
 ## 组管理与MCPTT组呼入口
 

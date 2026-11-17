@@ -1847,11 +1847,15 @@
           "read": "topics/mcdata/fd-msrp-hop-ack-and-storage.md"
         },
         {
-          "condition": "接收端收齐、内部指示，以及PF完成事件已发生且要求更新时的非聚合通知路由",
+          "condition": "接收端收齐、内部指示，以及PF完成事件已发生且要求更新时的直接或条件聚合通知路由",
           "read": "topics/mcdata/fd-media-reception-and-signalling-report.md"
+        },
+        {
+          "condition": "普通在网单播媒体面FD服务器主动、无预告释放；按one-to-one或预安排组及逐角色事件",
+          "read": "topics/mcdata/media-fd-server-release.md"
         }
       ],
-      "boundary": "普通在网单播媒体面FD；不移植HTTP caller，保留精确版本间的引用及MIME差异。 不补PF获知终端完成的caller或helper到CF入口字段完整性；202不等于客户端已收通知，不扩成全组完成。"
+      "boundary": "普通在网单播媒体面FD；不移植HTTP caller，保留精确版本间的引用及MIME差异。 不补PF获知终端完成的caller或helper到CF入口字段完整性；202不等于客户端已收通知，不扩成全组完成。 聚合只在需要且未发送等守卫成立时进入；TDC1表的SDS实例范围差异及发送后晚到策略仍未闭合，计时放行不等于全员完成。"
     },
     {
       "id": "mcvideo-client-video-pull",
@@ -1876,13 +1880,17 @@
         {
           "condition": "判断何时反馈、反馈给谁及PF能确认什么",
           "read": "topics/mcdata/mbms-listening-feedback-boundary.md"
+        },
+        {
+          "condition": "固定24.582 V19.0.0的MB2组FD终止侧，已满足MSRP/SDP及公告处理前提，判断Map/Unmap",
+          "read": "topics/mcdata/fd-mbms-group-bearer-mapping.md"
         }
       ],
-      "boundary": "仅TS24.282 V19.7.0 §19的所列在网MBMS信令条件，不等同5GS MBS或端到端交付。"
+      "boundary": "公告与监听按TS24.282 V19.7.0 §19；NOTE5仅说明初始交集和映射后区域。MB2组FD映射另按TS24.582 V19.0.0角色及事件条件，不适用SDS或5GS MBS；两个固定快照分别取证，不保证完整接口互通或交付。"
     },
     {
       "id": "mcptt-offnetwork-ordinary-group",
-      "question": "离网普通MCPTT组呼怎样发起、接受和本端退出",
+      "question": "离网普通MCPTT组呼怎样发起、接受、本端退出及按条件合并",
       "select_one_by_question": [
         {
           "condition": "探测、加入已有呼叫或超时后发起",
@@ -1899,9 +1907,13 @@
         {
           "condition": "呼叫已成功建立，需区分终接者话权初始化与发起者入口限制",
           "read": "topics/calls/offnetwork-floor-entry.md"
+        },
+        {
+          "condition": "参与中S3或T2遇到同组另一普通BASIC公告，并满足各自身份差异及时间/call ID排序守卫",
+          "read": "topics/calls/offnetwork-group-basic-merge.md"
         }
       ],
-      "boundary": "呼叫控制入口按 TS 24.379 V19.4.0；话权入口按 TS 24.380 V19.1.0 的独立条件。跨规范调用不自动证明完整映射、全员确认或声音交付。"
+      "boundary": "呼叫控制入口按 TS 24.379 V19.4.0；话权入口按 TS 24.380 V19.1.0 的独立条件。跨规范调用不自动证明完整映射、全员确认或声音交付。 合并仅核24.379的本地过程及话权调用接口，不把已有24.380 V19.1.0独立主题视为该调用的版本映射或许可证明；两状态机调度与全网收敛未闭合。"
     },
     {
       "id": "mcvideo-offnetwork-auto-private",
@@ -2088,9 +2100,15 @@
     },
     {
       "id": "mcvideo-offnetwork-manual-private",
-      "question": "普通离网手动私呼怎样等待、应答并完成本地接通",
+      "question": "普通离网手动私呼怎样等待、应答、取消和按本地事件释放",
       "start": "topics/mcvideo/offnetwork-private-manual-answer.md",
-      "boundary": "固定24.281 V19.3.0 manual commencement、已确定的两用户，逐端P2/P5及事件守卫适用。RINGING不是接受，用户接受不直接进入P4；不拼自动释放为手动释放验收，不补P2取消、媒体a.b或完整分派。"
+      "boundary": "固定24.281 V19.3.0 manual commencement、已确定的两用户，逐端状态及事件守卫适用。建立前取消与P4释放分开，不互补初始化或清理；P2取消CFP3初值、重叠超时调度、媒体a.b、完整分派与双端同步仍未闭合。自动释放主题不自动成为手动过程的依据。"
+    },
+    {
+      "id": "mcptt-offnetwork-auto-private",
+      "question": "普通已知双用户离网自动私呼如何建立，P和Q各自何时完成",
+      "start": "topics/calls/offnetwork-private-auto-control.md",
+      "boundary": "固定24.379 V19.4.0普通PRIVATE CALL自动模式且发起关联紧急状态false。基本P与类型Q按独立事件读取，不将RTP到P4当作Q1；MONP接收port TBD、位置IE条件及话权内部许可不得借组呼、Video或旧24.380主题补齐。"
     }
   ]
 }
