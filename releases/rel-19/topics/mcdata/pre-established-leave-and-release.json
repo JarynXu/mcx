@@ -30,7 +30,7 @@
     {
       "id": "pf-leave200-precedes-business-bye-and-terminated-feedback",
       "conditions": [
-        "PF收到客户端REFER，Refer-To的URI中method=BYE，且本段身份绑定条件满足。"
+        "PF收到客户端REFER，Refer-To的URI中method=BYE，进入本段身份检查；缺绑定的拒绝分支不要求绑定已满足。仅在前序检查未拒绝并停止时，继续REFER200及业务BYE步骤；收到该业务BYE的200时，才执行对应资源释放和terminated反馈。"
       ],
       "conclusion": "PF从PAI确定用户，找不到所列绑定回404/141停止；按false/norefersub条件不建隐式订阅。PF先回REFER200，再向CF发送以Refer-To中业务session identity为Request-URI的BYE。收到该BYE200后，PF调用媒体过程释放与CF的SIP session相关资源，并向预建立会话发state=terminated的re-INVITE。因此REFER200、业务BYE200和客户端终止状态通知不是同一证据，业务收尾也没有在这里自动撤销组归属。",
       "clause": "9.2.5.4.2.1;9.2.5.1.2",
@@ -48,7 +48,7 @@
     {
       "id": "remote-business-bye-uses-terminate-request-not-pre-established-bye",
       "conditions": [
-        "PF收到CF针对业务通信的BYE；客户端随后实际满足§9.2.5.4.1.2的接收入口。"
+        "PF分支以收到CF针对业务通信的BYE为入口，不以客户端已收到后续通知为前提；PF收到其所发re-INVITE的2xx时，另执行相应媒体交互。客户端分支独立以实际收到预建立会话内的re-INVITE、该预建立会话没有关联MCData session且state=terminate-request为条件。各角色事件分别适用，不要求同时满足。"
       ],
       "conclusion": "PF先调用媒体过程并向CF回200，再在预建立会话内发state=terminate-request的re-INVITE；该请求2xx后又调用媒体过程。客户端接收段写在“预建立会话没有关联MCData session”的条件下，若state=terminate-request则先回200，再释放对应MCData通信资源。该分支仍通过re-INVITE表达业务终止，并非对预建立会话发送BYE。",
       "clause": "9.2.5.4.2.2;9.2.5.4.1.2;9.2.5.1.2",
@@ -68,7 +68,7 @@
     {
       "id": "destroying-pre-established-session-handles-established-and-pending-business",
       "conditions": [
-        "客户端或PF决定释放预建立会话本身，进入§18.3.3，而非仅执行§9.2.5.4业务离开。"
+        "限§18.3.3释放预建立会话本身，而非仅执行§9.2.5.4业务离开。客户端或PF主动决定释放、PF收到客户端在预建立dialog内发送的BYE、客户端收到PF在预建立dialog内发送的BYE，以及相应BYE响应到达，分别按自身事件和业务状态进入对应分支；被动接收不以接收方已主动决定释放为前提。PF收到远端业务BYE的200与收到其向客户端所发预建立BYE的200，按各自响应分支处理。"
       ],
       "conclusion": "客户端主动销毁时按§13.2.2.2.2.1发BYE。PF收到预建立dialog内BYE后区分：已有业务则调用业务释放helper；业务正在建立则先CANCEL，若远端INVITE200仍到达，还要调用业务释放；没有业务则调用媒体断开并回BYE200。远端业务BYE200到达后，PF分别调用面向远端和客户端的资源释放，再向客户端回200。PF主动销毁则先移除使用该预建立会话的所有MCData calls中的本客户端，再向预建立URI发BYE，收到其200后交互媒体面。不能把对一个业务的leave视为整个预建立会话已销毁。",
       "clause": "18.3.3.1.1/.2;18.3.3.2.1/.2;13.2.2.2.2.1;13.2.2.2.3.1;13.2.3.2.2",

@@ -50,7 +50,7 @@
     {
       "id": "pre-established200-identifies-session-not-business-or-data-success",
       "conditions": [
-        "PF通过预建立准入并生成INVITE200；客户端收到对应2xx。"
+        "PF分支以已通过自身预建立准入、继续构造并发送INVITE200为条件；PF的URI分配、媒体交互、200发送及后续ICE评估不以客户端已收到响应为前提。客户端分支独立以实际收到对应INVITE的2xx为条件，执行自身媒体交互。两个角色入口分别适用，不要求同时满足。"
       ],
       "conclusion": "PF分配标识预建立会话的URI并放入Contact，200还带PF身份、norefersub、SDP answer；SIP core支持共享时才加入Resource-Share answer及逐媒体流共享规则。PF先调用24.582媒体过程，再发送200，然后评估ICE候选；若选中非默认候选对，还需要§18.3.4的后续offer/answer。客户端收到2xx后也调用媒体过程。这个200证明的是该预建立事务进入成功分支，不能代替后续REFER触发的业务建立结果或逐消息送达。",
       "clause": "18.3.2.2 steps8–12 andNOTE;18.3.2.1 2xx procedure;18.3.1.1/.2",
