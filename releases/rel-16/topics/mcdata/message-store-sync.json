@@ -1,0 +1,141 @@
+{
+  "topic_id": "r16-mcdata-message-store-sync",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCData 消息存储：收到同步通知，哪些对象已经回到终端？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 23.282 V16.8.0，Release 16，Stage 2；限存储客户端的本地消息存储与 MCData 消息存储之间，针对该用户的通知及同步。"
+  ],
+  "claims": [
+    {
+      "id": "notification-scope",
+      "title": "收到通知时知道什么",
+      "conditions": [
+        "MCData 用户在消息存储有账户；消息存储与存储客户端已成功完成认证和授权。"
+      ],
+      "conclusion": "消息存储收到该用户需要同步的新对象并决定通知时，向存储客户端发送同步通知。通知表只列接收通知的用户的 MCData ID（必填）。",
+      "normative_strength": "流程描述服务端主动通知；如何决定需要发送通知，明确不在本规范范围。",
+      "limitations": [
+        "不能据通知确定对象的标识、数量或内容，也不能认定客户端已经请求、接收或写入对象。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.17.1–2, notification preconditions, Figure 7.13.3.17.2-1, steps 1–2 and note after step 1"
+          ],
+          "printed_pages": [
+            162,
+            163
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.31, Table 7.13.3.1.31-1, addressee of synchronization notification"
+          ],
+          "printed_pages": [
+            148
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "client-sync-request",
+      "title": "谁请求同步，部分同步何时须给筛选条件",
+      "conditions": [
+        "存储客户端要使本地消息存储与 MCData 消息存储同步；双方已成功完成认证和授权。"
+      ],
+      "conclusion": "由存储客户端向消息存储发送请求，用户的 MCData ID 与同步类型均为必填。同步类型可以是全量或部分。筛选条件指定要同步哪类对象；其状态栏为 O，但部分同步时表注要求该字段必须存在。",
+      "normative_strength": "仅当类型为部分时，表注把一般可选的筛选条件变为必填；不可把过程描述中的“可选”脱离表注解读。",
+      "limitations": [
+        "没有先收通知这一明列前提。部分请求缺筛选不能据此解释为全量或断言服务端返回何种错误；全量不因本表注而须附筛选。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.9, Table 7.13.3.1.9-1 including the filter-criteria note"
+          ],
+          "printed_pages": [
+            143
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.6.1–2, synchronization precondition, Figure 7.13.3.6.2-1 and steps 1–2"
+          ],
+          "printed_pages": [
+            151,
+            152
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "response-objects-and-limits",
+      "title": "怎样读响应里的对象、空字段和本地状态",
+      "conditions": [
+        "消息存储针对该用户的本次同步请求作出响应。"
+      ],
+      "conclusion": "消息存储按本次请求筛选，向客户端返回符合条件且需要同步的全部已存对象本身。响应中用户的 MCData ID、已存对象字段均为必填；对象字段存在但为空表示本次没有对象需要同步，字段缺失不等同于空字段。",
+      "normative_strength": "过程止于消息存储返回同步响应。判断终端收到了哪些对象，须有相应的接收证据。",
+      "limitations": [
+        "响应不能证明本地已写入或其他终端已一致；空值不证明账户没有任何已存对象。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.10, Table 7.13.3.1.10-1, mandatory elements and empty stored-objects element"
+          ],
+          "printed_pages": [
+            143
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.6.1–2, synchronization precondition, Figure 7.13.3.6.2-1 and steps 1–2"
+          ],
+          "printed_pages": [
+            151,
+            152
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcdata-stored-object-lookup",
+    "r16-mcdata-deferred-group-list"
+  ],
+  "limitations": [
+    "不推导协议编码、错误码、通知调度、本地写入或设备间一致性。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
