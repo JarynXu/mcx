@@ -1,0 +1,200 @@
+{
+  "topic_id": "r16-mcdata-sds-session-media-server",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "clause-checked",
+  "title": "私聊 SDS 会话媒体：服务器路径、绑定与逐跳响应",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.582-v16.3.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "固定TS24.582 V16.3.0（2021-01）和TS24.282 V16.13.0（2026-02），普通在网直接ID按需one-to-one SDS session；不含standalone、组、MBMS、预建立会话或HTTP FD。",
+    "按实际服务器角色、部署及连接/接收事件分别适用，不把SIP200、MSRP连接已成功或远端数据交付作为全部声明的共同成功前提。这里解释已规定的局部职责，不承诺端到端可运行或完整失败恢复。",
+    "保护仍按24.582 §10.1–10.3.4的实际协商/配置适用。PF/CF转发受保护的media information不额外执行该安全框架动作；对受保护media control则分别按客户端侧CSK和服务器侧SPK解密、完整性检查及条件重保护。不能把两类内容混成服务器任意解密用户数据；密钥派生和密码实现仍依赖33.180。"
+  ],
+  "common_source_references": [
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "4.2;5.1.1;10.1–10.3.4"
+      ],
+      "printed_pages": [
+        11,
+        12,
+        33,
+        34,
+        35,
+        36
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "id": "actual-media-path-and-signalling-entry",
+      "title": "按实际部署和信令事件进入媒体程序",
+      "conditions": [
+        "处理普通私聊 SDS session 的服务器媒体路径，或相应服务器实际到达24.282规定的媒体调用事件；各角色事件分别适用。"
+      ],
+      "conclusion": "媒体面客户端与 CF 都是 MSRP client。PF 只有作为独立实体实际处于 CF 与客户端之间时才作为 MSRP relay；不能因信令经过 PF 就推定每条媒体路径必有一个独立 relay。CF 可与零个、一个或多个 PF 通信；PF 与 CF 同机时，CF 可执行该 PF 的职责，此时两者作为单一实体。24.282 的 PF SDP helper 仅在需要时替换媒体 IP/port，替换 IP 才前插自己的 MSRP URI；同机且 PF 没有专用媒体 IP 或 port 时省略替换。O-PF 收到所发 INVITE 的200时调用6.2.2.4，T-PF收到所发INVITE的200时调用6.2.2.5。CF 在私聊请求通过前序且恰有一个目标时邀请目标并调用6.3.2；邀请helper实际收到200又明确调用6.3.2。这些调用点不证明 MSRP 已经绑定，也不能据此自行规定重复初始化次数。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "5.1.1;6.2.2.1"
+          ],
+          "printed_pages": [
+            11,
+            12,
+            22
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "clauses": [
+            "9.2.4.3.1–2;9.2.4.3.3 response step10;9.2.4.3.4 response step9"
+          ],
+          "printed_pages": [
+            132,
+            134,
+            136
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "clauses": [
+            "9.2.4.4.3 response event;9.2.4.4.4 steps1–7"
+          ],
+          "printed_pages": [
+            138,
+            139
+          ]
+        }
+      ],
+      "normative_strength": "媒体角色及条件成立后的规定动作是 SHALL；同机 CF 执行 PF 职责是 MAY；PF 地址改写仅在 if required 条件下适用。",
+      "limitations": [
+        "本页没有重新定义 SIP 分类、用户资格或目标发现；媒体调用不能越过实际信令准入。PF存在于信令域、独立媒体relay和同机单一实体是不同判断。",
+        "24.282分别有邀请后和收到200的CF调用点；本页不把两者拼成必须先完成所有媒体连接才回200的算法。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "cf-connection-binding-and-forwarding",
+      "title": "CF 的连接绑定、局部应答与转送",
+      "conditions": [
+        "CF实际执行本页媒体连接程序；或CF实际收到来自 originating PF 的 MSRP SEND。转送只针对已成功建立 MSRP 连接的目标，接收处理不以目标已经交付数据为前提。"
+      ],
+      "conclusion": "朝主叫一侧，CF按6.3.2.2.1与存在的O-PF建立TLS连接，否则与主叫客户端建立；CF作为passive等待已建立连接上的SEND以完成绑定。朝终接一侧，CF与存在的T-PF建立TLS连接，否则与终接客户端建立；按收到的SDP answer，passive对应CF active，active对应CF passive，CF作为active时向已建立连接发空SEND用于绑定。收到来自O-PF的SEND后，6.3.2.3先生成并返回MSRP200，再向已有成功MSRP连接的终接客户端转送；To-Path按该客户端answer SDP里的MSRP URI修改，From-Path改为CF自己的MSRP URI。200只表明这一跳的响应，不等于目标已接收、应用已交付或用户已读。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.3.2.1–6.3.2.3"
+          ],
+          "printed_pages": [
+            25,
+            26
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "clauses": [
+            "9.2.4.4.1–2 (SDP dependency)"
+          ],
+          "printed_pages": [
+            136,
+            137
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.3.1.3 steps1–5 (standalone comparison-only)"
+          ],
+          "printed_pages": [
+            24,
+            25
+          ]
+        }
+      ],
+      "normative_strength": "CF连接、绑定和收到指定来源SEND后的应答/转送为 SHALL；仅向连接已成功的目标转送。",
+      "limitations": [
+        "建连条款明确允许PF不存在时直连客户端，但6.3.2.3接收事件字面仍写来自originating PF。本文保留这个接口边界，不替原文补直接客户端输入、双向角色重置或完整直连逐消息算法。",
+        "CF的SDP offer允许TCP/MSRP或TCP/TLS/MSRP，媒体建连段却明确写TLS。两段分别保留，本页不裁决非TLS实现是否可由此闭合。",
+        "session 的6.3.2.3没有重复standalone的服务级大小检查与403段，也没有在此列出终接错误的完整回程。不能搬standalone规则补成session算法，也不能由未列出推断可绕过客户端逐消息许可。",
+        "此处的answer SDP措辞是CF转送规则；不能用客户端发送程序的received SDP澄清来改写CF。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "pf-relay-and-response-evidence",
+      "title": "独立 PF 的连接与转发不等于终端交付",
+      "conditions": [
+        "PF作为独立实体实际处于媒体路径，执行对应O-PF或T-PF连接程序，或实际收到该角色列出的SEND/响应。请求与响应是替代事件，不要求所有角色同时完成。"
+      ],
+      "conclusion": "PF接收侧依自己发送的SDP answer建立连接，setup为passive/active时分别按同名端点角色处理；发送侧依收到的answer建立连接，并取相反的active/passive角色。O-PF朝主叫使用接收helper，朝CF使用发送helper；T-PF朝CF使用接收helper，朝终接使用发送helper，这四个角色连接入口均写should。O-PF收到主叫SEND时，若尚无到CF的连接则建立，否则复用，然后转发；实际收到CF的MSRP200或错误响应时，分别转发给主叫。T-PF收到CF的SEND时先生成MSRP200给CF，再转发给终接；收到终接错误响应时，原文要求转发给主叫客户端。因此T-PF已返回200不排除随后终接失败，更不证明交付或阅读。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.2.2.2–6.2.2.5.3"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.2.1.4.3 (standalone originating size gate comparison-only)"
+          ],
+          "printed_pages": [
+            21
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.1.2.4 (client per-message permission boundary)"
+          ],
+          "printed_pages": [
+            18
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.4.1"
+          ],
+          "printed_pages": [
+            26
+          ]
+        }
+      ],
+      "normative_strength": "四个角色连接入口为 SHOULD；接收/发送helper本身、O-PF缺连接时建连及规定转发/响应为 SHALL，不能全页统一降为SHOULD。",
+      "limitations": [
+        "T-PF错误响应的目的地原文直接写 originating MCData client，本页不擅改为CF，也不补逐跳错误回程。该段没有单列终接成功200回程，不能据此宣称全链确认已闭合。",
+        "session O-PF段没有standalone O-PF的MacData1To1检查及403停止段；不自动移植。客户端6.1.2.4的逐消息门槛仍是另一责任，信令建会成功不免除它。",
+        "MSRP relay的完整路由、分块、响应和失败恢复继续依赖RFC4975/4976/6135。服务器发送多个MIME body时仍须6.4.1的multipart/mixed及边界格式，单个body使用对应Content-Type；这不是可省略保护的许可。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

@@ -1,6 +1,6 @@
 # Release 16
 
-当前仅覆盖六项固定规范版本的 Stage 3 局部流程，整版尚未完成。
+当前仅覆盖七项固定规范版本的局部范围，包括独立的 Stage 2 功能解释和 Stage 3 程序，整版尚未完成。
 
 - [普通按需私呼：客户端应答与建立证据](topics/calls/private-client-answer-evidence.md)：TS 24.379 V16.14.0。
 - [普通私聊 SDS 控制面：发送资格、请求与接收证据](topics/mcdata/sds-control-client.md)：TS 24.282 V16.13.0。
@@ -24,6 +24,10 @@
 - [私聊 SDS 会话：服务器准入、目标邀请与响应证据](topics/mcdata/sds-session-server.md)：按该主题网络模式、角色和实际事件读取。
 - [普通离网组呼：探测、加入与本地退出](topics/calls/offnetwork-group-client.md)：按该主题网络模式、角色和实际事件读取。
 - [私聊 SDS 会话媒体：连接、逐条发送与收件证据](topics/mcdata/sds-session-media-client.md)：按该主题网络模式、角色和实际事件读取。
+
+- [私聊 SDS 会话媒体：服务器路径、绑定与逐跳响应](topics/mcdata/sds-session-media-server.md)：Stage 3，仅对应职责与事件。
+- [在网 MCVideo 接收客户端：通知、接收许可与结束](topics/mcvideo/reception-client-permission-and-end.md)：Stage 3，仅对应职责与事件。
+- [MCData 服务能力与功能角色](topics/mcdata/service-capability-and-functional-roles.md)：Stage 2，仅对应职责与事件。
 
 先读主题共同条件，再按实际角色与事件选取结论；不把拒绝、应答、取消或后续数据处理拼成同时必备的条件。这些主题均不构成完整端到端实现，也不证明版本组合互通。
 

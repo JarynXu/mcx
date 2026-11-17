@@ -103,7 +103,12 @@
       "id": "r16-mcdata-sds-session-client",
       "question": "私聊 SDS 会话：客户端建立、应答与结束证据",
       "start": "topics/mcdata/sds-session-client.md",
-      "next_if": [],
+      "next_if": [
+        {
+          "condition": "实际到达主叫成功响应或终接ACK媒体调用，并满足客户端媒体主题的网络模式、角色与事件条件",
+          "read": "topics/mcdata/sds-session-media-client.md"
+        }
+      ],
       "boundary": "不覆盖完整服务器链、MSRP媒体实现、全部通知送达或跨版本互通。"
     },
     {
@@ -124,7 +129,12 @@
       "id": "r16-mcdata-sds-session-server",
       "question": "私聊 SDS 会话：服务器准入、目标邀请与响应证据",
       "start": "topics/mcdata/sds-session-server.md",
-      "next_if": [],
+      "next_if": [
+        {
+          "condition": "实际到达本角色 PF/CF 的媒体调用事件，并满足媒体服务器页所列角色、实际部署及连接或接收事件条件时读取；不由任意 SIP 200 推定媒体已绑定，也不要求所有 PF 都是独立媒体 relay",
+          "read": "topics/mcdata/sds-session-media-server.md"
+        }
+      ],
       "boundary": "不覆盖完整SIP、MSRP、安全实现或组/预建立会话。"
     },
     {
@@ -138,8 +148,34 @@
       "id": "r16-mcdata-sds-session-media-client",
       "question": "私聊 SDS 会话媒体：连接、逐条发送与收件证据",
       "start": "topics/mcdata/sds-session-media-client.md",
-      "next_if": [],
+      "next_if": [
+        {
+          "condition": "实际部署中的PF/CF处于媒体路径，且需要判断对应连接或接收事件；不是所有会话必经独立relay",
+          "read": "topics/mcdata/sds-session-media-server.md"
+        }
+      ],
       "boundary": "不覆盖组、standalone、HTTP FD、MBMS、完整RFC和密码算法；所列CSK/CPK字面差异保留。"
+    },
+    {
+      "id": "r16-mcdata-sds-session-media-server",
+      "question": "私聊 SDS 会话媒体：服务器路径、绑定与逐跳响应",
+      "start": "topics/mcdata/sds-session-media-server.md",
+      "next_if": [],
+      "boundary": "不覆盖完整端到端错误返回、失败恢复、SIP/MSRP/RFC或密码实现；T-PF错误目的地与直接客户端接收边界保留。"
+    },
+    {
+      "id": "r16-mcvideo-reception-client-permission-and-end",
+      "question": "在网 MCVideo 接收客户端：通知、接收许可与结束",
+      "start": "topics/mcvideo/reception-client-permission-and-end.md",
+      "next_if": [],
+      "boundary": "不覆盖普通私呼Reception Mode配置生产、服务端仲裁、完整报文编码或媒体呈现实现；不以组模式补齐。"
+    },
+    {
+      "id": "r16-mcdata-service-capability-and-functional-roles",
+      "question": "MCData 服务能力与功能角色",
+      "start": "topics/mcdata/service-capability-and-functional-roles.md",
+      "next_if": [],
+      "boundary": "不覆盖Stage 3信令/媒体实现、DS协议完成度、完整授权算法或从架构图推导的物理拓扑。 能力存在不代表部署已启用；不自动进入任何Stage 3流程。"
     }
   ]
 }
