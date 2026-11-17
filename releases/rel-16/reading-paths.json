@@ -141,7 +141,12 @@
       "id": "r16-calls-offnetwork-group-client",
       "question": "普通离网组呼：探测、加入与本地退出",
       "start": "topics/calls/offnetwork-group-client.md",
-      "next_if": [],
+      "next_if": [
+        {
+          "condition": "实际到达该离网呼叫角色的话权初始化或后续话权事件，且满足普通基本话权页的当前状态、消息/用户/计时器及适用配置条件时读取；不是所有呼叫事件必经，不将组配置套给私呼",
+          "read": "topics/calls/offnetwork-floor-participant.md"
+        }
+      ],
       "boundary": "不覆盖紧急、迫近危险、广播、并发呼叫合并、完整离网话权仲裁或ProSe安全实现。"
     },
     {
@@ -188,8 +193,34 @@
       "id": "r16-calls-offnetwork-private-manual-client",
       "question": "普通离网私呼：手动应答、建立证据与退出",
       "start": "topics/calls/offnetwork-private-manual-client.md",
-      "next_if": [],
+      "next_if": [
+        {
+          "condition": "实际到达该离网呼叫角色的话权初始化或后续话权事件，且满足普通基本话权页的当前状态、消息/用户/计时器及适用配置条件时读取；不是所有呼叫事件必经，不将组配置套给私呼",
+          "read": "topics/calls/offnetwork-floor-participant.md"
+        }
+      ],
       "boundary": "不覆盖自动应答、紧急升级降级、并发仲裁、ProSe/密码实现或完整离网话权仲裁；不自行裁决传输接口与正文/图表差异。"
+    },
+    {
+      "id": "r16-mcdata-group-sds-control-client",
+      "question": "预安排组 standalone SDS 控制面：客户端发送、接收与处置",
+      "start": "topics/mcdata/group-sds-control-client.md",
+      "next_if": [],
+      "boundary": "不覆盖组服务器分发、组媒体、回执聚合或已发送消息撤回；不能接入private-only服务器/媒体页补齐。"
+    },
+    {
+      "id": "r16-mcvideo-prearranged-group-client-establishment",
+      "question": "普通按需 MCVideo 预安排组呼：客户端请求、应答与媒体初始化",
+      "start": "topics/mcvideo/prearranged-group-client-establishment.md",
+      "next_if": [],
+      "boundary": "不覆盖完整组服务器汇聚、重入、逐路媒体许可、排队或释放；不解除旧private-only条件，不用Stage2填补mc_granted消费。"
+    },
+    {
+      "id": "r16-calls-offnetwork-floor-participant",
+      "question": "离网话权：请求、排队确认、发送与交接",
+      "start": "topics/calls/offnetwork-floor-participant.md",
+      "next_if": [],
+      "boundary": "不覆盖抢占、特殊优先级、多发言者或完整媒体实现；本地许可不证明全网独占，首次队列通知身份生产/消费差异未闭合。"
     }
   ]
 }

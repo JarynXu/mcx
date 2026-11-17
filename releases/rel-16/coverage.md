@@ -62,6 +62,16 @@ PF/CF 的模式选择和响应仅限正文所列依赖；客户端事件分别�
 
 [读取主题](topics/calls/offnetwork-private-manual-client.md)
 
+## 离网话权：请求、排队确认、发送与交接
+
+普通离网话权的请求竞争、排队确认、本地发送许可与交接。
+
+从实际离网呼叫初始化及话权状态进入；self-grant、用户确认、对端RTP分别判断。
+
+尚未建立：不覆盖抢占、特殊优先级、多发言者或完整媒体实现；本地许可不证明全网独占，首次队列通知身份生产/消费差异未闭合。
+
+[读取主题](topics/calls/offnetwork-floor-participant.md)
+
 ## 普通私聊SDS控制面：发送资格、请求与接收证据
 
 发送资格、控制面选择、直接目标请求与接收响应的证据。
@@ -152,6 +162,16 @@ Stage 2服务能力与功能角色，以及文件存储和消息历史的职责�
 
 [读取主题](topics/mcdata/service-capability-and-functional-roles.md)
 
+## 预安排组 standalone SDS 控制面：客户端发送、接收与处置
+
+预安排组standalone SDS控制面客户端许可、请求、接收与处置。
+
+发送、接收与通知按各自事件适用；200不证明全组送达，组保护不套私聊PCK。
+
+尚未建立：不覆盖组服务器分发、组媒体、回执聚合或已发送消息撤回；不能接入private-only服务器/媒体页补齐。
+
+[读取主题](topics/mcdata/group-sds-control-client.md)
+
 ## 普通按需 MCVideo 私呼：客户端请求、应答与结果证据
 
 普通MCVideo私呼客户端请求、拒绝、应答、结果和取消证据。
@@ -201,6 +221,16 @@ Stage 2 功能与信息流说明不替代 Stage 3；许可、媒体可用、实�
 尚未建立：不覆盖完整 Stage 3 流程、模式选择、报文构造、媒体呈现或安全实现；可选调度、获准后通知与排队能力不变成每次强制动作。
 
 [读取主题](topics/mcvideo/functional-media-control-roles.md)
+
+## 普通按需 MCVideo 预安排组呼：客户端请求、应答与媒体初始化
+
+普通按需预安排MCVideo组呼客户端请求、应答模式及有限媒体初始化。
+
+收到的Answer-Mode与对应本地条件共同限定helper；初始化不证明已获逐路媒体许可。
+
+尚未建立：不覆盖完整组服务器汇聚、重入、逐路媒体许可、排队或释放；不解除旧private-only条件，不用Stage2填补mc_granted消费。
+
+[读取主题](topics/mcvideo/prearranged-group-client-establishment.md)
 
 ## 显式组归属：本客户端的建立、解除与状态观察
 

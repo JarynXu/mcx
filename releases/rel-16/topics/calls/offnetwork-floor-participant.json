@@ -1,0 +1,306 @@
+{
+  "topic_id": "r16-calls-offnetwork-floor-participant",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "离网话权：请求、排队确认、发送与交接",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "固定TS24.380 V16.9.0的普通离网基本话权。各条按客户端当时状态和实际消息/用户/计时器事件分别适用，不把已排队、已获准或已成功发送设为全页前提。",
+    "排队及持有者非抢占准入中的组配置守卫只在该配置适用时使用，不给私呼补造组配置。本文不覆盖抢占、广播/系统/紧急/危急及多发言者流程。",
+    "主题回答何时取得本地发送许可、排队与授予的证据差别、持有者交接和释放职责；不是全网互斥证明或完整字段生产链实现。首次队列通知与接收字段存在明确差异，局部有效输入不证明上游必然生成。"
+  ],
+  "claims": [
+    {
+      "id": "request-compete-and-local-permission",
+      "title": "请求、竞争与本地发送许可",
+      "conditions": [
+        "替代入口：O: silence 或 O: has no permission 中用户请求发送；O: pending request 收到相关消息、T201到期或用户撤回。响应字段和SSRC守卫分别适用，不要求先成功获得权限。"
+      ],
+      "conclusion": "用户请求时发送带自己User ID的Floor Request，必要时携带非默认Floor Priority，C201=1并启动T201进入pending request；silence入口还停止T230。T201未到C201上限时重发、重启并递增；到上限时发送含自己ID及SSRC的Floor Taken，把当前仲裁者SSRC设为自己，停止仍运行的T203并进入has permission。竞争会影响这一路径：收到更高优先级请求，或同优先级但更高SSRC请求，重置C201=1并重启T201；收到Taken也更新当前仲裁者并重置等待。有效RTP按无current、匹配current或匹配candidate分支渲染并重置C201、更新T203，仍pending。Floor Granted的User ID须匹配自己，且发送者匹配current、无current、或匹配candidate三种分支之一，才停止T201/T203、把current置己并进入has permission；candidate分支还清candidate。Floor Deny按相同三类身份入口停止T201、通知拒绝、更新T203并转has no permission。用户撤回则发Release，停T201和仍运行的T203，启动T230、清current并转silence。",
+      "limitations": [
+        "本地has permission不证明全网无并发发送；T201不是按固定次数无条件走完，竞争/RTP/Taken都可改变等待。",
+        "匹配current的Granted分支明确停止渲染；无current和candidate分支未列同一动作，不能统一补齐。授予通知是MAY，拒绝通知是SHALL而拒绝原因展示是MAY。",
+        "T201默认40ms、C201默认上限3且可配置；计数表上限明确发Taken，不能搬用在网超时失败规则。收到给他人的Granted仍留pending并更新candidate/C201/T201/T203，不是获得自己的许可。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.3.1–2",
+            "7.2.3.4.1–2",
+            "7.2.3.6.1–2",
+            "7.2.3.6.4–11",
+            "8.2.4 (request purpose and identity)",
+            "8.2.5 (Granted identity)",
+            "8.2.6.1",
+            "11.1.2 T201/T203",
+            "11.2.2 C201"
+          ],
+          "printed_pages": [
+            125,
+            126,
+            127,
+            132,
+            133,
+            134,
+            135,
+            136,
+            137,
+            138,
+            161,
+            162,
+            163,
+            164,
+            214,
+            223
+          ]
+        }
+      ],
+      "normative_strength": "发送、计时、身份更新和状态转移为SHALL；授予/他人占用提示和拒绝原因展示为MAY。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "queue-input-and-confirmation",
+      "title": "排队、获准通知与用户确认是三个证据",
+      "conditions": [
+        "替代入口：pending request 收到Queue Position Info；queued收到Granted/Deny/队列更新、用户发送/撤回、T233/T203/T204事件。各入口使用自己实际字段与SSRC守卫。"
+      ],
+      "conclusion": "pending的队列通知须Queued User ID匹配自己，并满足发送方current匹配、无current或candidate匹配三种分支；更新队列、停止T201后进入queued，位置提示可选。queued收到给自己的Granted且发送者匹配current或candidate时，停止渲染、必要时启动T233并通知用户，仍在queued；candidate分支还将current置己并清candidate。只有用户表示要发送且T233正在运行时，才停T204（若运行）及T233、把current置己并进入has permission。T233到期停仍运行的T204、启动T230并转silence。queued用户撤回发送Release，停止仍运行的T204/T233并转has no permission；收到匹配自己且来自current或candidate的Deny亦停止这两个计时器、通知拒绝并转has no permission。queued中T203到期则停止渲染、重新发Request，停T204、C201=1并启动T201，清current、转pending。",
+      "limitations": [
+        "首次排队消息能否提供本入口需要的Queued User ID存在下节所述生产/消费差异；这里只说明实际满足守卫的输入如何处理，不能证明上游必定生成。",
+        "queued位置更新的current分支匹配Queued User ID，candidate分支却字面匹配User ID；不把两者统一。两支均SHALL通知、停T204并保持queued。",
+        "T233默认3s、最大5s且可配置；T205×C205+T233的等待总时段SHOULD小于T203。收到Granted不等于用户确认，也不等于已经发送RTP。",
+        "用户查询队列启动T204、C204=1；重传递增，达到上限重置C204、启动T230、清current并转silence。正文重传段未另写低于上限，而计时表有该条件，不据此补实现事件优先级。T204默认80ms、C204默认3且可配置。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.6.3",
+            "7.2.3.8.1–13",
+            "8.2.12",
+            "11.1.2 T203/T204/T233",
+            "11.2.2 C204"
+          ],
+          "printed_pages": [
+            133,
+            134,
+            140,
+            141,
+            142,
+            143,
+            144,
+            172,
+            173,
+            214,
+            216,
+            223
+          ]
+        }
+      ],
+      "normative_strength": "状态、计时、queued授予/拒绝及位置更新通知为SHALL；首次入队位置提示与拒绝原因展示为MAY；总等待时间约束为SHOULD。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "holder-admission-and-queue-identity-gap",
+      "title": "持有者仲裁及队列字段边界",
+      "conditions": [
+        "has permission中收到按§4.1.1.5判为非抢占的Request，且本条所用组配置适用于当前组呼；或收到队列位置查询。私呼不能凭本页自动取得这些组配置。"
+      ],
+      "conclusion": "持有者也是当前话权仲裁者。QueueUsage=false，或QueueUsage=true但请求F-bit=0或没有Floor Indicator时，发送Deny cause1并保留权限。QueueUsage=true且F-bit=1时，不重复保存已有请求；队列未满发Queue Position Info，满则Deny cause7，保持has permission。该首次通知构造将请求者ID写入User ID；但§8.2.12定义User ID为通知发送者、Queued User ID为排队者，接收§7.2.3.6.3又要求Queued User ID匹配自己。首次构造没有在该步骤列出Queued User ID，不能据局部构造声明队列入口已闭合。响应显式Queue Position Request的§7.2.3.5.8另行明确自己的ID放User ID、请求者ID放Queued User ID，不能把它倒灌为首次通知的修订。",
+      "limitations": [
+        "非抢占资格来自有效优先级规则而非仅普通呼叫名称；本页不展开抢占算法。QueueUsage与F-bit的AND/OR保留，字段缺失不能写成支持排队。",
+        "先保存未存请求、再按队列满否发消息是正文列出的顺序；不能自行增加满队列回滚、排序或把所有已保存项当已通知。",
+        "接收者能否从首次通知读到所需身份仍是接口边界，不用字段定义或显式查询响应暗中补写首次通知。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "4.1.1.5",
+            "7.2.3.5.1",
+            "7.2.3.5.3–4",
+            "7.2.3.5.8",
+            "7.2.3.6.3 (consumer comparison)",
+            "8.2.6.2 causes1/7",
+            "8.2.12"
+          ],
+          "printed_pages": [
+            21,
+            22,
+            128,
+            129,
+            130,
+            131,
+            133,
+            134,
+            164,
+            165,
+            172,
+            173
+          ]
+        }
+      ],
+      "normative_strength": "拒绝、条件存储和队列消息为SHALL；附加拒绝解释文字为MAY。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "send-and-end-own-transmission",
+      "title": "获得许可后发送与结束自己的发言",
+      "conditions": [
+        "替代入口：has permission收到编码媒体或已有缓冲媒体；用户结束发言；不再收到编码媒体且存在排队请求；T206/T207到期。队列守卫仅约束相应分支。"
+      ],
+      "conclusion": "has permission收到或已有编码媒体时，若T206未运行则启动它，并请求客户端开始发送RTP。T206到期可提示即将超时，启动T207且保持状态。无排队的用户结束分支停仍运行的T206/T207，发送含自己ID的Release、启动T230、清current并转silence。有排队且不再收到编码媒体时，则停止相关计时器和RTP发送，把队首ID/SSRC写入Granted并移除队首，随消息带其余队列身份/位置/优先级，将current改为被授予者，启动T205、C205=1，转pending granted。T207到期且至少存有请求也执行向队首授予和停止发送；T207到期无待处理请求，或QueueUsage=false的条文分支发送Release、启动T230、清current并转silence。",
+      "limitations": [
+        "只有许可状态并不足以证明已收到编码媒体；发送动作另有实际媒体输入。",
+        "无排队用户释放条款的正文只把“无队列”显式放在发送Release步骤，标题限定无排队。本页按该有界分支解释，不令其与有队列交接同时执行。T207的“无队列 OR QueueUsage=false”不改为AND。",
+        "无排队释放/超时段未像有队列分支一样列显式stop-sending-RTP动作；不能为统一流程补原文没有的步骤。T206默认27s、T207默认3s且取配置，不是固定部署时长。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.5.1–2",
+            "7.2.3.5.5–6",
+            "7.2.3.5.9–11",
+            "8.2.5",
+            "8.2.7 (message purpose)",
+            "11.1.2 T206/T207"
+          ],
+          "printed_pages": [
+            128,
+            129,
+            130,
+            131,
+            132,
+            162,
+            163,
+            165,
+            215
+          ]
+        }
+      ],
+      "normative_strength": "媒体发送请求、状态、计时和交接构造为SHALL；T206预警通知为MAY。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "handover-is-not-remote-transmission",
+      "title": "交出权限后仍须观察接管证据",
+      "conditions": [
+        "pending granted中收到RTP/Request/Release、T205/T233到期或用户再次按PTT；所有条件按各事件独立适用。"
+      ],
+      "conclusion": "pending granted是在等另一客户端接任仲裁者，不是原持有者继续发送的许可。收到与保存current相同SSRC的RTP时，请求渲染，停止仍运行的T205/T233，启动T203并转has no permission。T205未到C205上限重发Granted、递增并重启；到上限有队列则重置C205、启动T233并继续等，无队列则重置、启T230、清current并转silence。T233到期有队列则授予下一队首，更新current、T205/C205，保持pending granted；无队列则发Release、启T230、清current并转silence。此状态用户按PTT仅可收到拒绝提示并保持；来自当前被授予者的Request触发Granted重发和C205递增，其他SSRC的Request收到cause1拒绝。匹配队列User ID的Release移除对应项但保持状态。",
+      "limitations": [
+        "发Granted不是对端已确认或RTP已到达；队列用户仍可能等待自己的T233确认。",
+        "T205默认80ms、C205默认上限4且可配置。pending granted重发Grant时的完整字段仍依消息定义，不能以局部列出的队列字段当完整编码。",
+        "旧仲裁者的pending granted和新用户queued是不同客户端的不同状态，不能把二者T233当成同一个实例。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.7.1–10",
+            "7.2.3.8.6–8 (other-client comparison)",
+            "8.2.5",
+            "11.1.2 T205/T233",
+            "11.2.2 C205"
+          ],
+          "printed_pages": [
+            138,
+            139,
+            140,
+            142,
+            143,
+            162,
+            163,
+            215,
+            216,
+            223
+          ]
+        }
+      ],
+      "normative_strength": "RTP处理、计时、重发、队列推进及拒绝为SHALL；本地按PTT拒绝提示及附加拒绝解释为MAY。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "initialization-and-call-release",
+      "title": "初始化许可、发言结束与呼叫释放不能混用",
+      "conditions": [
+        "替代入口：无活动话权会话时的主叫/终接初始化；silence的T230到期；或除Start-stop外任一基本状态收到应用与信令面的呼叫释放。"
+      ],
+      "conclusion": "初始化主叫按§7.2.1进入has permission；终接组呼进入silence，终接私呼进入has no permission，不能把前者隐式许可套到每个终接用户。额外主叫Floor Granted构造仍受§7.2.3.2.2的explicit floor request条件约束。silence的T230到期通知呼叫控制、销毁话权实例并回Start-stop；话权停止可能导致呼叫结束，但不等于所有发言释放都会结束呼叫。实际呼叫释放事件则停止控制消息，要求停止发送/接收RTP，释放资源和运行计时器，销毁话权状态机并回Start-stop。",
+      "limitations": [
+        "本页从实际状态/事件解释局部责任，不保证首次队列通知字段链或全网竞争已经闭合。初始化调用点由离网组呼/私呼主题负责。",
+        "T230默认600s且可配置，SHOULD大于T203；组/私呼分别取自己的HangTime配置。没有该状态处理程序的控制消息或RTP丢弃并保持，格式错误忽略且不改状态。",
+        "不扩抢占、广播/紧急/危急、多发言者或完整媒体加密与传输实现；不能由这种边界省略本页列出的竞争和身份守卫。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.1",
+            "7.2.2",
+            "7.2.3.1",
+            "7.2.3.2.1–4",
+            "7.2.3.3.7",
+            "7.2.3.9",
+            "11.1.2 T203/T230"
+          ],
+          "printed_pages": [
+            120,
+            121,
+            122,
+            123,
+            126,
+            144,
+            145,
+            214,
+            216
+          ]
+        }
+      ],
+      "normative_strength": "初始化、停止、清理和未处理输入动作按SHALL；T230相对T203的配置关系为SHOULD，话权终止引发呼叫终止为may。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [],
+  "limitations": [
+    "普通业务也必须按实际状态、身份和竞争事件判断，不把在网话权失败处理迁移到离网。"
+  ],
+  "related_topics": [
+    "offnetwork-group-client.md",
+    "offnetwork-private-manual-client.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

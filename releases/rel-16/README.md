@@ -32,6 +32,10 @@
 - [MCVideo 功能职责：会话、传输接收控制与媒体分发](topics/mcvideo/functional-media-control-roles.md)：Stage 2，按对应业务及网络模式读取。
 - [普通离网私呼：手动应答、建立证据与退出](topics/calls/offnetwork-private-manual-client.md)：Stage 3，按对应业务及网络模式读取。
 
+- [预安排组 standalone SDS 控制面：客户端发送、接收与处置](topics/mcdata/group-sds-control-client.md)：仅对应网络模式、业务对象及事件。
+- [普通按需 MCVideo 预安排组呼：客户端请求、应答与媒体初始化](topics/mcvideo/prearranged-group-client-establishment.md)：仅对应网络模式、业务对象及事件。
+- [离网话权：请求、排队确认、发送与交接](topics/calls/offnetwork-floor-participant.md)：仅对应网络模式、业务对象及事件。
+
 先读主题共同条件，再按实际角色与事件选取结论；不把拒绝、应答、取消或后续数据处理拼成同时必备的条件。这些主题均不构成完整端到端实现，也不证明版本组合互通。
 
 [业务域](domains.json) · [主题索引](topics.json) · [条件阅读路径](reading-paths.json) · [覆盖边界](coverage.md) · [来源](sources.json) · [状态](status.json)
