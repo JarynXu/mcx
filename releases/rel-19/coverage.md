@@ -245,6 +245,14 @@
 
 固定来源及具体条款以主题为准。
 
+### 独立 MCVideo 紧急告警取消
+
+- **能回答：**可查本人或他人取消的许可与对象字段、PF/CF 实际调用入口、指定告警缓存，以及本人回执和接收者通知的不同状态动作。
+- **只到条件或接口：**本系统在网预安排组、请求用户已授权且已归属、无 ongoing 组会话且不携 emergency-ind；这是本页范围，CF 的 alert-ind=false 分派本身不要求 ongoing 会话。各角色与授权结果分别判断。
+- **尚未建立的结论：**不从 MCPTT 移植 ongoing 守卫或权限字段；保留取消授权、通知/回执生成错引和 client-id 构造匹配缺口，不补完整路由、组状态取消、re-INVITE 或全员同步。
+
+入口：[独立紧急告警取消：本人、他人及不同成功证据](topics/mcvideo/standalone-emergency-alert-cancellation.md)。
+
 ## MCPTT通话与话权
 
 [查看本域全部主题](topics-calls.json)
@@ -548,6 +556,14 @@
 - **尚未建立的结论：**不覆盖 UseCurrentlySelectedGroup 的构造缺项、隐式归属、取消、跨系统或完整 SIP/保护/失败恢复；独立指示的身份回指差异保留，不推导组呼建立或用户已读。
 
 入口：[独立组紧急告警：MESSAGE 发起、分发与确认边界](topics/emergency/standalone-group-alert.md)。
+
+### 独立 MESSAGE 取消 MCPTT 组告警
+
+- **能回答：**可查本人或指定他人告警取消的请求字段、PF 身份检查、CF 实际分派与指定缓存清理，以及请求者和通知接收者的状态条件。
+- **只到条件或接口：**各角色分别进入；CF 的明确取消分支要求组已有 ongoing 通话且存在未结告警，客户端与接收者不共同继承这两个守卫。仅取消告警，不附带 emergency-ind=false 的组状态取消。
+- **尚未建立的结论：**无通话纯告警取消的 CF caller 未闭合，不能由客户端可发起就跳入 helper；取消授权回指、通知收件人范围和接收指示身份差异保留，不证明全组同步、通话释放或完整互通。
+
+入口：[独立 MESSAGE 取消组告警：本人、他人与结果条件](topics/emergency/standalone-alert-cancellation.md)。
 
 ## 阅读结果时仍须分开的证据
 
