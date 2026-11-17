@@ -1,0 +1,219 @@
+{
+  "topic_id": "r16-mcdata-group-fd-emergency",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCData：文件正在组内传送，升级或取消紧急状态会停传吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 23.282 V16.8.0，Rel-16 Stage 2；围绕同一次在网媒体面组文件分发。图例中组已预先定义、示例终端已归属该组、全组成员属于同一 MCData 系统；分别按升级或后续取消的实际触发条件判断。"
+  ],
+  "claims": [
+    {
+      "id": "upgrade-trigger",
+      "title": "何时可以把原通信升级为紧急组 FD",
+      "conditions": [
+        "判断授权用户是否可发起图示升级。"
+      ],
+      "conclusion": "仅适用于按 §7.5.2.7 建立且已在进行的媒体面组 FD。用户发起组紧急事件，其客户端置本地紧急状态，保持到显式取消，再向服务器发组 FD 升级请求并置紧急指示。示例发起端已配置在升级时发告警；按该配置，请求还指示发起告警。",
+      "normative_strength": "媒体面建立方式是升级段明示的适用限制；告警指示依配置，不是每次升级固有。",
+      "limitations": [
+        "不能套用于尚未开始的分发、HTTP 文件下载、一对一 FD 或离网组传送。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.12.1, upgrade of an existing group FD communication"
+          ],
+          "printed_pages": [
+            106
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.12.2, media-plane scope, preconditions 1–4 and Figure 7.5.2.12-1"
+          ],
+          "printed_pages": [
+            107
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.12.2, steps 1–2 (local state and request indicators)"
+          ],
+          "printed_pages": [
+            107
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "upgrade-bearer-and-confirmation",
+      "title": "什么会提升，响应能证明什么",
+      "conditions": [
+        "服务器处理组 FD 升级请求。"
+      ],
+      "conclusion": "服务器调整所有或选定单播接收参与者的底层承载优先级，选谁由实现决定。服务器向已归属组员客户端转发升级请求；仅在原请求有告警指示时转带该指示。组员得到组紧急状态通知。接收端确认，在多播场景不发送逐端确认。服务器另向发起端确认，原 FD 以紧急状态继续。",
+      "normative_strength": "步骤 3 及注 2 限定承载范围；步骤 7 的确认可视条件在步骤 3 之后、通信以紧急状态继续之前发生。",
+      "limitations": [
+        "所有组员获知组状态不等于所有承载均提升；服务器确认不必等齐逐端响应，也不是文件完成回执。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.12.2, media-plane scope, preconditions 1–4 and Figure 7.5.2.12-1"
+          ],
+          "printed_pages": [
+            107
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.12.2, steps 3–7, NOTES 2–3, and continuation of the upgraded FD communication"
+          ],
+          "printed_pages": [
+            108
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "cancel-group-not-file",
+      "title": "取消时变的是组状态和优先待遇",
+      "conditions": [
+        "原发起端发起取消；组处于进行中紧急状态并有优先承载支持，组员已获通知，用户有相应取消权限。"
+      ],
+      "conclusion": "客户端发组 FD 优先状态取消请求，复位紧急指示；服务器调整承载，解除紧急优先待遇，复位组状态，向组员的客户端发取消请求，组员获知取消。接收端确认，多播场景不发逐端确认。服务器向发起端确认；原组 FD 在图示流程中继续。",
+      "normative_strength": "图 7.5.2.13-1 明示通信继续；注 3 允许视条件在完成承载调整后确认，不必等齐逐端响应。",
+      "limitations": [
+        "取消不是撤回文件、释放整次通信或确认每位接收者已下载完毕。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.13.1–2, scope and preconditions 1–5"
+          ],
+          "printed_pages": [
+            108
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.13.2, Figure 7.5.2.13-1 and steps 1–6 (group state and bearer; FD continues)"
+          ],
+          "printed_pages": [
+            109
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.13.2, step 7 and NOTE 3 (request condition, local reset and confirmation timing)"
+          ],
+          "printed_pages": [
+            109,
+            110
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "alert-and-local-state",
+      "title": "组取消后，告警和发起者本地状态如何判断",
+      "conditions": [
+        "同一组还有有效告警，或需要判断哪个用户可清除发起者的本地紧急状态。"
+      ],
+      "conclusion": "同组告警在某些情况下可以与组紧急状态一并取消，此时取消请求带相应告警指示。在原发起者本人取消的流程中，若此前请求携带 Alert indicator，发起端收到服务器确认时复位本地紧急状态。其他有权取消组紧急状态的用户，还可能具有另外的告警取消权限；只有发起者可以取消自己的本地紧急状态。",
+      "normative_strength": "一并取消有条件；另获告警取消权限不等于有权代清原发起者的本地状态。",
+      "limitations": [
+        "这些条款没有穷举可同时取消告警的情形；仅凭组状态复位不能断定告警及本地状态也已清除。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.12.2, steps 1–2 (local state and request indicators)"
+          ],
+          "printed_pages": [
+            107
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.13.1–2, scope and preconditions 1–5"
+          ],
+          "printed_pages": [
+            108
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.13.2, Figure 7.5.2.13-1 and steps 1–6 (group state and bearer; FD continues)"
+          ],
+          "printed_pages": [
+            109
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.13.2, NOTES 1–2 (alert and initiator’s local state)"
+          ],
+          "printed_pages": [
+            109
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.13.2, step 7 and NOTE 3 (request condition, local reset and confirmation timing)"
+          ],
+          "printed_pages": [
+            109,
+            110
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [],
+  "limitations": [
+    "本页仅解释固定版本 Stage 2 在网媒体面组 FD 的紧急升级和后续组状态取消，不覆盖迫近危险、部署拓扑、报文编码、承载具体等级或文件完整交付。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
