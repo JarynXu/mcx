@@ -1,0 +1,284 @@
+{
+  "topic_id": "r16-mcptt-emergency-group-client",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "在网紧急预安排组呼：客户端发起、本人取消与结果证据",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "固定 TS24.379 V16.14.0，在网按需预安排组、直接组身份；范围为客户端紧急发起、已有会话升级、本人取消及必要状态反馈。排除chat/预建立、临时组、功能别名、离网、广播/system和独立imminent-peril业务。",
+    "发起时不新增 emergency alert；已有MEA状态在取消和反馈中仍须分别判断，不能将无告警分支当作所有情况。第三方告警取消和独立告警发送仅作为边界比较。",
+    "各角色、请求、失败、成功、通知和退出分别适用；不要求已获授权、已建立、已获话权或已取消成功才能阅读对应失败分支。"
+  ],
+  "claims": [
+    {
+      "id": "state-and-authorization",
+      "title": "先区分个人紧急状态、组状态与发起/取消权限",
+      "conditions": [
+        "按客户端实际发起或取消请求判断权限；状态说明不是所有分支必须同时满足的前提。"
+      ],
+      "conclusion": "MES 是个人 MCPTT emergency state；MEG 是客户端对组 in-progress emergency 状态的视图，组全局状态由 CF 管理；MEGC 跟踪本人紧急组呼请求，MEA 跟踪告警。发起授权要求 allow-emergency-group-call=true，且（DedicatedGroup 配置匹配目标组，或配置为 UseCurrentlySelectedGroup）；其余情况未授权。取消组紧急状态的授权程序分别将 allow-cancel-group-emergency=true/false 判为授权/未授权。",
+      "normative_strength": "发起授权检查和判定、取消 true/false 判定为 SHALL；状态表 G 为 informative 说明，不作为独立强制初始化算法。",
+      "limitations": [
+        "表 G.3 初始 MEG1，表 G.5 初始 MEA1；MEGC1 表示未在发起或参与本人发起的紧急组呼，MES 可以 set 或 clear。不能把 MEGC1/MEA1 当 MES 必为 clear，亦不把 MEG2 当本人已发起紧急呼叫。",
+        "取消授权条文只列元素 true 与 false，没有说明缺元素时的结果；不能照发起的 all other cases 补成未授权。",
+        "用户/profile及组配置的获取、CF再次准入不由客户端检查完成来证明。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.6.1",
+            "6.2.8.1.7–8",
+            "G.1–5 (informative tables)"
+          ],
+          "printed_pages": [
+            39,
+            40,
+            65,
+            66,
+            584,
+            585,
+            586,
+            587
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "initiate-or-upgrade",
+      "title": "新建 INVITE 与既有会话升级 re-INVITE 使用不同入口",
+      "conditions": [
+        "用户发起紧急预安排组呼，或在 MES 已 set 时发起组呼；另一入口是用户请求将已有按需组会话升级为紧急。本文不发起新的 emergency alert。"
+      ],
+      "conclusion": "新建入口调用 §6.2.8.1.1：在其授权及状态条件满足时携 emergency-ind=true；MES 原为 clear 且 MEGC1 时须置 MES、MEGC2；MES 已 set 时仅在 MEGC1 时改 MEGC2。MEG 非2时置4。MES 原已 set 的分支仅在未请求告警且 MEA1时置 alert-ind=false；MES 原为 clear、MEGC1且获授权的分支在未请求告警时置 alert-ind=false，不另加 MEA1守卫。初始 INVITE 的 Request-URI 为服务 PF 的 PSI，业务体含 prearranged、目标组及客户端 ID。已有会话升级先判断授权：未授权 SHOULD 提示并 SHALL 跳过剩余步骤；授权紧急升级调用同一业务体及 Resource-Priority helper，按需 SDP 用 §6.2.1，再发送 re-INVITE。",
+      "normative_strength": "所述条件字段、状态、构造发送及升级未授权停止为 SHALL；升级未授权提示为 SHOULD；新建 timer/Session-Expires 为 SHOULD、P-Preferred-Identity 为 MAY。",
+      "limitations": [
+        "新建段及 §6.2.8.1.1 并未像升级段另写未授权提示/停止；不能把升级的动作直接移植来宣称新建未授权控制链已闭合。",
+        "MES 未set但目标组已紧急的参与者可处于紧急组呼；§6.2.8.1.1 NOTE3不要求其同样携 emergency-ind/alert-ind。Resource-Priority helper 还允许 MEG2 情形；本页不把该参与者伪装成本人发起者。",
+        "Resource-Priority 的 emergency/normal namespace 与 priority 取服务配置，不硬编码。需要 implicit floor request 时才按 §6.4标识；识别为请求不是话权获准，紧急媒体仲裁不在本页。",
+        "已有告警不等于本次必须重新发 alert；MES 原已 set 分支的 MEA1 守卫不能套给 MES 原为 clear、MEGC1且获授权的分支。新告警发起、位置报告及其独立许可留在本页之外。",
+        "F.1 的 emergency-ind/alert-ind 采用对应布尔内容语义；多MIME、SDP首体及 §6.6收发保护仍须执行。完整XML/RFC/配置/密钥实现不在此展开。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.1.1",
+            "10.1.1.2.1.3",
+            "6.2.8.1.1–2;6.2.8.1.8;6.2.8.1.15",
+            "6.2.1;6.4 initial/re-INVITE branches",
+            "6.5;6.6.1.1–4",
+            "F.1.3 relevant fields"
+          ],
+          "printed_pages": [
+            56,
+            57,
+            61,
+            62,
+            63,
+            65,
+            66,
+            69,
+            70,
+            136,
+            137,
+            138,
+            139,
+            220,
+            221,
+            222,
+            223,
+            224,
+            547,
+            548,
+            549
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "origination-result",
+      "title": "建立或升级结果更新呼叫状态，不等于话权授予",
+      "conditions": [
+        "分别收到发起/升级的2xx，或4xx/5xx/6xx；仅在对应MEGC状态适用动作，不把成功设为失败入口前提。"
+      ],
+      "conclusion": "对 MEGC2或3 的成功结果，helper 将 MEG置2、MEGC置3，并清相应 imminent-peril 状态为 MIG1/MIGC1；若 MEA2且响应无149 Warning，才置MEA3。失败结果将 MEGC置1，仅当MEG4才置MEG1；本次请求曾携alert-ind=true时才置MEA1。发起/升级2xx同时触发媒体接口调用。",
+      "normative_strength": "上述条件状态动作与媒体调用为 SHALL；初始INVITE收到P-Answer-State时向用户提示为 MAY。",
+      "limitations": [
+        "失败helper没有统一清MES动作；不得把请求失败等同个人紧急状态已解除。MEA2处理只说明已有状态与收到结果的条件，不在本页扩展告警发送链。",
+        "MEGC3的call-granted是紧急呼叫状态，不是 Floor Granted；SIP2xx、Resource-Priority及媒体接口调用不能当作已获话权、RTP已发送或全组已接听。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.1.1 response branches;10.1.1.2.1.3 response branches",
+            "6.2.8.1.4–5",
+            "G.4 (informative comparison)",
+            "6.4 (implicit request comparison)"
+          ],
+          "printed_pages": [
+            64,
+            65,
+            136,
+            137,
+            221,
+            222,
+            224,
+            586
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "cancel-own-request",
+      "title": "本人取消时，是否有未结告警决定 MES 清理",
+      "conditions": [
+        "收到用户取消本人发起的组紧急状态请求，先按 §10.1.1.2.1.4检查授权；未授权的提示和停止仍适用。仅获授权后调用 §6.2.8.1.3 的分支才分别继承 MEGC3及相应MEA条件；是否同时取消本人告警为用户选择，不是全局AND。"
+      ],
+      "conclusion": "取消未授权时 SHOULD 提示并 SHALL 停止。授权后：MEGC3且MEA1时携 emergency-ind=false、清MES、置MEG3；MEA非1且只取消组紧急状态时携 emergency-ind=false、置MEG3但不清MES。若同时要求取消本人告警，则仅在独立告警取消权限成立时携alert-ind=false、置MEA4并清MES；不获告警取消权限时 SHOULD 提示，仍置MEG3。请求另携prearranged和目标组、MCPTT Contact特征、按需SDP及适用Resource-Priority后发送。",
+      "normative_strength": "条件构造/状态/发送及未授权组取消停止为 SHALL；未授权提示为 SHOULD。",
+      "limitations": [
+        "取消组状态权限不是取消告警权限；后者 §6.2.8.1.6要求 allow-cancel-emergency-alert=true，其余未授权。不能将告警许可失败扩大成整个已授权组取消停止。",
+        "第三方告警取消使用 §6.2.8.1.14与originated-by识别告警所有者；本页只保留对照，不覆盖该发送路径或独立告警服务。",
+        "取消是降低组紧急状态，不是BYE结束会话；MES可能在发送取消请求阶段已清，不能等待成功后才描述这一动作。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.1.4 request branch",
+            "6.2.8.1.2–3;6.2.8.1.6–7;6.2.8.1.15",
+            "6.2.8.1.14 (third-party comparison)",
+            "6.2.1;F.1.3"
+          ],
+          "printed_pages": [
+            56,
+            57,
+            63,
+            64,
+            65,
+            69,
+            70,
+            224,
+            225,
+            547,
+            548,
+            549
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "cancel-result",
+      "title": "取消失败恢复哪些状态，必须逐字段判断",
+      "conditions": [
+        "收到本人取消请求的2xx，或4xx/5xx/6xx，两者为替代事件。"
+      ],
+      "conclusion": "取消2xx须调用媒体接口，置MEG1和MEGC1；仅当MEA4、发送请求不含originated-by且响应无149 Warning时置MEA1。取消失败须置MEG2；响应alert-ind=true且发送请求无originated-by时置MEA3；响应既无alert-ind又无originated-by时MEA恢复进入本程序之前的值。失败NOTE说明会话仍保持紧急级别优先。",
+      "normative_strength": "所列条件动作均为 SHALL；NOTE为结果解释。",
+      "limitations": [
+        "失败段第三项对originated-by的缺失描述跟随收到的响应，而第二项明确检查发送请求；不能默默统一成同一个对象。响应alert-ind=false不在第三项缺字段分支内。",
+        "取消失败正文没有显式重设MES，不能凭MEG2或MEA恢复推导MES自动回滚。成功也不是所有告警和所有设备状态都已清。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.1.4 response branches and NOTE3",
+            "6.2.8.1.3 (pre-send MES comparison)"
+          ],
+          "printed_pages": [
+            63,
+            64,
+            225
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "incoming-status-and-leave",
+      "title": "状态通知、取消响应和离开会话是不同事件",
+      "conditions": [
+        "分别处理本会话INFO、收到re-INVITE，或本地离开/收到BYE；不把某一事件的状态守卫套到其他事件。"
+      ],
+      "conclusion": "符合 §6.2.8.1.13包名、会话与业务体条件的INFO须回200，特定MEGC/MEA只限制后续状态动作：例如MEGC3且MEA2时按alert-ind false/true更新MEA1/3；本人告警取消待定且原请求无originated-by时按alert值更新MEA。收到re-INVITE emergency-ind=true须置MEG2并清MIG/MIGC对应状态；false须置MEG1，并仅在MEGC3时改MEGC1，相关用户显示为SHOULD。客户端按实际承载构造SDP/Contact和200，再交接媒体。本地离开按需会话走BYE与媒体接口，收到BYE亦回复200并交接媒体。",
+      "normative_strength": "有效INFO的200、条件状态动作、re-INVITE应答和离开接口动作为 SHALL；相关显示为 SHOULD，Resource-Priority的规范外进一步动作 MAY。",
+      "limitations": [
+        "INFO200不要求先处于MEGC3或MEA2；也不单凭INFO200证明取消成功。含imminentperil字段的完整业务不在本页。",
+        "收到re-INVITE的alert-ind=false且originated-by指向本人时才有相应MEA清理动作；不能把组emergency-ind=false概括成所有本地告警都清除。",
+        "§6.2.8.1.17 release helper写MEG3:confirm-pending，而发起及G.3写MEG4:confirm-pending。已定位的显式caller为chat预建立 §10.1.2.2.2.1 的媒体释放事件，不能移植成按需预安排BYE后的统一清状态。",
+        "退出本地会话不证明CF取消全组紧急状态；完整媒体停止、紧急话权与独立告警生命周期不在本页。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.8.1.13;6.2.8.1.17",
+            "10.1.1.2.1.6",
+            "10.1.1.2.3;6.2.4.1;6.2.6",
+            "10.1.2.2.2.1 release caller (comparison only)",
+            "6.2.2;G.3 (comparison)"
+          ],
+          "printed_pages": [
+            57,
+            58,
+            60,
+            61,
+            68,
+            70,
+            71,
+            227,
+            228,
+            229,
+            275,
+            585
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [
+    "这是客户端有界职责，不是服务端全局准入、所有设备同步、紧急话权算法或完整SIP/XML/安全实现。§6.5/§6.6及配置依赖仍适用。",
+    "初始化状态表为 informative；不据其概述补正文未给的取消缺省、MES回滚或释放调用。"
+  ],
+  "related": [],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
