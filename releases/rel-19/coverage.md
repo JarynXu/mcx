@@ -241,6 +241,14 @@
 
 入口：[SDS会话逐消息发送：媒体就绪、许可与构造入口](topics/mcdata/sds-session-send.md)。
 
+### 跨PF位置查询的逐跳责任
+
+- **能回答：**可查请求者PF分派、目标PF逐目标分享检查与刷新、报告回程及客户端配置路由的有限入口。
+- **只到条件或接口：**在网直接ID列表，目标位置由不同PF管理；每个handler依实际收到的有效输入和本身守卫适用，拒绝与异常剥离不继承其他角色成功前提。
+- **尚未建立的结论：**有效输入不证明必达；请求者PAI映射、完整OR/AND剥离守卫、刷新RequestId映射和配置PAI回程缺失或陈旧四项缺口保留。两个200不证明全部目标定位成功，不借本地owner闭合完整跨PF链。
+
+入口：[MCData跨PF位置查询：逐跳许可、正文边界与报告回程](topics/mcdata/cross-pf-location.md)。
+
 ## MCVideo视频业务
 
 [查看本域全部主题](topics-mcvideo.json)
@@ -642,6 +650,14 @@
 入口：[MCPTT注册后的服务授权：PUBLISH、身份绑定与设置结果](topics/identity/mcptt-publish-service-authorization.md)。
 
 固定来源及具体条款以主题为准。
+
+### MCPTT服务设置观察
+
+- **能回答：**可查同用户本端或其他客户端的SUBSCRIBE/NOTIFY设置观察、服务器身份检查、变化通知与文档缓存。
+- **只到条件或接口：**主系统在网，各角色按实际请求、通知或缓存事件适用；首次读取与既有dialog操作分开，同用户ID不替代认证。
+- **尚未建立的结论：**initial0读取、dialog0退订与PUBLISH0撤销不同；无正文与零entity不可合并。RFC4354是外部Informational依赖，仅按所列范围读取，不提供设置修改权限或完整SIP状态机。
+
+入口：[MCPTT 服务设置观察：同用户多客户端的查询与通知](topics/identity/mcptt-service-settings-observation.md)。
 
 ## 安全与密钥
 

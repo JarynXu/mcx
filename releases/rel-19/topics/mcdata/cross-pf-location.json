@@ -1,0 +1,238 @@
+{
+  "topic_id": "r19-mcdata-cross-pf-location",
+  "title": "MCData跨PF位置查询：逐跳许可、正文边界与报告回程",
+  "release": 19,
+  "standard_stage": 3,
+  "state": "clause-checked",
+  "common_conditions": [
+    "固定TS24.282 V19.7.0，在网直接MCData用户ID列表的位置查询；请求者PF与管理目标位置的PF不同。各接收职责仅在实际所需输入存在时解释，不据此证明输入必然到达。",
+    "请求者、请求者PF、目标PF及目标客户端是不同角色；各claim按实际事件判断，不把许可、报告成功或有效映射假定为所有分支的共同前提。",
+    "本页不是端到端可运行定位方案；跨PF身份映射、异常剥离、刷新标识、配置路由的缺口在正文保留。排除功能别名、跨PF配置、完整测量/安全和故障恢复算法。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.282-v19.7.0",
+  "claims": [
+    {
+      "id": "cross-pf-request-dispatch-and-stripping",
+      "title": "请求者PF逐目标转送，但正文可达性不能默认成立",
+      "conditions": [
+        "请求者客户端采用直接MCData ID列表查询。请求者PF已经通过§17.2.3.2 steps1–5的资源、有效PAI绑定、目标列表和请求许可检查，发送200并确定目标；当前目标的位置不由该PF管理。异常剥离是另一个按实际收到SIP请求及完整守卫判断的事件，不以前述成功为共同前提。"
+      ],
+      "conclusion": "请求者PF确定管理当前目标位置的PF公共服务身份，将收到的MESSAGE复制出去：Request-URI改为该PF的PSI，resource-lists只保留该目标用户，然后发送并按原文跳过本过程余下步骤。该分派不是本地查询的直接返回用户分支。请求者PF的200在逐目标处理之前，不能证明目标PF已收到位置正文、允许分享或已经获得位置。",
+      "limitations": [
+        "§17.2.5要求：PAI公共用户身份不关联该PF服务用户，或mcdata-info正文内mcdata-request-URI标识该PF服务的MCData用户；再同时满足Accept-Contact有g.3gpp.mcdata、另一Accept-Contact有MCData ICSI、location-info包含Request或Configuration时，PF发送SIP请求须移除location-info正文。第二个OR项没有not，不能反转或漏掉后面的联合条件。",
+        "若跨PF请求满足上述完整剥离条件，不能保证仍携Request到达后续handler。§17.2.3.2没有给本分派添加豁免；本页不定义剥离与转送之间的调度、修复或重加正文。仅凭跨PF这一个事实，也不能省略header/body条件而断言必剥离。",
+        "目标PF PSI如何发现未由该段定义。名单缩为一个目标不等于改变请求者身份；该分派未列将PAI替换成请求者PF PSI或添加calling-user-id的步骤，不能照配置请求或其他服务补写。原文skip remaining steps不用于推导混合本地/远端名单的完整遍历调度。"
+      ],
+      "normative_strength": "本分派的修改、发送、停止及完整异常守卫匹配后的剥离为SHALL；不将其转为端到端传输保证。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "17.2.3.2 steps1–7,7A(a) and NOTES1–3",
+          "printed_pages": [
+            411,
+            412
+          ],
+          "role": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "17.2.5 full procedure",
+          "printed_pages": [
+            415
+          ],
+          "role": "公开接口边界，含完整OR与header/body守卫"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "17.3.3.2 steps1–6",
+          "printed_pages": [
+            417
+          ],
+          "role": "直接ID请求实际发起入口"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "17.2.2A step7(b);17.2.2B step2",
+          "printed_pages": [
+            410
+          ],
+          "role": "comparison-only：配置calling-user-id不能补查询身份"
+        }
+      ],
+      "clause": "17.2.3.2 steps1–7,7A(a) and NOTES1–3",
+      "printed_pages": [
+        411,
+        412
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "cross-pf-target-permission-and-refresh",
+      "title": "目标PF独立识别请求者并核每个目标的分享许可",
+      "conditions": [
+        "管理目标位置的PF实际收到另一MCData server发来的、仍含位置Request及resource-lists目标的MESSAGE。资源拒绝和逐目标分享失败均为可达分支，不把收到200或分享已获准设为本条前提。此有效输入不代表上一条的传输/剥离缺口已被解决。"
+      ],
+      "conclusion": "目标PF可因资源不足或拥塞风险以500拒绝，可附Retry-After，并停止拒绝路径。继续时按PAI中的公共用户身份确定原请求用户MCData ID，随后先回200，再对名单中的每个目标检查其是否允许向该请求用户提供位置；不允许时静默忽略该目标并停止其余下步骤。允许后，无缓存或refresh=true时调用§17.2.3.1请求即时更新，等待实现定义时间，收到后保存；已有缓存但过旧时另有更新条件。LocationFilter的AreaIn=true且目标在区域外，或false且目标在区域内时，跳过余下步骤，不生成本分支报告。",
+      "limitations": [
+        "目标用户ID来自resource-lists entry.uri；原请求者ID来自PAI绑定，不是目标ID，也不是PF PSI。§17.2.3.3引用服务授权时的绑定，但未展开目标PF如何取得跨PF请求者映射，亦未列本地入口的404/141、403/244或403/245分支，不能自行补为同一拒绝表。",
+        "配置请求§17.2.2B用mcdata-calling-user-id确定请求者，查询§17.2.3.3却明确从PAI取身份。两者不能互换；本页保留身份输入来源未闭合的限制。200不能替代逐目标分享许可，静默失败不补第二最终403或所有目标结果汇总。",
+        "无缓存/refresh和过旧缓存是分别列出的条件，不自行合并为互斥或保证只刷新一次。超时后无位置、过滤无法判断、未知目标的完整恢复算法未给出，不保证每次都能报告。",
+        "§17.2.3.1向目标用户服务授权对应URI发送含Request的MESSAGE；它未说明如何生成或映射新RequestId到原查询。不得据此假定刷新事务与原始查询共享同一个标识。"
+      ],
+      "normative_strength": "资源拒绝和Retry-After为MAY；继续后的身份确定、200及明确逐目标条件动作为SHALL。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "17.2.3.3 opening and steps1–4(iv),NOTES1–2",
+          "printed_pages": [
+            413,
+            414
+          ],
+          "role": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "17.2.3.1 full procedure",
+          "printed_pages": [
+            411
+          ],
+          "role": "即时更新实际helper及标识输入缺口"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "17.2.3.2 steps2–5;17.2.2B step2",
+          "printed_pages": [
+            410,
+            411
+          ],
+          "role": "comparison-only：本地拒绝与配置身份入口不可移植"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "D.4.2 tRequestType;D.4.3 Request semantics",
+          "printed_pages": [
+            596,
+            597,
+            612
+          ],
+          "role": "RequestId及filter对象约束"
+        }
+      ],
+      "clause": "17.2.3.3 opening and steps1–4(iv),NOTES1–2",
+      "printed_pages": [
+        413,
+        414
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "cross-pf-report-return-and-configured-client-route",
+      "title": "跨PF报告先回请求者PF，目标客户端报告另用配置路由",
+      "conditions": [
+        "目标PF已按§17.2.3.3前序继续到step4(v)时生成查询报告；请求者PF则以实际收到§17.2.4.2完整条件的另一server报告为独立入口。目标客户端被显式要求刷新时，按§17.3.3.1实际ICSI、MIME和Request接收条件另行处理。各角色事件不合并为全局AND。"
+      ],
+      "conclusion": "目标PF生成新的Report MESSAGE，Request-URI取原请求用户所属PF的PSI；ReportID取收到请求的RequestID，CurrentLocation承载所查目标位置，mcdata-reporting-uri标识该目标MCData ID。请求者PF收到来自另一server的报告，且Content-Type为location-info、该正文含Report及ReportID和mcdata-reporting-uri时，更新Request-URI并转发给原请求客户端。这与本地查询直接把报告送往请求用户绑定公共身份不同。目标客户端自己的刷新报告是另一跳：独立MESSAGE目的地取其先前位置配置请求的PAI SIP URI，不改为当前查询的PAI，也不直接把报告发给原查询用户。",
+      "limitations": [
+        "目标客户端可将Report附在本来就需发送的SIP请求中；只有独立MESSAGE分支使用上述配置PAI路由。§17.2.2的配置PAI为配置PF PSI。配置缺失、旧配置指向别处或刷新请求缺关联值时，源文没有在本链提供通用恢复；不能默认位置会回到当前等待它的目标PF。",
+        "显式Request触发报告不要求周期trigger仍真；生成报告后按§17.3.4重启minimumReportInterval并清triggers。该过程字段生成仍有trigger条件，不能保证每次显式刷新都有全部位置数据。",
+        "D.4 schema使用RequestId与ReportID，过程和语义又有RequestID、ReportId写法，保持大小写差异，不输出统一后的可执行XML。schema里ReportID和mcdata-reporting-uri可选，不取消§17.2.4.2对该回程入口明确要求它们存在。关联值不证明新鲜度；CurrentLocation必需但坐标和测量时间可选。",
+        "请求者PF如何建立完整报告到原客户端的路由/关联表、最终客户端如何确认处理、上游200与后续报告丢失如何关联为业务失败，未在所列步骤闭合。不得据两个200宣称所有目标定位成功。"
+      ],
+      "normative_strength": "达到各自事件后的报告构造、路由、转发与显式报告动作为SHALL；不把可选位置字段提升为必需结果。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "17.2.3.3 step4(v),NOTE3;17.2.4.2",
+          "printed_pages": [
+            414,
+            415
+          ],
+          "role": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "17.2.3.2 step7A(b)(v)",
+          "printed_pages": [
+            413
+          ],
+          "role": "comparison-only：本地直返用户与跨PF回程不同"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "17.3.1;17.3.3.1;17.3.4.1–.2",
+          "printed_pages": [
+            415,
+            416,
+            417,
+            418
+          ],
+          "role": "目标端实际报告入口、内容与配置路由依赖"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "17.2.2 steps1–10",
+          "printed_pages": [
+            408,
+            409
+          ],
+          "role": "配置PAI输入来源，不展开跨PF配置"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "D.4.2 tRequestType/tReportType;D.4.3 Request/Report/CurrentLocation semantics",
+          "printed_pages": [
+            596,
+            597,
+            612
+          ],
+          "role": "关联大小写及字段必需/可选"
+        }
+      ],
+      "clause": "17.2.3.3 step4(v),NOTE3;17.2.4.2",
+      "printed_pages": [
+        414,
+        415
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [
+    "有效输入是各handler的适用条件，不是本页已经建立的传输保证。尤其不能给§17.2.5加跨PF例外，也不能把本地查询路由直接套到跨PF。"
+  ],
+  "related": [
+    "local-location-request.md",
+    "local-location-configuration.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
