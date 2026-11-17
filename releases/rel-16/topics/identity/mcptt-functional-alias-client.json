@@ -1,0 +1,144 @@
+{
+  "topic_id": "r16-mcptt-functional-alias-client",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 功能别名：怎样申请启用或停用，怎样知道结果？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 24.379 V16.14.0；在网 MCPTT 客户端处理手动申请的功能别名变更，或确定指定用户的别名状态。"
+  ],
+  "claims": [
+    {
+      "id": "observe-target-before-change",
+      "title": "先确定被观察的用户及订阅期限",
+      "conditions": [
+        "查询本人或另一名 MCPTT 用户已经启用的别名。若要观察某次变更成功或被拒，须先为该变更涉及的用户发起状态确定程序，再开始变更。"
+      ],
+      "conclusion": "初始 SIP SUBSCRIBE 的 Request-URI 填服务于查询者的起始参与 MCPTT 功能的公共服务身份。在 application/vnd.3gpp.mcptt-info+xml 消息体中，mcptt-request-uri 填被查询用户的 MCPTT ID，request-type 填 functional-alias-status-determination。P-Preferred-Service 使用 MCPTT ICSI（urn:urn-7:3gpp-service.ims.icsi.mcptt），事件包为 presence，Accept 包含 application/pidf+xml。初始请求的 Expires=0 只取当前状态，4294967295 则取当前状态并接收后续通知。已有订阅时，在该对话内发送 SUBSCRIBE，Expires=4294967295 续订，Expires=0 退订；同样指定 presence 及上述 Accept 类型。",
+      "normative_strength": "先发起状态确定程序是取得此次变更结果的前提；初始和对话内 SUBSCRIBE 分别按使用目的设置 Expires。",
+      "limitations": [],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.1.1"
+          ],
+          "printed_pages": [
+            199
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.1.3"
+          ],
+          "printed_pages": [
+            200,
+            201
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "manual-deactivation-profile-check",
+      "title": "手动停用时先检查该别名的配置",
+      "conditions": [
+        "用户请求手动停用某个功能别名。"
+      ],
+      "conclusion": "客户端先查在网用户配置档的 FunctionalAliasList 中该别名条目下的 manual-deactivation-not-allowed-if-location-criteria-met。如果该别名是由位置区域触发启用的，且此项为 true，客户端抑制用户的停用请求。此时可向用户显示提示。",
+      "normative_strength": "检查配置是必做动作；所列两项条件同时满足时必须抑制请求。显示提示是可选行为（注 1）。",
+      "limitations": [],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.1.2, manual deactivation and note 1"
+          ],
+          "printed_pages": [
+            200
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "publish-one-direction",
+      "title": "一次发布只申请启用或只申请停用",
+      "conditions": [
+        "用户请求启用或停用一个或多个别名，客户端需要发出变更请求。将 take-over 子元素设为 true 的两个条件是：客户端收到了可接管的指示，且打算接管。"
+      ],
+      "conclusion": "客户端向服务于发起用户的起始参与 MCPTT 功能的公共服务身份发送 SIP PUBLISH。在 application/vnd.3gpp.mcptt-info+xml 中将 mcptt-request-uri 设为该用户的 MCPTT ID；P-Preferred-Service 使用 MCPTT ICSI。申请启用的 Expires 为 4294967295，申请停用为 0；两种方向分开发送。按用户组织的 application/pidf+xml 另含目标客户端的 MCPTT 客户端 ID。启用时列出该用户为该 MCPTT ID 请求启用的全部别名；请求中的别名条目不含 status、expires 属性。在 presence 下写入全局唯一的 p-id-fa；两个接管条件均成立时将 take-over 子元素设为 true。",
+      "normative_strength": "请求的构造和发送、两类 Expires、PIDF 字段以及两项接管条件成立时的 take-over 均按本条规定；同一 PUBLISH 不能混合启用和停用（注 3）。",
+      "limitations": [],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.1.2, user triggers"
+          ],
+          "printed_pages": [
+            199
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.1.2, steps 1–6 and note 3"
+          ],
+          "printed_pages": [
+            200
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "read-status-and-correlate-notify",
+      "title": "逐个读取别名状态，用发布标识关联通知",
+      "conditions": [
+        "客户端收到 SIP NOTIFY，且含有按 §9A.3.1 构造的按用户组织的功能别名 PIDF 消息体。"
+      ],
+      "conclusion": "客户端对消息体中每个别名判断该 MCPTT 用户的状态。如果 presence 下带有 p-id-fa，它的值指明触发该通知的 SIP PUBLISH。没有这个字段，客户端仍须逐个判断所列别名的状态，但不能用这个字段关联发布。检测到别名启用或停用时，客户端执行 §9.2.1.7 的基于规则的组归属程序。",
+      "normative_strength": "消息体满足条件时必须逐别名判定；关联某次发布以通知含有 p-id-fa 为条件；执行后续程序以实际检测到启用或停用为条件。",
+      "limitations": [],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.1.3, receipt of NOTIFY"
+          ],
+          "printed_pages": [
+            201
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
