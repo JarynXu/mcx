@@ -50,6 +50,8 @@
 
 - [普通离网组：single 参与者的请求、媒体与本地结束](topics/mcvideo/offnetwork-single-participant.md)：仅普通离网组single终接/晚加入参与者，不接在网或私呼链。
 
+- [独立组紧急告警：本人发起、取消与反馈证据](topics/calls/standalone-group-alert-client.md)：独立MESSAGE告警入口，按本人请求、响应、匹配回执或通知分别读取，不借紧急组呼推定适用。
+
 先读主题共同条件，再按实际角色与事件选取结论；不把拒绝、应答、取消或后续数据处理拼成同时必备的条件。这些主题均不构成完整端到端实现，也不证明版本组合互通。
 
 [业务域](domains.json) · [主题索引](topics.json) · [条件阅读路径](reading-paths.json) · [覆盖边界](coverage.md) · [来源](sources.json) · [状态](status.json)
