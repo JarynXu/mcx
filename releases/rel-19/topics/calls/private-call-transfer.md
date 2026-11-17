@@ -1,27 +1,27 @@
-# 未预告私呼转接：三角色、结果与旧呼释放
+# 私呼转接：未预告控制与预告咨询交接
 
-TS24.379 V19.4.0，主系统在网、直接 MCPTT ID 的未预告私呼转接。A 请求把其正在进行的 A–B 私呼中的 B 转给 C；A、B、C 分别是 requesting、transferred、target 角色。
+TS24.379 V19.4.0，主系统在网、直接 MCPTT ID 私呼转接。A、B、C 分别是 requesting、transferred、target 角色；A 请求把正在进行的 A–B 私呼中的 B 转给 C。
 
 各 claim 的请求、接收、拒绝、响应和完成事件分别适用，不以控制请求已获准、B 已起呼成功或 C 已接听作为全页前提。
 
-本页只展开转接控制许可、身份与映射、新呼调用、结果和成功后的旧呼释放入口；不展开功能别名、announced 咨询/保持、跨系统网关或完整媒体生命周期。
+未预告控制与预告咨询按各 claim 的模式和事件分别适用；不展开功能别名、跨系统网关、完整 C 端对话替换或媒体生命周期。RFC5359 仅为被调用的外部保持依赖，不是 Rel19 规范。
 
 ## A 请求把正在通话的 B 转给 C
 
-适用事件：A 请求将正在进行的 A–B 私呼转接到直接 MCPTT ID 标识的 C，非 announced 转接。
+适用事件：本条仅适用于未预告转接。；A 请求将正在进行的 A–B 私呼转接到直接 MCPTT ID 标识的 C，非 announced 转接。
 
 A 是 requesting user，B 是 transferred user，C 是 target user。客户端 allow-call-transfer 缺失或 false 时 SHOULD 提示未授权，并 SHALL 停止。通过后 SHALL 生成并发送 MESSAGE：mcptt-called-party-id=C；anyExt/request-type=transfer-private-call-request；call-to-functional-alias-ind=false；resource-lists 放 B；Request-URI 为服务 A 的 PF PSI。P-Preferred-Service 与 Accept-Contact 携 MCPTT ICSI，后者带 require/explicit；P-Preferred-Identity MAY 携带。
 
 规范强度：未授权提示 SHOULD、停止 SHALL；通过后的请求构造和发送 SHALL；P-Preferred-Identity MAY。
 
-- announced 转接另有保持原通话、与目标的咨询通话及 Replaces 处理，§11.1.8.2.3 调用 RFC5359 §2.1；这些不在本页展开，不能把本页当 announced 实现。
+- announced 转接另有保持原通话、与目标的咨询通话及 Replaces 处理，§11.1.8.2.3 调用 RFC5359 §2.1；这些见下文预告咨询分支，不能把上述未预告流程当 announced 实现。
 - 这里请求的是转移既有 A–B 通话，不是要求任意远端用户另起一通与旧通话无关的呼叫。
 
 依据：TS24.379 V19.4.0 §11.1.8.1、§11.1.8.2.1 steps1–4、§11.1.8.2.3 (announced scope comparison)、§F.1.3 call-to-functional-alias-ind definition，印刷页 498,499,501,502,730。
 
 ## 发送者身份与转接许可分别核对
 
-适用事件：O-PF 收到转接 request 或 response MESSAGE；许可拒绝仅在所述 request-type 分支适用。
+适用事件：本条仅适用于未预告转接。；O-PF 收到转接 request 或 response MESSAGE；许可拒绝仅在所述 request-type 分支适用。
 
 PF MAY 因资源或拥塞风险返回 500，MAY 带 Retry-After。它 SHALL 从入站 P-Asserted-Identity 的公共身份取得发送者 MCPTT ID；无绑定或绑定过期时 SHALL 返回 404+Warning141 并停止。request-type=transfer-private-call-request 时，allow-call-transfer 缺失/false，或 allow-call-transfer-to-any-user 缺失/false 且 C 不匹配 AllowedMCPTTIdsForCallTransfer，分别触发 403+Warning170 并停止。可继续分支 SHALL 选择 requesting user 的转接服务 CF PSI，复制 mcptt-info/resource-lists，将 mcptt-calling-user-id 写为已绑定发送者，加入自己的 PAI 与服务标记并发送。下游 2xx 时 SHALL 生成 200 给发送客户端；4xx/5xx/6xx SHALL 转发。
 
@@ -34,7 +34,7 @@ PF MAY 因资源或拥塞风险返回 500，MAY 带 Retry-After。它 SHALL 从�
 
 ## CF 按控制收件人路由，终接 PF 保存转接映射
 
-适用事件：CF 接收转接请求或结果；随后 T-PF 处理实际投递用户。可转送实例的资源列表包含一个有效收件 MCPTT ID。
+适用事件：本条仅适用于未预告转接。；CF 接收转接请求或结果；随后 T-PF 处理实际投递用户。可转送实例的资源列表包含一个有效收件 MCPTT ID。
 
 CF 可因资源/拥塞风险返回 500；Accept-Contact 缺 MCPTT ICSI 须 403 并停止，缺资源列表正文或 list 中 entry 总数多于一个须 403+Warning145 并停止。本页直接 ID 分支复制 mcptt-info，取资源列表的用户 ID 写入 mcptt-request-uri，并将 Request-URI 设为服务该用户的 T-PF PSI，携自己的 PAI 与服务标记后发送。去程收件人 B，回程收件人 A，均不以 C 替代。CF 下游 2xx 转为 200 给 O-PF，错误响应转发。T-PF 按 mcptt-request-uri 查公共身份绑定，缺失返回 404 并停止；可资源拒绝 500。通过后调用 §6.3.2.2.11 生成 MESSAGE。其 step5 的转接 request 分支读取 C，并保存收件用户 ID 与 C 的映射；NOTE 说明同一用户多个并发转接需多个映射。随后加入服务标记并发送。
 
@@ -49,7 +49,7 @@ CF 可因资源/拥塞风险返回 500；Accept-Contact 缺 MCPTT ICSI 须 403 �
 
 ## B 实际发起新呼，映射不能替代准入
 
-适用事件：B 收到转接请求 MESSAGE；或 B 的 O-PF 接收到由该请求触发的新 INVITE/REFER。两个角色按各自事件适用。
+适用事件：本条仅适用于未预告转接。；B 收到转接请求 MESSAGE；或 B 的 O-PF 接收到由该请求触发的新 INVITE/REFER。两个角色按各自事件适用。
 
 B SHOULD 提示收到转接请求，SHALL 从 mcptt-called-party-id 取得 C。本地策略选择按需时 SHALL 调用 §11.1.1.2.1.1；选择预建立且会话可用时 SHALL 调用 §11.1.1.2.2.1。按需新呼 step14A 构造 session-type=private、call-transfer-ind=true，并沿用被转接通话的 Priv-Answer-Mode 值；预建立 REFER 的 step8(c)(ii)(D) 同样携转接标志。新呼的 O-PF 对 private 的 call-transfer-ind=true 且没有 B–C 缓存映射时，按 INVITE §11.1.1.3.1.1 step11(c) 或 REFER §11.1.1.3.1.2 step10(d) 返回 403+Warning170 并停止。这不豁免各自身份、私呼准入及实际接续模式检查。
 
@@ -63,7 +63,7 @@ B SHOULD 提示收到转接请求，SHALL 从 mcptt-called-party-id 取得 C。�
 
 ## 180 或最终响应触发结果，但不直接定义成功
 
-适用事件：B 所调用的按需或预建立起呼过程已经收到 SIP 180 或 SIP final response。
+适用事件：本条仅适用于未预告转接。；B 所调用的按需或预建立起呼过程已经收到 SIP 180 或 SIP final response。
 
 B SHALL 生成结果 MESSAGE：resource-lists/entry@uri 为收到请求的 mcptt-calling-user-id，即 A；mcptt-called-party-id 仍是 C；anyExt/response-type=transfer-private-call-response；按起呼过程是否成功设置 transfer-call-outcome=success 或 fail。请求携 MCPTT ICSI，Accept-Contact 带 require/explicit，P-Preferred-Identity MAY 携带。Request-URI SHALL 指服务 B 的 PF PSI并发送。结果再走上述 PF/CF 控制路径。F.1.3 的 outcome 定义对应成功或失败地发起被请求的呼叫。
 
@@ -77,7 +77,7 @@ B SHALL 生成结果 MESSAGE：resource-lists/entry@uri 为收到请求的 mcptt
 
 ## A 只在成功结果分支结束旧呼
 
-适用事件：A 收到原控制 MESSAGE 的 4xx/5xx/6xx；或 A 收到转接结果 MESSAGE。两者是替代入口，不以 B 成功或完成作为共同前提。
+适用事件：本条仅适用于未预告转接。；A 收到原控制 MESSAGE 的 4xx/5xx/6xx；或 A 收到转接结果 MESSAGE。两者是替代入口，不以 B 成功或完成作为共同前提。
 
 A 收到原请求错误响应时 SHOULD 提示请求失败并退出其余步骤。A 收到结果 MESSAGE 时 SHALL 从 transfer-call-outcome 判断成功/失败，生成并发送 200；SHOULD 提示结果。只有 outcome=success 分支 SHALL 调用 §11.1.3.1 结束 A 与 B 的旧私呼。按需旧呼的客户端发起释放调用 §6.2.5.1；预建立旧呼调用 §6.2.5.2。这个成功分支不能提前到控制事务 200，也不能施加给 fail。
 
@@ -89,9 +89,67 @@ A 收到原请求错误响应时 SHOULD 提示请求失败并退出其余步骤�
 
 依据：TS24.379 V19.4.0 §11.1.8.2.1 response paragraphs (including announced comparison)、§11.1.3.1.1.1、§11.1.3.1.2.1、§6.2.5.1、§6.2.5.2、§11.1.8.3.1 response paragraphs、§11.1.8.4 response paragraphs，印刷页 74,463,499,500,503,506。
 
+## 预告转接先保持旧呼，不先释放
+
+适用事件：A 请求 announced 转接其正在进行的 A–B 私呼，C 以直接 MCPTT ID 指定；是否已有 A–C 通话在后续分支分别判断。
+
+§11.1.8.2.1 的客户端许可检查仍先于 announced 分支：allow-call-transfer 缺失或 false 时 SHOULD 提示无权，并 SHALL 停止；通过后进入 §11.1.8.2.3。A SHALL 按所引 RFC5359 §2.1 保持 A–B，然后按是否已建立 A–C 通话选择新咨询或已有咨询路径。保持不是结束 A–B。
+
+规范强度：未授权提示 SHOULD；未授权停止、进入 announced 程序及保持旧呼 SHALL。RFC 内容按被引用的外部示例说明，不额外创造 MCPTT 强制动作。
+
+- RFC5359 是 2008 年 BCP144 的 SIP 服务示例。其保持/取回示例在既有对话中修改 SDP；这里不把示例参数提升为全部 MCPTT 媒体实现要求，也不从取回示例补出失败时必须自动恢复的规则。
+- 后续新咨询与已有咨询是替代入口，不以新建咨询成功作为已有咨询路径前提。
+
+依据：TS24.379 V19.4.0 §11.1.8.2.1 steps1–2、§11.1.8.2.3 opening,step1，印刷页 498,501；RFC5359（2008，外部依赖） §1 scope、§2.1 Call Hold: narrative/flow; F10–F19 relevant messages，印刷页 3,4,6,7,11,12,13,14,15,16。
+
+## 尚无 A–C 通话：建立咨询并检查返回标识
+
+适用事件：A 已进入 announced 程序，尚未建立与 C 的通话。
+
+A SHALL 按 §11.1.1.2.1 或 §11.1.1.2.2 发起对 C 的按需或预建立私呼，并包含 transfer-announced-ind 元素。收到该通话的 200 时，若存在 replaces-header-value，SHALL 把其内容交给 §11.1.8.2.1。A–C 建立后 SHOULD 提示 A 向 C 预告转接；若该 200 没有 replaces-header-value，则 SHALL 按 §11.1.3 结束 A–C。step2(e) 另列 SHOULD 提供取回 A–B 的选项，以向原通话用户预告转接。
+
+规范强度：发起咨询、包含元素、条件交接标识及缺标识结束 A–C SHALL；预告提示与提供取回选项 SHOULD。
+
+- step2(a) 写包含 transfer-announced-ind，未在该处列出值；F.1.3 定义 true 表示 announced，不能把定义静默写进此步骤的原文字段要求。
+- step2(e) 是同级步骤，不自行变成只有缺标识时才提供取回选项；SHOULD 提供选项不等于 SHALL 自动取回。
+- 这里以实际收到的咨询 200 及字段为条件，不保证每种承载路径的 200 均携标识，也不把新咨询 200 当成 B–C 转接成功。
+
+依据：TS24.379 V19.4.0 §11.1.8.2.3 step2(a–e)、§11.1.3.1 (release interface)、§F.1.3 transfer-announced-ind/replaces-header-value definitions，印刷页 463,464,501,731。
+
+## 已有 A–C 通话：用 re-INVITE 获取标识
+
+适用事件：A 已进入 announced 程序，已有与 C 建立的通话；或 C 收到该既有私呼的 re-INVITE。两角色分别按实际事件处理。
+
+A SHALL 向 C 生成并发送 re-INVITE，transfer-announced-ind=true，SDP offer 使用当前已建立的媒体参数。既有私呼客户端接收过程 §11.1.1.2.1.3 step5A 在该元素为 true 时，SHALL 以收到请求的 Call-ID/from-tag 及自身 200 的 to-tag 形成 replaces-header-value；它适用于按需和预建立会话。A 收到该 re-INVITE 的 200，若标识存在，SHALL 交给 §11.1.8.2.1；若没有，SHOULD 提示转接调用失败，且 SHALL 停止后续步骤。
+
+规范强度：re-INVITE 构造/发送、条件标识生成和交接、缺标识停止 SHALL；失败提示 SHOULD。
+
+- 该分支未重复规定缺标识时结束 A–C，不能移植新咨询的拆除动作。也不能自动套用新咨询 step2(e) 的取回选项。
+- step5A 的守卫是 true；不同于初始 INVITE 应答 helper §6.2.3.1.1 step7a 的元素存在守卫，见下一节。
+- 本节不改变既有会话的 answer-mode，也不声称 re-INVITE 200 已完成转接或媒体回滚。
+
+依据：TS24.379 V19.4.0 §11.1.8.2.3 step3(a–d)、§11.1.1.2.1.3 opening,steps5–8,NOTE1、§F.1.3 replaces-header-value definition，印刷页 425,426,501,502,731。
+
+## 咨询标识的产生与传递，不等于完整替换已完成
+
+适用事件：实际初始 INVITE 终接路径已到达所述应答 helper；或 A 构造 announced 转接 MESSAGE；或 B 接收该 MESSAGE 并发起新呼；或 A 收到转接结果。各事件替代适用，后者不是前者的共同前提。
+
+对实际按 §11.1.1.2.1.2 steps9/10 到达应答过程的初始 INVITE，§6.2.3.1.1 step7a 在 transfer-announced-ind 元素存在时生成 replaces-header-value；手动接听的最终 200 也调用该 helper。标识由请求 Call-ID/from-tag 和响应 to-tag 构成，F.1.3 用分号分隔。A 的转接 MESSAGE 仅在 §11.1.8.2.1 step3(d)(C) 所列 announced、incoming INVITE 的 Supported 含 replaces 及标识存在条件下复制该值。B 收到存在的标识 SHALL 提取，并在相应新 INVITE 或预建立 REFER 构造分支中携 Replaces。A 只有收到 success 结果，才按 §11.1.8.2.1 结果 step2 调用 §11.1.3.1 结束 A–B；announced 还 SHALL 结束 A–C。
+
+规范强度：实际 helper 的条件标识生成、条件复制/提取、相应新呼 Replaces 构造及 success 分支释放 SHALL；不增加通用自动恢复或替换保证。
+
+- 初始 INVITE 的应答 helper 仅按实际 caller 适用；其存在守卫不等于所有咨询路径均返回该字段，也不能把已有会话 step5A 的 true 改成存在即可。
+- 主条款 step3(d)(C) 写 incoming SIP INVITE，不自行补定其具体对话对象或省略 Supported 条件。
+- §6.2.3.1.1 step9 的 Replaces 释放对象写 pre-established session。本页不把它无条件用于咨询 A–C 对话，亦不宣称完整 C 端替换已闭合。
+- 咨询 200、控制 MESSAGE 200、转接 outcome 是不同证据；fail 没有成功分支的双通话释放动作。前述六个未预告控制小节仍只限其明确范围，本节不借链接自动扩大它们。
+
+依据：TS24.379 V19.4.0 §11.1.1.2.1.2 opening,steps1–10 (helper caller boundary)、§6.2.3.1.1 steps7a,9 (comparison)、§6.2.3.2.1 final200 paragraph、§11.1.1.2.1.3 step5A (guard comparison)、§11.1.8.2.1 step3(d)(C),response step2、§11.1.8.2.2 step3、§11.1.1.2.1.1 step14(b1)、§11.1.1.2.2.1 step8(b1)、§11.1.3.1、§F.1.3 transfer-announced-ind/replaces-header-value，印刷页 71,72,416,417,422,423,424,426,429,430,463,464,499,500,731。
+
 ## 相关入口
 
 - [remotely-initiated-private](remotely-initiated-private.md)
 - [forwarding-client-results](forwarding-client-results.md)
 - [originating-authorization](originating-authorization.md)
 - [preestablished-private-origination](preestablished-private-origination.md)
+
+外部保持依赖：[RFC5359 §2.1](https://www.rfc-editor.org/rfc/rfc5359.html#section-2.1)。

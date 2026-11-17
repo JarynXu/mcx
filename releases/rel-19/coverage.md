@@ -233,6 +233,14 @@
 
 入口：[MCData协商式归属请求：终止侧许可与用户决定](topics/mcdata/negotiated-affiliation-reception.md)。
 
+### SDS会话逐消息发送
+
+- **能回答：**可查普通单播one-to-one/组SDS session客户端媒体就绪、逐消息许可与大小、payload至MSRP SEND构造入口。
+- **只到条件或接口：**按实际主叫/终接及active/passive事件判断媒体就绪；逐消息发送时许可与大小待检查，通过适用条件后才在已建立MSRP连接构造。
+- **尚未建立的结论：**TS24.582 V19.0.0与24.282 V19.7.0仅按所列caller对照，不声称完整互通。排除standalone、离网、FD、IPCONN、MBMS/MBS及ad hoc/预建立额外条件，不提供对端交付证明或完整传输安全重传。
+
+入口：[SDS会话逐消息发送：媒体就绪、许可与构造入口](topics/mcdata/sds-session-send.md)。
+
 ## MCVideo视频业务
 
 [查看本域全部主题](topics-mcvideo.json)
@@ -523,13 +531,13 @@
 
 入口：[私呼终接的承载选择：Unconfirmed、手动邀约与FTA替换](topics/calls/private-termination-bearer-selection.md)。
 
-### 未预告私呼转接
+### 私呼转接：未预告控制与预告咨询
 
-- **能回答：**可查A/B/C角色、请求许可和身份映射、B的新呼调用、转接结果及成功后旧呼释放入口。
-- **只到条件或接口：**主系统在网直接ID未预告转接，各角色按实际控制请求、结果或业务响应事件适用；B起呼与A收到控制错误为不同入口。
-- **尚未建立的结论：**控制200不替代业务结果；既有普通终接主题排除转接，不能借其闭合C侧。保留起呼接口差异，不扩announced咨询保持、功能别名、跨系统或完整媒体生命周期。
+- **能回答：**可查A/B/C控制身份和许可、未预告新呼与结果，以及预告的新建/已有咨询、标识交接和成功后释放入口。
+- **只到条件或接口：**主系统在网直接ID转接，按各claim模式与实际事件读取；六条未预告责任仍有显式模式守卫，预告新咨询和已有咨询条件分别判断。
+- **尚未建立的结论：**咨询200不是转接success，保持/取回不是释放；RFC5359仅为有限外部依赖。initial应答的元素存在与既有re-INVITE的true守卫不同。不补完整C端Replaces、跨系统、功能别名或媒体实现。
 
-入口：[未预告私呼转接：三角色、结果与旧呼释放](topics/calls/private-call-transfer.md)。
+入口：[私呼转接：未预告控制与预告咨询交接](topics/calls/private-call-transfer.md)。
 
 ## 组管理与MCPTT组呼入口
 
