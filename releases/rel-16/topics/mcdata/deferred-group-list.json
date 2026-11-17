@@ -1,0 +1,198 @@
+{
+  "topic_id": "r16-mcdata-deferred-group-list",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCData：组里有哪些暂存数据可供我下载？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "TS 23.282 V16.8.0，Rel-16 Stage 2，在网延期组数据的主动清单查询；§7.6.2.5.1 将本程序标为待研究。"
+  ],
+  "claims": [
+    {
+      "id": "applicability-and-ffs",
+      "title": "先确认是否已有暂存数据，以及程序的版本限制",
+      "conditions": [
+        "判断本版所述查询是否适用。"
+      ],
+      "conclusion": "前提是 MCData 服务器已有暂存的延期组通信数据。接收方推迟下载是例子，不是唯一原因；非强制下载可接受、推迟（不响应）或拒绝，接收方不可达、网络拥塞或用户推迟时服务器都可能暂存。",
+      "normative_strength": "暂存是 may；既有暂存数据是查询示例的前提。§7.6.2.5.1 的编者注因 Rel-16 为 HTTP FD 引入新内容服务器，将本查询程序标为待研究（FFS）。",
+      "limitations": [
+        "不以延期这一事实推断服务端必有记录，也不将查询程序写成已定案的 HTTP FD 接口或产品要求。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2, on-network scope"
+          ],
+          "printed_pages": [
+            115
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.4.1, non-mandatory download choices"
+          ],
+          "printed_pages": [
+            119
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.4.2, step 6 (temporary storage is optional)"
+          ],
+          "printed_pages": [
+            120
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.5.1, general and editor’s note (procedure FFS after introduction of the HTTP FD content server in R16)",
+            "7.6.2.5.2, precondition"
+          ],
+          "printed_pages": [
+            120
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "request-and-affiliated-scope",
+      "title": "查哪个用户的哪些组",
+      "conditions": [
+        "在本文所述流程中，接收用户发起查询。"
+      ],
+      "conclusion": "该用户的 MCData 客户端向 MCData 服务器请求清单。请求表只列请求用户的 MCData ID；服务器列出其已归属组里对该请求客户端可下载的暂存项目。仅是组成员不足以将未归属组的数据列入。",
+      "normative_strength": "请求的 MCData ID 在表中为 M。查询主体与选取范围来自图及步骤 1–3。",
+      "limitations": [
+        "不能把组 ID 或对象 ID 当作此请求表规定的必填项。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.5.1, general and editor’s note (procedure FFS after introduction of the HTTP FD content server in R16)",
+            "7.6.2.5.2, precondition"
+          ],
+          "printed_pages": [
+            120
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.5.2, Figure 7.6.2.5.2-1 and steps 1–4"
+          ],
+          "printed_pages": [
+            121
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.1.3, direction and Table 7.6.2.1.3-1"
+          ],
+          "printed_pages": [
+            115,
+            116
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "references-not-content",
+      "title": "响应给引用，不是内容或完成证据",
+      "conditions": [
+        "客户端收到图中查询响应，需要解释列表项并与个人历史查询区分。"
+      ],
+      "conclusion": "服务器向客户端返回请求用户的 MCData ID 和待下载数据的引用清单；客户端通知用户，用户可选择是否取回。列入清单并非下载完成。个人历史对象查询则由 MCData 消息存储在认证和授权后，于本人存储区内按 ID 或条件返回对象本身。",
+      "normative_strength": "查询响应表两项均为 M；步骤 4 将是否取回留给用户决定。个人对象查询的响应类型见 §7.13.3.1 各表。",
+      "limitations": [
+        "这些查询条文不指定引用编码为 URL、没有项目时的响应形式或实际取回的交付证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.5.1, general and editor’s note (procedure FFS after introduction of the HTTP FD content server in R16)",
+            "7.6.2.5.2, precondition"
+          ],
+          "printed_pages": [
+            120
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.5.2, Figure 7.6.2.5.2-1 and steps 1–4"
+          ],
+          "printed_pages": [
+            121
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.1.4, Table 7.6.2.1.4-1"
+          ],
+          "printed_pages": [
+            116
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.2, access limited to the designated MCData user’s storage area",
+            "7.13.3.1.1, Table 7.13.3.1.1-1",
+            "7.13.3.1.2, Table 7.13.3.1.2-1"
+          ],
+          "printed_pages": [
+            141
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.3, Table 7.13.3.1.3-1",
+            "7.13.3.1.4, Table 7.13.3.1.4-1"
+          ],
+          "printed_pages": [
+            142
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcdata-stored-object-lookup"
+  ],
+  "limitations": [
+    "仅解释该固定版本描述的信息流，不是 HTTP FD 实现或合规要求。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
