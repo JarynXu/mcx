@@ -72,6 +72,8 @@
 
 - [同一用户跨业务、跨终端时，怎样辨认身份？](topics/identity/cross-service-user-mapping.md)：辨别认证、业务和路由身份，并按信任域判断何时可用公共用户身份标识业务用户。
 
+- [MCVideo 组呼下行：组播子信道如何映射，哪些成员仍走单播](topics/mcvideo/mbms-group-downlink.md)：解释共用一条 MBMS 承载时的组映射、按监听状态分流和客户端收包。
+
 先读主题共同条件，再按实际角色与事件选取结论；不把拒绝、应答、取消或后续数据处理拼成同时必备的条件。这些主题均不构成完整端到端实现，也不证明版本组合互通。
 
 [业务域](domains.json) · [主题索引](topics.json) · [条件阅读路径](reading-paths.json) · [覆盖边界](coverage.md) · [来源](sources.json) · [状态](status.json)
