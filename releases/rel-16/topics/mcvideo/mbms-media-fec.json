@@ -1,0 +1,127 @@
+{
+  "topic_id": "r16-mcvideo-mbms-media-fec",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCVideo 组播媒体：FEC 与加密的顺序，修复包怎样发送",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.581-v16.9.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 24.581 V16.9.0，Release 16，Stage 3；在网 MCVideo 组呼中经 MBMS 子信道传送音视频 RTP 媒体。是否采用 FEC、谁执行编码，依各条条件判断。"
+  ],
+  "claims": [
+    {
+      "id": "fec-crypto-order",
+      "title": "同时使用 FEC 与媒体面加密时的顺序",
+      "conditions": [
+        "该媒体同时启用 FEC 与媒体面加密。"
+      ],
+      "conclusion": "发送时先做媒体面加密，再做 FEC 编码；接收时先做 FEC 解码，再做媒体面解密。这个顺序适用于两种处理都使用的媒体，不要求所有 MBMS 媒体都开启 FEC，也不能据此判断某路媒体是否必须加密。",
+      "normative_strength": "FEC 可选；两者并用时处理顺序由 §10.4.1 直接给定。",
+      "limitations": [],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "10.4.1"
+          ],
+          "printed_pages": [
+            198
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "announce-when-selected",
+      "title": "选用 FEC 就须随承载通告声明",
+      "conditions": [
+        "参与侧决定对给定 MBMS 子信道采用 FEC。"
+      ],
+      "conclusion": "参与侧 MCVideo 功能一旦决定为特定 MBMS 子信道采用 FEC，就必须在 MBMS 承载通告中声明使用 FEC。通告按 TS 24.281 办理。即使不能确定由谁编码，这项声明义务也不变。",
+      "normative_strength": "第 1 项是选用后的必须动作，不以第 2 项的自行编码条件为前提。",
+      "limitations": [],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "10.4.2, item 1"
+          ],
+          "printed_pages": [
+            198
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "local-encoder-repair-delivery",
+      "title": "参与侧自行编码时的 RTP 编码、流标识和修复包目的端口",
+      "conditions": [
+        "参与侧已决定为给定 MBMS 子信道采用 FEC，且由参与侧自行进行 FEC 编码。"
+      ],
+      "conclusion": "如果参与侧自行编码，它在向该 MBMS 子信道发送音视频 RTP 包前，按 TS 26.346 §8.2.2.4 对这些包进行 FEC 编码；按该规范 §8.2.2 的机制生成修复包，其中视频的 UDP 流标识设为 1，音频设为 2。修复包经 MBMS 子信道发送，目的端口取自 Map Group To Bearer 消息。1 和 2 是流标识，并非目的端口号。",
+      "normative_strength": "第 2 项的子项 a、b 明写 shall；子项 c 以 send 续接同一条件下的发送步骤。",
+      "limitations": [
+        "如果只知道已选用 FEC，不能把编码、生成和发送修复包这些动作一概归给参与侧。本条没有指定其他编码实体的具体流程，也不规定 FEC 算法细节。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "10.4.2, item 2 a–c"
+          ],
+          "printed_pages": [
+            198
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "10.4.1"
+      ],
+      "printed_pages": [
+        198
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "10.4.2"
+      ],
+      "printed_pages": [
+        198
+      ]
+    }
+  ],
+  "limitations": [
+    "仅引用 TS 24.581 对 TS 24.281 和 TS 26.346 的依赖，不据此宣称已核验承载通告字段、FEC 算法或其他编码实体的处理。",
+    "客户端建立解码器、分派收到的媒体或修复包，以及收到 Unmap Group To Bearer 后解除组映射，均由相关主题 mbms-group-downlink.md 说明。"
+  ],
+  "related_topics": [
+    "mbms-group-downlink.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

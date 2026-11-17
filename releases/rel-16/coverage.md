@@ -384,6 +384,16 @@ Granted与实际RTP分别取证；容量分支不补列表记账，T205到限停
 
 [读取主题](topics/mcvideo/prearranged-group-queue-position.md)
 
+## MCVideo 组播媒体：FEC 与加密的顺序，修复包怎样发送
+
+同时使用时，发送先加密后 FEC 编码，接收先 FEC 解码后解密。参与侧选用 FEC 时须通告；若由参与侧自行编码，还可判定修复包所用流标识及目的端口的来源。
+
+选用 FEC 本身不能证明编码者是谁。流标识视频为 1、音频为 2，不是目的端口；参与侧自行编码时按 Map Group To Bearer 所给目的端口发送修复包。
+
+尚未建立：FEC 算法细节、其他编码实体的具体过程以及某一路媒体是否必须加密。
+
+[读取主题](topics/mcvideo/mbms-media-fec.md)
+
 
 ## 显式组归属：本客户端的建立、解除与状态观察
 
