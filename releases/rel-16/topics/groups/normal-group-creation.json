@@ -1,0 +1,285 @@
+{
+  "topic_id": "r16-groups-normal-group-creation",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "新建普通 MC 业务组：谁定组 ID，谁会得知建组？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "各声明继承共同条件；ID 被拒绝采用不等于建组失败，按已创建、用户重编组与是否有成员区分后续步骤。",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0，Release 16，Stage 2；§10.2.3 的在网普通建组，同一 MC 系统内的组管理客户端、GMS、MC 业务服务器和成员。管理员知道拟纳入的用户身份；仅在明确标注时对照 user regroup。"
+  ],
+  "claims": [
+    {
+      "id": "creation-request-inputs",
+      "title": "建组输入与可省略的字段",
+      "conditions": [
+        "管理员请求为具体用户建立一个新的普通 MC 业务组。"
+      ],
+      "conclusion": "创建请求带成员的 MC 业务用户 ID 列表，该列表可为空。步骤 1 要求提供启用的业务信息；专门的业务列表信息元素在表中标 O，建多业务组时必须带。建议组 ID 与组配置数据均为可选。",
+      "normative_strength": "用户 ID 列表标 M；业务列表为 O 且受注 2 的 shall 约束；建议组 ID 与配置数据标 O。",
+      "limitations": [
+        "输入的是用户身份，不是把若干已有组作为组成组；既有组重组的输入表及默认值不适用于本请求。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.1, scope and NOTE 1"
+          ],
+          "printed_pages": [
+            86
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.3, introduction and preconditions 1–2"
+          ],
+          "printed_pages": [
+            94
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.1, Table 10.2.2.1-1 and NOTEs 1–3"
+          ],
+          "printed_pages": [
+            87
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.3, step 1 and NOTEs 1–2"
+          ],
+          "printed_pages": [
+            95
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "choose-id-and-store",
+      "title": "选择组 ID 与检查成员数",
+      "conditions": [
+        "GMS 处理建议 ID；仅在继续建组时执行配置保存等后续步骤。"
+      ],
+      "conclusion": "未给建议 ID，由 GMS 生成；给出且可接受，则使用建议值；给出但不可接受，GMS 可修改建议 ID、另生成 ID 或拒绝建组请求。继续创建时，GMS 保存组配置数据或先创建后保存，并检查组成员总数上限 Nc6。",
+      "normative_strength": "步骤 2a 是按输入分支处理，不可接受时列出三种选择；步骤 2b 描述配置保存和上限检查。",
+      "limitations": [
+        "未规定不可接受时三种选择的优先级，也未在这里规定 ID 可接受性的判据或超限时的协议错误码。成员总数不是已归属人数。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.3, steps 2a–2b"
+          ],
+          "printed_pages": [
+            95
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "notify-server-and-members",
+      "title": "配置建立后，谁会被通知",
+      "conditions": [
+        "已创建新组；区分普通建组、同条款的 user regroup，以及组中是否有成员。"
+      ],
+      "conclusion": "图中第 3 步，普通建组时 GMS 可按条件通知 MC 业务服务器，通知必带新组 ID 和成员的业务 ID 列表；多业务组发送时通知为该组配置的相应业务服务器。user regroup 时 GMS 通知业务服务器临时组及其成员；若业务服务器做了相应配置，这些用户可能自动归属。图中第 4 步，新组若有成员，其组管理客户端获知新建组的配置；无成员则无成员通知对象。",
+      "normative_strength": "步骤 3 的普通服务器通知是 may，user regroup 的服务器通知是流程动作，其自动归属有配置前提且是 may。步骤 4 以存在组成员为前提。",
+      "limitations": [
+        "图示先后不是全员签收栅栏；普通建组没有在此给出业务服务器通知的触发判据。通知配置不证明已归属或入呼；发起者若要参加，须同时是新组成员并已归属。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.1, scope and NOTE 1"
+          ],
+          "printed_pages": [
+            86
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.7, Table 10.2.2.7-1 and preceding NOTE"
+          ],
+          "printed_pages": [
+            88
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.3, Figure 10.2.3-1 and steps 3–4"
+          ],
+          "printed_pages": [
+            95
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "read-creation-result",
+      "title": "发起端的操作结果和失败时的 ID",
+      "conditions": [
+        "GMS 向发起方的组管理客户端返回本次建组结果。"
+      ],
+      "conclusion": "步骤 5 的结果可区分采用建议 ID 的成功、采用 GMS 提供的 ID 的成功、因建议 ID 不可接受而失败，以及其他失败。响应表同时要求结果和组 ID；结果为失败时，组 ID 字段的值无意义。",
+      "normative_strength": "结果与组 ID 字段均为 M，表注对失败时 ID 值的解释作专门限制。",
+      "limitations": [
+        "字段存在不等于建组成功；响应不是给成员的配置通知，成功也不能证明成员已确认、归属或入呼。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.3, Figure 10.2.3-1 and steps 3–4"
+          ],
+          "printed_pages": [
+            95
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.3, step 5"
+          ],
+          "printed_pages": [
+            96
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.2, Table 10.2.2.2-1 and NOTE"
+          ],
+          "printed_pages": [
+            87
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.1, scope and NOTE 1"
+      ],
+      "printed_pages": [
+        86
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.3, introduction and preconditions 1–2"
+      ],
+      "printed_pages": [
+        94
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.2.1, Table 10.2.2.1-1 and NOTEs 1–3"
+      ],
+      "printed_pages": [
+        87
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.3, step 1 and NOTEs 1–2"
+      ],
+      "printed_pages": [
+        95
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.3, steps 2a–2b"
+      ],
+      "printed_pages": [
+        95
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.2.7, Table 10.2.2.7-1 and preceding NOTE"
+      ],
+      "printed_pages": [
+        88
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.3, Figure 10.2.3-1 and steps 3–4"
+      ],
+      "printed_pages": [
+        95
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.3, step 5"
+      ],
+      "printed_pages": [
+        96
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.2.2, Table 10.2.2.2-1 and NOTE"
+      ],
+      "printed_pages": [
+        87
+      ]
+    }
+  ],
+  "limitations": [
+    "不规定普通组服务器通知的实现触发器、ID 分配算法、送达时限、失败重试或加入具体呼叫；不覆盖既有组的临时重组或拆除。"
+  ],
+  "related": [
+    "r16-groups-single-system-temporary-regroup",
+    "r16-groups-group-membership-notification"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
