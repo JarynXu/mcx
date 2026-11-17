@@ -62,6 +62,8 @@
 
 - [MCPTT 服务设置发布：身份守卫、当前设置与删除边界](topics/calls/settings-publication.md)：按构造、拒绝、实际成功处理与删除事件进入，不将设置传达等同服务授权、通知或呼叫成功。
 
+- [预建立会话：建立、空闲修改与无业务使用时释放](topics/calls/preestablished-session-lifecycle.md)：按建立、无关联会话修改或无呼叫使用时释放分别进入，不将容器建立视为呼叫或话权成功。
+
 先读主题共同条件，再按实际角色与事件选取结论；不把拒绝、应答、取消或后续数据处理拼成同时必备的条件。这些主题均不构成完整端到端实现，也不证明版本组合互通。
 
 [业务域](domains.json) · [主题索引](topics.json) · [条件阅读路径](reading-paths.json) · [覆盖边界](coverage.md) · [来源](sources.json) · [状态](status.json)
