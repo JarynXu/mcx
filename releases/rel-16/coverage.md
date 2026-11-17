@@ -292,6 +292,16 @@ Stage 2 功能与信息流说明不替代 Stage 3；许可、媒体可用、实�
 
 [读取主题](topics/mcvideo/offnetwork-single-participant.md)
 
+## 普通离网组 single 仲裁者：非抢占授予、重发与发送者记录
+
+普通离网组single实际仲裁者的局部请求授予/拒绝、重发、媒体记录与本机结束。
+
+Granted与实际RTP分别取证；容量分支不补列表记账，T205到限停止与计数重置不补重发算法；交接开始不是交接完成。
+
+尚未建立：不覆盖完整自任/选举、容量记账、身份映射、排队/抢占、交接完成或全局唯一仲裁；非抢占和QueueUsage=false仅限Request分支，其他事件不附加该前提。
+
+[读取主题](topics/mcvideo/offnetwork-single-arbitrator.md)
+
 ## 显式组归属：本客户端的建立、解除与状态观察
 
 本客户端显式兴趣发布、解除、订阅观察及必要服务器接收和状态证据。
