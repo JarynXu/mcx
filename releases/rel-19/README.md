@@ -21,7 +21,7 @@
 | [位置服务](topics-location.json) | 位置获取、报告、订阅、取消、历史补报与传播权限。当前归属、测量时间和报告可用信息分别判断；跨 MC/LMR 位置到互通域查。 |
 | [网络策略与 QoS](topics-network-policy.json) | EPS 信令、Rx 重试与 MCData 预建立共享边界、5GS 的 QFI/5QI/ARP、GBR 通知、MCPTT 资源模型和通用 N5 创建、更新、终止及GBR目标变化通知。资源结果不是话权或媒体交付结果；[MCData 预建立共享](topics/network-policy/mcdata-preestablished-resource-sharing-boundary.md)的注册、Rx绑定和执行证据也须分开。 |
 | [SIP 路由](topics-signalling.json) | 注册器寻找及用户绑定、对话标识、remote target 与 route set。RFC 基线不等于完整 MCX SIP profile。 |
-| [紧急与优先状态](topics-emergency.json) | 通用紧急要求、MCPTT 私呼升级/降级，以及[已建组呼紧急升级](topics/emergency/group-inprogress-upgrade.md)与[取消紧急状态](topics/emergency/group-inprogress-cancel.md)各自的条件入口；MCData、MCVideo 的专有告警与取消须回到各自业务域，不跨业务搬用规则。 |
+| [紧急与优先状态](topics-emergency.json) | 通用紧急要求、MCPTT 私呼升级/降级，以及[已建组呼紧急升级](topics/emergency/group-inprogress-upgrade.md)与[取消紧急状态](topics/emergency/group-inprogress-cancel.md)各自的条件入口；没有正在进行的组通话时，已归属用户另查 [DedicatedGroup 独立告警](topics/emergency/standalone-group-alert.md)的请求、分发与确认边界；MCData、MCVideo 的专有告警与取消须回到各自业务域，不跨业务搬用规则。 |
 
 ## 几类容易选错的入口
 
