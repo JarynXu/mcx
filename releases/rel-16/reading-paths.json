@@ -1,6 +1,6 @@
 {
   "release": 16,
-  "purpose": "按角色与实际事件读取，不把可选、拒绝或后续事件拼成共同前提。",
+  "purpose": "按想了解的问题选择相关主题。判断某次通信发生了什么时，再核对正文所列的网络模式、角色、状态和消息；相邻页面不是必经步骤。",
   "paths": [
     {
       "id": "r16-calls-private-client-answer-evidence",
@@ -8,7 +8,7 @@
       "start": "topics/calls/private-client-answer-evidence.md",
       "next_if": [
         {
-          "condition": "需要核对服务器独立准入或路由，且实际收到该主题限定的请求或响应；不以客户端成功代替服务器条件",
+          "condition": "要查普通按需私呼中服务器怎样检查准入、识别主叫或选择目标。",
           "read": "topics/calls/private-server-admission-routing.md"
         }
       ],
@@ -20,7 +20,7 @@
       "start": "topics/mcdata/sds-control-client.md",
       "next_if": [
         {
-          "condition": "需要核对服务器独立准入或路由，且实际收到该主题限定的请求或响应；不以客户端成功代替服务器条件",
+          "condition": "要查私聊 standalone SDS 的服务器怎样受理、拒绝或转送 MESSAGE。",
           "read": "topics/mcdata/sds-control-server.md"
         }
       ],
@@ -32,7 +32,7 @@
       "start": "topics/calls/private-server-admission-routing.md",
       "next_if": [
         {
-          "condition": "需要客户端应答或内容处理证据，且实际到达该客户端自身角色和事件入口",
+          "condition": "要区分普通按需私呼的客户端拒绝、应答、取消和建立证据。",
           "read": "topics/calls/private-client-answer-evidence.md"
         }
       ],
@@ -44,7 +44,7 @@
       "start": "topics/mcdata/sds-control-server.md",
       "next_if": [
         {
-          "condition": "需要客户端应答或内容处理证据，且实际到达该客户端自身角色和事件入口",
+          "condition": "要查私聊 standalone SDS 客户端怎样发送、响应或处理消息内容。",
           "read": "topics/mcdata/sds-control-client.md"
         }
       ],
@@ -56,7 +56,7 @@
       "start": "topics/calls/prearranged-client-establishment.md",
       "next_if": [
         {
-          "condition": "仅用户实际要求重入或客户端被触发返回覆盖、且针对既有session identity时读取主动重入入口；不是初建成功后的必经步骤，也不是把正文组身份改为session URI",
+          "condition": "要区分预安排组呼初建和主动重入，尤其是重入时使用哪个会话身份。",
           "read": "topics/calls/rejoin-late-entry.md"
         }
       ],
@@ -66,14 +66,24 @@
       "id": "r16-mcdata-http-fd-client",
       "question": "私聊HTTP文件分发客户端：上传、URL通知、下载决定与完成证据",
       "start": "topics/mcdata/http-fd-client.md",
-      "next_if": [],
+      "next_if": [
+        {
+          "condition": "要查普通私聊 HTTP 文件分发中，服务器怎样检查发送资格、选择目标并转送请求。",
+          "read": "topics/mcdata/http-fd-server.md"
+        }
+      ],
       "boundary": "不覆盖组、别名、应用定向、媒体面FD、服务器完整转送、安全依赖实现或通知送达闭环。"
     },
     {
       "id": "r16-mcvideo-private-client-answer-evidence",
       "question": "普通按需 MCVideo 私呼：客户端请求、应答与结果证据",
       "start": "topics/mcvideo/private-client-answer-evidence.md",
-      "next_if": [],
+      "next_if": [
+        {
+          "condition": "要查普通按需 MCVideo 私呼中，服务器怎样核准初始 INVITE 并选择路由。",
+          "read": "topics/mcvideo/private-server-admission-routing.md"
+        }
+      ],
       "boundary": "不覆盖组呼、离网、视频推拉、远程ambient、预建立承载、完整服务端或媒体许可实现。"
     },
     {
@@ -87,14 +97,24 @@
       "id": "r16-mcdata-http-fd-server",
       "question": "私聊HTTP文件分发服务端：准入、目标转送与受理证据",
       "start": "topics/mcdata/http-fd-server.md",
-      "next_if": [],
+      "next_if": [
+        {
+          "condition": "要区分服务器受理、终端响应与实际下载，或查客户端怎样决定是否取回文件。",
+          "read": "topics/mcdata/http-fd-client.md"
+        }
+      ],
       "boundary": "不覆盖组、别名、媒体面FD、终止/延期列表、完整HTTP存储或通知送达闭环。"
     },
     {
       "id": "r16-mcvideo-private-server-admission-routing",
       "question": "普通按需 MCVideo 私呼：服务器准入、路由与响应边界",
       "start": "topics/mcvideo/private-server-admission-routing.md",
-      "next_if": [],
+      "next_if": [
+        {
+          "condition": "要查普通按需 MCVideo 私呼的客户端怎样发起、拒绝、应答或取消。",
+          "read": "topics/mcvideo/private-client-answer-evidence.md"
+        }
+      ],
       "boundary": "不覆盖优先、预建立、完整SIP/SDP或媒体生命周期；原文回指缺口仍未解决。"
     },
     {
@@ -103,11 +123,11 @@
       "start": "topics/media/on-network-floor-client.md",
       "next_if": [
         {
-          "condition": "仅当需要核对实际服务器角色处理、且请求方U已为not permitted and Floor Idle、G已为Floor Idle并满足普通显式非排队范围时读取；客户端请求、SIP200或组归属不能证明这些入口成立",
+          "condition": "要查在网服务器在 Floor Idle 状态怎样处理普通显式、非排队的话权请求。",
           "read": "topics/media/on-network-idle-floor-server.md"
         },
         {
-          "condition": "仅实际进入本页在网单话权角色/状态事件时比较显式抢占与撤销；客户端has permission收到Revoke与服务器U/G事件分别适用，普通请求不保证必经本页",
+          "condition": "要比较在网单话权抢占时，客户端收到 Revoke 与服务器撤销各意味着什么。",
           "read": "topics/media/on-network-preemption-revoke.md"
         }
       ],
@@ -119,7 +139,7 @@
       "start": "topics/mcdata/sds-session-client.md",
       "next_if": [
         {
-          "condition": "实际到达主叫成功响应或终接ACK媒体调用，并满足客户端媒体主题的网络模式、角色与事件条件",
+          "condition": "要查私聊 SDS 会话从 SIP 应答或 ACK 转入客户端媒体处理后，怎样连接和逐条收发消息。",
           "read": "topics/mcdata/sds-session-media-client.md"
         }
       ],
@@ -138,7 +158,7 @@
       "start": "topics/calls/prearranged-server-admission-routing.md",
       "next_if": [
         {
-          "condition": "仅PF/CF实际收到定向会话身份重入INVITE，或CF收到新归属/回覆盖通知且已有ongoing组呼时按对应入口读取；初始准入不自动证明重入/晚入条件通过",
+          "condition": "要比较初始准入、针对既有会话的重入 INVITE 和服务器收到新归属或回覆盖通知后的晚入。",
           "read": "topics/calls/rejoin-late-entry.md"
         }
       ],
@@ -150,7 +170,7 @@
       "start": "topics/mcdata/sds-session-server.md",
       "next_if": [
         {
-          "condition": "实际到达本角色 PF/CF 的媒体调用事件，并满足媒体服务器页所列角色、实际部署及连接或接收事件条件时读取；不由任意 SIP 200 推定媒体已绑定，也不要求所有 PF 都是独立媒体 relay",
+          "condition": "要区分私聊 SDS 会话的 SIP 准入和 PF/CF 位于媒体路径时的连接、绑定与响应。",
           "read": "topics/mcdata/sds-session-media-server.md"
         }
       ],
@@ -162,7 +182,7 @@
       "start": "topics/calls/offnetwork-group-client.md",
       "next_if": [
         {
-          "condition": "实际到达该离网呼叫角色的话权初始化或后续话权事件，且满足普通基本话权页的当前状态、消息/用户/计时器及适用配置条件时读取；不是所有呼叫事件必经，不将组配置套给私呼",
+          "condition": "要查离网组呼中普通基本话权的请求、排队、发送或交接。",
           "read": "topics/calls/offnetwork-floor-participant.md"
         }
       ],
@@ -174,7 +194,7 @@
       "start": "topics/mcdata/sds-session-media-client.md",
       "next_if": [
         {
-          "condition": "实际部署中的PF/CF处于媒体路径，且需要判断对应连接或接收事件；不是所有会话必经独立relay",
+          "condition": "要查 PF/CF 位于私聊 SDS 会话媒体路径时，怎样绑定连接或逐跳响应。",
           "read": "topics/mcdata/sds-session-media-server.md"
         }
       ],
@@ -214,7 +234,7 @@
       "start": "topics/calls/offnetwork-private-manual-client.md",
       "next_if": [
         {
-          "condition": "实际到达该离网呼叫角色的话权初始化或后续话权事件，且满足普通基本话权页的当前状态、消息/用户/计时器及适用配置条件时读取；不是所有呼叫事件必经，不将组配置套给私呼",
+          "condition": "要查手动离网私呼的话权处理，以及哪些话权条件仅适用于组呼。",
           "read": "topics/calls/offnetwork-floor-participant.md"
         }
       ],
@@ -233,7 +253,7 @@
       "start": "topics/mcvideo/prearranged-group-client-establishment.md",
       "next_if": [
         {
-          "condition": "仅当核对普通预安排组controlling function服务器职责，并实际到达本页的受邀成员初始化或对应U/G状态事件时读取；客户端200不证明G已Idle或已获许可，不将私呼媒体页作为本组流程后续",
+          "condition": "要查普通预安排 MCVideo 组呼中，控制服务器怎样初始化成员并处理传输许可。",
           "read": "topics/mcvideo/prearranged-group-transmission-server.md"
         }
       ],
@@ -252,7 +272,7 @@
       "start": "topics/media/on-network-idle-floor-server.md",
       "next_if": [
         {
-          "condition": "仅另行确认实际已进入G Taken、请求者U Taken及原持有者对应事件时比较；本页Idle条件授予不自动证明这些状态或新抢占请求成功，不以返回Idle闭合排队推进",
+          "condition": "要比较在网单话权空闲时的条件授予与 Taken 状态下的抢占、撤销。",
           "read": "topics/media/on-network-preemption-revoke.md"
         }
       ],
@@ -264,7 +284,7 @@
       "start": "topics/mcvideo/prearranged-group-transmission-server.md",
       "next_if": [
         {
-          "condition": "仅需核对普通预安排组的接收侧职责，且实际到达接收Gr/U的创建、通知或对应请求/媒体/结束事件时读取；传输Grant不等于接收许可，相关页不是必经成功链，私呼接收客户端范围不适用",
+          "condition": "要区分普通预安排 MCVideo 组呼的发送许可和逐流接收许可。",
           "read": "topics/mcvideo/prearranged-group-reception-server.md"
         }
       ],
@@ -276,7 +296,7 @@
       "start": "topics/calls/emergency-group-client.md",
       "next_if": [
         {
-          "condition": "仅在核对已有按需预安排组会话的CF职责，且CF实际收到对应紧急re-INVITE或其响应/ACK事件时读取；客户端发起或权限检查不证明CF已收到、授权或成功，不适用于初始INVITE",
+          "condition": "要查已有按需预安排组会话中，CF 怎样处理紧急升级或取消的 re-INVITE。",
           "read": "topics/calls/emergency-group-server.md"
         }
       ],
@@ -309,7 +329,7 @@
       "start": "topics/mcvideo/offnetwork-single-participant.md",
       "next_if": [
         {
-          "condition": "仅本参与者实际经对应C201到限或匹配交接等事件已转入O:transmission arbitration后，按新页普通组single及逐事件条件读取；此出口不保证完整自任/交接或全局唯一仲裁，Request的非抢占/QueueUsage=false不扩成全部事件共同前提",
+          "condition": "要查普通离网组 single 模式下，参与者转入仲裁状态后承担哪些职责。",
           "read": "topics/mcvideo/offnetwork-single-arbitrator.md"
         }
       ],
@@ -356,7 +376,7 @@
       "start": "topics/calls/settings-publication.md",
       "next_if": [
         {
-          "condition": "仅另有实际设置读取、订阅/退订或 NOTIFY 接收事件，且满足设置观察页各角色和身份条件时读取；不由 PUBLISH200 推定订阅存在、通知送达或缓存更新",
+          "condition": "要区分服务设置的 PUBLISH 与读取、订阅、退订和 NOTIFY 缓存。",
           "read": "topics/calls/settings-observation.md"
         }
       ],
@@ -375,7 +395,7 @@
       "start": "topics/groups/negotiated-affiliation-client.md",
       "next_if": [
         {
-          "condition": "仅目标用户接受后，被接受归属项当前尚未归属或被接受解除项当前已归属，实际调用§9.2.1.2时读取；保留显式helper完整兴趣、条件抑制等全部限制。另有本客户端实际状态观察事件时才读相应观察职责；MESSAGE200不代替PUBLISH或NOTIFY结果",
+          "condition": "要查目标用户接受后怎样显式变更符合当前归属状态的条目，或怎样观察本客户端的归属状态。",
           "read": "topics/groups/explicit-affiliation-client.md"
         }
       ],

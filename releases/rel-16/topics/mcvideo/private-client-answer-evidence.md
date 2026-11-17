@@ -79,3 +79,5 @@ Answer-Mode=Auto 且本地自动，或本地手动但愿意自动应答，进入
 - 技术依据只取本固定 Release16 版本。TS24.229、TS24.484、TS33.180、TS24.581 及 RFC 的完整实现仍是依赖；本页不以其他 Release 或 MCPTT 规则补足。
 
 [固定版本来源](https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/16.12.00_60/ts_124281v161200p.pdf)
+
+普通按需初始 INVITE 的准入与目标选择见[MCVideo 私呼服务器](private-server-admission-routing.md)。
