@@ -1,0 +1,255 @@
+{
+  "topic_id": "r19-groups-adhoc-explicit-list-establishment",
+  "release": 19,
+  "standard_stage": 3,
+  "state": "clause-checked",
+  "title": "显式名单建立 ad hoc 组呼：资格、邀请与应答证据",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v19.4.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "固定 TS24.379 V19.4.0，单一主系统、普通在网按需 MCPTT ad hoc 组呼初建；用户提供显式被邀 MCPTT ID 列表，不接续 ad hoc emergency alert，不带已有 ad hoc group ID。",
+    "不含 criteria 确定、紧急/迫近危险、广播、迁移、跨系统、功能别名、预建立、Replaces、转接或重入；请求者不在会触发优先呼叫的 emergency 状态，不请求端到端安全或优先级覆盖。",
+    "客户端、PF、CF、终接客户端按各自实际接收事件适用。权限成功、邀请送达或最终200不是全链共同前提；错误输入比较只说明对应拒绝，不成为正常显式列表路径。"
+  ],
+  "claims": [
+    {
+      "id": "adhoc-explicit-request",
+      "title": "显式用户列表发往 PF，不向配置模板组起呼",
+      "conditions": [
+        "用户请求建立普通按需 ad hoc 会话并给出被邀用户列表；不接续 ad hoc emergency alert，本次不提供既有 ad hoc group ID 或 criteria。"
+      ],
+      "conclusion": "§17.1 将配置来源组与实际通信组分开：独立预配置组提供配置，不用作这次组通信的组身份。客户端先检查服务配置 allow-adhoc-group-call-support；缺失或 false 时 SHOULD 告知不允许，SHALL 停止。通过后发初始 INVITE：Request-URI 为服务主叫的 PF PSI，正文 session-type=adhoc、mcptt-client-id 为本端 ID，resource-lists 列待呼叫的 MCPTT 用户 ID；主叫 MCPTT ID 留待 PF 填入。请求带 MCPTT 能力/ICSI 标识、相应 Accept-Contact 的 require/explicit、P-Preferred-Service 与 SDP offer。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "17.1",
+            "17.2.2.1.1 opening,steps1-5,10(a-c),11,13,17",
+            "17.2.2.1.1 steps10(b),12 and NOTES1-5 (comparison only: supplied identity,criteria,alert-follow-on)",
+            "17.2.2.1.1 step15 (comparison only: scope excludes originating client already in emergency state)"
+          ],
+          "printed_pages": [
+            642,
+            643,
+            644,
+            645
+          ]
+        }
+      ],
+      "limitations": [
+        "显式列表与 criteria 是不同输入方式，不能将配置模板组的成员表默认当作被邀名单；本页不处理同时提供两类输入的有效路径。",
+        "§17.1 对配置组额外参数保留 Editor’s Note（FFS）；不把它解读为整个 ad hoc 呼叫业务未实现。",
+        "未展开可选会话计时器字段、功能别名、位置、隐式话权请求与端到端密钥流程；所列字段不是完整 SIP/XML 模板。"
+      ],
+      "normative_strength": "按各条原文分别保留 SHALL、SHOULD、MAY；依赖调用不等于已核完整实现。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "adhoc-explicit-opf",
+      "title": "主叫 PF 分别检查本地许可、配置许可与容量",
+      "conditions": [
+        "O-PF 收到 session-type=adhoc 的发起侧 INVITE；以下正常转送须此前未拒绝，拒绝本身不继承授权成功。"
+      ],
+      "conclusion": "O-PF 可因资源或拥塞风险以 500 拒绝，可附 Retry-After。从 P-Asserted-Identity 对应公共身份确定主叫 MCPTT ID，绑定缺失/过期返回 404+Warning141；本地策略不准发起返回 403+Warning184；未提供 MCPTT speech codec 返回 488；MaxSimultaneousCallsN6 已超出返回 486+Warning103。显式列表且无告警后续 true 指示时，按主叫用户身份确定 ad hoc 服务 CF PSI，无法确定返回 404+Warning142。用户配置 allow-adhoc-group-call 缺失或 false，另返回 403+Warning185。通过后生成转送 INVITE，Request-URI 为所定 CF PSI，填入 mcptt-calling-user-id，并构造 SDP offer；不得复制收到的 Answer-Mode/Priv-Answer-Mode。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "17.3.2.1.1 opening,steps1-9,10-14,18",
+            "17.3.2.1.1 step7(b-c),NOTES7-9 (comparison only: alert/rejoin/discovery)"
+          ],
+          "printed_pages": [
+            654,
+            655,
+            656,
+            657
+          ]
+        }
+      ],
+      "limitations": [
+        "客户端服务支持开关通过，不代替 PF 的用户许可、身份、媒体或容量检查；184 与185不是同一配置条件。",
+        "本路径按主叫选择 CF，不按模板组 ID、被叫名单中的任意一人或已存在会话 ID 选择。发现 PSI 的具体方法未规定；本页不展开伙伴系统/网关。"
+      ],
+      "normative_strength": "按各条原文分别保留 SHALL、SHOULD、MAY；依赖调用不等于已核完整实现。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "adhoc-explicit-admission",
+      "title": "CF 检查服务、用户与输入边界",
+      "conditions": [
+        "CF 收到 ad hoc 初始 INVITE；本主题显式列表正常路径不含 criteria，但同时携两者的拒绝作为输入边界列出。"
+      ],
+      "conclusion": "CF 可因资源不足/拥塞风险以 500 拒绝；媒体参数不可接受或未提供 MCPTT speech codec 返回 488。Accept-Contact 缺 g.3gpp.mcptt 或缺携 MCPTT ICSI 的 g.3gpp.icsi-ref 时返回 403。主叫 allow-adhoc-group-call=false 返回 403+Warning185；服务 allow-adhoc-group-call-support 缺失或 false 返回 403+Warning186。存在显式列表时检查被邀人数是否在 max-no-participants 配置限额内，越界返回 403+Warning189；同时存在列表与带一项或多项 criteria 的字段，返回 403+Warning187。这些拒绝分支均停止本条后续处理。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "17.4.2.2 opening,steps1-3,4-7",
+            "17.3.2.1.1 step9 (comparison only: missing user permission)"
+          ],
+          "printed_pages": [
+            655,
+            670,
+            671,
+            672
+          ]
+        }
+      ],
+      "limitations": [
+        "CF step4 仅明写 allow=false 的拒绝条件，不借 PF 的缺失规则补成 CF 缺省；这也不等于缺失就授权。",
+        "不从所选条款自行补空列表、重复 ID、缺失 max-no-participants 的处理或数字默认值。criteria 正常确定流程不在本页。"
+      ],
+      "normative_strength": "按各条原文分别保留 SHALL、SHOULD、MAY；依赖调用不等于已核完整实现。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "adhoc-explicit-invitation",
+      "title": "创建实际组和会话，再逐个邀请",
+      "conditions": [
+        "CF 前序检查已通过；无告警后续 true 指示且未提供 ad hoc group ID，显式列表用于确定成员。"
+      ],
+      "conclusion": "CF 将被邀成员 200 响应计数初始化为0，创建 ad hoc 组并生成组身份；把列表每个 entry 对应用户列为受邀者，创建会话并分配 MCPTT session identity。普通非优先呼叫启动 TNG3，时长取服务配置 max-duration-of-call。CF 按 §17.4.2.2 step15 调用 §17.4.2.1.1 邀请各成员，并视所有受邀成员为隐式归属。每条邀请的 Request-URI 指向该用户的终接 PF PSI；正文 mcptt-request-uri 是该被叫用户 ID，mcptt-calling-group-id 是新组 ID，P-Asserted-Identity 是 CF PSI。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "17.4.2.2 steps8-13,15-17",
+            "17.4.2.1.1 opening,steps1-5,9",
+            "17.4.2.2 step11 (comparison only: security configuration group)",
+            "17.1"
+          ],
+          "printed_pages": [
+            642,
+            643,
+            668,
+            669,
+            672,
+            673
+          ]
+        }
+      ],
+      "limitations": [
+        "实际组 ID、MCPTT session identity、模板组 ID、被叫用户 ID 和下一跳 PSI 各有用途，不能互换。端到端安全请求才触发 step11 的预配置组安全材料选择；本页不重建密钥或完整媒体依赖。",
+        "隐式归属发生在邀请过程，不证明受邀客户端已接听、媒体可达或全员成功。TNG3 是持续时间计时器，不擅自把它解释为等齐所有被叫的建立门槛。",
+        "此处只依据 §17 实际调用链，不沿用预安排组呼 required/minimum-number-to-start 算法；完整 SDP/媒体资源生成与失败回滚未核。"
+      ],
+      "normative_strength": "按各条原文分别保留 SHALL、SHOULD、MAY；依赖调用不等于已核完整实现。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "adhoc-explicit-termination",
+      "title": "受邀用户仍有独立参与许可和接续选择",
+      "conditions": [
+        "T-PF 收到本次邀请，或被叫客户端收到对应初始 INVITE。均为未迁移用户的按需分支，无 Replaces/转接、功能别名与紧急容量特例。"
+      ],
+      "conclusion": "T-PF 可因资源/拥塞风险返回 500；Contact 无 isfocus 返回 403+Warning104；尚未取得该客户端 Answer-Mode Indication 返回 480+Warning146；被叫公共身份绑定不存在返回 404；allow-adhoc-group-call-participation 缺失或 false 返回 403+Warning188。通过后，无 Answer-Mode 且保存设置为 auto-answer 时调用自动接续；本地策略亦可选择自动接续。无 Answer-Mode 且保存设置为 manual-answer 时调用手动接续。客户端仍可因资源不足或规范范围外原因拒绝，按条文响应并停止；已获准限制失败原因时可用不带 Warning 的480。客户端仅在 Answer-Mode=Auto 且本地设自动或允许从手动改自动时进入组呼自动过程；Manual 分支同样要求本地设手动或允许改手动。手动组呼可在用户确认前发183，用户拒绝则480+Warning110；实际发送最终200时复用组呼自动应答过程。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "17.3.2.1.2 steps1-8",
+            "17.2.2.1.2 steps1(a,c),2,9-10",
+            "17.2.2.1.2 step1(b) (comparison only: excluded functional-alias capacity)",
+            "6.2.3.1.2",
+            "6.2.3.1.1 steps1-5,7-8,10",
+            "6.2.3.2.2"
+          ],
+          "printed_pages": [
+            71,
+            72,
+            73,
+            645,
+            646,
+            647,
+            657,
+            658,
+            659
+          ]
+        }
+      ],
+      "limitations": [
+        "PF 的本地策略自动分支与 manual 设置分支均保留原文，不自创冲突优先序；客户端 header/本地设置不满足所列组合时，不补默认应答。模式 helper 的完整 PF 报文与响应处理未在本页展开。",
+        "客户端 step1(b) 另列特定主叫功能别名的 MaxSimultaneousEmergencyGroupCalls，原文未再加 incoming emergency=true 守卫；本页明确排除该特例，不断言普通来话永远不受它影响。",
+        "资源列表列有某人，不代表他已获参与许可；发出200只属该被叫腿证据，不等于所有名单成员都应答。"
+      ],
+      "normative_strength": "按各条原文分别保留 SHALL、SHOULD、MAY；依赖调用不等于已核完整实现。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "adhoc-explicit-result",
+      "title": "上游200可早于被叫确认，名单也不等于成功人数",
+      "conditions": [
+        "CF 实际收到某被邀腿响应；或 O-PF/主叫客户端收到本次 INVITE 的响应。各事件分开判断。"
+      ],
+      "conclusion": "CF 收到被邀 INVITE 的200后与媒体层交互、将本地200计数加1，并向已订阅 conference event 的参与者发 NOTIFY。上游应答另按 §17.4.2.2：收到183且 P-Answer-State=Unconfirmed、支持媒体缓冲、尚未给主叫最终响应时，生成仍标 Unconfirmed 的200，完成所列媒体处理再发送；收到被邀 INVITE 的200且尚未给主叫最终响应时，也按条文生成上游200并在媒体处理后发送。这两段没有列出等齐显式名单或最低人数的前提。两段响应均带实际 ad hoc group identity。O-PF 收到2xx后生成200，映射 Contact 中会话身份，并在收到时复制 P-Answer-State；主叫收到2xx后与用户面交互，MAY 告知收到的答案状态和组身份。主叫收到4xx/5xx/6xx后与用户面交互，MAY 提示建立失败。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "17.4.2.1.1 SIP200 response paragraph,NOTE7",
+            "17.4.2.2 step9 and SIP183/SIP200 response paragraphs",
+            "17.3.2.1.1 SIP2xx/SIP4xx-6xx response paragraphs",
+            "17.2.2.1.1 SIP2xx/SIP4xx-6xx response paragraphs",
+            "17.4.6.1 opening,step5(b) (comparison only: criteria source mismatch)",
+            "17.4.2.2 step12(i-ii) (comparison only: actual criteria caller)"
+          ],
+          "printed_pages": [
+            645,
+            657,
+            670,
+            672,
+            673,
+            674,
+            679,
+            680
+          ]
+        }
+      ],
+      "limitations": [
+        "§17.4.2.2 两段200正文均列 call-participants-criterias，回指 §17.4.6.1 step5(b)；显式列表路径并未因此调用 criteria 确定过程。本页保留该字段取值来源缺口，不制造 criteria、不静默删掉要求，也不将本文视为已闭合的完整200模板。",
+        "Unconfirmed 的上游200不是被叫用户已确认，更不是全员确认或已获话权。计数和 NOTIFY 也不自动建立全员屏障；本页不补无任何应答、全部拒绝、重复响应去重或完整超时退出算法。",
+        "原始名单、已邀请、隐式归属、收到某腿200、主叫收到200与实际音频可听分别判断；普通组既有页的建立门槛不能直接移植。"
+      ],
+      "normative_strength": "按各条原文分别保留 SHALL、SHOULD、MAY；依赖调用不等于已核完整实现。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [
+    "本页覆盖显式名单初建的业务责任和响应解释；不提供完整 SIP/XML/SDP、媒体与安全实现。显式名单成功响应中 criteria 的取值来源缺口保留，未借别版或其他业务补齐。"
+  ],
+  "related": [
+    "prearranged-origination.md",
+    "temporary-group-lifecycle.md",
+    "../calls/group-acknowledged-start.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

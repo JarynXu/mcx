@@ -121,6 +121,14 @@
 
 固定来源及具体条款以主题为准。
 
+### 普通组 HTTP FD 的控制侧准入与目标选择
+
+- **能回答：**可查 HTTP 分类与 FD SIGNALLING PAYLOAD/group-fd 条件、组文档成功门槛、组配置/成员/发送权限，以及前序通过后的归属目标和出站身份。
+- **只到条件或接口：**普通在网本地非重组 HTTP group-fd，按实际 CF 步骤顺序及停止条件读取；前置 MIME/FILEURL 之后才进入组分支，大小与主叫归属门槛仍由既有主题承载。
+- **尚未建立的结论：**不把成员资格当发送许可、大小通过或归属；保留 supported-services 量词、元素存在判断和目标回指差异，不替未归属者创建记录，不套媒体面FD、终止或完整下载算法，202不证明交付。
+
+入口：[普通组 HTTP 文件分发：控制侧业务准入与目标身份](topics/mcdata/http-group-fd-controller-admission.md)。
+
 ## MCVideo视频业务
 
 [查看本域全部主题](topics-mcvideo.json)
@@ -386,6 +394,14 @@
 入口：[在网广播组呼：按需请求、邀请与接续证据](topics/groups/broadcast-ondemand-signalling.md)。
 
 固定来源及具体条款以主题为准。
+
+### 显式名单初建 MCPTT ad hoc 组呼
+
+- **能回答：**可查客户端、PF、CF 和受邀客户端的独立资格、显式名单与实际组/会话身份、逐成员邀请，以及上游应答与被叫确认的区别。
+- **只到条件或接口：**单一主系统普通在网按需初建，显式 MCPTT ID 列表，无已有 ad hoc group ID 或告警后续；各角色按事件与前序判断，发起端不处于会触发优先呼叫的 emergency 状态。
+- **尚未建立的结论：**不套预安排组呼 required/最少人数门槛，不把名单、隐式归属或 Unconfirmed200当全员确认；保留显式名单成功响应 criteria 字段来源缺口，不补完整媒体、安全、失败回滚或 criteria 过程。
+
+入口：[显式名单建立 ad hoc 组呼：资格、邀请与应答证据](topics/groups/adhoc-explicit-list-establishment.md)。
 
 ## 身份、注册与配置
 

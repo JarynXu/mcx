@@ -1,0 +1,176 @@
+{
+  "topic_id": "r19-mcdata-http-group-fd-controller-admission",
+  "title": "普通组 HTTP 文件分发：控制侧业务准入与目标身份",
+  "release": 19,
+  "state": "clause-checked",
+  "standard_stage": 3,
+  "common_conditions": [
+    "固定 TS24.282 V19.7.0 Rel19，普通在网、本地、非重组的 group-fd 使用 HTTP 文件分发，关注CF处理FD SIGNALLING PAYLOAD。",
+    "不覆盖SDS、媒体面FD、功能别名、终止/延期/撤回及跨系统扩展。各claim须同时满足本页范围、自己的事件和前序未停止条件。",
+    "本页不是完整端到端发送或下载算法。文件可用性、大小、归属、计时和202已有独立主题，以下按实际调用条件连接，不把相邻主题一律视为必经。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.282-v19.7.0",
+  "claims": [
+    {
+      "id": "http-group-admission-entry",
+      "title": "HTTP 分类之后，仍按消息内容决定是否进入组准入",
+      "role": "控制 MCData 功能（CF）",
+      "conditions": [
+        "CF 收到对应 HTTP FD MESSAGE，或决定重新处理此前排队的该请求。"
+      ],
+      "conclusion": "§6.3.1.1 以路由到 CF、Accept-Contact 的 FD ICSI-ref 与 P-Asserted-Service 的 FD ICSI 分类。§10.2.4.4.2 的组准入 step12 另要求 signalling MIME 中为 FD SIGNALLING PAYLOAD，且 request-type=group-fd；两项须同时成立。",
+      "limitations": [
+        "排队请求先回202/Warning215并停止；不能因已返回202就视为通过组准入。",
+        "step3–9 的MIME/载荷/FILEURL检查与相关元数据处理在组分支之前，既有文件信令与可用期主题承载这些事实。本页不把FD HTTP TERMINATION套入step12。"
+      ],
+      "normative_strength": "shall；排队/资源拒绝按原文 may",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clauses": [
+            "6.3.1.1 HTTP FD controlling-function classification",
+            "10.2.4.4.2 opening,steps1–9,12"
+          ],
+          "printed_pages": [
+            89,
+            281,
+            282,
+            283
+          ]
+        }
+      ]
+    },
+    {
+      "id": "http-group-document-prerequisite",
+      "title": "先取得对应组文档，成功后才继续",
+      "role": "控制 MCData 功能（CF）",
+      "conditions": [
+        "已到step12，尚未遇到前序停止条件。"
+      ],
+      "conclusion": "step12a按§6.3.3取得请求组身份对应的文档，只有该过程成功才继续。helper在尚未订阅时按mcdata-request-uri中的组身份订阅xcap-diff；订阅404对应404/Warning113，其他4xx/5xx/6xx对应最终响应加Warning114。",
+      "limitations": [
+        "已有订阅不等于每次请求重新建订阅或重新GET全文。",
+        "§6.3.3 step3在通用SIP request语境中写成SIP INVITE request；HTTP caller明确调用此helper，但本页保留该措辞差异，不另造HTTP专属订阅协议。"
+      ],
+      "normative_strength": "shall；排队/资源拒绝按原文 may",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clauses": [
+            "10.2.4.4.2 step12a",
+            "6.3.3"
+          ],
+          "printed_pages": [
+            283,
+            97
+          ]
+        }
+      ]
+    },
+    {
+      "id": "http-group-configuration-and-member-gates",
+      "title": "组可用、成员资格与FD支持分别判断",
+      "role": "控制 MCData 功能（CF）",
+      "conditions": [
+        "step12a成功，按12b、b1、c、d、e顺序检查。"
+      ],
+      "conclusion": "on-network-disabled元素存在即403/115；preconfigured-group-use-only=true则403/167；没有与mcdata-calling-user-id匹配的成员mcdata-mcdata-id uri则403/116；mcdata-allow-file-distribution=false则403/213；supported-services缺失，或其中存在service的enabler非FD ICSI，则488/214。每项拒绝均停止后续。",
+      "limitations": [
+        "成员路径按本版字面为list-service/list/entry/mcdata-mcdata-id，不静默换成其他字段。",
+        "禁用条件是元素存在，不限true；FD许可这一条件只写false，不能补为缺失也拒绝。",
+        "supported-services条件不能改写成“列表完全没有FD”；混合FD与非FD条目也满足原文非FD条目条件。本页不推导schema默认值或修订其量词。"
+      ],
+      "normative_strength": "shall；排队/资源拒绝按原文 may",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clauses": [
+            "10.2.4.4.2 steps12b–e"
+          ],
+          "printed_pages": [
+            284
+          ]
+        }
+      ]
+    },
+    {
+      "id": "http-group-transmit-permission",
+      "title": "是组成员还不够，发送许可另有拒绝",
+      "role": "控制 MCData 功能（CF）",
+      "conditions": [
+        "前述组配置和成员检查通过，进入step12f(i)。"
+      ],
+      "conclusion": "§11.1 step2要求组文档actions中的mcdata-allow-transmit-data-in-this-group存在且不能为false；缺失或false判为不允许。HTTP CF的step12f(i)将此失败映射为403/Warning201并停止。",
+      "limitations": [
+        "后续12f(ii/iii)大小门槛仍须处理，具体两种208原因由fd-size-admission承载；本项通过不等于大小已通过。",
+        "12g的主叫归属是另一门槛，其403/120及不自动补隐式归属见既有归属入口主题。成员、发送权限、大小、归属不能互相替代。"
+      ],
+      "normative_strength": "shall；排队/资源拒绝按原文 may",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clauses": [
+            "10.2.4.4.2 steps12f–g",
+            "11.1 step2"
+          ],
+          "printed_pages": [
+            284,
+            310
+          ]
+        }
+      ]
+    },
+    {
+      "id": "http-group-targets-and-outgoing-identities",
+      "title": "通过准入后，发送给筛出的归属成员",
+      "role": "控制 MCData 功能（CF）",
+      "conditions": [
+        "step12a–g未触发停止，CF继续12h–j；普通非重组范围。"
+      ],
+      "conclusion": "12h调用§6.3.4，从组文档list条目按§6.3.5确定归属成员；没有归属成员时12i回403/198并停止。12j调用§10.2.4.4.1发送：出站mcdata-request-uri变为目标用户ID，mcdata-calling-group-id保留组身份，SIP Request-URI为目标PF的PSI，PAI为CF自身PSI。",
+      "limitations": [
+        "12j字面回指“step j above”，而目标确定列在12h；保留该错引，不把它当成额外目标算法。",
+        "§6.3.5仍按组、用户、客户端记录及用户信息项未过期判断；§6.3.4包含已隐式归属者，不表示本步骤替未归属者创建记录。",
+        "这里只说明HTTP caller和出站身份，不展开强制下载附加处理、PF发现与跨系统。发送请求并不证明下载完成；正常202证据由既有文件信令主题承载。"
+      ],
+      "normative_strength": "shall；排队/资源拒绝按原文 may",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clauses": [
+            "10.2.4.4.2 steps12h–j,15–16",
+            "6.3.4",
+            "6.3.5",
+            "10.2.4.4.1 opening,steps5–10"
+          ],
+          "printed_pages": [
+            284,
+            285,
+            97,
+            98,
+            280,
+            281
+          ]
+        }
+      ]
+    }
+  ],
+  "related": [
+    "fd-http-file-and-signalling-evidence.md",
+    "fd-size-admission.md",
+    "implicit-affiliation-entry-and-lifecycle-boundaries.md",
+    "fd-file-availability-and-expiry.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
