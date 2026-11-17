@@ -1,0 +1,193 @@
+{
+  "topic_id": "r16-mcdata-http-file-removal",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCData：上传方移除文件后，原来收到下载链接的人会知道吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 23.282 V16.8.0，Release 16，Stage 2；仅讨论用户发起的已上传 HTTP 文件移除及相关信息流，操作对象是 MCData 内容服务器上的文件。"
+  ],
+  "claims": [
+    {
+      "id": "single-system-removal",
+      "title": "单系统：请求者、目标与结果",
+      "conditions": [
+        "用户已注册 MCData 服务，且此前已成功上传该文件；内容服务器能核查该用户是否有权移除它。"
+      ],
+      "conclusion": "用户决定移除时，媒体存储客户端通过 HTTP 向内容服务器的媒体存储功能提交文件 URL。服务器据此移除文件并向该客户端报告是否成功。",
+      "normative_strength": "单系统程序的前提及所示处理；不把能核查授权改写成无条件授权。",
+      "limitations": [
+        "持有链接不是移除授权。请求本身也不是成功答复。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.8.1, removal using HTTP, scope"
+          ],
+          "printed_pages": [
+            101
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.8.2, preconditions, Figure 7.5.2.8.2-1, steps 1–4 and editor’s note"
+          ],
+          "printed_pages": [
+            101,
+            102
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.14, Table 7.5.2.1.14-1 and notes 1–2, removal request"
+          ],
+          "printed_pages": [
+            86
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.15, Table 7.5.2.1.15-1 and notes 1–2, removal response"
+          ],
+          "printed_pages": [
+            86
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "partner-removal-and-order",
+      "title": "互联系统：定位伙伴副本、两段确认与本地移除次序",
+      "conditions": [
+        "用户已注册 MCData 服务，文件已上传到主内容服务器，并已成功转存到伙伴内容服务器。"
+      ],
+      "conclusion": "客户端向主服务器提交 URL；主服务器根据已有转送记录向伙伴请求移除，携带主服务器上原文件的 URL。伙伴移除后向主侧确认成功，主侧再告知发起客户端是否成功。主侧本地移除可在步骤 2 后、步骤 6 前进行，不必在向伙伴发请求前完成。",
+      "normative_strength": "互联示例的成功路径；本地移除时序以步骤 3 的注为准。",
+      "limitations": [
+        "仅收过 URL 不等于伙伴已取得文件。伙伴确认不是终端回执，不规定伙伴失败时的重试或回滚。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.8.3, preconditions, Figure 7.5.2.8.3-1, steps 1–7, note to step 3 and editor’s note"
+          ],
+          "printed_pages": [
+            102,
+            103
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "request-response-identities",
+      "title": "请求和响应在各接口上怎样标识身份？",
+      "conditions": [],
+      "conclusion": "移除请求必须给内容引用（文件 URL），响应必须给成功或失败结果。用户 MCData ID 和伙伴系统身份的表列状态均为 O；表注指明客户端与服务器间的请求、响应带移除用户的 MCData ID，内容服务器之间的请求、响应带伙伴系统身份。",
+      "normative_strength": "请求和结果的必填状态为 M；两个身份字段按表注所写的方向出现。",
+      "limitations": [
+        "不能按 O 一概省去相关身份，也不能要求任一接口总是同时使用两种身份。这两张表不是 Stage 3 HTTP 状态码或报文规范。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.14, Table 7.5.2.1.14-1 and notes 1–2, removal request"
+          ],
+          "printed_pages": [
+            86
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.15, Table 7.5.2.1.15-1 and notes 1–2, removal response"
+          ],
+          "printed_pages": [
+            86
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "recipient-notification-boundary",
+      "title": "通知表能否证明收件人获知文件已移除？",
+      "conditions": [],
+      "conclusion": "表定义 MCData 服务器发往 MCData 客户端的移除通知，上传者的 MCData ID、已移除文件的 URL 必填，原因可选。单系统与跨系统程序均把是否以及如何通知原 URL 收件人留待研究（FFS）。",
+      "normative_strength": "通知表规定信息项；两项编辑注保留的是程序中面向旧 URL 收件人的通知问题。",
+      "limitations": [
+        "不能由通知表或服务器移除成功推出必通知、禁止通知或任何人已收到通知；程序也不能证明收件人先前下载的本地副本被远程擦除。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.8.2, preconditions, Figure 7.5.2.8.2-1, steps 1–4 and editor’s note"
+          ],
+          "printed_pages": [
+            101,
+            102
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.8.3, preconditions, Figure 7.5.2.8.3-1, steps 1–7, note to step 3 and editor’s note"
+          ],
+          "printed_pages": [
+            102,
+            103
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.18, Table 7.5.2.1.18-1, removal notification"
+          ],
+          "printed_pages": [
+            86
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcdata-http-fd-client",
+    "r16-mcdata-http-fd-server"
+  ],
+  "limitations": [
+    "不涵盖自动过期、个人消息存储中的文件夹操作、已下载终端副本删除、失败补偿或具体 HTTP 编码。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
