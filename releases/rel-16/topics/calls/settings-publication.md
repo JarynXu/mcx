@@ -1,0 +1,76 @@
+# MCPTT 服务设置发布：身份守卫、当前设置与删除边界
+
+## 适用范围
+
+- 固定 TS24.379 V16.14.0，Rel16 Stage 3。只解释 MCPTT 客户端 service-settings-only PUBLISH 的构造、服务器实际接收及删除事件；不是携 access-token 执行服务授权的 §7.2.2/7.3.3，也不是 REGISTER。
+- 客户端设置/更新/刷新/移除、服务器接收与客户端实际收到响应分别适用。绑定缺失、过期或保护失败仍是本页拒绝分支，不将处理成功设为全页前提。
+- 本页不赋予修改任意其他用户或其他设备设置的权限；以 targeted MCPTT ID、originating client ID、服务器身份/绑定和实际事件判断。SIP、事件包、配置、数据库及密码规范仍为外部接口，不能据本页生成完整可发送报文或声称完成认证。
+
+## 仅发布设置：PF 地址、目标用户和本客户端身份各有位置
+
+条件：客户端按 §7.2.3 要设置、更新、刷新或移除服务设置；依 §7.2.1A 被调用构造，不把 common helper 当独立发送入口。
+
+客户端按 TS24.229、RFC3903/4354 生成 PUBLISH；Request-URI 使用服务用户的 PF 公共服务身份，P-Preferred-Service 带 MCPTT ICSI，Event=poc-settings。不移除时 Expires=4294967295，移除时为 0。mcptt-info 正文携 targeted MCPTT ID 的 mcptt-request-uri 与 originating MCPTT client ID 的 mcptt-client-id：机密性保护启用时二者用 CSK 加密，禁用时为明文。poc-settings 正文携当前 auto-answer/manual-answer 设置及所选 user profile 的 user-profile-index 对应 selected-user-profile-index。完整性保护启用时，用 CSK 分别保护这两个 XML MIME 正文，再按 TS24.229 发送。
+
+规范强度：所列条件动作是 SHALL；外部被引用程序不在本页展开。
+
+限制：
+- 机密性和完整性各自按配置启用；相关元素缺省或 true 是启用，false 才禁用。可用密钥和配置是接口依赖，不证明已完成密钥分发。§7.2.3 没有要求照搬授权用 PUBLISH 的 access-token/MIKEY 构造。
+- 4294967295 是请求值，不保证服务器授予永久寿命。§7.2.1A NOTE2 将客户端设置计时限制在匹配 Instance Identifier URN 的客户端，并说明其更新还更新用户设置计时；本页不补 URN 与 client ID 的映射。
+- §7.4.1.2.2 的 schema 使用 MCS 命名空间和 nonNegativeInteger 子值；两客户端 NOTIFY 示例的命名空间与模式字符串不宜直接当作 PUBLISH 模板。RFC4354 的实体标识和编码约束未在本页完整验证。
+
+依据：
+- TS24.379 V16.14.0 §7.2.1A;7.2.3; 6.6.2.2;6.6.2.3.1;6.6.3.3.1 (configuration/key dependency); 7.4.1.2.2 tables7.4.1.2.2-1–3 (schema/example boundary)；印刷页 139, 140, 146, 149, 150, 151, 160, 161。
+
+## 服务器接收先核保护与绑定，不能把 PUBLISH 当重新授权
+
+条件：实际收到 Event=poc-settings、poc-settings 正文及含 mcptt-request-uri 和 mcptt-client-id 的 mcptt-info 正文的 PUBLISH，进入 §7.3.4。
+
+服务器先从 P-Asserted-Identity 识别 IMS 公共用户身份，执行 §7.3.1A。该 helper 先识别并验证实际存在的 XML 完整性保护，再判机密性；设置-only 分支的两个身份元素同时加密时均须解密成功，只加密一个则认定机密性失败，无加密时读明文。§7.3.4 在 helper 不成功时发 403/Warning 140 并停止。随后核对身份绑定；有效绑定存在时按需取得 profile，不存在或已过期时发 404 并停止。通过后按 RFC3903 处理请求，处理失败不得继续缓存或发送本条成功响应。
+
+规范强度：所列条件动作是 SHALL；外部被引用程序不在本页展开。
+
+限制：
+- 身份来源存在明确文本差异：step1 从 P-Asserted-Identity 识别，step4 却写 Request-URI 中的 IMS public user identity，而客户端 common helper 将 Request-URI 设为 PF PSI。本页保留这三处，不能自行把 step4 改为 PAI 或从 PF PSI 推导用户绑定；可执行身份映射仍缺依据。
+- §7.3.1A 的总述允许无完整性保护继续，编号步骤又写 all checks succeed；不可把无签名一律当失败。其被调用 §6.6.3.4.2 对验证失败有 403/Warning139 和停止；外层 Warning140 不能解释为必须额外发第二份最终响应。
+- 没有 access-token 的设置-only 分支不创建新服务授权绑定。§7.3.3 的授权容量检查、创建绑定和 Warning101/164 不可移植到本分支。
+
+依据：
+- TS24.379 V16.14.0 §7.3.4 steps1–7; 7.3.1A general and settings-only branch; 6.6.3.4.1–2 (integrity dependency); 7.2.1A;7.3.3 (identity and authorization comparison)；印刷页 147, 149, 153, 154, 155, 156, 157。
+
+## 成功处理后的缓存、当前模式和 active profile 仍不等于呼叫成功
+
+条件：§7.3.4 的前置保护/绑定检查未拒绝且 RFC3903 处理成功，实际继续 steps8–13；客户端提示则必须实际收到其 PUBLISH 的 200。
+
+服务器缓存收到的设置至设置到期，发送 200，将 Answer-Mode Indication 用作该客户端当前模式；profile 尚未存储时按需从用户数据库下载。带 selected-user-profile-index 时用它识别该客户端 active profile，注记只需下载所选 profile；无该元素而有多个 profile 时，按 Pre-selected-indication 选预选 profile。只有一个 profile 时，注记默认它是预选 profile。profile 的 OnNetwork/ImplicitAffiliations 有含组 ID 的 entry 时须调用 §9.2.2.2.15 隐式归属。客户端收到 PUBLISH 200 后可以提示设置已成功传达服务器。
+
+规范强度：服务器所列动作是 SHALL；客户端成功传达提示是 MAY，单 profile 默认与仅下载所选 profile 为 NOTE。
+
+限制：
+- 客户端 §7.2.3 要求发送所选索引，但服务器仍规定无索引分支；不能删掉该服务器入口，也不能据此让客户端任意省略字段。
+- §7.3.4 的 200 在文本上先于后续当前模式/profile/隐式归属步骤；本页不据客户端看到 200 推断这些外部调用全部完成。提示是 MAY，不是必须向用户宣称全流程成功。
+- 隐式归属 helper §9.2.2.2.15 的入口另要求已成功服务授权，client/user 身份取自服务授权请求；其候选表、N2 及逐组 §9.2.2.2.6 调用不能由 settings-only PUBLISH 自动补齐。这里仅保留该接口，不证明已归属成功。TS29.283 数据库、TS24.484 配置、多个预选标志、找不到索引、并发更新与失败回滚策略不由本页补造。
+- 当前模式/active profile 是服务器设置职责，不保证下一次具体呼叫采用、既有会话已变更、其他设备同步、通知已送达或媒体许可。
+
+依据：
+- TS24.379 V16.14.0 §7.3.4 steps8–13 and NOTE1–2; 7.2.3 final response paragraph; 7.3.6.1–2 (notification comparison only); 9.2.2.2.15 (implicit affiliation entry/interface boundary)；印刷页 151, 157, 158, 159, 185, 186, 187。
+
+## 删除设置须成功处理 PUBLISH，不能混同停止观察
+
+条件：服务器实际收到 Event=poc-settings 且 Expires=0 的 PUBLISH，进入 §7.3.5；不是 initial 或 in-dialog SUBSCRIBE。
+
+服务器从 P-Asserted-Identity 识别 IMS 公共用户身份，按 RFC3903 处理 PUBLISH。只有处理成功才继续删除 MCPTT service settings、删除 MCPTT ID 与公共用户身份之间的绑定，并发送 200。客户端 common helper 的注记说明，Expires=0 移除设置会使该 MCPTT 客户端退出 MCPTT 服务。
+
+规范强度：所列条件动作是 SHALL；外部被引用程序不在本页展开。
+
+限制：
+- 本删除入口未以两个设置正文作为明示入口条件；不能无依据把 §7.3.4 的非删除处理条件全局 AND 到这里。§7.2.3 的客户端构造仍按其本条要求和所引用 RFC 执行；分支协调与实体标签处理不能由本页臆造。
+- 删除绑定的文字粒度是 MCPTT ID 与 public user identity，不展开多设备绑定数据库的选择和全用户清理算法；不得解释为强制注销所有设备或整个 IMS 注册。
+- 本条与设置观察页的 PUBLISH 对照一致，只补到本发布生命周期入口；初始 SUBSCRIBE 的 0 是读取当前值，in-dialog SUBSCRIBE 的 0 是停止观察，都不等于本删除程序。
+
+依据：
+- TS24.379 V16.14.0 §7.3.5;7.2.1A NOTE2–3; 7.2.4 (SUBSCRIBE comparison)；印刷页 150, 151, 152, 158。
+
+## 条件化关联
+
+[设置读取与观察](settings-observation.md)：只有实际 SUBSCRIBE/NOTIFY 及各角色条件满足时读取；PUBLISH 200 不保证 NOTIFY 已到达。

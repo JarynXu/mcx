@@ -60,6 +60,8 @@
 
 - [普通在网组显式抢占：满容量撤销、等待与 End 证据](topics/mcvideo/onnetwork-preemption-revoke.md)：各角色按实际状态和事件进入，撤销、入队与 End 不证明完整抢占成功。
 
+- [MCPTT 服务设置发布：身份守卫、当前设置与删除边界](topics/calls/settings-publication.md)：按构造、拒绝、实际成功处理与删除事件进入，不将设置传达等同服务授权、通知或呼叫成功。
+
 先读主题共同条件，再按实际角色与事件选取结论；不把拒绝、应答、取消或后续数据处理拼成同时必备的条件。这些主题均不构成完整端到端实现，也不证明版本组合互通。
 
 [业务域](domains.json) · [主题索引](topics.json) · [条件阅读路径](reading-paths.json) · [覆盖边界](coverage.md) · [来源](sources.json) · [状态](status.json)
