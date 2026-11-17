@@ -1,0 +1,243 @@
+{
+  "topic_id": "r16-mcvideo-private-call-release",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "一对一 MCVideo 私呼：谁发起结束，服务器向谁请求、向谁应答？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.281-v16.4.0",
+  "common_conditions": [
+    "Release 16 TS 23.281 V16.4.0 Stage 2：甲、乙均已注册 MCVideo 服务，并已在网建立一对一私呼；原呼叫可用手动或自动开始模式。"
+  ],
+  "condition_rule": "客户端与服务器发起为备选分支；不能把两个分支的条件相加。媒体清理与传输控制资源的条件分别判断。",
+  "claims": [
+    {
+      "id": "client-originated-release-response-chain",
+      "title": "客户端发起时，服务器收到对端应答后才回应发起端",
+      "conditions": [
+        "甲用户要求结束与乙的这场私呼。"
+      ],
+      "conclusion": "甲端向服务器发起结束请求，服务器向原请求指定的乙端发送相应请求。乙端通知本端用户，再向服务器应答；服务器收到乙端应答后，生成对甲端原请求的应答并发给甲端。",
+      "normative_strength": "Stage 2 客户端发起的控制面流程，后一个应答有明确前提。",
+      "limitations": [
+        "乙不是直接向甲应答。仅见服务器向乙发请求，不能证明是甲发起。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.2.2.3.3.1, scope, precondition, Figure 7.2.2.3.3.1-1 and steps 1–2"
+          ],
+          "printed_pages": [
+            71
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.2.2.3.3.1, steps 3–6"
+          ],
+          "printed_pages": [
+            72
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "server-originated-release-both-clients",
+      "title": "服务器主动结束时，两端都是结束请求的接收方",
+      "conditions": [
+        "服务器判定本次私呼满足终止条件，并决定释放。"
+      ],
+      "conclusion": "服务器向甲端、乙端各发结束请求；各端通知本端用户并各自应答服务器。管理员配置的最长时长已到、没有收发导致超时，是终止条件的例子。",
+      "normative_strength": "Stage 2 服务器发起的流程；触发情形为举例，不是穷举。",
+      "limitations": [
+        "不规定统一时长，也没有规定两端应答之间的先后。单凭一方画面暂停，不能确认服务器已经判定超时。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.2.2.3.3.2, scope, precondition, Figure 7.2.2.3.3.2-1 and steps 1–4"
+          ],
+          "printed_pages": [
+            72
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "release-call-media-and-conditional-control",
+      "title": "两端释放本呼叫的媒体面资源，有传输控制才释放其资源",
+      "conditions": [
+        "客户端发起或服务器发起的私呼释放流程执行至清理步骤。"
+      ],
+      "conclusion": "两端释放该通私呼占用的全部媒体面资源。若原呼叫建立时带传输控制，还释放相应的传输控制资源。",
+      "normative_strength": "两条正常流程都明列媒体面清理，传输控制资源带有原建呼条件。",
+      "limitations": [
+        "一条结束应答不是两端均已清理的证据。两条 Stage 2 流程也不能据以认定具体 SIP 方法、状态码或用户端实际画面。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.2.2.3.3.1, step 7"
+          ],
+          "printed_pages": [
+            72
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.2.2.3.3.2, step 5"
+          ],
+          "printed_pages": [
+            73
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "partial-release-evidence-and-push-boundary",
+      "title": "释放请求的一个发送方向或一项推送完成记录都不能识别唯一发起方",
+      "conditions": [
+        "比较两条私呼释放流程；涉及推送时仅对照一对一视频推送的正常结束条款。"
+      ],
+      "conclusion": "服务器向乙发结束请求同时符合甲端发起和服务器发起两条路径。推送视频传完时按私呼释放程序结束，但推送条款不指定固定发起方。",
+      "normative_strength": "两张过程图与推送条款的回指对照；对单条记录的解释是证据边界。",
+      "limitations": [
+        "不能从一次普通私呼释放倒推曾有推送、视频已经传完或已被观看。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.2.2.3.3.1, scope, precondition, Figure 7.2.2.3.3.1-1 and steps 1–2"
+          ],
+          "printed_pages": [
+            71
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.2.2.3.3.1, steps 3–6"
+          ],
+          "printed_pages": [
+            72
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.2.2.3.3.2, scope, precondition, Figure 7.2.2.3.3.2-1 and steps 1–4"
+          ],
+          "printed_pages": [
+            72
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.3.2, NOTE 2",
+            "7.4.2.3.3, cross-reference to 7.2.2.3.3"
+          ],
+          "printed_pages": [
+            94
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.2.2.3.3.1, scope, precondition, Figure 7.2.2.3.3.1-1 and steps 1–2"
+      ],
+      "printed_pages": [
+        71
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.2.2.3.3.1, steps 3–6"
+      ],
+      "printed_pages": [
+        72
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.2.2.3.3.2, scope, precondition, Figure 7.2.2.3.3.2-1 and steps 1–4"
+      ],
+      "printed_pages": [
+        72
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.2.2.3.3.1, step 7"
+      ],
+      "printed_pages": [
+        72
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.2.2.3.3.2, step 5"
+      ],
+      "printed_pages": [
+        73
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.4.2.3.2, NOTE 2",
+        "7.4.2.3.3, cross-reference to 7.2.2.3.3"
+      ],
+      "printed_pages": [
+        94
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcvideo-one-to-one-video-push",
+    "r16-mcvideo-private-client-answer-evidence",
+    "r16-mcvideo-group-call-leave"
+  ],
+  "limitations": [
+    "范围为已进行私呼的基本结束流程，不讨论建立前取消、离网或组呼、SIP 释放编码、异常重传和端到端媒体呈现。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
