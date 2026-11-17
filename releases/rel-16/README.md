@@ -56,6 +56,8 @@
 
 - [普通预安排组重入与晚入：会话身份、准入和恢复证据](topics/calls/rejoin-late-entry.md)：按定向主动重入或实际CF晚入通知分别进入，200不等于获话权。
 
+- [同用户多客户端的服务设置：读取、观察与停止观察](topics/calls/settings-observation.md)：按同用户设置读取、观察或停止观察的实际事件进入，不把通知缓存当作设置发布或呼叫采用。
+
 先读主题共同条件，再按实际角色与事件选取结论；不把拒绝、应答、取消或后续数据处理拼成同时必备的条件。这些主题均不构成完整端到端实现，也不证明版本组合互通。
 
 [业务域](domains.json) · [主题索引](topics.json) · [条件阅读路径](reading-paths.json) · [覆盖边界](coverage.md) · [来源](sources.json) · [状态](status.json)
