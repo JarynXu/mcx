@@ -212,6 +212,16 @@ settings-only PUBLISH 的身份字段与保护配置、服务器保护/绑定拒
 
 [读取主题](topics/calls/conference-participant-status.md)
 
+## 在网 MCPTT 预安排组呼：怎样识别广播请求，何时释放通话？
+
+区分初始 INVITE 中的广播标志与对话外 REFER 所引用的组条目内的广播标志；判断播报结束和控制面必须释放的条件。
+
+控制功能收到规定的媒体面 T4 到期指示是释放条件之一。六项条件任一满足即可；其中只有预安排组呼发起者离开这一项明确受本地策略限定。
+
+尚未建立：仅凭请求、INVITE 成功应答或发起人结束传输，不能证明全体成员已听见，也不能证明会话释放已经执行。
+
+[读取主题](topics/calls/onnetwork-prearranged-broadcast-origin.md)
+
 
 
 ## 普通私聊SDS控制面：发送资格、请求与接收证据

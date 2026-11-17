@@ -1,0 +1,258 @@
+{
+  "topic_id": "r16-calls-onnetwork-prearranged-broadcast-origin",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "在网 MCPTT 预安排组呼：怎样识别广播请求，何时释放通话？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0（Release 16，Stage 3）；在网 MCPTT、发起人所属的预安排组；仅讨论普通组实例中的广播识别及组呼业务会话释放，不涉及紧急、迫近危险或重组的附加条件。"
+  ],
+  "condition_rule": "按需与预建立互为两条发起路径；服务含义、客户端请求、收到响应和服务端释放须各按自己的前提判断，不将任一结果倒作他项前提。",
+  "claims": [
+    {
+      "id": "broadcast-service-and-release-scope",
+      "title": "无需专建广播组，发起人不期待其他用户回话",
+      "conditions": [
+        "发起人属于目标 MCPTT 组，本页实例为在网预安排组。"
+      ],
+      "conclusion": "本版允许 MCPTT 用户向自己所属的任一 MCPTT 组发起广播。发起用户不期待其他用户回答，自己的传输完成即为业务上的广播终点。本版广播功能不符合 §4.12 所列其他规范对 user-broadcast group 和 group-broadcast group 的要求；未提供创建这两类组的能力。广播组层级配置不被本版 TS 24.380 程序使用。",
+      "normative_strength": "§4.12 为业务定义和版本能力说明；不将 can 改写为所有请求均须获准。",
+      "limitations": [
+        "不把本版两类专用广播组的限制写成不能在既有组播报；业务结束不能替代服务端释放证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.12, broadcast service semantics, scope in this Release and notes 1–2"
+          ],
+          "printed_pages": [
+            49,
+            50
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ondemand-invite-broadcast-mark",
+      "title": "按需：查初始 INVITE 自身的 MCPTT 信息正文",
+      "conditions": [
+        "用户请求在网预安排广播组呼，客户端按需发起；关于 2xx 的结论另以客户端确实收到该 INVITE 的相应 2xx 为前提。"
+      ],
+      "conclusion": "发起客户端用初始 SIP INVITE，Request-URI 指向服务用户的参与功能的公共服务标识；MCPTT 信息 XML 正文中 session-type=prearranged、mcptt-request-uri 标识目标组，broadcast-ind=true。收到该 INVITE 的 SIP 2xx 时，客户端另有协议处理；这不是其他用户的语音回答。",
+      "normative_strength": "指定初始请求、目标、字段构造及发送为 SHALL。收到 2xx 后的用户面交互另有条件性 SHALL。",
+      "limitations": [
+        "只证明所观察到的请求或响应，不能推断整组已接入、听见或回话；不列完整 SIP/SDP，也不推断话权。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.12, broadcast service semantics, scope in this Release and notes 1–2"
+          ],
+          "printed_pages": [
+            49,
+            50
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.8.2, item 1: originating client, on-demand broadcast indication"
+          ],
+          "printed_pages": [
+            71
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.1.1, opening and items 3, 10, 14(a–b) and 17; received SIP 2xx"
+          ],
+          "printed_pages": [
+            220,
+            221
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "preestablished-refer-broadcast-mark",
+      "title": "预建立：从对话外 REFER 追到组 URI 内的正文",
+      "conditions": [
+        "用户请求在已经建立的会话上，按预安排组身份发起本次广播；本页不处理私呼、chat 发起或加入。"
+      ],
+      "conclusion": "发起客户端产生对话外 SIP REFER，Request-URI 是预建立会话标识。Refer-To 的 cid 指向资源列表；单一条目的 URI 标识预安排组。其 SIP URI 的 headers 部分内，hname 为 body 的参数承载 MCPTT 信息正文，session-type 取 prearranged，按 §6.2.8.2 项 2 在 MCPTT 信息 XML 中置 broadcast-ind=true。",
+      "normative_strength": "对话外 REFER、指定目标、资源列表构造及广播指示为 SHALL；所引用通用构造按预安排条款修正。",
+      "limitations": [
+        "Refer-To 的 cid 不是目标组身份；外层没有独立广播字段不能排除内嵌指示。复用 REFER 构造不改变组呼业务类型；预建立会话在先不等于广播已发起。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.8.2, item 2: originating client, Refer-To URI body parameter"
+          ],
+          "printed_pages": [
+            71
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.2.1, opening and modifications to the referenced procedure, items 1–3"
+          ],
+          "printed_pages": [
+            228
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.2.1, items 1–3(c)(ii), REFER target and resource-list URI construction as invoked and modified by 10.1.1.2.2.1"
+          ],
+          "printed_pages": [
+            273,
+            274
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "controlling-function-release-alternatives",
+      "title": "释放：媒体面向 CF 报告 T4 到期是充分条件之一",
+      "conditions": [
+        "对已经存在的组呼会话，逐项按 §6.3.8.1 适用条件判断；不以 T4 到期、发起者离开或本地策略同意为全页前提。"
+      ],
+      "conclusion": "广播组呼的控制功能（CF）若收到媒体面的 T4 不活动定时器到期指示，必须释放该组呼的 MCPTT 会话。本条另列预安排组呼的同一 T4 指示、会中参与者不超过一人、预安排组呼发起者离开且本地策略据此释放、不满足已归属组成员最低人数、TNG3 到期。各项为替代触发，不需全部成立。",
+      "normative_strength": "任一列明条件成立，CF 释放为 SHALL；“按本地策略”只限定预安排发起者离开一项。",
+      "limitations": [
+        "松键、终端静音、业务传输完毕不是 CF 收到媒体面 T4 指示的证据；必须释放不等于已经执行，组呼业务释放也不证明预建立会话自身被释放。不推导 T4 数值或启动/重启规则。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.12, broadcast service semantics, scope in this Release and notes 1–2"
+          ],
+          "printed_pages": [
+            49,
+            50
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.8.1, alternatives 1–6 and mandatory group-session release by the controlling function"
+          ],
+          "printed_pages": [
+            136
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "4.12, broadcast service semantics, scope in this Release and notes 1–2"
+      ],
+      "printed_pages": [
+        49,
+        50
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.2.8.2, item 1: originating client, on-demand broadcast indication"
+      ],
+      "printed_pages": [
+        71
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.2.8.2, item 2: originating client, Refer-To URI body parameter"
+      ],
+      "printed_pages": [
+        71
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.2.1.1, opening and items 3, 10, 14(a–b) and 17; received SIP 2xx"
+      ],
+      "printed_pages": [
+        220,
+        221
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.2.2.1, opening and modifications to the referenced procedure, items 1–3"
+      ],
+      "printed_pages": [
+        228
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.2.1, items 1–3(c)(ii), REFER target and resource-list URI construction as invoked and modified by 10.1.1.2.2.1"
+      ],
+      "printed_pages": [
+        273,
+        274
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.8.1, alternatives 1–6 and mandatory group-session release by the controlling function"
+      ],
+      "printed_pages": [
+        136
+      ]
+    }
+  ],
+  "related": [
+    "r16-calls-prearranged-client-establishment",
+    "r16-mcptt-preestablished-session-lifecycle",
+    "r16-mcptt-offnetwork-broadcast-client"
+  ],
+  "limitations": [
+    "不含服务端逐跳邀请、详细接续与话权、用户收听确认、离网广播状态机、预建立资源的完整生命周期及本 Release 以外能力。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
