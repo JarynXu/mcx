@@ -1,0 +1,241 @@
+{
+  "topic_id": "r16-mcptt-offnetwork-broadcast-client",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 离网广播组呼：拒接后还会响吗？谁能结束这通广播？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "仅 TS 24.379 V16.14.0（Release 16）的 MCPTT 离网广播组呼。B1/B2/B3/B4 均为各终端自己的呼叫状态。",
+    "各条分别由实际用户动作、收到的消息或计时器到期触发；不要求同一终端按文章顺序经历全部事件。"
+  ],
+  "claims": [
+    {
+      "id": "receive-and-accept",
+      "title": "收到新广播：按本机确认配置接通或等待",
+      "conditions": [
+        "接收端在 B1 收到 GROUP CALL BROADCAST，且其呼叫标识不匹配任何进行中的广播呼叫；手动接受另要求已在 B3 并有本机用户接受指示。"
+      ],
+      "conclusion": "先保存呼叫标识、呼叫类型、SDP、发起用户标识及组标识。不要求本机用户确认时，按所存 SDP 建立媒体会话，以接收方身份启动话权控制，启动 TFB1 并进入 B2。需要确认时，先启动 TFB3、通知本机用户、进入 B3；B3 不预期发送确认指示。用户接受后才按所存 SDP 建立媒体，以接收方身份启动话权控制，停 TFB3、启动 TFB1、进入 B2。",
+      "normative_strength": "满足对应角色、当前状态及实际事件条件时，所列程序动作均为强制要求。状态含义、计时器表摘要和证据边界不是新的协议动作。",
+      "limitations": [
+        "发起用户不期望其他用户回应不等于接收侧没有本地确认配置；不能将 B3、存有 SDP 或话权控制已启动当成实际收听、发言获准的凭据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.12, opening broadcast purpose on p.49 (section continues p.50)"
+          ],
+          "printed_pages": [
+            49,
+            50
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.3.2.3.1–4, local B1–B4 state meanings"
+          ],
+          "printed_pages": [
+            347
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.3.2.4.2, steps 1–7: stored values and acknowledgment configuration"
+          ],
+          "printed_pages": [
+            348,
+            349
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.3.2.4.3, steps 1–5: local user accepts"
+          ],
+          "printed_pages": [
+            349
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "reject-suppress-and-refresh",
+      "title": "拒接或未选后，遇到同一呼叫的消息",
+      "conditions": [
+        "B3 的本机用户明确拒绝或 TFB3 到期；另一个入口是 B4 或 B2 收到呼叫标识与所存值相同的 GROUP CALL BROADCAST。"
+      ],
+      "conclusion": "B3 明确拒绝要先停 TFB3 再启动 TFB1、转 B4；若是 TFB3 自然到期，只须启动 TFB1、转 B4。B4 收到同一呼叫标识的广播，重启 TFB1，保持 B4；已在 B2 则重启 TFB1，保持 B2。",
+      "normative_strength": "满足对应角色、当前状态及实际事件条件时，所列程序动作均为强制要求。状态含义、计时器表摘要和证据边界不是新的协议动作。",
+      "limitations": [
+        "拒接不清呼叫标识、不等于已接通；同一呼叫的重发不会使 B4 重新提示，也不使 B2 另起会话。只知道组相同不足以满足呼叫标识匹配条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.3.2.4.4–5, rejection versus TFB3 expiry"
+          ],
+          "printed_pages": [
+            349
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.3.2.4.10 and 10.3.2.4.12, matching broadcast refresh in B4 or B2"
+          ],
+          "printed_pages": [
+            351
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "user-release-by-role",
+      "title": "B2 中主动退出：接收方与发起方",
+      "conditions": [
+        "本机处于 B2，且该侧用户明确要求释放；先区分该 UE 是接收端还是发起端。"
+      ],
+      "conclusion": "接收端释放媒体、停止话权控制，进 B4；这一程序不要求发 END、清呼叫标识或启停 TFB1。发起端释放媒体，以所存的呼叫标识、发起用户标识和组标识构造并发出 GROUP CALL BROADCAST END，停 TFB2、停 TFB1、清呼叫标识、停话权控制，回 B1。",
+      "normative_strength": "满足对应角色、当前状态及实际事件条件时，所列程序动作均为强制要求。状态含义、计时器表摘要和证据边界不是新的协议动作。",
+      "limitations": [
+        "本地退出与对外发送结束通知不同。即使发起端已发 END，本条也不给出所有其他终端都已收到的证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.3.2.4.6, steps 1–3: terminating user release"
+          ],
+          "printed_pages": [
+            349
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.3.2.4.7, steps 1–8: originating user release and END contents"
+          ],
+          "printed_pages": [
+            350
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "receive-matching-end",
+      "title": "匹配的结束通知在等待、参与、忽略三种状态下的处理",
+      "conditions": [
+        "在 B3、B2 或 B4 收到 GROUP CALL BROADCAST END，且消息的呼叫标识与本机所存值相同。"
+      ],
+      "conclusion": "B3 清呼叫标识、停 TFB3、回 B1，不先建媒体。B2 或 B4 执行媒体释放，停 TFB1、清呼叫标识，若话权控制仍在运行则停止，回 B1。",
+      "normative_strength": "满足对应角色、当前状态及实际事件条件时，所列程序动作均为强制要求。状态含义、计时器表摘要和证据边界不是新的协议动作。",
+      "limitations": [
+        "接收条件按呼叫标识；不要把发起端生成 END 时填写的三个字段误写成此处有三个接收比较条件。也不能由 B4 的媒体释放动作倒推曾接通过。标识不同不能用此匹配分支清当前呼叫。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.3.2.4.8, steps 1–5: matching END in B2 or B4"
+          ],
+          "printed_pages": [
+            350
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.3.2.4.13, steps 1–3: matching END in B3"
+          ],
+          "printed_pages": [
+            351
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "duration-expiry-by-role",
+      "title": "最长时长到期由谁发送 END",
+      "conditions": [
+        "TFB1 到期；接收端处于 B2 或 B4，发起端处于 B2。B3 等待用户所用的 TFB3 是另一入口。"
+      ],
+      "conclusion": "接收端释放媒体、清呼叫标识、停止仍在运行的话权控制，回 B1；不要求发 END。发起端释放媒体，以所存呼叫标识、发起用户标识及组标识构造并发出 END，停 TFB2、清呼叫标识、停话权控制，回 B1。发起端开始广播时必须先启动重传计时器 TFB2，再启动最长时长计时器 TFB1，随后进入 B2。不能用附录计时器表对 TFB1 启动原因的简述删去正文的发起端程序。",
+      "normative_strength": "满足对应角色、当前状态及实际事件条件时，所列程序动作均为强制要求。状态含义、计时器表摘要和证据边界不是新的协议动作。",
+      "limitations": [
+        "TFB1 到期不等于接收方已经收到 END，更不证明全员同步结束。到期与用户主动释放不是同一事件：到期分支不再另列停止 TFB1。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.3.2.4.1, steps 10–12: originating UE starts TFB2 and TFB1"
+          ],
+          "printed_pages": [
+            348
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.3.2.4.11, terminating and originating UE timer-expiry branches"
+          ],
+          "printed_pages": [
+            351
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "B.3.3, table B.3.3-1 (TFB1 cause of start; contrast to 10.3.2.4.1 and .11)"
+          ],
+          "printed_pages": [
+            539
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [
+    "话权控制仅到本程序的启动或停止动作，不展开话权仲裁、媒体收发、并发呼叫和其他标识的完整处理。广播消息和结束消息不是其他所有成员完成同一动作的证明。"
+  ],
+  "related": [
+    "r16-calls-offnetwork-group-client"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
