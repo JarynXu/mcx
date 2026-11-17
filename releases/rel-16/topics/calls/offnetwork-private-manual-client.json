@@ -1,0 +1,286 @@
+{
+  "topic_id": "r16-calls-offnetwork-private-manual-client",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "普通离网私呼：手动应答、建立证据与退出",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "固定 TS24.379 V16.14.0 的普通离网 PRIVATE CALL，使用 MANUAL COMMENCEMENT MODE；主叫发起时紧急状态为 false，且不是紧急请求。被叫范围为收到该普通类型和手动模式的请求。不覆盖自动应答、紧急升级/降级或并发呼叫仲裁。",
+    "各条按角色、当前状态、用户动作、消息或计时器事件分别适用；不以已接受、已建立媒体、已获话权或成功安全验证作为所有事件的共同前提。发起授权只约束发起分支。",
+    "本页解释 MONP 手动建立、角色结果证据、取消及本地释放，话权仅到 TS24.380 V16.9.0 的初始化/停止接口。配置分发、ProSe 承载、完整 SDP/密码实现及后续话权仲裁不在此实现。"
+  ],
+  "claims": [
+    {
+      "id": "manual-initiation-and-transport",
+      "title": "发起与振铃不等于建立",
+      "conditions": [
+        "替代事件：P0 或 P1 中用户发起，且 PrivateCall/Authorised=true；或 P2 收到 RINGING。发起分支的 manual 选择遵下面优先规则。"
+      ],
+      "conclusion": "发起者保存随机 Call identifier、自己的 caller ID、对端 callee ID，并创建独立呼叫类型状态机。若请求自动且 AutoCommence=true 则选择自动，不属于本页；否则 ManualCommence=true 才保存手动模式。普通类型控制把类型设为 PRIVATE CALL 并保存其配置的 ProSe 优先级。构造 SETUP REQUEST，包含 Call identifier、模式、类型、双方 ID 和 SDP offer；必要的端到端安全上下文先按条文生成及保存 MIKEY-SAKKE I_MESSAGE，再放入 offer。发送后 CFP1=1，启动 TFP1；原为 P1 时停止 TFP7，进入 P2。收到 RINGING 仍在 P2。RINGING 定义表示对端已向用户呈现来电并等待响应，不表示用户已接受。",
+      "normative_strength": "所列状态、消息和计时器处理为 SHALL；不将条文未列的动作补为强制要求。",
+      "limitations": [
+        "发送规则写 UDP 8809、TTL 255，但接收规则仍写 port TBD 和 received 8809 messages；本页不把它改成完整可直接实现的收包规则。",
+        "RINGING 的接收过程只列保持 P2，不能补主叫界面通知、停止 TFP1 或启动 TFP9。",
+        "模式两个许可都不满足时，本入口未给默认模式。MaxCallN10 限制并行私呼数；配置获取不由本页补齐。SDP 段仍有 MCPTT group 字样，不能据此把私呼改成组呼。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.1.1.1–2",
+            "11.2.2.1–3",
+            "11.2.2.4.2.1",
+            "11.2.2.4.2.3",
+            "11.2.3.1–4.3",
+            "15.1.5–6",
+            "15.2.3",
+            "15.2.6–7",
+            "15.2.10–11"
+          ],
+          "printed_pages": [
+            420,
+            421,
+            422,
+            423,
+            424,
+            436,
+            437,
+            479,
+            480,
+            489,
+            490,
+            491,
+            492
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "caller-wait-and-cancel",
+      "title": "主叫等待、拒绝与撤销",
+      "conditions": [
+        "替代事件：P2 中 TFP1/TFP9 到期、收到同 Call identifier 的 REJECT，或用户取消；不要求先收到 RINGING。"
+      ],
+      "conclusion": "TFP1 到期且 CFP1 低于上限时，递增计数，按保存字段重发 SETUP REQUEST，重新启动 TFP1 并留在 P2。手动模式下 TFP1 到期且 CFP1 等于上限时，启动 TFP9 并继续等待；TFP9 到期则启动 TFP7，释放类型状态机，进入 P1。同 Call identifier 的 REJECT 到达时，停止仍运行的 TFP1/TFP9，启动 TFP7、释放类型状态机并进入 P1。用户在 P2 取消则发送 RELEASE，停止 TFP1/TFP9，启动 TFP3、CFP3=1，进入 P3 等待释放回应。",
+      "normative_strength": "所列状态、消息和计时器处理为 SHALL；不将条文未列的动作补为强制要求。",
+      "limitations": [
+        "B.3.2 的 TFP1 行及 C.2.2 的 CFP1 行概括写达到上限终止建立，而手动专用 §11.2.2.4.2.5 明写进入 TFP9 等待；两层文字不被合并成一个无差异算法。",
+        "图 11.2.2.2-1 的 P2→P1 标签写 TFP2 expires，手动等待正文 §11.2.2.4.2.6 使用 TFP9；保留此定位差异，不把被叫用户等待计时器移到主叫。",
+        "TFP1 默认 40 ms 且可配置、依 D2D 特性；TFP9 默认 30 s、最大 60 s且可配置。CFP1/3 默认上限3且可配置，默认值不是每次部署的实际值。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.2.4.2.2–9",
+            "Figure11.2.2.2-1",
+            "15.1.8–10",
+            "B.3.2 TFP1/3/9",
+            "C.2.2 CFP1/3"
+          ],
+          "printed_pages": [
+            422,
+            424,
+            425,
+            426,
+            481,
+            482,
+            537,
+            538,
+            541,
+            542
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "callee-manual-decision",
+      "title": "被叫接受后仍须等待建立证据",
+      "conditions": [
+        "替代事件：P0/P1 收到手动且 Call identifier 不同于保存值的 SETUP REQUEST；P5 用户接受/拒绝、TFP2 到期、TFP4 到期，或收到主叫 ACCEPT ACK/RTP。每项守卫只约束对应事件。"
+      ],
+      "conclusion": "新来电保存 Call identifier 和 caller ID，以自己的 ID 为 callee ID，创建类型状态机，发送 RINGING；原为 P1 时停 TFP7，启动 TFP2，进入 P5。用户超时发送 Reason=FAILED 的 REJECT，启动 TFP7、释放类型状态机并进入 P1。用户主动拒绝时，只有请求限制失败通知且 FailRestrict=true 才用 FAILED，否则用 REJECT；停止 TFP2后进入同样的 P1 清理路径。用户接受时：若 offer 有含 MIKEY-SAKKE I_MESSAGE 的 mikey key-mgmt 属性，执行签名验证，失败按 FailRestrict 条件发 FAILED 或 E2E SECURITY CONTEXT FAILURE，停 TFP2、必要时启 TFP7并退出；验证成功后提取/解密 PCK及 PCK-ID，生成 answer。无 key-mgmt 属性时直接按该分支生成 answer。两种成功分支都发 ACCEPT、基于 SDP 建媒体，停 TFP2、CFP4=1、启动 TFP4，仍处 P5。TFP4 重传过程重新发送保存 answer 的 ACCEPT、递增 CFP4并重启；等于上限的失败过程启动 TFP7、释放类型状态机并进入 P1。P5 收到主叫 ACCEPT ACK 或 RTP 后，才停 TFP4、启动终接话权和 TFP5，进入 P4。",
+      "normative_strength": "所列状态、消息和计时器处理为 SHALL；不将条文未列的动作补为强制要求。",
+      "limitations": [
+        "没有 key-mgmt 与有符合该值的属性是正文列出的两类分支；不为其他属性值补默认安全路径，不以用户按接受代替密码验证。",
+        "TFP4 重传条款本身未写低于上限，另有等于上限的失败条款；B.3.2/C.2.2也列上限失败。不能宣称已解决同时匹配时的实现调度优先级。",
+        "TFP2 默认30 s、最大60 s；TFP4默认40 ms，CFP4默认上限3，均可配置。ACCEPT消息仅表示接受请求，不证明对端已收到或被叫已进入P4。",
+        "类型机 §11.2.3.4.4 用 ACCEPT 或 ACCEPT ACK 驱动普通 Q1，而基本机接受 RTP 也能进入 P4；不能给类型机补未列的 RTP 转移。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.2.4.4.1–7",
+            "11.2.3.4.3–4",
+            "15.1.6–8",
+            "15.1.11",
+            "15.2.8",
+            "B.3.2 TFP2/4",
+            "C.2.2 CFP4"
+          ],
+          "printed_pages": [
+            429,
+            430,
+            431,
+            432,
+            433,
+            437,
+            438,
+            480,
+            481,
+            482,
+            491,
+            537,
+            541,
+            542
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "acceptance-and-floor-role",
+      "title": "双方建立证据与话权角色不同",
+      "conditions": [
+        "替代事件：P2 主叫收到响应本次请求且 Call identifier 相同的 ACCEPT；或 P5 被叫收到主叫 ACCEPT ACK/RTP。话权初始化要求当前没有活动话权会话。"
+      ],
+      "conclusion": "主叫保存 answer、发送 ACCEPT ACK，停止仍运行的 TFP1/TFP9，按 answer 建立媒体，调用主叫话权初始化、启动 TFP5并进入 P4。被叫的对应调用点是收到 ACCEPT ACK 或主叫 RTP 后，而不是发送 ACCEPT 时。TS24.380 §7.2.1 将主叫初始化为 O: has permission，将终接私呼初始化为 O: has no permission；终接私呼的 §7.2.3.2.4 还启动 T203。主叫 has permission 表示该客户端兼任话权仲裁者并可发送媒体，不证明音频已经产生或到达对端。",
+      "normative_strength": "所列状态、消息和计时器处理为 SHALL；不将条文未列的动作补为强制要求。",
+      "limitations": [
+        "§7.2.3.2.2 的额外 Floor Granted 构造以 session announcement including an explicit floor request 为条件；本私呼 SETUP 消息表没有独立 floor-request IE。不能仅由 §7.2.1 的主叫调用推定该额外条件已满足或必发 Granted。",
+        "本页不展开 has-permission 后的媒体发送、T206/T207与完整仲裁算法；呼叫建立与持续媒体传送不是同一保证。",
+        "终接基本状态由 ACK 或 RTP 推进，但不据此补类型机的 RTP 输入。ACCEPT ACK 的消息定义仅确认收到 ACCEPT。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.2.4.2.8",
+            "11.2.2.4.4.5",
+            "11.2.3.4.4",
+            "15.1.5",
+            "15.1.11"
+          ],
+          "printed_pages": [
+            425,
+            426,
+            432,
+            438,
+            479,
+            480,
+            482
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.1",
+            "7.2.3.2.1–4",
+            "7.2.3.4.1",
+            "7.2.3.5.1–2 (boundary comparison)"
+          ],
+          "printed_pages": [
+            120,
+            123,
+            126,
+            127,
+            128,
+            129
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "release-timeout-and-id-retention",
+      "title": "释放确认、超时退出与旧标识保留",
+      "conditions": [
+        "替代事件：P5/P1 收到主叫 RELEASE；P4 用户释放或收到 RELEASE或TFP5到期；P3收到 RELEASE ACK或TFP3到期；P1中TFP7到期。不是所有事件均须发生。"
+      ],
+      "conclusion": "P5/P1 收到主叫 RELEASE 时发送 RELEASE ACK，停仍运行的 TFP2/TFP4；仅P5分支必要时启动TFP7、释放类型状态机并转P1。P4用户释放发送RELEASE，停TFP5、CFP3=1、启动TFP3并进入P3。P3重传过程重发RELEASE、递增CFP3并重启TFP3；上限失败过程终止媒体、启TFP7、释放类型状态机并进P1。P3收到RELEASE ACK时还停仍运行的TFP3，再执行媒体终止和P1清理。P4收到RELEASE则先回ACK，终止媒体、停TFP5并执行P1清理；TFP5到期也终止媒体并进入该清理路径。P1的TFP7到期清除保存Call identifier并回P0。活动话权会话在离网呼叫释放时终止。",
+      "normative_strength": "所列状态、消息和计时器处理为 SHALL；不将条文未列的动作补为强制要求。",
+      "limitations": [
+        "等待释放响应或上限超时不是收到对端确认；RELEASE ACK定义表示发送方已终止呼叫，但不能反推所有超时路径的远端状态。",
+        "TFP3重传段称 timer CFP3，其他步骤及计数表将CFP3作为counter；不改写成新的计时器。重传段与上限段的优先级不自行补齐。",
+        "TFP7默认1 s且可配置；TFP5来自私呼MaxDuration配置，没有在本表给固定默认。旧Call identifier保留期不等于仍在通话。",
+        "TS24.380 §7.2.2另述T230不活动可结束话权并可能结束呼叫，不能等同每条呼叫释放都由T230触发。没有处理的MONP消息丢弃，未处理用户/计时器事件忽略。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.2.4.4.8",
+            "11.2.2.4.5.1–7",
+            "11.2.2.4.6",
+            "15.1.9–10",
+            "B.3.2 TFP3/5/7",
+            "C.2.2 CFP3"
+          ],
+          "printed_pages": [
+            433,
+            434,
+            435,
+            436,
+            481,
+            482,
+            537,
+            538,
+            541,
+            542
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.2",
+            "7.2.3.2.1"
+          ],
+          "printed_pages": [
+            121,
+            123
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [],
+  "limitations": [
+    "这是有界的客户端责任说明，不是可直接执行的全协议实现；各条保留本版接口和图表差异。"
+  ],
+  "related_topics": [
+    "offnetwork-group-client.md",
+    "private-client-answer-evidence.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

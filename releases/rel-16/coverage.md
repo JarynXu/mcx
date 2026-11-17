@@ -52,6 +52,16 @@ PF/CF 的模式选择和响应仅限正文所列依赖；客户端事件分别�
 
 [读取主题](topics/calls/offnetwork-group-client.md)
 
+## 普通离网私呼：手动应答、建立证据与退出
+
+普通离网手动私呼的角色状态、建立证据、取消与释放。
+
+各角色事件分别适用；不借在网 SIP 或离网组呼规则补私呼，话权仅到实际初始化与停止接口。
+
+尚未建立：不覆盖自动应答、紧急升级降级、并发仲裁、ProSe/密码实现或完整离网话权仲裁；不自行裁决传输接口与正文/图表差异。
+
+[读取主题](topics/calls/offnetwork-private-manual-client.md)
+
 ## 普通私聊SDS控制面：发送资格、请求与接收证据
 
 发送资格、控制面选择、直接目标请求与接收响应的证据。
@@ -181,6 +191,16 @@ general/basic实例、Reception Mode和实际事件分别适用；许可不等�
 尚未建立：不覆盖普通私呼Reception Mode配置生产、服务端仲裁、完整报文编码或媒体呈现实现；不以组模式补齐。
 
 [读取主题](topics/mcvideo/reception-client-permission-and-end.md)
+
+## MCVideo 功能职责：会话、传输接收控制与媒体分发
+
+在网 MCVideo 应用、控制与媒体功能职责，以及分发和混合的条件边界。
+
+Stage 2 功能与信息流说明不替代 Stage 3；许可、媒体可用、实际接收和呈现分开判断。
+
+尚未建立：不覆盖完整 Stage 3 流程、模式选择、报文构造、媒体呈现或安全实现；可选调度、获准后通知与排队能力不变成每次强制动作。
+
+[读取主题](topics/mcvideo/functional-media-control-roles.md)
 
 ## 显式组归属：本客户端的建立、解除与状态观察
 

@@ -1,0 +1,146 @@
+{
+  "topic_id": "r16-mcvideo-functional-media-control-roles",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCVideo 功能职责：会话、传输接收控制与媒体分发",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.281-v16.4.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "固定 TS23.281 V16.4.0（2021-01），Rel16 Stage 2；仅解释在网功能职责，不是完整协议或部署实现。",
+    "各声明按对应功能和业务证据分别适用；不要求所有功能已启用、所有角色或成功事件同时出现。"
+  ],
+  "common_source_references": [
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "1",
+        "6.2.1"
+      ],
+      "printed_pages": [
+        11,
+        16
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "id": "application-control-and-media-control-roles",
+      "title": "应用服务与传输控制是不同功能职责",
+      "conditions": [
+        "识别在网 MCVideo 的应用服务、控制服务器与 UE 参与者；不要求先取得媒体许可才能解释这些职责。"
+      ],
+      "conclusion": "MCVideo client 是应用事务的用户代理，MCVideo server 提供集中服务支持。Transmission control server 可按上行条件调度请求，并可在请求获准时按下行条件通知参与者；竞争时可提供排队。Transmission control participant 处理发送请求以及到来的视频流邀请和通知。在网控制服务器位于 MCVideo server，参与者位于 UE。传输控制定义同时涉及谁可发送以及后续下行视频传输。",
+      "normative_strength": "功能定义和职责描述，不把支持能力表述成某次业务已成功。",
+      "limitations": [
+        "这些是功能实体描述，§6.2.1 明确不等于物理实体；不能由名称数出服务器台数。",
+        "组呼、私呼和功能别名的控制角色相互独立；不能照搬其他业务的角色划分或把别名许可当媒体许可。",
+        "这里不从功能支持推导 SIP 准入、RTCP 编码、客户端状态或排队确认算法。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "3.1 transmission control",
+            "6.2.1–6.2.2.3.2",
+            "6.2.2.3.6–7"
+          ],
+          "printed_pages": [
+            12,
+            16,
+            17,
+            18
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "session-signalling-control-and-media-evidence",
+      "title": "建立会话、控制许可与媒体交换分属不同接口",
+      "conditions": [
+        "在网业务使用相应参考点时，分别判断会话信令、传输/接收控制或媒体交换；不把它们合成必须同时成功的共同条件。"
+      ],
+      "conclusion": "MCVideo-1 用于建立服务会话的应用信令，MCVideo-4 承载单播传输控制信令，MCVideo-7 在媒体分发功能与 UE 媒体混合功能之间交换单播媒体。发送获准信息流针对请求发送者；媒体传输通知告诉接收侧另一用户的媒体可用。接收请求和接收响应又分别表达接收意图与该请求能否接收的结果。",
+      "normative_strength": "功能定义和职责描述，不把支持能力表述成某次业务已成功。",
+      "limitations": [
+        "这些Stage2职责/信息流含义不能互代：会话建立不直接证明接收结果，发送者获准不证明接收者已经收到并呈现。",
+        "本页不规定全部控制步骤的顺序、应答码、消息字段或完成证据，也不把Stage2信息流直接映射为Stage3报文。",
+        "§7.7.1.2.1 说明部分控制信息流可捎带呼叫控制；功能分工不表示每类职责必须使用独立物理连接。具体承载和实现仍需其各自规范。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "6.3.1",
+            "6.3.4",
+            "6.3.5",
+            "7.7.1.1–7.7.1.2.1",
+            "7.7.1.2.3;7.7.1.2.5–7 descriptive text"
+          ],
+          "printed_pages": [
+            18,
+            19,
+            123,
+            124,
+            125
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "distribution-and-mixing-have-distinct-limits",
+      "title": "分发与混合不能混为许可或任意解密能力",
+      "conditions": [
+        "分别判断网络媒体分发或 UE 媒体混合的职责；涉及网络侧混合时另判断媒体是否端到端加密。"
+      ],
+      "conclusion": "媒体分发功能利用服务器提供的信息接收上行、按需要复制并下发媒体，还支持保存媒体流为内容文件以及网络侧混合。UE 的 media mixer 支持发送和接收一个或多个流，并按媒体策略组合多个流，也支持保存流为内容文件。网络侧混合若发生，与 UE media mixer 独立；媒体端到端加密时不能在媒体分发功能内进行该混合。",
+      "normative_strength": "功能定义和职责描述，不把支持能力表述成某次业务已成功。",
+      "limitations": [
+        "功能支持不等于每次通话都必须录制，也不授予用户无条件录制或访问权限。",
+        "本页不提供编解码、混合算法、解密方案或已呈现的证明，不用网络分发职责填补接收客户端实现缺口。",
+        "部署场景在 §6B 转引通用架构；本页不从图或功能位置推出未核物理拓扑。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "6.2.1",
+            "6.2.2.3.3–4 including NOTE1–2",
+            "6B"
+          ],
+          "printed_pages": [
+            16,
+            17,
+            18,
+            20
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [
+    "不扩写离网、MBMS、跨系统、紧急或远程控制流程；通用架构和安全转引仍是独立依赖。",
+    "功能定义不能证明某个Stage3程序已实现，也不能填补其模式选择、错误处理或计时器缺口。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
