@@ -177,6 +177,14 @@
 
 入口：[MCData ad hoc 组确定：按条件取得组身份](topics/mcdata/adhoc-group-determination.md)。
 
+### MCData 组会话状态观察
+
+- **能回答：**可查当前状态或持续通知请求、PF会话映射、CF观察权限及广播拒绝、订阅者NOTIFY和结束观察。
+- **只到条件或接口：**普通本地在网；正常客户端订阅限正在参加的非广播会话，广播拒绝及ad hoc成员变化按独立分支读取，不预设全链成功。
+- **尚未建立的结论：**不把观察权限、身份、归属、入会和交付混同；结束订阅不等于退组，ad hoc变化不推广所有配置组。不套PTT/Video，也不补RFC状态合并、XML或安全实现。
+
+入口：[MCData组会话状态：订阅权限、通知与结束观察](topics/mcdata/conference-state-observation.md)。
+
 ## MCVideo视频业务
 
 [查看本域全部主题](topics-mcvideo.json)
@@ -498,6 +506,14 @@
 - **尚未建立的结论：**创建200不证明全员已收到通知或通话已建立；保留全200与非2xx条件边界，不补完整重试、补偿移除、进行中通话合并或安全实现。
 
 入口：[预配置组重组创建：授权、分层响应与成员通知](topics/groups/preconfigured-regroup-creation.md)。
+
+### 预配置重组移除与退归属
+
+- **能回答：**可查用户/O-PF/CF移除入口、group与user分支、NCF/T-PF通知以及终端本地退归属责任。
+- **只到条件或接口：**既有group或user regroup按实际类型处理；用户请求和CF自主决定为替代入口，各角色按已识别的实际事件适用，不套group创建专用前提。
+- **尚未建立的结论：**200不证明全端清理或媒体释放；保留分类要求与构造字段、T-PF正文类型及响应helper差异，不补完整移除报文或全局越权许可。创建失败补偿另按创建页条件。
+
+入口：[预配置重组移除：用户请求、服务器决定与退归属](topics/groups/preconfigured-regroup-removal.md)。
 
 ## 身份、注册与配置
 
