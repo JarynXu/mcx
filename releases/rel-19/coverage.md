@@ -201,6 +201,14 @@
 
 入口：[MCData按需位置请求：本地目标许可、刷新与报告证据](topics/mcdata/local-location-request.md)。
 
+### 功能别名与组的绑定及解绑
+
+- **能回答：**可查客户端许可和绑定专用激活检查、PF身份及转送、CF同用户组冲突检查与记录创建或移除。
+- **只到条件或接口：**在网本用户发起绑定或解绑，各角色依实际请求和响应事件处理；记录动作须前序未停止且request-type匹配，再按binding-ind区分。
+- **尚未建立的结论：**保留两组177守卫、178适用范围、分类层级/PSI及200目的地差异，不自行修成互斥算法。成功提示和记录变更不证明激活、停用、组成员变化或媒体交付；不补多组回滚和部分成功。
+
+入口：[MCData功能别名与组绑定：许可、记录变更及响应边界](topics/mcdata/functional-alias-group-binding.md)。
+
 ## MCVideo视频业务
 
 [查看本域全部主题](topics-mcvideo.json)
@@ -546,6 +554,14 @@
 - **尚未建立的结论：**不套group regroup全部NCF200门槛；任一T-PF200不证明全员送达或建会，不补超时、补偿、重复通知或密钥实现。
 
 入口：[预配置用户重组创建：指定用户、局部成功与通知](topics/groups/preconfigured-user-regroup-creation.md)。
+
+### 远程改变 selected group
+
+- **能回答：**可查A/B/G身份、请求许可、PF/CF转送、条件归属确认、B选组及结果接收。
+- **只到条件或接口：**在网远程选组，各角色按请求、响应或错误事件分别适用；B只在正文列明的归属条件满足或字段不存在时改组选组。归属依匹配p-id的NOTIFY判断。
+- **尚未建立的结论：**控制200不证明选组成功，outcome success不证明起呼或媒体。字段存在且false不能当不存在；授权取值、资格helper身份、分类层级及观察依赖顺序差异均保留，不补默认结果或回滚。
+
+入口：[远程改变selected group：按人授权、归属确认与选组结果](topics/groups/remote-selected-group-change.md)。
 
 ## 身份、注册与配置
 

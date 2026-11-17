@@ -1,0 +1,209 @@
+{
+  "topic_id": "r19-mcdata-functional-alias-group-binding",
+  "title": "MCData功能别名与组绑定：许可、记录变更及响应边界",
+  "release": 19,
+  "standard_stage": 3,
+  "state": "clause-checked",
+  "common_conditions": [
+    "固定TS24.282 V19.7.0，限在网用户通过自己的MCData客户端请求将一个功能别名绑定到指定组列表，或解除这些绑定。",
+    "客户端、PF与CF各按自身角色和实际事件应用对应条件；不把已激活、许可通过、记录更新或200收到作为全页共同前提。",
+    "本页解释有限业务责任，保留构造、分类和拒绝守卫的原文差异，不提供修复后的可执行报文或完整跨域算法。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.282-v19.7.0",
+  "claims": [
+    {
+      "id": "alias-group-client-intent-and-result",
+      "title": "绑定与解绑共用许可，但本机激活只约束绑定",
+      "conditions": [
+        "客户端收到本用户将一个功能别名绑定到一个或多个组、或从所列组解绑的请求。按所请求操作分别检查，不以许可已经通过作为拒绝分支的前提。"
+      ],
+      "conclusion": "两种操作都检查用户profile中的 allow-functional-alias-binding-with-group：缺失或false时告知用户并退出。绑定还要求请求的别名已由该用户在本客户端激活，否则同样退出；解绑条款没有重复这个激活检查。继续时客户端向服务自己的PF公共服务身份发送MESSAGE，携MCData ICSI的P-Preferred-Service，以及分别含g.3gpp.mcdata、MCData ICSI的Accept-Contact和require/explicit参数；可携P-Preferred-Identity。info正文的request-type均为fa-group-binding-req，含本机mcdata-client-id；绑定使用binding-ind=true和binding-fa-uri，解绑使用false和unbinding-fa-uri。resource-lists各entry.uri列出组ID。若需携带正在使用的活动别名，另按原文加入functional-alias-URI。收到该请求的2xx时告知对应操作成功，收到4xx、5xx或6xx时告知失败，可参考Warning原因。",
+      "limitations": [
+        "§22.4.1允许同一用户把同一别名绑定多个组，但不允许该用户给同一个组绑定多个别名。这不是不同用户之间的别名独占规则。",
+        "请求要绑定/解绑的URI与附带的functional-alias-URI不是可互换字段。解绑未列本机激活门槛，不等于免除许可或服务器准入。",
+        "客户端把request-type列在mcdata-Params内；§6.3.1.1分类写在其anyExt内，D.1.2又把request-type定义为mcdata-ParamsType子元素。binding字段在D.1扩展字段及D.1.3 anyExt语义下定义。客户端step6e还把anyExt写成functional-alias-URI的元素，D.1.3则将functional-alias-URI列在anyExt下。本页保留这些层级差异，不提供经自行修复的XML。",
+        "这里的成功提示仅针对绑定操作，不证明用户已参加组、已建立会话或媒体交付；解绑也不据此证明别名已停用。该响应段未给3xx处理或批量部分成功策略。"
+      ],
+      "normative_strength": "许可/激活检查、必需构造及响应告知为SHALL；P-Preferred-Identity为MAY；附带活动别名按实际需要的条件处理。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "22.4.1;22.4.2.1.1–22.4.2.1.3",
+          "printed_pages": [
+            498,
+            499,
+            500
+          ],
+          "role": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "6.3.1.1 functional-alias group-binding classifiers",
+          "printed_pages": [
+            91
+          ],
+          "role": "实际分类与层级比较"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "D.1.2 mcdata-ParamsType and extension declarations;D.1.3 step11(f),(l–n)",
+          "printed_pages": [
+            583,
+            584,
+            588,
+            589
+          ],
+          "role": "字段类型、层级与有限语义对照"
+        }
+      ],
+      "clause": "22.4.1;22.4.2.1.1–22.4.2.1.3",
+      "printed_pages": [
+        498,
+        499,
+        500
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "alias-group-pf-identity-permission-and-forwarding",
+      "title": "PF分别检查身份绑定、操作许可与目标正文",
+      "conditions": [
+        "PF实际收到§6.3.1.1命名的功能别名组绑定请求；权限与正文检查按§22.4.2.2.2 step4的request-type守卫执行。后续转送仅在前序未停止时进行。响应处理则以PF收到其出站请求的相应响应为事件。"
+      ],
+      "conclusion": "PF可因资源不足或拥塞风险返回500，可附Retry-After，并停止该路径。随后从收到的PAI公共用户身份确定MCData用户ID；找不到有效绑定或绑定已过期时以404/Warning141拒绝并停止。当request-type=fa-group-binding-req时，许可字段缺失或false导致403/176；step4b、4c另列目标正文不足的403/177停止条件。继续时PF向与主叫用户MCData ID关联的该绑定服务CF公共服务身份构造MESSAGE，复制info及resource-lists，以PAI确定的用户ID设置mcdata-calling-user-id，出站PAI为PF公共服务身份。若收到附带functional-alias-URI，只有该别名对该用户的状态为activated才保留，否则不带；该检查不替代绑定目标URI。出站还带MCData服务标识和相应Accept-Contact。PF收到出站请求的2xx时构造PAI为自身公共服务身份的200给客户端；收到4xx–6xx则转发错误。",
+      "limitations": [
+        "两个177条件原文分别为不含resource-lists正文，或不含binding-ind与binding-fa-uri；以及不含resource-lists正文，或不含binding-ind与unbinding-fa-uri。两个检查没有显式按binding-ind真/假互斥，否定与and/or组合也不在本页重写成布尔算法。不能删除一项、给解绑自动豁免，或要求客户端补双URI来绕过这一差异。",
+        "分类器的PF入口使用PF PSI及info/mcdata-Params/anyExt/request-type。该层级与客户端构造的差异尚存；本页说明已识别请求后的责任，不声称已经验证逐跳互操作。",
+        "PAI身份绑定、组绑定服务许可、附带别名状态是不同检查；本页不展开§7.3授权建立过程，也不把客户端声称的用户或client ID当成PAI绑定。"
+      ],
+      "normative_strength": "明确身份/许可/正文拒绝、出站处理与响应处理为SHALL；资源拒绝及Retry-After为MAY。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "22.4.2.2.1–22.4.2.2.2 including NOTE1 and response processing",
+          "printed_pages": [
+            500,
+            501
+          ],
+          "role": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "6.3.1.1 functional-alias group-binding classifiers",
+          "printed_pages": [
+            91
+          ],
+          "role": "实际PF caller与层级边界"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "22.4.2.1.2–22.4.2.1.3 step6",
+          "printed_pages": [
+            498,
+            499
+          ],
+          "role": "comparison-only：目标URI和附带别名，不移植客户端成功条件"
+        }
+      ],
+      "clause": "22.4.2.2.1–22.4.2.2.2 including NOTE1 and response processing",
+      "printed_pages": [
+        500,
+        501
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "alias-group-cf-record-and-response-boundaries",
+      "title": "CF检查同用户组冲突，再按操作修改记录",
+      "conditions": [
+        "CF实际收到§22.4.2.3.2命名的绑定请求。拒绝以各自收到请求及检查事件为前提；记录动作仅在前序未停止且request-type=fa-group-binding-req时按binding-ind执行。"
+      ],
+      "conclusion": "CF可因资源不足或拥塞风险以500拒绝，可附Retry-After并停止；Accept-Contact未含MCData ICSI时以403拒绝并停止。随后steps3、4分别列出涉及binding-fa-uri和unbinding-fa-uri的目标正文不足403/177检查。任何所列组已与同一用户的其他功能别名绑定时，CF以403/178拒绝并跳过其余步骤。进入step6且request-type匹配时，binding-ind=true使CF存储或更新客户端记录，为binding-fa-uri与所列组创建绑定；false则从所列组移除unbinding-fa-uri所指别名的绑定，并存储或更新记录。其后生成含CF公共服务身份PAI的200。",
+      "limitations": [
+        "steps3、4同样没有binding-ind互斥守卫；step5的178也没有显式限制为true。因此不能把解绑直接跳到移除记录，也不能自行判定解绑免于178。冲突条件是同一用户的其他别名，不扩为任何用户占用同组都拒绝。",
+        "§6.3.1.1的CF分类写controlling participating MCData function且Request-URI为participating function PSI；§22.4.2.2.2 step6却发送至CF PSI，§22.4.2.3.1文字又称participating。§22.4.1的X.2回指也保持原状。这里以实际命名CF接收过程为有限入口，不静默修正分类。",
+        "CF step8字面把200发送给MCData client；PF条款另规定收到出站2xx后向客户端构造200。本页分别保留，不将CF目的地改写为PF或声称逐跳事务已闭合。",
+        "记录创建/移除仅说明别名与指定组的绑定关系。没有据此执行激活、停用、组成员变更或媒体流程；对多组请求的回滚、并发冲突及部分完成策略，该段没有给出完整算法。"
+      ],
+      "normative_strength": "明确拒绝、记录动作及200构造为SHALL；资源拒绝及Retry-After为MAY。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "22.4.2.3.1–22.4.2.3.2",
+          "printed_pages": [
+            501,
+            502,
+            503
+          ],
+          "role": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "22.4.1;22.4.2.2.2 step6 and response processing",
+          "printed_pages": [
+            498,
+            501
+          ],
+          "role": "数量约束、实际PF出站与200目的地比较"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "6.3.1.1 functional-alias group-binding classifiers",
+          "printed_pages": [
+            91
+          ],
+          "role": "实际CF分类及名称/PSI差异"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "D.1.3 step11(l–n)",
+          "printed_pages": [
+            589
+          ],
+          "role": "记录操作语义"
+        }
+      ],
+      "clause": "22.4.2.3.1–22.4.2.3.2",
+      "printed_pages": [
+        501,
+        502,
+        503
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [
+    "配置字段仅按TS24.282的引用范围理解；外部配置schema、SIP基础事务与安全保护细节不在本页展开。",
+    "绑定关系不等同别名激活状态、组成员资格或媒体交付证据。"
+  ],
+  "related": [],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
