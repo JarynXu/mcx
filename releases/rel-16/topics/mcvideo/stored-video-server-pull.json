@@ -1,0 +1,319 @@
+{
+  "topic_id": "r16-mcvideo-stored-video-server-pull",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "从 MCVideo 服务器回放一段录像：有了 URL，能播放、快进和快退吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.281-v16.4.0",
+  "common_conditions": [
+    "固定 TS 23.281 V16.4.0（Release 16、Stage 2），在网 MCVideo 客户端向存有目标录像的 MCVideo 服务器请求流式播放；一对一推送仅作对照。"
+  ],
+  "condition_rule": "各条分别受发起、成功、遥控、停止或服务对照的条件约束；不以播放成功为共同前提。",
+  "claims": [
+    {
+      "id": "pull-requires-per-file-authorization",
+      "title": "知道 URL、已有服务资格仍须检查文件拉取权限",
+      "conditions": [
+        "用户已通过服务认证和授权，客户端已注册，并获得存于服务器的目标录像 URL。"
+      ],
+      "conclusion": "主叫的 MCVideo ID 标识请求发起者，文件 URL 指定希望播放的录像。客户端向服务器发起拉取，携带说明媒体的 SDP 提议。服务器还须检查该客户端是否获准拉取此录像。",
+      "normative_strength": "Stage 2 程序前提及授权检查；此处不列初始信息流的完整字段。",
+      "limitations": [
+        "URL 标识文件而不授予权限；不就拒绝响应的字段或错误码作判断。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.3.2.4.1",
+            "7.3.2.4.2, preconditions 1–3"
+          ],
+          "printed_pages": [
+            86
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.3.2.2.1, Table 7.3.2.2.1-1 (identifying the calling party and the requested file)"
+          ],
+          "printed_pages": [
+            84
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.3.2.4.2, steps 1–2 (request and authorization for the requested video)"
+          ],
+          "printed_pages": [
+            87
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "successful-response-before-playback",
+      "title": "成功响应、媒体面建立和用户观看要分开判断",
+      "conditions": [
+        "服务器接受对目标录像的拉取请求。"
+      ],
+      "conclusion": "成功响应携 SDP 应答。媒体面和传输控制另行建立，之后由服务器向客户端传输录像流。",
+      "normative_strength": "流程区分接受请求、媒体条件建立以及发送录像流。",
+      "limitations": [
+        "仅凭响应不能证明画面已到、用户已看过或本地已保存文件；不据此判断服务器取得发送许可的方式。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.3.2.4.2 (successful SDP response, media-plane establishment and video stream)"
+          ],
+          "printed_pages": [
+            87
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "remote-controls-depend-on-sdp",
+      "title": "能播放不等于能远程快进或快退",
+      "conditions": [
+        "接收方希望在本次录像回放中操作服务器提供的流。"
+      ],
+      "conclusion": "快进与快退是远程控制录像流的示例；本次可用的操作取决于双方的 SDP 协商。",
+      "normative_strength": "本次可用的遥控动作受协商条件限制。",
+      "limitations": [
+        "可以播放并不证明两个遥控操作都可用。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.3.2.4.2 (stream remote control subject to SDP negotiation)"
+          ],
+          "printed_pages": [
+            87
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "completion-initiator-and-cause",
+      "title": "客户端或服务器均可发起结束；原因随请求而非应答提供",
+      "conditions": [
+        "用户主动停止，或服务器依据内部条件停止；两者是替代情形。"
+      ],
+      "conclusion": "用户停止时客户端向服务器发完成请求，由服务器确认。文件结束是服务器可据以终止的一种内部条件。完成信息流表允许两个方向：若服务器发出完成请求，客户端向服务器应答。完成请求须含主叫的 MCVideo ID 和结束原因；完成应答表只列主叫的 MCVideo ID。",
+      "normative_strength": "完成信息流的双向性和必填项来自两张完成信息表及其引言，停止条件和用户停止时的流程来自 §7.3.2.4.2。由已识别的应答收发方向判断相应请求的发起方，是据请求与应答方向作出的推断，不是应答表里的原因字段。",
+      "limitations": [
+        "主叫指发起回放的用户，不一定发出这次完成请求。若只保留应答表中的主叫 ID，没有收发方向和结束原因，不能识别这次完成请求的发起方或停止原因。若保留应答方向，客户端向服务器应答表示服务器发请求，服务器向客户端应答表示客户端发请求。方向表明交换由谁发起，不能单独证明具体原因，特别是不能由服务器发起推出文件已到末尾。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.3.2.4.2 (user stop, server internal termination criteria)"
+          ],
+          "printed_pages": [
+            87
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.3.2.2.3, Table 7.3.2.2.3-1",
+            "7.3.2.2.4, Table 7.3.2.2.4-1"
+          ],
+          "printed_pages": [
+            84
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "stored-pull-versus-user-push",
+      "title": "先分清视频源，再选结束流程",
+      "conditions": [
+        "区分在网客户端拉取服务器上已有的录像和甲向乙推送视频。"
+      ],
+      "conclusion": "前者由客户端请求、服务器向客户端传录像，并使用双方之间的拉取完成信息流；后者是主叫向被叫发视频的私呼，传输完成后沿用 §7.2.2.3.3 的私呼释放程序。",
+      "normative_strength": "本规范的两项服务定义及各自的结束程序。",
+      "limitations": [
+        "不能用面向被叫用户的一对一推送释放链替代服务器录像回放的完成请求和应答。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.3.2.4.1",
+            "7.3.2.4.2, preconditions 1–3"
+          ],
+          "printed_pages": [
+            86
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.3.2.4.2 (user stop, server internal termination criteria)"
+          ],
+          "printed_pages": [
+            87
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.3.2.2.3, Table 7.3.2.2.3-1",
+            "7.3.2.2.4, Table 7.3.2.2.4-1"
+          ],
+          "printed_pages": [
+            84
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.3.1 (one-to-one push contrast)"
+          ],
+          "printed_pages": [
+            93
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.3.3 (one-to-one push release contrast)"
+          ],
+          "printed_pages": [
+            94
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.3.2.4.1",
+        "7.3.2.4.2, preconditions 1–3"
+      ],
+      "printed_pages": [
+        86
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.3.2.2.1, Table 7.3.2.2.1-1 (identifying the calling party and the requested file)"
+      ],
+      "printed_pages": [
+        84
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.3.2.4.2, steps 1–2 (request and authorization for the requested video)"
+      ],
+      "printed_pages": [
+        87
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.3.2.4.2 (successful SDP response, media-plane establishment and video stream)"
+      ],
+      "printed_pages": [
+        87
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.3.2.4.2 (stream remote control subject to SDP negotiation)"
+      ],
+      "printed_pages": [
+        87
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.3.2.4.2 (user stop, server internal termination criteria)"
+      ],
+      "printed_pages": [
+        87
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.3.2.2.3, Table 7.3.2.2.3-1",
+        "7.3.2.2.4, Table 7.3.2.2.4-1"
+      ],
+      "printed_pages": [
+        84
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.4.2.3.1 (one-to-one push contrast)"
+      ],
+      "printed_pages": [
+        93
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.4.2.3.3 (one-to-one push release contrast)"
+      ],
+      "printed_pages": [
+        94
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcvideo-one-to-one-video-push",
+    "r16-mcvideo-private-call-release"
+  ],
+  "limitations": [
+    "不覆盖文件 URL 的发现、另一终端的视频拉取、离网或 MCData 下载。这里只解释 Stage 2，不指定 SIP、HTTP 或特定遥控协议的报文字段。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
