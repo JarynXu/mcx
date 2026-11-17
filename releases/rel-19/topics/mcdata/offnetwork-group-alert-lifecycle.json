@@ -1,0 +1,297 @@
+{
+  "topic_id": "r19-mcdata-offnetwork-group-alert-lifecycle",
+  "title": "MCData离网组紧急告警：本机状态、远端记录与取消",
+  "release": 19,
+  "standard_stage": 3,
+  "state": "clause-checked",
+  "common_conditions": [
+    "固定TS24.282 V19.7.0 §16.3的离网组紧急告警。每组有独立告警状态机；本机状态、远端逐用户记录以及各角色事件分别判断。",
+    "不以发起成功作为接收或到期分支的共同前提；不套用在网SIP/CF许可与响应、离网SDS重传计数、媒体FD或conference观察规则。",
+    "本页核协议事件与有限证据，不提供完整配置、承载、安全或可靠送达实现。每条claim在其明确角色和事件下适用，不把尚未发生的ACK或取消当共同条件。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.282-v19.7.0",
+  "claims": [
+    {
+      "id": "offnetwork-alert-originator-lifecycle",
+      "title": "本机发起、重传与本人取消分别由状态和事件驱动",
+      "conditions": [
+        "发起：本组状态为E1，用户指示发送组告警，且用户profile的Common/AllowedActivateAlert为true。重传：本组为E2且TFE2到期。本人取消：本组为E2、用户指示取消且Common/AllowedCancelAlert为true。三个事件分别适用，不要求同时发生。"
+      ],
+      "conclusion": "发起时客户端置stored emergency state为true，保存目标组ID，生成GROUP EMERGENCY ALERT，带该组ID和自己的Originating MCData user ID，发送后启动TFE2并进入E2。组织名可选；若请求位置信息，可以带当前User location。E2中TFE2到期时重新生成并发送告警，重新启动TFE2，仍处于E2。获准本人取消时置stored emergency state为false，发送带已存组ID及自身originator ID的GROUP EMERGENCY ALERT CANCEL，停止TFE2并进入E1。TFE2可配置，默认5秒、最大10秒；附录所列正常停止是发送CANCEL。",
+      "limitations": [
+        "§16.3未给出收到ACK即停止TFE2的程序，不能用ACK、在网SIP成功或SDS重传计数补造停止条件；也不承诺全组收齐后停止。",
+        "上述许可只取24.282明确引用的profile字段；不补字段缺失时的默认许可、配置schema或第三方取消权限。E1是初始状态，E2描述本机已发送告警；不能把收到他人告警直接当成本机发起。",
+        "本页各类发送均按§9.3.1.2，以MONP carrier作为UDP完整载荷发往组multicast地址、端口8809、IP TTL=255。该helper明确包括告警；不继承§9.3.2.2中仅SDS发送的AllowedSDS检查。carrier、安全、发现及地址配置的完整实现不在本页。"
+      ],
+      "normative_strength": "发起、重传、取消的状态与发送动作是 SHALL；组织名和符合请求条件的当前位置是 MAY。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "16.3.3.1;16.3.3.2;16.3.3.5",
+          "printed_pages": [
+            406,
+            407
+          ],
+          "role": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "16.3.2.2–16.3.2.3",
+          "printed_pages": [
+            405
+          ],
+          "role": "每组状态及本机E1/E2范围"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "F.3.2 Table F.3.2-1",
+          "printed_pages": [
+            641,
+            642
+          ],
+          "role": "告警定时器及正常停止"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "9.3.1.2",
+          "printed_pages": [
+            260,
+            261
+          ],
+          "role": "实际发送依赖：明确包含§16.3告警消息"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "15.1.14.1;15.1.16.1",
+          "printed_pages": [
+            359,
+            360
+          ],
+          "role": "消息身份与可选字段"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "15.2.14;15.2.15;15.2.25;15.2.26",
+          "printed_pages": [
+            368,
+            369,
+            374,
+            375
+          ],
+          "role": "字段含义依赖，不展开外部位置结构"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "9.3.2.2 step1;F.3.1;G.3.1",
+          "printed_pages": [
+            261,
+            640,
+            641,
+            643
+          ],
+          "role": "comparison-only：SDS许可和重传计数不适用于告警"
+        }
+      ],
+      "clause": "16.3.3.1;16.3.3.2;16.3.3.5",
+      "printed_pages": [
+        406,
+        407
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "offnetwork-alert-recipient-record-and-refresh",
+      "title": "接收记录与本机状态分开，重复告警有位置变化守卫",
+      "conditions": [
+        "接收者本组处于E1或E2。首次记录分支：收到ALERT且originator尚不在紧急用户列表。重复分支：originator已在列表，且收到的Location IE与存储位置不同。两分支不同时适用。"
+      ],
+      "conclusion": "首次记录时保存originator及location，生成GROUP EMERGENCY ALERT ACK：组ID取所收ALERT，Sending MCData user ID为自己，Originating MCData user ID取所收ALERT。按组transport发送ACK后启动TFE1，保持当前E状态。重复分支中可以更新位置，但必须重启关联TFE1并保持状态。TFE1实例按MCData用户ID关联；其可配置值默认30秒、最大60秒。",
+      "limitations": [
+        "位置IE在ALERT消息表中为可选，首次接收过程却要求保存location。本页不假设缺失就是零坐标、沿用旧值或拒绝，也不补缺失位置的比较算法。",
+        "位置相同或缺失的重复包不满足本段明确给出的“位置不同”条件，不能据此保证每个重复包都刷新TFE1或重发ACK。位置更新为MAY，重启计时器为SHALL，两者不可混成同一强度。",
+        "§16.3.3.3同时给出每用户TFE1注释与多用户告警下TFE1用法FFS；这里保留两者，不声称多并发告警计时已完整闭合。",
+        "ACK消息含义是收到告警，不是人员已读、救援接受或全体成员已收到。接收记录不把E1转为E2，也不清除本机E2。User location的内部LocationInfo结构依赖其他规范，本页不校验该结构。"
+      ],
+      "normative_strength": "首次保存、ACK发送、计时器启动及状态保持为 SHALL；重复分支位置更新为 MAY，重启关联TFE1为 SHALL。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "16.3.3.3;16.3.3.4 including NOTE and Editors Note",
+          "printed_pages": [
+            406,
+            407
+          ],
+          "role": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "16.3.2.2–16.3.2.3",
+          "printed_pages": [
+            405
+          ],
+          "role": "每组状态及本机E1/E2范围"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "F.3.2 Table F.3.2-1",
+          "printed_pages": [
+            641,
+            642
+          ],
+          "role": "告警定时器及正常停止"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "9.3.1.2",
+          "printed_pages": [
+            260,
+            261
+          ],
+          "role": "实际发送依赖：明确包含§16.3告警消息"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "15.1.14.1;15.1.15.1",
+          "printed_pages": [
+            359,
+            360
+          ],
+          "role": "位置可选性与ACK含义/身份"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "15.2.14;15.2.15;15.2.25",
+          "printed_pages": [
+            368,
+            369,
+            374
+          ],
+          "role": "ID与位置字段依赖"
+        }
+      ],
+      "clause": "16.3.3.3;16.3.3.4 including NOTE and Editors Note",
+      "printed_pages": [
+        406,
+        407
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "offnetwork-alert-remote-removal-and-expiry",
+      "title": "远端取消或到期只移除对应记录，不改变自身E状态",
+      "conditions": [
+        "客户端本组为E1或E2。显式取消接收：收到CANCEL且其Originating MCData user ID在紧急用户列表中。隐式取消：与已存用户ID关联的TFE1到期。两个事件分别适用。"
+      ],
+      "conclusion": "显式取消接收分支移除该用户ID及关联位置，生成GROUP EMERGENCY ALERT CANCEL ACK并按组transport发送，停止关联TFE1，保持当前E状态。ACK的组ID取所收CANCEL，Sending MCData user ID为自身；originator字段的源文回指差异见下。TFE1到期则只移除对应用户及位置并保持当前E状态。附录把收到CANCEL列为TFE1正常停止，把到期结果描述为假定该紧急状态结束并移除关联用户。",
+      "limitations": [
+        "§16.3.3.6 step2c在CANCEL接收过程内，字面却要求ACK的originator取所收GROUP EMERGENCY ALERT，而不是CANCEL。本页不静默改源字段；这限制了仅凭该段构造取消ACK的完整性。",
+        "不在列表的CANCEL不满足该入口，不能据此要求返回ACK或删除其他用户。所列到期分支没有发送CANCEL或ACK的步骤；不可把本地记录过期解释为发起者本人已经取消、所有接收端均已清除或安全风险已经结束。",
+        "收到他人取消或TFE1到期均保持当前E状态；本机仍处于E2时不能由此停止自身TFE2。多个用户并发的TFE1用法仍受§16.3.3.3的FFS限制。"
+      ],
+      "normative_strength": "匹配取消后的移除、ACK、停TFE1及保持状态为 SHALL；关联TFE1到期后的移除及保持状态为 SHALL。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "16.3.3.6;16.3.3.7",
+          "printed_pages": [
+            407,
+            408
+          ],
+          "role": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "16.3.2.2–16.3.2.3",
+          "printed_pages": [
+            405
+          ],
+          "role": "每组状态及本机E1/E2范围"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "F.3.2 Table F.3.2-1",
+          "printed_pages": [
+            641,
+            642
+          ],
+          "role": "告警定时器及正常停止"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "9.3.1.2",
+          "printed_pages": [
+            260,
+            261
+          ],
+          "role": "实际发送依赖：明确包含§16.3告警消息"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "15.1.16.1;15.1.17.1",
+          "printed_pages": [
+            360,
+            361
+          ],
+          "role": "取消及取消ACK消息含义与身份"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "16.3.3.3 NOTE and Editors Note;16.3.3.5",
+          "printed_pages": [
+            407
+          ],
+          "role": "多人计时边界及本机TFE2停止事件对照"
+        }
+      ],
+      "clause": "16.3.3.6;16.3.3.7",
+      "printed_pages": [
+        407,
+        408
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [
+    "组级本机E状态与逐用户远端记录不可合并；记录过期只是本地协议处理，不是现实紧急情况解除的证明。",
+    "配置字段只按24.282引用范围解释；外部配置schema、MONP载体编码、安全验证与位置结构未在本页展开。"
+  ],
+  "related": [],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

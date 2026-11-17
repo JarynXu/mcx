@@ -185,6 +185,14 @@
 
 入口：[MCData组会话状态：订阅权限、通知与结束观察](topics/mcdata/conference-state-observation.md)。
 
+### MCData 离网组紧急告警
+
+- **能回答：**可查本机许可与状态驱动的发起/重传/取消、远端逐用户记录与位置变化、取消ACK及TFE1到期。
+- **只到条件或接口：**固定§16.3，每组状态机与逐用户远端记录分别判断；发起、接收、重复、取消、到期各按实际事件，不预设发起成功或ACK到达。
+- **尚未建立的结论：**TFE2不套SDS计数或ACK停发；保留TFE1多人FFS、位置条件及CANCEL ACK originator源文差异，不推可靠送达或远端列表改变自身E状态，不移植在网许可。
+
+入口：[MCData离网组紧急告警：本机状态、远端记录与取消](topics/mcdata/offnetwork-group-alert-lifecycle.md)。
+
 ## MCVideo视频业务
 
 [查看本域全部主题](topics-mcvideo.json)
@@ -514,6 +522,14 @@
 - **尚未建立的结论：**200不证明全端清理或媒体释放；保留分类要求与构造字段、T-PF正文类型及响应helper差异，不补完整移除报文或全局越权许可。创建失败补偿另按创建页条件。
 
 入口：[预配置重组移除：用户请求、服务器决定与退归属](topics/groups/preconfigured-regroup-removal.md)。
+
+### 预配置用户重组创建
+
+- **能回答：**可查指定用户名单、O-PF授权与480、CF按T-PF分组及任一200、T-PF条件通知和客户端归属。
+- **只到条件或接口：**在网预配置user regroup创建，各角色按实际入口分类；配置前提不代替CF处理能力检查，T-PF逐用户通知保留从已存信息知道尚未收到通知的条件。
+- **尚未建立的结论：**不套group regroup全部NCF200门槛；任一T-PF200不证明全员送达或建会，不补超时、补偿、重复通知或密钥实现。
+
+入口：[预配置用户重组创建：指定用户、局部成功与通知](topics/groups/preconfigured-user-regroup-creation.md)。
 
 ## 身份、注册与配置
 
