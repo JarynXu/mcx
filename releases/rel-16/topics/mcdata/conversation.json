@@ -1,0 +1,225 @@
+{
+  "topic_id": "r16-mcdata-conversation",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCData：消息和文件该用哪一个会话 ID？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "限 TS 23.282 V16.8.0，Release 16 Stage 2，MCData 会话管理；四种场景按各自的前提分别适用。 本文所称会话 ID 按 §3.1 定义，为标识一系列相关 MCData 事务的全局唯一标识。"
+  ],
+  "claims": [
+    {
+      "id": "associate-transactions",
+      "title": "哪些传输归入一条讨论线索",
+      "conditions": [
+        "针对一次活动，使用 MCData 会话管理关联 SDS 或 FD 事务。"
+      ],
+      "conclusion": "会话 ID 是全局唯一标识，用于标识一系列相关 MCData 事务。每笔用于会话管理的 SDS、FD 事务都须带会话管理服务指示和会话 ID；同一会话可含 SDS、FD 或两者。参与用户集合不同须认作不同会话；集合相同但会话 ID 不同也须分开。",
+      "normative_strength": "§3.1 为适用于本规范的术语定义。§5.7 第 1、3、4、5 项为 shall，第 2 项为 may；§7.8.1 说明关联后向用户呈现为同一线程。",
+      "limitations": [
+        "可查看或归入会话不能证明任何一笔 SDS 或 FD 已交付。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "3.1, definition of conversation identifier"
+          ],
+          "printed_pages": [
+            14
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "5.7, conversation management, items 1–5"
+          ],
+          "printed_pages": [
+            19
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.8.1, activity and thread"
+          ],
+          "printed_pages": [
+            134
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "on-network-one-to-one",
+      "title": "在网一对一：注册后选择会话",
+      "conditions": [
+        "两端用户均已注册接收 MCData 服务；一方发起或继续两人之间的会话。"
+      ],
+      "conclusion": "用户要新开会话时生成新会话 ID；续接时使用已有会话对应的 ID；同一对用户有多个并行会话时，各用不同 ID。首笔 MCData 事务发起后即可查看该会话。 此程序的新标识为全局唯一。可运行一对一 SDS、FD 或二者。",
+      "normative_strength": "§3.1 给出全局唯一的定义；其后各程序中的发起、续接、并行和查看时点是步骤描述，步骤 2 的 SDS、FD 或二者组合为可选。",
+      "limitations": [
+        "可查看或归入会话不能证明任何一笔 SDS 或 FD 已交付。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "3.1, definition of conversation identifier"
+          ],
+          "printed_pages": [
+            14
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.8.2.2.1, precondition, Figure 7.8.2.2.1-1 and steps 1–2"
+          ],
+          "printed_pages": [
+            134,
+            135
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "on-network-group",
+      "title": "在网组：注册、同组成员及服务归属",
+      "conditions": [
+        "参与用户均已注册接收 MCData 服务、是同一 MCData 组的成员且已归属到 MCData 服务。"
+      ],
+      "conclusion": "用户要新开会话时生成新会话 ID；续接时使用已有会话对应的 ID；同一组有多个并行会话时，各用不同 ID。首笔 MCData 事务发起后即可查看该会话。 在网组步骤 1 只写 unique，但该术语依 §3.1 仍为全局唯一；不同组新建会话不能因为本步骤的简写而复用同一值。可运行组 SDS、FD 或二者。",
+      "normative_strength": "§3.1 给出全局唯一的定义；其后各程序中的发起、续接、并行和查看时点是步骤描述，步骤 2 的 SDS、FD 或二者组合为可选。",
+      "limitations": [
+        "在网组步骤 1 的措辞不是对 §3.1 全局唯一性定义的例外；本条未规定特定 ID 生成算法或编码。",
+        "可查看或归入会话不能证明任何一笔 SDS 或 FD 已交付。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "3.1, definition of conversation identifier"
+          ],
+          "printed_pages": [
+            14
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.8.2.3.1, preconditions, Figure 7.8.2.3.1-1 and steps 1–2"
+          ],
+          "printed_pages": [
+            135
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "off-network-one-to-one",
+      "title": "离网一对一：发现近处目标后选择会话",
+      "conditions": [
+        "两个客户端同属一个 ProSe 发现组且都具备 ProSe 一对一直通能力；发起端已通过 ProSe 发现过程在近处发现与目标用户关联的客户端。"
+      ],
+      "conclusion": "用户要新开会话时生成新会话 ID；续接时使用已有会话对应的 ID；同一对用户有多个并行会话时，各用不同 ID。首笔 MCData 事务发起后即可查看该会话。 此程序的新标识为全局唯一。可运行一对一 SDS、FD 或二者。",
+      "normative_strength": "§3.1 给出全局唯一的定义；其后各程序中的发起、续接、并行和查看时点是步骤描述，步骤 2 的 SDS、FD 或二者组合为可选。",
+      "limitations": [
+        "可查看或归入会话不能证明任何一笔 SDS 或 FD 已交付。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "3.1, definition of conversation identifier"
+          ],
+          "printed_pages": [
+            14
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.8.3.1.1, preconditions, Figure 7.8.3.1.1-1 and steps 1–2"
+          ],
+          "printed_pages": [
+            135,
+            136
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "off-network-group",
+      "title": "离网组：预配置组直通信息及映射",
+      "conditions": [
+        "客户端属于同一 MCData 组，发起端预配置了该组的 ProSe 直通通信信息以及该 MCData 组到 ProSe 二层组 ID 的映射。"
+      ],
+      "conclusion": "用户要新开会话时生成新会话 ID；续接时使用已有会话对应的 ID；同一组有多个并行会话时，各用不同 ID。首笔 MCData 事务发起后即可查看该会话。 此程序的新标识为全局唯一。可运行组 SDS、FD 或二者。",
+      "normative_strength": "§3.1 给出全局唯一的定义；其后各程序中的发起、续接、并行和查看时点是步骤描述，步骤 2 的 SDS、FD 或二者组合为可选。",
+      "limitations": [
+        "ProSe 二层组 ID 是组映射所用标识，不是用来关联各次活动的会话 ID。",
+        "可查看或归入会话不能证明任何一笔 SDS 或 FD 已交付。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "3.1, definition of conversation identifier"
+          ],
+          "printed_pages": [
+            14
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.8.3.2.1, preconditions, Figure 7.8.3.2.1-1 and steps 1–2"
+          ],
+          "printed_pages": [
+            136,
+            137
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcdata-stored-object-lookup"
+  ],
+  "limitations": [
+    "不规定标识编码，不把归类或可见性当成逐项传输或存储成功。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
