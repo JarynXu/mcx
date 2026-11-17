@@ -255,7 +255,12 @@
       "id": "r16-mcptt-emergency-group-client",
       "question": "在网紧急预安排组呼：客户端发起、本人取消与结果证据",
       "start": "topics/calls/emergency-group-client.md",
-      "next_if": [],
+      "next_if": [
+        {
+          "condition": "仅在核对已有按需预安排组会话的CF职责，且CF实际收到对应紧急re-INVITE或其响应/ACK事件时读取；客户端发起或权限检查不证明CF已收到、授权或成功，不适用于初始INVITE",
+          "read": "topics/calls/emergency-group-server.md"
+        }
+      ],
       "boundary": "仅在网按需预安排组客户端对应发起、已有会话升级、本人取消或状态反馈事件；不新增告警仍须按已有MEA状态判断，组取消与告警取消权限分别适用。不覆盖CF全局准入、独立告警发送或第三方取消、完整紧急话权/媒体及生命周期；MES、MEG、MEGC、MEA分别取证，INFO200、re-INVITE和BYE不能互相替代。"
     },
     {
@@ -264,6 +269,13 @@
       "start": "topics/mcvideo/prearranged-group-reception-server.md",
       "next_if": [],
       "boundary": "仅普通预安排组controlling功能的Gr/U实际创建、Mode1通知、请求/结果、RTP或结束事件，各自继承对应状态与逐流守卫。不覆盖完整初始化、策略、接收应用释放、跨节点交付或组客户端呈现；发送许可、接收许可与实际RTP分别取证，不借私呼接收客户端条件闭合组链。"
+    },
+    {
+      "id": "r16-mcptt-emergency-group-server",
+      "question": "已有按需预安排组会话：CF紧急升级、取消与分层反馈",
+      "start": "topics/calls/emergency-group-server.md",
+      "next_if": [],
+      "boundary": "仅CF实际收到已有按需预安排组会话的紧急re-INVITE，或对应下行响应、ACK/INFO及MESSAGE结果事件；CF组状态与客户端MES/MEG/MEGC/MEA分别判断。不覆盖初始建立、完整告警/紧急媒体/话权或全组生命周期；正向取消授权错回指、通知集合和200事件衔接差异未闭合，不借客户端授权或普通初始服务器条件补全。"
     }
   ]
 }
