@@ -1,0 +1,229 @@
+{
+  "topic_id": "r16-mcdata-sds-control-client",
+  "title": "普通私聊SDS控制面：发送资格、请求与接收证据",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "common_conditions": [
+    "固定 TS24.282 V16.13.0（2026-02），Release16 Stage3；普通在网、直接目标 MCData ID 的 one-to-one standalone SDS 控制面客户端职责，不含组、别名目标解析、媒体面或 SDS session。",
+    "发送与接收按各自角色和实际事件适用；不把发送获准、保护成功或接收200设为所有分支的共同前提。",
+    "本页不串成完整 PF/CF 转发链。XML、TLV及端到端保护仍按适用的本版程序执行；保护过程未通过时不能凭业务字段存在推定可继续。"
+  ],
+  "condition_rule": "Inherit all common_conditions and add claim conditions; role/event alternatives apply separately.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.282-v16.13.0",
+  "claims": [
+    {
+      "id": "permission-before-control-plane-selection",
+      "title": "先核发送资格，再决定是否走控制面",
+      "conditions": [
+        "用户请求向直接目标发送一条普通私聊 standalone SDS；进入9.2.1.1的发送判定，尚未假定11.1成功。"
+      ],
+      "conclusion": "客户端先执行11.1。allow-transmit-data缺失或false即停止；存在带条目的One-to-One-Communication名单且目标不匹配时也停止。服务SDS大小上限与MaxData1To1单次额度分别检查。通过后，payload不大于max-payload-size-sds-cplane-bytes才调用控制面9.2.2.2.1，超过则转媒体面入口。",
+      "normative_strength": "shall；失败停止与阈值两分支分别适用",
+      "limitations": [
+        "控制面阈值不是发送许可或总发送上限；本页不展开媒体面后续。配置数值和未列缺省行为不推定。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "9.2.1.1"
+          ],
+          "printed_pages": [
+            105,
+            106
+          ],
+          "scope": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "11.1 steps1,1A,3,7,12; other service branches comparison"
+          ],
+          "printed_pages": [
+            187,
+            188,
+            189
+          ],
+          "scope": "规范依据"
+        }
+      ]
+    },
+    {
+      "id": "direct-target-request-and-message-context",
+      "title": "发到服务PF的请求仍须标明目标和消息上下文",
+      "conditions": [
+        "发送控制已通过，且按阈值进入9.2.2.2.1的one-to-one控制面分支。"
+      ],
+      "conclusion": "按6.2.4.1构造SDS服务标识并将Request-URI设为服务PF身份；目标MCData ID放入resource-lists，request-type为one-to-one-sds。再调用6.2.2.1生成信令与数据两个payload：新消息有新Message ID，Conversation ID按新建或继续未结束会话选择，回复另关联原消息。",
+      "normative_strength": "shall；P-Preferred-Identity为may",
+      "limitations": [
+        "本页不提供TLV/XML字节编码或完整报文。应用目标、payload类型和保护仍受6.2.2.1各自条件约束，不是仅携两个body即可发送。",
+        "需要端到端安全且上下文不存在或已过期的条件分支要求MIKEY准备；完整密钥算法依赖33.180。6.6.3.2的信令保护写CPK/CPK-ID，本文不静默改名，也不由业务构造宣称保护已验证。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "9.2.2.2.1 steps1,2,4,5"
+          ],
+          "printed_pages": [
+            108,
+            109
+          ],
+          "scope": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "6.2.4.1"
+          ],
+          "printed_pages": [
+            44,
+            45
+          ],
+          "scope": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "6.2.2.1"
+          ],
+          "printed_pages": [
+            40,
+            41
+          ],
+          "scope": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "6.4"
+          ],
+          "printed_pages": [
+            55,
+            56
+          ],
+          "scope": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "6.5.1.1–4;6.6.3.1–2"
+          ],
+          "printed_pages": [
+            56,
+            57,
+            65
+          ],
+          "scope": "保护调用边界；不展开外部密码算法"
+        }
+      ]
+    },
+    {
+      "id": "receiving-200-precedes-content-handling",
+      "title": "接收200与实际内容处理分开",
+      "conditions": [
+        "终端实际收到6.2.1.1所称standalone SDS MESSAGE：Accept-Contact的g.3gpp.icsi-ref及P-Asserted-Service均标识MCData SDS。此项不以资源充足或MIKEY验证成功为前提；后续动作只在前序未停止时执行。"
+      ],
+      "conclusion": "终端资源不足可拒绝；若拒绝则回480并停止。携MIKEY I_MESSAGE时须验证，认证失败回606及警告136并停止。继续路径先生成并发送200，再调用9.2.1.2处理内容。实际收到信令和数据两个MIME body后，按会话/消息关联处理；无应用标识的内容呈现给用户，有应用标识则按已知或未知分别交付应用或丢弃，不能由此前200证明已呈现、已读或应用处理成功。",
+      "normative_strength": "资源拒绝may；选定拒绝后的响应/停止及继续路径shall；用户通知与本地保存may",
+      "limitations": [
+        "XML接收保护检查的调用在6.5.1.4；完整算法不在本页展开。MIKEY上下文成功不是所有数据保护步骤都已成功。",
+        "若有处置请求，9.2.1.2另调用9.2.1.3，READ依实际display indication，通知走12.2.1.1；本页不展开定时器值、通知构造/聚合或服务器转送，也不把用户呈现等同通知已送达。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "6.2.1.1 standalone SDS classification"
+          ],
+          "printed_pages": [
+            38
+          ],
+          "scope": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "9.2.2.2.2"
+          ],
+          "printed_pages": [
+            109,
+            110
+          ],
+          "scope": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "9.2.1.2"
+          ],
+          "printed_pages": [
+            106,
+            107
+          ],
+          "scope": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "9.2.1.3"
+          ],
+          "printed_pages": [
+            107,
+            108
+          ],
+          "scope": "处置调用与READ事件边界"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "12.2.1.1"
+          ],
+          "printed_pages": [
+            191,
+            192
+          ],
+          "scope": "通知发送入口依赖；不展开完整通知链"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v16.13.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/16.13.00_60/ts_124282v161300p.pdf",
+          "clauses": [
+            "6.5.1.1–4;6.6.3.1–2"
+          ],
+          "printed_pages": [
+            56,
+            57,
+            65
+          ],
+          "scope": "保护调用边界；不展开外部密码算法"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "仅客户端有限职责；服务器身份准入、跨域路由、完整SIP事务、安全算法与互通验收不在本页建立。",
+    "本页仅采用固定Rel16版本，不继承其他Release的结论或核验状态。"
+  ],
+  "related": [],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

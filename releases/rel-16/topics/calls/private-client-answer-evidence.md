@@ -1,0 +1,87 @@
+# 普通按需私呼：客户端应答与建立证据
+
+## 适用范围
+- 固定 TS24.379 V16.14.0，主系统在网、带话权控制、直接 MCPTT ID 的普通一对一私呼；不是 first-to-answer、紧急、转发、转接或功能别名流程。
+- 主叫不处于会使普通请求转为紧急处理的状态；本页客户端使用按需会话，终接服务器的承载选择以对应 claim 为准，不覆盖预建立承载或 Replaces 替换。
+- 各角色的发起、接收、拒绝、应答及取消是替代事件入口，不以全链准入成功或被叫已接受作为全页前提。
+
+## 呼叫对象、路由与许可是不同检查
+
+适用事件：主叫准备普通直接 ID 私呼，或 O-PF/CF 接收该初始 INVITE；各接收事件分别适用。
+
+客户端把一个被叫 MCPTT ID 放入资源列表，session-type 为 private；发给服务自己的 PF，不把业务用户 ID 与服务器 PSI 混用。O-PF 按 P-Asserted-Identity 查发送者绑定，绑定不存在或过期返回 404+Warning141 并停止；allow-private-call 缺失或 false 返回 403+Warning107 并停止。请求 Auto 或 Manual 另受对应许可检查，缺失/false 分别为 Warning125/126。CF 还验证 calling-user-id 并作本地授权；客户端选了模式不等于获得服务许可。
+
+规范强度：所述身份、许可、请求构造和条件拒绝为 SHALL。
+
+- 本节不列完整服务器准入矩阵、名单限制或全部头构造；CF 本地授权不是仅凭一个字段自动通过。
+- 服务端分类按实际路由角色判断；客户端此处入口是 §11.1.1.2.1.2 的初始 INVITE，不能借 §6.2.0.1 的 MESSAGE 分类代替。
+
+依据：TS24.379 V16.14.0 §11.1.1.2.1.1 steps1,3,9,14 (emergency and FTA scope comparison)；§6.3.1.1 originating/terminating PF and private CF classification；§11.1.1.3.1.1 steps1–11；§11.1.1.4.2 steps1–5；§F.1.3 session-type/mcptt-request-uri/calling-user-id；§6.2.0.1 (MESSAGE-only classification comparison)；§11.0;11.1.1.1 (scope)，印刷页 55, 56, 77, 78, 352, 353, 354, 366, 367, 368, 380, 381, 547, 548, 549。
+
+## 终接 PF 选择模式并保留终端应答责任
+
+适用事件：T-PF 收到 private 初始 INVITE；按需分支指未同时满足空闲预建立会话、语音参数匹配、话权参数匹配的选择条件。
+
+T-PF 未收到该用户 Answer Mode Indication 时拒绝为 480+Warning146 并停止；找不到被叫公共身份绑定时返回 404。不能参与的用户配置产生 403+Warning127，本段未另写停止。Answer-Mode=Auto、无 Answer-Mode 且保存设置为 auto-answer、或 Priv-Answer-Mode=Auto，进入自动 helper；Manual 分支有对应三个条件。自动按需构造在收到值为 Auto 的 Priv-Answer-Mode 时写 Priv-Answer-Mode=Auto；否则，收到 Answer-Mode 时写 Answer-Mode=Auto。仅在两个模式头均未收到且保存设置为 auto-answer 时，按保存设置补 Answer-Mode=Auto。手动按需构造相应写 Manual。请求头与服务设置决定服务器入口，最终客户端仍按自己的接收条件处理。
+
+规范强度：所述模式选择、条件拒绝和头处理 SHALL；自动 helper 满足所列条件时生成提前 183 为 SHALL，不能当成终端已接受。
+
+- 本页不承担服务设置发布、全部 SDP/媒体协商或预建立承载使用；条件匹配时进入预建立路径，不可硬套按需 helper。
+- Priv-Answer-Mode 的客户端处理不证明任何主叫均有强制自动应答许可。
+
+依据：TS24.379 V16.14.0 §11.1.1.3.2 steps1–8；§6.3.2.2.5.1 full; 6.3.2.2.5.2 steps1–11；§6.3.2.2.6.1 full; 6.3.2.2.6.2 request construction；§11.1.1.2.1.2 steps9–10，印刷页 95, 96, 97, 98, 99, 100, 358, 359, 376, 377。
+
+## 收到 INVITE 后仍可拒绝，密钥检查不等于接听
+
+适用事件：被叫客户端收到初始 INVITE；MIKEY 检查仅在 SDP 的 a=key-mgmt 含 MIKEY-SAKKE I_MESSAGE 时适用。
+
+正占用其他会话且超过 MaxCall、资源不足或规范范围外原因时，客户端 MAY 拒绝。拒绝通常携适当响应码和 Warning；获准限制失败原因时，可用不带 Warning 的 480，随后不继续本节。携 MIKEY 时按被调用安全过程验签，认证失败返回 488+Warning136；成功才解封密钥并取得密钥 ID。通过安全检查仍不等于已完成人工应答。
+
+规范强度：资源/其他所列原因拒绝及获准隐藏失败原因的 480 为 MAY；拒绝后停止及条件性密钥处理为 SHALL。
+
+- TS33.180 的密码实现和配置文档不在此展开；不能从没有携带 MIKEY 推导统一的允许或拒绝规则。
+
+依据：TS24.379 V16.14.0 §11.1.1.2.1.2 steps1–4 (emergency step3 comparison)，印刷页 356, 357。
+
+## 客户端模式规则与最终 200 分开判断
+
+适用事件：被叫已到达 §11.1.1.2.1.2 steps9–10；随后发生相应自动处理、手动拒绝或手动最终应答。
+
+Answer-Mode=Auto 且本地自动，或本地手动但愿意自动应答，进入自动过程；Priv-Answer-Mode=Auto 也是该过程的入口。Manual 则对应本地手动，或本地自动但允许手动，以及 Priv-Answer-Mode=Manual。自动 helper 构造并发送 200，含会话计时和 SDP 等要求，并交接媒体过程。手动 helper 中用户拒绝为 480+Warning110 并停止；其余生成 180，发送最终 200 时调用同一自动应答 helper。180 不是最终接受，调用自动 helper 也不表示用户原先选择了自动模式。
+
+规范强度：模式条件满足后的 helper 调用、响应构造/发送及用户拒绝处理 SHALL。
+
+- NOTE5 假定入站模式头已与会话类型正确对应；这里不补互相冲突头的优先算法。
+- Replaces 的预建立替换分支不属于本页；最终 200 的媒体交接不等于已经核完整媒体实现。
+
+依据：TS24.379 V16.14.0 §11.1.1.2.1.2 steps9–10 and NOTE5；§6.2.3.1.1 full (Replaces comparison)；§6.2.3.2.1 full；§6.2.2，印刷页 57, 58, 59, 358, 359。
+
+## CANCEL 的 200 不接受原 INVITE
+
+适用事件：对话已存在，客户端收到针对该 INVITE 的 CANCEL，且尚未对 INVITE 发送 200。
+
+客户端向 CANCEL 返回 200，并向 INVITE 返回 487。两个响应属于两个请求，不能把取消事务成功记成私呼建立成功。
+
+规范强度：所述两个响应 SHALL。
+
+- 已对 INVITE 发送 200 的情况不满足此入口；本页不据此推导建立后释放或完整竞态处理。
+
+依据：TS24.379 V16.14.0 §11.1.1.2.1.2 CANCEL branch (emergency/FTA comparison)，印刷页 358。
+
+## 主叫建立提示不能单独证明被叫已人工接听
+
+适用事件：以下是替代事件：主叫收到 183；主叫收到 200；或 CF 在所列缓冲分支收到终接侧 183/Unconfirmed。不要求这些事件全部发生。
+
+主叫收到 183 可提示进展；收到 200 则须交接媒体并提示私呼已成功建立，若有 P-Answer-State，可另提示 Confirmed 或 Unconfirmed。CF 在 private 会话、收到 183+Unconfirmed、支持媒体缓冲且尚未发最终响应时，会向主叫构造 200+Unconfirmed。因此主叫的建立提示和被叫最终应答是不同证据；不得把所有 200 都解释为被叫用户已经接听，也不能把 183 定义为成功。
+
+规范强度：主叫进展提示及 P-Answer-State 提示 MAY；收到 200 的媒体交接/成功提示与 CF 条件满足后的响应处理 SHALL。
+
+- 本页不补全部错误恢复、ACK/PRACK 事务或终端最终应答之后的完整服务端状态机。媒体和话权可用性须另依被调用协议确认。
+
+依据：TS24.379 V16.14.0 §11.1.1.2.1.1 183 and 200 response branches (FTA/emergency comparison)；§11.1.1.4.2 183 Unconfirmed response branch；§11.1.1.4.1 183 handling，印刷页 355, 356, 379, 381, 382。
+
+## 边界
+- 本页是客户端应答及必要服务端依赖的有界说明，不是完整端到端建立实现或所有互通场景。
+- 仅本固定 Release16 版本为技术依据；Stage1/Stage2 身份盘点不替代 Stage3 条文。TS24.229、TS24.380、TS33.180 等完整依赖未在本页展开。
+
+来源：[ETSI TS124379 V16.14.0](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf)。
