@@ -55,6 +55,7 @@ PF须验证P-Asserted-Identity的公共用户身份与body中MCData ID绑定。�
 
 ## 按需继续
 
+- 问题实际属于§19A的multicast MBS UE join/leave通知，而非本页§19 MBMS监听，查[5G MBS 组播接收意愿：join/leave触发与PF反馈边界](mbs-multicast-join-feedback-boundary.md)。
 - [MCData 服务授权如何建立绑定：身份来源、并发上限和响应边界](service-authorization-binding.md)
 - [MBMS公告与终端监听条件](mbms-announcement-and-listening-conditions.md)
 

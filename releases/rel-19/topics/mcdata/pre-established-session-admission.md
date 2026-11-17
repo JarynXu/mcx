@@ -48,6 +48,7 @@ PF分配标识预建立会话的URI并放入Contact，200还带PF身份、norefe
 
 ## 按需继续
 
+- 需区分 SIP-core 支持、直接 Rx 路径、IP-CAN 绑定或共享资源执行证据，查[MCData 预建立共享资源：SIP 支持、Rx 绑定与完成证据](../network-policy/mcdata-preestablished-resource-sharing-boundary.md)。
 - [预建立会话上的私聊 SDS：REFER、业务 INVITE 与结果反馈](pre-established-private-sds-use.md)
 
 [3GPP TS24.282 V19.7.0 / ETSI TS124282 V19.7.0 (2026-08)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf)；仅本版本。

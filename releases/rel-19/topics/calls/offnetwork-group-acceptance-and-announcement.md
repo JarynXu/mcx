@@ -81,3 +81,5 @@ TFG2到期发送保存呼叫信息的公告，probe response已置true时携Prob
 - [离网MCPTT组呼：本端退出、忽略窗口与最大时长](offnetwork-group-local-leave.md)
 
 [3GPP TS24.379 V19.4.0 / ETSI TS124379 V19.4.0 (2026-01)](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/19.04.00_60/ts_124379v190400p.pdf)；仅所列版本和条款。
+
+离网呼叫成功建立后，终接或后来加入者的话权初始化另见[离网话权入口](offnetwork-floor-entry.md)。呼叫应答不能替代本地话权状态；发起者的隐式与显式请求前提仍须分别判断。

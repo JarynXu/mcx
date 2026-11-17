@@ -85,3 +85,11 @@
 - [入会与请求话权：SIP 成功、接收媒体和发送许可分别判断](floor-participant-entry-request.md)
 
 [3GPP TS24.380 V19.1.0](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/19.01.00_60/ts_124380v190100p.pdf)；仅所列版本和条款。
+
+## 多talker独立范围
+
+multi-talker的独立范围另见multi-talker-admission-and-media；本页单话权优先撤销条件不直接迁移。新主题区分未满额允许名单转交与仲裁处理；不因此推定完整准入、队列后续授予或端到端媒体证据。
+
+- [多talker容量、授予列表与媒体分发](multi-talker-admission-and-media.md)
+
+若本地策略选择不撤销原持有者，而允许两者同时发送，改读[双话权入口与媒体](dual-floor-entry-and-media.md)。该页有独立共同条件，不能沿用本页的撤销等待链。

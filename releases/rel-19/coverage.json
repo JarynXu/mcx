@@ -1,0 +1,1161 @@
+{
+  "release": 19,
+  "complete": false,
+  "purpose": "按业务选择可回答的问题，并识别条件片段、接口边界与未建立的结论。",
+  "interpretation": [
+    "本目录仅覆盖所列问题和条件，不是Release 19整版完成声明。主题数量不是完成率，也不代表条款、实现或互通场景的覆盖比例。",
+    "“能回答”指可从已列主题找到有来源的条件化答案；“只到条件或接口”指出不能直接跨越的步骤；“尚未建立的结论”是本知识库的边界，不是断言标准没有相关规定。",
+    "先选业务，再读链接主题的共同条件、角色、事件、条款和限制。本页只是导航，不替代原主题的shall/should/may、否定条件或源文疑义。",
+    "同属Rel19不代表不同规范的精确版本已验证互通。Stage1是需求层，Stage2是架构/信息流层，Stage3是协议层；Stage3片段也不自动构成完整可运行实现。RFC依赖不是Rel19规范。"
+  ],
+  "domains": [
+    {
+      "id": "mcdata",
+      "title": "MCData数据业务",
+      "index": "topics-mcdata.json",
+      "areas": [
+        {
+          "domain": "mcdata",
+          "title": "SDS：在网发送、会话与回执",
+          "can_answer": "可按控制面/媒体面入口查准入、逐段响应、会话标识与消息标识，以及送达/已读通知的不同证据。",
+          "conditional_or_interface_only": "MSRP响应、分块接收、standalone收尾及session带内通知只在各页角色和事件条件内成立；来源侧200不是全组送达。",
+          "not_established": "完整MSRP/RFC错误恢复、逐消息可靠性及24.282 V19.7.0与24.582 V19.0.0的完整接口映射、组合互通未建立。",
+          "read": [
+            {
+              "title": "SDS发送准入与承载选择：控制面阈值不是发送上限",
+              "path": "topics/mcdata/sds-transmission-selection.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0"
+              ]
+            },
+            {
+              "title": "SDS回执：SIP响应、送达与已读的不同证据",
+              "path": "topics/mcdata/sds-disposition-timing.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0"
+              ]
+            },
+            {
+              "title": "SDS session 后续使用：会话标识、消息证据与媒体边界",
+              "path": "topics/mcdata/sds-session-message-evidence.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0"
+              ]
+            },
+            {
+              "title": "SDS媒体确认：CF受理与终端交付分开判断",
+              "path": "topics/mcdata/sds-msrp-response-boundary.md",
+              "source_ids": [
+                "3gpp-ts-24.582-v19.0.0"
+              ]
+            },
+            {
+              "title": "Standalone SDS媒体收尾：最后响应与停止发送",
+              "path": "topics/mcdata/sds-msrp-standalone-release.md",
+              "source_ids": [
+                "3gpp-ts-24.582-v19.0.0"
+              ]
+            },
+            {
+              "title": "SDS session回执：业务类型与MSRP响应不同",
+              "path": "topics/mcdata/sds-session-inband-notification.md",
+              "source_ids": [
+                "3gpp-ts-24.582-v19.0.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "mcdata",
+          "title": "离网SDS：消息与通知各自重发",
+          "can_answer": "可区分TFS1/CFS1消息重发、TFS2/CFS2通知重发、TFS3等待显示及原消息关联。",
+          "conditional_or_interface_only": "仅离网standalone SDS所列信令分支；计数含初发、停止重发不是收到确认，READ仍需相应事件。",
+          "not_established": "不覆盖完整发现、地址配置、安全、通知聚合或可靠交付；目标状态名称缺口不补成完整路由。",
+          "read": [
+            {
+              "title": "离网SDS重发：次数上限不是送达确认",
+              "path": "topics/mcdata/offnetwork-sds-retransmission.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0"
+              ]
+            },
+            {
+              "title": "离网SDS接收：重复消息与已读等待",
+              "path": "topics/mcdata/offnetwork-sds-reception-and-read.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0"
+              ]
+            },
+            {
+              "title": "离网SDS通知：原消息关联与独立重发",
+              "path": "topics/mcdata/offnetwork-sds-notification-retry.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "mcdata",
+          "title": "FD：HTTP与MSRP媒体面分别判断",
+          "can_answer": "可查文件上限、HTTP存入/可用/下载证据，以及MSRP空SEND、分块收尾、服务器先响应、暂存和终端重组。 另可查PF条件完成通知的关联键、CF非聚合转发/202、目标PF绑定及客户端收到后的通知交付。",
+          "conditional_or_interface_only": "终端内部下载完成指示不同于PF有条件的完成通知；PF暂存完成不等于终端下载。HTTP调用不能补到媒体面。 路由从实际PF完成事件及完成更新请求起，CF/目标PF各按实际收到与入口守卫执行；不补helper未逐项列出的CF入口字段。",
+          "not_established": "媒体面ACK错引、SDP/MIME差异及普通转发中PF如何获知终端完整下载仍未闭合；未给完整文件系统、断点续传或全端交付保证。 需聚合/晚到通知、PSI发现、完整事务恢复及客户端专门200/关联算法不由有限路由闭合；202不证明原主叫已看到结果。",
+          "read": [
+            {
+              "title": "FD 发送准入：文件上限、单次额度与拒绝来源",
+              "path": "topics/mcdata/fd-size-admission.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0"
+              ]
+            },
+            {
+              "title": "HTTP 文件分发：文件已存、URL 已通知与下载成功",
+              "path": "topics/mcdata/fd-http-file-and-signalling-evidence.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0"
+              ]
+            },
+            {
+              "title": "FD 接收决定：自动下载、接受、延期与完成通知",
+              "path": "topics/mcdata/fd-download-decision-and-completion.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0"
+              ]
+            },
+            {
+              "title": "媒体面 FD：何时能发文件，响应如何触发收尾",
+              "path": "topics/mcdata/fd-msrp-start-and-originator-result.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0",
+                "3gpp-ts-24.582-v19.0.0"
+              ]
+            },
+            {
+              "title": "媒体面 FD：服务器 200、转发与暂存分别证明什么",
+              "path": "topics/mcdata/fd-msrp-hop-ack-and-storage.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0",
+                "3gpp-ts-24.582-v19.0.0"
+              ]
+            },
+            {
+              "title": "媒体面 FD：收齐文件、信令面完成指示与业务通知",
+              "path": "topics/mcdata/fd-media-reception-and-signalling-report.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0",
+                "3gpp-ts-24.582-v19.0.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "mcdata",
+          "title": "IP Connectivity：建立、隧道与释放",
+          "can_answer": "可查直接双客户端IPCONN的信令准入、端点/锚点参数、条件中继、GRE-in-UDP约束及逐段释放证据。",
+          "conditional_or_interface_only": "媒体路径不必经过每个信令服务器；200/ACK、隧道建立和应用成功分开。用户主动与服务器无预告释放按各自入口适用。",
+          "not_established": "sport/s-port语法差异、失败探测及逐隧道销毁未闭合；无完整RFC实现或精确版本互通保证，不能搬用SDS的MSRP成功收尾。",
+          "read": [
+            {
+              "title": "IP Connectivity 的服务器路径与分段响应",
+              "path": "topics/mcdata/ipconn-server-path.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0"
+              ]
+            },
+            {
+              "title": "IP Connectivity 的媒体协商、应用信息和失败证据",
+              "path": "topics/mcdata/ipconn-media-and-success-evidence.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0",
+                "3gpp-ts-24.582-v19.0.0"
+              ]
+            },
+            {
+              "title": "IPCONN媒体路径：隧道建立、逐跳中继与IP交付",
+              "path": "topics/mcdata/ipconn-tunnel-and-delivery.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0",
+                "3gpp-ts-24.582-v19.0.0"
+              ]
+            },
+            {
+              "title": "MCData 会话的服务器释放：无预告 BYE、原因与参与者范围",
+              "path": "topics/mcdata/session-server-release.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "mcdata",
+          "title": "MBMS：公告与监听反馈",
+          "can_answer": "可查按TMGI保存/取消公告、SDP关联、保护验证、listening两分支、not-listening三分支及PF身份校验。",
+          "conditional_or_interface_only": "仅24.282第19章所列在网MBMS信令；公告、监听、映射、业务数据到达分别判断。",
+          "not_established": "本项仍仅§19 MBMS；§19A multicast join/leave通知另见独立有限主题。完整承载创建、Map/Unmap、媒体处理、无线检测和端到端交付链未建立。",
+          "read": [
+            {
+              "title": "MBMS公告与终端监听条件",
+              "path": "topics/mcdata/mbms-announcement-and-listening-conditions.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0"
+              ]
+            },
+            {
+              "title": "MBMS监听反馈：触发、对象与证据边界",
+              "path": "topics/mcdata/mbms-listening-feedback-boundary.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "mcdata",
+          "title": "授权、归属、存储、别名及终止",
+          "can_answer": "可按业务对象查服务绑定、设置有效期、归属结果、Message Store对象与文件落点、功能别名结果、HTTP FD取消及延期。",
+          "conditional_or_interface_only": "各主题只覆盖所列角色、条件与结果；存储确认、PUBLISH 200、NOTIFY、归属及通话参加不可互换。",
+          "not_established": "不把对象存在当作内容已下载；未建立所有跨域、配置schema、存储实现或所有子服务的统一终止算法。紧急变更须另查专门主题。",
+          "read": [
+            {
+              "title": "MCData 服务授权如何建立绑定：身份来源、并发上限和响应边界",
+              "path": "topics/mcdata/service-authorization-binding.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0"
+              ]
+            },
+            {
+              "title": "MCData 归属结果：先启动观察，再区分 200、状态与请求关联",
+              "path": "topics/mcdata/explicit-affiliation-observation.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0"
+              ]
+            },
+            {
+              "title": "对象与文件落点：存入、迁存和重复请求",
+              "path": "topics/mcdata/message-store-file-locality.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0"
+              ]
+            },
+            {
+              "title": "功能别名结果：PUBLISH 200、NOTIFY 与后续归属",
+              "path": "topics/mcdata/functional-alias-state-evidence.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0"
+              ]
+            },
+            {
+              "title": "HTTP FD 主叫取消：定位原分发、202与终止结果",
+              "path": "topics/mcdata/http-fd-originator-termination.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0"
+              ]
+            },
+            {
+              "title": "MCData 会话释放预告：剩余量、TDC3 与延期决定",
+              "path": "topics/mcdata/session-release-extension.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "mcdata",
+          "title": "5G MBS：组播接收意愿通知",
+          "can_answer": "可区分两个join与三个leave替代触发、PF目的地址与业务/MBS会话标识，以及绑定成立且含session-id时的媒体意愿指示。",
+          "conditional_or_interface_only": "仅§19A multicast MBS；join/leave表达接收意愿，不将公告、映射、网络加入或数据接收合成一次成功。无conversation触发与消息session-id关联仍未闭合。",
+          "not_established": "不提供完整MBS公告/监听、下层加入或交付链；mvdata/角色文字、successfully joining前提和相邻listening错引/状态矛盾不裁决，不从意愿报告证明承载完成。",
+          "read": [
+            {
+              "title": "5G MBS 组播接收意愿：join/leave触发与PF反馈边界",
+              "path": "topics/mcdata/mbs-multicast-join-feedback-boundary.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo",
+      "title": "MCVideo视频业务",
+      "index": "topics-mcvideo.json",
+      "areas": [
+        {
+          "domain": "mcvideo",
+          "title": "在网通话、发送与接收",
+          "can_answer": "可区分私呼、预安排组、chat、广播的信令结果，以及按用户/源的发送与接收控制、单源停止和通话释放。",
+          "conditional_or_interface_only": "所列普通在网transmission-control及单源接收/停止分支按各页条件读取；SIP 200、发流许可、收流许可、首帧显示不能互作成功，不推广到所有MCVideo模式。",
+          "not_established": "不代表所有会话模式、异常恢复和媒体编解码已覆盖；不得把MCPTT话权或一个源停止扩成整通话结束。",
+          "read": [
+            {
+              "title": "MCVideo 按需私呼：客户端邀请、应答与接通证据",
+              "path": "topics/mcvideo/private-call-client-signalling.md",
+              "source_ids": [
+                "3gpp-ts-24.281-v19.3.0"
+              ]
+            },
+            {
+              "title": "MCVideo预安排组呼：required、最低人数与Unconfirmed成功",
+              "path": "topics/mcvideo/prearranged-call-setup-result.md",
+              "source_ids": [
+                "3gpp-ts-24.281-v19.3.0",
+                "3gpp-ts-24.581-v19.2.0"
+              ]
+            },
+            {
+              "title": "MCVideo普通chat控制侧：资格、初建/已有分支与媒体许可",
+              "path": "topics/mcvideo/chat-ondemand-admission.md",
+              "source_ids": [
+                "3gpp-ts-24.281-v19.3.0",
+                "3gpp-ts-24.581-v19.2.0"
+              ]
+            },
+            {
+              "title": "MCVideo广播媒体角色：发起者发送、接收者Mode0与拒绝反向发送",
+              "path": "topics/mcvideo/broadcast-media-roles.md",
+              "source_ids": [
+                "3gpp-ts-24.581-v19.2.0"
+              ]
+            },
+            {
+              "title": "普通在网 MCVideo 发送：入会不等于可发送",
+              "path": "topics/mcvideo/participant-transmission-control.md",
+              "source_ids": [
+                "3gpp-ts-24.581-v19.2.0"
+              ]
+            },
+            {
+              "title": "普通在网 MCVideo 接收：按源通知、许可与结束",
+              "path": "topics/mcvideo/participant-reception-control.md",
+              "source_ids": [
+                "3gpp-ts-24.581-v19.2.0"
+              ]
+            },
+            {
+              "title": "某个源无人接收：T11到期、停止命令与T3确认",
+              "path": "topics/mcvideo/server-stream-idle-termination.md",
+              "source_ids": [
+                "3gpp-ts-24.581-v19.2.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "mcvideo",
+          "title": "拉取另一客户端视频",
+          "can_answer": "可查A拉B的角色、pull类型、CF双边许可、被叫隐式媒体请求及用户/服务器释放入口。",
+          "conditional_or_interface_only": "仅普通在网按需one-to-one、使用transmission control；被叫拒绝仍有效，隐式请求不是授予。",
+          "not_established": "不覆盖one-from-server或pull专属完整媒体状态机；未建立隐式请求相对200的独立时序、首帧或同步停止证明。",
+          "read": [
+            {
+              "title": "向另一客户端拉视频：请求角色与双边授权",
+              "path": "topics/mcvideo/video-pull-request-and-authorization.md",
+              "source_ids": [
+                "3gpp-ts-24.281-v19.3.0"
+              ]
+            },
+            {
+              "title": "拉视频的开始与结束：媒体请求、通话成功和释放分开判断",
+              "path": "topics/mcvideo/video-pull-start-and-release.md",
+              "source_ids": [
+                "3gpp-ts-24.281-v19.3.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "mcvideo",
+          "title": "推送本端视频给另一客户端",
+          "can_answer": "可查 push 会话类型、服务 PSI 与目标、CF 双边权限、被叫提示、可选保存及用户/服务器释放入口。",
+          "conditional_or_interface_only": "仅普通在网按需 one-to-one、使用 transmission control；私呼 helper 仍保留各自条件，提示、接受、通话成功、媒体许可和实际接收分别判断。",
+          "not_established": "不覆盖 one-to-server、完整 PF 分类/准入或 push 专属媒体状态机；PSI 用途及两类目标字段差异无消解规则，释放错引保留，不证明首帧、文件落盘或同步停止。",
+          "read": [
+            {
+              "title": "向另一客户端推视频：服务地址、目标与双边权限",
+              "path": "topics/mcvideo/video-push-request-and-authorization.md",
+              "source_ids": [
+                "3gpp-ts-24.281-v19.3.0"
+              ]
+            },
+            {
+              "title": "收到推视频邀请：提示、接听、可选录制与释放证据",
+              "path": "topics/mcvideo/video-push-observation-and-release.md",
+              "source_ids": [
+                "3gpp-ts-24.281-v19.3.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "mcvideo",
+          "title": "普通离网自动私呼",
+          "can_answer": "可查已确定两用户间的自动建立、拒绝、P2/P5到P4的端点事件，以及RELEASE、超时、P1保留标识与P0清理。",
+          "conditional_or_interface_only": "MONP信令入口；发起端媒体调用角色称谓及clause a.b占位引用保留。自动终接端按原文以terminating MCVideo client调用；RELEASE接收分支不另加originating发送者限制，完整消息分派和鉴权未核。",
+          "not_established": "本项仅自动路径；手动等待/应答另列，但其完整释放与建立前取消未闭合。不是离网组呼或完整发现/安全/媒体控制实现；未闭合发送与接收许可、首帧、双端同步停止或重叠超时优先级。",
+          "read": [
+            {
+              "title": "离网自动私呼：发起资格、接受与拒绝",
+              "path": "topics/mcvideo/offnetwork-private-auto-setup.md",
+              "source_ids": [
+                "3gpp-ts-24.281-v19.3.0"
+              ]
+            },
+            {
+              "title": "离网私呼接通：双方状态和媒体许可缺口",
+              "path": "topics/mcvideo/offnetwork-private-media-entry.md",
+              "source_ids": [
+                "3gpp-ts-24.281-v19.3.0"
+              ]
+            },
+            {
+              "title": "离网私呼结束：逐端响应、超时和清除标识",
+              "path": "topics/mcvideo/offnetwork-private-release.md",
+              "source_ids": [
+                "3gpp-ts-24.281-v19.3.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "mcvideo",
+          "title": "普通离网基本组呼：探测与无需确认加入",
+          "can_answer": "可查探测与超时创建、主动加入和终接无需用户确认的加入判据，以及条件公告回应、本地离开和探测取消。",
+          "conditional_or_interface_only": "仅既定普通BASIC GROUP CALL、emergency state=false，按S/T各自状态和事件；公告回应另需stored probe response已满足所列条件，不推断初值。",
+          "not_established": "本项仅探测及无需确认加入；S4/S5需用户应答另见独立主题，同组另一BASIC呼叫的条件合并另见独立主题；其他类型/优先级及跨过程调度仍未闭合。probe初值、媒体a.b占位与发送错引保留；S3不证明媒体许可、首帧或全组同步，本地离开不结束全组。",
+          "read": [
+            {
+              "title": "离网组呼：探测、创建与加入判据",
+              "path": "topics/mcvideo/offnetwork-group-probe-and-join.md",
+              "source_ids": [
+                "3gpp-ts-24.281-v19.3.0"
+              ]
+            },
+            {
+              "title": "离网组呼：公告回应与本地离开",
+              "path": "topics/mcvideo/offnetwork-group-announcement-and-leave.md",
+              "source_ids": [
+                "3gpp-ts-24.281-v19.3.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "mcvideo",
+          "title": "离网组呼终接：需用户应答",
+          "can_answer": "可查S1进入S4/S5、用户接受、拒绝或TFG4超时，以及S6保留身份的有限衔接。",
+          "conditional_or_interface_only": "普通BASIC GROUP CALL且本地要求用户应答；有无Confirm indication独立决定S5/S4，只有所列S5接受支发送ACCEPT。基本控制S状态与类型控制T状态分别判断。",
+          "not_established": "不补配置默认、并发调度、重新加入或完整媒体状态机；a.b占位保留，ACCEPT收发不证明全组加入、接收许可或首帧。",
+          "read": [
+            {
+              "title": "离网组呼来话：等待用户、接受与拒绝后的状态",
+              "path": "topics/mcvideo/offnetwork-group-user-confirmation.md",
+              "source_ids": [
+                "3gpp-ts-24.281-v19.3.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "mcvideo",
+          "title": "离网普通组呼：同类型条件合并",
+          "can_answer": "可查同组另一BASIC呼叫的身份差异守卫、较早start time或同时间较小call ID选择，基本控制的存储/媒体调用及TFG6/TFG2重启，以及类型侧字段更新。",
+          "conditional_or_interface_only": "基本控制S3、类型控制T2各自适用守卫；普通同类型，不按originator ID大小或最后类型变更时间决胜。采用被选呼叫SDP不等于同一呼叫期间任意改流。",
+          "not_established": "跨过程调度/取值、平局兜底、其他类型和优先级、全网收敛未闭合；媒体a.b占位不补号，不以保持S3证明媒体许可或首帧，不把重启TFG6当作从合并时刻给满额时长。",
+          "read": [
+            {
+              "title": "离网普通组呼合并：选择另一通话与本地切换",
+              "path": "topics/mcvideo/offnetwork-group-merge.md",
+              "source_ids": [
+                "3gpp-ts-24.281-v19.3.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "mcvideo",
+          "title": "普通离网手动私呼：等待与应答",
+          "can_answer": "可查manual commencement发起授权、RINGING等待、终接P5用户接受/拒绝或超时、TFP与CFP有限处理，以及按ACCEPT/ACK/RTP等各自事件推进的本地完成。",
+          "conditional_or_interface_only": "两个已确定用户的普通PRIVATE CALL，MONP而非SIP；逐端状态、call id、模式和事件条件分别判断。用户接受仍留P5，RINGING不启动自行补造的等待算法。",
+          "not_established": "手动已建立通话的释放及建立前取消未展开；不能把自动相关页的claims继承到手动模式。媒体a.b、安全、完整异常分派、双端计时同步和首帧未闭合。",
+          "read": [
+            {
+              "title": "离网手动私呼：响铃等待、用户应答与有限失败",
+              "path": "topics/mcvideo/offnetwork-private-manual-answer.md",
+              "source_ids": [
+                "3gpp-ts-24.281-v19.3.0"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "calls",
+      "title": "MCPTT通话与话权",
+      "index": "topics-calls.json",
+      "areas": [
+        {
+          "domain": "calls",
+          "title": "在网MCPTT通话与普通话权",
+          "can_answer": "可按私呼、组呼、chat及预建立入口查准入、应答、参加/移除、释放，并区分终端、服务端接口与仲裁者的话权状态。",
+          "conditional_or_interface_only": "普通话权的请求、排队、授予和媒体计时按各自入口读取；入会不等于可发声。",
+          "not_established": "不提供完整SIP/RFC或全部话权状态机；multi-talker有限服务端路径另列，完整准入、排队后继及端到端控制仍未闭合；dual floor、audio cut-in完整控制链未覆盖。",
+          "read": [
+            {
+              "title": "在网按需私呼：被叫客户端的拒绝、应答和取消",
+              "path": "topics/calls/private-client-acceptance.md",
+              "source_ids": [
+                "3gpp-ts-24.379-v19.4.0"
+              ]
+            },
+            {
+              "title": "组呼建立门槛：归属、required应答与最少人数",
+              "path": "topics/calls/group-acknowledged-start.md",
+              "source_ids": [
+                "3gpp-ts-24.379-v19.4.0"
+              ]
+            },
+            {
+              "title": "预建立会话承载普通组呼：REFER 寻址、响应与独立通知",
+              "path": "topics/calls/preestablished-group-association.md",
+              "source_ids": [
+                "3gpp-ts-24.379-v19.4.0"
+              ]
+            },
+            {
+              "title": "按需 chat 组呼入口：新建与加入都从组 ID 的 initial INVITE 开始",
+              "path": "topics/calls/chat-ondemand-entry.md",
+              "source_ids": [
+                "3gpp-ts-24.379-v19.4.0"
+              ]
+            },
+            {
+              "title": "话权状态归谁：客户端、服务器接口与呼叫仲裁分开读取",
+              "path": "topics/calls/floor-state-ownership.md",
+              "source_ids": [
+                "3gpp-ts-24.380-v19.1.0"
+              ]
+            },
+            {
+              "title": "入会与请求话权：SIP 成功、接收媒体和发送许可分别判断",
+              "path": "topics/calls/floor-participant-entry-request.md",
+              "source_ids": [
+                "3gpp-ts-24.380-v19.1.0"
+              ]
+            },
+            {
+              "title": "服务器授予后的媒体计时：T20 重传、T1 静默与 T2 超时撤销",
+              "path": "topics/calls/floor-server-media-timers.md",
+              "source_ids": [
+                "3gpp-ts-24.380-v19.1.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "calls",
+          "title": "优先话权：撤销而非完整交接",
+          "can_answer": "可查同时协商queueing与mc_priority、有效pre-emptive且策略选revoke的有限分支，队首、T3/T8、旧RTP及G-bit=0终端停止请求。",
+          "conditional_or_interface_only": "撤销通知、接口转态与终端实际停止分开；队首不等于Granted，媒体组件停止请求不等于已完成。",
+          "not_established": "已协商queueing范围下的下一位Granted与单话权超时交接未闭合；不覆盖override without revoke、dual floor或multi-talker的完整流程。",
+          "read": [
+            {
+              "title": "优先请求：何时触发撤销，为什么队首仍不等于获权",
+              "path": "topics/calls/floor-preemption-decision.md",
+              "source_ids": [
+                "3gpp-ts-24.380-v19.1.0"
+              ]
+            },
+            {
+              "title": "撤销传递：服务端宽限、终端停止请求与交接证据",
+              "path": "topics/calls/floor-revoke-observation.md",
+              "source_ids": [
+                "3gpp-ts-24.380-v19.1.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "calls",
+          "title": "Multi-talker：有限服务端准入、授予与逐人退出",
+          "can_answer": "可查未满额且在允许名单时的接口转交、并发Granted列表/SSRC、已获准RTP处理，以及逐人Release、T1断流和满额优先撤销。",
+          "conditional_or_interface_only": "固定TS24.380 V19.1.0 Stage3，在网已配置multi-talker的普通组；仲裁者实际收到请求、容量及有效优先级分别判断。满额撤销选择最低优先级许可者并将新请求排队，不是立即Granted；其他talker独立退出。",
+          "not_established": "全部准入、同优先级择人、排队后继、配置互通及完整端到端控制仍未闭合。pending中的其他人Release与T1出口差异保留；不推全组停发、混音/解码或接收端已听到，也不覆盖dual floor或audio cut-in。",
+          "read": [
+            {
+              "title": "多talker：容量、授予列表与媒体分发",
+              "path": "topics/calls/multi-talker-admission-and-media.md",
+              "source_ids": [
+                "3gpp-ts-24.380-v19.1.0"
+              ]
+            },
+            {
+              "title": "多talker：逐人退出与满额撤销",
+              "path": "topics/calls/multi-talker-release-and-revoke.md",
+              "source_ids": [
+                "3gpp-ts-24.380-v19.1.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "calls",
+          "title": "双话权：保留原发言者的第二路",
+          "can_answer": "可查策略选择同时发言后的 D 仲裁、G-bit 授予、第二路媒体接收集合，以及 T11、T12 和 Release 三种退出。 原主路先退出时另可查 G 的条件接续与 D Terminate；另可区分 D 内部 call release 两阶段动作，不代表完整信令层释放。 同一已获准overriding者再次请求已经到达D时，可查有限Granted回应及接口转交边界。",
+          "conditional_or_interface_only": "限普通在网组呼所列抢占条件；区分基本 G 与双话权 D，按事件保留计时器条件、通知顺序及接收集合。服务器请求不证明终端已收到或停止。 原主路退出接续保留 D 是否在用、计时器及待处理内容的条件，不将 Terminate 当作新的 Granted。",
+          "not_established": "不覆盖完整终端 G-bit/Ack 路由、接口G/D选择、重发Granted完整回程、其他请求者处置、配置 N7、安全或混音；原文未列的 G-bit 不补默认值。身份与 SSRC 指向差异、接口事件归属及 D 释放后继续发言的解释边界仍未闭合，不推导剩余时长转移或显式资源重绑定。",
+          "read": [
+            {
+              "title": "双话权：保留原发言者的第二路许可与媒体",
+              "path": "topics/calls/dual-floor-entry-and-media.md",
+              "source_ids": [
+                "3gpp-ts-24.380-v19.1.0"
+              ]
+            },
+            {
+              "title": "双话权：第二路停止与原主路退出后的接续",
+              "path": "topics/calls/dual-floor-stop-evidence.md",
+              "source_ids": [
+                "3gpp-ts-24.380-v19.1.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "calls",
+          "title": "普通离网MCPTT组呼",
+          "can_answer": "可查每组状态机的PROBE、超时发起/加入已有呼叫、用户应答与Confirm mode、周期公告、本端退出和忽略窗口。 话权另可查终接者初始化、silence 请求、T201/C201 竞争与本地许可，以及无排队释放、取消和呼叫停止。",
+          "conditional_or_interface_only": "呼叫控制按 TS 24.379 V19.4.0，有限 O 话权路径按 TS 24.380 V19.1.0，各自条件不可省略；话权要求离网呼叫已成功建立。本地状态或已发送消息不是全员一致的证明。",
+          "not_established": "不覆盖离网私呼、广播、类型变化、并呼合并、完整 ProSe、安全或话权排队实现；发起者隐式与显式请求入口差异保留，本端退出不等于全组结束。不能与离网 MCVideo 自动私呼合成一个状态机。",
+          "read": [
+            {
+              "title": "离网MCPTT组呼：先探测，已有则加入、超时则发起",
+              "path": "topics/calls/offnetwork-group-probe-and-start.md",
+              "source_ids": [
+                "3gpp-ts-24.379-v19.4.0"
+              ]
+            },
+            {
+              "title": "离网MCPTT组呼：用户接受、确认消息与周期公告",
+              "path": "topics/calls/offnetwork-group-acceptance-and-announcement.md",
+              "source_ids": [
+                "3gpp-ts-24.379-v19.4.0"
+              ]
+            },
+            {
+              "title": "离网MCPTT组呼：本端退出、忽略窗口与最大时长",
+              "path": "topics/calls/offnetwork-group-local-leave.md",
+              "source_ids": [
+                "3gpp-ts-24.379-v19.4.0"
+              ]
+            },
+            {
+              "title": "离网话权入口：组呼参与者与临时仲裁者",
+              "path": "topics/calls/offnetwork-floor-entry.md",
+              "source_ids": [
+                "3gpp-ts-24.380-v19.1.0"
+              ]
+            },
+            {
+              "title": "离网请求竞争：重试、计数复位与本地取得话权",
+              "path": "topics/calls/offnetwork-floor-request-contention.md",
+              "source_ids": [
+                "3gpp-ts-24.380-v19.1.0"
+              ]
+            },
+            {
+              "title": "离网停止边界：空队列释放、静默与呼叫退出",
+              "path": "topics/calls/offnetwork-floor-release-boundary.md",
+              "source_ids": [
+                "3gpp-ts-24.380-v19.1.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "calls",
+          "title": "普通离网话权：条件排队与移交观察",
+          "can_answer": "可按逐角色状态查非抢占判定、排队能力与开关、排位匹配、队首授予、用户接受、匹配RTP观察，以及所列重试与取消事件。",
+          "conditional_or_interface_only": "呼叫已成功建立；普通请求仍须另判非抢占。排位更新、current/candidate调整、Granted、用户接受和旧仲裁者收到RTP各按自身事件，不能合为一次成功。",
+          "not_established": "Queue Position的User ID/Queued User ID冲突、T233表与实际启动入口差异保留；O:queued查询与所列等待出口另见独立主题，仍未闭合队列导入/排序、T204全状态、配置、安全或全员唯一持权。",
+          "read": [
+            {
+              "title": "离网话权排队与移交：收到授予、用户接受和首包观察",
+              "path": "topics/calls/offnetwork-floor-queue-and-handoff.md",
+              "source_ids": [
+                "3gpp-ts-24.380-v19.1.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "calls",
+          "title": "离网排队后：查询与条件出口",
+          "can_answer": "可查O:queued排位查询、回复匹配、T204/C204有限重试及到限出口，并区分Deny、他人授予、媒体更新与T203超时重申请。",
+          "conditional_or_interface_only": "普通离网呼叫已建立，逐角色状态/事件/身份条件分别适用；字段254/255的语义不能自动变成本地退出动作，计数含初发。",
+          "not_established": "current/candidate字段差异及出口未列的清理保持；不覆盖完整状态机、T204全状态、排序/导入、在网Ack或调度员取消移植，不证明远端已移除排队者。",
+          "read": [
+            {
+              "title": "离网排位查询与等待失效：重试后是否还在排队",
+              "path": "topics/calls/offnetwork-floor-queue-query-and-exit.md",
+              "source_ids": [
+                "3gpp-ts-24.380-v19.1.0"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "groups",
+      "title": "组管理与MCPTT组呼入口",
+      "index": "topics-groups.json",
+      "areas": [
+        {
+          "domain": "groups",
+          "title": "组文档、归属及会议状态",
+          "can_answer": "可查文档/节点操作、XCAP校验与并发、订阅，以及MCPTT组呼入口、显式/隐式归属和会议状态合并。",
+          "conditional_or_interface_only": "文档权限、成员、归属、入呼权限分别判断；Stage3组文档与业务归属按各自来源，RFC会议合并按订阅版本解释。",
+          "not_established": "不是完整schema/RFC实现或跨域部署算法；归属确认不证明呼叫接受，会议通知不是媒体到达。MCData/MCVideo专有归属须查各自域。",
+          "read": [
+            {
+              "title": "组文档操作：先选资源层级，再选 HTTP 方法",
+              "path": "topics/groups/resource-operations.md",
+              "source_ids": [
+                "3gpp-ts-24.481-v19.3.0"
+              ]
+            },
+            {
+              "title": "XCAP 并发修改：ETag 与 412",
+              "path": "topics/groups/conditional-update.md",
+              "source_ids": [
+                "ietf-rfc-4825"
+              ]
+            },
+            {
+              "title": "显式归属服务器记录：两侧建立、刷新与通知确认",
+              "path": "topics/groups/explicit-affiliation-server-state.md",
+              "source_ids": [
+                "3gpp-ts-24.379-v19.4.0"
+              ]
+            },
+            {
+              "title": "显式归属结果：先订阅状态，再用NOTIFY关联请求",
+              "path": "topics/groups/explicit-affiliation-observation.md",
+              "source_ids": [
+                "3gpp-ts-24.379-v19.4.0"
+              ]
+            },
+            {
+              "title": "参与者通知合并：全量、增量与版本断档",
+              "path": "topics/groups/conference-state-merge.md",
+              "source_ids": [
+                "ietf-rfc4575"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "identity",
+      "title": "身份、注册与配置",
+      "index": "topics-identity.json",
+      "areas": [
+        {
+          "domain": "identity",
+          "title": "身份、注册、令牌与用户配置",
+          "can_answer": "可区分客户端登记、用户认证、SIP注册、服务授权，查令牌刷新、伙伴系统及配置取得/更新的选定边界。",
+          "conditional_or_interface_only": "配置更新含Stage2信息流，认证/HTTP按对应规范；24.482与33.180的token字段义务差异保留。",
+          "not_established": "未提供完整OIDC/RFC、安全实现或跨版本统一token模板；配置存储确认不证明所有通话即时同步。",
+          "read": [
+            {
+              "title": "原生客户端认证：注册、授权码与令牌分别做什么",
+              "path": "topics/identity/native-authentication.md",
+              "source_ids": [
+                "3gpp-ts-33.180-v19.4.0"
+              ]
+            },
+            {
+              "title": "SIP 注册之后：服务范围、令牌校验与身份绑定",
+              "path": "topics/identity/service-authorization.md",
+              "source_ids": [
+                "3gpp-ts-33.180-v19.4.0"
+              ]
+            },
+            {
+              "title": "刷新 access token：不能借刷新扩大授权",
+              "path": "topics/identity/token-refresh.md",
+              "source_ids": [
+                "3gpp-ts-33.180-v19.4.0"
+              ]
+            },
+            {
+              "title": "令牌响应字段：两个 Rel19 规范版本不能静默合并",
+              "path": "topics/identity/token-response-obligations.md",
+              "source_ids": [
+                "3gpp-ts-24.482-v19.0.0"
+              ]
+            },
+            {
+              "title": "用户配置更新：通知取回与客户端提交",
+              "path": "topics/identity/profile-update.md",
+              "source_ids": [
+                "3gpp-ts-23.280-v19.9.0"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "title": "安全与密钥",
+      "index": "topics-security.json",
+      "areas": [
+        {
+          "domain": "security",
+          "title": "保护层次与密钥生命周期",
+          "can_answer": "可查组密钥验证、用户切换时材料保存/隔离、私呼与组保护、信令/媒体保护边界。",
+          "conditional_or_interface_only": "安全专题说明所列条件下的密钥及保护责任；多发言者安全片段仅解释保护/混音限制，不等于完整多发言者控制。",
+          "not_established": "不提供完整密码编码、KMS部署、擦除算法或所有安全失败映射；取得密钥不代表归属、通话或发流获准。",
+          "read": [
+            {
+              "title": "组密钥下发：收到GMK之前要验证什么",
+              "path": "topics/security/group-key-distribution.md",
+              "source_ids": [
+                "3gpp-ts-33.180-v19.4.0"
+              ]
+            },
+            {
+              "title": "UE密钥生命周期：保存、换用户与失效清理",
+              "path": "topics/security/ue-key-lifecycle.md",
+              "source_ids": [
+                "3gpp-ts-33.180-v19.4.0"
+              ]
+            },
+            {
+              "title": "在网私呼：PCK 分发完成不等于通话获准",
+              "path": "topics/security/private-key-distribution.md",
+              "source_ids": [
+                "3gpp-ts-33.180-v19.4.0"
+              ]
+            },
+            {
+              "title": "多发言者与预配置重组：服务器混音和组密钥前提",
+              "path": "topics/security/group-call-media-boundaries.md",
+              "source_ids": [
+                "3gpp-ts-33.180-v19.4.0"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "interworking",
+      "title": "MCX与LMR互通",
+      "index": "topics-interworking.json",
+      "areas": [
+        {
+          "domain": "interworking",
+          "title": "MCX与LMR互通",
+          "can_answer": "可查IWF边界、组配置/归属、重组、组呼/私呼、SDS地址映射、话权过滤与位置的信息流。",
+          "conditional_or_interface_only": "TS23.283 V19.5.0 Stage2；IWF前的本地选中不等于最终Granted，互通MCData范围为SDS。",
+          "not_established": "不代表IWF内部实现、LMR协议编码、全部SIP或媒体互通测试；不能直接当原生MCX Stage3消息配方。",
+          "read": [
+            {
+              "title": "LMR 互通：IWF 的规范边界",
+              "path": "topics/interworking/scope.md",
+              "source_ids": [
+                "3gpp-ts-23.283-v19.5.0"
+              ]
+            },
+            {
+              "title": "归属信息流：服务类型与逐组结果",
+              "path": "topics/interworking/affiliation-results.md",
+              "source_ids": [
+                "3gpp-ts-23.283-v19.5.0"
+              ]
+            },
+            {
+              "title": "互通私呼释放：发起方与确认次序",
+              "path": "topics/interworking/private-release.md",
+              "source_ids": [
+                "3gpp-ts-23.283-v19.5.0"
+              ]
+            },
+            {
+              "title": "互通SDS：地址映射与代理回执",
+              "path": "topics/interworking/sds-addressing.md",
+              "source_ids": [
+                "3gpp-ts-23.283-v19.5.0"
+              ]
+            },
+            {
+              "title": "组话权本地过滤：通过预选不等于最终授予",
+              "path": "topics/interworking/floor-filtering.md",
+              "source_ids": [
+                "3gpp-ts-23.283-v19.5.0"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "location",
+      "title": "位置服务",
+      "index": "topics-location.json",
+      "areas": [
+        {
+          "domain": "location",
+          "title": "位置采集、订阅与历史",
+          "can_answer": "可查配置触发/按需采集、按当前归属用户的订阅、通知、取消及恢复报告后的历史补报。",
+          "conditional_or_interface_only": "相关采集、订阅和历史流程限TS23.280 V19.9.0所列单MC系统Stage2场景；报告可用信息不保证新测量或精度，位置传播权限单独判断。",
+          "not_established": "不覆盖完整定位算法、配置IE/Stage3编码、历史容量/保留/删除策略或每次移动都被记录的保证。",
+          "read": [
+            {
+              "title": "位置采集：配置触发与按需上报",
+              "path": "topics/location/report-acquisition.md",
+              "source_ids": [
+                "3gpp-ts-23.280-v19.9.0"
+              ]
+            },
+            {
+              "title": "位置订阅：动态组目标、通知与取消",
+              "path": "topics/location/subscription-lifecycle.md",
+              "source_ids": [
+                "3gpp-ts-23.280-v19.9.0"
+              ]
+            },
+            {
+              "title": "恢复位置上报后：历史补报与取消",
+              "path": "topics/location/history-recovery.md",
+              "source_ids": [
+                "3gpp-ts-23.280-v19.9.0"
+              ]
+            },
+            {
+              "title": "位置：传播权限与保护要求",
+              "path": "topics/location/privacy.md",
+              "source_ids": [
+                "3gpp-ts-22.280-v19.7.0"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "network-policy",
+      "title": "网络策略与QoS",
+      "index": "topics-network-policy.json",
+      "areas": [
+        {
+          "domain": "network-policy",
+          "title": "EPS/5GS QoS与MCPTT用途",
+          "can_answer": "可区分QFI/5QI/ARP、GBR通知，及MCPTT语音和MCPTT-4/9的5QI65与SIP-1的69；按部署选择SIP core或服务器资源模型。",
+          "conditional_or_interface_only": "MCPTT用途固定TS23.289 V19.7.0 Stage2；服务器模型区分客户端/锚点参数，客户端确认早于资源请求与分配结果。",
+          "not_established": "通用N5 Stage3授权输入与结果另列，仍未建立MCX实际接口绑定、完整可运行N5/Rx/N33请求、PCC到QFI/包过滤器及UPF执行链或语音质量验收；不保证与23.501 V19.8.0等快照的组合互通。",
+          "read": [
+            {
+              "title": "5GS QoS：QFI、5QI 与 ARP 分别决定什么",
+              "path": "topics/network-policy/5gs-qos-model.md",
+              "source_ids": [
+                "3gpp-ts-23.501-v19.8.0"
+              ]
+            },
+            {
+              "title": "GBR 无法保障时：通知不等于立即释放",
+              "path": "topics/network-policy/5gs-notification-control.md",
+              "source_ids": [
+                "3gpp-ts-23.501-v19.8.0"
+              ]
+            },
+            {
+              "title": "MCPTT 语音进 5GS：语音 QoS 与 SIP 信令的边界",
+              "path": "topics/network-policy/mcptt-5gs-voice-qos-scope.md",
+              "source_ids": [
+                "3gpp-ts-23.289-v19.7.0"
+              ]
+            },
+            {
+              "title": "MCPTT 服务器请求单播资源：端点与完成证据",
+              "path": "topics/network-policy/mcptt-5gs-server-resource-request.md",
+              "source_ids": [
+                "3gpp-ts-23.289-v19.7.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "network-policy",
+          "title": "通用N5：AF上下文与资源结果",
+          "can_answer": "可查IP类型PDU会话的AF上下文创建、UE地址及绑定输入、媒体组件/流过滤器、应用标识优先关系、服务拒绝，以及201、订阅、成功/失败资源通知和204的不同证据。",
+          "conditional_or_interface_only": "固定TS29.514 V19.5.0 Stage3，AF已获使用服务授权，限普通单播、单接入和所列基本创建/通知。成功通知只覆盖所报告流；正常通知204是接收确认，不把所有不可接受POST都强制解释为204。",
+          "not_established": "不等于MCX已绑定该API；完整安全、schema、过滤语法、session binding、PCC/SMF执行及UPF转发未建立。未验证MCX SDP到全部字段、PCC到QFI/包过滤器的完整链；201、资源通知均不能证明业务权限、话权或媒体交付，失败也不等于全会话释放。",
+          "read": [
+            {
+              "title": "N5授权请求：应用、媒体和流如何区分",
+              "path": "topics/network-policy/n5-af-session-input.md",
+              "source_ids": [
+                "3gpp-ts-29.514-v19.5.0"
+              ]
+            },
+            {
+              "title": "N5授权结果：201与资源分配通知分别证明什么",
+              "path": "topics/network-policy/n5-authorization-result-boundary.md",
+              "source_ids": [
+                "3gpp-ts-29.514-v19.5.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "network-policy",
+          "title": "通用 N5：已有 AF 会话的更新与终止",
+          "can_answer": "可查 PATCH 修改媒体与门控、会话级订阅全量替换和移除、更新拒绝，以及 POST 删除、PCF terminate 通知和条件资源清理请求。",
+          "conditional_or_interface_only": "固定 TS 29.514 V19.5.0 的普通 IP、单播、单接入及已有上下文；更新页要求支持 PatchCorrection。200/204、终止确认、上下文删除和 PCC/SMF 清理分别判断。",
+          "not_established": "Retry-After 正文与表格强度差异不裁决；完整 schema、RFC 合并语义、全部错误/特性和下游执行未建立。通用 API 不证明 MCX 媒体绑定、QFI 映射、UPF 已执行或媒体已停。",
+          "read": [
+            {
+              "title": "N5 会话更新：媒体变更、订阅替换与生效证据",
+              "path": "topics/network-policy/n5-session-update.md",
+              "source_ids": [
+                "3gpp-ts-29.514-v19.5.0"
+              ]
+            },
+            {
+              "title": "N5 会话终止：删除请求、PCF 通知与资源清理",
+              "path": "topics/network-policy/n5-session-termination.md",
+              "source_ids": [
+                "3gpp-ts-29.514-v19.5.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "network-policy",
+          "title": "MCData预建立共享：支持、绑定与执行",
+          "can_answer": "可区分SIP-core与直接Rx路径、逐流Resource-Share应答、ResShare特性交集、IP-CAN绑定和方向共享键，并判断AAA、停止共享及AF终止的有限证据。",
+          "conditional_or_interface_only": "MCData限普通在网SDS预建立用途；Rx限所列AF/PCRF语境，P-CSCF规则不直接套给PF。注册UE绑定不替代IP-CAN绑定，支持共享不证明独立媒体资源。",
+          "not_established": "24.229的头语法/映射/触发、29.212/213的共享执行和完整绑定未闭合；不提供完整共享实现、N5/5GS适配或媒体交付保证。",
+          "read": [
+            {
+              "title": "MCData 预建立共享资源：SIP 支持、Rx 绑定与完成证据",
+              "path": "topics/network-policy/mcdata-preestablished-resource-sharing-boundary.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0",
+                "3gpp-ts-29.214-v19.3.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "network-policy",
+          "title": "N5：GBR目标变化与流范围",
+          "can_answer": "可区分QOS_NOTIF订阅、PCF获知目标不再保证或恢复保证后的报告，以及qncReports和Flows内两层省略范围。",
+          "conditional_or_interface_only": "固定TS29.514 V19.5.0普通IP、单播、单接入；恢复是GBR目标又可保证，不是资源分配结果。无MediaComponentVersioning时省略flows才按全会话解释；Flows项省略fNums仅该组件全部流。",
+          "not_established": "不覆盖方向、替代QoS、内容版本或完整QoS测量、SMF检测执行链。204只确认通知，PATCH可选；不证明QFI绑定、MCX媒体恢复或交付。",
+          "read": [
+            {
+              "title": "N5 GBR 目标通知：不再保证、恢复保证与受影响流",
+              "path": "topics/network-policy/n5-gbr-qos-notification.md",
+              "source_ids": [
+                "3gpp-ts-29.514-v19.5.0"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "signalling",
+      "title": "SIP路由",
+      "index": "topics-signalling.json",
+      "areas": [
+        {
+          "domain": "signalling",
+          "title": "SIP注册器与对话路由",
+          "can_answer": "可区分注册器寻找/绑定责任与RFC3261的对话标识、remote target和route set。",
+          "conditional_or_interface_only": "注册器模型是TS23.280 V19.9.0 Stage2；对话规则为RFC基线，RFC本身没有3GPP Release。",
+          "not_established": "不覆盖完整MCX SIP profile、事务匹配、连接复用、负载均衡亲和、故障切换或注册状态复制。",
+          "read": [
+            {
+              "title": "SIP 路由：寻找注册器与保存用户绑定",
+              "path": "topics/signalling/registrar-routing.md",
+              "source_ids": [
+                "3gpp-ts-23.280-v19.9.0"
+              ]
+            },
+            {
+              "title": "SIP 对话内请求：标识、目标与路由集",
+              "path": "topics/signalling/dialog-routing.md",
+              "source_ids": [
+                "ietf-rfc-3261"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "emergency",
+      "title": "紧急与优先状态",
+      "index": "topics-emergency.json",
+      "areas": [
+        {
+          "domain": "emergency",
+          "title": "紧急状态、告警与优先变更",
+          "can_answer": "可区分Stage1紧急状态要求与MCPTT/MCData/MCVideo已覆盖的升级、本人取消、告警和服务器结果。",
+          "conditional_or_interface_only": "业务、对象与入口分别适用；紧急优先级取消不是BYE，200、Warning149、INFO、ACK也不是同一结果。",
+          "not_established": "不把一种业务的组/私呼规则移到另一种；取消授权FFS、错引和部分状态路径仍保留，不代表完整紧急媒体、远程取消或所有优先模式已覆盖。",
+          "read": [
+            {
+              "title": "紧急告警、状态与组通信",
+              "path": "topics/emergency/alert-state.md",
+              "source_ids": [
+                "3gpp-ts-22.280-v19.7.0"
+              ]
+            },
+            {
+              "title": "已有私呼升级紧急：呼叫与告警的不同结果",
+              "path": "topics/emergency/private-upgrade.md",
+              "source_ids": [
+                "3gpp-ts-24.379-v19.4.0"
+              ]
+            },
+            {
+              "title": "紧急私呼取消：降级、告警与失败恢复",
+              "path": "topics/emergency/private-downgrade.md",
+              "source_ids": [
+                "3gpp-ts-24.379-v19.4.0"
+              ]
+            },
+            {
+              "title": "私聊 SDS 紧急取消：权限未决说明与部分接受结果",
+              "path": "topics/mcdata/private-emergency-server-cancellation.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0"
+              ]
+            },
+            {
+              "title": "私呼本人取消：通话、告警与用户状态分开处理",
+              "path": "topics/mcvideo/private-emergency-client-cancellation.md",
+              "source_ids": [
+                "3gpp-ts-24.281-v19.3.0"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "source_catalog": "sources.json"
+}

@@ -75,3 +75,5 @@ S2尚在探测时用户退出只停重发、进S7，不走已有公告的S6释�
 - [组呼参与者退出：BYE、REFER与全组释放判断](group-participant-leave.md)
 
 [3GPP TS24.379 V19.4.0 / ETSI TS124379 V19.4.0 (2026-01)](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/19.04.00_60/ts_124379v190400p.pdf)；仅所列版本和条款。
+
+需要区分本端话权释放与呼叫结束时，另读[离网话权释放边界](offnetwork-floor-release-boundary.md)。无排队释放须单独满足队列条件，不能从普通呼叫或本端退出推定全组结束。

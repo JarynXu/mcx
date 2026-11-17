@@ -1,0 +1,68 @@
+# 离网普通组呼合并：选择另一通话与本地切换
+
+## 适用范围
+
+- 固定3GPP TS24.281 V19.3.0，ETSI TS124281 V19.3.0 (2026-01)，Release19 Stage3；只研究普通离网BASIC GROUP CALL在参与中遇到同组另一呼叫公告。
+- 本地基本控制S3（参与呼叫）与类型控制T2（普通类型进行中），已具备组合法使用条件、地址和配置。所收及所存类型均为BASIC，无紧急/迫近危险、广播、网关、优先升级或其它类型变化。
+- 每条条件独立继承共同范围；基本控制和类型控制的守卫各自适用，不把一方完成当成另一方已完成。媒体仅保留精确调用依赖，不以信令状态证明发流/接收许可。
+
+下述过程在各自守卫成立时列出的动作是规范要求（SHALL）；未列出的调度、取值机制或媒体结果不能据此补造。
+
+## 先识别另一呼叫，再比较时间和标识
+
+本地客户端基本控制S3、类型控制T2；收到GROUP CALL ANNOUNCEMENT，所存类型与公告类型均为BASIC GROUP CALL。
+
+进入合并判断先要求组ID相同，并且公告的Originating MCVideo user ID或Call identifier至少一项不同。普通同类型随后选择公告start time较早的呼叫；若start time相同，只有公告call ID较小才满足选择条件。发起用户不同只是前置差异判据，不是按用户ID大小决胜。
+
+- 相同时间且相同call ID、仅originator不同，虽过外层差异守卫，却未过普通选择条件。
+- 两项身份均相同但start time不同，不满足这里的外层差异守卫。
+- 未满足本分支不能直接改写为丢弃全部消息或执行某个其它分支；不提供碰撞兜底算法。
+
+依据：3GPP TS24.281 V19.3.0 §9.3.2.4.6.1 opening and conditions3–4；§9.3.3.4.9 opening and conditions3–4，印刷页 305、306、318。
+
+## 本地采用公告存储并调整媒体
+
+本地客户端基本控制处于S3，收到GROUP CALL ANNOUNCEMENT：组ID与所存组ID相同，公告的Originating MCVideo user ID或Call identifier至少一项不同于所存值，所存类型和公告类型均为BASIC GROUP CALL；以上条件同时成立，且还满足以下二者之一：公告call start time较早；公告start time等于所存值且公告call ID较小。
+
+依次把公告SDP、call ID、发起用户ID、refresh interval和call start time保存为本呼叫值。随后基于已存SDP调整媒体，并以terminating transmission participant重启transmission control，引用TS24.581 clause a.b。接着停止TFG6、按§9.3.2.4.1.2重启TFG6，再停止TFG2、按§9.3.2.4.1.1.1重启TFG2，仍留S3。
+
+- 两项stop未写if running，不从退出分支移植条件。
+- 此入口未列发送ACCEPT、BYE或等待所有成员确认，不能补成一次在网重新呼叫。
+- 媒体a.b占位不补号；调整和重启是规定动作，不证明许可已获、首帧已显示或旧媒体资源已完整销毁。
+
+依据：3GPP TS24.281 V19.3.0 §9.3.2.4.6.1 steps1–11，印刷页 306。
+
+## 类型侧另更新变更记录
+
+本地客户端类型控制处于T2，收到GROUP CALL ANNOUNCEMENT：组ID与所存组ID相同，公告的Originating MCVideo user ID或Call identifier至少一项不同于所存值，所存类型和公告类型均为BASIC GROUP CALL；以上条件同时成立，且还满足以下二者之一：公告call start time较早；公告start time等于所存值且公告call ID较小。
+
+类型控制依次保存公告Last call type change time、Last user to change call type及Call type，本范围保存的类型仍为BASIC GROUP CALL。本条后续显式设置ProSe优先级与进入T1/T3的分支只针对紧急/迫近危险；不能为BASIC复制一条并不存在的优先级重设或显式重新进入T2动作。
+
+- 基本控制和类型控制并行，两个handler各自含身份差异守卫；一个过程更新所存call ID、发起者等比较值后，另一过程如何取得其判定所需值，本段未规定跨过程调度或取值机制。
+- 不从最后类型变更时间推导合并胜负；普通选择使用Call start time。
+
+依据：3GPP TS24.281 V19.3.0 §9.3.3.4.9 steps1–5；§9.3.3.1，印刷页 306、318。
+
+## 采用另一呼叫的SDP不等于任意改流
+
+普通离网呼叫的固定SDP说明，与满足合并判据后采用另一呼叫的专门入口分别适用。
+
+§9.3.2.1说本版同一呼叫期间媒体流不能修改、SDP保持不变；§9.3.2.4.6.1则明确在选中另一呼叫后替换已存SDP并调整媒体。这里区分继续原呼叫和采用被选呼叫两个场景，不把专门合并动作扩大为任意会中改流能力，也不静默删除固定SDP限制。
+
+- 场景区分是对两段同时适用边界的解释，不是新增协商算法或规范勘误。
+- 单端S3保持不证明全网收敛；丢包、并发公告、时钟差异、身份认证和媒体迁移实现不在本主题闭合。
+
+依据：3GPP TS24.281 V19.3.0 §9.3.2.1；§9.3.2.4.6.1，印刷页 295、305、306。
+
+## 未覆盖的行为
+
+- 未闭合跨状态机调度、碰撞平局、配置缺省、完整媒体、安全校验或全网一致收敛。
+- TFG6/TFG2本页只定位计算条款；不将重启TFG6理解为从合并时刻给满额呼叫时长。
+
+## 按需继续
+
+- [初次探测与加入](offnetwork-group-probe-and-join.md)
+- [公告与本地离开](offnetwork-group-announcement-and-leave.md)
+- [终接用户确认](offnetwork-group-user-confirmation.md)
+
+[ETSI官方发布版](https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf)；仅所列版本和条款。

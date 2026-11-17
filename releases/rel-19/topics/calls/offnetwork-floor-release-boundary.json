@@ -1,0 +1,181 @@
+{
+  "topic_id": "r19-calls-offnetwork-floor-release-boundary",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "仅适用于 3GPP TS 24.380 V19.1.0 §7 的普通离网 MCPTT 组呼，不是在网 G/U 服务器模型。排除私呼、广播、system、紧急/迫近危险、dual floor、multi-talker 及 audio cut-in。",
+    "覆盖终接或后来加入者从 O: silence 发起请求、在 O: pending request 竞争后按 T201/C201 进入本地许可的有限路径，以及初始化和无排队本端释放边界；不是任意收包下的完整状态机。",
+    "离网呼叫已成功建立，且本条所需授权、载体与配置已满足。未核 ProSe、安全、SSRC 认证、完整报文编码或 TS 24.483 配置取得及缺失处理。",
+    "请求竞争中的优先级比较以已知有效比较值为输入；不覆盖完整离网优先级、抢占或排队算法。使用无排队释放分支时，必须另确认没有 queued request，不能从普通呼叫推导队列为空。",
+    "收到的事件按实际到达顺序处理。没有该状态专门过程的消息或媒体丢弃且状态不变，格式错误也忽略（§7.2.3.1，印刷页 132–133）。仅在逐条条件满足时采用下述动作。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v19.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "permission-media-and-warning",
+      "role": "持权客户端/临时仲裁者",
+      "state": "O: has permission",
+      "conditions": [
+        "收到用户编码媒体或已有缓冲媒体；另分别判断T206到期。"
+      ],
+      "conclusion": "媒体事件在T206未运行时启动它，请求向其他客户端发送RTP并保持has permission。T206到期可提示即将达到时限，启动T207且仍在当前状态。",
+      "clause": "7.2.3.5.1;7.2.3.5.2;7.2.3.5.9",
+      "printed_pages": [
+        139,
+        142
+      ],
+      "normative_strength": "SHALL；另列MAY及证据分析不新增协议义务",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v19.1.0",
+          "clause": "7.2.3.5.1;7.2.3.5.2;7.2.3.5.9",
+          "printed_pages": [
+            139,
+            142
+          ],
+          "url": "https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/19.01.00_60/ts_124380v190100p.pdf"
+        }
+      ],
+      "limitations": [
+        "§.5.1概述称T206和T207在该状态运行，不能据概述把二者都无条件放到状态入口启动。",
+        "只证明发送请求与本地许可，不证明收端成功；不覆盖已知多仲裁冲突的全部纠正。"
+      ],
+      "timers": "具体发送步骤只启动T206；T207由T206到期动作启动。"
+    },
+    {
+      "id": "empty-queue-release",
+      "role": "持权客户端/临时仲裁者",
+      "state": "O: has permission",
+      "conditions": [
+        "用户释放发送许可且没有queued requests；另分别判断T207到期且无pending requests。"
+      ],
+      "conclusion": "用户释放分支停运行的T206/T207，发含自身User ID与normal Floor Indicator=0的Release，启T230、清current SSRC并转silence。T207到期且无排队分支也发同样Release、启T230、清current并转silence。",
+      "clause": "7.2.3.5.5;7.2.3.5.11",
+      "printed_pages": [
+        140,
+        141,
+        143
+      ],
+      "normative_strength": "SHALL；另列MAY及证据分析不新增协议义务",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v19.1.0",
+          "clause": "7.2.3.5.5;7.2.3.5.11",
+          "printed_pages": [
+            140,
+            141,
+            143
+          ],
+          "url": "https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/19.01.00_60/ts_124380v190100p.pdf"
+        }
+      ],
+      "limitations": [
+        "这两条本身没有像有排队的§.5.6/.5.10那样显式列stop sending RTP，不移植该步骤；这两条不足以建立完整的停止发送动作链，也不能据此推断仍获准继续发送 RTP。",
+        "这里只报告空队列分支，不用§.5.11的QueueUsage=false替代条件去裁决有队列异常。",
+        "Floor Release不是整场组呼结束或所有接收端已静默。"
+      ],
+      "timers": "T207分支不补另停T206/T207动作；不从普通呼叫猜队列为空。"
+    },
+    {
+      "id": "cancel-pending-and-inactivity",
+      "role": "请求者floor participant",
+      "state": "O: pending request；随后O: silence",
+      "conditions": [
+        "用户取消pending请求；随后如在silence遇T230到期。"
+      ],
+      "conclusion": "取消时发含自身User ID及normal Indicator=0的Release，停T201、停运行中的T203，启T230、清current SSRC并转silence。silence的T230到期向call control报告，终止本floor状态机并回Start-stop。",
+      "clause": "7.2.3.6.5;7.2.3.3.7;7.2.2",
+      "printed_pages": [
+        132,
+        137,
+        145,
+        146
+      ],
+      "normative_strength": "SHALL；另列MAY及证据分析不新增协议义务",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v19.1.0",
+          "clause": "7.2.3.6.5;7.2.3.3.7;7.2.2",
+          "printed_pages": [
+            132,
+            137,
+            145,
+            146
+          ],
+          "url": "https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/19.01.00_60/ts_124380v190100p.pdf"
+        }
+      ],
+      "limitations": [
+        "取消条文未列清candidate，不补；不从本地超时推出整个组呼已结束。"
+      ],
+      "timers": "不是在网T100重发链；T230结束floor session仅可能导致call session结束。"
+    },
+    {
+      "id": "call-release-floor-helper",
+      "role": "floor participant",
+      "state": "除Start-stop外任意基本O状态",
+      "conditions": [
+        "收到应用/信令层MCPTT call release请求。"
+      ],
+      "conclusion": "停止向其他参与者发floor消息，请求客户端停止收发RTP，释放关联资源及运行计时器，销毁floor状态机并回Start-stop。",
+      "clause": "7.2.3.9.1;7.2.3.9.2",
+      "printed_pages": [
+        155
+      ],
+      "normative_strength": "SHALL；另列MAY及证据分析不新增协议义务",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v19.1.0",
+          "clause": "7.2.3.9.1;7.2.3.9.2",
+          "printed_pages": [
+            155
+          ],
+          "url": "https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/19.01.00_60/ts_124380v190100p.pdf"
+        }
+      ],
+      "limitations": [
+        "与PTT release不同；不加入在网Releasing两阶段或SIP BYE。",
+        "该过程展开 TS 24.379 调用的停止话权 helper，但不证明其他组员已退出。"
+      ],
+      "timers": ""
+    }
+  ],
+  "limitations": [
+    "只覆盖列明事件，不是离网话权整体实现。未覆盖排队授予/T233、完整远端Granted/Deny、抢占、并呼合并或全部冲突收敛。",
+    "TS24.483配置获取、完整报文安全/编码及与TS24.379 V19.4.0精确版本组合互操作未核。",
+    "无排队Release缺少显式stop RTP步骤、发起explicit/implicit文字差异均保留，不用常识补闭环。"
+  ],
+  "related": [
+    "offnetwork-floor-entry.md",
+    "offnetwork-floor-request-contention.md",
+    "offnetwork-group-local-leave.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "source_issues": [
+    {
+      "clause": "7.2.3.5.1/.2/.9",
+      "printed_pages": [
+        139,
+        142
+      ],
+      "issue": "概述称两计时器运行，具体启动点分别在媒体事件与T206到期；不造统一入口同时启动。"
+    },
+    {
+      "clause": "7.2.3.5.5/.11 versus .5.6/.10",
+      "printed_pages": [
+        140,
+        141,
+        142,
+        143
+      ],
+      "issue": "空队列释放未明列停止RTP请求，有队列分支明列；报告动作差异，不推空队列可持续发送，也不补未写步骤。"
+    }
+  ]
+}

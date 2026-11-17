@@ -1,0 +1,83 @@
+# 离网手动私呼：响铃等待、用户应答与有限失败
+
+TS24.281 V19.3.0 Rel19，两个已确定用户之间的普通离网PRIVATE CALL，使用manual commencement。目标ID和离网传输配置已具备；发现、紧急、video push/pull、组呼和在网SIP不适用。
+
+每个私呼控制状态机以MCVideo user ID为粒度；并发受MaxCallNc10配置限制。P0无控制实体，P1忽略同call id，P2等响应，P3等释放响应，P4在通话，P5为pending；只按各端自己的状态和事件判断。
+
+本文的字段名省略PRIVATE CALL消息前缀时含义不变。MONP传输按§10.3.1.1.1，不替换成SIP。配置、安全及TS24.581离网媒体细节未核，clause a.b占位不补成已知媒体过程。
+
+各分支列出的过程动作是相应条件下的规范要求；位置处理保留MAY。
+
+## 手动模式仍须经过发起授权
+
+发起客户端P0或P1，用户请求普通私呼；Common/PrivateCall/Authorised=true；不满足“请求自动模式且AutoCommence=true”的优先分支，并且ManualCommence=true。
+
+客户端将模式保存为MANUAL COMMENCEMENT MODE。其余建立动作仍按§10.3.2.4.2.1执行：均匀随机生成并保存call identifier（原文区间(0,65536)，不裁定端点），保存双方ID和PRIVATE CALL类型；若需建立端到端安全上下文，先执行该条PCK/PCK-ID与封装、签名I_MESSAGE步骤，再设置离网私呼ProSe优先级、生成并保存offer SDP。SETUP REQUEST携所存call identifier、双方ID、模式、类型及offer，发出后CFP1置1、启动TFP1并进P2；位置保存和携带可选。
+
+ManualCommence分支不是忽略Authorised的替代入口；安全算法和配置默认值未展开。
+
+依据：TS24.281 V19.3.0 §10.3.2.4.2.1，印刷页356,357。
+
+## 响铃不等于接受，也不启动新的等待算法
+
+发起客户端已按手动模式进入P2；分别处理RINGING、TFP1到期以及TFP2到期。
+
+收到PRIVATE CALL RINGING时，正文只要求保持P2，没有列出停止TFP1或启动TFP2。一般TFP1到期段要求CFP1加1、用所存字段重发SETUP REQUEST、重启TFP1并保持P2，位置可更新及携带。另有明确的手动上限分支：TFP1到期且CFP1等于上限时，启动TFP2并保持P2。P2中TFP2到期则启动TFP7、释放call control state machine并进入P1。
+
+一般重传段未写低于上限，不能自行裁定与上限专节的执行优先级。两个端点的TFP2各自启动，不是同步倒计时；不填计时值或重传上限。
+
+依据：TS24.281 V19.3.0 §10.3.2.4.2.2;10.3.2.4.2.3;10.3.2.4.2.5;10.3.2.4.2.6，印刷页357,358。
+
+## 终接端先回响铃并等待用户
+
+终接客户端P0或P1收到MANUAL COMMENCEMENT MODE的PRIVATE CALL SETUP REQUEST，且其call identifier不同于所存值。
+
+终接端保存call identifier、PRIVATE CALL类型、离网私呼ProSe优先级、请求中的caller ID及自己的callee ID；用所存call identifier和双方ID发送PRIVATE CALL RINGING，启动TFP2并进入P5。P5状态概述对应已向用户呈现来话通知并等待用户指示；此入口尚未发送ACCEPT，也没有建立媒体的步骤。
+
+不把自动应答ACCEPT之后的P5语境搬到这里；不从组呼S4/S5引入Confirm mode、ACCEPT或TFG计时器。
+
+依据：TS24.281 V19.3.0 §10.3.2.3.6;10.3.2.4.4.1，印刷页356,362,363。
+
+## 用户接受后仍留在P5等待完成事件
+
+终接客户端P5收到用户接受来话指示；分别处理SDP offer无a=key-mgmt属性，或含mikey属性值的MIKEY-SAKKE I_MESSAGE并进行验签的分支，包括验签成功或失败；其他key-mgmt格式不在本条覆盖范围。
+
+若offer无a=key-mgmt属性，或指定I_MESSAGE验签成功且已解封PCK、提取PCK-ID，终接端才按相应成功分支生成并保存answer SDP，发送携所存call identifier、双方ID和answer的PRIVATE CALL ACCEPT，按private call的SDP body建立媒体，停止TFP2，将CFP4置1，启动TFP4并保持P5。若指定I_MESSAGE验签失败，则回REJECT并进P1，不走上述成功分支；仅在请求限制失败通知且FailRestrict=true时Reason为FAILED，否则为E2E SECURITY CONTEXT FAILURE。
+
+验签失败分支未列停止TFP2或启动TFP7，不补造；其他key-mgmt格式不推定可通过。具体安全算法、媒体建立成功及发送资格未核。
+
+依据：TS24.281 V19.3.0 §10.3.2.4.4.3，印刷页363,364。
+
+## 用户拒绝与用户未响应的Reason不同
+
+终接客户端处于手动来话P5，分别收到用户拒绝指示或TFP2到期；另行观察发起客户端P2收到回应其SETUP REQUEST且call identifier相同的REJECT。
+
+终接端用户拒绝时发送携所存call identifier和双方ID的REJECT：请求隐藏失败通知且FailRestrict=true时Reason为FAILED，否则为REJECT。终接端TFP2到期则发送同样标识字段的REJECT，Reason直接为FAILED。两种终接出口都启动TFP7并进P1。发起端的匹配REJECT入口则停止运行中的TFP1和TFP2、启动TFP7、释放call control state machine并进P1。
+
+用户拒绝专节未显式列stop TFP2；不将TFP7开始或进入P1解释为已清空call identifier。
+
+依据：TS24.281 V19.3.0 §10.3.2.4.4.2;10.3.2.4.4.7;10.3.2.4.2.7，印刷页358,363,365。
+
+## 接受响应和终接完成按各自事件推进
+
+分别观察发起端P2收到回应SETUP REQUEST且call identifier相同的ACCEPT，或已发送ACCEPT的手动终接端P5收到发起用户的ACCEPT ACK或RTP媒体；另观察终接端P5的TFP4到期。
+
+发起端保存answer，发送携所存call identifier和双方ID的ACCEPT ACK，停止运行中的TFP1/TFP2，按answer建立媒体，按原文字面以terminating transmission participant启动transmission control（TS24.581 clause a.b），启动TFP5并进P4。终接端收到上述ACK或RTP时停止TFP4，以terminating MCVideo client调用同一未展开的a.b接口，启动TFP5并进P4。终接端一般TFP4到期重发携所存标识和answer的ACCEPT、CFP4加1、重启TFP4并保持P5；到期且CFP4等于上限的专节另要求启动TFP7并进P1。
+
+终接完成入口未另列call-id匹配校验，不补成原文守卫；一般重传与上限出口的调度不裁定。失败出口未列终止已建立媒体，不推定全部资源已清。P4不证明已获流许可或显示首帧。
+
+依据：TS24.281 V19.3.0 §10.3.2.4.2.8;10.3.2.4.4.4;10.3.2.4.4.5;10.3.2.4.4.6，印刷页358,359,364,365。
+
+## 范围与关联
+
+仅闭合等待、应答和列出的有限失败入口；不建立跨端计时同步、完整异常消息分派或安全算法。
+
+已建立通话的释放归§10.3.2.4.5；关联释放主题现有common_conditions限自动路径，不能将其claims直接继承到手动模式。本文不重复释放动作，也不声称手动释放已独立验收。
+
+建立前取消另见§10.3.2.4.2.9及§10.3.2.4.4.8，本主题未展开；不能把P4释放作为P2取消。
+
+§10.3.2.4.3.1位于自动应答小节，尽管其入口字面未写模式，不直接移作手动媒体失败出口。
+
+[自动应答对照](offnetwork-private-auto-setup.md)、[自动路径媒体入口](offnetwork-private-media-entry.md)、[既有释放说明及其适用范围](offnetwork-private-release.md)。
+
+来源：[ETSI TS124281 V19.3.0](https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf)，对应3GPP TS24.281 V19.3.0 Release19，Stage3。

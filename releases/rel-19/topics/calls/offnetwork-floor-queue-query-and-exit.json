@@ -1,0 +1,432 @@
+{
+  "topic_id": "r19-calls-offnetwork-floor-queue-query-and-exit",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "仅 TS24.380 V19.1.0 §7 普通离网 MCPTT 组呼；§6.2 是在网参与者，不混入。",
+    "离网呼叫已成功建立，且所需授权、载体、身份及配置已满足；不覆盖 ProSe、系统发现、SSRC 认证、完整安全或编码实现。",
+    "限普通离网排队后的查询和等待事件。排除紧急、迫近危险、广播、system、私呼、dual floor、multi-talker、audio cut-in 和抢占后续；不重定义入队资格、队列排序或完整移交算法。",
+    "每项结论须同时满足本页共同范围与该项主体、状态、事件及匹配条件；同一项内明示的替代分支分别判断，不要求各角色事件同时发生。收包按到达顺序；没有状态专门过程的消息或媒体丢弃且状态不变，格式错误亦忽略（§7.2.3.1，印刷页 132–133）。",
+    "不建立任意丢包/并发/隐藏节点下唯一持权或全员成功保证。时限默认值不是部署实值；TS24.483 配置取得及缺失处理不在本页覆盖范围。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v19.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "queue-query-start",
+      "title": "查询排位不会重新申请话权",
+      "role": "排队参与者",
+      "state": "O: queued",
+      "conditions": [
+        "收到 MCPTT client 请求查询排位的指示。"
+      ],
+      "conclusion": "发送 Floor Queue Position Request：参与者 SSRC 取此前已发 Floor Request 的 SSRC，User ID 为自身 MCPTT User ID；随后 C204 初始化为 1、启动 T204，仍为 queued。",
+      "clause": "7.2.3.8.11;8.2.11",
+      "printed_pages": [
+        154,
+        155,
+        185,
+        186
+      ],
+      "normative_strength": "SHALL；明确标出的 MAY 和证据边界除外",
+      "limitations": [
+        "此入口未写 T233 必须未运行；不能从在网 T104/T132 流程移植该守卫。查询不是 Floor Request，也不是授予或发送媒体许可。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v19.1.0",
+          "clauses": [
+            "7.2.3.8.11",
+            "8.2.11"
+          ],
+          "printed_pages": [
+            154,
+            155,
+            185,
+            186
+          ],
+          "url": "https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/19.01.00_60/ts_124380v190100p.pdf"
+        }
+      ]
+    },
+    {
+      "id": "queue-query-answer",
+      "title": "持权者回复哪一个人的排位",
+      "role": "持权参与者/临时仲裁者",
+      "state": "O: has permission",
+      "conditions": [
+        "收到 Floor Queue Position Request。"
+      ],
+      "conclusion": "发送 Floor Queue Position Info：User ID 写回复者自身 MCPTT ID；Queue Info 携排位及话权优先级；queued SSRC 复制查询消息中请求排位者的 SSRC；Queued User ID 复制查询消息的 User ID。保持 has permission。",
+      "clause": "7.2.3.5.8;8.2.12",
+      "printed_pages": [
+        142,
+        186,
+        187
+      ],
+      "normative_strength": "SHALL；明确标出的 MAY 和证据边界除外",
+      "limitations": [
+        "该条没有额外列 QueueUsage=true 或请求者已在队列的判断；不据此补造未知请求者的具体排位值，也不将回复过程扩展到 pending granted。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v19.1.0",
+          "clauses": [
+            "7.2.3.5.8",
+            "8.2.12"
+          ],
+          "printed_pages": [
+            142,
+            186,
+            187
+          ],
+          "url": "https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/19.01.00_60/ts_124380v190100p.pdf"
+        }
+      ]
+    },
+    {
+      "id": "queue-query-info-received",
+      "title": "排位回复何时停止查询计时",
+      "role": "排队参与者",
+      "state": "O: queued",
+      "conditions": [
+        "先判断：Queued User ID 匹配自身 MCPTT ID，且发送者 SSRC 匹配 current。",
+        "否则另判断：User ID 匹配自身 MCPTT ID，且发送者 SSRC 匹配 candidate。两者为替代分支。"
+      ],
+      "conclusion": "current 分支依次更新排位、必须通知用户收到的位置、停止 T204，仍 queued。candidate 分支依次更新排位、将收到的仲裁者 SSRC 存为 current、清 candidate、必须通知用户位置、停止 T204，仍 queued。",
+      "clause": "7.2.3.8.3",
+      "printed_pages": [
+        152
+      ],
+      "normative_strength": "SHALL；明确标出的 MAY 和证据边界除外",
+      "limitations": [
+        "两分支匹配的身份字段不同，不改写为都读 Queued User ID。通知是 SHALL，不沿用初次入队时 MAY 的强度。该条未列重置 C204。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v19.1.0",
+          "clauses": [
+            "7.2.3.8.3"
+          ],
+          "printed_pages": [
+            152
+          ],
+          "url": "https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/19.01.00_60/ts_124380v190100p.pdf"
+        }
+      ]
+    },
+    {
+      "id": "queue-query-retry-or-abandon",
+      "title": "查询无响应：有限重发与本地退出",
+      "role": "排队参与者",
+      "state": "O: queued",
+      "conditions": [
+        "T204 到期；分别按 C204 小于配置上限或等于配置上限判断。"
+      ],
+      "conclusion": "未达上限时，重发 Floor Queue Position Request，仍携已发 Floor Request 的 SSRC 及自身 User ID；C204 加 1、启动 T204，保持 queued。等于上限时，C204 复位 1、启动 T230、清 current，进入 silence。",
+      "clause": "7.2.3.8.12;7.2.3.8.13;11.1.2;C.2.1",
+      "printed_pages": [
+        155,
+        239,
+        297
+      ],
+      "normative_strength": "SHALL；明确标出的 MAY 和证据边界除外",
+      "limitations": [
+        ".8.12 正文没有显式 <limit；该限制由同版 §11.1.2 Table 11.1.2-1 的 T204 行明确给出。信息性 Table C.2.1-1 也区分到限/否则，不作为新增规范义务。",
+        "到限条文不列发送 Release、清 candidate、停 T203/T233 或停止呈现；不自行补动作，不声称远端队列已经删掉本端。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v19.1.0",
+          "clauses": [
+            "7.2.3.8.12",
+            "7.2.3.8.13",
+            "11.1.2",
+            "C.2.1"
+          ],
+          "printed_pages": [
+            155,
+            239,
+            297
+          ],
+          "url": "https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/19.01.00_60/ts_124380v190100p.pdf"
+        }
+      ]
+    },
+    {
+      "id": "queue-query-configured-budget",
+      "title": "默认计数不是初发之外再重发三次",
+      "role": "排队参与者",
+      "state": "O: queued 的查询过程",
+      "conditions": [
+        "使用本版 T204/C204 计时计数定义，实际配置值已知。"
+      ],
+      "conclusion": "T204 默认 80 ms，依赖 D2D sidelink period×2，可配置；C204 默认上限 3，可配置，计数从 1 开始。若采用这些默认值且期间没有回复或其他状态变化，初发 C204=1，前两次到期分别重发并加至 2、3，下一次到期按上限分支退出。",
+      "clause": "7.2.3.8.11;7.2.3.8.12;7.2.3.8.13;11.1.2;11.2.2",
+      "printed_pages": [
+        154,
+        155,
+        239,
+        249
+      ],
+      "normative_strength": "计时/计数表定义；示例为有条件推导",
+      "limitations": [
+        "计数例为条文推导，不是固定 240 ms 获权/退出的部署保证。TS24.483 配置取得及缺失处理未核。",
+        "§11.2.2 正文引用表 11.2.2-1，但表题印为 11.2.1.2-1；以章节和页码定位。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v19.1.0",
+          "clauses": [
+            "7.2.3.8.11",
+            "7.2.3.8.12",
+            "7.2.3.8.13",
+            "11.1.2",
+            "11.2.2"
+          ],
+          "printed_pages": [
+            154,
+            155,
+            239,
+            249
+          ],
+          "url": "https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/19.01.00_60/ts_124380v190100p.pdf"
+        }
+      ]
+    },
+    {
+      "id": "queued-denial-exit",
+      "title": "收到拒绝后不再留在 queued",
+      "role": "排队参与者",
+      "state": "O: queued",
+      "conditions": [
+        "Deny 的 User ID 匹配自身 MCPTT ID；先判发送者 SSRC 匹配 current，否则判匹配 candidate。"
+      ],
+      "conclusion": "current 分支依次停止运行中的 T204、T233，必须通知拒绝，可用 Reject Cause 显示原因，然后进入 has no permission。candidate 分支也先条件停止两计时器，再将消息中的仲裁者 SSRC 存为 current、清 candidate，必须通知拒绝、可显示原因，进入 has no permission。",
+      "clause": "7.2.3.8.4",
+      "printed_pages": [
+        152,
+        153
+      ],
+      "normative_strength": "SHALL；明确标出的 MAY 和证据边界除外",
+      "limitations": [
+        "两分支都不以任意来源的 Deny 为有效拒绝。原文没有要求显示原因，也没有在本事件列发送 Release 或删除远端队列的确认。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v19.1.0",
+          "clauses": [
+            "7.2.3.8.4"
+          ],
+          "printed_pages": [
+            152,
+            153
+          ],
+          "url": "https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/19.01.00_60/ts_124380v190100p.pdf"
+        }
+      ]
+    },
+    {
+      "id": "queued-media-tracks-arbitrator",
+      "title": "还在排队时听到媒体，更新的是谁",
+      "role": "排队参与者",
+      "state": "O: queued",
+      "conditions": [
+        "收到 RTP，先判包 SSRC 匹配 current，否则判匹配 candidate。"
+      ],
+      "conclusion": "current 分支请求呈现 RTP、重启 T203，保持 queued。candidate 分支先请求呈现、重启 T203，再把该 RTP 的 SSRC 存为 current、清 candidate，保持 queued。",
+      "clause": "7.2.3.8.2",
+      "printed_pages": [
+        151,
+        152
+      ],
+      "normative_strength": "SHALL；明确标出的 MAY 和证据边界除外",
+      "limitations": [
+        "两分支没有停止 T204 或重置 C204；仍有 RTP 不能推出排位查询已收到答复，也不能推出本端可发媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v19.1.0",
+          "clauses": [
+            "7.2.3.8.2"
+          ],
+          "printed_pages": [
+            151,
+            152
+          ],
+          "url": "https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/19.01.00_60/ts_124380v190100p.pdf"
+        }
+      ]
+    },
+    {
+      "id": "queued-grant-to-other",
+      "title": "授予别人时继续等待",
+      "role": "排队参与者",
+      "state": "O: queued",
+      "conditions": [
+        "Granted 的 User ID 不匹配自身 MCPTT ID；先判消息发送者 SSRC 匹配 current，否则判匹配 candidate。"
+      ],
+      "conclusion": "两分支均请求停止呈现 RTP、重启 T203，将 Granted 中被授予用户的 SSRC 存为 candidate，保持 queued。",
+      "clause": "7.2.3.8.9",
+      "printed_pages": [
+        154
+      ],
+      "normative_strength": "SHALL；明确标出的 MAY 和证据边界除外",
+      "limitations": [
+        "消息发送者 SSRC 用于守卫，被授予用户 SSRC 用于保存 candidate，不能互换。该事件不把 current 改为被授予者，不列停止 T204；后续匹配 candidate 的 RTP 是另一事件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v19.1.0",
+          "clauses": [
+            "7.2.3.8.9"
+          ],
+          "printed_pages": [
+            154
+          ],
+          "url": "https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/19.01.00_60/ts_124380v190100p.pdf"
+        }
+      ]
+    },
+    {
+      "id": "queued-media-timeout-recontend",
+      "title": "媒体等待超时会重新申请，不是静默退队",
+      "role": "排队参与者",
+      "state": "O: queued",
+      "conditions": [
+        "T203 到期。"
+      ],
+      "conclusion": "依次请求停止呈现 RTP，向其他参与者发送 Floor Request（自身 MCPTT ID；需要非默认优先级时携所请求 Priority），停止运行中的 T204，C201 初始化为 1、启动 T201，清 current，进入 pending request。普通呼叫范围不触发特殊呼叫类型的 Floor Indicator 条件。",
+      "clause": "7.2.3.8.10",
+      "printed_pages": [
+        154
+      ],
+      "normative_strength": "SHALL；明确标出的 MAY 和证据边界除外",
+      "limitations": [
+        "此事件不等于 T204 到限进入 silence；也不是直接取得话权。条文未列清 candidate 或停 T233，不补齐并发计时器清理及优先级。后续竞争需按 pending request 的各事件重新判断。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v19.1.0",
+          "clauses": [
+            "7.2.3.8.10"
+          ],
+          "printed_pages": [
+            154
+          ],
+          "url": "https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/19.01.00_60/ts_124380v190100p.pdf"
+        }
+      ]
+    },
+    {
+      "id": "queue-position-special-values",
+      "title": "位置不可用不等于排在第 255 位",
+      "role": "排位信息读取者",
+      "state": "解读 Queue Info；如在 O: queued 收到消息，仍须满足消息接收守卫",
+      "conditions": [
+        "读取 Queue Info 的 Queue Position Info 值，区分字段含义与状态动作。"
+      ],
+      "conclusion": "值 254 表示客户端未排队；255 表示已排队但服务端不能确定位置，或按策略不透露位置。它们不能解释成普通队列名次。§7.2.3.8.3 对满足身份与 SSRC 条件的 Info 仍列更新、通知、停 T204、留 queued，没有另列 254 的状态退出分支。",
+      "clause": "8.2.3.5;7.2.3.8.3",
+      "printed_pages": [
+        162,
+        152
+      ],
+      "normative_strength": "字段定义与已列状态动作；边界分析不新增义务",
+      "limitations": [
+        "字段语义不自动补出本地退队动作；对 254 与 queued 状态的关系保留此细化缺口。这里不声称规范整体绝无其他处理。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v19.1.0",
+          "clauses": [
+            "8.2.3.5",
+            "7.2.3.8.3"
+          ],
+          "printed_pages": [
+            162,
+            152
+          ],
+          "url": "https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/19.01.00_60/ts_124380v190100p.pdf"
+        }
+      ]
+    }
+  ],
+  "source_issues": [
+    {
+      "id": "candidate-info-identity-mismatch",
+      "clauses": [
+        "7.2.3.5.8",
+        "7.2.3.8.3",
+        "8.2.12"
+      ],
+      "printed_pages": [
+        142,
+        152,
+        186,
+        187
+      ],
+      "finding": "查询回复和编码定义区分发送者 User ID 与排队者 Queued User ID；queued 的 current 接收分支读后者，candidate 分支却用前者匹配自身。",
+      "treatment": "按分支保留原字段，不静默修正，也不声称仲裁者变化时回复链已经无歧义。"
+    },
+    {
+      "id": "retry-guard-cross-clause-resolved",
+      "clauses": [
+        "7.2.3.8.12",
+        "7.2.3.8.13",
+        "11.1.2",
+        "C.2.1"
+      ],
+      "printed_pages": [
+        155,
+        239,
+        297
+      ],
+      "finding": ".8.12 未明写未到上限，但 T204 表明写计数小于上限才重发，.8.13 明写等于上限退出；信息性表也区分两路。",
+      "treatment": "按同版规范表补齐分支约束并说明来源，不把此点列成不可裁决冲突。"
+    },
+    {
+      "id": "exit-cleanup-not-complete",
+      "clauses": [
+        "7.2.3.8.10",
+        "7.2.3.8.13"
+      ],
+      "printed_pages": [
+        154,
+        155
+      ],
+      "finding": "T203 出口未列清 candidate 或停 T233；T204 到限未列 Release、清 candidate、停 T203/T233 或停止呈现。",
+      "treatment": "仅报告各出口明确动作，不补同时事件优先级或远端撤回确认。"
+    },
+    {
+      "id": "special-position-no-extra-state-branch",
+      "clauses": [
+        "8.2.3.5",
+        "7.2.3.8.3"
+      ],
+      "printed_pages": [
+        162,
+        152
+      ],
+      "finding": "254 定义为未排队，但 queued 的 Info 接收条文没有按 254 增列退出分支。",
+      "treatment": "分开字段语义和本地状态转换，不以编码含义自造状态动作。"
+    }
+  ],
+  "limitations": [
+    "仅列明状态和事件，不是完整状态机、网络一致性或互操作认证。",
+    "用户主动撤回、获授后接受/T233 超时与仲裁端移除匹配请求见排队与移交主题，不在这里重复维护。",
+    "Floor Ack（§8.2.13，印刷页 187）及用于取消其他用户排队请求的 Queued Floor Requests（§8.2.15，印刷页 189）明示为在网消息，不移植为离网撤回确认或调度员取消流程。"
+  ],
+  "related": [
+    "offnetwork-floor-queue-and-handoff.md",
+    "offnetwork-floor-request-contention.md",
+    "offnetwork-floor-release-boundary.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

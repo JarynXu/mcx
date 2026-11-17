@@ -42,6 +42,7 @@ CF须分别检查`<mcvideo-calling-user-id>`是否获准发起pull、`<mcvideo-c
 
 ## 按需继续
 
+- 要把本端视频推给另一客户端而不是拉取对方视频时，查[向另一客户端推视频：服务地址、目标与双边权限](video-push-request-and-authorization.md)。
 - [MCVideo 私呼服务器链：身份准入、终接设置与逐段应答](private-call-server-admission.md)
 - [拉视频的开始与结束：媒体请求、通话成功和释放分开判断](video-pull-start-and-release.md)
 

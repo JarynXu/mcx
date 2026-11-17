@@ -1,381 +1,71 @@
-先从[业务域目录](domains.json)选择问题所在领域，读取相应轻量索引；明确问题路径时可直接用[阅读路径](reading-paths.json)。[全量主题索引](topics.json)保留供跨域检索。
-
 # Release 19
 
-本目录是部分覆盖的知识库。先按问题取正文；只有需要机器处理的条件时，才读该页同名 JSON。[主题索引](topics.json)支持问题定位，[读取路径](reading-paths.json)把相关任务连起来，不要求整条路径全部加载。
-
-## 组文档与跨系统配置
-
-- 先判断操作对象：[文档、元素与属性的方法表](topics/groups/resource-operations.md)；并发冲突见[ETag与412](topics/groups/conditional-update.md)。
-- 构造请求与排错：[地址和命名空间](topics/groups/xcap-addressing.md)、[替换范围与409校验](topics/groups/xcap-write-validation.md)。
-- 持续跟踪文档变化：GMC先看[初始订阅](topics/groups/change-subscription.md)，随后[列表更新与NOTIFY](topics/groups/subscription-refresh.md)；服务端按角色选[MCS服务器订阅](topics/groups/server-subscription.md)或[组成组GMS订阅临时组](topics/groups/constituent-subscription.md)，不要混用身份与Request-URI。
-- 创建请求被拒：[建组地址、403 与 409](topics/groups/creation.md)。
-- 已知组 ID，要判断能读什么：[文档与成员表权限](topics/groups/document-access.md)。
-- HTTP 请求要访问另一服务商：[跨服务商转发](topics/groups/forwarding.md)。
-- MC/LMR 缺少组配置：[向谁获取](topics/interworking/group-configuration.md)；需要继续跟踪变化，再读[订阅与通知](topics/interworking/configuration-updates.md)。
-- 不确定 IWF 是什么或规范管到哪里：[LMR/IWF 范围](topics/interworking/scope.md)。
-
-- [跨系统重组边界](topics/interworking/regroup-boundaries.md)：接纳、用户信息和临时组所有权；语音兼容另见 [LMR 加密与编解码](topics/interworking/regroup-media.md)。
-
-组文档主题依据 Stage 3；互通配置主题依据 Stage 2。它们不是同一个完整协议状态机，不能直接把一侧的信息流名称当成另一侧的 HTTP 消息。
-
-- 互通组呼请求字段：[主叫身份与隐式话权](topics/interworking/group-call-request.md)，仅覆盖 Stage 2 信息要素。
-
-## 互通归属与呼叫
-
-按正在改变的状态选主题，不必依次读取整条链：
-
-- 改变组归属关系：先分清[逐用户与代理](topics/interworking/affiliation-representation.md)，按组定义方选[MC组](topics/interworking/affiliation-mc-group.md)或[LMR组](topics/interworking/affiliation-lmr-group.md)；多个组的成功与失败见[逐组结果](topics/interworking/affiliation-results.md)。
-- 预安排组呼中加入或结束：[晚加入](topics/interworking/late-entry.md)、[整体释放](topics/interworking/group-call-release.md)。
-- chat 组呼：[初建](topics/interworking/chat-initiation.md)、[进行中加入或回到覆盖](topics/interworking/chat-entry.md)、[释放及归属保留](topics/interworking/chat-release.md)。
-- 已取消归属，移除相应呼叫参与者：[取消归属后的退出](topics/interworking/deaffiliation-exit.md)。不能从单用户 leave 反推代理取消只影响一个人的归属；代理范围见上面的 MC 组主题。
-- 同一个 LMR 用户涉及多个活跃组：[同时互通呼叫及实现边界](topics/interworking/simultaneous-calls.md)。
-- 使用预配置方式重组：[配置来源组、实际重组及冲突](topics/interworking/preconfigured-regroup.md)，不要与§10.2.2重组混用。
-
-互通私呼单独选：[手动建立与振铃/接受](topics/interworking/private-manual.md)、[三种发起方的释放确认](topics/interworking/private-release.md)、[两类加密及密钥前提](topics/interworking/private-encryption.md)。不要套用组呼加入或释放路径。
-
-[话权信息流](topics/interworking/floor-signals.md)区分授予、占用、排队、取消及单播控制；这些状态不是呼叫释放。
-
-话权机制按问题选：[主控归属](topics/interworking/floor-control-owner.md)、[组请求本地过滤](topics/interworking/floor-filtering.md)、[无法通知旧发言者的覆盖](topics/interworking/floor-override.md)。本地预选通过不等于最终获授话权；私呼主控不能一概按组规则推定。
-
-## 互通安全
-
-[LMR安全消息运输](topics/interworking/lmr-security-transport.md)说明透明载荷如何承载；[加密语音转码](topics/interworking/encrypted-transcoding.md)说明媒体处理的密钥前提。运输成功不能证明密钥获取完成；这些主题也不构成完整安全实现。
-
-## 注册、SIP 路由与 EPS 信令
-
-按问题选读：[主系统认证与注册](topics/identity/primary-registration.md)、[注册器寻找及用户绑定](topics/signalling/registrar-routing.md)、[EPS 接入与信令 QoS](topics/network-policy/eps-signalling.md)。这组内容核对的是 TS23.280 V19.9.0 Stage2，不能推定与其他版本等同，也不是完整 REGISTER、分布式黏性或 5GS 映射方案。
-
-对话内请求另读 [SIP 对话标识及路由集](topics/signalling/dialog-routing.md)：外部 RFC 基线，不冒充已核完整 MCX profile。5GS 则读 [QFI、5QI 与 ARP](topics/network-policy/5gs-qos-model.md)，需要判断 GBR 失保留流时再读 [通知控制](topics/network-policy/5gs-notification-control.md)。
-
-伙伴系统另读[迁移授权及重定向门槛](topics/identity/migration-authorization.md)，返回或再迁移时读[旧伙伴去授权](topics/identity/migration-exit.md)。普通互联、用户迁移和 SIP 对话路由是不同问题；这条路径不保证进行中通话连续。
-
-## 身份、紧急行为与媒体业务
-
-以下为 Stage 1 的要求解释，不是可直接运行的协议实现。
-
-- [身份与认证前访问](topics/identity/authentication-boundary.md)：应用身份、选定预认证能力和授权边界。
-- [访问控制与终端禁用](topics/security/access-disable.md)：配置停用、暂时禁用和永久禁用的区别。
-- [功能别名共享与接管](topics/identity/functional-alias.md)：模式互斥、满额与授权接管。
-- [紧急告警、状态与组通信](topics/emergency/alert-state.md)：自动触发配置、状态持续及取消主体。
-- MCVideo：[发流许可](topics/mcvideo/transmission-admission.md)、[接受邀请与选流](topics/mcvideo/reception.md)、[无人接收的通知及可选暂停](topics/mcvideo/no-receivers.md)。分别判断每组发送上限和每用户接收上限。
-- [MCData 下载、已读与取消](topics/mcdata/delivery-evidence.md)：证据含义与取消范围。
-
-- [MCData 会话与历史](topics/mcdata/conversation.md)：并行会话、关联超时和回执权限。
-- [MCData 自动转发与接收邀请](topics/mcdata/transmission-options.md)：在网发送能力、大小上限与可选 TTL。
-
-- [在网取数与无其他归属成员](topics/mcdata/receiving-data.md)：近期邀请列表、通知后发送选择。
-- [在网终止通知](topics/mcdata/termination.md)：预告、原因和响应义务。
-- [离网私聊](topics/mcdata/off-network-private.md)：授权、距离和生命周期能力，不含建立协议。
-
-互通SDS的Stage2补充见[地址映射与代理回执](topics/interworking/sds-addressing.md)，不要把代理disposition当作终端已读。
-
-## 位置与网络策略
-
-单系统采集见[配置触发与按需上报](topics/location/report-acquisition.md)，持续跟踪见[组目标、通知及取消](topics/location/subscription-lifecycle.md)，恢复通信后的积压位置见[历史补报](topics/location/history-recovery.md)。
-
-单系统按需查询可先读[取得位置与回报的顺序](topics/location/on-demand-usage.md)，已核 V19.9.0；不据此升级下列其他版本摘要。
-
-[位置传播权限与保护要求](topics/location/privacy.md)已核对 Stage 1 原文，不能替代下列 Stage 2 机制核验。
-
-跨 MC/LMR 的 [查询与通知](topics/interworking/location-query.md)、[订阅](topics/interworking/location-subscription.md)、[取消订阅](topics/interworking/location-unsubscribe.md)已核对应 Stage 2 条款，可直接进入，无须先读基础位置页。反向订阅响应端点的图文冲突仍保留。
-
-进行中组呼另见[当前发言者位置](topics/interworking/talker-location.md)：话权与位置披露权限分别判断。
-
-以下三篇已核对所标明版本的官方原文：
-
-- [位置报告与组目标](topics/location/reporting.md)：取消订阅、当前归属、测量时间及 UE label 方向。
-- [位置触发覆盖与恢复](topics/location/trigger-override.md)：覆盖对象、期间新请求及恢复内容。
-- [Rx 临时拒绝与重试间隔](topics/network-policy/rx-retry.md)：等待义务和永久失败边界。
-
-## 能回答到哪里
-
-[来源清单](sources.json)固定规范版本、条款和核验范围；[覆盖状态](status.json)列出已收录页面。各页面已核对所列原文条款，但未验证完整协议实现。
-
-当前没有完整的注册认证、安全密钥、呼叫/媒体状态机、QoS/承载映射和各服务 off-network 实现知识。不能从某个子主题推出这些路径已经覆盖。位置配置取消的字段集合在 TS23.280 V19.10.1 表10.9.2.1-1与§10.9.3.4之间仍有措辞差异，本目录保留差异，不据此规定可直接编码的取消载荷。
-
-Release 19 的条款不得静默用于其他 Release；缺失主题不是“规范没有要求”。
-
-接入安全补充：[HTTP-1 与 SIP-1](topics/security/access-transport.md)已核 TS33.180 V19.4.0 的选定条款；外部安全 profile 尚未完整核验；应用令牌的已核部分见下方主题，不代表完整实现验收。
-
-## 认证到私呼保护的按需路径
-
-[原生客户端取令牌](topics/identity/native-authentication.md)解释客户端登记、授权码和PKCE；[服务授权与身份绑定](topics/identity/service-authorization.md)回答无token能否注册及逐条位置授权；[令牌刷新](topics/identity/token-refresh.md)限定scope与grant类型。随后按问题选择[KMS密钥获取](topics/security/kms-provisioning.md)或[在网私呼PCK分发](topics/security/private-key-distribution.md)。密钥交换成功不是业务准入或媒体连通证明。
-
-### 伙伴域和组密钥
-
-按问题选择：[伙伴令牌交换](topics/identity/partner-token-exchange.md)、[GMK下发校验](topics/security/group-key-distribution.md)、[成员移除与删钥](topics/security/group-key-membership.md)。三者分别处理授权、密钥接收和成员变化，不能彼此替代。
-
-密钥取得之后，可按问题查看[UE保存与清理](topics/security/ue-key-lifecycle.md)或[组媒体与控制保护边界](topics/security/group-media-control.md)。
-
-### 信令与MCData保护
-
-[信令密钥更新](topics/security/signalling-key-update.md)说明CSK替换与MuSiK拒绝后的信令回退；[XML保护](topics/security/xml-protection.md)区分保护范围和服务器可见性；[MCData保护层次](topics/mcdata/security-layers.md)区分信令密钥和用户payload端到端密钥。
-
-### 配置与通话状态
-
-[预选和活动配置切换](topics/identity/profile-selection.md)区分下次授权生效与当前服务状态清理；[多发言者和预配置重组](topics/security/group-call-media-boundaries.md)说明混音位置和既有GMK前提；[KMS重定向](topics/security/kms-redirection.md)说明政策和信任边界，并保留原文疑义。
-
-[取得主系统或伙伴配置](topics/identity/profile-acquisition.md) → [更新数据](topics/identity/profile-update.md) → [选择生效配置](topics/identity/profile-selection.md)组成用户配置路径。三步的成功不能互相代替。
-
-### 组协议的读取与重组
-
-[默认不取成员表](topics/groups/memberlist-free-retrieval.md)、[临时组检查与通知](topics/groups/temporary-group-lifecycle.md)、[GKTP访问边界](topics/groups/gktp-access.md)分别说明读取范围、形成/拆除条件和密钥资源授权。均限定TS24.481 V19.3.0，不把成功响应扩写为事务或媒体成功。
-
-组协议排障继续看[代理至组拥有方的授权](topics/groups/subscription-proxy.md)和[未知XML条件处理](topics/groups/unknown-extensions.md)；[权限页](topics/groups/document-access.md)同时列出资源联动及所有者仍受限制的操作。
-
-HTTP 请求的入口与身份可分别读取[TLS 端点](topics/identity/http-transport-endpoints.md)和[发送者身份分支](topics/identity/http-sender-identity.md)，再进入具体资源授权。两页限定 TS24.482 V19.0.0，不代表后续版本。
-
-需要消息顺序时，查[IdM授权与令牌端点](topics/identity/idm-protocol-sequence.md)；参数安全约束仍在原生认证页，响应字段差异单列，不用流程概述覆盖条件。
-
-### 私呼被叫的业务结果
-
-密钥分发后可续读[拒绝、应答与取消](topics/calls/private-client-acceptance.md)及[模式选择](topics/calls/commencement-selection.md)。这些 TS24.379 V19.4.0 客户端步骤区分 MIKEY失败、用户拒绝、振铃与最终响应；服务器授权和媒体全流程仍未完整覆盖。
-
-私呼服务器链可从[主叫授权与路由](topics/calls/originating-authorization.md)进入，按问题续读[控制功能的响应含义](topics/calls/control-routing-results.md)、[被叫侧授权](topics/calls/terminating-authorization.md)或[first-to-answer选择与清理](topics/calls/first-to-answer-selection.md)。媒体缓冲条件下存在200/Unconfirmed，不能仅凭200认定被叫已应答。
-
-私呼后续处理可按问题继续：[别名解析与300](topics/calls/functional-alias-selection.md)、[转发触发](topics/calls/forwarding-trigger-limits.md)与[MESSAGE路由](topics/calls/forwarding-message-routing.md)、[取消紧急优先级](topics/emergency/private-downgrade.md)、[结束信令](topics/calls/release-signalling.md)、[无话权控制](topics/calls/without-floor-control.md)。这些页面保留各分支条件，不把信令成功等同于接通或全部资源释放。
-
-判断私呼是否完成某一步，可查[回呼确认](topics/calls/callback-confirmation.md)、[转发客户端续呼](topics/calls/forwarding-client-reorigination.md)与[结果报告](topics/calls/forwarding-client-results.md)、[紧急升级](topics/emergency/private-upgrade.md)、[服务器释放链](topics/calls/server-release-chain.md)。每页按消息、角色和当前状态限定成功含义。
-
-普通预安排组呼可从[发起寻址](topics/groups/prearranged-origination.md)进入，按需核对[成员、归属与权限](topics/groups/prearranged-admission.md)、[已有会话加入许可](topics/groups/join-authorization.md)、[确认与人数门槛](topics/calls/group-acknowledged-start.md)、[超时或拒绝](topics/calls/group-acknowledgement-failure.md)、[释放定时器](topics/calls/group-release-timers.md)和[隐式话权请求](topics/calls/implicit-floor-request.md)。这条路径区分准入、信令应答、媒体与话权，不把组密钥或单个成功码当成完整接通证明。
-
-组呼被邀请侧可从[参与功能寻址与检查](topics/calls/group-terminating-addressing.md)进入，按需读[模式与预建立选择](topics/calls/group-terminating-mode.md)、[客户端接收与应答](topics/groups/terminating-client-acceptance.md)或[183、PRACK、200的含义](topics/calls/group-terminating-responses.md)。客户端手动183与参与功能自动Unconfirmed不是同一个条件，单腿Confirmed也不证明全组完成。
-
-## 显式归属与加入进行中组呼
-
-从[兴趣组PUBLISH](topics/groups/explicit-affiliation-publish.md)请求建立或刷新，[SUBSCRIBE/NOTIFY](topics/groups/explicit-affiliation-observation.md)用于观察结果。部分[退组请求](topics/groups/explicit-deaffiliation-request.md)必须保留其他兴趣组；[服务器撤销状态](topics/groups/explicit-deaffiliation-state.md)说明失败清理及同用户多客户端的未闭合处。PUBLISH200不能单独证明逐组变更成功。
-
-已归属后，按[组ID加入及服务器late entry](topics/groups/active-call-entry.md)或[已有会话身份重入](topics/groups/rejoin-session.md)选择入口；两者还须通过各自通话准入。本文不把归属成功、被邀请与通话已建立合成一个状态。
-
-## 归属后如何观察和退出通话
-
-- [请求触发隐式归属的资格](topics/groups/implicit-affiliation-eligibility.md)与[候选记录及结果处理](topics/groups/implicit-affiliation-state.md)。
-- [订阅会话参与者状态](topics/groups/conference-state.md)，需要合并增量通知时读[版本与合并规则](topics/groups/conference-state-merge.md)。
-- [主动退出本次组呼](topics/calls/group-participant-leave.md)与[服务器移除参与者](topics/calls/group-participant-removal.md)。
-
-归属状态、会话名单、呼叫接受和媒体可用性分别判断，不用一个200响应代替所有结果。
-
-## 预建立与业务会话
-
-- [建立、空闲修改和拆除](topics/calls/preestablished-session-lifecycle.md)
-- [预建立承载组呼：REFER、Contact 与通知](topics/calls/preestablished-group-association.md)
-
-## 普通在网 Chat
-
-[按需加入入口](topics/calls/chat-ondemand-entry.md)与[控制侧准入](topics/groups/chat-ondemand-control.md)分开判断；已有对话见[会话更新](topics/calls/chat-existing-session-update.md)，离开或移除见[释放链](topics/calls/chat-participant-release.md)。这些是原生 Stage 3 程序，不替换 MC/LMR 互通主题。
-
-### 媒体控制与话权证据
-
-- [预建立 Connect 与客户端接受](topics/calls/mcpc-connect-evidence.md)
-- [Disconnect、超时与保留承载](topics/calls/mcpc-disconnect-evidence.md)
-- [入会、请求与授予](topics/calls/floor-participant-entry-request.md)
-- [排队确认、撤销与释放](topics/calls/floor-participant-queue-release.md)
-
-限 TS24.380 V19.1.0 指定分支；SIP成功、媒体收到、用户接受与发送许可不能互相替代。
-
-### 服务器话权决策
-
-先读[状态所有者](topics/calls/floor-state-ownership.md)，再按问题选择[空闲请求](topics/calls/floor-server-idle-request.md)、[他人持有时的排队](topics/calls/floor-server-queue-admission.md)、[取消与释放后选择](topics/calls/floor-server-release-selection.md)，或[授予后的媒体计时](topics/calls/floor-server-media-timers.md)。规范的条件衔接问题在对应页保留，不以推测补成实现算法。
-
-### SDS 协议路径与回执证据
-
-[发送准入与控制面/媒体面选择](topics/mcdata/sds-transmission-selection.md)区分大小上限与分流阈值；[回执时序与原消息关联](topics/mcdata/sds-disposition-timing.md)区分 SIP 响应、送达、已读和未送达。依据 TS24.282 V19.7.0 指定 Stage 3 分支；普通服务器路径见下文；媒体交付及配置依赖仍按页注明。
-
-### MCVideo 客户端发送与接收
-
-[发送控制](topics/mcvideo/participant-transmission-control.md)区分请求、排队、授予及结束；[接收控制](topics/mcvideo/participant-reception-control.md)区分来流通知、自动许可、主动接收与单源结束。依据 TS24.581 V19.2.0 指定 Stage 3 分支，不代表完整 MCVideo 信令或服务器策略。
-
-### MCVideo 服务器发送授权与接收筛选
-
-[发送仲裁](topics/mcvideo/server-transmission-grant.md)连接请求、源标识、许可与无人接收；[接收仲裁和用户接口](topics/mcvideo/server-reception-permission.md)说明普通组手动模式、按 SSRC 筛选以及停止下行。客户端和服务器的同名状态不共用实例；普通组不能依据客户端 Mode=0 分支自行选择自动模式。限 TS24.581 V19.2.0 所列分支，内部路由及编码疑义未以猜测补全。
-
-### SDS 服务器准入与通知
-
-按问题选择[身份与私聊准入](topics/mcdata/sds-server-identities-and-private-admission.md)、[普通组文档与归属](topics/mcdata/sds-group-controller-admission.md)或[路由及202/200](topics/mcdata/sds-server-responses-and-routing.md)。通知另经[参与功能路由与暂存](topics/mcdata/sds-notification-routing.md)、[控制功能关联与聚合](topics/mcdata/sds-disposition-aggregation.md)。TDC1窗口到期允许聚合发送，不证明全员成功；普通原请求与回执的SIP事务不能合并解释。
-
-### MCVideo 计时与源终止
-
-[发送/接收空闲](topics/mcvideo/server-idle-timers.md)区分T1、T2和T5；[排队授予重传](topics/mcvideo/server-queued-grant-retry.md)说明T4达到上限仍保留Taken；[无人接收源的终止](topics/mcvideo/server-stream-idle-termination.md)连接T11、结束命令、T3宽限及确认。默认值可配置；源终止、停止转发和通话释放分别判断。
-
-### MCData XML的先行安全处理
-
-[启用范围与配置默认](topics/mcdata/xml-protection-activation.md)、[入站验证及139/140](topics/mcdata/xml-inbound-validation.md)、[复制和出口重加密](topics/mcdata/xml-server-forwarding.md)分别回答发送前、业务处理前和服务器转发时的问题。身份绑定成功不能替代密码验证；XML、TLV及用户数据保护分别判断。
-
-### SDS 按需媒体面的信令与结果
-
-超过控制面阈值后，按[INVITE与SDP建链](topics/mcdata/sds-media-session-setup.md)、[建链和传输证据](topics/mcdata/sds-media-setup-and-transfer-evidence.md)、[结果BYE与资源释放](topics/mcdata/sds-media-result-and-release.md)选择问题。TS24.282指定的媒体接口不展开TS24.582内部成功判据，不能据此断言全组数据交付已核；用户主动释放也不无条件替代自动结果收尾。
-
-### MCData TLV信令与用户Data
-
-[逐段信令保护](topics/mcdata/tlv-signalling-hop-protection.md)说明PF/CF如何按各段条件处理；[用户Data与客户端验证](topics/mcdata/protected-data-client-verification.md)说明服务器安全透明转发和客户端签名职责。两类内容不可互换，CPK/CSK原文差异仍待裁决。
-
-### HTTP 文件分发的接收与可用期
-
-从[分段响应与实际文件取得](topics/mcdata/fd-http-file-and-signalling-evidence.md)区分URL、SIP成功和下载成功；按[自动/接受/延期及完成通知](topics/mcdata/fd-download-decision-and-completion.md)处理用户决定，再看[文件可用期与删除条件](topics/mcdata/fd-file-availability-and-expiry.md)。等待用户的TDU2和文件可用期TDC2不互相续期，过期通知也不证明文件已被物理删除。
-
-### MCData 注册、授权绑定与设置
-
-[REGISTER/PUBLISH入口](topics/mcdata/service-authorization-entry.md)区分能力标签和授权请求；[绑定建立与并发上限](topics/mcdata/service-authorization-binding.md)说明多client及处理顺序；[设置刷新和退出](topics/mcdata/service-settings-validity.md)连接后续SDS有效绑定检查。设置Expires不等于令牌或绑定寿命，200响应也不证明后续隐式归属全部完成。
-
-### 观察设置与验证 CSK 更新
-
-[设置订阅](topics/mcdata/service-settings-observation.md)按同一用户及client标识获取通知，不把SUBSCRIBE取消当作服务退出。[CSK下载验证](topics/mcdata/csk-key-download-validation.md)要求匹配服务PF、验签并成功提取后才替换该PF关联密钥；服务器切换确认和失败恢复的完整时序仍未核。
-
-### 发送额度与 SDS session 的独立门槛
-
-[FD大小准入](topics/mcdata/fd-size-admission.md)区分文件上限与单次额度，以及PF/CF各自责任；组HTTP的同一403/208不唯一对应一个根因。[SDS session准入](topics/mcdata/sds-session-admission.md)保留later-use的双方发送许可和组服务元素缺失时的拒绝，不能套用单条standalone SDS媒体传输流程。
-
-### MCVideo 私呼从信令到媒体许可
-
-[客户端邀请和应答](topics/mcvideo/private-call-client-signalling.md)、[服务器逐段准入和响应](topics/mcvideo/private-call-server-admission.md)使用TS24.281 V19.3.0普通单ID按需私呼。再从[会话与媒体许可边界](topics/mcvideo/session-media-permission-boundary.md)进入既有TS24.581 V19.2.0发送/接收状态机；200、PCK、SDP控制通道和隐式请求均不能单独证明发送或接收许可。
-
-### SDS session 的建立与逐消息证据
-
-[建立入口](topics/mcdata/sds-session-establishment.md)说明双向媒体协商和两端交接事件；[分段响应与参与者](topics/mcdata/sds-session-responses-and-participants.md)区分目标应答、全组加入和后来归属；[消息证据](topics/mcdata/sds-session-message-evidence.md)连接业务 UUID、释放后回执和未核媒体依赖。不能把 session 建立 200 当作单条数据送达。
-
-### IP Connectivity
-
-[目标与准入](topics/mcdata/ipconn-target-and-admission.md)说明如何从目标 IP 信息取得业务标识及角色权限；[服务器路径](topics/mcdata/ipconn-server-path.md)区分用户、下一跳和会话身份；[媒体与结果证据](topics/mcdata/ipconn-media-and-success-evidence.md)限定 200、ACK、应用字段和失败 BYE 的含义。本版双客户端在网过程明确不兼容 Rel16，未展开媒体规范内部实现。
-
-### MCVideo 私呼释放
-
-[客户端BYE](topics/mcvideo/private-call-client-release.md)区分停流和信令判定后的资源回收；[服务器逐段释放](topics/mcvideo/private-call-server-release.md)说明各段200、私呼策略及未消解的原文错引。不能将某一段200或某个源停止发送视为全部会话已释放。
-
-### Message Store
-
-[访问与对象](topics/mcdata/message-store-access-and-objects.md)区分客户端认证与服务器存入；[文件落点](topics/mcdata/message-store-file-locality.md)说明 retrieveFile 缺省获取和重复 retrieve 的结果；[通知同步](topics/mcdata/message-store-notification-sync.md)区分创建通道、变更订阅和本地对象更新。这里的文件“本地保存”指 Message Store，不是用户终端。
-
-### 通信存储启停
-
-[控制请求](topics/mcdata/message-store-control-request.md)、[PF准入](topics/mcdata/message-store-control-admission.md)与[执行结果](topics/mcdata/message-store-control-result.md)解释获准范围、全体开关和指定名单，以及200的含义。停用不是删除历史对象；指定名单body的原文差异尚未裁决。
-
-### 普通 MCVideo 预安排组呼
-
-[发起与准入](topics/mcvideo/prearranged-call-admission.md)连接组文档、归属和发起许可；[终接应答](topics/mcvideo/prearranged-call-terminating.md)解释模式、183和PRACK；[建立结果](topics/mcvideo/prearranged-call-setup-result.md)分开 required 成员、TNG1、缓冲支持与媒体许可，不把某个200当全员已接听。
-
-### MCData 功能别名客户端
-
-- [功能别名观察：变更前订阅与当前状态查询](topics/mcdata/functional-alias-observation.md)
-- [功能别名变更：PUBLISH、续期与位置约束](topics/mcdata/functional-alias-change-request.md)
-- [功能别名结果：PUBLISH 200、NOTIFY 与后续归属](topics/mcdata/functional-alias-state-evidence.md)
-
-### MCVideo 进入已有组呼
-
-- [MCVideo重入：session identity寻址、加入许可与TC边界](topics/mcvideo/rejoin-session.md)
-- [MCVideo按组ID进入已有呼叫：join检查与Warning123](topics/mcvideo/active-call-entry.md)
-- [MCVideo服务器主动晚进入邀请：触发、接受与媒体许可](topics/mcvideo/server-late-entry.md)
-
-### MCData 功能别名服务器与结果回流
-
-- [功能别名服务器准入：用户身份、owner 许可与两段 200](topics/mcdata/functional-alias-server-admission.md)
-- [功能别名状态回流：owner 订阅、匹配状态与请求关联](topics/mcdata/functional-alias-owner-observation.md)
-- [功能别名失效与对外结果：发布失败、到期和通知边界](topics/mcdata/functional-alias-lifecycle-results.md)
-
-### MCVideo 会议状态
-
-- [MCVideo会议状态订阅：会话寻址、授权、转发与终止](topics/mcvideo/conference-subscription.md)
-- [MCVideo会议状态通知：何时发送、字段含义与成功证据](topics/mcvideo/conference-state-notification.md)
-
-### MCData 功能别名目标SDS
-
-- [向功能别名发送 SDS：解析选人、300 与直接 ID 重发](topics/mcdata/sds-functional-alias-target-routing.md)
-- [SDS 别名解析：owner 查询、当前状态与协议缺口](topics/mcdata/sds-functional-alias-resolution.md)
-
-### MCVideo 组成员离开与全组释放
-
-- [MCVideo组成员离开：BYE不等于全组结束](topics/mcvideo/group-participant-leave.md)
-- [MCVideo全组释放：五项策略、TNG3和公共BYE边界](topics/mcvideo/group-release-policy.md)
-
-### MCData 显式归属与组观察
-
-- [MCData 显式归属变更：完整兴趣列表、刷新与撤销](topics/mcdata/explicit-affiliation-request.md)
-- [MCData 归属结果：先启动观察，再区分 200、状态与请求关联](topics/mcdata/explicit-affiliation-observation.md)
-- [MCData group dynamic：独立组观察，不是归属或会话参加证明](topics/mcdata/group-dynamic-observation.md)
-
-
-### 普通视频chat怎样新建或加入，何时归属和获得发送许可？
-
-- [MCVideo普通chat入口：客户端寻址、PF准入与隐式归属结果](topics/mcvideo/chat-ondemand-entry.md)
-- [MCVideo普通chat控制侧：资格、初建/已有分支与媒体许可](topics/mcvideo/chat-ondemand-admission.md)
-
-### 归属请求怎样到组owner，哪些通知可以确认结果？
-
-- [MCData 显式归属到组 owner：聚合记录、成员检查与接受边界](topics/mcdata/explicit-affiliation-owner-admission.md)
-- [MCData owner 状态回流：独立订阅、匹配确认与缺席条件](topics/mcdata/explicit-affiliation-owner-state.md)
-- [MCData 归属失败与结果回到客户端：清理范围及期限边界](topics/mcdata/explicit-affiliation-lifecycle-results.md)
-
-### MCVideo chat离开与存续
-
-- [MCVideo chat离开与移除：BYE确认不等于全组结束](topics/mcvideo/chat-participant-leave.md)
-- [MCVideo chat存续：三项释放条件与可选组时长](topics/mcvideo/chat-release-policy.md)
-
-
-### MCData 配置归属与普通发送
-
-- [MCData 配置触发隐式归属：候选组、N2 与 owner 结果](topics/mcdata/configured-implicit-affiliation.md)
-- [MCData 隐式归属边界：普通发送、请求型提交与退出不能混用](topics/mcdata/implicit-affiliation-entry-and-lifecycle-boundaries.md)
-
-
-### MCVideo 普通在网广播
-
-- [MCVideo在网广播发起：指示字段、服务准入与邀请范围](topics/mcvideo/broadcast-ondemand-admission.md)
-- [MCVideo广播自动接听与缓冲结果：Unconfirmed 200不证明收看](topics/mcvideo/broadcast-auto-setup-result.md)
-- [MCVideo广播媒体角色：发起者发送、接收者Mode0与拒绝反向发送](topics/mcvideo/broadcast-media-roles.md)
-
-
-### MCData 紧急告警与自身取消
-
-- [MCData 紧急告警发起：用户许可、目标组与本地状态](topics/mcdata/emergency-alert-origination.md)
-- [MCData 告警准入与结果：请求型隐式归属、CF 接受和成员通知](topics/mcdata/emergency-alert-admission-and-results.md)
-- [MCData 自身告警取消：独立许可、匹配反馈与不回滚归属](topics/mcdata/emergency-alert-self-cancellation.md)
-
-
-### MCVideo 广播结束链
-
-- [MCVideo广播退出与发送结束：BYE、CF策略和发送侧状态](topics/mcvideo/broadcast-call-exit.md)
-- [MCVideo广播接收结束：停止单源为何还会进入Call releasing](topics/mcvideo/broadcast-reception-ending.md)
-
-
-### MCData 已有组会话的客户端紧急条件
-
-- [MCData 组会话客户端升级：权限、待确认状态与 149/INFO](topics/mcdata/group-emergency-client-upgrade.md)
-- [MCData 组会话客户端取消：紧急条件、告警与对端状态分开判断](topics/mcdata/group-emergency-client-cancellation.md)
-
-MCVideo授权与设置：[共享注册、服务授权及多client绑定](topics/mcvideo/service-authorization.md)、[设置有效期、退出和私呼准入](topics/mcvideo/service-settings-validity.md)、[CSK更新](topics/mcvideo/csk-key-update.md)。
-
-SDS服务器释放：[无预告释放与归属边界](topics/mcdata/session-server-release.md)、[预告、剩余量与延期结果](topics/mcdata/session-release-extension.md)。
-
-MCVideo显式归属：[完整组集与结果观察](topics/mcvideo/explicit-affiliation-request.md)、[用户侧候选状态和N2](topics/mcvideo/explicit-affiliation-serving-state.md)、[组所有者确认与续期边界](topics/mcvideo/explicit-affiliation-owner-confirmation.md)。
-
-MCVideo隐式归属：[业务候选的建立、完成及取消](topics/mcvideo/implicit-affiliation-lifecycle.md)、[配置触发、N2与owner结果](topics/mcvideo/configured-implicit-affiliation.md)。
-
-HTTP FD控制：[主叫终止](topics/mcdata/http-fd-originator-termination.md)、[服务器停止与文件通知](topics/mcdata/http-fd-server-stop.md)、[预告和延期](topics/mcdata/http-fd-release-extension.md)。
-
-MCVideo组动态数据：[订阅授权与路由](topics/mcvideo/group-dynamic-subscription.md)、[通知字段及与conference的区别](topics/mcvideo/group-dynamic-notification.md)。
-
-MCData授权参与者释放：[媒体通信](topics/mcdata/authorized-user-media-release.md)、[HTTP文件分发](topics/mcdata/authorized-user-http-release.md)、[预告及延期决定边界](topics/mcdata/authorized-user-release-intent-and-decision.md)。
-
-### MCVideo 紧急告警与已有组会话
-
-[独立告警](topics/mcvideo/emergency-alert-message.md)区分用户许可、CF准入与接收确认；已有预安排会话的[本人升级和取消](topics/mcvideo/emergency-session-client-path.md)与[CF状态、告警及TNG2](topics/mcvideo/emergency-session-control.md)分别处理。通话状态改变、告警结果和媒体许可不能相互替代。
-
-### MCData 预建立会话
-
-先看[共享资源与准入](topics/mcdata/pre-established-session-admission.md)，再按需读[私聊SDS的REFER与建立结果](topics/mcdata/pre-established-private-sds-use.md)或[离开业务与销毁预建立会话](topics/mcdata/pre-established-leave-and-release.md)。预建立200、REFER200、具体业务建立和逐消息送达是不同证据。
-
-### 一对一通信中的紧急条件
-
-MCData 已有私聊 SDS 会话按问题读[PF转发](topics/mcdata/private-emergency-server-forwarding.md)、[CF升级](topics/mcdata/private-emergency-server-upgrade.md)和[CF取消](topics/mcdata/private-emergency-server-cancellation.md)。这些one-to-one入口不补齐组re-INVITE的服务器路径。
-
-MCVideo 已有私呼按问题读[客户端升级](topics/mcvideo/private-emergency-client-upgrade.md)、[本人取消和对端](topics/mcvideo/private-emergency-client-cancellation.md)与[PF/CF服务器路径](topics/mcvideo/private-emergency-server-path.md)。紧急通话、附带告警和媒体结果分别判断；规范错引与未闭合字段保持可见。
-
-### SDS 的 MSRP 响应与业务回执
-
-TS24.582 V19.0.0 的有限媒体行为另读[服务器200与终端交付](topics/mcdata/sds-msrp-response-boundary.md)、[standalone收尾](topics/mcdata/sds-msrp-standalone-release.md)和[session带内通知](topics/mcdata/sds-session-inband-notification.md)。CF的响应先于转发，来源侧成功响应不能证明全组收齐或已读。这些主题独立保留媒体规范版本，不表示与TS24.282 V19.7.0的全部接口映射已验证。
-
-### 离网SDS与IPCONN媒体
-
-离网SDS分别查看[重发次数](topics/mcdata/offnetwork-sds-retransmission.md)、[接收与已读等待](topics/mcdata/offnetwork-sds-reception-and-read.md)和[通知独立重发](topics/mcdata/offnetwork-sds-notification-retry.md)。这些UDP离网过程不使用在网MSRP的成功判据。
-
-普通直接IPCONN另见[隧道、逐跳中继与IP交付](topics/mcdata/ipconn-tunnel-and-delivery.md)、[信令及失败边界](topics/mcdata/ipconn-media-and-success-evidence.md)和[服务器释放](topics/mcdata/session-server-release.md)。源端口语法差异和媒体失败/销毁接口缺口保持可见，不据SIP200宣称应用成功。
+本目录仅部分覆盖 MCX Release 19。它按业务问题解释职责、条件、流程与规范依据，不是完整协议实现或互通认证。先查问题所在业务域，再读命中的主题，无须按本页顺序阅读或加载整库。
+
+## 从问题进入
+
+- **找某项行为或响应含义：**从下表选择业务域；域索引列出问题、主题正文、结构化记录及来源。
+- **需要连接几个步骤：**查[按问题组织的阅读路径](reading-paths.json)，仅在所列条件满足时继续下一页；相关主题不是必经流程。
+- **想判断能回答到哪里：**查[覆盖边界](coverage.md)，区分已能回答的问题、只到条件或接口的部分和尚未建立的结论。机器可读形式见 [coverage.json](coverage.json)。
+- **不知道属于哪个域：**查[业务域目录](domains.json)或[全量主题索引](topics.json)。[收录状态](status.json)用于核对已收录页面，不代表 Release 已完成。
+
+| 问题所在领域 | 查什么、注意什么 |
+| --- | --- |
+| [MCPTT 通话与话权](topics-calls.json) | 私呼、预安排组呼、chat、预建立会话、加入与释放；普通、优先撤销、多发言者、双话权（含同一获准者再次请求的有限D回应及原主路退出接续）及有限离网路径（排队主链另须判为非抢占，查询/等待出口按事件读取）。先分清呼叫控制与话权、客户端与服务器状态。 |
+| [组管理与 MCPTT 组呼入口](topics-groups.json) | 组文档、XCAP 方法与权限、并发修改、订阅、显式/隐式归属和会议状态；文档权限、归属与入呼许可分别判断。MCData、MCVideo 专有归属到各自业务域查。 |
+| [MCData 数据业务](topics-mcdata.json) | SDS、HTTP/媒体面 FD、IP Connectivity、MBMS 公告、有限 MBS 组播接收意愿反馈、Message Store、功能别名，以及本业务授权、设置、归属、保护、紧急条件和释放。先区分在网与离网、控制面与媒体面、单条消息与会话。 |
+| [MCVideo 视频业务](topics-mcvideo.json) | 私呼、预安排组呼、chat、广播、video pull/push、有限离网自动/手动私呼和普通组呼探测、自动或需用户应答的有限加入及BASIC同类型条件合并；本业务授权、归属、会议/组动态观察、发送接收许可、紧急条件和释放。不套用 MCPTT 话权规则。 |
+| [身份、注册与配置](topics-identity.json) | 身份认证、SIP 注册、服务授权、令牌、HTTP 身份、伙伴系统迁移和用户配置取得/更新/切换。各步骤的成功不能互相代替。 |
+| [安全与密钥](topics-security.json) | 接入保护、KMS、私呼/组密钥、成员变化、保存清理及信令/媒体保护。取得密钥不等于业务准入或媒体连通。 |
+| [MCX 与 LMR 互通](topics-interworking.json) | IWF 范围、组配置与归属、重组、组呼/私呼、SDS 映射、话权和位置。Stage 2 信息流不是原生 MCX Stage 3 消息配方。 |
+| [位置服务](topics-location.json) | 位置获取、报告、订阅、取消、历史补报与传播权限。当前归属、测量时间和报告可用信息分别判断；跨 MC/LMR 位置到互通域查。 |
+| [网络策略与 QoS](topics-network-policy.json) | EPS 信令、Rx 重试与 MCData 预建立共享边界、5GS 的 QFI/5QI/ARP、GBR 通知、MCPTT 资源模型和通用 N5 创建、更新、终止及GBR目标变化通知。资源结果不是话权或媒体交付结果；[MCData 预建立共享](topics/network-policy/mcdata-preestablished-resource-sharing-boundary.md)的注册、Rx绑定和执行证据也须分开。 |
+| [SIP 路由](topics-signalling.json) | 注册器寻找及用户绑定、对话标识、remote target 与 route set。RFC 基线不等于完整 MCX SIP profile。 |
+| [紧急与优先状态](topics-emergency.json) | 通用紧急要求和 MCPTT 私呼升级/降级；MCData、MCVideo 的专有告警与取消须回到各自业务域，不跨业务搬用规则。 |
+
+## 几类容易选错的入口
+
+- **已入会，为什么还不能发送？**MCPTT 先看[话权状态所有者](topics/calls/floor-state-ownership.md)；MCVideo 看[会话与媒体许可](topics/mcvideo/session-media-permission-boundary.md)。在网双话权、多发言者和离网仲裁不是同一状态机，分别查[双话权](topics/calls/dual-floor-entry-and-media.md)、[多发言者](topics/calls/multi-talker-admission-and-media.md)和[离网话权入口](topics/calls/offnetwork-floor-entry.md)。
+- **收到成功响应，数据真的送到了吗？**SDS 先查[响应、送达与已读](topics/mcdata/sds-disposition-timing.md)；HTTP 文件查[信令与实际取得文件](topics/mcdata/fd-http-file-and-signalling-evidence.md)；媒体面 SDS 查[MSRP 响应与终端交付](topics/mcdata/sds-msrp-response-boundary.md)；媒体面 FD 的[有条件完成通知](topics/mcdata/fd-media-reception-and-signalling-report.md)另分 PF 完成事件、非聚合路由、CF 202 与原主叫实际收到。不要把服务器响应、下载、阅读或应用完成合成一个结果。
+- **归属、会话名单和通话接受有什么区别？**MCPTT 查[归属结果观察](topics/groups/explicit-affiliation-observation.md)及[会议通知合并](topics/groups/conference-state-merge.md)；MCData、MCVideo 在本业务域中查“归属”和“conference/group dynamic”。PUBLISH 200 或一份成员名单不证明已经参加通话。
+- **一个参与者退出，会不会结束整场通信？**MCPTT 查[组呼参与者退出](topics/calls/group-participant-leave.md)；MCVideo 查[组成员离开](topics/mcvideo/group-participant-leave.md)；MCData 查[授权参与者释放](topics/mcdata/authorized-user-media-release.md)。停止单源、单腿 BYE、整场释放和资源回收分开判断。
+- **离网如何建立并取得本地许可？**MCPTT 从[普通组呼探测与建立](topics/calls/offnetwork-group-probe-and-start.md)进入，成功建呼后才按条件查[话权竞争](topics/calls/offnetwork-floor-request-contention.md)；已判非抢占的排队与移交另看[逐角色事件](topics/calls/offnetwork-floor-queue-and-handoff.md)，排队后的查询与等待另看[条件出口](topics/calls/offnetwork-floor-queue-query-and-exit.md)；MCVideo 按模式区分[自动私呼](topics/mcvideo/offnetwork-private-auto-setup.md)、[手动等待与应答](topics/mcvideo/offnetwork-private-manual-answer.md)及[普通组呼探测及无需用户确认加入](topics/mcvideo/offnetwork-group-probe-and-join.md)，组呼终接需用户应答时另查[S4/S5](topics/mcvideo/offnetwork-group-user-confirmation.md)，公告回应和本地离开另按[对应条件](topics/mcvideo/offnetwork-group-announcement-and-leave.md)读取，参与中遇到同组另一BASIC呼叫时查[条件合并](topics/mcvideo/offnetwork-group-merge.md)；MCData 查[离网 SDS](topics/mcdata/offnetwork-sds-retransmission.md)。这些入口不能拼成通用离网实现，也不证明唯一仲裁者或全员接收。
+- **5GS 分配成功能否证明业务成功？**先区分[MCPTT Stage 2 资源模型](topics/network-policy/mcptt-5gs-server-resource-request.md)与[通用 N5 Stage 3 授权结果](topics/network-policy/n5-authorization-result-boundary.md)。通用 API 不证明 MCX 已绑定该接口，201、逐流通知和媒体可用性也不是同一证据。[GBR目标变化通知](topics/network-policy/n5-gbr-qos-notification.md)另区分不再保证、恢复保证与受影响流，不等于媒体恢复。已有上下文的[更新](topics/network-policy/n5-session-update.md)与[终止/删除](topics/network-policy/n5-session-termination.md)另按事件读取，响应不等于承载执行完成。
+
+## 读取条件、版本与证据
+
+先读命中主题的正文；需要机器处理时，再读同名 JSON。每条 claim 继承该主题全部 `common_conditions`，并叠加自己的 `conditions`。角色、当前状态、触发事件、例外和证据边界不得在摘取时丢失。
+
+Stage 1 是业务要求，Stage 2 是架构或信息流，Stage 3 是协议程序；它们不能互相替代。各页的 `standard_stage`、固定来源及具体条款决定结论范围。多来源页面按每条 `source_id` 或 `source_references` 追溯，不能把主来源的版本和页码套给其他来源。
+
+本目录同时使用下列固定快照，详细条款、发布者、URL 及核验范围见[来源清单](sources.json)。表中并列不表示已经验证组合互通，也不表示整部规范已经读完。
+
+| 用途 | 固定规范版本 |
+| --- | --- |
+| 通用、视频及数据业务要求 | TS 22.280 V19.7.0；TS 22.281 V19.0.0；TS 22.282 V19.0.0 |
+| 公共架构与位置 | TS 23.280 V19.9.0、V19.10.1，按各主题分别适用，不以较新版本覆盖较旧结论 |
+| MCX/LMR 互通 | TS 23.283 V19.5.0 |
+| MCPTT 通话与媒体控制 | TS 24.379 V19.4.0；TS 24.380 V19.1.0 |
+| 组文档与 HTTP 身份 | TS 24.481 V19.3.0；TS 24.482 V19.0.0 |
+| MCVideo 信令与媒体控制 | TS 24.281 V19.3.0；TS 24.581 V19.2.0 |
+| MCData 信令与媒体 | TS 24.282 V19.7.0；TS 24.582 V19.0.0 |
+| 安全 | TS 33.180 V19.4.0 |
+| 网络策略 | TS 23.501 V19.8.0；TS 23.289 V19.7.0；TS 29.214 V19.3.0；TS 29.514 V19.5.0 |
+
+外部 IETF RFC 只作为各页标明的基线或依赖，本身没有 3GPP Release。Release 19 条款不得静默用于其他 Release；MCData 的[IP Connectivity 版本限制](topics/mcdata/ipconn-media-and-success-evidence.md)还须单独读取，不能推定与 Rel16 兼容。
+
+页面或 Git 提交存在，不证明完整实现验收。来源身份核对、指定条款原文复核、独立复核与使用验证按实际状态区分；[覆盖边界](coverage.md)仍应与命中页一起判断。缺少主题不表示规范没有要求。
+
+## 未闭合或有原文差异时
+
+当前尚未提供完整的注册认证、安全密钥、呼叫/媒体状态机、QoS/承载映射和各服务 off-network 实现知识。下面列出影响使用的差异入口；其他条件化接口和缺口按[覆盖边界](coverage.md)及主题内说明读取，不以常识补成可编码的协议。
+
+- **位置取消与互通端点：**[TS 23.280 V19.10.1 的来源记录](sources.json)保留表 10.9.2.1-1 与 §10.9.3.4 的取消字段措辞差异，不能据此确定完整取消载荷；报告接收者与组目标另查[位置报告](topics/location/reporting.md)。[互通位置订阅](topics/interworking/location-subscription.md)保留反向响应端点的图文冲突。触发覆盖与恢复另见[对应主题](topics/location/trigger-override.md)。
+- **令牌和安全：**[令牌响应字段](topics/identity/token-response-obligations.md)不把 TS 24.482 与 TS 33.180 的义务静默合并；[KMS 重定向](topics/security/kms-redirection.md)保留信任边界及疑义。MCData 的 [TLV 信令](topics/mcdata/tlv-signalling-hop-protection.md)与[用户 Data 验证](topics/mcdata/protected-data-client-verification.md)保留 CPK/CSK 差异，[CSK 更新](topics/mcdata/csk-key-download-validation.md)不补齐未核的服务器切换确认和失败恢复时序。
+- **MCData 存储与媒体接口：**[存储控制请求](topics/mcdata/message-store-control-request.md)保留指定名单 body 的差异，停用不等于删历史；[IPCONN 隧道](topics/mcdata/ipconn-tunnel-and-delivery.md)保留源端口语法差异，[媒体与结果](topics/mcdata/ipconn-media-and-success-evidence.md)保留失败/销毁接口缺口。TS 24.582 与 TS 24.282 各自已核部分不等于全部接口映射已验证。
+- **MCVideo 路由、释放及紧急状态：**[发送仲裁](topics/mcvideo/server-transmission-grant.md)和[接收仲裁](topics/mcvideo/server-reception-permission.md)保留内部路由及编码疑义；[私呼服务器释放](topics/mcvideo/private-call-server-release.md)与[私呼紧急服务器路径](topics/mcvideo/private-emergency-server-path.md)保留错引和未闭合字段，不把信令成功视为全部媒体已停。[Video push](topics/mcvideo/video-push-request-and-authorization.md)保留 PF 分类、PSI 用途与两类目标字段边界，[提示、录制与释放](topics/mcvideo/video-push-observation-and-release.md)不证明首帧或同步停止。
+- **MCPTT 仲裁与停止：**[服务器释放后选择](topics/calls/floor-server-release-selection.md)、[优先撤销](topics/calls/floor-preemption-decision.md)保留排队及后继授予的条件缺口；[离网话权入口](topics/calls/offnetwork-floor-entry.md)保留发起者 explicit/implicit 请求差异，[离网停止](topics/calls/offnetwork-floor-release-boundary.md)保留空队列分支未显式列出停止 RTP 的差异，不推导仍可继续发送。双话权的[第二路停止与原主路退出后的接续](topics/calls/dual-floor-stop-evidence.md)仅覆盖列明的服务端分支，不补完整终端 G-bit/Ack 路由。
+
+- **紧急取消授权：**[MCPTT 私呼降级](topics/emergency/private-downgrade.md)保留服务器授权的 FFS，[MCData 私聊取消](topics/mcdata/private-emergency-server-cancellation.md)保留本业务的未决授权及部分接受边界；不把一种业务的规则移到另一种。
+
+授权不等于可达，归属不等于参加，会话建立不等于媒体许可，发送或排队不等于交付，单端释放不等于所有参与者同步停止。需要端到端结论时，沿条件化阅读路径逐项取得证据，不能用一个成功码或一个本地状态替代。

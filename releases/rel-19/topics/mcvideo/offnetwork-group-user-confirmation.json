@@ -1,0 +1,204 @@
+{
+  "topic_id": "r19-mcvideo-offnetwork-group-user-confirmation",
+  "title": "离网组呼来话：等待用户、接受与拒绝后的状态",
+  "release": 19,
+  "state": "clause-checked",
+  "standard_stage": 3,
+  "common_conditions": [
+    "固定3GPP TS24.281 V19.3.0，ETSI TS124281 V19.3.0 (2026-01)，Release19 Stage3；普通离网基本组呼的终接需用户应答路径。",
+    "组ID、组播地址、合法使用条件与承载/配置已具备；emergency state=false，收到BASIC GROUP CALL，无紧急/迫近危险变化、广播、合并、网关、临时重组或在网SIP。",
+    "基本控制按组ID维护；S1未参加，S4等待用户且无Confirm indication，S5等待用户且有Confirm indication，S3在会，S6拒绝/离开后不呈现来话。T0等待建立、T2普通类型进行中，属于独立的类型控制状态机。",
+    "各声明的角色、状态及事件分别适用，不继承前一声明成功；S3观察ACCEPT可发生在另一客户端。媒体只保留信令接口，未闭合授权、接收许可、首帧、安全和全组一致性。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions. Apply role, state and event to each corresponding branch.",
+  "source_id": "3gpp-ts-24.281-v19.3.0",
+  "source_catalog": "../../sources.json",
+  "claims": [
+    {
+      "id": "video-group-confirm-pending",
+      "title": "是否等用户与是否回确认分开判断",
+      "role": "终接 MCVideo 客户端基本控制及关联类型控制",
+      "state": "基本控制S1；新建类型控制T0",
+      "conditions": [
+        "终接 MCVideo 客户端基本控制及关联类型控制处于基本控制S1；新建类型控制T0。收到公告，其组ID不匹配其他控制实例已存组ID；UE配置要求用户应答。"
+      ],
+      "conclusion": "先存公告的SDP、call identifier、originating user ID、refresh interval、组ID和call start time，并创建类型控制。启动TFG4；公告含Confirm mode indication则进S5，否则进S4。S4/S5的状态定义均描述已向用户呈现公告通知并等待响应，区别是是否预期发送确认。类型控制在T0收到本普通公告时，设置BASIC GROUP CALL及基本组呼ProSe优先级，复制最后类型变更时间和用户，仍在T0。",
+      "normative_strength": "过程动作 SHALL；状态含义与证据边界另述。",
+      "limitations": [
+        "状态定义不规定提示文案、铃声或界面；不能把收到公告当成用户接受。",
+        "本地需用户应答配置与公告Confirm indication独立；没有Confirm仍可等待用户。配置字段和默认未在此补造。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v19.3.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf",
+          "clauses": [
+            "9.3.2.4.3.3 steps1–8",
+            "9.3.2.3.4",
+            "9.3.2.3.5",
+            "9.3.3.4.4"
+          ],
+          "printed_pages": [
+            296,
+            299,
+            300,
+            310
+          ]
+        }
+      ]
+    },
+    {
+      "id": "video-group-confirm-accept",
+      "title": "接受后加入，只有S5发送ACCEPT",
+      "role": "终接 MCVideo 客户端基本控制及关联类型控制",
+      "state": "基本控制S4或S5；类型控制T0且stored current call type=BASIC GROUP CALL",
+      "conditions": [
+        "终接 MCVideo 客户端基本控制及关联类型控制处于基本控制S4或S5；类型控制T0且stored current call type=BASIC GROUP CALL。用户实际接受本次来话；两种基本状态分别适用。"
+      ],
+      "conclusion": "S5按顺序据已存SDP建立媒体，以terminating transmission participant调用TS24.581 clause a.b，生成并发送GROUP CALL ACCEPT，再启动TFG6、TFG2并进S3。ACCEPT携所存call ID、自己的Sending MCVideo user ID、类型控制保存的current call type及所存组ID；发送采用§9.3.1.1.1的组播MONP载体。S4也先建媒体、启动同角色transmission control，再启TFG6、TFG2并进S3，但本接受入口未列发送ACCEPT。关联类型控制收到需用户确认来话的接受指示且类型为BASIC时从T0转T2。",
+      "normative_strength": "过程动作 SHALL；状态含义与证据边界另述。",
+      "limitations": [
+        "不把ACCEPT的Sending用户写成原发起者，不重新生成call ID。",
+        "clause a.b是源文占位引用；不能自行补为某媒体条款，S3/T2也不证明发流/收流许可或首帧。",
+        "两个状态机的事件调度顺序没有由这些条文完整给出；不要把类型转换插为基本控制某一步的原文明定时序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v19.3.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf",
+          "clauses": [
+            "9.3.2.4.3.4",
+            "9.3.2.4.3.5",
+            "9.3.3.4.6",
+            "9.3.1.1.1"
+          ],
+          "printed_pages": [
+            294,
+            300,
+            301,
+            311
+          ]
+        }
+      ]
+    },
+    {
+      "id": "video-group-confirm-timing",
+      "title": "等待计时停止与加入计时各有依据",
+      "role": "终接 MCVideo 客户端",
+      "state": "S4或S5接受/拒绝，或用户接受后开始S3",
+      "conditions": [
+        "终接 MCVideo 客户端处于S4或S5接受/拒绝，或用户接受后开始S3。分别应用用户动作与加入计时条件。"
+      ],
+      "conclusion": "接受程序§9.3.2.4.3.4/.5没有逐步列出停TFG4；同版信息性附录B的表B.3.1.1-1的TFG4行把接收用户Accept或Reject列为normal stop。这提供了正常停止的摘要，但不是接受程序中新增的显式SHALL步骤；也不能只看接受程序的省略就断言TFG4继续运行。该信息性表列TFG4可配置、默认30秒、最大60秒，到期动作为停止来话通知。加入时TFG6=MaxDuration−(当前UTC秒−公告call start time)，不是从用户点击接受重新给满额时长；TFG2=refresh interval*(2/3+2X/3)秒，每次计算生成0至1均匀随机数X。",
+      "normative_strength": "正文接受动作和计时计算为SHALL；附录B/B.1明确为informative，TFG4数值、normal stop与到期通知是信息性摘要，不升级为正文SHALL。",
+      "limitations": [
+        "计时表未把TFG4停止安插到接受程序的具体两步之间，不补顺序。",
+        "TFG4配置路径为/<x>/OffNetwork/Timers/TFG4；这里只使用24.281本表，不推导24.483的管理规则。",
+        "MaxDuration是组配置值，UTC秒不计闰秒；负值、超时竞态及非法配置处理未覆盖。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v19.3.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf",
+          "clauses": [
+            "B.3.1.1 Table B.3.1.1-1 TFG4",
+            "9.3.2.4.3.4",
+            "9.3.2.4.3.5",
+            "9.3.2.4.1.1.1",
+            "9.3.2.4.1.2",
+            "Annex B; B.1"
+          ],
+          "printed_pages": [
+            297,
+            300,
+            301,
+            566,
+            564
+          ]
+        }
+      ]
+    },
+    {
+      "id": "video-group-confirm-reject-timeout",
+      "title": "拒绝或不操作都进入S6，但类型清理条件不同",
+      "role": "终接 MCVideo 客户端基本控制；拒绝时另有类型控制",
+      "state": "基本控制S4或S5；类型清理限T0",
+      "conditions": [
+        "基本控制处于S4或S5，分别响应用户拒绝或TFG4到期。类型字段清理另要求类型控制处于T0并收到用户release或reject指示；TFG4到期不自动满足这个触发。"
+      ],
+      "conclusion": "用户拒绝时先停TFG4、启动TFG5，再进S6；TFG4到期时启动TFG5并进S6，信息性附录B的计时表同时摘要说明停止来话通知，不作为正文新增的SHALL步骤。两条基本控制入口都未列发送拒绝消息，也未在此清call ID等呼叫存储。类型控制T0收到用户release或reject指示时另清current call type、ProSe priority、last type change time及last changing user，仍为T0；该条未把TFG4到期列成同一清理触发。",
+      "normative_strength": "正文拒绝、超时及条件类型清理动作SHALL；附录B的通知停止说明是informative。",
+      "limitations": [
+        "不编造SIP错误、GROUP CALL REJECT或远端已知拒绝的证据。没有本地接受也不证明其他成员未在通话。",
+        "拒绝后的类型字段清理与基本控制的呼叫标识存储属于不同对象；不能说立即清空全部身份。",
+        "TFG4到期是否触发其他类型清理接口不在本条闭合；不从用户拒绝类推。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v19.3.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf",
+          "clauses": [
+            "9.3.2.4.3.7",
+            "9.3.2.4.3.8",
+            "9.3.3.4.11",
+            "B.3.1.1 Table B.3.1.1-1 TFG4",
+            "Annex B; B.1"
+          ],
+          "printed_pages": [
+            301,
+            302,
+            319,
+            566,
+            564
+          ]
+        }
+      ]
+    },
+    {
+      "id": "video-group-confirm-retention",
+      "title": "S6仍记住呼叫，收到接受也不代表全员入会",
+      "role": "分别为拒绝/超时后的本地客户端，或观察ACCEPT的在会客户端",
+      "state": "分别为S6或S3",
+      "conditions": [
+        "对拒绝或超时后的本地客户端，适用事件分别是S6收到组ID匹配其存储组ID的公告，或S6的TFG5到期；对另一在会客户端，适用事件是S3收到组ID匹配其存储组ID的ACCEPT。各分支独立，不要求顺序发生。"
+      ],
+      "conclusion": "S6收到同组公告会更新SDP、call ID、发起用户ID、refresh interval和start time，并停止再启动TFG5，仍为S6；TFG5到期才释放这些存储及组ID、销毁类型控制并回S1。S3收到同组ACCEPT可以告知用户接受情况，但须仍留S3。这里的通知能力不是全体组员确认门槛。",
+      "normative_strength": "S6存储/计时/清理SHALL；S3通知为can，保持S3为SHALL。",
+      "limitations": [
+        "S6保留和更新身份不表示重新加入或重新弹出确认；用户重入另属未覆盖流程。",
+        "ACCEPT接收入口明列组ID匹配，未另列call ID匹配；不替规范添加门槛，也不由此宣称安全验证完整。",
+        "标识的已存值不等于经过认证的真实人员身份；本页不定义鉴权和安全校验。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v19.3.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124281/19.03.00_60/ts_124281v190300p.pdf",
+          "clauses": [
+            "9.3.2.4.5.2",
+            "9.3.2.4.5.4",
+            "9.3.2.4.3.6"
+          ],
+          "printed_pages": [
+            301,
+            303,
+            304
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "不覆盖自动应答、探测发起、用户重新加入、并发事件排序、紧急/广播与完整离网媒体过程。",
+    "TS24.581 clause a.b不补号；不将MCPTT或在网媒体状态移入。",
+    "已有公告/离开主题维护S6一般存续；这里保留拒绝/超时后身份何时清除的必要衔接。"
+  ],
+  "related": [
+    "offnetwork-group-probe-and-join.md",
+    "offnetwork-group-announcement-and-leave.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

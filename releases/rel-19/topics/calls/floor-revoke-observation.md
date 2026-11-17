@@ -85,3 +85,9 @@
 - [服务器授予后的媒体计时：T20 重传、T1 静默与 T2 超时撤销](floor-server-media-timers.md)
 
 [3GPP TS24.380 V19.1.0](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/19.01.00_60/ts_124380v190100p.pdf)；仅所列版本和条款。
+
+## 多talker独立范围
+
+multi-talker的独立范围另见multi-talker-release-and-revoke；本页单话权优先撤销条件不直接迁移。新主题区分未满额允许名单转交与仲裁处理；不因此推定完整准入、队列后续授予或端到端媒体证据。
+
+- [多talker逐人退出与满额撤销](multi-talker-release-and-revoke.md)

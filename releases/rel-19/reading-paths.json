@@ -1847,11 +1847,11 @@
           "read": "topics/mcdata/fd-msrp-hop-ack-and-storage.md"
         },
         {
-          "condition": "接收端收齐、内部指示与业务报告",
+          "condition": "接收端收齐、内部指示，以及PF完成事件已发生且要求更新时的非聚合通知路由",
           "read": "topics/mcdata/fd-media-reception-and-signalling-report.md"
         }
       ],
-      "boundary": "普通在网单播媒体面FD；不移植HTTP caller，保留精确版本间的引用及MIME差异。"
+      "boundary": "普通在网单播媒体面FD；不移植HTTP caller，保留精确版本间的引用及MIME差异。 不补PF获知终端完成的caller或helper到CF入口字段完整性；202不等于客户端已收通知，不扩成全组完成。"
     },
     {
       "id": "mcvideo-client-video-pull",
@@ -1895,9 +1895,13 @@
         {
           "condition": "本端退出、忽略窗口或最大时长",
           "read": "topics/calls/offnetwork-group-local-leave.md"
+        },
+        {
+          "condition": "呼叫已成功建立，需区分终接者话权初始化与发起者入口限制",
+          "read": "topics/calls/offnetwork-floor-entry.md"
         }
       ],
-      "boundary": "固定24.379 V19.4.0普通离网组呼基本控制；媒体/话权只核调用点，不是全员确认或声音交付。"
+      "boundary": "呼叫控制入口按 TS 24.379 V19.4.0；话权入口按 TS 24.380 V19.1.0 的独立条件。跨规范调用不自动证明完整映射、全员确认或声音交付。"
     },
     {
       "id": "mcvideo-offnetwork-auto-private",
@@ -1916,7 +1920,7 @@
           "read": "topics/mcvideo/offnetwork-private-release.md"
         }
       ],
-      "boundary": "固定24.281 V19.3.0普通离网自动一对一；保留媒体引用占位和角色差异，不证明发送/接收许可或首帧。"
+      "boundary": "固定24.281 V19.3.0普通离网自动一对一；保留发起端媒体调用角色称谓及a.b占位，不证明发送/接收许可或首帧。手动应答按独立主题条件读取，本路径释放claims不自动适用于手动模式。"
     },
     {
       "id": "mcptt-priority-floor-revoke",
@@ -1947,6 +1951,146 @@
         }
       ],
       "boundary": "独立TS23.289 V19.7.0 Stage2来源；不是Stage3编码、完整授权或与旧23.501版本的组合互通。"
+    },
+    {
+      "id": "mcptt-multi-talker-evidence",
+      "question": "多talker容量、媒体和逐人退出如何判断",
+      "select_one_by_question": [
+        {
+          "condition": "未满额转交、授予列表及媒体分发",
+          "read": "topics/calls/multi-talker-admission-and-media.md"
+        },
+        {
+          "condition": "单人Release/T1退出与满额撤销",
+          "read": "topics/calls/multi-talker-release-and-revoke.md"
+        }
+      ],
+      "boundary": "固定TS24.380 V19.1.0普通在网multi-talker有限路径；不与dual floor混用，不闭合全部准入、排队后继或配置互通。"
+    },
+    {
+      "id": "n5-policy-authorization-evidence",
+      "question": "N5会话授权、资源通知与媒体成功如何区分",
+      "select_one_by_question": [
+        {
+          "condition": "应用/媒体/流输入层级与绑定",
+          "read": "topics/network-policy/n5-af-session-input.md"
+        },
+        {
+          "condition": "授权拒绝、201和逐流资源通知",
+          "read": "topics/network-policy/n5-authorization-result-boundary.md"
+        },
+        {
+          "condition": "已有上下文且支持 PatchCorrection，需修改媒体或会话级订阅",
+          "read": "topics/network-policy/n5-session-update.md"
+        },
+        {
+          "condition": "AF 会话结束或 PCF 通知上下文无效，需判断删除与清理证据",
+          "read": "topics/network-policy/n5-session-termination.md"
+        },
+        {
+          "condition": "已订阅QOS_NOTIF，需判断GBR目标变化报告的流范围、确认与实际媒体结果",
+          "read": "topics/network-policy/n5-gbr-qos-notification.md"
+        }
+      ],
+      "boundary": "TS29.514 V19.5.0通用Stage3普通IP授权；不能替代MCX具体接口绑定、PCC执行、QFI映射或媒体接收证据。"
+    },
+    {
+      "id": "mcptt-dual-floor-ordinary",
+      "question": "双话权第二路如何获权、退出，原主路先退出时如何有限接续",
+      "select_one_by_question": [
+        {
+          "condition": "策略选择同时发言、D 实例、第二路授予或媒体计时，或同一已获准overriding者再次请求已经到达D的有限回应",
+          "read": "topics/calls/dual-floor-entry-and-media.md"
+        },
+        {
+          "condition": "D 中 T11/T12 到期、第二路 Release、D 内部 call release 两阶段动作的区别（非完整信令层释放），或原主路退出引发 Terminate",
+          "read": "topics/calls/dual-floor-stop-evidence.md"
+        }
+      ],
+      "boundary": "仅 TS 24.380 V19.1.0 所列普通在网双话权服务端条件；不移植单话权撤销或 multi-talker 列表，不证明终端已接收或停止。 接口转交的G/D选择与重发Granted完整回程仍未闭合，D handler未列计时动作不等于整个接口链无计时影响。"
+    },
+    {
+      "id": "mcptt-offnetwork-floor-bounded",
+      "question": "普通离网组呼建立后，本端如何请求、竞争和释放话权",
+      "select_one_by_question": [
+        {
+          "condition": "终接或后来加入者初始化，或判断发起者入口差异",
+          "read": "topics/calls/offnetwork-floor-entry.md"
+        },
+        {
+          "condition": "从 silence 请求，按实际事件处理 T201/C201 竞争",
+          "read": "topics/calls/offnetwork-floor-request-contention.md"
+        },
+        {
+          "condition": "无排队释放、取消 pending request、T230 或 call release",
+          "read": "topics/calls/offnetwork-floor-release-boundary.md"
+        },
+        {
+          "condition": "普通组呼已建立，排队主链另已判非抢占；需按能力、身份、状态和事件判断授予、用户接受与RTP观察",
+          "read": "topics/calls/offnetwork-floor-queue-and-handoff.md"
+        },
+        {
+          "condition": "已处于queued，需判断排位查询、T204/C204及Deny、媒体、他人授予等所列事件",
+          "read": "topics/calls/offnetwork-floor-queue-query-and-exit.md"
+        }
+      ],
+      "boundary": "须离网呼叫已成功建立，并满足各页的授权、载体、配置和事件条件。只覆盖 TS 24.380 V19.1.0 的有限 O 状态路径，不保证唯一仲裁者、全员接收或完整排队处理。"
+    },
+    {
+      "id": "mcvideo-client-video-push",
+      "question": "把本端视频推给另一客户端的地址、权限、观察与释放",
+      "start": "topics/mcvideo/video-push-request-and-authorization.md",
+      "next_if": [
+        {
+          "condition": "需要判断被叫提示、接受、可选保存或释放证据",
+          "read": "topics/mcvideo/video-push-observation-and-release.md"
+        }
+      ],
+      "boundary": "仅普通在网按需 one-to-one video push、使用 transmission control；不套用 one-to-server 或 pull，PF 分类与字段疑点未闭合，不证明首帧、落盘或同步停止。"
+    },
+    {
+      "id": "mcdata-preestablished-resource-sharing",
+      "question": "MCData预建立会话的共享支持与实际资源证据",
+      "start": "topics/mcdata/pre-established-session-admission.md",
+      "next_if": [
+        {
+          "condition": "需核SIP-core/直接Rx差别、ResShare、IP-CAN绑定、方向共享键或终止边界",
+          "read": "topics/network-policy/mcdata-preestablished-resource-sharing-boundary.md"
+        }
+      ],
+      "boundary": "仅普通在网SDS预建立用途与所列AF/PCRF语境；注册、支持信号和AAA不代表共享执行。24.229映射与29.212/213依赖未闭合，不外推N5。"
+    },
+    {
+      "id": "mcvideo-offnetwork-basic-group",
+      "question": "普通离网MCVideo组呼的探测、自动或需用户应答加入与本地退出",
+      "start": "topics/mcvideo/offnetwork-group-probe-and-join.md",
+      "next_if": [
+        {
+          "condition": "已参与呼叫需按stored probe response条件回应探测，或本端离开/探测中取消",
+          "read": "topics/mcvideo/offnetwork-group-announcement-and-leave.md"
+        },
+        {
+          "condition": "终接本地配置要求用户应答，需区分S4/S5与Confirm indication",
+          "read": "topics/mcvideo/offnetwork-group-user-confirmation.md"
+        },
+        {
+          "condition": "S3/T2参与普通BASIC呼叫时，收到同组另一BASIC呼叫公告；分别满足身份差异及时间/call ID选择条件",
+          "read": "topics/mcvideo/offnetwork-group-merge.md"
+        }
+      ],
+      "boundary": "既定普通BASIC GROUP CALL；主动/自动加入与需用户应答的终接按不同主题条件读取，同组另一BASIC呼叫的条件合并另列；其他类型/优先级、紧急升级和跨过程调度未闭合。S/T状态分开，probe初值、媒体a.b与发送错引保留；不证明首帧或全组同步。"
+    },
+    {
+      "id": "mcdata-mbs-multicast-reception-intent",
+      "question": "5G MBS组播join/leave通知能证明什么",
+      "start": "topics/mcdata/mbs-multicast-join-feedback-boundary.md",
+      "boundary": "仅TS24.282 V19.7.0 §19A multicast接收意愿通知；按替代触发、身份绑定和session-id条件解释。不套§19 MBMS的完整监听链，不裁决mvdata字样或successfully joining关联，不证明网络加入、首包或交付。"
+    },
+    {
+      "id": "mcvideo-offnetwork-manual-private",
+      "question": "普通离网手动私呼怎样等待、应答并完成本地接通",
+      "start": "topics/mcvideo/offnetwork-private-manual-answer.md",
+      "boundary": "固定24.281 V19.3.0 manual commencement、已确定的两用户，逐端P2/P5及事件守卫适用。RINGING不是接受，用户接受不直接进入P4；不拼自动释放为手动释放验收，不补P2取消、媒体a.b或完整分派。"
     }
   ]
 }

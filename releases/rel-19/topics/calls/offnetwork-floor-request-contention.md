@@ -1,0 +1,124 @@
+# 离网请求竞争：重试、计数复位与本地取得话权
+
+## 适用范围
+
+- 仅适用于 3GPP TS 24.380 V19.1.0 §7 的普通离网 MCPTT 组呼，不是在网 G/U 服务器模型。排除私呼、广播、system、紧急/迫近危险、dual floor、multi-talker 及 audio cut-in。
+- 覆盖终接或后来加入者从 O: silence 发起请求、在 O: pending request 竞争后按 T201/C201 进入本地许可的有限路径，以及初始化和无排队本端释放边界；不是任意收包下的完整状态机。
+- 离网呼叫已成功建立，且本条所需授权、载体与配置已满足。未核 ProSe、安全、SSRC 认证、完整报文编码或 TS 24.483 配置取得及缺失处理。
+- 请求竞争中的优先级比较以已知有效比较值为输入；不覆盖完整离网优先级、抢占或排队算法。使用无排队释放分支时，必须另确认没有 queued request，不能从普通呼叫推导队列为空。
+- 收到的事件按实际到达顺序处理。没有该状态专门过程的消息或媒体丢弃且状态不变，格式错误也忽略（§7.2.3.1，印刷页 132–133）。仅在逐条条件满足时采用下述动作。
+
+## 从静默发出请求
+
+适用主体：请求者floor participant。
+
+当前状态：O: silence。
+
+适用条件：
+- 用户指示要发送媒体。
+
+向其他参与者发Floor Request，携自身User ID；要求非默认优先级时带对应Priority。C201初始化1，停T230、启T201，转O: pending request。普通范围不触发特殊呼叫类型指示。
+
+计时与计数边界：初发即C201=1；进入pending不是发送RTP许可。
+
+- 只核silence入口；Start-stop直接PTT及has-no-permission入口不互相套用。
+
+规范强度：SHALL；另列MAY及证据分析不新增协议义务。
+
+依据：3GPP TS 24.380 V19.1.0 §7.2.3.3.2;7.2.3.6.1，印刷页 136、143。
+
+## 未达上限时重发
+
+适用主体：请求者floor participant。
+
+当前状态：O: pending request。
+
+适用条件：
+- T201到期，C201尚未达到配置上限。
+
+重发Floor Request，保留自身User ID及非默认优先级的条件要求；重启T201，C201加1，仍pending。
+
+计时与计数边界：T201表列默认40ms、依D2D特性且可配置；C201默认上限3、可配置且从1开始。不是初发之外再重发3次。
+
+- 不据默认值给出固定120ms获权保证；配置取得/缺值处理未核，竞争和RTP可重置计数。
+- §11.2.2正文称表11.2.2-1，但表题印作11.2.1.2-1；按章节/页码保留差异。
+
+规范强度：SHALL；另列MAY及证据分析不新增协议义务。
+
+依据：3GPP TS 24.380 V19.1.0 §7.2.3.6.9;11.1.2 Table11.1.2-1;11.2.2，印刷页 148、239、249。
+
+## 收到竞争请求或 Floor Taken
+
+适用主体：请求者floor participant。
+
+当前状态：O: pending request。
+
+适用条件：
+- 收到其他Floor Request且其priority更高，或priority相同且SSRC更高；另分别判断收到Floor Taken。
+
+符合竞争比较guard的Request使C201复位1、重启T201，仍pending。收到Taken则把current-arbitrator SSRC设为消息的granted-participant SSRC，同样复位C201、重启T201并仍pending；不是自己获授。
+
+计时与计数边界：竞争请求重启T201；Taken也重启。
+
+- 不把相同priority且更低/相同SSRC的请求写成必重置；不把SSRC较大当身份授权或整个系统的全序公平保证。
+
+规范强度：SHALL；另列MAY及证据分析不新增协议义务。
+
+依据：3GPP TS 24.380 V19.1.0 §7.2.3.6.1;7.2.3.6.10;7.2.3.6.11，印刷页 143、148。
+
+## 收到 RTP 时复位什么
+
+适用主体：请求者floor participant。
+
+当前状态：O: pending request。
+
+适用条件：
+- 收到RTP；按顺序判断：没有current SSRC，或发送者匹配current，或otherwise匹配candidate。
+
+三个分支均请求呈现、C201复位1、启动或重启T203，仍pending。无current时设置current为该RTP SSRC；匹配current时保留；匹配candidate时把current设为该RTP SSRC并清candidate。
+
+计时与计数边界：此条列C201复位和T203更新，没有写重启T201；不能复制竞争请求的动作。
+
+- 无current分支未写清candidate，不补该操作；非匹配媒体不能套用后两分支。
+- 呈现请求不等于可听成功，不赋本端发送许可。
+
+规范强度：SHALL；另列MAY及证据分析不新增协议义务。
+
+依据：3GPP TS 24.380 V19.1.0 §7.2.3.6.2，印刷页 143、144。
+
+## 到达计数上限后本地取得话权
+
+适用主体：请求者floor participant。
+
+当前状态：O: pending request。
+
+适用条件：
+- T201到期且C201已达到上限；此前没有其他事件改变本状态或计数。
+
+发Floor Taken，携自身SSRC和User ID；保存自身SSRC为current arbitrator，停运行中的T203，进入O: has permission。它是本地按超时承担话权，不是收到了远端Granted或全员同意。
+
+计时与计数边界：同一到期事件先按计数guard选择：达到上限不再走重发分支。
+
+- Floor Granted/Deny/Queue Position Info可能另行改变状态；本有限竞争路径不覆盖其接收完整guard，不能忽略这些事件而强行等到上限。
+- 不声称不存在隐藏节点、丢包、同时持权或唯一仲裁保证。
+
+规范强度：SHALL；另列MAY及证据分析不新增协议义务。
+
+依据：3GPP TS 24.380 V19.1.0 §7.2.3.6.6;11.2.2，印刷页 146、249。
+
+## 原文差异
+
+§11.2.2（印刷页 249）：正文表编号11.2.2-1与印刷表题11.2.1.2-1不同。
+
+## 证据边界
+
+- 只覆盖列明事件，不是离网话权整体实现。未覆盖排队授予/T233、完整远端Granted/Deny、抢占、并呼合并或全部冲突收敛。
+- TS24.483配置获取、完整报文安全/编码及与TS24.379 V19.4.0精确版本组合互操作未核。
+- 无排队Release缺少显式stop RTP步骤、发起explicit/implicit文字差异均保留，不用常识补闭环。
+
+## 按需继续
+
+- [离网话权入口：组呼参与者与临时仲裁者](offnetwork-floor-entry.md)
+- [离网停止边界：空队列释放、静默与呼叫退出](offnetwork-floor-release-boundary.md)
+
+[3GPP TS 24.380 V19.1.0 / ETSI TS 124 380 V19.1.0（2026-01）](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/19.01.00_60/ts_124380v190100p.pdf)；仅适用所列版本和条款。

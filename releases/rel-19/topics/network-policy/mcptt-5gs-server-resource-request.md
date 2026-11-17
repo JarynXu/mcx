@@ -54,6 +54,11 @@
 
 ## 按需继续
 
+另读通用 Stage3 AF 授权输入与结果边界：TS23.289 V19.7.0 §7.2 的 PCC 流程引用 TS23.503；TS29.514 V19.5.0 §1 承接 TS23.502/23.503。本页仍为 MCX Stage2 用途，不据此认定 MCX 实际接口绑定或精确版本组合已验证。
+
+- [N5授权请求：应用、媒体和流如何区分](n5-af-session-input.md)
+- [N5授权结果：201与资源分配通知分别证明什么](n5-authorization-result-boundary.md)
+
 - [5GS QoS：QFI、5QI 与 ARP 分别决定什么](5gs-qos-model.md)
 - [MCPTT 语音进 5GS：语音 QoS 与 SIP 信令的边界](mcptt-5gs-voice-qos-scope.md)
 
