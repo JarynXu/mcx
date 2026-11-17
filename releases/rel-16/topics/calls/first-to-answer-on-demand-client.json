@@ -1,0 +1,208 @@
+{
+  "topic_id": "r16-mcptt-first-to-answer-on-demand-client",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 按需首接呼叫：邀请谁，忙线、取消和释放如何区分？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "适用于 3GPP TS 24.379 V16.14.0（Release 16、Stage 3）规定的在网、按需、带话权控制的 MCPTT first-to-answer 呼叫。本页区分发起客户端与某一被叫客户端，不是普通一对一私呼或预建立会话。",
+    "以下是四种事件入口，不要求同一呼叫依次经过。紧急场景只说明此处已有临时 MEPP 状态时的恢复，不展开紧急授权、发起或后续状态机。"
+  ],
+  "claims": [
+    {
+      "id": "origination-permission-and-target",
+      "title": "谁可以发起，邀请发往哪里？",
+      "conditions": [
+        "用户请求发起按需 first-to-answer，在本机检查发起许可；仅在继续构造请求时适用地址和消息体规则。"
+      ],
+      "conclusion": "用户配置规则中没有 allow-request-first-to-answer-call，或其值为 false，主叫客户端必须告知用户并退出，不发送这次首接邀请。通过本机检查不等于网络已经受理。对照普通私呼的一名被叫，首接呼叫面向至少两名候选用户。客户端向服务于主叫的参与 MCPTT 功能发出初始 SIP INVITE；Request-URI 是该功能的公共服务身份，不是某个候选人的地址。资源列表可以列候选用户的 MCPTT ID，也可以填被呼叫的功能别名 URI，不能把一个这样的 URI 当成只呼一人。MCPTT 信息正文的 session-type 填 first-to-answer：当客户端知道已启用的别名且正呼叫一个已启用别名时，call-to-functional-alias-ind 填 true，否则填 false。若需要随本次邀请标识主叫使用的活动别名，另填 functional-alias-URI；后者不是被呼叫的别名。",
+      "normative_strength": "本地拒绝、所述请求构造和发送均为条件满足时的强制要求。",
+      "limitations": [
+        "附录 F.1.3 说明接收时缺少 call-to-functional-alias-ind 按候选用户 ID 理解；这不取消主叫构造邀请时按 §11.1.1.2.1.1 第 15(b) 项显式填写的要求。",
+        "资源列表中写一个功能别名，不说明客户端已解析出具体成员，也不证明任何候选人已接受。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.1, private versus first-to-answer target population"
+          ],
+          "printed_pages": [
+            352
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.1, steps 1–2 and 9–10"
+          ],
+          "printed_pages": [
+            353
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.1, steps 14(c), 15(a–c) and 17"
+          ],
+          "printed_pages": [
+            354,
+            355
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.1.3, functional-alias-URI; call-to-functional-alias-ind and its absence"
+          ],
+          "printed_pages": [
+            551
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "busy-and-unanswered",
+      "title": "忙线和无人接听，为什么不是同一响应？",
+      "conditions": [
+        "被叫客户端收到初始 INVITE；先判断通用接收步骤。仅当请求未在此前终止且进入第 8 项，才适用 first-to-answer 的专门规则。"
+      ],
+      "conclusion": "若客户端已占用其他会话且并发会话数超过 MaxCall、资源不足，或有规范范围外的其他原因，客户端可以在通用步骤拒绝。若在这一步拒绝，按适当响应码及 Warning 处理；获准限制失败原因时也可用不带 Warning 的 480，并停止后续步骤。如果继续到了首接专门步骤，客户端必须通知被叫用户、不得转发这通呼叫。用户正忙于另一通呼叫时，向这份 INVITE 回 486 并停止；若用户在客户端实现所定的时限内没有应答，则回 480 并停止。这里没有固定秒数。两种 480 的进入条件不同，不能单凭 480 判定某人未接。",
+      "normative_strength": "通用拒绝是可选的；到达第 8 项后，通知、禁止转发、满足相应条件时回码并停止是强制的。",
+      "limitations": [
+        "486 或 480 描述这个被叫对其 INVITE 的结果；不能据此断定整个首接呼叫失败，也不能推断其他候选人的状态。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.2, steps 1–2"
+          ],
+          "printed_pages": [
+            356
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.2, step 8(a–d)"
+          ],
+          "printed_pages": [
+            358
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "cancel-pending-invitation",
+      "title": "INVITE 尚未回 200：分别应答哪两个请求？",
+      "conditions": [
+        "被叫收到取消这份 INVITE 的 SIP CANCEL；该 INVITE 在客户端已有对话，且客户端还没有向该 INVITE 发送 200。"
+      ],
+      "conclusion": "客户端可以通知用户首接呼叫已取消。若接收紧急首接邀请时曾暂存紧急私呼优先级状态（MEPP），则须先恢复暂存值并丢弃这份暂存值。客户端向 CANCEL 回 200，向原 INVITE 回 487：前者表示取消请求已处理，不表示呼叫建立。没有暂存值时不做这一步恢复；归属不同事务的响应保持不变。",
+      "normative_strength": "用户提示可选；有暂存值时的恢复、丢弃以及两个 SIP 响应是强制的。",
+      "limitations": [
+        "已有对话不等于已对 INVITE 回 200。若已回 200，这段 CANCEL 规则的前提不成立；不能据此替迟到的 CANCEL 指定响应。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.2, step 3(b) and note 2 (temporary MEPP); step 3(c)"
+          ],
+          "printed_pages": [
+            356,
+            357
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.2, received CANCEL, steps 1–4"
+          ],
+          "printed_pages": [
+            358
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "bye-established-dialog",
+      "title": "已建立的对话收到 BYE，还要给原 INVITE 回 487 吗？",
+      "conditions": [
+        "被叫在已建立的首接对话收到 SIP BYE。紧急私呼优先级恢复还要求有此前暂存值，并且 BYE 的 MCPTT 信息正文带有条文列举的 release-reason。"
+      ],
+      "conclusion": "不再套用取消未决邀请的 200/487 组合。若 BYE 说明本端未被选中（not selected for call），或给出规定的 MIKEY 消息认证失败原因，且客户端此前确已暂存 MEPP，则必须恢复原值。这段 BYE 文字未像 CANCEL 那样另行要求丢弃暂存值。首接呼叫释放可提示用户，不以这两种原因为提示的必要条件。不论是否触发上述恢复，被叫都继续按私呼释放程序与媒体面交互，并向 MCPTT 服务器回 200 应答 BYE。",
+      "normative_strength": "满足条件才必须恢复；用户提示可选；转入释放程序、媒体面交互和应答 BYE 为强制要求。",
+      "limitations": [
+        "其他原因或缺少原因不能从这一款得出应恢复 MEPP，也不会让普通的 BYE 释放应答消失。客户端收到“未选中”仅是本条对话的释放证据；无法凭它辨认获选者或验证服务端如何裁定同时应答。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.2, step 3(b); BYE steps 1(a)–2 and note 6"
+          ],
+          "printed_pages": [
+            356,
+            358,
+            359
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.4.2, client handling of BYE"
+          ],
+          "printed_pages": [
+            390
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.6, steps 1–2"
+          ],
+          "printed_pages": [
+            61
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [
+    "不覆盖网络侧选人、同时应答的裁决、下游邀请分发或上游响应汇总；不据某一客户端的响应推断全呼叫结果。也不展开后续应答模式、媒体/话权授予、端到端密钥交换和 IMS 事务的全部竞态。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "related": [
+    "r16-calls-private-client-answer-evidence",
+    "r16-mcptt-functional-alias-client"
+  ]
+}

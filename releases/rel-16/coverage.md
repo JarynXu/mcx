@@ -142,6 +142,16 @@ settings-only PUBLISH 的身份字段与保护配置、服务器保护/绑定拒
 
 [读取主题](topics/calls/preestablished-session-lifecycle.md)
 
+## MCPTT 按需首接呼叫：邀请谁，忙线、取消和释放如何区分？
+
+客户端怎样核对首接发起许可、表示候选接收者，某一被叫怎样区分忙线与无人应答，以及怎样处理未决邀请上的 CANCEL 和既有对话中的 BYE。
+
+发起时要看用户配置中的许可；被叫侧的响应只解释本客户端及其事务。不能由某一条 SIP 200 判定哪位候选最终接听。
+
+尚未建立：控制功能如何选择最终接听者、同时应答如何裁决，以及请求分发和响应汇总。
+
+[读取主题](topics/calls/first-to-answer-on-demand-client.md)
+
 
 
 ## 普通私聊SDS控制面：发送资格、请求与接收证据
