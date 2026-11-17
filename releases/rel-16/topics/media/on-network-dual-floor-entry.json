@@ -1,0 +1,293 @@
+{
+  "topic_id": "r16-mcptt-onnetwork-dual-floor-entry",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 在网双话权：新发言人获准后，原发言人和听众各会怎样？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "各项继承 common_conditions；audio cut-in 和 multi-talker 仅作入口对照，不能同时套用到 D 实例。",
+  "common_conditions": [
+    "Release 16、Stage 3，在网 MCPTT 组呼；话权控制服务器的一般仲裁中已有发言人。讨论控制功能一侧仲裁；下游非控制功能仅按明示的说明区分。"
+  ],
+  "claims": [
+    {
+      "id": "policy-and-mode",
+      "title": "抢占请求到达时，原发言人是否必须让出话权？",
+      "conditions": [
+        "一般仲裁处于 G: Floor Taken，已收到此次 Floor Request；主分支限非 multi-talker、非 audio cut-in，请求者的有效优先级为抢占、原发言人的有效优先级不是抢占。其他两种组配置只作对照。"
+      ],
+      "conclusion": "甲正在发言，服务器的一般话权仲裁处于 G: Floor Taken（话权已被占用），并已收到乙的 Floor Request。在未配置多发言人或音频切入的组中，如果乙的有效优先级属于抢占级、甲的不是，服务器依本地策略选择：撤销甲，或者保留甲的许可并允许甲、乙两路媒体。后一个选择才调用双话权规程。只看到乙在客户端发出请求，不能断言请求已交给这个仲裁状态；即使已交到，也还要看服务器选了哪条分支。",
+      "normative_strength": "一般仲裁按本地策略二选一；选两路后须调用双话权入口。音频切入例外另见 NOTE 2。",
+      "limitations": [
+        "音频切入（audio cut-in）组中，这次切入只允许新请求者的媒体。多发言人（multi-talker）组则按自己的并发人数上限处理请求；请求者须是获准在该组发言的成员，且当前仍有空余发言名额，才适用这里允许增加发言人的分支，这一分支的 Floor Granted 用 I=1 标示多发言人。观察到两人同时说话，不足以判定启用了双话权。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.4.7, entry, items 1–3 and NOTE 2"
+          ],
+          "printed_pages": [
+            61,
+            62
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "4.1.1.2, dual floor, audio cut-in and multi-talker comparison only"
+          ],
+          "printed_pages": [
+            20
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.4.7a, item 1 and item 3(a)(iv), multi-talker comparison only"
+          ],
+          "printed_pages": [
+            62
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "parallel-operation",
+      "title": "服务器为谁建立第二个仲裁实例？",
+      "conditions": [
+        "服务器已选择保留甲，乙的覆盖性抢占请求获准。"
+      ],
+      "conclusion": "甲仍由一般话权仲裁管理，原许可没有被收回。服务器另为乙建立一个双话权控制实例（D 状态机）；乙是覆盖发言人，甲是被覆盖但仍可发言的人。新实例在处理话权输入前处于 Start-stop。服务器保存乙的 RTP 同步源标识（SSRC）；如果请求带 Track Info，还要把它关联到这个 D 实例保存，然后按 D: Floor Taken 的进入规程处理。",
+      "normative_strength": "一般仲裁继续；建立一个 D 实例、保存 SSRC、条件保存 Track Info 及进入 D: Floor Taken 为 shall。单次呼叫的用户数量限制为注。",
+      "limitations": [
+        "§6.3.6.1 的注明确，一通 MCPTT 呼叫只能有一名具有这种覆盖性抢占优先级的用户。这里的“一名”指乙这一类用户，不是说同一时刻只有乙一人有许可，也不是给每位听众新建一个 D 实例。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.6.1, scope, instance and NOTE"
+          ],
+          "printed_pages": [
+            94,
+            95
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.6.2.1, initial state"
+          ],
+          "printed_pages": [
+            95
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.6.2.2, items 1–4"
+          ],
+          "printed_pages": [
+            96
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "grant-and-timers",
+      "title": "如何认出给乙的许可？时长字段等于计时器已经启动吗？",
+      "conditions": [
+        "服务器进入乙的 D: Floor Taken 状态。"
+      ],
+      "conclusion": "服务器向乙发送 Floor Granted：Floor Indicator 的 G 位为 1，Floor Priority 写入授予的优先级，Duration 写入 T12 的时长值。若已为该 D 实例保存 Track Info，须附回；若有非控制 MCPTT 功能参与，还须带获准参与者乙的 SSRC。广播组呼、系统呼叫、紧急呼叫、迫近危险呼叫或临时组会话还须带相应指示。",
+      "normative_strength": "列出的字段和附带条件、启动 T11 以及进入状态为 shall；两个计时器在该状态中可能运行不等于必然同时启动。",
+      "limitations": [
+        "进入动作明确启动的是 T11，并进入 D: Floor Taken。T11、T12 都可能在这个状态中运行，但不能从 Duration 带了 T12 的值推断 T12 此时也启动了。Granted 是给乙的发送许可，不是乙已发送媒体的证明。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.6.3.1, state and timers"
+          ],
+          "printed_pages": [
+            96
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.6.3.2, item 1"
+          ],
+          "printed_pages": [
+            96
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.6.3.2, items 4–5"
+          ],
+          "printed_pages": [
+            97
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "recipient-partition",
+      "title": "服务器向谁依次发送 Idle、Taken，又向谁只发送 Taken？",
+      "conditions": [
+        "进入双话权状态；按本地策略区分由控制功能直接管理的听众。会话如涉及非控制 MCPTT 功能，另按功能间规则处理。"
+      ],
+      "conclusion": "对控制功能直接管理的听众，服务器先向只听乙的人发 Floor Idle，再向所有按策略会听乙的人发带 G=1 的 Floor Taken。因此，服务器向只听乙的人依次发送两条通知，向兼听甲、乙的人只发送 Taken；这两步都不要求向只听甲的人发送通知。发送名单和步骤顺序不能证明终端实际收到消息或其到达顺序。Idle 和 Taken 各自都须带递增 1 的消息序号。这里的 Idle 发给特定听众，不是在宣布整通呼叫无人说话。",
+      "normative_strength": "直接发送对象、字段和发送步骤为 shall；非控制功能面向其所属听众的 Idle 触发及两路媒体的分配见注 1、2。",
+      "limitations": [
+        "若有非控制 MCPTT 功能参与，服务器也向这些功能发 Idle 和带 G=1 的 Taken。注 1 说明，非控制功能收到带 G=1 的 Taken 时，才向自己管理的、按本地策略只听乙的听众发送 Idle。不能把控制功能直接发送的对象当成每个下游客户端的通知时序。",
+        "甲在这项分支里仍可继续传送语音。各听众应收听哪一路由配置决定；给乙的 Granted、给听众的 Taken 或单个听众不再听见甲，都不能证明甲失去了许可，也不能证明某个终端实际收到了两路语音。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.6.3.2, items 2–3 and NOTEs 1–2"
+          ],
+          "printed_pages": [
+            96,
+            97
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.4.4.7, entry, items 1–3 and NOTE 2"
+      ],
+      "printed_pages": [
+        61,
+        62
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "4.1.1.2, dual floor, audio cut-in and multi-talker comparison only"
+      ],
+      "printed_pages": [
+        20
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.4.4.7a, item 1 and item 3(a)(iv), multi-talker comparison only"
+      ],
+      "printed_pages": [
+        62
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.6.1, scope, instance and NOTE"
+      ],
+      "printed_pages": [
+        94,
+        95
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.6.2.1, initial state"
+      ],
+      "printed_pages": [
+        95
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.6.2.2, items 1–4"
+      ],
+      "printed_pages": [
+        96
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.6.3.1, state and timers"
+      ],
+      "printed_pages": [
+        96
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.6.3.2, item 1"
+      ],
+      "printed_pages": [
+        96
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.6.3.2, items 4–5"
+      ],
+      "printed_pages": [
+        97
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.6.3.2, items 2–3 and NOTEs 1–2"
+      ],
+      "printed_pages": [
+        96,
+        97
+      ]
+    }
+  ],
+  "limitations": [
+    "只讲在网组呼中保留原发言人的服务器入口及进入 D: Floor Taken 时的动作；不展开后续媒体分发、超时、释放、重新申请或 D/G 状态交接。",
+    "不规定本地优先级策略、混音方式、抓包必然可见的顺序或终端实际播放结果。"
+  ],
+  "related": [
+    "r16-mcptt-onnetwork-preemption-revoke",
+    "r16-media-on-network-floor-client"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
