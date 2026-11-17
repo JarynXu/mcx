@@ -1,0 +1,293 @@
+{
+  "topic_id": "r16-mcptt-chat-establish-join",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "按需 MCPTT chat 组呼：按组身份发起请求，何时新建会话、何时加入已有会话？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "Each claim inherits common_conditions. Client, controlling function and notification actions have different event preconditions.",
+  "common_conditions": [
+    "本页限于 Release 16、Stage 3 的普通在网按需 MCPTT chat 语音组呼。客户端用未重组的 MCPTT 组 ID 直接请求发起或加入；不处理已重组的组、临时组身份（TGI）、预建立会话，以及紧急或迫近危险请求和相应既有状态。"
+  ],
+  "claims": [
+    {
+      "id": "group-addressed-invite",
+      "title": "初始 INVITE 发给谁，要加入哪个组又写在哪里？",
+      "conditions": [
+        "用户要求以标识 chat 组的组身份发起或加入会话。"
+      ],
+      "conclusion": "两种操作都由客户端发出初始 SIP INVITE：Request-URI 填服务该用户的参与 MCPTT 功能的公共服务身份；消息体的 session-type 填 chat，mcptt-request-uri 填目标组身份，mcptt-client-id 填发起客户端 ID。主叫用户的 MCPTT ID 不由客户端填入该消息体，由发起侧参与功能补入。这条加入程序不要求客户端先取得既有会话 ID。",
+      "normative_strength": "满足入口条件时生成、填写和发送请求为 shall；主叫用户身份的分工见 NOTE 2。",
+      "limitations": [
+        "信令还须携带 SDP offer；需要隐式请求话权时按 §6.4 指示。发出 INVITE 或收到成功响应本身均不能证明获得话权。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.1, opening; client steps 9, 13a–c, NOTE 2, 14–16"
+          ],
+          "printed_pages": [
+            265,
+            266
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "create-or-use-session",
+      "title": "谁判断要不要建会？",
+      "conditions": [
+        "控制功能收到以未重组的 MCPTT 组 ID 标识 chat 组的请求。组文档、资格和媒体检查各有相应入口；建会判断仅适用于通过前序处理并到达步骤 10 的请求。"
+      ],
+      "conclusion": "控制功能先取组文档并进行初检。对这里的未重组组 ID，若发起用户尚未归属该组，步骤 5 要求检查其隐式归属资格；不具资格就拒绝（SIP 403，Warning 引号内的 MCPTT 文本码为 120）并停止。媒体参数不可接受或未提供 MCPTT 语音编解码也须拒绝（488）。通过前序处理，到达步骤 10 时，若该组的 chat 会话身份尚不存在，控制功能须建会并为它分配一个 MCPTT 会话身份。会话已在进行时，获准的用户加入原会话，不因自己的初始 INVITE 再分配一个组会话身份。",
+      "normative_strength": "所列条件检查、拒绝和条件建会/分配为 shall；处理组呼计时器 TNG3 为 may，不能把计时动作当作建会标志。",
+      "limitations": [
+        "资格检查不改变归属状态。走到步骤 12 时，只有步骤 5 判为有资格、且本条此前尚未调用 §9.2.2.3.7，控制功能才须执行该规程；处理对象是主叫用户对请求所指组的归属。若此前已调用，步骤 12 不要求再调用。这个条件不说明具体在哪一步先行调用，更不代表每次加入都会改变归属。",
+        "已重组组或 TGI 在组文档初检时另有分支，本页不为这些分支排列建会、归属或授权的顺序，也不规定并发建会的实现。",
+        "这里有三层数字：403 或 486 是 SIP 响应状态码；Warning 头的外层警告码（warn-code）是 399；引号内警告文本开头的三位数才是 MCPTT 文本码（mcptt-warn-code）。120 和 122 都不填在外层警告码的位置。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1, opening terminology 1–2; controlling steps 4–5"
+          ],
+          "printed_pages": [
+            286,
+            287
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1, controlling steps 9–10, 12"
+          ],
+          "printed_pages": [
+            288
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.5.2, step 4b and step 5, non-regrouped MCPTT group ID (scope only)"
+          ],
+          "printed_pages": [
+            131,
+            132
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.3.7, opening and steps 1–2 (served group and handled user)"
+          ],
+          "printed_pages": [
+            192
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.4.1; 4.4.2, Table 4.4.2-1 and Table 4.4.2-2 (entries 120, 122)"
+          ],
+          "printed_pages": [
+            33,
+            34,
+            36
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ongoing-at-capacity",
+      "title": "正在进行的组已满，较高优先级是否保证入会？",
+      "conditions": [
+        "控制功能处理加入请求，chat 会话已在进行，且已达组的在网参与人数上限（on-network-max-participant-count）。"
+      ],
+      "conclusion": "若本地策略判断新用户的优先级高于至少一名既有参与者，控制功能可以按所引的参与者移出规程移出一人，跳过容量拒绝这一步，再继续后续处理。是否移出并非强制，也没有规定必须挑优先级最低的人。不采用该例外时，该满员分支须向发起网络返回 486（Busy Here），Warning 引号内的 MCPTT 文本码 122 表示人数过多。尚未达到上限则不触发这一容量拒绝；仍须满足其余入会条件。",
+      "normative_strength": "满足本地策略条件后移出参与者为 may；不走移出例外的满员拒绝为 shall。",
+      "limitations": [
+        "步骤 11 的注 2 只举出可能的策略输入，如用户优先级、参与者类型及其他组文档信息；未规定统一的排序、候补或抢占算法。移出一人并非拆除整个组会话。",
+        "SIP 486 和 MCPTT 文本码 122 说明这次请求因人数上限未获准，不报告用户此前是否已归属，也不能单凭该响应断定是否曾执行过隐式归属。",
+        "人数已满时，486 是 SIP 状态码；Warning 头的外层 warn-code 为 399，引号内 warn-text 开头的 MCPTT 文本码为 122。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1, controlling step 11a–b and NOTE 2"
+          ],
+          "printed_pages": [
+            288
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.4.1; 4.4.2, Table 4.4.2-1 and Table 4.4.2-2 (entries 120, 122)"
+          ],
+          "printed_pages": [
+            33,
+            34,
+            36
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "success-and-subscribers",
+      "title": "200 与会议通知分别能证明什么？",
+      "conditions": [
+        "控制功能已走到接受请求的分支；通知还需本次请求之前会话就已在进行且至少一名参与者订阅会议事件。客户端动作则以收到该 INVITE 的 2xx 为入口。"
+      ],
+      "conclusion": "控制功能在成功响应 200 的 Contact 中给出 MCPTT 会话身份（并含 isfocus 等标记），与媒体面交互，发送该响应。客户端收到 2xx 后须与用户面交互，但是否订阅会议事件由客户端选择。若是加入已有会话且已有参与者订阅会议事件，控制功能须向所有已订阅的参与者发送 NOTIFY；不要求向未订阅者群发。",
+      "normative_strength": "成功分支的 200、Contact 会话身份、媒体面交互和条件满足时的 NOTIFY 为 shall；客户端订阅为 may。",
+      "limitations": [
+        "首次创建不满足这一 NOTIFY 步骤的“原已进行”条件；无人订阅也不满足。判断限于本条这一次通知，不排除其他事件触发的通知。仅见 200 不能分辨该会话是否刚创建，也不能证明其他成员已经加入、收到语音或主叫已获话权。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1, controlling steps 15, 19, 23–25"
+          ],
+          "printed_pages": [
+            290
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.1, receipt of 2xx steps 1 and 3"
+          ],
+          "printed_pages": [
+            266
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.1, opening; client steps 9, 13a–c, NOTE 2, 14–16"
+      ],
+      "printed_pages": [
+        265,
+        266
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.4.1.1, opening terminology 1–2; controlling steps 4–5"
+      ],
+      "printed_pages": [
+        286,
+        287
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.4.1.1, controlling steps 9–10, 12"
+      ],
+      "printed_pages": [
+        288
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.5.2, step 4b and step 5, non-regrouped MCPTT group ID (scope only)"
+      ],
+      "printed_pages": [
+        131,
+        132
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.2.3.7, opening and steps 1–2 (served group and handled user)"
+      ],
+      "printed_pages": [
+        192
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "4.4.1; 4.4.2, Table 4.4.2-1 and Table 4.4.2-2 (entries 120, 122)"
+      ],
+      "printed_pages": [
+        33,
+        34,
+        36
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.4.1.1, controlling step 11a–b and NOTE 2"
+      ],
+      "printed_pages": [
+        288
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.4.1.1, controlling steps 15, 19, 23–25"
+      ],
+      "printed_pages": [
+        290
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.1, receipt of 2xx steps 1 and 3"
+      ],
+      "printed_pages": [
+        266
+      ]
+    }
+  ],
+  "limitations": [
+    "不覆盖预安排组重入、优先呼叫状态、全套服务器拒绝门槛、参与侧转发的完整程序或独立的话权授予机制。"
+  ],
+  "related": [
+    "r16-calls-prearranged-client-establishment",
+    "r16-mcptt-rejoin-late-entry",
+    "r16-mcptt-implicit-floor-early-media"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
