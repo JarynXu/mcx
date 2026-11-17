@@ -1,0 +1,267 @@
+{
+  "topic_id": "r16-mcvideo-one-to-one-video-push",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "一对一视频推送：谁能发画面，多台终端中哪台接呼？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.281-v16.4.0",
+  "common_conditions": [
+    "TS 23.281 V16.4.0（Release 16，Stage 2）的在网一对一视频推送；甲指源用户和主叫，乙指目标用户和被叫。"
+  ],
+  "condition_rule": "推送正常路径的不同事件各依本条条件判断；成功及完成不是所有声明的共同前提。",
+  "claims": [
+    {
+      "id": "source-initiates-one-way-video",
+      "title": "本次推送只允许主叫向被叫发视频",
+      "conditions": [
+        "甲从自己的客户端发起在网一对一视频推送，乙是目标用户；远程发起只用于比较。"
+      ],
+      "conclusion": "甲端经授权用户可手动发起，或由甲端经授权用户设置的条件自动触发。本次私呼只允许甲向乙发送视频。与之相对，丙可以另发远程推送请求；源端接受该请求后会复用甲乙之间的一对一建呼。",
+      "normative_strength": "Stage 2 业务定义、建呼前提及远程程序对照。",
+      "limitations": [
+        "乙应答不产生反向发视频的资格；源端自动触发不等于有远程请求，不能从甲乙之间的建呼单独还原丙是否参与。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.3.1",
+            "7.4.2.3.2, preconditions 1–3 and Figure 7.4.2.3.2-1"
+          ],
+          "printed_pages": [
+            93
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.5.2, steps 1 and 4 (comparison with remotely initiated video push)"
+          ],
+          "printed_pages": [
+            96
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "request-identifies-push-and-roles",
+      "title": "服务器核查发起推送和接收推送两种资格",
+      "conditions": [
+        "甲的客户端向服务器发出建立本次推送私呼的请求。"
+      ],
+      "conclusion": "请求携带乙的 MCVideo ID、含一种或多种媒体类型的 SDP 提议，以及视频推送指示。服务器核查甲发起、乙接收这类私呼的资格。甲可提供功能别名；若提供，还须核查该别名可供甲使用且已为甲激活。",
+      "normative_strength": "步骤描述；功能别名可选，提供时才执行所述核查。",
+      "limitations": [
+        "不能因甲有发起资格就推定乙有接收资格；未提供别名不构成这里的别名核查失败。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.3.1",
+            "7.4.2.3.2, preconditions 1–3 and Figure 7.4.2.3.2-1"
+          ],
+          "printed_pages": [
+            93
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.3.2, steps 1–2"
+          ],
+          "printed_pages": [
+            94
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "deliver-only-designated-ue-if-multi-registered",
+      "title": "多台已注册且指定了私呼接收终端时，只向指定终端送请求",
+      "conditions": [
+        "双方通过资格核查，服务器转送请求；唯一投递规则另要求乙用多台 MCVideo 终端注册且已指定私呼接收终端。"
+      ],
+      "conclusion": "服务器转送时保留甲提议的全部或部分媒体类型，带自动开始模式指示，其依据是甲所请求的开始模式或乙端设置。满足多终端注册及指定条件时，入呼请求只送至指定终端。乙端提示有视频推送来呼；收到甲的功能别名时将它显示出来。",
+      "normative_strength": "Stage 2 步骤 4–5；唯一投递和别名显示各有条件。",
+      "limitations": [
+        "多台注册但不知道有没有指定时，不能由此规则推出全送、唯一投递或具体回退策略。收到来呼提示不等于已接受或已呈现视频。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.3.2, steps 4–5"
+          ],
+          "printed_pages": [
+            94
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "progress-acceptance-and-media-establishment",
+      "title": "进展可选，建呼应答和媒体就绪不证明已观看",
+      "conditions": [
+        "按图示成功建呼路径，分别考察服务器报告进展、乙端接受、甲收到成功应答及媒体条件建立。"
+      ],
+      "conclusion": "服务器可向甲报告进展，注 1 允许它在转送请求（步骤 4）之后、乙端应答（步骤 6）之前出现。乙端接受后向服务器应答，服务器向甲报告建呼成功；媒体面与传输控制在甲乙两端建立。",
+      "normative_strength": "进展为可选；注 1 说明可出现的位置，步骤 6–8 描述成功路径。",
+      "limitations": [
+        "不能把步骤 3 的图号当作它必须先于步骤 4 的时序；进展不是成功应答。建呼和媒体就绪都不是已呈现、已观看或已传完的证明。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.3.1",
+            "7.4.2.3.2, preconditions 1–3 and Figure 7.4.2.3.2-1"
+          ],
+          "printed_pages": [
+            93
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.3.2, steps 3 and 6–8 and NOTE 1"
+          ],
+          "printed_pages": [
+            94
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "completed-video-uses-private-call-release",
+      "title": "视频传输完成后释放本次私呼",
+      "conditions": [
+        "一对一推送的视频传输已完成。"
+      ],
+      "conclusion": "推送的私呼在视频传输完成时释放，释放采用 §7.2.2.3.3 的私呼释放程序。",
+      "normative_strength": "业务定义与步骤 8 后注 2 对应，§7.4.2.3.3 指明采用的程序。",
+      "limitations": [
+        "不能将收到来呼提示、建呼应答或观看当作传输完成的替代证据；该推送条款未规定固定由哪一方先挂断。这里不复述通用释放步骤，也不把传输完成写成唯一可能的释放原因。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.3.1",
+            "7.4.2.3.2, preconditions 1–3 and Figure 7.4.2.3.2-1"
+          ],
+          "printed_pages": [
+            93
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.3.2, NOTE 2",
+            "7.4.2.3.3, cross-reference to 7.2.2.3.3"
+          ],
+          "printed_pages": [
+            94
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.4.2.3.1",
+        "7.4.2.3.2, preconditions 1–3 and Figure 7.4.2.3.2-1"
+      ],
+      "printed_pages": [
+        93
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.4.2.3.2, steps 1–2"
+      ],
+      "printed_pages": [
+        94
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.4.2.3.2, steps 4–5"
+      ],
+      "printed_pages": [
+        94
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.4.2.3.2, steps 3 and 6–8 and NOTE 1"
+      ],
+      "printed_pages": [
+        94
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.4.2.3.2, NOTE 2",
+        "7.4.2.3.3, cross-reference to 7.2.2.3.3"
+      ],
+      "printed_pages": [
+        94
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.4.2.5.2, steps 1 and 4 (comparison with remotely initiated video push)"
+      ],
+      "printed_pages": [
+        96
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcvideo-private-client-answer-evidence",
+    "r16-mcvideo-private-server-admission-routing",
+    "r16-mcvideo-functional-media-control-roles"
+  ],
+  "limitations": [
+    "不扩展为普通按需私呼、群推、向服务器推送、拉取或离网流程；远程外层仅用于区别发起者。不是 SIP 字段、完整错误分支、用户界面或实测媒体的规范。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
