@@ -2,13 +2,13 @@
 
 限在网、正常非紧急的 on-demand standalone SDS，目标为直接 MCData ID 的 one-to-one 或普通预安排组；排除 SDS session、预建立会话、ad hoc、TGI、重组、functional alias、跨域网关、MBMS/MBS 和 FD。
 
-发送选择前的 §11.1 传输控制已成功，后续各角色适用的准入检查也必须通过。只核所列字段与动作，不将其当作完整 INVITE 编码模板或完整安全验证。
+依据固定 TS24.282 V19.7.0，按每条所列角色及事件进入相应过程；本角色前序步骤若要求停止，不执行其后步骤。准入检查、成功响应和拒绝响应是不同分支，不预设全部准入成功。
 
-组客户端仍受 §9.2.3.2.3 的两个入口限制：preconfigured-group-use-only 为 true 时应向用户提示且必须停止；AllowedSDS 叶节点存在且为 false 时必须拒绝发送并停止。
+只核所列字段与动作，不将其当作完整 INVITE 编码模板或完整安全验证。
 
 ## Standalone媒体面不是SDS session
 
-适用条件：用户发送一条 standalone SDS，且 payload 大于已配置的 max-payload-size-sds-cplane-bytes。
+适用条件：用户发送一条 standalone SDS，客户端已完成 §9.2.1.1 要求的 §11.1 传输控制且结果成功，payload 大于已配置的 max-payload-size-sds-cplane-bytes。组发送还须通过 §9.2.3.2.3 的本地门槛：preconfigured-group-use-only 不得存在且为 true；AllowedSDS 不得存在且为 false。此处进入发起请求，不要求下游准入已成功。
 
 §9.2.1.1 在 §11.1 成功后选择 §9.2.3.2.3，建立按需媒体面 standalone SDS。客户端仍用 one-to-one-sds 或 group-sds 的 request-type；私聊目标放在 resource-lists 的单个 entry，普通组目标放在 mcdata-request-uri 并带 mcdata-client-id。初始 SIP Request-URI 指向服务本用户的 PF 的 PSI。用户另行要求 SDS session 时走 §9.2.4，不能因为两者都有 INVITE 和 MSRP 就合并为一种会话。
 
@@ -17,9 +17,11 @@
 
 依据：§9.2.1.1;9.2.3.1;9.2.3.2.3 steps7a,7b(i),8b(i)–(iii),9;9.2.4.1，印刷页 189、190、210、211、212、213、224。
 
+条件依据：§9.2.3.2.3 opening and step8a，印刷页 211、212。
+
 ## SDP单向媒体和连接角色
 
-适用条件：客户端为 §9.2.3 standalone SDS 生成初始 SDP offer，接收端为被接受的媒体流生成 answer。
+适用条件：以下两个生成事件分别适用，不要求同时成立：发送客户端在 §9.2.3.2.3 的发起分支走到 step11，按 §9.2.3.2.1 生成初始 SDP offer；或者接收客户端在 §9.2.3.2.4 的前序未要求停止，走到 step9，按 §9.2.3.2.2 为接受的媒体流生成 answer。
 
 offer 的 m=message 包含端口、TCP/MSRP 或采用 TLS 时的 TCP/TLS/MSRP、格式 *、sendonly、自身 MSRP URI 的 path，以及 mcdata-signalling 和 mcdata-payload 两个 accept-types；setup 为 actpass。接收客户端的 answer 对接受的流使用 recvonly、自身 path、对应 offer 的传输协议和同样两个 accept-types，setup 按 RFC 6135 生成。SDS session 的 sendrecv 不适用于这条 standalone 主线。
 
@@ -28,9 +30,11 @@ offer 的 m=message 包含端口、TCP/MSRP 或采用 TLS 时的 TCP/TLS/MSRP、
 
 依据：§9.2.3.2.1 step1;9.2.3.2.2;9.2.4.2.1 step1;9.2.4.2.2 step1，印刷页 210、211、224、225。
 
+条件依据：§9.2.3.2.3 step11;9.2.3.2.4 steps1–3,9，印刷页 213、214、215。
+
 ## 参与功能与控制功能各自维护媒体路径
 
-适用条件：请求已通过各角色准入；PF 转发 offer/answer，CF 为发送端和被邀请端分别生成 SDP。
+适用条件：PF 或 CF 在自己的实际调用点生成 SDP，各角色及 offer/answer 分支分别适用。生成出站 INVITE offer 时，本角色此前适用检查未要求停止；PF answer 由其对应 INVITE 的 200 触发，CF answer 由 §9.2.3.4.4 所列目标 200 且 MCData ID 匹配触发。发 offer 不以尚未发生的目标准入成功或 answer 到达为前提。
 
 PF 的 offer 只保留收到的一个 SDS 媒体段，并保留已有 mikey key-mgmt；需要锚定媒体时替换 IP/端口，若替换 IP 则把自身 MSRP URI 插到 path 中已有 URI 前。answer 的地址和 path 也按对应条件处理。若 PF 与 CF 同服且 PF 没有独立媒体 IP 或端口，原文允许省去相应替换。CF 面向被邀请方的 offer 是 sendonly/actpass，path 为 CF 自身 MSRP URI；面向邀请方的 answer 是 recvonly/passive，也使用 CF 自身 path。因此不能把所有 SIP 跳点等同于必经的独立媒体节点，也不能把 CF 的 answer 当作原样转发目标客户端 answer。
 
@@ -39,9 +43,11 @@ PF 的 offer 只保留收到的一个 SDS 媒体段，并保留已有 mikey key-
 
 依据：§9.2.3.3.1;9.2.3.3.2;9.2.3.4.1;9.2.3.4.2;6.3.7.1.23 step7a，印刷页 115、116、215、216、220、221。
 
+条件依据：§9.2.3.3.3 step15 and 200 response;9.2.3.3.4 step13 and 200 response;9.2.3.4.3 step12;9.2.3.4.4 final response，印刷页 217、218、219、220、222、224。
+
 ## 密钥建立可能阻断邀请接受
 
-适用条件：私聊进入 §9.2.3.2.1 step2 与 §9.2.3.2.3 step7c 所述安全上下文建立分支；接收端收到 SDP key-mgmt 内的 MIKEY-SAKKE I_MESSAGE。
+适用条件：以下角色事件分别适用：私聊发送端走到 §9.2.3.2.3 step7c，在其所述需要建立且不存在安全上下文、或现有上下文过期的条件下准备密钥，并按 §9.2.3.2.1 step2 加入 offer；接收端此前未按 §9.2.3.2.4 steps1–2 拒绝，且入站 SDP key-mgmt 的 mikey 值含 MIKEY-SAKKE I_MESSAGE 时执行 step3，签名成功不是进入验证的前提；服务器复制义务按 §5.3.0 的对应消息与已有 keying material 条件适用。
 
 发送端在需要端到端安全且上下文不存在，或现有上下文过期的条款条件下，准备 PCK/PCK-ID 与签名的 MIKEY-SAKKE I_MESSAGE，并放入 SDP 的 mikey key-mgmt。接收端从 I_MESSAGE 的 IDRi 取主叫 MCData ID、转成 UID 并验证签名；验证失败必须以 SIP 488 加 Warning136 拒绝 INVITE，停止后续步骤。验证成功才提取并解密 PCK、取得 PCK-ID，再继续接受邀请。服务器还受 §5.3 的跨消息复制 keying material 要求约束。
 
@@ -50,9 +56,11 @@ PF 的 offer 只保留收到的一个 SDS 媒体段，并保留已有 mikey key-
 
 依据：§9.2.3.2.1 step2;9.2.3.2.3 step7c;9.2.3.2.4 step3;5.3.0，印刷页 50、51、210、212、214。
 
+条件依据：§9.2.3.2.4 steps1–3，印刷页 214。
+
 ## INVITE有自身的服务器准入门槛
 
-适用条件：O-PF、CF、T-PF 分别处理普通媒体面 standalone SDS INVITE；只有本角色前序检查成功时才进入后续步骤。
+适用条件：O-PF、CF 或 T-PF 收到属于各自入口的普通媒体面 standalone SDS INVITE，分别执行自己的准入过程；仅本角色此前检查未要求停止时进入当前检查。无需先证明该角色全部准入或下游准入成功。私聊目标条件与普通组配置、成员、许可及归属条件只用于各自分支。
 
 O-PF 仍从 PAI 的 public user identity 解析主叫 MCData ID，拒绝无绑定或绑定过期的用户，并确定相应 CF、执行 §11.1 授权。CF 另查媒体参数是否可接受和 SDP 是否给出 MSRP URI，不满足时回 488；缺少所要求的 SDS feature tag 时回 403。CF 私聊只在直接目标列表恰有一个 entry 时邀请该用户；普通组须通过组文档、成员、SDS 服务、发送权限和归属检查，再邀请筛出的 affiliated 成员。T-PF 另要求 Contact 中有 isfocus，缺少时回 403/Warning104；目标用户绑定不存在时回 404。媒体面必须依这些 INVITE 条款准入，不能直接复制控制面 MESSAGE 的全部错误码、MIME 三体检查和阈值拒绝表。
 
