@@ -217,6 +217,14 @@
 
 入口：[MCData本地位置报告配置：许可、替换更新与触发边界](topics/mcdata/local-location-configuration.md)。
 
+### 组地理区域通知与归属入口
+
+- **能回答：**可查PF位置Report授权、区域事件后的通知、客户端处理和PF收到200的有限证据。
+- **只到条件或接口：**本地PF服务客户端，实际收到符合Content-Type及Report结构的请求并授权后，发生组区域进入/离开事件才调用通知；客户端接收与PF响应分开。
+- **尚未建立的结论：**位置配置或查询不保证产生Report或区域事件；通知200不证明归属完成。保留分类与构造差异，不扩区域测量判定、紧急区域链、跨系统或完整归属状态机。
+
+入口：[MCData组地理区域通知：归属入口与响应证据](topics/mcdata/group-geographic-notification.md)。
+
 ## MCVideo视频业务
 
 [查看本域全部主题](topics-mcvideo.json)
@@ -498,6 +506,14 @@
 - **尚未建立的结论：**REFER成功提示与实际业务INVITE、媒体结果分别判断；保留自动应答字段值、FTA筛选及失败接口差异。不覆盖完整终接、密码媒体实现、释放或承载删除。
 
 入口：[预建立会话上的私呼与FTA发起：业务准入、REFER提示和后续结果](topics/calls/preestablished-private-origination.md)。
+
+### 私呼终接的承载选择与应答
+
+- **能回答：**可查终接业务准入、普通自动/手动承载选择、Unconfirmed、FTA替换及客户端接听拒绝事件。
+- **只到条件或接口：**在网直接ID带话权普通私呼或所列FTA；以T-PF实际收到业务INVITE及本页全部条件为入口，预建立会话是否合用仍须检查。各响应和失败事件分别适用。
+- **尚未建立的结论：**主叫REFER成功不保证进入本页；普通自动200、手动re-INVITE与FTA Replaces不互代。不扩完整CF赢家选择、普通私呼强制应答/紧急、转发、安全及媒体实现。
+
+入口：[私呼终接的承载选择：Unconfirmed、手动邀约与FTA替换](topics/calls/private-termination-bearer-selection.md)。
 
 ## 组管理与MCPTT组呼入口
 

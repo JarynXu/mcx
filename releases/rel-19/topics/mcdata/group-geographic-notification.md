@@ -1,0 +1,48 @@
+# MCData组地理区域通知：归属入口与响应证据
+
+## 适用范围
+
+- 固定TS24.282 V19.7.0，本地PF向其服务客户端通知预定义组地理区域进入/离开，并触发本用户在该客户端的归属或撤销过程。
+- PF位置报告处理、区域通知发送、客户端接收及PF收到响应是各自独立事件；按各claim条件适用，不预设归属成功或已收到后续状态。
+- 限组地理区域通知责任；不含紧急告警区域链、跨系统位置转送、完整区域判定/测量、安全实现或归属状态机。
+
+## PF从获准位置报告进入区域通知，目标用户与所涉组分开
+
+**条件：** 本页的实际报告caller是PF收到SIP请求，其Content-Type为application/vnd.3gpp.mcdata-location-info+xml，且对应正文location-info内含Report；先按收到的MCData ID执行报告授权。仅在用户获准发送报告且发生组地理区域进入/离开事件时，沿§17.2.4.1调用§6.3.7.1.7。通知构造以PF确定客户端进入/离开预定义组地理区域为条件，不要求后续归属已成功。
+
+PF向目标用户的关联公共用户身份发送MESSAGE，PAI为PF公共服务身份。两个Accept-Contact分别携g.3gpp.mcdata和MCData ICSI，并带require/explicit；服务标识字段原文名为P-Asserted-Service-Id。info正文中mcdata-request-uri标识目标MCData用户，associated-group-id标识发生区域进入/离开的组，group-geo-area-ind以true表示进入、false表示离开。区域确定以及是否、何时通知的附加选择条件由实现决定，可涉及活动功能别名、紧急状态、速度或方向；不能将任意Report到达都解释为必须发出区域通知。
+
+**规范强度：** 获准Report对应事件的helper调用、通知必需构造及发送为SHALL；附加接收者/时机选择为NOTE中的实现能力，不提升为每次位置变化必发。
+
+- 报告许可是此caller的前置，不等于归属资格、组成员许可或业务媒体授权。§17.2.4.1对未授权报告未在该段给出本业务的统一拒绝响应，不补错误码。
+- 三种身份不可互换：Request-URI使用目标公共用户身份，mcdata-request-uri使用目标MCData ID，associated-group-id使用所涉组ID。D.1.2将后者声明为string；D.1.3 step11(v)另描述其在临时组/预配置重组通信中的constituent group用途。本页按§6.3.7.1.7 step8b的明确区域用途理解，不据D.1把此通知限制为重组，也不替换字段。
+- §6.3.7.1.7把上述字段列在mcdatainfo/mcdata-Params中；D.1声明group-geo-area-ind及associated-group-id为扩展元素，D.1.3置于anyExt语义下。这里保留层级与用途差异，不提供自行修复的XML、区域计算或去抖算法。
+
+**依据：**
+- [TS24.282 V19.7.0 §17.2.4.1;6.3.7.1.7 opening,NOTE and steps1–9](https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf)，印刷页 103,104,414；规范依据。
+- [TS24.282 V19.7.0 §D.1.2 mcdata-ParamsType and extension declarations;D.1.3 step11(h),(v)](https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf)，印刷页 583,584,588,590；字段类型、anyExt层级及associated-group-id用途比较。
+
+## 客户端先确认通知，再按进出指示发起归属变更
+
+**条件：** 客户端分支以实际收到§6.2.1.1命名的组地理区域通知MESSAGE为入口：请求路由到客户端，Content-Type为application/vnd.3gpp.mcdata-info+xml，XML含分类器所写的mcdata-info根、mcdata-Params及group-geo-area-ind。PF结果分支独立以收到所发区域通知的200为事件；不把客户端后续PUBLISH或归属完成作为200处理的前提。
+
+客户端先向发送通知的PF回200。group-geo-area-ind=true时，可向用户显示进入区域，并须调用§8.2.2对PF指示的组发起归属；false时，可显示离开区域，并须调用同一过程撤销归属。PF收到通知的200后，按自己已发通知中的true/false，分别记录客户端已收到进入/离开区域通知。因此这一200只证明通知收到，不是归属或撤销完成，也不是会话参加、退出或媒体交付证据。
+
+**规范强度：** 200发送、按true/false调用归属过程及PF收到200后的记录为SHALL；客户端显示进入/退出提示为MAY。
+
+- 分类器使用mcdata-info根名，而通知构造及D.1使用mcdatainfo；分类器描述也没有将D.1的anyExt层级完整展开。本页保留此差异，只解释已识别通知后的业务责任，不声称报文互操作已闭合。缺少有效true/false时，该段未给替代归属动作，不默认进入或退出。
+- §16.2.1.4不含用户接受确认守卫；不能借协商模式§8.2.5给此入口增加“同意后才执行”。显示提示是MAY，归属过程调用是SHALL，二者不互相替代。
+- 被调用的§8.2.2是兴趣变更过程，不是直接写affiliated。只在本用户、本目标客户端及其实际兴趣集合条件下关联显式归属页；仍须保留完整剩余列表、无剩余组的零期限及该页所述正文边界。观察结果另按§8.2.1/8.2.3的用户、客户端、组及通知条件判断；“先启动状态确定”不能改为“先等SUBSCRIBE成功”。
+- §8.2.2的手动撤销抑制有用户手动请求、规则触发归属和配置元素存在且true的共同条件，不能直接用来阻止本区域通知的false分支。客户端本地规则评估§8.2.6是另一实际入口，不用其FA变化或配置判定替换本通知入口。
+
+**依据：**
+- [TS24.282 V19.7.0 §6.2.1.1 group geographic area classifier;16.2.1.4;6.3.7.1.7 response paragraph](https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf)，印刷页 55,103,104,382；规范依据。
+- [TS24.282 V19.7.0 §D.1.2 root and extension declarations;D.1.3 step11h](https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf)，印刷页 583,584,588；根名/层级比较及布尔语义。
+- [TS24.282 V19.7.0 §8.2.1–8.2.3](https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf)，印刷页 158,159,160；实际调用及条件化结果导航，不重复归属全链。
+- [TS24.282 V19.7.0 §8.2.5;8.2.6.1–8.2.6.3](https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf)，印刷页 161,162；comparison-only：协商确认与本地规则入口，不移植其前提。
+
+## 使用边界与关联
+
+- 本页解释通知和实际业务调用，不把区域触发当绕过组准入的许可，也不提供修正原文差异后的可执行报文。
+- [显式归属请求](explicit-affiliation-request.md)：在本用户、本目标客户端及该页兴趣/撤销条件成立时查看PUBLISH责任；不是通知200后的已完成结果。
+- [归属状态观察](explicit-affiliation-observation.md)：需要获知变更结果时，按该页启动观察、通知内容和过滤条件解释状态；不是另一必定成功的无条件后续。

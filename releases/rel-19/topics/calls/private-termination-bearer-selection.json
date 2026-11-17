@@ -1,0 +1,285 @@
+{
+  "topic_id": "r19-calls-private-termination-bearer-selection",
+  "release": 19,
+  "standard_stage": 3,
+  "state": "clause-checked",
+  "title": "私呼终接的承载选择：Unconfirmed、手动邀约与FTA替换",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v19.4.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "TS24.379 V19.4.0，在网、带话权控制的直接ID私呼/first-to-answer（FTA）终接。这里判断被叫侧能否采用预建立会话，以及不同路径的应答证据；不以已存在空闲匹配承载、准入成功或客户端已接听作为全页前提。",
+    "主范围是普通非紧急private且不含Priv-Answer-Mode，以及CF按FTA程序加入Priv-Answer-Mode=Manual的FTA。优先指示true、普通私呼强制应答、功能别名、转接、转发、迁移、ambient listening与无话权变体不展开；涉及这些分支时只保留实际分派边界，不将其假定已成功处理。",
+    "各claim按其角色和事件分别适用。新业务使用预建立dialog的re-INVITE、替换预建立dialog的新INVITE、对已进行私呼的修改，以及主叫发起侧的REFER，是不同入口；不能因SIP方法相近合并条件。"
+  ],
+  "claims": [
+    {
+      "id": "terminating-business-gates",
+      "title": "进入承载选择前仍核终接业务身份与准入",
+      "conditions": [
+        "T-PF收到Request-URI为自身终接PSI的业务INVITE，按11.1.1.3.2处理；本条拒绝不要求此前已成功找到绑定。"
+      ],
+      "conclusion": "缺资源或有拥塞风险时可500，可附Retry-After，采用拒绝则停止；缺Contact的isfocus时403/104并停止。T-PF用mcptt-request-uri中的目标MCPTT ID查公共用户身份绑定；先行转发/迁移分支未处理请求而仍无绑定时回404。session-type=private且尚未收到被叫Answer-Mode Indication时480/146并停止。用户发起的私呼仍核被叫参与许可；不允许则403/127。对普通private，非空IncomingPrivateCallList不含主叫且无名单外接听许可时403/159并停止。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "6.3.1.1 terminating participating INVITE classification",
+            "11.1.1.3.2 opening and steps1-11",
+            "11.1.1.4.1 steps3-5 (caller and target identity)",
+            "F.1.3 session-type and mcptt-request-uri/calling-user-id definitions"
+          ],
+          "printed_pages": [
+            95,
+            448,
+            449,
+            450,
+            451,
+            453,
+            727
+          ]
+        }
+      ],
+      "limitations": [
+        "11.1.1.3.2自身覆盖按需和预建立；不能把旧按需终接owner的common直接解除来代替本caller核验。",
+        "即时转发、迁移和无绑定no-answer转发先于普通404；TNP1造成转发时也不继续。这里不展开转发流程，不将“无绑定”一概写成必然404。",
+        "step8对127没有另写停止句，本页不增补；“用户请求私呼”的实际定义是transfer与forwarding标志各缺失或false。原文step10的别名拒绝对象写originating，本页不修订该对照文字。"
+      ],
+      "normative_strength": "资源性500与Retry-After为MAY；isfocus、绑定、设置和业务许可的所列拒绝为SHALL；停止仅按明确分支。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mode-and-bearer-selection",
+      "title": "先选应答模式，再检查可复用承载",
+      "conditions": [
+        "T-PF已到11.1.1.3.2 steps12-13，尚未被适用前序处理终止；被叫是否有合用预建立会话仍待判断。"
+      ],
+      "conclusion": "Answer-Mode=Auto，或缺该头而被叫已上报auto-answer，或Priv-Answer-Mode=Auto时，调用自动程序6.3.2.2.5.1。Manual、缺Answer-Mode而上报manual-answer、或Priv-Answer-Mode=Manual则调用手动程序6.3.2.2.6.1。两类程序都要求同时具备：被叫至少一个未关联MCPTT呼叫的预建立会话，所提供语音流media-level section与该既有会话相同，所提供话权控制实体media-level section也相同；满足才进入相应预建立helper，否则进入相应按需helper。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "11.1.1.3.2 steps12-13",
+            "6.3.2.2.5.1 full",
+            "6.3.2.2.6.1 full",
+            "11.1.1.4.1 step3 (FTA caller)",
+            "11.1.1.2.2.2 full (client-entry comparison)",
+            "11.1.1.2.1.3 opening and NOTE1 (existing-call comparison)"
+          ],
+          "printed_pages": [
+            118,
+            121,
+            425,
+            426,
+            435,
+            451,
+            453
+          ]
+        }
+      ],
+      "limitations": [
+        "不是只要注册或曾建立过承载就可复用；也不是由主叫使用REFER来决定被叫分支。",
+        "CF对FTA实际加入Priv-Answer-Mode=Manual。不要把此头理解为只有强制Auto才重要，后续预建立helper按是否存在任意Priv-Answer-Mode分派。",
+        "本页不替相互冲突的应答头自创优先级算法。客户端2.2.2的接收说明也不能越过服务器这些分派条件，把所有普通private都理解为必定收到re-INVITE。",
+        "对既有私呼的re-INVITE修改由2.1.3处理，不重新改变answer-mode；这不同于以既有预建立dialog接收一通新私呼。"
+      ],
+      "normative_strength": "实际模式调用与三条件承载选择为SHALL。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "automatic-preestablished-evidence",
+      "title": "普通自动路径直接给上游Unconfirmed，不等新客户端200",
+      "conditions": [
+        "自动程序已选择预建立helper6.3.2.2.5.3；入站无emergency-ind=true、无imminentperil-ind=true且无Priv-Answer-Mode。"
+      ],
+      "conclusion": "T-PF生成上游业务INVITE的200，以预建立协商结果和收到的offer构造SDP answer，设置P-Answer-State=Unconfirmed及T-PF自身PAI，先发送该200，再调用媒体交互。本分支没有先向客户端发一个新INVITE并等待其200的步骤。NOTE2说明，按steps2-7处理会使终接客户端收不到通常在mcptt-info正文中的数据。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "6.3.2.2.5.3 full",
+            "6.3.2.2.2.2 full",
+            "6.3.2.2.4.2 full",
+            "11.1.1.2.2.2 full (scope comparison)"
+          ],
+          "printed_pages": [
+            116,
+            117,
+            118,
+            120,
+            121,
+            435
+          ]
+        }
+      ],
+      "limitations": [
+        "这一200明确为Unconfirmed，不能写成被叫已完成新INVITE应答；也不能从NOTE2自行补一个SIP通知传递正文。媒体交互的具体送达和客户端提示不在本页闭合。",
+        "若有任意Priv-Answer-Mode或所列优先指示true，step1转用按需helper并带Replaces，跳过此直接200路径。",
+        "step5的PAI句末存在重复残句；此处只采用其明确的T-PF公共服务身份赋值，不为残句补另一身份。"
+      ],
+      "normative_strength": "200构造、Unconfirmed、身份赋值、先发送后媒体交互均为SHALL；正文不送达为NOTE对该路径结果的说明。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "manual-preestablished-evidence",
+      "title": "普通手动路径在既有dialog中邀约并等待客户端结果",
+      "conditions": [
+        "手动程序已选择6.3.2.2.6.3，且无所列优先指示true、无Priv-Answer-Mode；返回事件分别为该re-INVITE的180或200。"
+      ],
+      "conclusion": "T-PF生成预建立dialog内的re-INVITE，复制收到的mcptt-info并带基于入站offer构造的SDP。该场景不带Answer-Mode，手动应答由此场景隐含。收到180时生成并转送上游180，PAI为T-PF；收到客户端200时，若codec或media-format改变先更新媒体参数，再构造上游200、以客户端SDP answer为依据生成answer，进行媒体交互并发送上游200。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "6.3.2.2.6.3 full",
+            "6.3.2.2.3 full (actual construction helper)",
+            "6.3.2.2.4.1/.4.2 full",
+            "6.3.2.2.2.1 actual SDP-answer dependency",
+            "11.1.1.2.2.2 full"
+          ],
+          "printed_pages": [
+            116,
+            117,
+            118,
+            123,
+            124,
+            435
+          ]
+        }
+      ],
+      "limitations": [
+        "180不是最终接听结果。6.3.2.2.6.3的183说明是group情形，本页不把组呼183当作私呼必须经历的步骤。",
+        "caller明确要求re-INVITE，但调用的6.3.2.2.3正文以initial INVITE表述。此处按caller指定的会话内方法说明，保留helper文字边界，不偷偷改用另一个helper。",
+        "NOTE4提及MCPC Connect向终端提供业务会话身份；它不能替代具体媒体协议实现。该响应段也未提供可直接概括所有带SDP错误的统一转送规则，本页不从按需helper补上。"
+      ],
+      "normative_strength": "re-INVITE构造/发送、180转送和200分支的条件更新、构造及媒体调用为SHALL；所调用构造helper的Session-Expires为SHOULD，若含refresher则uac为SHALL。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "fta-replaces-path",
+      "title": "FTA的Manual头使可复用承载转为Replaces新INVITE",
+      "conditions": [
+        "CF按11.1.1.4.1为FTA加入Priv-Answer-Mode=Manual；T-PF已进入手动程序，且三项预建立选择条件满足。"
+      ],
+      "conclusion": "6.3.2.2.6.3发现Priv-Answer-Mode存在，调用按需手动helper6.3.2.2.6.2，并在新INVITE中加入指向所选预建立会话call-id/to-tag/from-tag的Replaces，SDP使用该会话当前媒体参数；SIP core支持资源共享时按规定加入Resource-Share。随后跳过普通手动预建立re-INVITE分支。按需手动helper把目标公共用户身份作为Request-URI，携Priv-Answer-Mode=Manual，设置T-PF的PAI并发送；180及客户端200按各自事件生成上游响应，200后执行相应媒体交互。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "11.1.1.4.1 steps3-5",
+            "11.1.1.3.2 step13",
+            "6.3.2.2.6.1 full",
+            "6.3.2.2.6.3 step1",
+            "6.3.2.2.6.2 full",
+            "6.3.2.2.3/.4.1/.4.2 full",
+            "6.3.2.2.9 full (MIME dependency)",
+            "11.1.1.2.2.2 step3"
+          ],
+          "printed_pages": [
+            117,
+            118,
+            121,
+            122,
+            123,
+            125,
+            435,
+            451,
+            453
+          ]
+        }
+      ],
+      "limitations": [
+        "即使被叫有合用的空闲预建立会话，FTA也不是普通manual re-INVITE路径。若三项匹配条件不成立，直接选择按需手动helper，不能凭FTA自行加一个不存在的Replaces目标。",
+        "Resource-Share仅在SIP core支持时加入；规则按对应m-line顺序，沿用原承载sharing key和方向。不能将共享资源等同保留旧dialog。",
+        "MIME复制按6.3.2.2.9的具体种类和条件，mcptt-info复制排除原文所列MKFC-GKTP，不能宣称无条件原样复制全部正文。",
+        "被叫200之后的上游响应不证明FTA全体候选都接听，也不替代CF后续赢家选择。此处不扩展该选择或完整失败清理。"
+      ],
+      "normative_strength": "FTA Manual头、条件Replaces构造、跳过普通分支、发送与响应处理为SHALL；Resource-Share按core支持条件为SHALL。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "client-acceptance-and-replacement",
+      "title": "客户端接受替换与保留原承载是两回事",
+      "conditions": [
+        "客户端收到本次业务邀请：普通private的预建立终接按2.2.2用re-INVITE入口，FTA用initial INVITE入口；本条重点解释FTA替换路径的接听、拒绝及CANCEL替代事件，不要求已成功接听。"
+      ],
+      "conclusion": "实际被调用2.1.2仍有客户端资源/并发拒绝及安全校验。FTA须通知用户且不得转发：用户忙于其他通话则486并停止，超过客户端实现决定的应答期限则480并停止。Priv-Answer-Mode=Manual进入6.2.3.2.1；用户拒绝回480/110，其余按该helper生成180，发送最终200时调用6.2.3.1.1。收到含Replaces的邀请时，该最终200使用被替换预建立会话的媒体参数；发送200后须释放Replaces所指预建立会话，再进行媒体交互。若在INVITE尚未发200且已有dialog时收到CANCEL，则对CANCEL回200、对INVITE回487。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "11.1.1.2.2.2 full",
+            "11.1.1.2.1.2 full",
+            "6.2.3.2.1 full",
+            "6.2.3.1.1 full",
+            "6.2.2 full (SDP answer dependency)",
+            "F.1.3 session-type definitions",
+            "6.3.2.2.6.3 step1 (server replacement caller)"
+          ],
+          "printed_pages": [
+            70,
+            71,
+            72,
+            123,
+            422,
+            423,
+            424,
+            425,
+            435,
+            727
+          ]
+        }
+      ],
+      "limitations": [
+        "FTA不转发的专用规则仍成立，不能从通用手动helper中“用户要求转发”分支反向赋予FTA转发能力。",
+        "客户端收到含MIKEY的offer需验证，失败488/136；成功才解封PCK。FTA需建立安全上下文时另有由终接方产生PCK及MIKEY的依赖；密码算法不在本页展开，不能从密钥处理成功推断用户接听。",
+        "FTA客户端200的Replaces处理明确释放旧预建立会话；这不同于普通manual re-INVITE的承载复用，不能概括为所有预建立终接都保留旧dialog。释放的完整SIP及媒体实现不在此展开。",
+        "CANCEL处理不继承成功接听条件；有临时MEPP状态时恢复并丢弃临时值，FTA取消提示为可选。普通非优先范围不因此增加紧急业务。",
+        "11.1.1.2.2.2修改2.1.2的入口；不能把已进行私呼修改程序2.1.3当作这次新业务的自动接受依据。普通手动re-INVITE的无Answer-Mode由服务器helper的明确NOTE解释，不制造新的客户端配置缺省。"
+      ],
+      "normative_strength": "FTA通知、禁止转发、忙/未答拒绝和停止、模式调用、最终200及条件释放、CANCEL200/INVITE487为SHALL；资源性拒绝和FTA取消提示为MAY。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [
+    "本页维护被叫侧承载选择与应答证据，不重写主叫发起、CF完整赢家选择、完整转发/紧急状态、安全算法或媒体协议。按角色和实际分派读取；普通自动200、普通手动re-INVITE与FTA Replaces不是同一个成功事件。"
+  ],
+  "related": [
+    "terminating-authorization.md",
+    "private-client-acceptance.md",
+    "commencement-selection.md",
+    "first-to-answer-selection.md",
+    "preestablished-session-lifecycle.md",
+    "group-terminating-mode.md",
+    "group-terminating-responses.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
