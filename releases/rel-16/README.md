@@ -46,6 +46,8 @@
 
 - [已有按需预安排组会话：CF紧急升级、取消与分层反馈](topics/calls/emergency-group-server.md)：按已有会话CF re-INVITE及对应响应事件进入；初始服务器或客户端请求不保证进入本页成功分支。
 
+- [在网单话权：显式抢占请求与撤销事件责任](topics/media/on-network-preemption-revoke.md)：仅已成立的Taken/permitted及后续pending角色事件，不把队首或撤销当许可。
+
 先读主题共同条件，再按实际角色与事件选取结论；不把拒绝、应答、取消或后续数据处理拼成同时必备的条件。这些主题均不构成完整端到端实现，也不证明版本组合互通。
 
 [业务域](domains.json) · [主题索引](topics.json) · [条件阅读路径](reading-paths.json) · [覆盖边界](coverage.md) · [来源](sources.json) · [状态](status.json)

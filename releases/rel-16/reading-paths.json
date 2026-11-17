@@ -100,6 +100,10 @@
         {
           "condition": "仅当需要核对实际服务器角色处理、且请求方U已为not permitted and Floor Idle、G已为Floor Idle并满足普通显式非排队范围时读取；客户端请求、SIP200或组归属不能证明这些入口成立",
           "read": "topics/media/on-network-idle-floor-server.md"
+        },
+        {
+          "condition": "仅实际进入本页在网单话权角色/状态事件时比较显式抢占与撤销；客户端has permission收到Revoke与服务器U/G事件分别适用，普通请求不保证必经本页",
+          "read": "topics/media/on-network-preemption-revoke.md"
         }
       ],
       "boundary": "不覆盖完整服务器仲裁、特殊业务、媒体安全或全部话权状态实现。"
@@ -236,7 +240,12 @@
       "id": "r16-mcptt-onnetwork-idle-floor-server",
       "question": "普通在网话权服务器：Idle 请求处理与条件授予",
       "start": "topics/media/on-network-idle-floor-server.md",
-      "next_if": [],
+      "next_if": [
+        {
+          "condition": "仅另行确认实际已进入G Taken、请求者U Taken及原持有者对应事件时比较；本页Idle条件授予不自动证明这些状态或新抢占请求成功，不以返回Idle闭合排队推进",
+          "read": "topics/media/on-network-preemption-revoke.md"
+        }
+      ],
       "boundary": "不覆盖完整初始化、授权政策、队列调度、重传/释放或媒体安全实现；不由未拒绝推定必授予，保留原文回指和逻辑差异。 仅从已有Idle U/G及实际角色事件进入；客户端流程不必经过本页。"
     },
     {
@@ -276,6 +285,13 @@
       "start": "topics/calls/emergency-group-server.md",
       "next_if": [],
       "boundary": "仅CF实际收到已有按需预安排组会话的紧急re-INVITE，或对应下行响应、ACK/INFO及MESSAGE结果事件；CF组状态与客户端MES/MEG/MEGC/MEA分别判断。不覆盖初始建立、完整告警/紧急媒体/话权或全组生命周期；正向取消授权错回指、通知集合和200事件衔接差异未闭合，不借客户端授权或普通初始服务器条件补全。"
+    },
+    {
+      "id": "r16-mcptt-onnetwork-preemption-revoke",
+      "question": "在网单话权：显式抢占请求与撤销事件责任",
+      "start": "topics/media/on-network-preemption-revoke.md",
+      "next_if": [],
+      "boundary": "不覆盖完整初始化、授权政策、排队推进、dual/multi-talker或完整释放；紧急SIP、Revoke、队首和Idle/Taken均不证明新请求者已获准，原文逻辑与接口差异保留。 按实际G Taken、请求者U Taken、原持有者U permitted及后续pending事件分别进入；不得由SIP成功推定这些状态。"
     }
   ]
 }

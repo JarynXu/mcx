@@ -302,6 +302,16 @@ Stage 2 功能与信息流说明不替代 Stage 3；许可、媒体可用、实�
 
 [读取主题](topics/media/on-network-idle-floor-server.md)
 
+## 在网单话权：显式抢占请求与撤销事件责任
+
+在网单话权显式抢占请求的U准入、G条件撤销、持有者客户端停止与U/G宽限期收尾。
+
+策略选撤销才进入后续；RTP、Release、T3/T1/T8及Idle/Taken分别按角色事件判断，队首和撤销不是新用户Granted。
+
+尚未建立：不覆盖完整初始化、授权政策、排队推进、dual/multi-talker或完整释放；紧急SIP、Revoke、队首和Idle/Taken均不证明新请求者已获准，原文逻辑与接口差异保留。
+
+[读取主题](topics/media/on-network-preemption-revoke.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

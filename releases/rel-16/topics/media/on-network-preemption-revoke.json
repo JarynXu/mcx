@@ -1,0 +1,274 @@
+{
+  "topic_id": "r16-mcptt-onnetwork-preemption-revoke",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "在网单话权：显式抢占请求与撤销事件责任",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "固定TS24.380 V16.9.0；已建立在网按需会话的单话权控制，以显式Floor Request及本地策略选择撤销为主。广播、ambient、system、临时组、audio-cut-in、dual和multi-talker不作为主流程；紧急/迫近危险指示仅按实际请求准入条件处理，implicit升级只作比较。",
+    "从已有G Taken、请求者U not permitted and Floor Taken及原持有者U permitted的相应事件开始；后续pending状态只适用于已进入该状态的角色。不提供初始化、完整授权政策、排队推进或完整通话释放算法。",
+    "各角色与消息/超时事件分别适用。请求失败、无queueing、尚未撤销及未收到Release均可落入对应条款，不以成功条件排除拒绝或超时。会话协商和适用媒体保护仍是独立依赖。"
+  ],
+  "claims": [
+    {
+      "id": "taken-request-admission",
+      "title": "请求者 U 先处理准入与队列，优先级不是发送许可",
+      "conditions": [
+        "本次为已建立在网会话中的显式 Floor Request；关联请求者的服务器 U 处于 not permitted and Floor Taken。各拒绝、重复请求、转交和排队分支按自己的条件适用，不以已获准或已协商 queueing 作为共同前提。"
+      ],
+      "conclusion": "非 multi-talker 时，若（请求无 Floor Indicator，或其中 D/E 均为0），并且（客户端未协商 queueing，或未在 mc_priority 中包含优先级），U 须发 cause1 Deny 并仍留 Taken。另一独立段在已协商 queueing 或包含 mc_priority 或两者均有、并按本地策略时，计算有效优先级：已协商且请求含值时取请求值与协商上限较小者；协商上限为 receive only 时采用 receive-only 优先级；已协商但非 receive-only 且请求缺值，或未协商优先级时，采用默认优先级。D=1 判 emergency，E=1 判 imminent peril；缺字段或两者均非1判 normal。有效优先级为 receive only 须发 cause5 Deny并保持 Taken。检查已有队列项时，有 Track Info 使用最上层 Participant Reference 加请求 SSRC，否则使用 SSRC。已有相同有效优先级的排队请求时，仅在已协商 queueing 时发送 Queue Position Info，并仍留 Taken。只有有效优先级是 pre-emptive、活动队列没有其他 pre-emptive 请求且当前持有者不是 pre-emptive 时，step5 才转交 G 并保持 Taken。未协商 queueing，且抢占请求遇其他抢占排队或抢占持有者时，step6 发 cause1 Deny；未协商 queueing且非抢占时，step7同样拒绝。已协商 queueing且非抢占时，step8 插入或更新到所有同有效优先级请求之后，发 Queue Position Info，仍留 Taken。Deny 的适用分支条件复制请求 Track Info，可附 Reject Phrase；Queue Info含位置与优先级。",
+      "normative_strength": "上述条件处理、转交、队列更新、发送和状态保持为 SHALL；Reject Phrase及相应分支请求ACK为 MAY。",
+      "limitations": [
+        "原文的拒绝段使用“未协商 queueing OR 未含 mc_priority”，后续处理段使用“queueing OR mc_priority OR both”。例如只满足其中一种协商时，两段可能同时适用；本页不改成互斥 if/else，也不给重复输出定义先后或消歧政策。",
+        "Floor Priority为0至255，缺字段默认0；是否抢占由有效优先级与本地策略决定，不等于数值高或紧急类型便必获准。§4.1.1.4还列用户优先级、层级数、参与者类型、当前持有者等输入，配置来源不是本页完整政策。",
+        "§8.2.3.15 NOTE1称C/D/E仅informative、本Release未定义相应procedure；§6.3.5.4.4却实际使用D/E分类。保留两处差异，不用注抹掉正文或用正文改写注。Floor Indicator可同时置多位，组合及优先级由本地策略决定。",
+        "Queue Info位置254表示未排队；255表示已排队但位置未知或策略不披露。Queue Position Info不是 Granted。Request和队列消息中的离网专用User ID、Queued User ID及queued SSRC不能直接套入在网。广播/ambient的cause5段，以及audio-cut-in、multi-talker入口仅作范围对照。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "4.1.1.4",
+            "6.3.5.4.4 full (audio-cut-in/multi/broadcast/ambient comparison included)",
+            "8.2.3.2;8.2.3.4–5;8.2.3.13;8.2.3.15",
+            "8.2.4;8.2.12",
+            "14.1–3"
+          ],
+          "printed_pages": [
+            21,
+            78,
+            79,
+            80,
+            81,
+            149,
+            150,
+            151,
+            154,
+            155,
+            156,
+            161,
+            162,
+            172,
+            173,
+            237,
+            238,
+            239
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "g-policy-revoke",
+      "title": "G 选择撤销后把请求放到队首，不等于立即授权",
+      "conditions": [
+        "G 已在 Floor Taken；收到有效优先级为抢占的显式请求，当前持有者有效优先级非抢占；非multi-talker、非audio-cut-in。这里仅展开本地策略选择 revoke 的后续，未选择撤销不继承这些动作。"
+      ],
+      "conclusion": "§6.3.4.4.7先按本地策略在撤销当前说话者与允许两者媒体之间选择。选择撤销时，G须停正在运行的T1/T20，指定 Floor Revoke cause4 Media Burst pre-empted，进入 pending Floor Revoke，并将请求者插入或更新至所有排队请求之前；仅在请求者已协商 queueing 时，向其发 Queue Position Info，含位置、优先级并条件复制请求中的Track Info。进入pending的helper须向原持有者发Revoke、启动该参与者T3并设置G pending状态；特殊呼叫类型按该helper条件携Floor Indicator。Revoke的SSRC是服务器SSRC，cause4不附额外原因信息。",
+      "normative_strength": "选择撤销之后的停止、cause4、状态、队首更新和条件通知为 SHALL；策略本身保留原文给定选择，不写成强制选撤销。",
+      "limitations": [
+        "原入口还列“or if audio cut-in”，另一策略选项调用dual流程。这里只取非audio-cut-in的单话权撤销分支，不将原文OR改为全局AND，不展开dual/multi-talker算法。",
+        "显式请求的队首插入没有以协商queueing为前提，Queue Position Info发送才有该前提；两者不能合并。此时没有给新请求者发送Granted的动作。",
+        "implicit仅供比较：§6.3.5.4.8要求已有会话升级emergency且信令告知后续offer含mc_implicit_request；§14.5只规定normal→emergency的该后续语义。§6.3.4.4.12则写emergency或imminent升级，并在先称Queue Position Info后称Queue Position Request。本页保留调用和消息名差异，不据呼叫紧急状态补一个隐式媒体许可链。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.4.7;6.3.4.4.7a (multi comparison)",
+            "6.3.4.5.1–2",
+            "8.2.10.1–2",
+            "6.3.5.4.8;6.3.4.4.12;14.5 (implicit comparison)"
+          ],
+          "printed_pages": [
+            61,
+            62,
+            64,
+            65,
+            83,
+            169,
+            170,
+            171,
+            240
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "holder-u-and-client",
+      "title": "持有者 U 的撤销重传与客户端停止是不同事件",
+      "conditions": [
+        "以下为替代事件：原持有者服务器U在permitted收到G的Revoke；该U在pending收到RTP或T8到期；原持有者客户端在has permission收到Revoke。客户端响应Release的G=0字段守卫仅限相应发送动作，不要求服务器事件已等到客户端响应。"
+      ],
+      "conclusion": "U收到G的Revoke须转交，若含Track Info则保存，进入pending并启动T8。pending收到关联参与者含payload的RTP仍须转发给media distributor并保持pending。T8到期须重发Revoke，使用与上次相同的Rejection Cause和Floor Indicator，重启T8并仍留pending。客户端has permission收到Revoke须通知用户许可正在撤销，可解释原因，并要求media mixer丢弃剩余缓冲RTP、停止向服务器转发编码语音。收到的Floor Indicator G=0时须发含G=0的Release，可请求ACK；客户端随后启动T100、C100置1并进入pending Release。",
+      "normative_strength": "U转交、保存、T8重传/状态和客户端清缓存、停止转发、条件Release、T100/C100为 SHALL；向用户解释原因和Release请求ACK为 MAY。放弃重传时断开客户端是NOTE中的建议，非强制。",
+      "limitations": [
+        "服务器T8重传次数和放弃后的动作是实现选项；表11.1.3给T8默认1秒、可配置，正常停止为T3到期或收到被撤销者Release。C7/C20表不提供T8次数上限，不能把C100当服务器T8计数器。",
+        "Floor Indicator缺失不能自动当G=0。Revoke生成helper只对所列特殊呼叫要求携该字段；客户端和服务器Release分派却明确检查G位，本页不补普通消息的默认位或完整构造闭合。",
+        "客户端pending Release中的晚到Granted按条件ACK后仍留pending；T100上限转has no permission，Idle/Taken/RTP各有自己的后续入口。它们不证明新请求者获准；完整普通客户端重传责任见已有在网话权客户端主题。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.5.5;6.3.5.6.1–4",
+            "6.2.4.5.4;6.2.4.6.1–8",
+            "6.3.4.5.2 (Floor Indicator construction boundary)",
+            "8.2.2;8.2.3.15;8.2.7",
+            "11.1.1 T100;11.2.1 C100;11.1.3 T8;11.2.3 (counter comparison)"
+          ],
+          "printed_pages": [
+            43,
+            45,
+            46,
+            47,
+            65,
+            86,
+            87,
+            88,
+            148,
+            155,
+            156,
+            165,
+            166,
+            213,
+            219,
+            223,
+            224
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "g-grace-and-completion",
+      "title": "G 按 RTP、匹配 Release 或计时器到期分别收尾",
+      "conditions": [
+        "G处于pending Floor Revoke。下述RTP、收到已被发Revoke参与者的Release、该参与者T3到期、该参与者T1到期是替代入口；不能把Release到达当超时分支的前提。"
+      ],
+      "conclusion": "pending收到原permitted参与者RTP的指示时，G须重启T1，按本地策略要求media distributor继续转发并保持pending。收到对应Revoke的Release时，G须要求停止转发、停运行中的T1并停T3；活动队列非空则调用Idle；队列空且当前获准列表空也调用Idle；队列空但列表非空则调用Taken。T3到期时，G须先告知客户端接口general state现在是Floor Idle，再按相同的队列/列表条件调用Idle或Taken。被撤销者T1到期时须停T3，只有floor now empty才调用Idle；不能将它改成任何T1到期都进入Idle。",
+      "normative_strength": "上述按实际事件的转发、停止、通知及条件状态动作为 SHALL。",
+      "limitations": [
+        "T3默认3秒且可配置；audio-cut-in为0不适用于本页。计时表T3的Cause of start仅列T2到期，实际pending helper另明确启动T3，不能用表格删除抢占入口。T3表的到期描述为不再允许RTP且floor idle，而正文仍按队列/列表分支处理。",
+        "§6.3.4.5.5 step2仅在支持multi时移除列表项，step3发送Release Multi Talker却未带multi守卫；本页保留这个字面动作差异，不给step3擅加条件，也不因此宣称普通单话权完整实现已闭合。相较之下，匹配Release和被撤销者T1到期中的相应multi动作有条件。",
+        "§6.3.4.5.6另有“其他参与者T1到期”段，不能移用来替代被撤销者分支。表11.1.3 NOTE3仍使用MBCP Media Burst Release字样及最后RTP序号条件，本页不补该序号编码算法。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.5.1–6 full",
+            "11.1.3 T1/T3 and NOTE3; T20 comparison"
+          ],
+          "printed_pages": [
+            64,
+            65,
+            66,
+            67,
+            218,
+            219,
+            220
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "u-release-result-boundary",
+      "title": "Release 与 Idle/Taken 返回只结束相应局部责任",
+      "conditions": [
+        "原持有者服务器U在pending Floor Revoke。来自关联参与者的Release、来自G的Idle、来自G的Taken是替代事件；Release中G=0仅约束向G转交分支，不是Idle/Taken接收前提。"
+      ],
+      "conclusion": "U收到Release时，若subtype要求ACK，须回Floor Ack，Message Type=4、Source=2。收到Release的Floor Indicator G=0时须转交G且仍留pending。后来收到G的Idle须转给参与者并进入not permitted and Floor Idle；收到Taken须转给参与者并按正文进入not permitted and Floor Taken。这两种下发可请求ACK；是否处理ACK及收不到后如何处理是实现选项。",
+      "normative_strength": "条件ACK、Release转交、Idle/Taken下发和正文状态为 SHALL；下发请求ACK为 MAY。",
+      "limitations": [
+        "§6.3.5.6.7称进入not permitted and Floor Taken却回指§6.3.5.3.2（Idle helper）；保留状态名与回指差异，不静默修成另一个编号。",
+        "进入Idle后的§6.3.4.3.2第一段要求非Start-stop、没有客户端协商queueing、且dual状态机不存在，却在内部列出空队列和非空队列处理。不能据撤销返回Idle，跨过no queueing守卫证明协商排队后的自动选队首和Granted。",
+        "发送Revoke、收到Release、返回Idle/Taken、队首位置都不是新请求者已获发送许可的证据。本页也不保证全部RTP已送达或已被播放，不把紧急呼叫状态当媒体许可。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.6.5–7",
+            "6.3.5.3.2 (cited helper comparison)",
+            "6.3.4.3.2 (queue advancement boundary)",
+            "8.2.2;8.2.5 opening (permission evidence);8.2.13"
+          ],
+          "printed_pages": [
+            56,
+            75,
+            88,
+            89,
+            148,
+            162,
+            173,
+            174
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [
+    "U是逐参与者接口，G是逐通话仲裁；内部实体说明不指定实现架构。协商、SSRC/Track Info身份关联和配置输入应实际成立，不能从SIP成功反推话权状态。",
+    "§13.2/13.3.2–4按协商及已提供CSK或已配置SPK要求相应控制消息保护；受保护RTP在PF/CF透明转发。本页只保留这些接口条件，不实现外部RFC3711、TS33.180、密钥分配或配置管理。"
+  ],
+  "related": [
+    "on-network-floor-client.json",
+    "on-network-idle-floor-server.json"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "scope_references": [
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "4.2.1 (entity prose only)",
+        "14.1–5",
+        "13.2;13.3.2–4 (on-network control protection interface)"
+      ],
+      "printed_pages": [
+        25,
+        229,
+        230,
+        231,
+        232,
+        233,
+        235,
+        236,
+        237,
+        238,
+        239,
+        240
+      ]
+    }
+  ]
+}
