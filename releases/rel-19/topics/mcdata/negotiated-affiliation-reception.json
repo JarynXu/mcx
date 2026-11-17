@@ -1,0 +1,143 @@
+{
+  "topic_id": "r19-mcdata-negotiated-affiliation-reception",
+  "title": "MCData协商式归属请求：终止侧许可与用户决定",
+  "release": 19,
+  "standard_stage": 3,
+  "state": "clause-checked",
+  "common_conditions": [
+    "固定TS24.282 V19.7.0，限协商请求已实际到达终止PF或目标客户端后的责任；一个目标用户可以收到多个组的归属/撤销请求。",
+    "终止PF授权、客户端收到MESSAGE、用户接受及发起者收到2xx按各自事件判断，不将许可、接受或归属成功作为所有分支的共同前提。",
+    "不是端到端协商归属流程；不含强制模式、批量目标用户、完整起始转送、安全实现或组owner最终状态机。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.282-v19.7.0",
+  "claims": [
+    {
+      "id": "negotiated-affiliation-terminating-permission-and-delivery",
+      "title": "终止PF先判断谁有权向该用户提出协商请求",
+      "conditions": [
+        "PF实际收到SIP MESSAGE：Request-URI为服务目标用户的终止PF公共服务身份；mcdata-info+xml正文含mcdata-request-uri及mcdata-calling-user-id；P-Asserted-Service携MCData ICSI；另含application/vnd.3gpp.mcdata-affiliation-command+xml正文。拒绝分支不预设许可已通过。"
+      ],
+      "conclusion": "PF从mcdata-request-uri确定被服务的目标MCData ID，从mcdata-calling-user-id确定发起MCData ID。发起者无权向该目标提出协商式归属改变时，返回403并停止。允许继续时，将Request-URI改为服务器内与目标MCData ID绑定的公共用户身份，加入携MCData ICSI及require/explicit的Accept-Contact，再转送MESSAGE。这里判定的是向目标提出请求的权限，不是替目标同意组变更，也不是各组最终准入。",
+      "limitations": [
+        "本页以§8.3.2.8完整入站条件为实际入口，不声称客户端发起到这里的中间路径已经闭合。§8.2.4发给originating PF并列出目标ID，但没有在该构造步骤列mcdata-calling-user-id；此处入口却要求terminating PF及calling用户字段。不能自行补身份注入或路由步骤。",
+        "§8.3.2.9处理的是带presence/PIDF的PUBLISH，不是本MESSAGE。因此不能借其PAI取身份与转送步骤补齐上述缺口；本页也不提供跨PF完整报文。",
+        "§8.2.4规定协商请求仅支持一个目标MCData用户，不支持一次发给多个目标用户。命令中的多个group是该目标的组列表，不是多个接收用户。目标绑定缺失如何选终端或返回何种错误，§8.3.2.8未在本段展开。"
+      ],
+      "normative_strength": "本条明确的检查、拒绝或条件动作均为SHALL；不将收到请求、交付响应或用户接受提升为最终归属成功。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "8.3.2.8 full entry and steps1–5",
+          "printed_pages": [
+            172,
+            173
+          ],
+          "role": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "8.2.4",
+          "printed_pages": [
+            160,
+            161
+          ],
+          "role": "comparison-only：单目标及起始字段/路由边界"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "8.3.2.9",
+          "printed_pages": [
+            173,
+            174
+          ],
+          "role": "comparison-only：PUBLISH入口不能替代MESSAGE转送"
+        }
+      ],
+      "clause": "8.3.2.8 full entry and steps1–5",
+      "printed_pages": [
+        172,
+        173
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "negotiated-affiliation-client-consent-and-result",
+      "title": "客户端先回200，再取得用户接受的组列表",
+      "conditions": [
+        "客户端实际收到§8.2.5规定的MESSAGE：P-Asserted-Service为MCData ICSI，命令MIME正文含affiliate下的归属组列表和de-affiliate下的撤销组列表。此入口按原文AND保留，不以用户已经接受作为处理前提。其后调用§8.2.2仅在用户接受且对应组状态条件成立时执行。"
+      ],
+      "conclusion": "客户端先回200，再向用户确认归属和撤销两类列表，得到用户接受的列表。用户接受请求后，对接受归属列表中尚未归属的每个组，调用§8.2.2归属；对接受撤销列表中已经归属的每个组，调用§8.2.2撤销。原发起客户端若收到本请求的2xx，只向用户说明请求已交付目标用户的一个MCData客户端。200、用户接受及后续归属结果是不同证据，不能因先收到200就显示“对方同意”或“全部组变更完成”。",
+      "limitations": [
+        "D.3.2的command-list下affiliate与de-affiliate各为可选的0..1元素，存在时含至少一个group，group类型为anyURI。§8.2.5接收条件却写两类列表AND；本页不改成OR，也不为只有一类列表的请求补接收算法。",
+        "D.3.3语义将子元素写为affiliate-command/de-affiliate-command，D.3.2则将这些名称用作类型，实际子元素为affiliate/de-affiliate。本页保留名称差异，不输出自行统一的XML。D.3.3的列表执行说明不能取消§8.2.5明确的用户接受和当前归属状态守卫。",
+        "拒绝接受、接受部分组或没有需要改变状态的组，不能据此制造第二个最终SIP错误、发起者逐组结果清单或回滚算法；这些处理未由本接收段完整规定。",
+        "§8.2.2调用后才进入目标用户在目标客户端的兴趣变更责任，不能复制发起者身份或把accepted列表当直接写入的最终状态。相关页仅在其本用户、目标客户端及实际兴趣集合条件下适用；结果观察按§8.2.1/8.2.3另行启动和解释，不在本页保证所有变更成功。"
+      ],
+      "normative_strength": "本条明确的检查、拒绝或条件动作均为SHALL；不将收到请求、交付响应或用户接受提升为最终归属成功。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "8.2.5;8.2.4 response paragraph",
+          "printed_pages": [
+            160,
+            161
+          ],
+          "role": "规范依据"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "D.3.1–D.3.3",
+          "printed_pages": [
+            593,
+            594
+          ],
+          "role": "命令对象、schema可选性与名称差异"
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "8.2.1–8.2.3",
+          "printed_pages": [
+            158,
+            159,
+            160
+          ],
+          "role": "实际后续helper与条件化结果边界，不重复PUBLISH/观察全链"
+        }
+      ],
+      "clause": "8.2.5;8.2.4 response paragraph",
+      "printed_pages": [
+        160,
+        161
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [
+    "请求被允许转交、交付到目标客户端、目标用户接受以及组状态完成必须分别判断。原文的字段、入口与schema差异仍限制直接生成可执行报文。"
+  ],
+  "related": [
+    "explicit-affiliation-request.md",
+    "explicit-affiliation-observation.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
