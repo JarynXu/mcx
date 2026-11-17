@@ -1,0 +1,273 @@
+{
+  "topic_id": "r16-identity-user-profile-switch",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "改了预选配置，当前通话会断吗？同一人的另一台终端要不要跟着切？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "Inherit common_conditions and add the applicable claim conditions.",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0，Release 16，Stage 2；区分更改下一次授权的预选与单个正在使用中的 MC 业务的当前配置选择。"
+  ],
+  "claims": [
+    {
+      "id": "preselection-next-authorization",
+      "title": "换预选只决定下一次授权的选择",
+      "conditions": [
+        "用户已认证，UE 能安全访问配置管理服务器、已有至少一个配置档，配置管理客户端被触发更改预选。"
+      ],
+      "conclusion": "配置管理客户端向配置管理服务器发送业务 ID 和预选索引。服务器先检查许可；允许时保存并回复，这两步可不定序。数据库更新后，业务服务器及所有关联终端获得变更；正在服务时，当前活动配置不变。程序写下次业务授权应用此改变。",
+      "normative_strength": "两请求字段、响应结果均为 M。步骤 3 与 4 可换序或并行。每台 UE 单独指定预选项为本版编者注 FFS。",
+      "limitations": [
+        "请求表写用户认证，程序写下次业务授权；本文保留二者差别。确认和配置传播均不是当前会话切换的证明。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.6, preconditions"
+          ],
+          "printed_pages": [
+            75
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.6, Figure 10.1.4.6-1, steps 1–4, note and subsequent paragraphs including editor’s note"
+          ],
+          "printed_pages": [
+            76
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.2.8, introductory paragraph"
+          ],
+          "printed_pages": [
+            70
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.2.8, Table 10.1.4.2.8-1",
+            "10.1.4.2.9, Table 10.1.4.2.9-1"
+          ],
+          "printed_pages": [
+            71
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "active-choice-per-client",
+      "title": "正在服务时，向该业务服务器为一个客户端改索引",
+      "conditions": [
+        "所涉业务正在提供服务；用户已认证，UE 可安全访问业务服务器，已有多份配置档、已完成该业务授权；业务客户端被触发选择活动配置。"
+      ],
+      "conclusion": "MCPTT、MCVideo、MCData 可分别使用本程序；一次限单一业务。业务客户端把业务 ID 和配置档索引发给本业务服务器。服务器为这个客户端保存所选索引并回复结果。同一用户不同客户端可使用不同的活动配置，每客户端同时只用一份。对于同一用户通过不同 UE 同时使用两份配置的情况，业务服务器与客户端如何处理仍待研究。",
+      "normative_strength": "两项请求字段和响应结果均为 M；每客户端保存见步骤 3，不同客户端可不同见注 1。 §5.2.4 注 3 将两端的多 UE 同时使用处理留待研究，不否定 §§10.1.4.1、10.1.4.7 明确允许的不同活动配置。",
+      "limitations": [
+        "不推出同机其他业务、同用户另一客户端跟着切换，也不等同各 UE 可分别设预选。步骤 2 的条件主体拼作 MPCTT server，不据该处扩展三个业务的缓存实现。",
+        "§5.2.4 注 3 的同时使用处理与 §10.1.4.6 编者注的逐 UE 指定预选项，是两个独立未决点；均不能由一次双机实测或按客户端存索引而补齐。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.1 and Figure 10.1.4.1-1, user profile per client"
+          ],
+          "printed_pages": [
+            68
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.7, scope and list of services"
+          ],
+          "printed_pages": [
+            76
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.7, preconditions, Figure 10.1.4.7-1, steps 1–3 and note 1"
+          ],
+          "printed_pages": [
+            77
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.2.10, Table 10.1.4.2.10-1",
+            "10.1.4.2.11, Table 10.1.4.2.11-1"
+          ],
+          "printed_pages": [
+            71
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.7, steps 4–6 and note 2"
+          ],
+          "printed_pages": [
+            77,
+            78
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.4, NOTE 3 (handling of simultaneous use of two user profiles across different UEs is FFS)"
+          ],
+          "printed_pages": [
+            19
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.6, Figure 10.1.4.6-1, steps 1–4, note and subsequent paragraphs including editor’s note"
+          ],
+          "printed_pages": [
+            76
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "response-and-group-config",
+      "title": "索引设置成功有哪些事情尚未完成",
+      "conditions": [
+        "服务器或客户端未存有所选配置档对应的组配置资料。"
+      ],
+      "conclusion": "服务器与客户端在各自缺少组配置时各自取得并订阅更新。服务器取得及订阅的步骤可与回复交换先后或并行。成功响应确认当前配置已设置，不证明两端的组配置或后续归属均已完成。",
+      "normative_strength": "步骤 4、6 都由本地数据是否已存作条件；注 2 允许步骤 4 和 5 不定序。",
+      "limitations": [
+        "用户配置档和它关联的组配置是不同数据；本程序不是无条件下载或订阅所有组。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.2.10, Table 10.1.4.2.10-1",
+            "10.1.4.2.11, Table 10.1.4.2.11-1"
+          ],
+          "printed_pages": [
+            71
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.7, steps 4–6 and note 2"
+          ],
+          "printed_pages": [
+            77,
+            78
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.7, paragraph following step 6"
+          ],
+          "printed_pages": [
+            78
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "successful-negotiation-clears-state",
+      "title": "什么时候清旧配置留下的通话和组归属",
+      "conditions": [
+        "业务服务器与终端成功协商所选配置。"
+      ],
+      "conclusion": "双方基于新配置，清理来自以前所选或预选配置的活动业务状态，包括解除相关组归属、断开相应业务呼叫；处理新配置资料，例如按需归属。",
+      "normative_strength": "§10.1.4.7 结尾以双方协商成功作条件；组归属是按需处理，不是所有组无条件加入。",
+      "limitations": [
+        "请求已发或结果失败不能据此确认清理；这些条款不指定失败回滚/重试。清理旧配置相关状态不是删除配置档、撤销其他业务或结束另一客户端的呼叫。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.6, Figure 10.1.4.6-1, steps 1–4, note and subsequent paragraphs including editor’s note"
+          ],
+          "printed_pages": [
+            76
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.7, scope and list of services"
+          ],
+          "printed_pages": [
+            76
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.2.10, Table 10.1.4.2.10-1",
+            "10.1.4.2.11, Table 10.1.4.2.11-1"
+          ],
+          "printed_pages": [
+            71
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.7, paragraph following step 6"
+          ],
+          "printed_pages": [
+            78
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-identity-cross-service-user-mapping",
+    "r16-mcptt-settings-publication"
+  ],
+  "limitations": [
+    "不定义 Stage 3 消息编码、各 UE 独立预选机制或失败时实现策略。",
+    "同一人可在不同客户端使用不同活动配置；同一用户在不同 UE 同时使用两份配置时，不宣称服务器与客户端的协调方法已定。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
