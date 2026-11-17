@@ -13,15 +13,15 @@
 | --- | --- |
 | [MCPTT 通话与话权](topics-calls.json) | 私呼、预安排组呼、chat、预建立会话、加入与释放；普通、优先撤销、多发言者、双话权（含同一获准者再次请求的有限D回应及原主路退出接续）及有限离网路径（普通BASIC同类型合并按身份和时间守卫；排队主链另须判为非抢占，查询/等待出口按事件读取）。先分清呼叫控制与话权、客户端与服务器状态。 |
 | [组管理与 MCPTT 组呼入口](topics-groups.json) | 组文档、XCAP 方法与权限、并发修改、订阅、显式/隐式归属和会议状态；文档权限、归属与入呼许可分别判断；[按需广播](topics/groups/broadcast-ondemand-signalling.md)另按版本限制与终接条件读取，不套非广播主链。MCData、MCVideo 专有归属到各自业务域查。 |
-| [MCData 数据业务](topics-mcdata.json) | SDS、HTTP/媒体面 FD、IP Connectivity、MBMS 公告与有限MB2组FD映射、有限 MBS 组播接收意愿反馈、Message Store、功能别名，以及本业务授权、设置、归属、保护、紧急条件和释放。先区分在网与离网、控制面与媒体面、单条消息与会话；已有预建立承载上的[普通组SDS业务](topics/mcdata/pre-established-group-sds-use.md)另分REFER接受、业务响应与承载身份。 |
-| [MCVideo 视频业务](topics-mcvideo.json) | 私呼、预安排组呼、chat、广播、video pull/push、有限离网自动/手动私呼和普通组呼探测、自动或需用户应答的有限加入及BASIC同类型条件合并；本业务授权、归属、会议/组动态观察、发送接收许可、紧急条件和释放。不套用 MCPTT 话权规则。 |
+| [MCData 数据业务](topics-mcdata.json) | SDS、HTTP/媒体面 FD、IP Connectivity、MBMS 公告与有限MB2组FD映射、有限 MBS 组播接收意愿反馈、Message Store、功能别名，以及本业务授权、设置、归属、保护、紧急条件和释放。先区分在网与离网、控制面与媒体面、单条消息与会话；[显式列表ad hoc SDS session](topics/mcdata/adhoc-sds-explicit-list-establishment.md)另按列表与身份条件进入，不套配置组流程；已有预建立承载上的[普通组SDS业务](topics/mcdata/pre-established-group-sds-use.md)另分REFER接受、业务响应与承载身份。 |
+| [MCVideo 视频业务](topics-mcvideo.json) | 私呼、预安排组呼、chat、广播、video pull/push、有限离网自动/手动私呼和普通组呼探测、自动或需用户应答的有限加入及BASIC同类型条件合并；本业务授权、归属、会议/组动态观察、发送接收许可、紧急条件和释放。不套用 MCPTT 话权规则；[功能别名私呼](topics/mcvideo/private-call-functional-alias.md)另按权限、目标选择与300重试条件进入。 |
 | [身份、注册与配置](topics-identity.json) | 身份认证、SIP 注册、服务授权、令牌、HTTP 身份、伙伴系统迁移和用户配置取得/更新/切换。各步骤的成功不能互相代替。 |
-| [安全与密钥](topics-security.json) | 接入保护、KMS、私呼/组密钥、成员变化、保存清理及信令/媒体保护。取得密钥不等于业务准入或媒体连通。 |
+| [安全与密钥](topics-security.json) | 接入保护、KMS、私呼/组密钥、成员变化、保存清理及信令/媒体保护。取得密钥不等于业务准入或媒体连通；[离网两用户私呼密钥](topics/security/offnetwork-private-key-protection.md)按独立分发与验证入口读取，不套在线登录或组GMK步骤。 |
 | [MCX 与 LMR 互通](topics-interworking.json) | IWF 范围、组配置与归属、重组、组呼/私呼、SDS 映射、话权和位置。Stage 2 信息流不是原生 MCX Stage 3 消息配方。 |
 | [位置服务](topics-location.json) | 位置获取、报告、订阅、取消、历史补报与传播权限。当前归属、测量时间和报告可用信息分别判断；跨 MC/LMR 位置到互通域查。 |
 | [网络策略与 QoS](topics-network-policy.json) | EPS 信令、Rx 重试与 MCData 预建立共享边界、5GS 的 QFI/5QI/ARP、GBR 通知、MCPTT 资源模型和通用 N5 创建、更新、终止及GBR目标变化通知。资源结果不是话权或媒体交付结果；[MCData 预建立共享](topics/network-policy/mcdata-preestablished-resource-sharing-boundary.md)的注册、Rx绑定和执行证据也须分开。 |
 | [SIP 路由](topics-signalling.json) | 注册器寻找及用户绑定、对话标识、remote target 与 route set。RFC 基线不等于完整 MCX SIP profile。 |
-| [紧急与优先状态](topics-emergency.json) | 通用紧急要求和 MCPTT 私呼升级/降级；MCData、MCVideo 的专有告警与取消须回到各自业务域，不跨业务搬用规则。 |
+| [紧急与优先状态](topics-emergency.json) | 通用紧急要求、MCPTT 私呼升级/降级，以及[已建组呼紧急升级](topics/emergency/group-inprogress-upgrade.md)与[取消紧急状态](topics/emergency/group-inprogress-cancel.md)各自的条件入口；MCData、MCVideo 的专有告警与取消须回到各自业务域，不跨业务搬用规则。 |
 
 ## 几类容易选错的入口
 
@@ -66,6 +66,6 @@ Stage 1 是业务要求，Stage 2 是架构或信息流，Stage 3 是协议程�
 - **MCVideo 路由、释放及紧急状态：**[发送仲裁](topics/mcvideo/server-transmission-grant.md)和[接收仲裁](topics/mcvideo/server-reception-permission.md)保留内部路由及编码疑义；[私呼服务器释放](topics/mcvideo/private-call-server-release.md)与[私呼紧急服务器路径](topics/mcvideo/private-emergency-server-path.md)保留错引和未闭合字段，不把信令成功视为全部媒体已停。[Video push](topics/mcvideo/video-push-request-and-authorization.md)保留 PF 分类、PSI 用途与两类目标字段边界，[提示、录制与释放](topics/mcvideo/video-push-observation-and-release.md)不证明首帧或同步停止。
 - **MCPTT 仲裁与停止：**[服务器释放后选择](topics/calls/floor-server-release-selection.md)、[优先撤销](topics/calls/floor-preemption-decision.md)保留排队及后继授予的条件缺口；[离网话权入口](topics/calls/offnetwork-floor-entry.md)保留发起者 explicit/implicit 请求差异，[离网停止](topics/calls/offnetwork-floor-release-boundary.md)保留空队列分支未显式列出停止 RTP 的差异，不推导仍可继续发送。双话权的[第二路停止与原主路退出后的接续](topics/calls/dual-floor-stop-evidence.md)仅覆盖列明的服务端分支，不补完整终端 G-bit/Ack 路由。
 
-- **紧急取消授权：**[MCPTT 私呼降级](topics/emergency/private-downgrade.md)保留服务器授权的 FFS，[MCData 私聊取消](topics/mcdata/private-emergency-server-cancellation.md)保留本业务的未决授权及部分接受边界；不把一种业务的规则移到另一种。
+- **紧急取消授权：**[MCPTT 私呼降级](topics/emergency/private-downgrade.md)保留服务器授权的 FFS，[MCData 私聊取消](topics/mcdata/private-emergency-server-cancellation.md)保留本业务的未决授权及部分接受边界；不把一种业务的规则移到另一种。无ongoing组通信且无emergency-ind时，MCData[指定他人告警取消](topics/mcdata/emergency-alert-third-party-cancellation.md)另按许可、CF处理与通知事件判断，不补组服务器降级缺口。
 
 授权不等于可达，归属不等于参加，会话建立不等于媒体许可，发送或排队不等于交付，单端释放不等于所有参与者同步停止。需要端到端结论时，沿条件化阅读路径逐项取得证据，不能用一个成功码或一个本地状态替代。

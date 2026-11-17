@@ -91,6 +91,26 @@
 
 固定来源及具体条款以主题为准。
 
+### Ad hoc SDS session：显式列表初建
+
+- **能回答：**可查显式用户列表的客户端、PF与CF有限初建责任，列表/业务身份、各角色配置门槛及成功返回。
+- **只到条件或接口：**普通在网按需ad hoc SDS session显式列表；不是私聊或配置组的扩大。缺失配置规则逐角色判断，可选conference动作在媒体步骤之后。
+- **尚未建立的结论：**不补完整终接、全员交付、criteria动态确定/修改、预建立、standalone、FD或安全实现。
+
+入口：[Ad hoc组SDS session：显式用户列表如何成为一次组通信](topics/mcdata/adhoc-sds-explicit-list-establishment.md)。
+
+固定来源及具体条款以主题为准。
+
+### 指定他人的独立紧急告警取消
+
+- **能回答：**可查指定他人告警的客户端许可/请求、CF已授权取消分支与接收通知的有限处理。
+- **只到条件或接口：**普通配置组、明确另一告警原发起者、无ongoing组通信且无emergency-ind；请求客户端、CF及通知接收者各按条件判断。
+- **尚未建立的结论：**不补旧组servercaller、完整PF转交、通知关联、安全或批量取消；不当作SDS/FD通信降级或MCPTT组取消的后续。
+
+入口：[指定他人的MCData紧急告警怎样取消](topics/mcdata/emergency-alert-third-party-cancellation.md)。
+
+固定来源及具体条款以主题为准。
+
 ## MCVideo视频业务
 
 [查看本域全部主题](topics-mcvideo.json)
@@ -204,6 +224,16 @@
 入口：[离网MCVideo紧急组呼：谁触发降级，以及降级结束什么](topics/mcvideo/offnetwork-group-emergency-downgrade.md)。
 
 所列入口的来源：3GPP TS24.281 V19.3.0。具体条款及边界以主题为准。
+
+### 在网TC私呼：功能别名目标
+
+- **能回答：**可查别名初始目标、客户端/O-PF权限字段、CF条件查询与目标选择、300业务目标及重试。
+- **只到条件或接口：**普通在网按需TC单一别名，角色按各自事件判断；300 target与Contact分开，不把解析成功当终接接受。
+- **尚未建立的结论：**查询互配缺口、激活生命周期、完整发现/安全/SIP及媒体许可未闭合；不继承直接ID私呼页排除别名的条件。
+
+入口：[在网私呼拨功能别名：权限、目标选择与 300 重试](topics/mcvideo/private-call-functional-alias.md)。
+
+固定来源及具体条款以主题为准。
 
 ## MCPTT通话与话权
 
@@ -351,6 +381,16 @@
 
 所列入口的来源：3GPP TS33.180 V19.4.0。具体Stage、条款及跨源差异以各主题为准。
 
+### 离网两用户私呼密钥与保护
+
+- **能回答：**可查普通离网MCPTT/MCVideo私呼的直接UE密钥分发、接收验证及媒体/控制保护材料关系。
+- **只到条件或接口：**发现可选；分发、验签、业务应答、媒体许可各有独立入口，不从在线登录/REGISTER推定离网认证步骤。
+- **尚未建立的结论：**不覆盖MCData、组GMK、完整呼叫状态机、配置或媒体实现；9.4.4回指差异不据此补齐控制实现。
+
+入口：[离网私呼的密钥分发、验证与保护边界](topics/security/offnetwork-private-key-protection.md)。
+
+固定来源及具体条款以主题为准。
+
 ## MCX与LMR互通
 
 [查看本域全部主题](topics-interworking.json)
@@ -460,6 +500,26 @@
 入口：[紧急告警、状态与组通信](topics/emergency/alert-state.md)；[已有私呼升级紧急：呼叫与告警的不同结果](topics/emergency/private-upgrade.md)；[紧急私呼取消：降级、告警与失败恢复](topics/emergency/private-downgrade.md)；[私聊 SDS 紧急取消：权限未决说明与部分接受结果](topics/mcdata/private-emergency-server-cancellation.md)；[私呼本人取消：通话、告警与用户状态分开处理](topics/mcvideo/private-emergency-client-cancellation.md)。
 
 所列入口的来源：3GPP TS 22.280 V19.7.0；3GPP TS24.281 V19.3.0；3GPP TS24.282 V19.7.0；3GPP TS24.379 V19.4.0。具体Stage、条款及跨源差异以各主题为准。
+
+### 已建MCPTT组呼取消紧急状态
+
+- **能回答：**可查普通按需预安排已建组呼取消in-progress emergency的客户端、PF、CF责任，许可/拒绝及本人、他人或不取消告警的替代分支。
+- **只到条件或接口：**固定24.379 V19.4.0 Stage3，各角色和事件独立；响应、下游通知与用户告警状态不是单一全局成功。
+- **尚未建立的结论：**不覆盖私呼、chat、广播、预建立、离网或完整组状态机；不是Stage1要求的直接实现证明，也不是退出或释放通话。
+
+入口：[通话中取消组紧急状态：授权、拒绝与告警结果](topics/emergency/group-inprogress-cancel.md)。
+
+固定来源及具体条款以主题为准。
+
+### 已建MCPTT组呼升级紧急状态
+
+- **能回答：**可查普通已建按需预安排组呼升级紧急的客户端/PF/CF权限、组状态与alert字段，以及响应、INFO和失败反馈。
+- **只到条件或接口：**各角色按独立事件与状态检查；客户端许可、CF许可与告警成功不合并为全局前提。
+- **尚未建立的结论：**不覆盖初始紧急起呼、chat/广播/预建立/离网或完整组状态机；不与私呼、Stage1或组取消拼成必经链。
+
+入口：[已有组呼升级紧急：权限、组状态与告警反馈](topics/emergency/group-inprogress-upgrade.md)。
+
+固定来源及具体条款以主题为准。
 
 ## 阅读结果时仍须分开的证据
 

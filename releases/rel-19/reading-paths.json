@@ -1557,7 +1557,7 @@
     },
     {
       "id": "mcdata-emergency-alert-and-cancel",
-      "question": "紧急告警怎样准入、通知和自行取消？哪一跳确认归属？",
+      "question": "独立MCData紧急告警怎样准入、通知及取消自身或指定他人告警",
       "select_one_by_question": [
         {
           "condition": "MCData 紧急告警发起：用户许可、目标组与本地状态",
@@ -1570,9 +1570,13 @@
         {
           "condition": "MCData 自身告警取消：独立许可、匹配反馈与不回滚归属",
           "read": "topics/mcdata/emergency-alert-self-cancellation.md"
+        },
+        {
+          "condition": "明确指定另一个告警原发起者，目标配置组无ongoing通信且请求/通知无emergency-ind，按独立角色事件判断",
+          "read": "topics/mcdata/emergency-alert-third-party-cancellation.md"
         }
       ],
-      "boundary": "普通配置组、明确目标、无正在进行组通信的独立在网告警；不是全部紧急MCData功能，取消授权回指差异保留。"
+      "boundary": "普通配置组、明确目标、无正在进行组通信的独立在网告警；不是全部紧急MCData功能，取消授权回指差异保留。 自身与指定他人取消分别选页；他人入口不串MCPTT组取消或MCData组客户端降级为后续，旧组servercaller仍未闭合。"
     },
     {
       "id": "mcvideo-broadcast-ending",
@@ -2192,6 +2196,36 @@
       "question": "普通在网按需广播如何请求、邀请并判断接续证据",
       "start": "topics/groups/broadcast-ondemand-signalling.md",
       "boundary": "普通GMS组、未重组、无活跃会话、非紧急/远程/预建立。§4.12版本限制及终接Answer-Mode AND（本端模式或获准切换）不可省略；Unconfirmed200不是全员接听。非广播路径不是广播的必经流程，仅有限信令钩子。"
+    },
+    {
+      "id": "mcvideo-private-functional-alias",
+      "question": "拨功能别名的普通在网TC私呼如何选目标并处理300",
+      "start": "topics/mcvideo/private-call-functional-alias.md",
+      "boundary": "单一functional alias初始目标，300后以返回单个MCVideo ID重试；客户端/O-PF/CF各自条件适用，不继承直接ID页排除别名的共同条件。权限字段、查询互配及300目标/Contact分开，不证明接通或媒体许可。"
+    },
+    {
+      "id": "mcdata-adhoc-sds-explicit-list",
+      "question": "显式MCData用户列表如何建立普通ad hoc SDS session",
+      "start": "topics/mcdata/adhoc-sds-explicit-list-establishment.md",
+      "boundary": "仅普通在网按需、显式列表初建，不从private/configured SDS路径扩大适用。各角色缺失配置与身份处理分别判断，可选conference在媒体动作之后；不补criteria动态过程、完整终接或全员交付。"
+    },
+    {
+      "id": "mcptt-group-inprogress-emergency-cancel",
+      "question": "已建立普通组呼怎样取消in-progress emergency而不等同退出通话",
+      "start": "topics/emergency/group-inprogress-cancel.md",
+      "boundary": "固定24.379 V19.4.0在网按需预安排已建组呼；客户端/PF/CF各自条件，告警本人/他人/不取消分别判断。独立于私呼降级及Stage1要求，不证明完整组状态机或全组释放。"
+    },
+    {
+      "id": "mcptt-group-inprogress-emergency-upgrade",
+      "question": "已建普通MCPTT组呼如何升级紧急并判断告警反馈",
+      "start": "topics/emergency/group-inprogress-upgrade.md",
+      "boundary": "在网按需预安排已建普通组呼，各角色权限与alert字段独立；不与旧组取消、私呼或Stage1串成必经完整状态机，不把一个200或INFO等同全组状态完成。"
+    },
+    {
+      "id": "offnetwork-private-key-protection",
+      "question": "普通离网两用户私呼怎样分发验证密钥并区分保护结果",
+      "start": "topics/security/offnetwork-private-key-protection.md",
+      "boundary": "仅离网MCPTT/MCVideo私呼，不继承在网私呼或组GMK条件。发现可选，直接UE密钥传递、验签、业务应答与媒体许可分开；不由登录/REGISTER路径推定离网需要线上认证，不据9.4.4回指补控制实现。"
     }
   ]
 }
