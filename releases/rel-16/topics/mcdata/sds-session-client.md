@@ -1,0 +1,59 @@
+# 私聊 SDS 会话：客户端建立、应答与结束证据
+
+- 固定TS24.282 V16.13.0（2026-02），普通在网、直接MCData ID、按需one-to-one SDS session客户端职责；排除组、功能别名、预建立会话与standalone SDS。
+- 各角色按实际请求、响应、媒体指示或释放事件分别适用；不把许可通过、MIKEY成功、SIP200或MSRP就绪设为拒绝分支共同前提。
+- MIME和适用XML保护按6.4及6.5.1.1–4；接收验证/解密先于其他处理，失败不得继续。完整SIP/RFC、安全与媒体实现仍是外部依赖，本页仅给出控制面责任与证据边界。
+
+共同依据：TS24.282 V16.13.0 §5.2（印刷页35–36）、§6.4及§6.5.1.1–4（印刷页55–57）。
+
+## 按需私聊会话不是按载荷阈值选一次发送
+
+- 条件：用户请求与一个直接 MCData ID 建立普通在网按需 SDS session，进入9.2.1.1的会话分支；发送许可仍待检查。SDP及INVITE构造仅在相应前序未停止时适用。
+
+会话分支先执行11.1，成功后进入9.2.4.2.3，而不是套用 standalone 的控制面/媒体面载荷阈值选择。11.1中适用的私聊许可与目标检查仍须执行：allow-transmit-data缺失或false不能发送；出站名单存在且含一个或多个entry且目标不匹配时不能向该目标发起。对于为以后通信建立私聊SDS session，step9明确客户端没有进一步检查并转step11；这不撤销之前适用的检查，也不把参与功能对双方发送许可的检查搬成客户端已经完成。邀请目标MCData ID放入resource-lists，request-type为one-to-one-sds-session；Request-URI为服务本用户的参与功能PSI，而不是直接写目标用户。Contact及Accept-Contact携SDS功能标识，Accept-Contact的两个标签各带require/explicit，P-Preferred-Service为SDS ICSI。SDP offer为m=message、TCP/MSRP或TCP/TLS/MSRP、sendrecv、自己的MSRP path、mcdata-signalling与mcdata-payload两种accept-types，setup为actpass。
+
+规范强度：所述会话入口、许可停止和必要构造为SHALL；Supported:timer和Session-Expires为SHOULD，建议省略refresher，若携带则须为uac；P-Preferred-Identity为MAY。
+- 边界：本页不含功能别名，也不把group-sds-session、预建立会话或standalone媒体发送当作本入口。
+- 边界：11.1中的逐条消息大小检查按其发送事件适用；本页不为尚无消息载荷的会话建立虚构一个大小值，也不证明会话内每次发送已获准。
+- 边界：上述SDP是协商内容，不证明TCP/MSRP连接已经建立或任何SDS已送达。
+
+依据：3gpp-ts-24.282-v16.13.0 §9.2.1.1 session branch; standalone comparison，印刷页106；3gpp-ts-24.282-v16.13.0 §11.1 steps1,1A,3,7,9,11–12 (role and event scope)，印刷页187,188,189；3gpp-ts-24.282-v16.13.0 §9.2.4.1;9.2.4.2.1;9.2.4.2.3 steps1–7b,9–12，印刷页128,129,130。
+
+## 被叫先处理可达拒绝，再生成会话应答
+
+- 条件：主叫构造私聊会话且满足安全上下文建立条件时处理密钥分支；或者被叫实际收到6.2.1.2分类的初始SDS session INVITE。两个角色事件分别适用，不以资源或安全验证已经成功作为共同前提。
+
+主叫需要建立端到端安全上下文且上下文不存在，或已有上下文过期时，按9.2.4.2.3 step7c执行必要的取密钥、生成PCK及PCK-ID、面向受邀用户的UID封装与MIKEY-SAKKE签名；PCK-ID高四位为0001，其余28位随机。9.2.4.2.1在其安全条件成立时要求把I_MESSAGE放入SDP的key-mgmt/mikey属性。被叫分类要求路由到该终端，Accept-Contact的g.3gpp.icsi-ref和P-Asserted-Service均标识SDS，且mcdata-info中的request-type为本页one-to-one-sds-session。被叫可因资源不足或规范范围外原因拒绝；若已拒绝，发适当拒绝码和Warning，或在用户有权限制失败原因时发无Warning的480，然后停止。仅前序未停止且SDP携MIKEY-SAKKE I_MESSAGE时，才提取发起者ID、转换UID、验签；失败发488/136并停止，成功才提取并解密PCK及提取PCK-ID。后续可显示邀请者与SDS类型，随后接受并发200，携Require:timer、Session-Expires且refresher=uas、SDS Contact标签及SDP answer；answer保持sendrecv和自己的MSRP path，setup按RFC6135选择，而不是无条件指定passive。
+
+规范强度：资源/其他原因拒绝与显示邀请者为MAY；被选择的拒绝响应、条件安全处理及继续后的200应答为SHALL。
+- 边界：安全条件保留本版不存在/过期的原句分支，不将本页密钥摘要当33.180完整实现或安全认证。
+- 边界：本版此终端过程未规定必须先弹出手动接受界面；不能从其他业务移植180/183或Answer-Mode分支。
+- 边界：收到该分类的INVITE只确定处理入口，不能据此证明服务器每一项准入或对端身份已验证。
+
+依据：3gpp-ts-24.282-v16.13.0 §6.2.1.2 SDS session classification，印刷页39；3gpp-ts-24.282-v16.13.0 §9.2.4.2.1–2;9.2.4.2.3 step7c;9.2.4.2.4 steps1–11，印刷页128,129,130,131,132。
+
+## SIP成功与媒体发送结果是不同事件
+
+- 条件：主叫实际收到自己会话INVITE的响应或媒体发送失败指示；被叫则以实际收到自己已发200的ACK为独立入口。各事件不要求同时发生。
+
+主叫收到INVITE的2xx时发送ACK、启动SIP Session timer并调用24.582的6.1.2.2媒体过程；原文并非只列200。收到4xx/5xx/6xx时则向用户表明SDS未能发送并发ACK，不能把建立拒绝改写为已经建立MSRP后的失败。被叫发送200不立即等同于同一媒体入口：它收到该200对应ACK时才按9.2.4.2.4调用24.582的6.1.2.3。主叫另在收到媒体明确报告SDS未成功发送时生成BYE，Reason code=SIP、cause=480、text=transmission failed，Request-URI指向待释放MCData session identity，再发向服务器。上述SIP响应和调用点不证明MSRP连接、某条SDS的发送、交付或读取已成功。
+
+规范强度：所述ACK、计时器、媒体过程调用及明确失败事件的BYE为SHALL。
+- 边界：这里只核24.282明确调用24.582的位置；未展开24.582的连接建立、首个MSRP消息、逐消息许可/大小或发送算法，不以其他Release的媒体实现补足。
+- 边界：没有把未收到SIP响应、未收到回执或本地超时推定为本条明确的媒体发送失败指示。
+- 边界：会话建立失败的提示采用本版“SDS message could not be sent”的含义；不由此推导消息曾进入媒体传输。
+
+依据：3gpp-ts-24.282-v16.13.0 §9.2.4.2.3 response and media-failure events;9.2.4.2.4 ACK event，印刷页130,131,132。
+
+## 结束会话不等于消息已经交付
+
+- 条件：发起用户不再希望传输，客户端要释放已通过媒体面建立的本页会话；或客户端实际收到相关BYE；或实际收到自己BYE的200。媒体释放后要发处置通知是另一条件事件，不要求所有事件同时成立。
+
+主动释放时客户端生成BYE，以待释放的MCData session identity为Request-URI并发给服务器；收到该BYE的200后释放对应通信的全部媒体资源。被动收到BYE时，客户端发送200并释放对应媒体资源；NOTE允许保存并处理部分已收数据，不能把这一说明升级为必须保留或已经完整交付。9.2.4.2.4另规定，媒体面释放后若要发送处置通知，执行12.2.1.1；释放本身不是交付/读取通知，也不意味着该通知已发出或到达。
+
+规范强度：主动/被动释放各自的BYE、200及资源释放为SHALL；部分数据可存储处理为NOTE的can，不改为SHALL；有后续通知事件时调用指定过程为SHALL。
+- 边界：本页不展开服务器策略、预告/延长或授权他人终止，也不宣称一腿BYE200证明全服务器链已清理完毕。
+- 边界：处置通知依赖消息身份、目标及其真实交付/读取事件；这里只保留释放后的调用边界，不从会话身份或BYE结果合成通知字段。
+
+依据：3gpp-ts-24.282-v16.13.0 §13.1;13.2.2.1;13.2.2.2.1–13.2.2.2.2.2，印刷页201,202,203；3gpp-ts-24.282-v16.13.0 §9.2.4.2.4 post-media-release disposition caller，印刷页132；3gpp-ts-24.282-v16.13.0 §12.1;12.2.1.1 full (notification boundary)，印刷页190,191,192。
+

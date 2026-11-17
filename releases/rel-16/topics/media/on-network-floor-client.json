@@ -1,0 +1,343 @@
+{
+  "topic_id": "r16-media-on-network-floor-client",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "clause-checked",
+  "title": "普通在网话权：客户端请求、排队确认与释放",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "固定 TS24.380 V16.9.0，在网且采用话权控制的普通客户端；限非ambient、非broadcast、非dual/multi-talker、非抢占业务，不展开紧急/迫近危险/system call、audio cut-in或预建立承载建立。",
+    "客户端当前状态与收到的用户指示、控制消息、媒体、计时器或信令层事件共同决定动作；各claim事件是替代入口，失败、撤回及释放不以已经获准发送为前提。",
+    "必要的呼叫控制边界仅以TS24.379 V16.14.0实际入口作比较；不复制另一Release规则，不宣称完整媒体、安全或外部RFC实现。"
+  ],
+  "claims": [
+    {
+      "id": "call-versus-floor",
+      "title": "通话建立、隐式请求和获准是三件事",
+      "conditions": [
+        "应用层发起或完成普通在网通话、重入既有通话，或协商媒体控制通道；各入口分别适用。"
+      ],
+      "conclusion": "媒体控制通道通过 SDP 协商，以 UDP/IP 上的 RTCP APP 承载。m=application 的端口是控制通道 RTCP 端口，不与其他 m-line 的 RTCP 端口混用。支持排队时在 offer 带 mc_queueing；answer 仍受不得增加 offer 未有参数的通用规则约束。初始 INVITE 可接受在200中获知授权时，客户端带 mc_granted；它不代替 Floor Granted 的基本操作。服务器仅在 offer 有此参数且决定以200授予隐式请求时，在 answer 带 mc_granted；临时组会话不得用此方式指示获准。mc_implicit_request 表达隐式请求意图，不表达已经获准。客户端按协商创建话权状态机：主叫在200之前收到控制消息先保存；建立的呼叫使用隐式请求时启动 T101、置 C101=1、进入 pending Request，再按该状态处理保存的消息。非隐式请求的 chat 建立及重入分别进入 has no permission；被叫建立也进入 has no permission。因此普通 SIP 200、能够收听或已经入呼都不是发言许可。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "4.3.1–4.3.3.1",
+            "6.1–6.2.4.2.3"
+          ],
+          "printed_pages": [
+            31,
+            32,
+            34,
+            35,
+            36,
+            37
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "14.1–14.4 (14.2.6/14.3.7 comparison only)"
+          ],
+          "printed_pages": [
+            237,
+            238,
+            239,
+            240
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.4 initial INVITE and other (re-)INVITE classification; REFER comparison only"
+          ],
+          "printed_pages": [
+            136,
+            137
+          ]
+        }
+      ],
+      "normative_strength": "控制通道构造、客户端状态及条件保存为 SHALL；服务器选择通过200给出授权为 MAY，临时组禁用该指示为 SHALL NOT；未被明确要求的隐式请求选用为 implementation option。",
+      "limitations": [
+        "仅在已采用话权控制的通话中应用本页；无话权私呼/FTA、预建立会话控制、临时组和特殊优先业务不在本页展开。",
+        "TS24.379 §6.4 指向24.380 clause12，固定24.380的clause12是SDP语法，协商程序在clause14；保留引用层次，不将其改为另一版条款。24.380 §14.3.5 对加入chat或进行中预安排呼叫另列例外，§6.2.1又明确重入不算隐式请求；不以普通初始INVITE规则覆盖这些入口。",
+        "§6.2.4.2.2 未在该段给出所有非chat、非隐式主叫组合的统一初态，本页不补默认分支。安全要求仍按§6.1调用clause13，不因话权状态满足而省略安全处理。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "request-and-response",
+      "title": "请求尚未授权，拒绝和重试耗尽均可返回无权限",
+      "conditions": [
+        "处于 has no permission 收到用户申请发送指示；或处于 pending Request 收到响应、媒体或 T101 到期。事件分别适用，不以请求获准为前提。"
+      ],
+      "conclusion": "用户请求时发送 Floor Request，启动 T101、置 C101=1，进入 pending Request。请求的 Location 字段须存在；位置不可用或配置不准上报时类型为0，否则按允许的实际位置编码。若使用不同于普通值的优先级，值不能超过协商上限。pending Request 收到 Floor Granted 或 SIP 200 中明确的 floor granted indication 时，按消息要求回 Ack（Message Type=1、Source=0），尚未通知时通知获准，停止运行中的 T103 和 T101，进入 has permission。收到 Deny 时按要求回 Ack（3、0），提示拒绝，可显示原因，停止 T101，进入无权限。T101 未到 C101 上限时重发请求、重启计时并将计数加1；达到上限时提示请求超时并进入无权限。收到他人 RTP 须请求播放但不因此获得发送权；收到 Floor Taken 在本页普通非抢占范围回到无权限，不能把它当作本用户的 Granted。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.3.1–6.2.4.3.6",
+            "6.2.4.4.1–6.2.4.4.7",
+            "6.2.4.4.11"
+          ],
+          "printed_pages": [
+            37,
+            38,
+            39,
+            40,
+            41,
+            42
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.2.1",
+            "8.2.3.21",
+            "8.2.4"
+          ],
+          "printed_pages": [
+            147,
+            148,
+            159,
+            160,
+            161,
+            162
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "11.1.1 table11.1.1-1;11.2.1 table11.2.1-1",
+            "14.2.3;14.3.3"
+          ],
+          "printed_pages": [
+            212,
+            213,
+            222,
+            223,
+            238,
+            239
+          ]
+        }
+      ],
+      "normative_strength": "发送、状态转移、条件Ack、拒绝和超时通知为 SHALL；显示拒绝原因是 MAY；接收媒体时启动可选T103为 SHOULD；请求重传总时长小于6秒为 SHOULD。",
+      "limitations": [
+        "C101 默认上限3，不是额外再重传3次；T101 的实际时值由配置决定，本页不编造统一毫秒数。",
+        "计时器表把 Floor Taken、Queue Position Info、他人 RTP 等列为 T101 正常停止事件；§6.2.4.4.7 接收RTP步骤仍写保持 pending Request，§6.2.4.4.11另写条件停止T100而非T101。保留表与事件正文各自措辞，不把停表等同于获准或静默改成统一状态算法。",
+        "§14.3.3 的非默认优先级上限取请求值、组用户优先级、服务层级数量的最低值，并对 on-network-recvonly 另作处理；本页不实现配置获取或借默认值解除接收限制。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "queue-confirmation",
+      "title": "排队获准后还要用户确认，查询超时与确认超时不同",
+      "conditions": [
+        "pending Request 收到 Queue Position Info；或已在 queued 收到控制消息、队列查询指示、用户确认/撤回、T104/T132 到期。"
+      ],
+      "conclusion": "首次收到 Queue Position Info 时按要求 Ack（9、0），通知已排队，可显示位置/优先级，进入 queued。queued 中收到 Granted 按要求 Ack（1、0），提示获准，停止运行中的 T104，在本页非dual范围停止相应运行中的 T103，启动 T132，但仍留 queued。只有用户表示要发送且 T132 正在运行，才停止 T132 并进入 has permission。T132 到期则发送 Release，可提示不再可用，直接进入 has no permission。查询位置时发 Queue Position Request、启动 T104、置 C104=1；未达上限重发并递增，达到上限提示队列超时、发 Release并进入 pending Release。queued 中收到更新的位置消息停止运行中的 T104并留 queued；收到 Deny 或 Idle 则按要求 Ack，停止运行中的 T104并进入无权限。用户主动撤回 queued 请求则发 Release，启动 T100、置 C100=1，停止运行中的 T104及T132，进入 pending Release。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "5.2.2",
+            "6.2.4.1 NOTE2 (audio cut-in comparison)",
+            "6.2.4.4.9",
+            "6.2.4.9.1–6.2.4.9.13"
+          ],
+          "printed_pages": [
+            33,
+            36,
+            41,
+            48,
+            49,
+            50,
+            51
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.2.1",
+            "11.1.1 table11.1.1-1",
+            "11.2.1 table11.2.1-1",
+            "14.2.2;14.3.2"
+          ],
+          "printed_pages": [
+            148,
+            212,
+            213,
+            222,
+            223,
+            238,
+            239
+          ]
+        }
+      ],
+      "normative_strength": "所列发送、条件Ack、计时/计数、通知及状态动作为 SHALL；排队能力支持、位置/原因/失效提示以及Release请求Ack为 MAY；queued接收媒体时重启T103为 SHOULD。",
+      "limitations": [
+        "排队是可选能力，audio cut-in组不进入queued；本页不强迫所有呼叫支持排队。T132默认2秒但可配置，C104默认上限3。",
+        "§6.2.4.9.11 的T104耗尽分支没有逐项重列T100启动/C100初始化；表11.1.1-1又将发Release列为T100启动原因。须同时保留这两层，不能假装事件正文完整复用了用户撤回的全部步骤。",
+        "T132超时进入无权限，不改成pending Release；T104耗尽进入pending Release，不改成无权限。Deny/Idle步骤未列统一清除所有计时器，不从别的事件补上。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "sending-and-withdrawal",
+      "title": "有权限才启动语音转发，撤销授权要求停发并丢弃缓存",
+      "conditions": [
+        "处于 has permission 收到编码语音/已有缓存、用户释放意图或 Floor Revoke；或者 pending Request 收到用户撤回意图。这些是替代事件。"
+      ],
+      "conclusion": "has permission 中得到编码语音或已有缓冲语音时，要求客户端开始向服务器转发并保持有权限；已排队用户须先完成前述确认。用户即使尚未发出媒体也能释放：发 Release，启动 T100、置 C100=1，进入 pending Release。pending Request 中用户撤回同样发 Release、启动T100/C100，并停止T101后进入pending Release。has permission 收到 Revoke 时须告知用户、要求丢弃剩余缓冲RTP并停止向服务器转发；可说明原因。在非dual的 G=0 分支发带 G=0 的 Release，启动T100/C100，进入pending Release。Release是否请求Ack可选，收到/未收到该Ack的处理是实现选项，不等于已有统一的Ack后完成规则。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.4.8",
+            "6.2.4.5.1–6.2.4.5.5",
+            "8.2.2.1"
+          ],
+          "printed_pages": [
+            41,
+            42,
+            43,
+            148
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "11.1.1 table11.1.1-1;11.2.1 table11.2.1-1"
+          ],
+          "printed_pages": [
+            212,
+            213,
+            222,
+            223
+          ]
+        }
+      ],
+      "normative_strength": "转发请求、撤回/撤销处理、停止并丢弃缓存及状态转移为 SHALL；撤销原因提示及Release请求Ack为 MAY。",
+      "limitations": [
+        "向服务器转发的动作不证明远端已经收到、播放或所有成员均在听。",
+        "主动Release段未逐字重复Revoke段的丢弃缓存步骤；本页不把两个入口写成相同的缓冲清理算法。",
+        "T100实际时值由配置决定；C100默认上限3，Release重传总时长须小于6秒（表11.1.1-1 NOTE1中的shall）。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "pending-release-outcomes",
+      "title": "撤回后的晚到 Granted 不重新授予发送权",
+      "conditions": [
+        "当前处于 pending Release，收到 Idle、Taken、RTP、Revoke、Granted 或 T100 到期；不是仍在等待请求授权。"
+      ],
+      "conclusion": "T100 未达 C100 上限时重发 Release，可请求Ack，重启T100并递增C100，保持pending Release；达到上限进入has no permission。收到普通非broadcast的Idle时按要求Ack（5、0），可通知空闲，停止T100，进入无权限。收到Taken按要求Ack（2、0），可提示，宜为新讲话者启动可选T103；仅本用户不在 List of Granted Users 时停止T100，随后进入无权限。收到RTP时要求播放，宜启动可选T103，停止T100，进入无权限。收到Revoke可提示但保持pending Release；晚到Granted按要求Ack（1、0）后仍保持pending Release，不能按pending Request的规则重新开麦。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.6.1–6.2.4.6.8",
+            "8.2.2.1"
+          ],
+          "printed_pages": [
+            45,
+            46,
+            47,
+            148
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "11.1.1 table11.1.1-1;11.2.1 table11.2.1-1"
+          ],
+          "printed_pages": [
+            212,
+            213,
+            222,
+            223
+          ]
+        }
+      ],
+      "normative_strength": "重发、计时/计数、条件Ack、媒体播放请求和状态变化为 SHALL；提示及Release请求Ack为 MAY；可选T103启动为 SHOULD。",
+      "limitations": [
+        "本段仅判客户端当前状态，不证明服务器已清除全部排队/授权记录。",
+        "Taken的T100停止有名单守卫，不因随后转无权限便抹掉该条件；不补不存在的通用FloorAck终态入口。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "call-release-and-boundary",
+      "title": "一次话权释放不等于结束通话",
+      "conditions": [
+        "以下为替代事件入口：在非 Start-stop 且非 Releasing 状态收到应用/信令层的通话释放 step1；在 Releasing 状态收到应用/信令层的通话释放 step2；或任一状态收到未定义处理的控制消息/RTP。"
+      ],
+      "conclusion": "通话释放是独立的两阶段接口：step1停止发送话权控制消息并要求停止RTP，进入Releasing；应用/信令层确定通话已释放后触发step2，释放包括运行中计时器在内的相关资源，回Start-stop并终止本实例。用户面可发起step1，step2始终由应用/信令层发起。某状态没有对应接收程序时，丢弃该控制消息或RTP并保持状态；不能把某条Granted规则应用到所有状态。普通无权限、pending Request或queued期间仍可接收/播放媒体，这与发送权限不同。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.2",
+            "6.2.4.1",
+            "6.2.4.3.4",
+            "6.2.4.4.7",
+            "6.2.4.7–6.2.4.8",
+            "6.2.4.9.2",
+            "6.1;13.1 opening (security dependency)",
+            "11.1.1 table11.1.1-1 T103"
+          ],
+          "printed_pages": [
+            34,
+            35,
+            36,
+            38,
+            40,
+            41,
+            47,
+            48,
+            212,
+            213,
+            226
+          ]
+        }
+      ],
+      "normative_strength": "通话释放接口动作、资源清理及未定义接收的丢弃为 SHALL；接收媒体相关可选T103动作按各事件为 SHOULD，不改成发言授权。",
+      "limitations": [
+        "本页解释话权状态与媒体动作证据，不展开SIP释放事务、完整服务器仲裁、安全密钥/加解密、RTP编码与送达保证。",
+        "可选T103表示接收媒体结束，表中建议等于T1且由配置确定；不能把T103到期一概解释为通话释放或发送获准。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
