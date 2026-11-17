@@ -153,6 +153,14 @@
 
 入口：[普通组媒体FD：控制侧准入、逐成员邀请与响应边界](topics/mcdata/media-group-fd-controller-setup.md)。
 
+### MCData ad hoc SDS 用户主动修改
+
+- **能回答：**可查已有按需ad hoc SDS session的名单/criteria替代请求、PF绑定转发、CF修改许可和容量、实际helper及分角色响应。
+- **只到条件或接口：**普通本地在网既有按需ad hoc SDS session；按实际角色和事件读取。criteria修改须原本基于用户criteria建立，不把客户端授权当服务器已通过。
+- **尚未建立的结论：**不套初建或PF自动delta；保留许可or/and组合、PF名单复制及step6错引，不补净人数、原子替换、全员收敛或失败回滚。200不证明成员全部完成或SDS交付。
+
+入口：[MCData ad hoc SDS：用户主动修改成员或选人条件](topics/mcdata/adhoc-user-participant-update.md)。
+
 ## MCVideo视频业务
 
 [查看本域全部主题](topics-mcvideo.json)
@@ -402,6 +410,14 @@
 - **尚未建立的结论：**不是普通远程私呼或紧急升级；自动接续不等于人工同意或跳过鉴权，200不保证音频成功。保留SDP回指、角色缓存排版、释放原因与重复响应段疑义，不补完整媒体或唯一释放状态机。
 
 入口：[按需环境监听：角色、准入、建立反馈与释放责任](topics/calls/ambient-listening-ondemand.md)。
+
+### MCPTT MBMS 公告与监听反馈
+
+- **能回答：**可查MBMS首次公告、同TMGI更新和显式取消、客户端缓存/条件认证、监听及暂停报告、PF身份核验与媒体接口。
+- **只到条件或接口：**固定§14 MBMS，公告接收、映射/取消、无线条件和RAN暂停按各自事件适用；不要求所有报告者处于组呼，report-suspension仅控制所列暂停报告。
+- **尚未建立的结论：**不覆盖5G MBS、完整映射或承载激活，不将公告/报告当入会或音频成功；保留TGMI字段、缓存安全顺序和异常身份边界，不保证PF必切单播。
+
+入口：[MCPTT MBMS：公告、监听与暂停反馈](topics/calls/mbms-announcement-listening-feedback.md)。
 
 ## 组管理与MCPTT组呼入口
 

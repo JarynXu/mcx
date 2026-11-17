@@ -1,0 +1,78 @@
+# MCData ad hoc SDS：用户主动修改成员或选人条件
+
+固定TS24.282 V19.7.0，普通在网、本地、已有on-demand ad hoc SDS session的用户主动修改；不含standalone、FD、预建立、优先通信、告警后续、迁移、跨域和安全材料重配置。
+
+客户端发起、PF处理、CF处理与各方响应分别依实际角色及事件适用，前序要求停止时不继续；客户端授权入口不预先满足服务器的绑定或修改许可。
+
+不涵盖初建和PF因原criteria持续变化而主动发MESSAGE增删的业务；两者仍由各自主题及条件负责。
+
+## 已有会话内选择名单修改或条件修改
+
+适用条件：客户端收到已授权用户修改一个 ongoing on-demand ad hoc SDS session 的请求；这只是客户端发起入口，不代表 PF/CF 已接受。名单修改与 criteria 修改分别适用。
+
+客户端生成 re-INVITE，mcdata-info 按当前已建立会话填充，SDP offer 沿用当前媒体参数。修改名单时，resource-lists 各 entry 的用户 MCData ID 以 method=INVITE 表示待邀请，以 method=BYE 表示待移除。修改 criteria 另要求当前会话原本基于用户要求的 criteria 建立，才在 anyExt/comn-participants-criteria 写入逗号分隔的一项或多项条件。用户同时请求修改名单和 criteria 时，NOTE 说明客户端拒绝，具体拒绝方式在规范范围外。
+
+- 不把已授权用户入口变成具体角色自动授权，也不从初建显式名单页推导其可直接改为 criteria 会话。
+- 这里的 INVITE/BYE 是名单 URI 的 method 参数，外层请求仍为 re-INVITE；不等于客户端直接向名单内每人发送 INVITE/BYE。
+- 保留当前会话并修改参与者，不创建一个新的 ad hoc 组，也不将本页当作完整 SIP/SDP 编码或安全流程。
+
+规范强度：请求构造与发送为 SHALL；同时修改两类的拒绝来自 NOTE，不补具体响应码。
+
+依据：TS24.282 V19.7.0 §24.2.6.0;24.2.6.1.1 opening,steps1–4 and NOTE，印刷页536（规范依据）。
+
+## PF重新核绑定并转发修改请求
+
+适用条件：PF实际收到标识 ongoing on-demand MCData ad hoc group session 的 re-INVITE，按自身顺序执行；前序拒绝时不继续。
+
+PF资源不足或存在拥塞风险时可回500，并可带 Retry-After。继续时从 P-Asserted-Identity 的 public user identity 确定主叫 MCData ID；无绑定或绑定过期时回404/Warning141并停止。随后验证媒体参数，未提供 MSRP URI 时回488。继续转发时复制 mcdata-info，写入绑定确定的 mcdata-calling-user-id，SDP offer 使用当前会话媒体参数，按 step9 复制入站 resource-lists，再转发 re-INVITE。
+
+- 绑定检查不是修改权限检查；CF仍有自己的修改许可门槛。
+- PF step9 复制 resource-lists 的字面步骤未带“若存在”条件，而客户端 criteria-only 分支不要求携带名单。本页保留这处边界，不自行要求空名单、不删除该步骤，也不声称 criteria-only 全链编码问题已解决。
+- 不把 PF 的“验证媒体参数，未提供 MSRP URI 则488”扩大为与 CF 完全相同的错误判定矩阵。
+
+规范强度：绑定、媒体检查及继续转发步骤为 SHALL；资源500和 Retry-After 为 MAY。
+
+依据：TS24.282 V19.7.0 §24.3.5.1.1 opening,steps1–10，印刷页550、551（规范依据）。
+依据：TS24.282 V19.7.0 §24.2.6.1.1 steps2,2a，印刷页536（criteria-only与名单复制的对照）。
+
+## CF核修改许可，再处理名单或条件
+
+适用条件：CF实际收到标识 on-demand ad hoc group session 的 re-INVITE；本角色前序未要求停止。名单业务步骤只在相应 resource-lists 存在时适用，criteria步骤只在 comn-participants-criteria 存在时适用。
+
+CF可因资源不足或拥塞回500并可带 Retry-After；媒体参数不可接受或 SDP 未提供 MSRP URI 时回488并停止。step3检查发起用户 profile 的 ruleset/rule/actions/allow-to-modify-adhoc-group-data-comn-participants-info，按“元素不存在 or 为 false and 无授权该请求的本地策略”的原文条件回403/Warning243并停止。名单分支先检查既有参与者数与新邀请用户数是否在 max-no-participants 限额内，超限回403/Warning242并停止；然后按本地策略确定待邀请或移除成员，分别调用 §24.4.2.1.1 与 §24.4.3.1.2.1，并将所有被邀请成员视为隐式归属，移除被移出会话用户的归属。criteria分支用收到的条件调用 §24.4.6.1。
+
+- 授权原文未用括号明确 or/and 的组合。本页不将其改写为无歧义布尔公式，不自行判定“字段缺失但有本地许可”一定接受或拒绝；字段 false 且没有授权策略是明确拒绝情形。
+- 人数比较没有规定先扣除待移除者，也未给出名单去重或净增量算法，不能据此用净人数绕过上限。
+- step4a(iii)/(iv)把所确定成员回指“step6 above”，但本节step6实际是生成SDP answer；本页保留其明确邀请/移除helper指向，不静默修正错引或补成员选择算法。
+- 只记录本次修改的实际helper调用，不把邀请、隐式归属、移除调用解释为全部用户已加入/离开。移除helper本身指向§13.2.2.2.4.4，完整释放实现不在本页。
+- criteria调用与旧页的持续确定流程按各自事件条件衔接，不说明旧查询是否原子替换、并发合并或何时全员收敛；不复制初建criteria分支的错误回指。
+
+规范强度：许可与容量拒绝、名单/criteria分支动作是 SHALL；资源500与 Retry-After 是 MAY。
+
+依据：TS24.282 V19.7.0 §24.4.5.1.1 identity definitions,steps1–4,6，印刷页565、566（规范依据）。
+依据：TS24.282 V19.7.0 §24.4.3.1.2.1，印刷页563、564（移除helper边界）。
+依据：TS24.282 V19.7.0 §24.4.6.1 opening and request/results，印刷页568、569（criteria实际依赖；算法见条件化旧owner）。
+
+## 修改响应不是全体成员完成证明
+
+适用条件：各事件独立适用：CF通过本次修改的前序门槛并到达steps5–11；PF收到其转发 re-INVITE 的2xx或所列错误响应；客户端收到其发出的修改 re-INVITE 的2xx或4xx/5xx/6xx。
+
+CF在所列修改动作后生成200，SDP answer沿用现有会话媒体参数，Supported包含norefersub和tdialog，PAI为CF自身PSI，SDS分支Contact含SDS服务标签与isfocus，然后发送。PF收到下游2xx时生成上游200，带当前媒体参数answer、收到的Warning、SDS/isfocus标签、自身PSI及相应Supported；存在mcdata-info时复制后发送。PF对403另有复制存在的mcdata-info和Warning的步骤，通用4xx/5xx/6xx段则生成相应响应、复制Warning并转发。客户端收到2xx后可以提示修改请求成功，收到4xx/5xx/6xx后可以提示失败及说明。
+
+- CF200的步骤没有等待所有新增成员接受或所有移除完成的门槛；不能由它认定全员成员状态同步或SDS交付。
+- PF成功入口是2xx，输出具体为200；403专项与通用4xx段并列，不能推导重复发送、分支优先级或完整事务调度。
+- 客户端成功/失败提示均为MAY。未显示不等于未收到响应；本页不补超时、重试、失败整体回滚或并发修改策略。
+
+规范强度：CF/PF所列响应步骤为 SHALL；客户端成功和失败提示均为 MAY。
+
+依据：TS24.282 V19.7.0 §24.4.5.1.1 steps5–11，印刷页566、567（规范依据）。
+依据：TS24.282 V19.7.0 §24.3.5.1.1 response paragraphs，印刷页551、552（规范依据）。
+依据：TS24.282 V19.7.0 §24.2.6.1.1 response paragraphs，印刷页536、537（规范依据）。
+
+## 使用边界与相关主题
+
+- 本页给出用户主动修改的有限信令责任，不保证底层媒体、安全、完整SIP事务或成员更新原子性。
+- 配置文档仅按 TS24.282 引用的字段解释；本页不展开其他配置规范的 schema 或默认值。
+
+- [显式名单初建](adhoc-sds-explicit-list-establishment.md)：仅该页普通显式列表初建条件成立时使用，不能补出criteria修改的原始建立前提。
+- [服务器criteria集合生命周期](adhoc-criteria-membership-lifecycle.md)：本页CF实际进入§24.4.6.1后，按旧页对应角色/消息和原有范围阅读；自动PF增删不是用户re-INVITE修改。
