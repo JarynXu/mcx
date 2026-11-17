@@ -1,0 +1,252 @@
+{
+  "topic_id": "r16-calls-conference-participant-status",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "这场 MCPTT 组呼有哪些人参加？查一次和持续观察有何不同？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "common_conditions": [
+    "固定 Release 16 的 TS 24.379 V16.14.0；在网 MCPTT 组呼的会议事件订阅，以普通客户端、参与功能（PF）、控制功能（CF）为范围。"
+  ],
+  "condition_rule": "发起、PF 解析、CF 准入或拒绝、收到变更、送达客户端分别是独立有条件的事件；不以所有请求有效、会话可解析、已获许可或非广播为全页共同前提。",
+  "claims": [
+    {
+      "id": "initial-subscription-target-and-lifetime",
+      "title": "新订阅指向会话，期限区分只取一次和持续接收",
+      "conditions": [
+        "客户端正在参加组呼，组呼仍在进行且发起时不是广播组呼；客户端选择订阅本次会话。"
+      ],
+      "conclusion": "新建 SIP 订阅对话，Request-URI 使用本次会话标识，正文 mcptt-request-uri 使用组 ID，Accept 包含 application/conference-info+xml。只读当前状态时 Expires 为 0；希望收取当前及后续通知时为 4294967295。需要终止订阅时按 RFC 6665 处理。",
+      "normative_strength": "订阅是 MAY；选择订阅后，规定的目标、字段、期限和新对话是 SHALL；需终止时的处理是 SHALL。",
+      "limitations": [
+        "初始读取的零值不是不取状态；最大值不是交付保证。订阅不替代加入或退出会话，组成员与已归属成员名单不等于本次会话参与者。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.3.1, participating client and role of conference events"
+          ],
+          "printed_pages": [
+            301
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.3.2, opening and items 1–2, 5–9: new dialog, session target, group ID and requested lifetime"
+          ],
+          "printed_pages": [
+            301
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.3.2, response, received NOTIFY and termination paragraphs"
+          ],
+          "printed_pages": [
+            302
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "participating-function-session-resolution",
+      "title": "参与功能先解析会话，解析失败在本跳停止",
+      "conditions": [
+        "PF 接收其服务用户的会议订阅，P-Asserted-Service 指示 MCPTT、Accept 含会议信息类型，指定类型的 MCPTT 信息正文含组 ID。"
+      ],
+      "conclusion": "PF 尝试将 Request-URI 解析为现有会话标识；失败则拒绝本次 SUBSCRIBE，返回 SIP 404，警告文本编号 137，并停止剩余步骤。成功时以映射的会话标识为新请求的目标，正文带上所服务用户的 MCPTT ID，并转发。",
+      "normative_strength": "§10.1.3.3 在列明的入口条件成立时规定 SHALL。",
+      "limitations": [
+        "这里的解析失败不是组文档授权失败，也不是组已删除或会话在整个系统中必定不存在的证明。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.3.3, incoming subscription conditions and PF processing items 1–7"
+          ],
+          "printed_pages": [
+            302
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "controlling-function-admission-and-broadcast",
+      "title": "控制功能分别处理组文档不允许和广播组呼",
+      "conditions": [
+        "普通参与者分支收到具有本次会话组 ID、参加者 MCPTT ID、规定 MCPTT 服务标识与会议信息类型的非广播订阅；广播分支另按发起时的呼叫类型判断。"
+      ],
+      "conclusion": "在非广播分支，CF 检查组文档 on-network-allow-conference-state 对请求者是否允许。被禁止时返回 SIP 403、警告文本编号 138，并停止。准入后按 RFC 处理、缓存订阅并发送会议状态通知。CF 在发起时为广播组呼的通话中收到该类请求则返回 SIP 480、警告文本编号 105。",
+      "normative_strength": "§10.1.3.4.1 中各分支为条件性 SHALL。",
+      "limitations": [
+        "既已参加仍须看订阅许可。广播是单独分支；不把普通参与者身份未匹配等未在这里规定的情况都判作 403/138。警告文本中的编号不是 SIP 状态码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.3.4.1, guarded non-broadcast branch, group permission, cache and notification; separate broadcast branch"
+          ],
+          "printed_pages": [
+            303
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "notification-triggers-recipients-and-evidence",
+      "title": "会议状态通知发给订阅者，由客户端接收并可选显示",
+      "conditions": [
+        "CF 收到按准入条款处理的订阅；或在预安排或聊天组呼中收到参与者 BYE、或有新参与者被加入。转送与显示须分别具备相应对话和客户端接收事件。"
+      ],
+      "conclusion": "CF 向已订阅该会议事件的参与者发送 NOTIFY。PF 向所服务的客户端转送订阅对话内的 NOTIFY；客户端收到后按 RFC 处理，可以基于通知中的信息显示状态。SUBSCRIBE 的成功响应只说明请求成功，乙的会中状态要看甲实际收到的相应会议信息。",
+      "normative_strength": "通知、转送及接收处理为条件性 SHALL，显示为 MAY。",
+      "limitations": [
+        "发送记录不能证明接收，更不能证明用户已看见、收听或获话权。不把通知发给整组或全部入会者；一次读取不产生后续变化的持续观察。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.3.2, response, received NOTIFY and termination paragraphs"
+          ],
+          "printed_pages": [
+            302
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.3.3, forwarding responses and in-dialog NOTIFY"
+          ],
+          "printed_pages": [
+            302,
+            303
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.3.4.1, guarded non-broadcast branch, group permission, cache and notification; separate broadcast branch"
+          ],
+          "printed_pages": [
+            303
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.3.4.2, three triggers and subscribed recipients"
+          ],
+          "printed_pages": [
+            304
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.3.1, participating client and role of conference events"
+      ],
+      "printed_pages": [
+        301
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.3.2, opening and items 1–2, 5–9: new dialog, session target, group ID and requested lifetime"
+      ],
+      "printed_pages": [
+        301
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.3.2, response, received NOTIFY and termination paragraphs"
+      ],
+      "printed_pages": [
+        302
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.3.3, incoming subscription conditions and PF processing items 1–7"
+      ],
+      "printed_pages": [
+        302
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.3.3, forwarding responses and in-dialog NOTIFY"
+      ],
+      "printed_pages": [
+        302,
+        303
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.3.4.1, guarded non-broadcast branch, group permission, cache and notification; separate broadcast branch"
+      ],
+      "printed_pages": [
+        303
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.3.4.2, three triggers and subscribed recipients"
+      ],
+      "printed_pages": [
+        304
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcptt-rejoin-late-entry",
+    "r16-groups-group-list-query",
+    "r16-mcptt-group-dynamic-data"
+  ],
+  "limitations": [
+    "临时组中控制与非控制功能间互订、完整会议信息正文、RFC 订阅生命周期细节及媒体或话权状态不在范围。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
