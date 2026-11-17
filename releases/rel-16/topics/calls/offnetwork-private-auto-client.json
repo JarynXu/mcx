@@ -1,0 +1,264 @@
+{
+  "topic_id": "r16-calls-offnetwork-private-auto-client",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "离网普通私呼自动应答：被叫发了 ACCEPT，双方就都在通话了吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "Rel-16 普通离网 MCPTT 一对一 PRIVATE CALL 的基本呼叫控制，限自动启动模式；手动仅为明确标出的模式选择和达限对照。",
+    "按发生事件的一端和该端的当前状态分别适用，不以双方都成功、媒体已到达或用户已同意作为共同前提。"
+  ],
+  "claims": [
+    {
+      "id": "caller-mode-and-expiry",
+      "title": "主叫的自动请求何时结束等待",
+      "conditions": [
+        "分别适用于 P0/P1 用户发起且 PrivateCall/Authorised=true，以及 P2 主叫 TFP1 到期；相应模式和 CFP1 守卫只用于各自分支。"
+      ],
+      "conclusion": "请求自动且 AutoCommence=true 才保存自动模式；否则 ManualCommence=true 时保存手动。发送带本次标识、双方身份、模式、呼叫类型和 SDP offer 的 SETUP REQUEST 后，CFP1=1，启动 TFP1，原为 P1 时停 TFP7，进入 P2。TFP1 到期、CFP1 低于上限，递增计数、按保存内容重发请求、重启 TFP1 并保持 P2；到期且计数等于上限时，自动模式启 TFP7、释放呼叫类型控制机并进 P1。手动模式在这个达限事件上启 TFP9、保持 P2。",
+      "normative_strength": "相应事件下所列消息、状态和计时器动作为 shall；未列的动作不推定为要求。",
+      "limitations": [
+        "计数首次发送即为 1。主叫放弃不证明对端主动拒绝或收到请求；不臆定两项模式配置都不许可时的默认。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.2.4.2.1, initiation and mode selection"
+          ],
+          "printed_pages": [
+            423,
+            424
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.2.4.2.2, retransmission"
+          ],
+          "printed_pages": [
+            424
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.2.4.2.4, automatic mode at limit"
+          ],
+          "printed_pages": [
+            424,
+            425
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.2.4.2.5, manual mode contrast"
+          ],
+          "printed_pages": [
+            425
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "callee-accept-pending",
+      "title": "被叫回 ACCEPT 后先进入 P5",
+      "conditions": [
+        "P0/P1 被叫收到自动模式、标识不同于保存值的 SETUP REQUEST，offer 声明的媒体可建立。区分 offer 无 a=key-mgmt 属性与该属性为 mikey 且包含 MIKEY-SAKKE I_MESSAGE。"
+      ],
+      "conclusion": "保存呼叫标识、主被叫身份，创建类型控制机。含上述 mikey 消息时须验签，成功后提取并解密 PCK、取出 PCK-ID；无该属性时按无属性分支处理。两条成功路径都生成并保存 answer，向主叫发带本次标识、双方身份和 answer 的 ACCEPT，按 answer 建媒体，CFP4=1、启动 TFP4，原为 P1 时停止 TFP7，进入 P5。",
+      "normative_strength": "相应事件下所列消息、状态和计时器动作为 shall；未列的动作不推定为要求。",
+      "limitations": [
+        "无属性不等于有不匹配的属性；不为未列值补默认处理。自动分支不需要等用户按键；建本地媒体不等于已进入 P4。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.2.4.3.2, preconditions and items 1–6"
+          ],
+          "printed_pages": [
+            427,
+            428
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "callee-failure-reasons",
+      "title": "媒体失败与验签失败如何拒绝，以及拒绝后的状态",
+      "conditions": [
+        "被叫 P0/P1 收到标识不同于保存值的普通自动私呼请求。分媒体不可建立和媒体可建立但规定的 mikey 消息验签失败。"
+      ],
+      "conclusion": "媒体不可建立：保存本次标识及双方身份，发 REJECT，默认给 MEDIA FAILURE，启动 TFP7；P0 转 P1，原为 P1 留在 P1。验签失败：发 REJECT，默认给 E2E SECURITY CONTEXT FAILURE，释放新建的类型控制机，保持原 P0 或 P1。两分支都只有请求限制失败通知且 FailRestrict=true 才将原因改为 FAILED。",
+      "normative_strength": "相应事件下所列消息、状态和计时器动作为 shall；未列的动作不推定为要求。",
+      "limitations": [
+        "不能在签名失败分支补启动 TFP7。主叫只看到 FAILED 不足以区分两个原因。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.2.4.3.1, media cannot be established"
+          ],
+          "printed_pages": [
+            426
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.2.4.3.2, item 5(d), signature failure"
+          ],
+          "printed_pages": [
+            427
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "two-local-entries",
+      "title": "主叫、被叫各凭哪一条接收证据进 P4",
+      "conditions": [
+        "分别观察 P2 主叫收到响应本次请求、标识相同的 ACCEPT；P5 被叫收到 ACCEPT ACK 或来自主叫的 RTP。"
+      ],
+      "conclusion": "主叫保存 answer、发 ACCEPT ACK，停止仍在运行的 TFP1 和 TFP9，按 answer 建立媒体、启动主叫侧话权控制与 TFP5，进入 P4。被叫需在 P5 收到 ACK 或来自主叫的 RTP 才停止 TFP4、启动终接侧话权控制与 TFP5，进入 P4。确认消息只确认收到了 ACCEPT。",
+      "normative_strength": "相应事件下所列消息、状态和计时器动作为 shall；未列的动作不推定为要求。",
+      "limitations": [
+        "主叫发 ACK 不等于被叫收到；看到被叫发 ACCEPT 并建媒体仍不能把它记为 P4。一端入 P4 不证明双方都已到 P4、取得新的话权授予或用户已经听到音频。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.2.4.3.2, preconditions and items 1–6"
+          ],
+          "printed_pages": [
+            427,
+            428
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.2.4.2.8, response matching the setup request"
+          ],
+          "printed_pages": [
+            425,
+            426
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.2.4.3.4, callee receives ACK or originating RTP"
+          ],
+          "printed_pages": [
+            429
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "15.1.11.1, PRIVATE CALL ACCEPT ACK definition"
+          ],
+          "printed_pages": [
+            482
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "callee-retry-or-fail",
+      "title": "被叫等待确认时的重传和达限失败",
+      "conditions": [
+        "P5 被叫的 TFP4 到期；另有 CFP4 等于上限时的失败分支，未见建立所需的 ACK 或主叫 RTP。"
+      ],
+      "conclusion": "重传条款要求用保存的标识、双方身份与 answer 回发 ACCEPT，CFP4 加 1、重启 TFP4 并留 P5。专门的失败条款规定 TFP4 到期且 CFP4 等于上限时启 TFP7、释放类型控制机、进 P1。表 B.3.2-1 及 C.2.2-1 也列达限失败。",
+      "normative_strength": "相应事件下所列消息、状态和计时器动作为 shall；未列的动作不推定为要求。",
+      "limitations": [
+        "重传条款没有额外写小于上限；不指定同时匹配时的实现调度优先级。失败条款不列发送 RELEASE 或结束本地媒体，也不证明远端收到先前的 ACCEPT。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.2.4.3.3, retransmission"
+          ],
+          "printed_pages": [
+            428,
+            429
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.2.4.3.5, failure at limit"
+          ],
+          "printed_pages": [
+            429
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "B.3.2, Table B.3.2-1, TFP4 row"
+          ],
+          "printed_pages": [
+            537
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "C.2.2, Table C.2.2-1, CFP4 row"
+          ],
+          "printed_pages": [
+            542
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-offnetwork-private-manual-client",
+    "r16-calls-private-client-answer-evidence"
+  ],
+  "limitations": [
+    "限建立、建立前拒绝和无响应达限；不覆盖在网 SIP、紧急私呼、后续释放、密码算法及后续话权仲裁。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

@@ -172,6 +172,16 @@ settings-only PUBLISH 的身份字段与保护配置、服务器保护/绑定拒
 
 [读取主题](topics/calls/chat-establish-join.md)
 
+## 离网普通私呼自动应答：被叫发了 ACCEPT，双方就都在通话了吗？
+
+对照主叫发请求与被叫自动接受或拒绝的分支；从各端的消息及媒体记录判断何时进入 P4，区分两端重发和到达计数上限时的处理。
+
+主叫须在 P2 收到与本次请求匹配的 ACCEPT；被叫在 P5 收到 ACCEPT ACK 或来自主叫的 RTP 都可进入 P4。被叫的重传条款未写低于上限的条件。
+
+尚未建立：被叫重传条款与达限失败条款同时匹配时的实现调度顺序，以及用户是否实际听到音频。
+
+[读取主题](topics/calls/offnetwork-private-auto-client.md)
+
 
 
 ## 普通私聊SDS控制面：发送资格、请求与接收证据
