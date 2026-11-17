@@ -66,6 +66,8 @@
 
 - [协商式组归属：单目标请求、用户确认与状态证据](topics/groups/negotiated-affiliation-client.md)：按单目标请求、目标确认和接受后的状态守卫进入，不将交付200或用户接受视为归属完成。
 
+- [组动态数据：订阅许可、通知内容与状态边界](topics/groups/group-dynamic-data.md)：按读取/订阅、角色准入与实际通知进入，不把组动态数据等同本人的归属或会议参与状态。
+
 先读主题共同条件，再按实际角色与事件选取结论；不把拒绝、应答、取消或后续数据处理拼成同时必备的条件。这些主题均不构成完整端到端实现，也不证明版本组合互通。
 
 [业务域](domains.json) · [主题索引](topics.json) · [条件阅读路径](reading-paths.json) · [覆盖边界](coverage.md) · [来源](sources.json) · [状态](status.json)

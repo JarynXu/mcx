@@ -1,0 +1,181 @@
+{
+  "topic_id": "r16-mcptt-group-dynamic-data",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "组动态数据：订阅许可、通知内容与状态边界",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 24.379 V16.14.0（Rel-16，Stage 3）区分三个角色：读取指定组动态数据的客户端、服务发起用户的参与功能（起始 PF），以及承担控制功能（CF）的组所有者服务器。订阅组动态数据与变更本用户归属、处理协商式归属命令、建立组呼或订阅会议事件是不同的程序。",
+    "目标组 ID、发起用户 ID、客户端 ID 和 PF/CF 的公共服务身份各有用途。发出订阅请求、收到 200 应答和收到 NOTIFY 是三件事；仅获准订阅不能证明用户已归属、已加入组呼或已获话权。",
+    "第9章适用§6.6：发送保护按角色配置，客户端与服务端到客户端的保密/完整性配置true或缺省启用，false关闭；服务器间另看allow-signalling-protection。接收端在其他处理前核已施加的XML完整性，再解密受保护内容，失败停止相应后续。每个XML MIME体独立完整性保护；§4.8的用户/组/客户端ID等敏感内容按保密规则处理。",
+    "转发并不意味着原封不动复制密文：原样复制XML内容的场合仍调用§6.6.2.5，按成功解密及出站保护配置处理。密钥预备、配置获取、完整SIP事件包/过滤器与密码算法仍是TS24.229、TS24.481、TS24.484、TS33.180及RFC接口，不在本页闭合。",
+    "本版在资源身份比较、订阅条款回指、字段拼写和过滤器的 XPath 命名空间上有几处不一致，下文按条款指出。受这些差异影响，示例不能直接当作已验证的过滤器。"
+  ],
+  "claims": [
+    {
+      "id": "client-subscribe-and-fetch",
+      "title": "Expires=0：初始请求只读当前数据，已有订阅的对话内请求用于退订",
+      "conditions": [
+        "客户端希望获取指定组当前/后续动态数据，或对已有订阅重新订阅/退订；实际收到相应per-group动态数据NOTIFY时另行判断内容。"
+      ],
+      "conclusion": "初始SUBSCRIBE按TS24.229、RFC3856/6665构造，Request-URI为服务自己的起始PF PSI，mcptt-info+xml中的mcptt-request-uri为目标组ID，P-Preferred-Service为MCPTT ICSI，Accept含application/pidf+xml，并含指示目标组的simple-filter+xml。当前及后续通知用Expires=4294967295，只取当前用0；in-dialog重新订阅用最大值、退订用0，仍接受PIDF。只有实际收到符合协议、携§9.3.1按组动态数据的NOTIFY，客户端才从正文确定该组动态数据。",
+      "limitations": [
+        "initial SUBSCRIBE的0是一次读取，in-dialog的0是停止观察，均不等于PUBLISH解除归属。",
+        "§9.3.2.2的动态数据过滤结构有pidf/mcpttPI10绑定、无uri/domain的filter及一个或多个无type的include；其示例XPath却给扩展元素和属性使用pidf前缀，而schema用mcpttPI10扩展且属性unqualified。正文要求过滤器指示组ID，但该段示例未直接给组ID条件，不能自行补成已核模板。",
+        "过滤器列出组状态/修改者、别名、呼叫进行信息及已归属用户客户端信息的选择项；不保证每次通知包含全部字段，也不保证所列XPath可不经核实直接运行。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.1.6",
+            "9.3.2.2 per-group dynamic data restrictions"
+          ],
+          "printed_pages": [
+            171,
+            198,
+            199
+          ]
+        }
+      ],
+      "normative_strength": "初始 SUBSCRIBE 和对话内续订、退订均须按各自目的构造。收到符合条件的 NOTIFY 时，客户端须从正文读取相应组的动态数据。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "originating-pf-forwarding",
+      "title": "起始 PF 核验订阅许可，转发时区分目标组和发起用户",
+      "conditions": [
+        "起始PF收到指向自身PSI的presence SUBSCRIBE，含MCPTT P-Asserted-Service及正文目标组ID，且该组不是本服务器所服务的组；按§9.2.2.2.16完整入口处理。"
+      ],
+      "conclusion": "PF从mcptt-request-uri识别目标组，从P-Asserted-Identity中的公共用户身份识别发起MCPTT用户；无订阅许可时403并停止。通过后由原请求生成SUBSCRIBE：Request-URI换成目标组CF PSI，PAI换成起始PF PSI，mcptt-info+xml内mcptt-request-uri仍是组ID，mcptt-calling-user-id是发起用户ID，其余信令元素保留后发送。该程序还要求转发收到的SUBSCRIBE响应、NOTIFY及NOTIFY响应。",
+      "limitations": [
+        "入口和识别段字面写application/vnd.3gpp.mcptt-info而无+xml，生成段带+xml；拒绝步骤又引用RFC3903。这里保留差异，不替规范修改MIME或外部RFC调用。",
+        "本分支仅适用于目标组不由该服务器服务的请求；本地组处理、拓扑发现、跨域映射和事务恢复另论。入站 PAI 提供发起用户的身份，出站 PAI 标识起始 PF；转发后要从正文的 mcptt-calling-user-id 识别发起用户。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.16"
+          ],
+          "printed_pages": [
+            187,
+            188
+          ]
+        }
+      ],
+      "normative_strength": "在指定转发分支中，PF 必须检查订阅许可。无权时回 403 并停止；通过后按规定构造请求并转发。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "group-owner-admission",
+      "title": "组所有者独立检查期限、组存在和订阅权限",
+      "conditions": [
+        "组所有者收到§9.2.2.3.9所列CF PSI、mcptt-info两身份字段、MCPTT P-Asserted-Service、presence Event和动态数据过滤正文的SUBSCRIBE；入口过滤器比较存在下列原文差异，不能视为已经修复。"
+      ],
+      "conclusion": "正文mcptt-request-uri标识服务组，mcptt-calling-user-id标识被处理用户。Expires缺失或是小于4294967295的非零值时回423并携Min-Expires=4294967295，然后停止；组管理服务器中组不存在时403并停止，该用户无该组动态数据订阅权限时也403并停止。通过这些检查后生成200，并承担订阅期变化通知职责。",
+      "limitations": [
+        "opening step5要求过滤器组ID与mcptt-calling-user-id中的组ID相同，但随后step2将同字段识别为用户ID。不得静默将比较改为mcptt-request-uri，或把用户与组当成同一种身份。",
+        "订阅期末句使用served MCPTT ID，通知程序§9.2.2.3.10则以served MCPTT group ID为对象；保留该措辞差异。",
+        "本入口检查的是订阅授权，不应移植相邻§9.2.2.3.8的归属资格/成员守卫作为替代。200不证明客户端已收到动态数据，也不执行归属或呼叫加入。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.3.9",
+            "9.2.2.3.8 (comparison only)"
+          ],
+          "printed_pages": [
+            192,
+            193
+          ]
+        }
+      ],
+      "normative_strength": "组所有者须依次检查期限、组是否存在以及用户是否有订阅许可，再按检查结果拒绝请求或生成 200 应答。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "notification-content-and-meaning",
+      "title": "NOTIFY 报告指定组的动态数据，不确认订阅者已加入组呼",
+      "conditions": [
+        "组所有者实际调用§9.2.2.3.10向被处理用户通知指定组动态数据；或客户端实际收到符合§9.2.1.6和§9.3.1的动态数据正文。"
+      ],
+      "conclusion": "服务器选取§9.2.2.3.2中组ID匹配的组信息条目，生成per-group动态数据PIDF并在affiliation中带expires，再发送NOTIFY。正文presence的entity为组ID；可有groupStatus及其ModifiedBy、additionalData内的广播别名、重组别名和呼叫进行属性。按组动态数据语法还为已归属用户列tuple，tuple id为用户ID，status下各affiliation携客户端ID；具体通知职责将通用语法可选的expires收紧为包含。客户端按实际字段和资源身份解读，不能从收到通知推定自己已加入呼叫。",
+      "limitations": [
+        "§9.2.2.3.10 step3字面回指在9.2.2.3.8创建的订阅，但3.8实际是归属资格检查，动态订阅入口在3.9；不静默修正回指或据此补完整状态机。",
+        "§9.3.1.2描述段把呼叫属性拼为groupCallOnoing，schema是groupCallOngoing且类型boolean；广播/重组别名类型anyURI。schema的groupStatus为字符串扩展，表9.3.1.2-3列in-peril和emergency，不补正常状态、清空标志或缺省false。",
+        "组状态、修改者和additionalData均可选；缺项不等于正常、没有呼叫或撤销前值。正文列出的用户/客户端信息不授权反向改变归属，也不是被邀请/已应答/媒体授权证据。",
+        "组存储状态语义另引用TS23.280，本页不推导状态改变触发、别名解析、缓存合并、变化排序、丢包恢复或会议参与者列表。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.3.2",
+            "9.2.2.3.10",
+            "9.3.1.1–2 per-group dynamic data; tables9.3.1.2-1–3",
+            "9.2.1.6 receive"
+          ],
+          "printed_pages": [
+            171,
+            188,
+            193,
+            194,
+            195,
+            196
+          ]
+        }
+      ],
+      "normative_strength": "组所有者须选取匹配的组，并在通知中为每个 affiliation 写入 expires。组状态、修改者及 additionalData 是可选项。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [
+    "不提供已修订的XML/XPath模板或完整端到端订阅、缓存恢复、归属/进呼状态机。"
+  ],
+  "scope_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "4.8",
+        "6.6.1.1–4;6.6.2.3.1–2;6.6.2.5;6.6.3.3.1–2 (protection interfaces)"
+      ],
+      "printed_pages": [
+        45,
+        46,
+        138,
+        139,
+        140,
+        142,
+        143,
+        146
+      ]
+    }
+  ],
+  "related": [],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
