@@ -368,6 +368,18 @@
       "start": "topics/calls/preestablished-session-lifecycle.md",
       "next_if": [],
       "boundary": "仅预建立会话本身的有限生命周期：客户端建立请求与 PF 准入、无关联 MCPTT 会话时的修改，以及无呼叫使用时释放。空闲条件仅约束修改/释放对应主张，不附加到建立。保留 Session-Expires 的 SHOULD 与 refresher=uac 的条件 SHALL、资源绑定条件和媒体交互时序；修改接收方生成 SDP 应答，旧资源保留至 200。预建立会话不等于实际呼叫，200 或 implicit-request 不证明话权授予；不覆盖 REFER 使用链、在用或建立中释放分支、完整保活/定时器、ICE/PCC/安全算法及媒体控制状态机。"
+    },
+    {
+      "id": "r16-mcptt-negotiated-affiliation-client",
+      "question": "协商式组归属：单目标请求、用户确认与状态证据",
+      "start": "topics/groups/negotiated-affiliation-client.md",
+      "next_if": [
+        {
+          "condition": "仅目标用户接受后，被接受归属项当前尚未归属或被接受解除项当前已归属，实际调用§9.2.1.2时读取；保留显式helper完整兴趣、条件抑制等全部限制。另有本客户端实际状态观察事件时才读相应观察职责；MESSAGE200不代替PUBLISH或NOTIFY结果",
+          "read": "topics/groups/explicit-affiliation-client.md"
+        }
+      ],
+      "boundary": "仅协商式单目标请求与目标客户端决定，不支持本版一次请求多个目标用户。服务端发送许可、MESSAGE送达、目标用户接受和实际归属分别判断；目标先200后确认，只有接受列表且满足当前未归属/已归属条件才调用显式变更，仍保留完整兴趣发布、条件抑制和状态观察限制。保留F.4元素名称与可选容器对接收入口的差异，不补自动接受、拒绝回执、确认超时、冲突清单、全设备同步或完整服务器转发链。"
     }
   ]
 }
