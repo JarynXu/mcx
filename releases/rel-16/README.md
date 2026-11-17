@@ -1,6 +1,6 @@
 # Release 16
 
-当前仅覆盖八项固定规范版本的局部范围，包括独立的 Stage 2 功能解释和 Stage 3 程序，整版尚未完成。
+当前仅覆盖九项固定规范版本的局部范围，包括独立的 Stage 2 功能解释和 Stage 3 程序，整版尚未完成。
 
 - [普通按需私呼：客户端应答与建立证据](topics/calls/private-client-answer-evidence.md)：TS 24.379 V16.14.0。
 - [普通私聊 SDS 控制面：发送资格、请求与接收证据](topics/mcdata/sds-control-client.md)：TS 24.282 V16.13.0。
@@ -69,6 +69,8 @@
 - [组动态数据：订阅许可、通知内容与状态边界](topics/groups/group-dynamic-data.md)：按读取/订阅、角色准入与实际通知进入，不把组动态数据等同本人的归属或会议参与状态。
 
 - [离网 MCData 消息在 MONP 中的识别与封装](topics/mcdata/offnetwork-monp-carrier.md)：根据外层类型码定位内层 MCData 消息。
+
+- [同一用户跨业务、跨终端时，怎样辨认身份？](topics/identity/cross-service-user-mapping.md)：辨别认证、业务和路由身份，并按信任域判断何时可用公共用户身份标识业务用户。
 
 先读主题共同条件，再按实际角色与事件选取结论；不把拒绝、应答、取消或后续数据处理拼成同时必备的条件。这些主题均不构成完整端到端实现，也不证明版本组合互通。
 

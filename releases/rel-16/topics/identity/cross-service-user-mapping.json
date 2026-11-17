@@ -1,0 +1,187 @@
+{
+  "topic_id": "r16-identity-cross-service-user-mapping",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "同一用户跨业务、跨终端时，怎样辨认身份？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0 定义的 Rel16 应用层用户身份与 SIP 信令控制面身份关系。"
+  ],
+  "claims": [
+    {
+      "id": "authentication-and-service-identity",
+      "title": "认证身份与业务身份",
+      "conditions": [
+        "区分用户向身份管理服务器认证与应用层识别业务用户。"
+      ],
+      "conclusion": "MC ID 在身份管理服务器唯一标识来认证的用户；MC service ID 在相应业务中唯一标识用户，是表明其定义所在 MC 系统的 URI。两者可以同值。与业务 ID 关联的属性可供业务服务器作授权判断；业务提供方要求时，业务 ID 对信令控制面隐藏。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.1.1"
+          ],
+          "printed_pages": [
+            43
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.1.2"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ]
+        }
+      ],
+      "normative_strength": "业务 ID 必须是 URI；同值和用关联属性作授权判断是允许的做法；隐藏以提供方要求为条件。",
+      "limitations": [],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "per-service-identity",
+      "title": "一项业务一个 ID；跨业务可以同值",
+      "conditions": [
+        "同一用户使用一项或多项 MC 业务。"
+      ],
+      "conclusion": "对同一用户，同一项 MC 业务只有一个 MC service ID，不同业务的 ID 可不同。若提供方为该用户配置单一 ID 以授权访问多项业务，各业务 ID 取同一值，终端（UE）和业务服务器在通信中必须指明具体业务。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.1",
+            "Figure 10.1.4.1-1"
+          ],
+          "printed_pages": [
+            68
+          ]
+        }
+      ],
+      "normative_strength": "每用户每业务只有一个 ID；共享同值是配置选择，触发条件成立时携带具体业务指示是 SHALL。",
+      "limitations": [],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "active-profile-per-client",
+      "title": "活动配置按客户端计算",
+      "conditions": [
+        "一个 MC service ID 对应的用户配置档与当前活动配置档。"
+      ],
+      "conclusion": "一个业务 ID 关联至少一份用户配置档（user profile）。配置档用索引区分，名称可选。同一 MC 业务客户端同一时刻只激活一份；同一用户的不同 UE 可用不同配置档，同一 UE 也可在不同时刻切换配置档。每客户端一份的限制在主系统和向伙伴系统迁移时均适用。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.1",
+            "Figure 10.1.4.1-1"
+          ],
+          "printed_pages": [
+            68
+          ]
+        }
+      ],
+      "normative_strength": "此处的“一个”是每个客户端同时激活的数量，不是一个人总共只能有一份配置档。",
+      "limitations": [],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "routing-and-user-mapping",
+      "title": "SIP 注册、路由与应用层映射",
+      "conditions": [
+        "区分 SIP 注册、经 SIP 核心发往 MC 业务服务器的信令路由，以及用公共用户身份直接标识 MC 业务用户。标识用户时须区分同一信任域与不同信任域。"
+      ],
+      "conclusion": "注册时用私有用户身份查找信令用户代理的认证凭据。该代理经 SIP 核心向业务服务器发送信令时，消息用公共用户身份路由。业务服务器管理业务 ID 与公共用户身份的映射，两个方向都允许一对多。MC 业务提供方与归属 PLMN 运营方在同一信任域时，公共用户身份可以兼作应用层的 MC 业务用户标识，但不是必须。公共用户身份不得标识另一信任域中的 MC 业务用户。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.1.2"
+          ],
+          "printed_pages": [
+            18
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.2"
+          ],
+          "printed_pages": [
+            45,
+            46
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.3.1"
+          ],
+          "printed_pages": [
+            46
+          ]
+        }
+      ],
+      "normative_strength": "同域兼作用户标识是 MAY（§8.3.1），跨域标识 MC 业务用户是 SHALL NOT（§5.1.2）；映射允许一对多，并不要求实际部署必须有多个。",
+      "limitations": [
+        "该禁令针对用公共用户身份跨信任域标识 MC 业务用户，不能据此断言跨域 SIP 通信或路由映射一律禁止。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "public-and-temporary-gruu",
+      "title": "多终端寻址时谁管理 GRUU",
+      "conditions": [
+        "系统支持同一用户登录多个设备或多人共享设备时。"
+      ],
+      "conclusion": "SIP 核心可以生成公共和临时 GRUU 来区分 MC 业务终端。业务服务器管理业务 ID 到公共 GRUU 的映射，一个业务 ID 可对应多个公共 GRUU；临时 GRUU 到公共 GRUU 的映射归 SIP 核心。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.2",
+            "8.3.1"
+          ],
+          "printed_pages": [
+            46
+          ]
+        }
+      ],
+      "normative_strength": "生成 GRUU 为 may；两类映射的管理者由条文分别指明。",
+      "limitations": [],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [
+    "限于本主题所引 Stage 2 条款中的身份、映射与用户配置档关系。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
