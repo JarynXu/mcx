@@ -182,6 +182,16 @@ settings-only PUBLISH 的身份字段与保护配置、服务器保护/绑定拒
 
 [读取主题](topics/calls/offnetwork-private-auto-client.md)
 
+## 首接呼叫已有一人接听，服务器怎样结束其他邀请？
+
+判断控制功能何时向主叫发送 183 或生成自己的 200，未选中分支何时用 CANCEL 或 BYE，以及 CANCEL 获 200 后还要等哪个响应。
+
+其他分支须按各自对话状态处理。已确认 CANCEL 但未在实现确定的时限内收到原 INVITE 的 487，须发带未选中原因的 BYE；取消或释放失败可重发。
+
+尚未建立：同时到达的成功响应之间的全局平局算法，以及等待 487 的固定秒数。
+
+[读取主题](topics/calls/first-to-answer-controlling.md)
+
 
 
 ## 普通私聊SDS控制面：发送资格、请求与接收证据

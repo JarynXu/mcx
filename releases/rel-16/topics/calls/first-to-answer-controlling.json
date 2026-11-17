@@ -1,0 +1,142 @@
+{
+  "topic_id": "r16-calls-first-to-answer-controlling",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "首接呼叫已有一人接听，服务器怎样结束其他邀请？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "Rel-16 普通在网、按需、带话权控制的 MCPTT 呼叫；初始 SIP INVITE 的 session-type=first-to-answer，排除紧急指示及告警。",
+    "观察对象为控制 MCPTT 功能；上游朝向主叫，其他分支只指同次首接请求引出的其他被邀请客户端。各条按独立事件和本条条件适用。"
+  ],
+  "claims": [
+    {
+      "id": "ringing-is-progress",
+      "title": "首个符合条件的振铃产生上游进展，不决定获选者",
+      "conditions": [
+        "收到该首接 INVITE 的 180；控制功能尚未向主叫发 180 或最终响应，此前没有收到本次首接呼叫其他相关 INVITE 的 180。"
+      ],
+      "conclusion": "控制功能向主叫的 INVITE 生成并发送 183。再收到其他候选人的 180 时，已不满足首个 180 的条件。",
+      "normative_strength": "相应条件下生成并发送 183 为 shall。",
+      "limitations": [
+        "不能用 183 识别已接通分支，也不能把 private 的 180 或媒体缓冲分支移用过来。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.2, received 180, opening condition and item 2 (first-to-answer)"
+          ],
+          "printed_pages": [
+            381
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "selected-invite-final",
+      "title": "向主叫发出成功应答前先完成媒体面处理",
+      "conditions": [
+        "控制功能收到对某份 INVITE 的 200，该对话由首接 INVITE 建立；控制功能尚未向主叫发最终响应。"
+      ],
+      "conclusion": "先为主叫的 INVITE 生成 200 并写入针对入站 offer 的 SDP answer；与媒体面交互，完成相应处理后，再向主叫发送 200。只有这个分支作为本次选中的对话继续。",
+      "normative_strength": "生成、应答内容、媒体面交互与发送均为 shall；注 4 说明媒体面步骤与发送的顺序。",
+      "limitations": [
+        "已向主叫发最终响应后，后到的其他 INVITE 的 200 不能再次触发这一段；本条未给出同刻到达时的全局平局算法，信令成功也不证明用户可听或已获话权。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.2, received 200 for first-to-answer INVITE, opening condition, items 1–2 and 5–6, Note 4"
+          ],
+          "printed_pages": [
+            382
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "other-dialog-branch",
+      "title": "对未选中者逐个区分已建立与待决对话",
+      "conditions": [
+        "控制功能已向主叫发送成功应答；只考察由同次首接 INVITE 引出的其他受邀客户端。"
+      ],
+      "conclusion": "对自上游 200 发出以来也已建立的对话，按 §6.3.3.1.5 发 BYE；application/vnd.3gpp.mcptt-info+xml 正文的 release-reason 为 not selected for call。对仍未建立的，按 RFC 3261 发 CANCEL 取消邀请。",
+      "normative_strength": "相应分支的 BYE 或 CANCEL 为 shall。",
+      "limitations": [
+        "不清理获选者，也不是向每位受邀方同时发两种请求。第 7(a、b) 项回指发送 200 为第 5 项；该版本第 5 项是与媒体面交互，实际发送在第 6 项。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.2, received 200 for first-to-answer INVITE, items 6 and 7(a–b)"
+          ],
+          "printed_pages": [
+            382,
+            383
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "cancel-confirmation-and-retry",
+      "title": "取消请求获 200 后仍须核对原始邀请的 487",
+      "conditions": [
+        "控制功能对同次首接呼叫的待决分支发了 CANCEL；区分收到该 CANCEL 的 200、在实现确定的时限内是否收到该客户端对原 INVITE 的 487，以及取消/释放是否成功。"
+      ],
+      "conclusion": "收到 CANCEL 的 200 后须等待原 INVITE 的 487。服务器实现在其确定的时限内未收到该 487，须按 §6.3.3.1.5 向该客户端发 BYE，MCPTT 信息正文内的 release-reason 为 not selected for call。487 按时到达则不触发该超时动作。若取消或释放没有成功，可再发 CANCEL 和 BYE。",
+      "normative_strength": "等待 487、超时发 BYE 为 shall；失败后重复请求为 may。",
+      "limitations": [
+        "未规定固定秒数、重试次数或必定成功。第 8 项把失败的取消/释放回指为第 6 项，但实际清理在第 7 项；CANCEL 的 200 不是呼叫已接通或原 INVITE 已返回 487 的证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.2, received 200 for first-to-answer INVITE, items 7(c–d) and 8; numbering compared with items 5–7"
+          ],
+          "printed_pages": [
+            382,
+            383
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcptt-first-to-answer-on-demand-client",
+    "r16-calls-private-server-admission-routing"
+  ],
+  "limitations": [
+    "不展开参与功能的寻址、主被叫客户端动作、完整 IMS 事务或媒体/话权控制；不以单个候选人的结果代表全呼叫，也不制定平局仲裁规则。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
