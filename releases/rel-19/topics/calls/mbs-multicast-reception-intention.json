@@ -1,0 +1,184 @@
+{
+  "topic_id": "r19-calls-mbs-multicast-reception-intention",
+  "release": 19,
+  "standard_stage": 3,
+  "state": "clause-checked",
+  "title": "MCPTT 5G MBS：组播接收意愿与反馈边界",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v19.4.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "固定 TS24.379 V19.4.0 §14B 的 MCPTT multicast MBS 接收意愿通知；不适用于 broadcast MBS，也不把它当作组呼加入、归属或承载建立程序。",
+    "客户端事件与PF接收分别适用各claim条件；Map触发和公告/服务区触发是替代入口，不要求所有报告者已有进行中的组呼。",
+    "范围止于实际信令触发、报文字段、身份绑定和媒体层通知。Map Group To Session Stream、无线加入及实际音频接收是外部依赖或不同证据，不由SIP MESSAGE完成来推定。"
+  ],
+  "claims": [
+    {
+      "id": "mbs-intention-triggers",
+      "title": "何时报告想接收或不再想接收",
+      "conditions": [
+        "客户端面对multicast MBS会话，实际发生下列事件组合。"
+      ],
+      "conclusion": "想接收的入口有两条：收到通用MBS信道上的Map Group To Session Stream、参加该消息标识的组会话且尚未报告ue-session-join；或收到MBS公告、进入指定MBS会话流可用的服务区且无线条件良好。不再想接收有三条入口：进行中会话的公告取消与Map相同的MBS session ID且尚未报告ue-session-leave；或无进行中会话，收到取消公告，此前因该公告的通用MBS子信道可用而报告过ue-session-join，且尚未报告ue-session-leave；或无线条件差。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "14B.1 (scope)",
+            "14B.3.5.1 (all join/leave conditions)",
+            "14B.3.3.2 (comparison: actual leave reference)",
+            "14B.2.2.2 step6(a)(vi) (comparison: reporting flag)",
+            "F.2A.3 4(a)(vi) (comparison: flag semantics)"
+          ],
+          "printed_pages": [
+            596,
+            597,
+            602,
+            603,
+            740
+          ]
+        }
+      ],
+      "limitations": [
+        "“尚未报告”只属于原文列出的Map或取消分支，不自动添加到入区/良好无线或差无线分支。收到公告本身不足以触发入区分支。",
+        "join的实际调用指向14B.3.5.2；leave末句却指向14B.3.3.2的监听/撤公告报告程序。本页保留这个回指，不将其静默改成join构造helper，也不声称leave调用链已完全一致。",
+        "公告构造允许携report-ue-session-join-notification=true或false。F.2A.3 4(a)(vi)定义：true表示服务器要求客户端加入multicast MBS会话后通知，false表示服务器不要求该通知，不等于禁止通知。14B.3.5.1列出的触发条件未写该字段门槛；本页同时保留字段含义与程序条件，不自行补字段缺失时的默认值或统一发送策略。"
+      ],
+      "normative_strength": "满足任一完整分支后报告相应意愿为 SHALL；公告携report-ue-session-join-notification为 MAY。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mbs-intention-message",
+      "title": "发给公告中的MBS PSI，保留构造helper的条件",
+      "conditions": [
+        "客户端执行14B.3.5.2 UE session join notification构造；本claim不修正leave caller的回指。"
+      ],
+      "conclusion": "客户端用SIP MESSAGE发往公告PAI提供的PF MBS公共服务身份。Accept-Contact携MCPTT ICSI及require/explicit，P-Preferred-Service携MCPTT ICSI，MBS usage-info正文version=1，mcptt-info的mcptt-request-uri携用户MCPTT ID；P-Preferred-Identity建议携公共用户身份。helper在“successfully joining”条件下编码mbs-multicast-joining-status=ue-session-join；若意图报告正在加入某multicast MBS会话程序，携进行中conversation的session-id。not joining分支编码ue-session-leave，并在其所列“不加入”报告条件下携session-id。两分支均携一个或多个mbs-session-id，随后发送MESSAGE。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "14B.3.5.2 steps1(a-h),2",
+            "14B.3.5.1 (comparison: actual caller and no-conversation branch)",
+            "14B.3.2 (announcement dependency)",
+            "14.3.2 step1(e) (mapped PSI association)",
+            "L.3.4 (terminology mapping)",
+            "F.2A.3 3(c) (dependency/comparison: existing session URI and conditional mandatory)"
+          ],
+          "printed_pages": [
+            589,
+            600,
+            602,
+            603,
+            604,
+            814,
+            815,
+            739
+          ]
+        }
+      ],
+      "limitations": [
+        "触发段表达接收意愿，helper的join分支另写successfully joining。条款没有在此给出无线成功判定算法，不能把一条意愿触发直接改写为无线加入成功。",
+        "F.2A.3 3(c)将session-id定义为既有业务会话的URI：按需会话建立时从CF的Contact头收到，或经预建立会话建立业务会话时从PF的Connect消息收到。该定义还写mbs-multicast-joining-status不存在时session-id为mandatory，所写MIME名为application/vnd.3gpp.mcptt-mms-usage-info+xml，保留此文字差异。触发段含无进行中conversation的情形，helper又按其条件要求conversation身份；定义提供既有会话的来源，但不补无会话身份，也不解除helper的条件要求或确立统一省略规则。不得为使报文完整而伪造会话身份。",
+        "构造段对mbs-session-id沿用“listening status applies”的措辞，但字段仍为joining-status；不据此把本消息改称listening报告。MBS session ID与MCPTT conversation的session-id承担不同关联责任。"
+      ],
+      "normative_strength": "MESSAGE的指定目的、服务标识、正文身份、符合分支条件的状态/会话字段及发送为 SHALL；P-Preferred-Identity为 SHOULD。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mbs-intention-pf",
+      "title": "PF先核用户绑定，有session-id才通知相应媒体会话",
+      "conditions": [
+        "PF收到UE session join notification；执行正文处理还要求MBS usage-info含mbs-multicast-joining-status，且mcptt-request-uri标识本PF所服务用户。"
+      ],
+      "conclusion": "PF按24.229/RFC3428处理MESSAGE，并验证PAI公共用户身份与正文MCPTT ID绑定。绑定成立后，ue-session-join且携session-id时，通知媒体层该会话客户端想接收指定MBS session ID的数据；ue-session-leave且携session-id时，通知媒体层相应会话客户端不再想接收。异常程序14B.2.4按L.3.4映射调用14.2.4：PAI不属于本PF服务的MCPTT用户，或正文标识本PF用户却发送含announcement的usage-info时，回403。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "14B.2.5 full",
+            "14B.2.4",
+            "14.2.4 (mapped abnormal cases)",
+            "L.3.4"
+          ],
+          "printed_pages": [
+            588,
+            599,
+            814,
+            815
+          ]
+        }
+      ],
+      "limitations": [
+        "没有session-id时，14B.2.5未列本claim的媒体通知动作；不推导消息必被拒绝、通用信道自动兜底或会话身份自动生成。",
+        "PAI绑定不匹配与14.2.4的具体异常守卫不能混写成所有不匹配统一403。没有给出特定成功响应即音频已送达的结论。",
+        "媒体通知表达接收意愿，不证明无线资源已建立、MCPTT组呼已加入、承载已切换或数据已送达。"
+      ],
+      "normative_strength": "一般MESSAGE处理、符合正文入口后的绑定检查、绑定成立且含session-id的媒体通知，以及命中所列异常的403为 SHALL。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mbs-intention-versus-listening",
+      "title": "意愿通知和监听报告分别判断",
+      "conditions": [
+        "比较14B.3.5接收意愿与14B.3.3.1监听触发，不将两种状态合并。"
+      ],
+      "conclusion": "监听的Map入口要求收到通用信道上的映射、参加其标识的组会话且尚未报listening；公告入口则要求收到公告、对于multicast已发送UE session join notification、进入会话流可用服务区且无线条件良好。满足该入口的完整条件后，才按14B.3.3.2生成监听报告。发送join通知只是公告入口中的一项条件，不单独等于已监听。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "14B.3.3.1 listening conditions1-2",
+            "14B.3.3.2 listening paragraph",
+            "14B.3.5.1 (comparison: intent triggers)",
+            "14B.2.5 (comparison: intent/media boundary)",
+            "L.3.4"
+          ],
+          "printed_pages": [
+            599,
+            600,
+            601,
+            602,
+            603,
+            814,
+            815
+          ]
+        }
+      ],
+      "limitations": [
+        "这些是替代监听入口，不能给Map入口另加“先发join”守卫，也不能把Map入口的未报告条件复制给公告入口。",
+        "14B.3.3.2通过术语映射复用MBMS监听构造，不等于14B.3.5.2的joining-status字段可替换为监听字段。完整MBS撤公告确认、媒体映射和无线接收实现不在本页展开。"
+      ],
+      "normative_strength": "满足任一完整监听入口后的报告为 SHALL；本claim未增加可选状态转换或成功保证。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [
+    "本页不提供完整5G MBS接入或离开实现。尤其leave回指、无conversation的身份来源及helper成功条件须保留为接口边界，不用其它业务规范补齐。"
+  ],
+  "related": [
+    "mbms-announcement-listening-feedback.md",
+    "group-acknowledged-start.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

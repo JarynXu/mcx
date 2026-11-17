@@ -161,6 +161,14 @@
 
 入口：[MCData ad hoc SDS：用户主动修改成员或选人条件](topics/mcdata/adhoc-user-participant-update.md)。
 
+### HTTP FD 被叫别名解析与重建
+
+- **能回答：**可查普通本地one-to-one HTTP FD的被叫别名请求、CF前序门槛和单目标解析、300停止以及客户端另建direct-ID请求。
+- **只到条件或接口：**客户端、PF、CF和300接收按实际事件分别适用；新direct-ID请求仍重新受PF/CF门槛约束。旧HTTP证据owner排除别名，仅新direct-ID请求实际进入其直接用户/组目标及前序未拒绝等条件时才可关联读取。
+- **尚未建立的结论：**300不是202后续或下载完成，不扩大旧HTTP owner范围。保留PF未单列300转发、MIME/请求方法及解析helper边界，不补选人排序、查询XML、安全绑定或重试算法，不套媒体FD或SDS。
+
+入口：[MCData HTTP FD：被叫功能别名解析与单目标重建](topics/mcdata/http-fd-called-functional-alias.md)。
+
 ## MCVideo视频业务
 
 [查看本域全部主题](topics-mcvideo.json)
@@ -418,6 +426,14 @@
 - **尚未建立的结论：**不覆盖5G MBS、完整映射或承载激活，不将公告/报告当入会或音频成功；保留TGMI字段、缓存安全顺序和异常身份边界，不保证PF必切单播。
 
 入口：[MCPTT MBMS：公告、监听与暂停反馈](topics/calls/mbms-announcement-listening-feedback.md)。
+
+### MCPTT multicast MBS 接收意愿
+
+- **能回答：**可查multicast MBS意愿通知的替代触发、公告PSI、身份及条件会话字段、PF绑定核验和媒体通知，以及与监听报告的区别。
+- **只到条件或接口：**固定§14B multicast而非broadcast；客户端各事件与PF接收分别适用，不要求所有报告者已有组呼。helper成功条件和session-id要求仍独立保留。
+- **尚未建立的结论：**不替代无线加入、组呼建立或MBMS。保留leave回指、无conversation身份与helper成功条件边界；false报告标志不等于禁止，不补缺失默认值或统一发送策略，不以MESSAGE证明音频接收。
+
+入口：[MCPTT 5G MBS：组播接收意愿与反馈边界](topics/calls/mbs-multicast-reception-intention.md)。
 
 ## 组管理与MCPTT组呼入口
 
