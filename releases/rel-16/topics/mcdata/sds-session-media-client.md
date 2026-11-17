@@ -1,0 +1,69 @@
+# 私聊 SDS 会话媒体：连接、逐条发送与收件证据
+
+## 适用范围
+
+- 固定 TS24.582 V16.3.0（2021-01）与 TS24.282 V16.13.0（2026-02），普通在网、直接 MCData ID、按需 one-to-one SDS session 的客户端媒体职责；不含组、预建立会话、standalone、HTTP FD 或 MBMS。
+- 各客户端角色及建立、发送、接收、通知事件分别适用，不把双方事件串成全局 AND，也不把逐消息许可通过作为拒绝判断的前提。SIP 建会准入仍由相应信令程序承担。
+- 媒体及媒体控制保护按24.582的10.1–10.3.2及实际协商适用；受保护内容须解密/完整性检查，签名内容须验证。本文不提供33.180密钥派生或外部RFC实现，普通内容处理不能免除适用保护义务。
+
+共同依据：3gpp-ts-24.582-v16.3.0 §4.1.1、4.2、5.1.1、10.1–10.3.2，印刷页10、11、33–35。
+
+## 从 SIP 建会进入 MSRP：两个角色的入口不同
+
+条件：普通私聊 SDS session 的主叫收到自己 INVITE 的 2xx，或终接客户端收到自己已发 200 的 ACK；媒体程序则以该角色实际收到建立 MSRP 的指示及随后实际连接事件分别适用。
+
+24.282 的主叫在 2xx 后发 ACK、启动 SIP Session timer 并调用媒体主叫程序；终接方在收到 ACK 后调用媒体终接程序。这些是进入媒体程序的事件，不等于首条 SDS 已发送。媒体主叫依收到的 SDP answer 建立连接，answer 为 passive 时自身 active，answer 为 active 时自身 passive；终接方依收到的 SDP offer 参数建立连接，端点角色按 RFC 6135。任一角色作为 active 时须发空 MSRP SEND 绑定连接与 MSRP session。主叫程序以收到首个 SEND 的 MSRP 200 为可以发送 SDS 或所请求通知的事件；终接程序则明确区分 active 收到首个 SEND 的 200，或 passive 对收到的首个 SEND 发出 200。
+
+强度：连接及角色动作按 SHALL；首个 MSRP 事件后的发送为 can；未获传数据许可的客户端不应使用建立过程为 SHOULD NOT。
+
+- 主叫文字没有像终接程序那样另列 passive 发出首个 200 的发送入口，本页不替它补成对称规则。24.282 的 2xx caller 与24.582主叫连接参数段写 SIP 200 的粒度也分别保留。
+- 建立连接仍依赖 RFC 4975/6135/6714，本文不展开传输协商和错误恢复的完整实现。首个空 SEND 的应答不证明应用数据已交付。
+
+依据：3gpp-ts-24.282-v16.13.0 §9.2.4.2.3 response event;9.2.4.2.4 ACK event，印刷页130,132；3gpp-ts-24.582-v16.3.0 §6.1.2.1–6.1.2.3.1，印刷页16,17,18。
+
+## 已在会话中仍须逐条检查许可与大小
+
+条件：客户端参与本页 SDS session，并实际达到自身可发送事件，准备发送一条私聊 SDS；许可和大小尚待判断，构造只在三项条件都满足后适用。
+
+发送不专属于会话发起者。每条私聊 SDS 必须同时满足：用户配置 actions 下 allow-transmit-data 存在且为 true；消息大小不超过服务配置 max-data-size-sds-bytes；且不超过用户配置 MaxData1To1。通过后调用 signalling payload、data payload 和 MSRP SEND helper，在已建立连接发送；To-Path 使用收到的 SDP 中的 MSRP URI，而非一律只取 answer。Signalling payload 设置当前 UTC 时间、UUID Conversation ID 和 Message ID、自身 Sender MCData user ID；回复及应用目标分别携相应标识，处置请求可选。Data payload 标明 payload 数量与内容；两种 MIME body 以 multipart/mixed 的 boundary 分隔，分别承载 signalling 与 payload，不把控制元数据当作用户数据本身。
+
+强度：三项为 only if 的必要条件；通过后的构造/发送为 SHALL；请求 delivery/read 处置的 IE 为 MAY。
+
+- 配置字段按本版媒体条款解释；24.484 配置 schema、缺省值与更新机制不在本页核验。没有通过逐消息门槛时，不能用 SIP 200 或已有连接替代许可；本段未指定专用 SIP 拒绝码。
+- 6.1.1.2.2 字面要求生成 Conversation ID UUID，而接收 helper 也处理既有 Conversation ID；不能据 SIP session 身份擅自规定所有消息复用同一个 Conversation ID。发送 helper 用 Reply ID，接收 helper 和24.282表格用 InReplyTo message ID，本页不补编码转换算法。
+- 6.1.2.4 明确调用三个构造 helper，没有调用 standalone 6.1.1.2.1 的成功后释放程序；不能因此每发一条便释放会话。
+- 用户数据有端到端保护要求时，24.282 的 DATA PAYLOAD 表要求 Security parameters and Payload IE；无此要求的私聊用 Payload IE。本文不提供密码封装或字节级编码实现。
+
+依据：3gpp-ts-24.582-v16.3.0 §4.1.1;6.1.2.1;6.1.2.4，印刷页10,16,18；3gpp-ts-24.582-v16.3.0 §6.1.1.2.2–6.1.1.2.4;6.4.1，印刷页14,15,26；3gpp-ts-24.282-v16.13.0 §15.1.2.1;15.1.4.1 and notes;15.2.7–15.2.13;15.2.15，印刷页227,228,229,239,240,241,242,243；3gpp-ts-24.582-v16.3.0 §6.1.1.2.1 successful-send release (comparison-only)，印刷页13。
+
+## 完整接收后按会话标识和应用目标交付内容
+
+条件：本页客户端的 MSRP session 已建立，实际收到 SDS 内容；有 chunking 时须先收齐并重组。各内容和应用分支按实际收到的 IE 分别适用。
+
+客户端不得把部分 chunks 提前交应用；重组后按6.1.2.6调用接收 helper，解码 signalling 与 payload 两种 MIME。新的 Conversation ID 建立 conversation；既有 ID 下，无 InReplyTo 时加入新消息，有 InReplyTo 时关联被回复消息，均用 Message ID 标识新消息。按 Number of Payloads 取得 payload。没有 Application identifier 时按用户内容处理，可通知用户并呈现内容；有该标识时不通知用户，未知应用标识则丢弃 SDS，已知则交对应应用。收到处置请求 IE 时使用会话内通知程序，而不是直接照搬 standalone 的带外通知调用。
+
+强度：收齐重组、内容处理及应用分支为 SHALL；面向用户内容的通知为 MAY。
+
+- 应用未知时丢弃不能改写为回退给用户显示；应用已知也不等于用户已阅读。
+- 这里说明本客户端收到内容后的责任，不证明服务端所有转发、保护验证或远端接收均已完成。
+
+依据：3gpp-ts-24.582-v16.3.0 §6.1.2.2.1 and6.1.2.3.1 chunking;6.1.2.6;6.1.1.3.2，印刷页16,17,18,20；3gpp-ts-24.282-v16.13.0 §15.2.7;15.2.9–15.2.13，印刷页239,240,241,242。
+
+## 会话内处置通知与会话结束后的通知分开
+
+条件：客户端实际需要发送收到 SDS 所请求的处置通知，或实际收到会话内 SDS disposition notification。非200及终止动作分别以实际响应或终止事件适用，不要求所有事件同时发生。
+
+会话内生成 SDS NOTIFICATION 并通过已建立的 MSRP 连接发送，To-Path 按收到的 SDP。通知依实际处置使用 DELIVERED、READ、DELIVERED AND READ；不能交给用户或应用（例如存储不足）时用 UNDELIVERED。设置当前时间，复制原 SDS 的 Conversation ID、Message ID；用户内容不携 Application ID，应用内容复制其 Application ID，并写通知发送者自身 MCData user ID。收到通知的客户端解码 signalling MIME 并交用户或应用。通知使用 chunking 时继续发送所需 chunks；收到非200按 RFC4975 处理错误；要终止 MSRP session 时中止尚待发送 chunks（若有），并提示 SDS 或通知未能发送。会话终止后，如仍要发处置通知，转由24.282的带外程序处理。
+
+强度：通知构造、发送、接收及规定的错误/终止动作按 SHALL；处置类型取决于实际业务事件。
+
+- MSRP 200 不是 READ/DELIVERED 通知的替代物；UNDELIVERED 也不能只凭暂未收到通知推断。
+- 6.1.2.5.1 对非200转引 RFC，随后以 To terminate the MSRP session 规定终止动作；本页不把所有非200改成无条件立即终止，也不宣称穷尽所有逐消息发送错误恢复。
+- 6.1.2.5.3 通用 helper 写 answer SDP，实际6.1.2.5.1澄清为 received SDP；终接发送者不被强制套主叫 answer 路径。
+
+依据：3gpp-ts-24.582-v16.3.0 §6.1.2.5.1–6.1.2.6;4.1.1，印刷页10,18,19,20；3gpp-ts-24.282-v16.13.0 §15.1.5.1;15.2.3;15.2.5;15.2.7–15.2.11;15.2.15，印刷页229,230,237,238,239,240,242,243；3gpp-ts-24.282-v16.13.0 §9.2.4.2.4 post-release caller;12.1 (out-of-band boundary)，印刷页132,190,191。
+
+## 使用边界与关联
+
+- 24.582 §10.1为客户端与PF的控制保护写CSK/CSK-ID，§10.3.2写CPK/CPK-ID；本页保留字面差异，不把它们擅自等同或补成完整安全算法。
+- [客户端信令建立、应答与结束](sds-session-client.md)：仅在该页对应角色和事件条件成立时使用；本页的媒体事件不替代信令准入，关联也不是每条消息后必走的释放步骤。

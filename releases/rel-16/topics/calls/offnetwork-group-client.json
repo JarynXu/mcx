@@ -1,0 +1,438 @@
+{
+  "topic_id": "r16-calls-offnetwork-group-client",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "clause-checked",
+  "title": "普通离网组呼：探测、加入与本地退出",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "固定 TS24.379 V16.14.0 的离网普通 BASIC GROUP CALL；每组 ID 的基本呼叫状态机及关联类型状态分开处理。发起者不处于紧急状态，本次请求及所述公告均不为紧急、迫近危险或广播；不展开并发呼叫合并、升级/降级或私呼。",
+    "客户端按各条实际状态和消息/用户/计时器事件处理；探测超时、接收公告、等待用户、拒绝和释放是不同入口，不以已接入、已获话权或已成功建立媒体作为共同前提。",
+    "范围为 MONP 呼叫控制的探测、新建/加入、终接接受与本地退出，并核 TS24.380 V16.9.0 的话权初始化和停止接口。配置取得、ProSe 承载/安全和完整离网话权仲裁不在此实现。"
+  ],
+  "claims": [
+    {
+      "id": "probe-before-start",
+      "title": "先探测，而不是按键即新建",
+      "conditions": [
+        "以下是替代事件：S1 的用户发起普通组呼；S2 的 TFG3 到期；或 S3 收到组 ID 匹配的 GROUP CALL PROBE。状态与守卫仅约束对应事件。"
+      ],
+      "conclusion": "S1 发起时保存组 ID，创建呼叫类型状态机，发送含组 ID 的 GROUP CALL PROBE，启动 TFG3 和 TFG1，进入 S2。普通类型初始化要求用户不处于紧急状态且本次不是紧急或迫近危险请求：类型设为 BASIC GROUP CALL，使用其配置的 ProSe per packet priority，保存当前 UTC 类型变更时间和自己的 MCPTT ID，类型状态暂留 T0。S2 中 TFG3 到期重发 PROBE 并重启 TFG3，仍留 S2。已有呼叫的 S3 收到匹配 PROBE 时，只有保存的 probe response 为 false 才停止 TFG2、改用收到探测后的短 TFG2 并置 true；并非每个 PROBE 都立即发公告。MONP 消息占整个 UDP payload，发往组 multicast IP、UDP 8809、TTL 255；客户端从该组地址和端口接收并按 MONP 处理。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.1.1.1 full;10.2.2.1–2 basic/session scope"
+          ],
+          "printed_pages": [
+            319,
+            320,
+            321
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.4.2.1–3 full"
+          ],
+          "printed_pages": [
+            323
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.1–2;10.2.3.4.2 basic branch"
+          ],
+          "printed_pages": [
+            332,
+            333,
+            334,
+            335
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "15.1.2;15.2.5 group identity"
+          ],
+          "printed_pages": [
+            478,
+            479,
+            490
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "B.3.1.1 TFG1/TFG3 values and configuration"
+          ],
+          "printed_pages": [
+            533,
+            534
+          ]
+        }
+      ],
+      "limitations": [
+        "TFG1 默认150 ms，TFG3 默认40 ms；两者可配置，TFG3 还与 D2D sidelink 特性有关，不能把默认值当所有部署的固定值。",
+        "配置、组 multicast 地址、组 ID、用户 ID 与 ProSe 优先级是所用程序的输入；本页不实现 TS24.483 配置取得、ProSe 承载建立或密钥管理。每组有自己的基本呼叫状态机，同时呼叫数量受 MaxCallN4 配置限制。"
+      ],
+      "normative_strength": "探测构造/发送、状态保存、普通类型初始化和相应计时器动作均为 SHALL；默认计时值不消除配置条件。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "probe-outcome-and-floor-start",
+      "title": "超时新建与发现既有呼叫走不同角色",
+      "conditions": [
+        "以下两种 S2 事件分别适用：TFG1 到期；或收到组 ID 匹配的 GROUP CALL ANNOUNCEMENT。不要求已经收到公告才允许超时新建。"
+      ],
+      "conclusion": "TFG1 到期时，停止仍运行的 TFG3，生成并保存 SDP，均匀随机选取0至65535的 call ID，保存刷新间隔、自己的 originating user ID 和当前 UTC 呼叫开始时间。客户端用这些值及类型状态中的类型/变更时间/变更用户构造 ANNOUNCEMENT，发送后建立媒体会话，按 originating user 启动话权程序，启动 TFG6 和周期 TFG2，进入 S3。Confirm IE 可选。另一分支中，收到匹配公告后停止 TFG3/TFG1，保存公告的 SDP、call ID、originator、刷新间隔和开始时间，建立媒体会话，按 terminating user 启动话权程序，启动 TFG6/TFG2并进入 S3。普通类型的探测响应分支要求收到与保存的类型均为 BASIC，保存公告中的最后类型变更时间/用户并进入 T2；超时发出公告也使普通类型进入 T2。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.4.3.1–2 full;10.2.2.4.1.2 TFG6"
+          ],
+          "printed_pages": [
+            322,
+            323,
+            324,
+            325
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.1.1.2;10.2.2.1 fixed SDP"
+          ],
+          "printed_pages": [
+            319,
+            320
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.4.3 basic branch;10.2.3.4.6 basic branch"
+          ],
+          "printed_pages": [
+            335,
+            336,
+            337,
+            338
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "15.1.3 mandatory/optional fields;15.2.3–4;15.2.6;15.2.14–15"
+          ],
+          "printed_pages": [
+            479,
+            489,
+            490,
+            493,
+            494
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.1 opening;7.2.3.2.1–3 full"
+          ],
+          "printed_pages": [
+            120,
+            123
+          ]
+        }
+      ],
+      "limitations": [
+        "§10.2.2.4.3.1 NOTE 将本 Release 的刷新间隔固定为10秒；§15.2.4 的 Refresh interval 字段单位是毫秒，不能把秒数直接当相同的线编码数值。SDP 在一次呼叫中保持固定，仅支持 speech 和一个 floor control entity；本页不展开 codec/RTCP/SDP 编码的全部实现。",
+        "TFG6=X−(Y−Z)：X 是配置的 OffNetworkMaxDuration，Y 是当前 UTC 秒，Z 是触发公告的开始时间；没有公告触发时用保存的开始时间。时间自1970年起、不计闰秒。晚加入不能重获完整最大时长；本条不补负值的处理算法。",
+        "话权角色不能互换：TS24.380 §7.2.1 将发起者初始化关联到 O: has permission，组终接者到 O: silence；§7.2.3.2.3 还启动 T230。§7.2.3.2.2 发送 Floor Granted 的具体入口要求建立时的 session announcement 包含 explicit floor request，本页不据一般公告构造推定该条件总成立。进入呼叫 S3 不等于每个加入者已获发送话权。",
+        "探测响应加入的 §10.2.2.4.3.2 不列用户确认等待或发送 ACCEPT，不能把空闲终接分支的 Confirm 处理自动套入。"
+      ],
+      "normative_strength": "两种建立分支的保存、媒体/话权调用、计时器和状态动作为 SHALL；新建公告的 Confirm IE 为 MAY；话权 helper 的动作只在各自入口条件下为 SHALL。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "idle-incoming-acceptance",
+      "title": "人工接受与 Confirm IE 是两条不同判断",
+      "conditions": [
+        "以下为替代事件：S1 收到组 ID 不匹配任何其他状态机的普通 ANNOUNCEMENT；S4/S5 用户接受、拒绝或 TFG4 到期；S3 收到组 ID 匹配的 ACCEPT。"
+      ],
+      "conclusion": "S1 收到新组公告时保存 SDP、call ID、originator、刷新间隔、组 ID 与开始时间并创建类型状态机。若配置要求用户确认，则启动 TFG4：有 Confirm IE 进入 S5，没有则进入 S4；普通类型保存公告中的类型、优先级和最后变更信息，暂留 T0。若不要求用户确认，则建立媒体、按 terminating user 启动话权；只有公告含 Confirm IE 才发送 GROUP CALL ACCEPT，随后启动 TFG6/TFG2并进入 S3，普通类型进入 T2。S4/S5 用户接受时同样建立媒体并启动终接话权，停止 TFG4，启动 TFG6/TFG2并进入 S3；只有 S5 发送 ACCEPT。ACCEPT 含 call ID、call type、组 ID 和自己的 sending user ID。S4/S5 用户拒绝时停止 TFG4、启动 TFG5并进入 S6；TFG4 自行到期也启动 TFG5并进入 S6。S3 收到匹配组 ID 的 ACCEPT 时可以通知用户对方已接受，状态保持 S3。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.4.3.3–8 full"
+          ],
+          "printed_pages": [
+            325,
+            326,
+            327
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.4.4–6 basic branches;10.2.3.4.11 reject comparison"
+          ],
+          "printed_pages": [
+            336,
+            337,
+            338,
+            345,
+            346
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "15.1.3–4;15.2.9–11 Confirm/user/type"
+          ],
+          "printed_pages": [
+            478,
+            479,
+            491,
+            492
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "B.3.1.1 TFG4/TFG5"
+          ],
+          "printed_pages": [
+            534
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.2.3 terminating floor initialization"
+          ],
+          "printed_pages": [
+            123
+          ]
+        }
+      ],
+      "limitations": [
+        "Confirm IE 的存在表示期待终接确认，不能替代 user acknowledgement 配置，也不是带 true/false 值的开关。S4 仍需用户接受，只是不回 ACCEPT。",
+        "TFG4 默认30秒、最大60秒且可配置；TFG5 默认30秒且可配置。拒绝/超时不要求先建立媒体。",
+        "§10.2.2.4.3.6 的 ACCEPT 接收动作明列组 ID 匹配，未另列 call ID 匹配守卫；不据消息携带 call ID 自行加守卫。该通知不是所有成员已加入或媒体已交付的证明。"
+      ],
+      "normative_strength": "公告保存、按配置分支、建立/接受/拒绝、计时器与状态动作为 SHALL；收到 ACCEPT 后通知用户原文为 can，不升级为必须通知。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "announcement-continuity",
+      "title": "公告维护必须匹配同一呼叫的状态",
+      "conditions": [
+        "S3 中 TFG2 到期，或 S3 收到符合本条全部匹配与 probe-response 条件的 ANNOUNCEMENT；两个事件分别适用。"
+      ],
+      "conclusion": "TFG2 到期时，用保存的 call ID、类型、刷新间隔、SDP、originator、组 ID、最后类型变更时间/用户及开始时间构造 ANNOUNCEMENT；仅保存的 probe response 为 true 时带 Probe Response IE。发送后将原为 true 的标志清为 false，重启周期 TFG2并留在 S3。接收公告触发重启则要求组 ID、开始时间、最后类型变更时间、最后类型变更用户、call ID 和类型都匹配，并且满足“保存标志为 true 且消息带 Probe Response IE”或“保存标志为 false”。此时停止/重启 TFG2，必要时清标志，仍在 S3。周期 TFG2 为 refresh×(2/3+2X/3) 秒，探测触发的短 TFG2 为 X/12 秒，X 为0至1均匀随机数。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.4.1.1;10.2.2.4.2.3;10.2.2.4.4.1–2 full"
+          ],
+          "printed_pages": [
+            322,
+            323,
+            327,
+            328
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "15.1.3;15.2.4;15.2.14–16"
+          ],
+          "printed_pages": [
+            479,
+            490,
+            493,
+            494
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.4.6.1 merge comparison;10.2.2.4.7 undefined events"
+          ],
+          "printed_pages": [
+            330,
+            331,
+            332
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.1.1.1 actual MONP transport;B.3.1.1 summary"
+          ],
+          "printed_pages": [
+            319,
+            534
+          ]
+        }
+      ],
+      "limitations": [
+        "§10.2.2.4.4.1 发送步骤字面回指10.2.2.1.1.1；MONP 传输正文实际在10.2.1.1.1。保留该号次差异，不把回指改写成新的媒体过程。",
+        "同组但 originator 或 call ID 不同可进入另一个并发呼叫合并程序，不能当普通刷新。Annex B 的简表不替代正文的匹配/标志守卫；未定义消息丢弃，未定义用户指示或计时器到期忽略。Probe Response 与 Confirm 是不同 IE。"
+      ],
+      "normative_strength": "符合各事件守卫时的公告构造、发送、标志修改和计时器动作为 SHALL；合并流程不在本条展开。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "leave-ignore-and-rejoin",
+      "title": "退出后的忽略期仍可能更新本地信息",
+      "conditions": [
+        "以下分别适用：S3/S4/S5 用户释放；S3 的 TFG6 到期；S6 收到匹配组公告、用户重新发起该组呼、或 TFG5 到期。话权停止 helper 另限其非 Start-stop 状态，不作为呼叫层退出的公共前提。"
+      ],
+      "conclusion": "用户在 S3/S4/S5 释放时，释放存在的媒体会话并调用停止话权，停止仍运行的 TFG4/TFG2，启动 TFG5，停止仍运行的 TFG6，进入 S6。S3 的 TFG6 到期也释放媒体、停止话权和仍运行的 TFG2，启动 TFG5并进入 S6。S6 收到匹配组公告只更新 SDP、call ID、originator、刷新间隔与开始时间，停止/重启 TFG5并保持 S6，不自动重新接入。S6 用户重新发起同组呼时停止 TFG5，按保存的 SDP 建立媒体，以 terminating user 启动话权，启动 TFG6/TFG2并进入 S3。S6 的 TFG5 到期才释放上述保存值及组 ID，并按类型状态清理回指处理，回到 S1。TS24.380 的非 Start-stop 话权实例收到应用/信令释放请求时，停止发送话权消息，请求停止 RTP 收发，释放资源与运行的计时器，终止实例并进入 Start-stop。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.4.5.1–4;10.2.2.4.5.9 full"
+          ],
+          "printed_pages": [
+            328,
+            329,
+            330
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.4.1.2 TFG6;B.3.1.1 TFG5"
+          ],
+          "printed_pages": [
+            322,
+            323,
+            534
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.4.10–11 full cleanup dependencies"
+          ],
+          "printed_pages": [
+            345,
+            346
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.9.1–2 full;7.2.2 floor end comparison"
+          ],
+          "printed_pages": [
+            121,
+            144,
+            145
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.2.3 terminating initialization"
+          ],
+          "printed_pages": [
+            123
+          ]
+        }
+      ],
+      "limitations": [
+        "S4/S5 可以尚未建立媒体/话权，不能让话权 helper 的非 Start-stop 守卫阻断这些呼叫层释放事件。该 helper 的资源释放只描述本地话权实例，不证明所有成员已结束呼叫。",
+        "§10.2.2.4.5.4 使用 destroy call type state machine 并回指10.2.3.4.10或.11；被调正文清除类型、ProSe优先级、最后变更时间/用户并进入或保持 T0。§10.2.3.4.10 开头的状态与收到释放之间字面为 OR。本页不把这些字样统一成未给出的对象分配/销毁算法。",
+        "普通本地释放分支未规定向全组发送一个结束消息；不能由本地 S6/S1 推出全组终止。话权 T230 失活结束可能导致呼叫终止，是 §7.2.2 的 may，不在此补全失活到呼叫控制的实现接口。"
+      ],
+      "normative_strength": "指定释放、信息更新、计时器和状态动作为 SHALL；S6 重新发起的停止 TFG5 步骤为原文操作指令。话权停止 helper 的动作在非 Start-stop 入口下为 SHALL；话权结束可能终止呼叫为 may。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "cancel-probe-and-late-announcement",
+      "title": "探测中取消仍须处理晚到公告",
+      "conditions": [
+        "以下是替代事件：S2 用户释放；S7 用户再次发起同组呼；S7 收到匹配组公告；或 S7 的 TFG1 到期。不要求这些事件同时发生。"
+      ],
+      "conclusion": "S2 用户释放时停止 TFG3并进入 S7，原步骤没有停止 TFG1。S7 再次发起同组呼时，停止 TFG1，重新发送 PROBE，启动 TFG3/TFG1并回 S2。若 S7 收到匹配公告，保存 SDP、call ID、originator、刷新间隔和开始时间，停止 TFG1，启动 TFG5并转 S6；此分支不建立媒体、不启动终接话权。若 S7 的 TFG1 到期，则释放组 ID，按10.2.3.4.11清理类型状态并回 S1。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.4.5.5–8 full"
+          ],
+          "printed_pages": [
+            329,
+            330
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.4.11 full"
+          ],
+          "printed_pages": [
+            345,
+            346
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.4.2.1;15.1.2 probe construction"
+          ],
+          "printed_pages": [
+            323,
+            478,
+            479
+          ]
+        }
+      ],
+      "limitations": [
+        "S7 是探测后、未取得公告前的取消路径，不等于已建立后的 S6。晚到公告只使客户端进入抑制期；不能当作取消失败后自动接听。",
+        "类型清理回指仍有基本程序称 destroy、helper 清值并保持 T0 的层次差异。此处不增加原文未列的公告确认、媒体建立或全组释放动作。"
+      ],
+      "normative_strength": "各替代事件的保存/释放、探测发送、计时器和状态动作均为 SHALL。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

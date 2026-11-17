@@ -1,0 +1,340 @@
+{
+  "topic_id": "r16-calls-prearranged-server-admission-routing",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "clause-checked",
+  "title": "普通按需预安排组呼：服务器准入与邀请路由",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "固定 TS24.379 V16.14.0 的在网、直接组身份、GMS 管理的普通预安排组；组文档不含 temporary/regrouped，不是 constituent 组或预配置重组；不含 chat、广播、功能别名或离网业务。",
+    "普通请求不带 emergency-ind/imminentperil-ind/alert-ind，组也不处于紧急或迫近危险状态。各角色按实际收到的初始请求处理；不以主叫已归属、文档已取得、目标已接受或全链成功作为公共前提。",
+    "范围是 O-PF/CF/T-PF 的准入、组资格、受邀集合及身份路由。新建与加入既有普通会话分别适用，不提供完整响应聚合、会议事件、媒体/安全实现或组呼释放生命周期。"
+  ],
+  "claims": [
+    {
+      "id": "originating-identity-and-routing",
+      "title": "O-PF 的主叫身份、起呼许可和组路由",
+      "conditions": [
+        "O-PF 收到按 §6.3.1.1 分类的 originating INVITE，session-type=prearranged；每项拒绝与后续构造按实际到达的步骤分别适用。"
+      ],
+      "conclusion": "O-PF 从 P-Asserted-Identity 的公共用户身份查主叫 MCPTT ID；绑定缺失或已过期时返回 404+Warning141 并停止。按本地策略不允许发起预安排组呼时返回 403+Warning109；未提供 MCPTT speech codec 时返回488；超过用户 MaxSimultaneousCallsN6 时返回486+Warning103。继续处理时按正文中的目标组身份确定组 CF PSI，无法确定则404+Warning142并停止。出站 Request-URI 写 CF PSI，mcptt-calling-user-id 写已确定的主叫 MCPTT ID；通用 INVITE helper 复制入站 P-Asserted-Identity 和相关 mcptt-info，但组呼程序明确不复制 Answer-Mode、Priv-Answer-Mode。因此客户端不能用这些模式头直接指定组成员的最终应答方式。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.1.1 originating/controlling group/terminating INVITE classifications"
+          ],
+          "printed_pages": [
+            77,
+            78
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.1 opening and steps1–17; priority implicit-affiliation steps6–7 comparison only"
+          ],
+          "printed_pages": [
+            229,
+            230,
+            231,
+            232
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.3 full;6.3.2.1.1.1 full"
+          ],
+          "printed_pages": [
+            83,
+            84,
+            85
+          ]
+        }
+      ],
+      "limitations": [
+        "资源不足或拥塞时返回500及附 Retry-After 都是 MAY。Warning109 的 step3 未另写停止，不把相邻拒绝的 stop 措辞移入本步。",
+        "O-PF 隐式归属 step6 要求未归属且请求是获准的优先呼叫；普通请求不能据此自动补齐归属。CF 的组侧检查另行适用。",
+        "CF PSI 如何发现是本版明确未规定的实现接口；本页不补发现算法、完整 SDP/安全实现、位置上报或功能别名处理。"
+      ],
+      "normative_strength": "身份识别、指定拒绝、目的地址和正文身份构造、模式头不复制为 SHALL；资源拒绝及 Retry-After 为 MAY。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "controlling-document-admission",
+      "title": "CF 先核媒体、服务标记与组文档",
+      "conditions": [
+        "CF 收到按 §6.3.1.1 分类的组 CF 初始 INVITE；组文档查询失败、组资格拒绝与继续处理分别适用，不要求已经取到文档或已通过成员检查。"
+      ],
+      "conclusion": "CF 的目标组来自 mcptt-request-uri，发起用户来自 mcptt-calling-user-id。媒体参数不可接受或没有 MCPTT speech codec 时488并停止；Accept-Contact 缺所要求的 MCPTT 或 ICSI feature tag 时403并停止。GMS 管理的组调用 §6.3.5.2：未订阅时订阅组文档的 xcap-diff；订阅得到404时返回404+Warning113，其他4xx/5xx/6xx时返回相应最终响应及Warning114。收到组文档通知或已有缓存后，普通组的 list-service 含 on-network-disabled 时403+Warning115，发起用户不在组 list 时403+Warning116；invite-members=true而请求不是prearranged时404+Warning117，invite-members=false而请求不是chat时404+Warning118，均停止相应后续。CF 初始处理已发送3xx/4xx/5xx/6xx时不再继续建立；通过后才缓存收到且支持的 Contact feature tags，并把受邀成员200计数初始化为0。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.2 definitions and steps1–9,12"
+          ],
+          "printed_pages": [
+            242,
+            243,
+            244
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.5.1;6.3.5.2 steps1–5 (ordinary group);step4 classification comparison"
+          ],
+          "printed_pages": [
+            130,
+            131,
+            132
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.2.2 full"
+          ],
+          "printed_pages": [
+            120
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.1.1 group CF classification"
+          ],
+          "printed_pages": [
+            78
+          ]
+        }
+      ],
+      "limitations": [
+        "普通无紧急/迫近危险字段且组不处于这些状态时，携带对应紧急/迫近危险 Resource-Priority 值仍触发 step12 的403；本页不把普通范围解释为跳过这个不一致检查。",
+        "§6.3.5.2 step4(b)(ii) 字面以不含 temporary 或 regrouped 分类，随后(iii)又列非temporary但regrouped；本页只处理两者均不含的普通组，不替原文改 OR 或实现通用分类器。",
+        "GMS 文档获取使用 TS24.481 接口；本页核的是24.379的调用、返回及成员检查，不提供外部订阅/缓存更新的完整实现。重组转向与 NCF 授权不在本页。"
+      ],
+      "normative_strength": "媒体、服务标记、文档错误及组资格拒绝、条件停止和缓存/计数初始化为 SHALL；CF 资源不足或拥塞时的500与 Retry-After 为 MAY。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "initiation-versus-join",
+      "title": "新建许可、加入许可与归属分别判断",
+      "conditions": [
+        "CF 已到达普通组的准入分支；未进行中的新建和已进行中的加入为替代分支，任一资格或人数拒绝仍可发生。"
+      ],
+      "conclusion": "是否 ongoing 由已分配组呼会话身份且会话 active 两项共同判断。本页非 constituent、无 emergency-ind/imminentperil-ind 的普通请求中，未通过 §6.3.6 归属检查时返回403+Warning120并停止。该检查要求组条目、用户条目、对应客户端 ID 均存在且用户条目未到期；不能只查组成员名单。新建另按 §6.3.5.4 检查发起资格，不符为403+Warning119；加入既有会话按 §6.3.5.3 检查加入资格，不符为403+Warning121。两者都需用户 list entry，并有匹配 is-list-member 或用户 identity 的 rule，但动作分别是 allow-initiate-conference=true 与 join-handling=true；supported-services 若存在须支持 MCPTT，且其中 group-media 若存在须含 MCPTT speech。已有会话达到人数上限时，按本地策略认为请求者优先级更高，可移除一名参与者并跳过随后拒绝；否则返回486+Warning122并停止。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.2 steps9,14(a–b),15(a–d)"
+          ],
+          "printed_pages": [
+            244,
+            245,
+            246,
+            247
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.5.3–6.3.5.4 full"
+          ],
+          "printed_pages": [
+            134,
+            135
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.6 full"
+          ],
+          "printed_pages": [
+            135,
+            136
+          ]
+        }
+      ],
+      "limitations": [
+        "§6.3.6 NOTE 指出发起客户端 ID 来自 mcptt-info 的 mcptt-client-id；它不是用户 ID 或公共身份的替代值。归属的建立/解除及状态同步见显式归属主题。",
+        "本页不将上述普通分支简化条件用于临时组或优先呼叫；原文14(a)/15(a)的 constituent 与隐式归属分支仍有独立条件。",
+        "满员时移除是 MAY 和本地策略，不是所有高优先用户都自动挤出他人；此处不实现移除的媒体及通知全链。"
+      ],
+      "normative_strength": "ongoing 判断、归属及许可检查、指定拒绝与停止为 SHALL；满员时本地策略允许的参与者移除为 MAY。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "invitation-set-and-gates",
+      "title": "受邀集合、归属门槛和应答门槛不同",
+      "conditions": [
+        "CF 的普通组新建请求通过相应前序准入后进入 step14(e,g)；集合选择失败仍在本条范围内，不要求组成员已经应答。"
+      ],
+      "conclusion": "CF 创建组会话并分配会话身份，按 §6.3.3.5.1 处理 TNG3：组文档存在 on-network-maximum-duration 才用其值启动，缺失则不启动。选择受邀者时，§6.3.5.5 只允许邀请已归属成员，普通组从组文档 list 逐一按 §6.3.6 判断；人数超出 on-network-max-participant-count 时仅邀请上限人数，并优先 on-network-required 成员。随后若已归属人数低于 minimum-number-of-affiliated-members，或任一 affiliation-to-group-required 成员未归属，返回480+Warning112并停止。通过后，存在已归属且 on-network-required 的成员时，须在发邀请前启动 TNG1。归属门槛不是应答完成：TNG1 停止要收到全部已归属 required 成员的200，且向发起者发送200还检查200计数达到 minimum-number-to-start。CF 按 §10.1.1.4.1.1 向选定的个别用户发邀请；收到某一受邀者的200后才增加该200计数，会议通知可以早于向发起者的响应，不能证明整个组会话最终建立成功。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.2 steps14(e,g)"
+          ],
+          "printed_pages": [
+            245,
+            246
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.5.5 full;6.3.6 full"
+          ],
+          "printed_pages": [
+            135,
+            136
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.5.1 full (ordinary initial timer);6.3.3.3 initial TNG1 start/stop and minimum-response gate"
+          ],
+          "printed_pages": [
+            121,
+            124,
+            125
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.1.1 response200 and NOTEs4–5"
+          ],
+          "printed_pages": [
+            241
+          ]
+        }
+      ],
+      "limitations": [
+        "step14(g)(v) 字面回指13(g)(i)，而实际选人步骤在14(g)(i)；保留该号次差异，不把两个步骤静默改写成同一引用。",
+        "on-network-required 与 on-network-affiliation-to-group-required 是不同字段，minimum-number-to-start 与 minimum-number-of-affiliated-members 也是不同门槛。其他超额名单选择策略不由本版限定；规范假设 GMS 校验最大人数不少于 required 人数。",
+        "TNG3 配置对预安排组为必需是 §6.3.3.5.1 NOTE1 的说明；正文仍明确写出字段缺失则不启动的行为。这里不补配置缺失时的默认时长。",
+        "本条只给正常邀请与必要应答门槛，不展开 TNG1 到期政策、全部响应聚合/失败补偿、会议订阅实现或完整释放生命周期。"
+      ],
+      "normative_strength": "会话分配、条件启停计时器、仅邀已归属成员、上限及优先选择、门槛拒绝、计数为 SHALL；配置必需性及通知不等于建立成功按 NOTE 层次解释。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "downstream-identity-handoff",
+      "title": "下行路由到用户，组身份和会话身份仍保留",
+      "conditions": [
+        "CF 对已选个别用户调用 §10.1.1.4.1.1；或 T-PF 收到该组呼 INVITE。两角色的接收失败与继续下发分别适用；终接仅展开未命中空闲匹配预建立承载的按需分支。"
+      ],
+      "conclusion": "CF 发出的 Request-URI 为服务目标用户的 T-PF PSI，P-Asserted-Identity 为 CF PSI；mcptt-request-uri 改为被邀用户 MCPTT ID，组 ID 放在 mcptt-calling-group-id，mcptt-calling-user-id 随通用 helper 复制保留。Contact 则携带组会话身份和 isfocus 等标记，Referred-By 携邀请者的公共用户身份。T-PF 先检查 isfocus，缺失403+Warning104并停止；再检查所需应答设置，缺失480+Warning146并停止，只有继续到 step4–5 才按被邀 MCPTT ID 查公共身份绑定，缺失404。按需下发时，T-PF 的 Request-URI 写该被邀用户公共身份，PAI 复制收到的 CF 身份；Contact 使用与收到的会话身份相映射的会话身份。自动和手动通用入口先按空闲预建立会话及语音/话权媒体段匹配选择承载，不能仅由主叫按需便推断被叫一定按需。客户端应答模式及200证据见组呼客户端主题，本页不重复其用户接受流程。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.1.1 opening and steps1–9"
+          ],
+          "printed_pages": [
+            240,
+            241
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.1–6.3.3.1.2 full"
+          ],
+          "printed_pages": [
+            105,
+            106
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.2 full"
+          ],
+          "printed_pages": [
+            238
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.3 full;6.3.2.2.5.1;6.3.2.2.5.2 steps3–11;6.3.2.2.6.1;6.3.2.2.6.2 steps1–10"
+          ],
+          "printed_pages": [
+            94,
+            95,
+            96,
+            97,
+            98,
+            99
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.9 full;6.3.2.2.1;6.3.2.1.1.1"
+          ],
+          "printed_pages": [
+            83,
+            93,
+            94,
+            102,
+            103
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.2 steps2–8 (private-call incoming-list comparison only)"
+          ],
+          "printed_pages": [
+            376,
+            377
+          ]
+        }
+      ],
+      "limitations": [
+        "T-PF PSI 的发现是 §10.1.1.4.1.1 NOTE1 明示的未规定接口；不要用目标用户 ID 直接替代路由 PSI。",
+        "T-PF 的普通组入口不包含私呼的 IncomingPrivateCallList/Warning159 检查；不能从私呼主题移植该拒绝。其已存设置与客户端模式选择不替代 CF 的组资格。",
+        "MIME 复制仍受 §6.3.2.2.9 的已复制判断和 MKFC-GKTP 排除约束；该 helper 的位置 MIME 条件与后续复制目标字面名称不同，§10.1.1.3.2 NOTE2 又使用 MKFC-GKTPs，不把这些字样静默统一。",
+        "这里只说明身份及承载交接责任，不把邀请发送、Contact 映射、SIP200或会议通知当作所有用户接听、实际话权获准或媒体可用的同一证据。"
+      ],
+      "normative_strength": "所述请求身份构造、绑定检查及相应拒绝、承载条件分派为 SHALL；通用 INVITE helper 的 Session-Expires 为 SHOULD，Resource-Share 为 MAY，不将可选头当准入前提。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
