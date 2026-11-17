@@ -1,0 +1,140 @@
+{
+  "topic_id": "r16-mcvideo-group-call-leave",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCVideo 一人离开组呼：谁请求退出，什么时候整场结束？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.281-v16.4.0",
+  "condition_rule": "各声明继承共同范围，仅按各自的触发和所涉角色使用。",
+  "common_conditions": [
+    "3GPP TS 23.281 V16.4.0，Release 16，Stage 2；在网 MCVideo 组已在组管理服务器定义、有已归属用户，组成员属于同一 MC 系统，涉事用户正在参加同一场组呼。"
+  ],
+  "claims": [
+    {
+      "id": "server-requests-deaffiliated-member-leave",
+      "title": "已解除归属，由服务器要求甲离开",
+      "conditions": [
+        "甲已解除该组归属，服务器已获知这一事实。"
+      ],
+      "conclusion": "服务器向甲的客户端发组呼离开请求。客户端告知甲、向服务器应答并退出，甲从当前呼叫移除。其他参与者可以获知甲已离开。",
+      "normative_strength": "Stage 2 图示及步骤叙述；通知甲是流程中的一步，告知其他参与者为可选。",
+      "limitations": [
+        "这是甲退出当前呼叫，不是通过离开应答来解除归属；仅服务器发出请求，不能证明甲已经应答、退出或其他人已经获知。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.2, preconditions, Figure 7.1.2.3.2-1 and steps 1–5"
+          ],
+          "printed_pages": [
+            40
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "participant-requests-own-leave",
+      "title": "本人主动退出，释放其客户端相关资源",
+      "conditions": [
+        "甲本人表示要退出当前组呼。"
+      ],
+      "conclusion": "甲的客户端向服务器发组呼离开请求，服务器向该客户端应答，随后释放该客户端与本次组呼关联的传输控制和媒体面资源。其他参与者可能获知甲已退出。服务器不为已离开该呼叫的用户执行迟入。",
+      "normative_strength": "步骤 1–3 描述程序，步骤 4 为可选；不执行服务器迟入出自注 2。",
+      "limitations": [
+        "未通知其他人不等于甲未退出；不执行服务器迟入，并没有规定用户以后自行请求重新加入的结果。不能从个人退出证明所有人的资源均已释放。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.3, preconditions, Figure 7.1.2.3.3-1, steps 1–4 and NOTE 2"
+          ],
+          "printed_pages": [
+            41
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "server-terminates-if-condition-met",
+      "title": "服务器检查终止条件，满足其一则释放整场",
+      "conditions": [
+        "用户主动退出该场组呼；服务器按适用的组呼终止条件判断。"
+      ],
+      "conclusion": "至少一项适用的终止条件满足，服务器就为全部参与者释放组呼。注 1 举例：最后一名或倒数第二名参与者离开、发起人离开，或在场的已归属成员不足最低人数；整场释放分别转引预安排组呼和聊天组呼的规程。",
+      "normative_strength": "步骤 3 后的注 1 说明条件分支；其例子并非穷尽列表，也不是全部同时成立的要求。",
+      "limitations": [
+        "没有给出普遍适用的最低人数值，也没有说所有组呼一律启用所有例子。不能只凭一次个人退出或一次停收视频认定整场结束。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.3, NOTE 1 after step 3"
+          ],
+          "printed_pages": [
+            41
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.3.2, preconditions, Figure 7.1.2.3.2-1 and steps 1–5"
+      ],
+      "printed_pages": [
+        40
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.3.3, preconditions, Figure 7.1.2.3.3-1, steps 1–4 and NOTE 2"
+      ],
+      "printed_pages": [
+        41
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.3.3, NOTE 1 after step 3"
+      ],
+      "printed_pages": [
+        41
+      ]
+    }
+  ],
+  "limitations": [
+    "只说明信令控制面的成员退出及条件性整场释放；单路接收覆盖、组播实例清理、实际媒体到达和个人是否看到视频，需要各自的证据。不规定 SIP 报文、终端界面或重新加入过程。"
+  ],
+  "related": [
+    "r16-mcvideo-reception-override-downlink",
+    "r16-mcvideo-mbms-to-unicast"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
