@@ -1,0 +1,68 @@
+# MCData ad hoc 组确定：按条件取得组身份
+
+固定 TS24.282 V19.7.0，普通在网、本地、用户请求以 criteria 确定 ad hoc 组的独立 MESSAGE 业务。不是 INVITE 建会、已有会话修改、持续成员维护或数据发送。
+
+客户端发起、PF处理、CF处理与响应接收分别按实际角色事件适用，不预设各角色准入均成功。拒绝与成功分支不合并；原文未闭合的接口或停止规则不自行补齐。
+
+显式名单只作接口边界对照，不提供其完整转发算法；不覆盖功能别名处理、跨系统选人、紧急告警及端到端安全实现。返回预配置组身份只核字段条件，不代表安全上下文已建立。
+
+## 以独立MESSAGE请求确定组，而不是发起会话
+
+适用条件：客户端收到用户要求根据 criteria 确定待邀请用户集合的请求；本页不携带主叫功能别名。服务器分类则以实际收到对应 MESSAGE 为事件。
+
+§24.2.7.2要求生成 SIP MESSAGE，调用 §6.2.4.1，mcdata-info+xml 的 request-type 为 ad-hoc-group-determination；criteria 位于 mcdata-Params/anyExt/comn-participants-criteria，以逗号分隔一个或多个条件。发送目的地为服务本用户的 PF。§6.3.1.1将路由到PF或CF、XML含该request-type的MESSAGE识别为组确定请求，不把它分类成建立媒体会话的INVITE。
+
+- §24.2.7.2的criteria构造句字面写“SIP INVITE request”，但入口、方法和发送步骤均为MESSAGE。本页报告该不一致，不将其修正为可直接执行的报文模板，也不因此要求另发INVITE。
+- §6.2.4.1的SDS和FD标签/ICSI分别受其业务条件约束，没有专列独立组确定请求。可确认其PF PSI路由规则，不能仅因后续可能发送SDS就断言本请求必须用SDS标签，也不擅选FD或通用MCData ICSI。
+- 显式名单分支在客户端使用resource-lists，但CF §24.4.7.2 step3(ii)写从mcdata-info中的ID选组；PF明确复制info，另有不修改名单的NOTE。不能由这些文字补出无歧义名单传递链，本页只处理criteria分支。
+
+规范强度：请求生成、所列字段及发送为 SHALL；本条不把未确定适用的服务标签变成新增义务。
+
+依据：TS24.282 V19.7.0 §24.2.7.2 opening,steps1–3,5，印刷页537（规范依据）。
+依据：TS24.282 V19.7.0 §6.2.4.1，印刷页61（实际构造helper及服务标识条件边界）。
+依据：TS24.282 V19.7.0 §6.3.1.1 ad-hoc-group-determination classifier，印刷页93（实际服务器分类）。
+依据：TS24.282 V19.7.0 §24.3.7.2 step10 and NOTE9;24.4.7.2 step3(ii)，印刷页555,556,571（显式名单对照，不补字段传递）。
+
+## PF重新检查身份和许可，按本地策略转送条件
+
+适用条件：PF实际收到组确定MESSAGE，criteria存在；每个前序停止或拒绝事件分别处理，不要求已通过本条检查才能阅读拒绝分支。
+
+PF资源不足或存在拥塞风险时可回500并可含Retry-After，否则继续。从PAI的public user identity确定主叫MCData ID；无绑定或绑定过期时404/Warning141并停止。PF检查该用户是否获准MCData通信，未获准时403/Warning238。它还确定与主叫用户相关的ad hoc业务CF PSI，不能确定时404/Warning142并停止。转发段生成MESSAGE、以CF PSI作Request-URI、复制mcdata-info并写主叫ID，以PF自身PSI作PAI；若存在criteria，可按本地策略修改其内容，然后发送。
+
+- 403/238段未显式写“停止剩余步骤”，不能自行补成拒绝后仍转发、双响应或已闭合的失败调度；本页分别列拒绝义务和转发段，不提供该缺口的实现策略。
+- 主叫ID写入step11与criteria修改step14字面称outgoing INVITE，其他转发步骤称MESSAGE。保留方法差异，不据此建立第二个事务。
+- CF PSI发现算法不由本段给出。限本地处理，不用跨域NOTES或其他业务的身份规则补充路由算法。
+- 本页不携带functional-alias-URI，因此不展开step12的活跃别名核查；身份绑定、业务许可、criteria本地修改是不同职责。
+
+规范强度：绑定、许可、CF路由及转发段为 SHALL；资源拒绝、Retry-After和criteria本地修改为 MAY。
+
+依据：TS24.282 V19.7.0 §24.3.7.2 opening,steps1–15 and NOTES1–9，印刷页554,555,556（规范依据）。
+
+## 返回组身份不证明成员已加入或通信已建立
+
+适用条件：以下事件分别适用：CF实际收到含criteria的组确定MESSAGE并处理本角色前序门槛；PF实际收到所转发请求的2xx或4xx/5xx/6xx；客户端实际收到组确定请求的200。
+
+CF可因资源或拥塞回500；继续时可按本地策略修改criteria，后续使用修改后的值，确定符合条件的用户并为这些用户选择ad hoc组身份。随后生成200，以自身PSI作PAI，mcdata-calling-group-id携所选组身份；要求端到端加密时附preconfigured-group，入站含criteria时附criteria。PF收到下游2xx后生成上游200，复制收到的Warning、存在的mcdata-info并以自身PSI作PAI后发送；对收到的4xx/5xx/6xx复制Warning并转发。客户端收到200后存储ad hoc组身份，并在可用时存储preconfigured-group和criteria；可向用户提示组确定成功。
+
+- 本过程的200返回组身份和条件化字段，未把实际邀请、参加、会话建立、SDS交付或持续criteria监听列为已完成结果。不能借已有建会或动态成员维护主题把这些动作自动接在200之后。
+- CF对伙伴系统选人的方式保留FFS；本页只取本地责任。CF资源段把可附Retry-After的主体写为participating MCData function，保留该角色差异，不另造PF代CF响应步骤。
+- PF成功入口为2xx，但复制Warning和info的段落写incoming200；另有“设置outgoing200的Request-URI”文字。不能把它当完整SIP响应编码模板或自行修正语法。
+- 客户端失败段称对re-SIP INVITE响应、主语为MCPTT client。本页不将该段无条件移植为本MESSAGE的完整客户端失败处理；PF的错误转发也不解决这一方法/角色差异。
+- 预配置组提供配置，不是被确定的ad hoc组身份。§9.2.2.2.1 step3A(iv)(A)明确在之后实际发ad hoc standalone SDS且已存该字段时使用preconfigured-group；同段按需要另携ad hoc身份。这是条件化后续用途，不要求收到本次200立即发SDS，也不证明端到端密钥、安全或成员同步已完成。
+
+规范强度：CF选人、选择身份和响应，PF响应转送及客户端存储为 SHALL；CF资源拒绝和本地criteria修改、客户端成功提示为 MAY；资源段角色异常保留。
+
+依据：TS24.282 V19.7.0 §24.4.7.2 steps1–7 and NOTE/Editor note，印刷页571（规范依据）。
+依据：TS24.282 V19.7.0 §24.3.7.2 response paragraphs，印刷页556（PF响应责任及语法边界）。
+依据：TS24.282 V19.7.0 §24.2.7.2 response paragraphs，印刷页537（客户端存储、提示及失败文字边界）。
+依据：TS24.282 V19.7.0 §24.1 preconfigured group paragraphs，印刷页523（组身份与配置身份区别）。
+依据：TS24.282 V19.7.0 §9.2.2.2.1 step3A(a)(iii)–(iv),NOTES6–7,steps3A(b)–(c),4–5，印刷页194（后续SDS用途对照；不是本请求自动后续）。
+
+## 使用边界与相关主题
+
+- 本页是组身份确定的有限信令责任，不提供完整SIP/XML编码、权限配置schema、criteria求值语言或安全实现。
+- 已有显式名单INVITE初建、服务器criteria持续维护及用户re-INVITE修改分别有自己的业务条件，不能用那些页面填补本页方法或名单接口差异。
+
+- [adhoc-sds-explicit-list-establishment](adhoc-sds-explicit-list-establishment.md)：对照：普通显式名单INVITE初建，不是本次MESSAGE的自动后续。
+- [adhoc-criteria-membership-lifecycle](adhoc-criteria-membership-lifecycle.md)：对照：已有ad hoc会话上下文的criteria动态维护，不等于本次一次组确定。
+- [adhoc-user-participant-update](adhoc-user-participant-update.md)：对照：ongoing会话内用户主动修改，不是取得新组身份的请求。

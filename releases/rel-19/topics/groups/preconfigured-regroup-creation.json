@@ -1,0 +1,235 @@
+{
+  "topic_id": "r19-groups-preconfigured-regroup-creation",
+  "release": 19,
+  "standard_stage": 3,
+  "state": "clause-checked",
+  "title": "预配置组重组创建：授权、分层响应与成员通知",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v19.4.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "固定 TS24.379 V19.4.0 §16.1/16.2 的在网group regroup using a preconfigured group创建流程。请求将组成组组合为重组，不是16.3指定用户重组、GMS临时组文档操作或IWF互通流程。",
+    "按16.1，相关MCPTT服务器与客户端预先配置该预配置组；重组取其完整配置（包括安全密钥），但不继承preconfigured-group-use-only元素。此处说明业务配置前提，不展开密钥分发、配置取得或完整安全验证。",
+    "各claim按客户端、O-PF、CF、NCF、T-PF的实际入口分别适用。只含创建、创建失败的补偿发送和下游创建通知；不覆盖独立移除生命周期、进行中通话合并或完整通话建立。"
+  ],
+  "claims": [
+    {
+      "id": "regroup-create-client",
+      "title": "配置来源组、实际重组与组成组是三种身份",
+      "conditions": [
+        "用户请求建立基于预配置组的group regroup。"
+      ],
+      "conclusion": "客户端向服务该用户的O-PF公共服务身份发送SIP MESSAGE。mcptt-regroup正文分别携create动作、唯一临时重组URI、preconfigured-group配置来源身份和groups-for-regroup组成组列表；唯一URI的形成由实现决定。mcptt-info携发起客户端ID；实际使用活动功能别名或用户请求应用优先级时，按各自条件携相应字段。收到该MESSAGE的2xx时，客户端建议通知用户创建成功。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "16.1",
+            "16.2.1.1 full"
+          ],
+          "printed_pages": [
+            620,
+            621,
+            622
+          ]
+        }
+      ],
+      "limitations": [
+        "客户端还按16.2.1.1携指定Accept-Contact及MCPTT服务标识，P-Preferred-Identity为可选；本页不是完整可直接发送的报文模板。",
+        "失败提示段原文写收到SIP INVITE的4xx/5xx/6xx，而前序构造是MESSAGE。保留此方法文字差异，不把所核失败句静默改为另一请求。",
+        "创建成功提示不是INVITE通话已建立，也不是每个终端都已收到创建通知；各层成功证据见后续claims。"
+      ],
+      "normative_strength": "请求必需字段与发送为 SHALL；P-Preferred-Identity为 MAY，2xx后的用户成功提示为 SHOULD；失败提示原文同为 SHOULD但保留其请求方法措辞。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "regroup-create-opf",
+      "title": "O-PF授权用户，并单独处理CF返回的480",
+      "conditions": [
+        "O-PF收到创建group regroup的SIP MESSAGE。"
+      ],
+      "conclusion": "O-PF从PAI公共身份确定MCPTT ID；用户profile没有allow-regroup=true时回403/160并停止。通过后选择管理重组的CF，转发两种正文及所收Accept/Reject-Contact，将PAI设为自身服务身份。收到480时，正文规定选另一CF并重发；收到2xx时向客户端回200；其它4xx以及5xx/6xx则携收到的Warning转回响应。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "16.2.2.1",
+            "16.2.2.2 full including NOTE1-12 and response branches"
+          ],
+          "printed_pages": [
+            623,
+            624,
+            625
+          ]
+        }
+      ],
+      "limitations": [
+        "资源不足或拥塞风险时，可回500并可带Retry-After；拒绝后停止后续处理。allow-regroup缺失与非true均不满足授权，不能改成仅false拒绝。",
+        "480分支正文用SHALL选择另一CF并转发，NOTE7又将是否重试归于部署决定；两层文字都保留，不补无限重试、固定次数或一定成功。",
+        "CF选择及跨系统PSI发现/出口网关路由有部署或规范范围外边界。本页只述各角色目的身份，不提供跨域发现算法。"
+      ],
+      "normative_strength": "身份确定、授权拒绝、转发及所列响应动作为 SHALL；资源性500和Retry-After为 MAY。480正文的 SHALL 与NOTE7部署说明分别保留。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "regroup-create-cf-result",
+      "title": "CF等待全部NCF响应，成功条件是全部200",
+      "conditions": [
+        "CF收到创建group regroup请求，按预配置组能力及新重组身份检查后处理组成组。"
+      ],
+      "conclusion": "CF不能处理指定预配置组时回480并停止； proposed重组ID已使用时回403/165并停止。对每个组成组确定其控制功能，该功能对重组承担NCF角色；CF向其PSI发MESSAGE，复制正文和指定接触头、以自身PSI作PAI。CF等待所有已发送NCF的响应：全部为200时向上游回200，再保存组成组列表、实际重组URI与预配置组身份。若至少一个响应不是2xx，回480，并向返回200的NCF发送包含重组URI和remove动作的补偿MESSAGE。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "16.2.3.1 steps1-7,NOTE1-11",
+            "16.2.2.2 480/2xx branches (comparison: upstream result)"
+          ],
+          "printed_pages": [
+            624,
+            625,
+            628,
+            629,
+            630
+          ]
+        }
+      ],
+      "limitations": [
+        "资源不足或拥塞风险时可500、可带Retry-After并停止。成功写全部200，失败写至少一个非2xx；全部为2xx但并非全部200的组合未在这两个分支中得到明确结果，不能统一改写为全部2xx成功。",
+        "补偿remove只是所列发送责任，原文未在这里要求等待所有清理完成才回480，也未给出全局原子回滚保证；后续O-PF可能重选CF不能被描述成已完成一致性恢复。",
+        "补偿对象原文step7(b)称在step4返回200，而等待/判断列于step5/6；保留号次，不据此编造不同请求。没有收到全部响应时，本段未给出等待超时完成规则。"
+      ],
+      "normative_strength": "能力/ID拒绝、逐组派发、等待及相应成功保存或失败补偿为 SHALL；资源性500和Retry-After为 MAY。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "regroup-create-ncf",
+      "title": "NCF先保存并回200，再按已归属成员通知T-PF",
+      "conditions": [
+        "组成组的控制功能以NCF角色收到创建group regroup的MESSAGE。"
+      ],
+      "conclusion": "NCF逐个检查其负责的组成组，若已被重组，回403/148且停止。通过后保存组成组列表、实际重组URI、预配置组身份及已重组信息，然后回200。此后才按各组成组中属于该组且已归属的用户，按服务他们的T-PF生成并合并列表；逐T-PF发送创建MESSAGE，复制正文并加入对应users-for-regroup，PAI为NCF自身PSI。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "16.2.4.1 full",
+            "16.2.3.1 steps4-6 (comparison: source caller and upstream response)"
+          ],
+          "printed_pages": [
+            628,
+            629,
+            633,
+            634
+          ]
+        }
+      ],
+      "limitations": [
+        "资源不足或拥塞风险时可500并可带Retry-After，拒绝后停止。成员条件是属于且已归属，不是所有配置成员自动进入分发列表。",
+        "NCF回200在下游列表生成/发送之前，不能让CF的全部200证明每个T-PF或终端均已收到通知。",
+        "step7(f)把users-for-regroup列表回指step3，实际列表生成/合并出现在steps5–6。保留这个号次差异，不把它解释成从无关状态自动补名单。"
+      ],
+      "normative_strength": "已重组拒绝、保存、200、按条件名单生成合并及通知为 SHALL；资源性500和Retry-After为 MAY。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "regroup-create-tpf",
+      "title": "T-PF的200也早于逐客户端通知",
+      "conditions": [
+        "T-PF收到创建group regroup的MESSAGE，其users-for-regroup列出需要服务的MCPTT IDs。"
+      ],
+      "conclusion": "T-PF先回200，再逐列表用户发MESSAGE到其关联公共用户身份，复制正文但不复制users-for-regroup，以自身PSI作PAI。发送后将该MCPTT ID视为已归属实际重组。T-PF保存重组URI、预配置组身份及收到的用户集合，直至重组移除。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "16.2.2.4 full",
+            "16.2.4.1 steps5-7 (comparison: recipient list caller)"
+          ],
+          "printed_pages": [
+            626,
+            627,
+            634
+          ]
+        }
+      ],
+      "limitations": [
+        "资源不足或拥塞风险时可500并可带Retry-After，拒绝后停止。正常200不是逐客户端接收确认的汇总。",
+        "组重组通知保留groups-for-regroup，但删除users-for-regroup；不要把内部路由用户列表直接当成每个客户端必须收到的成员名单。",
+        "本段的本地归属认定没有等待全部客户端200的守卫；不能据此声称实际终端已收到、已显示或已建立媒体会话。"
+      ],
+      "normative_strength": "200、逐用户转发、归属认定与保存为 SHALL；资源性500和Retry-After为 MAY。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "regroup-create-client-notified",
+      "title": "客户端收到通知后认定归属，呼叫仍是另一步",
+      "conditions": [
+        "客户端实际收到创建regroup的MESSAGE；group regroup通知携groups-for-regroup。"
+      ],
+      "conclusion": "客户端建议提示用户，回200，保存临时重组身份；groups-for-regroup存在时建议保存组成组列表，并将其视为group regroup。随后认定自己已归属重组。在重组持续期间，建议以重组而非任一组成组为呼叫目标；若重组为chat group，建议在收到创建通知时加入。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "16.2.1.3 full",
+            "16.1 (configuration prerequisite)",
+            "16.2.2.4 (comparison: actual notifying caller)"
+          ],
+          "printed_pages": [
+            620,
+            621,
+            622,
+            623,
+            626,
+            627
+          ]
+        }
+      ],
+      "limitations": [
+        "step3(a)写将mcptt-regroup-uri保存为临时身份并与同名mcptt-regroup-uri收到的组身份关联。本页不静默把后者改成preconfigured-group。",
+        "users-for-regroup存在时另有user regroup识别分支，但不是本页16.2创建请求的目标范围。列表显示为客户端可选择的呈现行为。",
+        "chat加入建议及重定向呼叫目标都不是完整INVITE建立过程。客户端的通知200、归属状态、实际通话建立与音频交付不能合并成一个成功。"
+      ],
+      "normative_strength": "通知200、身份保存、组重组类型识别及归属认定为 SHALL；用户提示、组成组列表保存、呼叫目标选择与chat加入为 SHOULD；列表显示为NOTE所述可选择行为。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [
+    "创建请求、各服务器的局部提交、下游通知、终端归属与业务通话建立是不同结果。本页不承诺端到端原子创建、完整拆除或完整媒体接通。"
+  ],
+  "related": [
+    "temporary-group-lifecycle.md",
+    "../interworking/preconfigured-regroup.md",
+    "../security/group-call-media-boundaries.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
