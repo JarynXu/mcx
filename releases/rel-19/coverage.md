@@ -137,6 +137,14 @@
 
 入口：[私聊媒体面FD：控制侧邀请与建会响应证据](topics/mcdata/media-fd-private-controller-setup.md)。
 
+### 媒体面 FD 自动接收与终端下载决定
+
+- **能回答：**可查媒体CF缺IE时调用§11.2的自动接收判定，以及终端实际收到媒体FD INVITE后的资源/安全检查、强制接收或用户决定。
+- **只到条件或接口：**普通在网、本地、单播私聊或非重组普通组媒体FD；CF缺IE入口与终端已带强制IE入口分别读取，前序准入仍有效，终端接受限定无关联CANCEL。私聊CF关联页仅适用于one-to-one，组caller另据原文。
+- **尚未建立的结论：**不把自动接收阈值当发送许可；缺metadata不借HTTP URL回退，不搬TDU2。保留§11.2无括号条件及403/480重叠，不裁决唯一响应算法，不以200证明文件完成或修复ACK媒体引用差异。
+
+入口：[媒体面文件分发：自动接收判定与终端下载决定](topics/mcdata/media-fd-download-decision.md)。
+
 ## MCVideo视频业务
 
 [查看本域全部主题](topics-mcvideo.json)
