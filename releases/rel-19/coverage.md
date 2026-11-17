@@ -111,6 +111,16 @@
 
 固定来源及具体条款以主题为准。
 
+### ad hoc SDS criteria用户集合生命周期
+
+- **能回答：**可查普通在网按需ad hoc SDS服务器criteria查询、结果、持续成员增删及停止职责。
+- **只到条件或接口：**CF/PF按各自入口处理，CF增删须ongoing；200先于应用增删，选中用户、邀请对象、参与者和交付结果不同。
+- **尚未建立的结论：**不把criteria作为显式列表初建必经步骤；初建15c回指.5而非.6.1未闭合，不覆盖用户主动改criteria、迁移或完整邀请/移除与全员交付。
+
+入口：[ad hoc SDS按条件选人与持续成员变化](topics/mcdata/adhoc-criteria-membership-lifecycle.md)。
+
+固定来源及具体条款以主题为准。
+
 ## MCVideo视频业务
 
 [查看本域全部主题](topics-mcvideo.json)
@@ -366,6 +376,16 @@
 入口：[原生客户端认证：注册、授权码与令牌分别做什么](topics/identity/native-authentication.md)；[SIP 注册之后：服务范围、令牌校验与身份绑定](topics/identity/service-authorization.md)；[刷新 access token：不能借刷新扩大授权](topics/identity/token-refresh.md)；[令牌响应字段：两个 Rel19 规范版本不能静默合并](topics/identity/token-response-obligations.md)；[用户配置更新：通知取回与客户端提交](topics/identity/profile-update.md)。
 
 所列入口的来源：3GPP TS 23.280 V19.9.0；3GPP TS24.482 V19.0.0；3GPP TS33.180 V19.4.0。具体Stage、条款及跨源差异以各主题为准。
+
+### MCPTT PUBLISH服务授权与设置
+
+- **能回答：**可查主系统已注册且已有token时，授权加设置PUBLISH的保护、并发上限、身份绑定及客户端/服务器反馈。
+- **只到条件或接口：**默认保护与139/140调用层次分别判断；用户上限存在时不再同时取服务上限。绑定先于RFC处理，200先于后续模式/profile/隐式归属处理。
+- **尚未建立的结论：**不覆盖完整REGISTER、外部IdM/token校验、配置取得或原子回滚；服务授权不替代具体通话权限、归属或媒体许可。
+
+入口：[MCPTT注册后的服务授权：PUBLISH、身份绑定与设置结果](topics/identity/mcptt-publish-service-authorization.md)。
+
+固定来源及具体条款以主题为准。
 
 ## 安全与密钥
 

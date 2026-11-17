@@ -1,0 +1,157 @@
+{
+  "topic_id": "r19-mcdata-adhoc-criteria-membership-lifecycle",
+  "release": 19,
+  "standard_stage": 3,
+  "state": "clause-checked",
+  "common_conditions": [
+    "限TS24.282 V19.7.0普通在网on-demand ad hoc SDS session的服务器侧criteria选人和持续成员集合变化；已具备对应ad hoc组上下文，初始业务权限、资源及会话准入另行满足。",
+    "不是显式ID列表初建的同义流程；排除standalone、FD、预建立、功能别名、告警/优先业务、跨域迁移、端到端安全材料选择及用户主动修改criteria的re-INVITE。",
+    "CF/PF的实际发送、接收、ongoing及成功移除条件分别适用；不得把查询候选集、组成员集、已邀请/加入会话和单条SDS送达视为同一集合或结果。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.282-v19.7.0",
+  "claims": [
+    {
+      "id": "criteria-determination-query-and-result",
+      "title": "按条件取得的是待邀请用户，不是已加入成员",
+      "conditions": [
+        "分别判断独立入口：CF实际需要按指定criteria确定用户并进入§24.4.6.1；PF实际收到对应get-userlist请求；CF实际收到规定response-type且组ID匹配的列表结果。各入口适用自身动作，不要求同时成立。"
+      ],
+      "conclusion": "CF建立待查询终接PF列表，向每个PF的PSI发送MESSAGE，带ad hoc组ID和get-userlist-adhoc-group-data-comn-request；criteria从入站INVITE复制，或按本地策略修改。PF按收到的comn-participants-criteria及本地策略确定用户；资源不足或拥塞风险可回500并可带Retry-After，不能确定用户则回403/240并停止。通过后先回请求200，再按正文步骤确定并保存用户ID列表，同时保存组ID和criteria用于持续确定符合或不再符合的用户。PF另发MESSAGE给CF，携组ID、复制的criteria、anyExt内get-userlist-adhoc-group-data-comn-response和resource-lists用户列表。CF只在response-type及组ID匹配入口处理：存在列表时将各entry视为待邀请用户，并回200。查询事务2xx与列表结果是不同证据。",
+      "clause": "24.4.6.1;24.3.6.1;24.4.2.2 step15c (caller comparison only)",
+      "printed_pages": [
+        552,
+        553,
+        554,
+        562,
+        568,
+        569
+      ],
+      "limitations": [
+        "§24.4.2.2 step15c的初建criteria分支实际回指§24.4.5，而具体确定程序在§24.4.6.1；本页以实际进入确定程序为条件，不把回指静默修成完整初建链。",
+        "CF对查询收到4xx/5xx/6xx时，正文要求将该PF服务用户视为不可用并从创建的PF列表移除；NOTE6允许实现先重试，不规定重试次数或定时器。",
+        "匹配结果入口未把缺少resource-lists写为拒绝，只有存在列表才确定待邀请entry；不能移植增删入口的缺列表403。PF的unable-to-determine也不据此扩写成所有空集合均拒绝。",
+        "criteria具体算法、采样频率、PF选择/PSI发现、多PF结果去重及全部响应收敛未闭合；不能从查询200推出邀请、加入或SDS交付。"
+      ],
+      "normative_strength": "正文shall动作保留；500/Retry-After为MAY，NOTE6重试不升为强制。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "24.4.6.1;24.3.6.1;24.4.2.2 step15c (caller comparison only)",
+          "printed_pages": [
+            552,
+            553,
+            554,
+            562,
+            568,
+            569
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "criteria-change-updates-members-before-completion-evidence",
+      "title": "条件变化引起增删，但200不是入会或移除完成",
+      "conditions": [
+        "分别判断独立事件：PF确定有新用户符合或已有用户不再符合已保存criteria；CF实际收到add或remove通知并通过本条消息门槛；移除后通知仅在成员实际成功移除时适用。"
+      ],
+      "conclusion": "PF向CF PSI发MESSAGE，以存储组ID填mcdata-request-uri，按变化选择adhoc-group-data-comn-add-participants-request或adhoc-group-data-comn-remove-participants-request，并携相应用户ID的resource-lists。PF先更新本地保存列表再发送。CF缺列表时403/240停止，不能匹配ongoing session所属ad hoc组时403/247停止；通过后先回200。add分支将用户纳入组，session仍ongoing时按§24.4.2.1.1邀请，并把被邀请者视为隐式affiliated。remove分支从组中移除列明用户，session仍ongoing时调用§24.4.3.1.2移除会话成员。该移除入口要求调用§13.2.2.2.4.4并附适当Reason；成功移除后才可向已订阅conference状态的客户端发成员移除通知。",
+      "clause": "24.3.5.2.1;24.4.5.2.1;24.4.3.1.2.1",
+      "printed_pages": [
+        552,
+        553,
+        563,
+        564,
+        567,
+        568
+      ],
+      "limitations": [
+        "add与remove按各自request-type和名单独立判断，不把同一名单同时加减，也不把PF本地名单更新等同CF已处理。",
+        "CF200列在业务增删动作之前；被邀请/隐式affiliated不是已经接受，更不是全部用户收到SDS。移除通知为MAY且要求成功移除，不能把未见NOTIFY当作移除失败。",
+        "§24.4.3.1.2.1从单客户端移除入口回指§13.2.2.2.4.4，本页只记录caller和Reason义务，不据此重建完整BYE目标集合、事务收敛或媒体清理。",
+        "持续变化的并发、去重、丢失更新恢复及客户端显示未在这些条款闭合；会议状态不是criteria重新选人的算法。"
+      ],
+      "normative_strength": "所列正文动作SHALL；成功移除后的conference通知为MAY，不把它提升为每次必发。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "24.3.5.2.1;24.4.5.2.1;24.4.3.1.2.1",
+          "printed_pages": [
+            552,
+            553,
+            563,
+            564,
+            567,
+            568
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "criteria-determination-stop-is-scoped-cleanup",
+      "title": "停止选人会清查询状态，不代表全会话释放成功",
+      "conditions": [
+        "分别判断独立入口：CF需要停止本次ad hoc组的criteria确定；PF实际收到相应stop-determining通知。会话释放caller仅作为何时调用停止程序的接口依据。"
+      ],
+      "conclusion": "CF向创建列表内各终接PF发送MESSAGE，以组ID填mcdata-request-uri，request-type为adhoc-group-data-comn-release-notification-request，随后删除该终接PF查询列表。PF收到停止通知后停止持续确定符合/不再符合的用户，清该过程保存的ad hoc组ID、criteria及用户ID列表，再回200。§24.4.3.1.1.1在按所引策略需要释放组session时先调用停止确定，再进入会话释放helper；此caller明确不适用“最少已归属组成员数不足”条件。",
+      "clause": "24.4.6.2;24.3.6.2;24.4.3.1.1.1",
+      "printed_pages": [
+        553,
+        554,
+        563,
+        569,
+        570
+      ],
+      "limitations": [
+        "CF删除查询列表的步骤没有等待所有PF200的门槛；PF清的是该确定过程状态，不是系统所有组和用户资料。",
+        "停止确定与释放媒体、各客户端退出、历史SDS删除分属不同动作；本页不展开§13.2.2.2.4.1/.4全部策略和释放实现，也不把停止通知200当成全组业务结束。"
+      ],
+      "normative_strength": "正文所列停止、清状态、发送响应为SHALL；不新增全局确认或重试规则。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "24.4.6.2;24.3.6.2;24.4.3.1.1.1",
+          "printed_pages": [
+            553,
+            554,
+            563,
+            569,
+            570
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [
+    "本页覆盖确定、持续增删与停止的有限服务器职责，不闭合criteria初建caller回指、配置算法、完整邀请/移除实现或全员交付。"
+  ],
+  "related": [
+    "adhoc-sds-explicit-list-establishment.md",
+    "group-dynamic-observation.md",
+    "sds-session-responses-and-participants.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
