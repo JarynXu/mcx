@@ -3,10 +3,8 @@
   "release": 19,
   "state": "clause-checked",
   "common_conditions": [
-    "限已送达接收客户端的 HTTP FD SIGNALLING PAYLOAD；客户端初始处理已解码 signalling MIME，消息类型正确，只有一个 FILEURL Payload IE。",
-    "Mandatory download IE 为 MANDATORY DOWNLOAD 时进入强制下载分支；完全没有该 IE 时进入非强制分支。保留其他值为 reserved 的边界，不把任意未知值归入普通下载。",
-    "接受、拒绝、延期和完成都是 FD disposition，不是 SIP 状态码。正文中的用户接受分支以用户消费文件为主；应用 ID 场景仅在明确写出时使用。",
-    "完成通知的确定结论限原请求明确要求 FILE DOWNLOAD COMPLETED UPDATE 且下载成功；未请求时发送义务的原文冲突保留，不裁决。"
+    "固定3GPP TS24.282 V19.7.0，在网FD；本页按CF添加指示、客户端HTTP下载处理、延期组文件列表查询和PF记录清理区分实际主体与事件。",
+    "每条主张仅在自身conditions成立时适用；前序处理若已退出或拒绝，不继续执行该分支。HTTP下载处理不扩展到媒体面；只有明确列出的§11.3列表查询同时覆盖HTTP与媒体面延期组通信。"
   ],
   "condition_rule": "Inherit common_conditions and add claim conditions.",
   "source_catalog": "../../sources.json",
@@ -16,7 +14,7 @@
       "id": "controller-can-add-mandatory-download",
       "clause": "10.2.4.4.1 step5;11.2 HTTP branch steps1–5;10.2.1.2.1 steps5,6",
       "conditions": [
-        "CF 向目标发送 HTTP FD；收到的 FD SIGNALLING PAYLOAD 尚未带 Mandatory download IE。"
+        "CF已到达§10.2.4.4.1 step5，向目标发送HTTP FD；入站signalling MIME含FD SIGNALLING PAYLOAD且未包含Mandatory download IE。此时不要求文件已经送达接收客户端或已经下载成功。"
       ],
       "conclusion": "CF 不是只转发发送方的下载选择。它调用 §11.2：有 metadata 时从 fileselector 取 filesize，否则确定 URL 对应文件大小；私聊文件不超过 max-data-size-auto-recv-bytes，或组文件不超过该组 mcdata-on-network-max-data-size-auto-recv 时，必须在出站 FD 请求加入 MANDATORY DOWNLOAD。接收端据收到的 IE 分支，不能只看发送方原请求未带 IE 就认定接收端一定弹出普通接受流程。",
       "printed_pages": [
@@ -27,13 +25,26 @@
       "limitations": [
         "这里的自动接收大小阈值不同于允许分发的最大文件尺寸，也不是文件成功下载证明。",
         "本 claim 不解释媒体面 FD 中另一套 metadata/SDP 条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "10.2.4.4.1 step5;11.2 HTTP branch steps1–5;10.2.1.2.1 steps5,6",
+          "printed_pages": [
+            265,
+            281,
+            312
+          ]
+        }
       ]
     },
     {
       "id": "mandatory-acceptance-still-precedes-download",
       "clause": "10.2.1.2.1;10.2.1.2.2 steps4–8;15.2.16",
       "conditions": [
-        "接收端收到 MANDATORY DOWNLOAD，消息已通过初始处理；继续按用户消费或目标应用的分支检查。"
+        "接收客户端处理HTTP FD；已解码signalling MIME、确认为FD SIGNALLING PAYLOAD，只有一个FILEURL Payload IE，未因初始检查退出。",
+        "Mandatory download IE的值为MANDATORY DOWNLOAD，进入§10.2.1.2.2；用户消费或目标应用分别按该分支检查，不能把尚未通过的应用ID检查预设为成功。"
       ],
       "conclusion": "强制下载分支将通知用户或目标应用文件会自动下载，发送 FD 接受通知，然后才尝试下载 URL 所指文件。若带应用 ID 且客户端不认识，该 FD 消息必须丢弃并退出，不能继续按强制下载执行。对已识别的目标，自动开始或发送接受通知仍不保证下载成功，后者取决于实际下载结果。",
       "printed_pages": [
@@ -44,13 +55,26 @@
       "limitations": [
         "强制下载省去普通用户等待分支，不等于绕过接收权限、资源或未知应用检查。",
         "此处的通知是文件将被自动下载，不是已完成通知。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "10.2.1.2.1;10.2.1.2.2 steps4–8;15.2.16",
+          "printed_pages": [
+            265,
+            266,
+            369
+          ]
+        }
       ]
     },
     {
       "id": "nonmandatory-tdu2-does-not-auto-reject",
       "clause": "10.2.1.2.3 steps1,3–8 and NOTES3,4;F.2.3 Table F.2.3-1",
       "conditions": [
-        "收到的 FD 请求不含 Mandatory download IE，且属于普通用户消费文件；用户尚未决定。"
+        "接收客户端处理HTTP FD；已解码signalling MIME、确认为FD SIGNALLING PAYLOAD，只有一个FILEURL Payload IE，未因初始检查退出。",
+        "完全没有Mandatory download IE；没有Application ID及Extended application ID，属于普通用户消费文件，用户尚未决定。这里不把IE存在但取其他值当成缺失。"
       ],
       "conclusion": "客户端通知用户后启动 TDU2 并等待决定。TDU2 默认 60 秒，可配置；接受、拒绝或决定延期时停止计时。用户在计时期间延期会生成延期通知；拒绝会生成拒绝通知并退出；接受则先生成接受通知，之后才尝试下载。计时器超时自身没有指定动作，不能写成自动拒绝、自动下载或自动发送延期。超时后仍可接受或拒绝，此后再选择延期不触发客户端动作。",
       "printed_pages": [
@@ -62,13 +86,35 @@
       "limitations": [
         "该完整接受/延期结论限定用户分支。原文 step5、step7 兼写 user or application，而 step6、step8 写 user，不能静默把所有字面差异抹平。",
         "60 秒不是文件可用期；文件可用期由 CF 的 TDC2 单独管理。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "10.2.1.2.3 steps1,3–8 and NOTES3,4;F.2.3 Table F.2.3-1",
+          "printed_pages": [
+            266,
+            267,
+            268,
+            640
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "10.2.1.2.1 steps1–6 (initial processing conditions)",
+          "printed_pages": [
+            265
+          ]
+        }
       ]
     },
     {
       "id": "requested-completion-is-a-separate-correlated-message",
       "clause": "10.2.1.2.2 step9;10.2.1.2.3 step8f;6.2.3.2;12.2.1.1",
       "conditions": [
-        "原 HTTP FD 请求明确要求完成更新；强制下载或已接受的非强制下载已经成功。"
+        "原HTTP FD在客户端已通过初始解码、FD SIGNALLING PAYLOAD和单FILEURL检查；原请求明确要求FILE DOWNLOAD COMPLETED UPDATE。",
+        "MANDATORY DOWNLOAD分支，或IE完全缺失且已接受的非强制分支，实际下载已经成功；用户/应用标识按相应原分支保留。未请求完成更新时的发送义务不由本claim裁决。"
       ],
       "conclusion": "客户端此时生成 FILE DOWNLOAD COMPLETED 的 FD NOTIFICATION，而不是把先前 ACCEPTED 改名。生成 helper 回带原 FD 的 Conversation ID、Message ID，并填写当前时间；面向用户的通知不带应用 ID，面向应用则回带相应应用标识。§12.2.1.1 从原请求的 mcdata-calling-user-id 确定通知目标，组通信还带原 mcdata-calling-group-id；因此通知目的地和原文件下载 URL 是不同信息。",
       "printed_pages": [
@@ -83,13 +129,37 @@
         "仅完成通知的 Message ID 设置在 helper 中有明确分支；不据本条推出接受/拒绝/延期全部字段的无歧义生成算法。",
         "FILE DOWNLOAD COMPLETED 表示文件下载完成，不是 READ、用户理解或应用业务执行完成。",
         "未请求完成更新时的外层条件、内层例外与注释矛盾见下方原文疑义；不能据本条宣称未请求就一定不发送。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "10.2.1.2.2 step9;10.2.1.2.3 step8f;6.2.3.2;12.2.1.1",
+          "printed_pages": [
+            60,
+            61,
+            266,
+            268,
+            314,
+            315
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "10.2.1.2.1 steps1–6 (initial processing conditions)",
+          "printed_pages": [
+            265
+          ]
+        }
       ]
     },
     {
       "id": "deferred-list-is-a-reference-list-not-file-bytes",
       "clause": "11.3.1;11.3.2.1;11.3.2.2;11.3.3.1;11.3.3.2",
       "conditions": [
-        "用户请求查看已延期的组 FD；PF 有相应存储记录，并执行 §11.3 的列表请求/返回流程。"
+        "用户请求查看已延期的组FD文件列表；§11.3明确适用于HTTP FD及媒体面FD，PF有对应存储记录。",
+        "各主体分别在列表请求、PF生成列表MESSAGE及客户端收到列表结果的实际事件下执行§11.3；不要求已下载成功、原请求要求完成更新，或先收到一个HTTP FILEURL请求。"
       ],
       "conclusion": "PF 先对列表请求回 SIP 200，再用另一个 SIP MESSAGE 发送 DEFERRED DATA RESPONSE。客户端收到列表后回 200，解码，对 FILEURL 类型的每项 deferred FD signalling payload，保存所需数据或整个 FD signalling payload，并保存 Group ID 信息，向用户展示延期文件 URL 列表；Originator、Conversation ID、Message ID 等额外展示信息为可选。取得列表不是取得文件内容，也不能证明列表中的文件此时仍可下载，实际取得仍需下载步骤及文件可用性满足。",
       "printed_pages": [
@@ -102,13 +172,26 @@
         "原文保留旧 Payload IE 返回形式以兼容 Rel13–16，并非要求 Rel19 只能发新格式。",
         "未证明任意一次用户延期都已创建完整网络存储记录；列表的前提是存在对应存储记录。",
         "DEFERRED DATA REQUEST/GROUP COMM 命名及 response/request 描述有不一致，见下方原文疑义。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "11.3.1;11.3.2.1;11.3.2.2;11.3.3.1;11.3.3.2",
+          "printed_pages": [
+            312,
+            313,
+            314
+          ]
+        }
       ]
     },
     {
       "id": "pf-record-cleanup-is-not-sender-or-file-delivery",
       "clause": "10.2.4.3.2 step4;12.2.2.1 steps1–3,6a,13",
       "conditions": [
-        "PF 收到 FD disposition 且前序资源、主叫绑定等检查通过；分别处理接受/拒绝，或无目标用户 ID 的完成通知。"
+        "PF收到与原HTTP FD相关的FD disposition SIP MESSAGE，进入§12.2.2.1；前序资源处理未拒绝，已从PAI绑定确定用户且绑定存在并未过期。",
+        "分别处理ACCEPTED/REJECTED的stored file list条目清理，或COMPLETED且不含§12.2.1.1 step3目标用户ID的stored deferred group communication清理；这是收到通知的处理，不额外推定客户端必然生成了该通知。"
       ],
       "conclusion": "收到 FILE DOWNLOAD REQUEST ACCEPTED 或 REJECTED 时，§12.2.2.1 要求从 stored file list 移除该文件条目；这是列表清理，不是证明文件已下载，也不是删除内容服务器文件。另一个明确分支是收到 FILE DOWNLOAD COMPLETED 且没有 §12.2.1.1 step3 的目标用户 ID：PF 回 SIP 200、清除对应 stored deferred group communication，并停止后续转发步骤。因此这个 200 不能证明完成通知已传到原发送用户。",
       "printed_pages": [
@@ -122,6 +205,20 @@
         "不反推客户端在何种未请求完成更新场景必发无目标通知；该生成义务仍存在原文冲突。",
         "stored file list 与 stored deferred group communication 按原文分别称呼，不宣称它们必为同一物理表或包含完整文件内容。",
         "PF 初始存储 Conversation ID、Message ID 和 Payload IE 的 HTTP FD 条件含 disposition request type IE，不扩大成所有 HTTP FD 都必存。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clause": "10.2.4.3.2 step4;12.2.2.1 steps1–3,6a,13",
+          "printed_pages": [
+            279,
+            280,
+            315,
+            316,
+            317
+          ]
+        }
       ]
     }
   ],
@@ -137,7 +234,7 @@
   ],
   "verification": {
     "original_clauses_checked": true,
-    "independent_usage_acceptance": false
+    "independent_usage_acceptance": true
   },
   "standard_stage": 3,
   "source_issues": [

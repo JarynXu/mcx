@@ -1,0 +1,268 @@
+{
+  "topic_id": "r19-emergency-group-imminent-request-feedback",
+  "release": 19,
+  "standard_stage": 3,
+  "state": "clause-checked",
+  "title": "已有组呼的迫近危险请求：升级、取消与状态反馈",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v19.4.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "固定 TS24.379 V19.4.0；已有在网、按需预安排 MCPTT 组呼的迫近危险升级、取消请求及状态反馈。不是初始建组/进组，也不是独立紧急告警或释放通话。",
+    "各角色按收到的事件分别适用。升级和取消是替代请求；客户端授权不等于 CF 授权，客户端 MIG/MIGC 与 CF 的组状态分别读取。组 emergency=false 仅限明确使用该守卫的 CF 分派，不作为全页共同前提。",
+    "不含 chat、广播、ad hoc、重组、预建立、离网、跨系统、功能别名和完整媒体/SDP实现。保留取消 helper 的入口与正文不一致及许可回指问题，不宣称端到端无歧义生命周期。"
+  ],
+  "claims": [
+    {
+      "id": "imminent-client-request",
+      "title": "升级与取消各有许可和本端状态门槛",
+      "conditions": [
+        "用户要求改变正在进行的按需预安排组呼状态；升级/取消分别进入其客户端程序。"
+      ],
+      "conclusion": "升级客户端依6.2.8.1.8判断许可：用户 allow-imminent-peril-call=true，且 DedicatedGroup 包含目标组，或在该用户许可下采用 UseCurrentlySelectedGroup，才为授权请求；否则宜提示（SHOULD）且必须停止（SHALL）。被调用6.2.8.1.9只有在 MIGC1且MEG1 时设置 imminentperil-ind=true、MIGC2，并在 MIG并非2时置MIG4。取消先按6.2.8.1.10检查 allow-cancel-imminent-peril：true授权、false不授权；不授权时宜提示（SHOULD）并必须停止（SHALL）。取消构造helper须 MIGC3或MIG2，设置指示false及MIG3。取消请求另带session-type=prearranged和目标组ID，发起者ID由PF添加。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "10.1.1.2.1.3 opening,steps2,4-8",
+            "10.1.1.2.1.5 opening,steps1-8,NOTE1",
+            "6.2.8.1.8 imminent-peril branch",
+            "6.2.8.1.9",
+            "6.2.8.1.10",
+            "6.2.8.1.11",
+            "6.2.8.1.12 (Resource-Priority dependency)"
+          ],
+          "printed_pages": [
+            79,
+            80,
+            81,
+            272,
+            273,
+            274,
+            275
+          ]
+        }
+      ],
+      "limitations": [
+        "MIG 是客户端所知的组迫近危险状态，MIGC 是本端迫近危险组呼请求/获准状态；请求发出时尚非成功。取消允许发起者或另一获授权成员，不改成只能本人。",
+        "客户端取消许可 helper 未列字段缺失时的判断；不能照 CF 的缺失拒绝规则补写，也不能宣布缺失等于允许。",
+        "两类请求依各自条款携Resource-Priority和SDP；升级中的隐式话权及位置处理仍依其条件，本页不展开。无ongoing通话的取消MESSAGE另有入口，不套本页re-INVITE。"
+      ],
+      "normative_strength": "未授权时的用户提示为 SHOULD，停止请求为 SHALL；许可判断、满足各自状态守卫后的指示设置与 MIG/MIGC 转换，以及请求构造和发送为 SHALL。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "imminent-pf-transfer",
+      "title": "PF 转送状态请求，不代替 CF 决定优先级",
+      "conditions": [
+        "O-PF收到对应已建会话的re-INVITE；响应处理另按实际收到的响应。"
+      ],
+      "conclusion": "O-PF可因资源/拥塞拒绝500并可附Retry-After；媒体不可接受或缺speech codec则488。通过后调用re-INVITE生成过程、填入发起用户MCPTT ID，构造本按需分支的SDP offer，存在Resource-Priority则复制其值，再转送；该头的有效性由CF判断。收到2xx时生成客户端侧200，包含SDP answer、收到的Warning以及PF PSI的PAI；收到403时复制存在的mcptt-info及Warning并转送。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "10.1.1.3.1.3 opening,steps1-8,response paragraphs",
+            "10.1.1.4.7 steps2,4-5 (comparison: CF validation)"
+          ],
+          "printed_pages": [
+            286,
+            287,
+            304,
+            305
+          ]
+        }
+      ],
+      "limitations": [
+        "这段没有独立给出本端新的迫近危险发起/取消许可判断，不从初始起呼条款移植。用户ID不是PF PSI，也不等于目标组或会话ID。",
+        "响应段回指step7，但转发在step8；保留号次差异，不将INVITE与re-INVITE称为不同方法冲突。其SDP和媒体接口只作依赖，不提供完整实现。"
+      ],
+      "normative_strength": "资源不足或拥塞风险下的500拒绝及附加Retry-After为 MAY；媒体/codec检查及不通过时的488、通过后的请求构造转送，以及对应2xx/403的响应处理为 SHALL。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "imminent-cf-entry",
+      "title": "先核 CF 实际分派，再看迫近危险 helper",
+      "conditions": [
+        "CF收到标识按需预安排组会话的re-INVITE；各拒绝或分派条件分别成立。"
+      ],
+      "conclusion": "CF可因资源/拥塞拒绝500并停止；存在emergency或imminent指示时调用组合校验。带imminent指示的请求只允许同时不带emergency和alert，否则403+Warning150。10.1.1.4.7 step4为true指示列出未授权时403及正文imminentperil-ind=false；step9则在含imminent指示且组emergency=false时调用10.1.1.4.8并跳过剩余步骤。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "10.1.1.4.7 opening,steps1-5,9",
+            "6.3.3.1.17",
+            "6.3.3.1.13.5 (comparison: true initiation authorization)",
+            "6.3.3.1.13.6 (actual step4 reference: false cancellation authorization)",
+            "10.1.1.4.8 opening,NOTE1,steps1-3"
+          ],
+          "printed_pages": [
+            139,
+            142,
+            304,
+            305,
+            307,
+            308,
+            309
+          ]
+        }
+      ],
+      "limitations": [
+        "step4的true发起许可实际回指6.3.3.1.13.6，而该helper以false取消为入口；相邻.13.5才描述true发起。不能静默换号，不能将客户端许可或取消许可当作已解决CF发起许可链。",
+        ".4.7 step9使用“指示存在”，不要求true；但.4.8开头写收到true，内部又列false取消。下文只能分别报告其分派与内部动作，不宣布false取消已获得无歧义helper入口。",
+        "Resource-Priority守卫另在step5按头值、指示是否存在和CF组状态判断；不能把“存在false指示”当成“不含指示”。不因头值或用户本端授权跳过前序检查。"
+      ],
+      "normative_strength": "资源不足或拥塞风险下的500拒绝为 MAY；组合校验、非法组合或所列未授权条件下的403，以及满足step9守卫后的helper调用和跳过后续步骤为 SHALL。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "imminent-cf-state",
+      "title": "服务器列出的组状态动作不等于所有成员已更新",
+      "conditions": [
+        "CF前序未拒绝且按实际caller进入迫近危险处理；取消内部动作需同时考虑上一节的入口疑义。"
+      ],
+      "conclusion": "在明确组emergency=false且请求imminent=true的分支，组原已imminent=true而用户给出新指示时，向其他已归属成员发MESSAGE；组原为false时，先置true，再给其他通话参与者发re-INVITE，给已归属但未参与者发MESSAGE，并缓存用户已发起迫近危险呼叫。取消正文中，false且未授权时403并带imminentperil-ind=false后停止；false且授权、组imminent=true时先置false、缓存该用户不再有未结迫近危险组呼，再向其他参与者发re-INVITE，向已归属未参与者发false通知。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "10.1.1.4.7 step9 (caller)",
+            "10.1.1.4.8 opening,steps1-8,NOTE1-2",
+            "6.3.3.1.13.6",
+            "6.3.3.1.13.13 (comparison only: separate local-policy helper)",
+            "6.3.3.1.15"
+          ],
+          "printed_pages": [
+            139,
+            141,
+            307,
+            308,
+            309
+          ]
+        }
+      ],
+      "limitations": [
+        "本段不重写.4.8 step1含AND/OR的整句结合规则，只取组emergency=false且请求true的明确子范围；不扩展成状态true可以绕过caller。",
+        "取消正文实际用.13.6：allow-cancel-imminent-peril=true授权，false或缺失未授权；另有.13.13本地策略helper，但本caller并未改引它，不替换。",
+        "状态先改、通知后发不等于全部通知送达或媒体优先级处理完成。其200及媒体处理按.4.8步骤继续，本页不补全员确认屏障。",
+        "NOTE2称emergency状态/alert取消，与迫近危险正文不符；不据此添加清紧急告警行为。6.3.3.1.15取消构造确实同时携emergency=false与imminent=false，这是CF向终端更新的字段，不将入站CF请求校验无条件反套到它。"
+      ],
+      "normative_strength": "所列分支内的组状态设置、用户状态缓存、re-INVITE与MESSAGE构造发送，以及未授权取消的403和停止为 SHALL；这些动作仍分别受其分支守卫约束。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "imminent-client-result",
+      "title": "200、Warning149、INFO及失败正文给出不同状态证据",
+      "conditions": [
+        "发起端收到升级或取消事务的响应，或收到符合INFO包条件的状态解释；各事件分别读取。"
+      ],
+      "conclusion": "升级响应2xx只有在MIGC2或3且无Warning149时，按6.2.8.1.4置MIGC3和MIG2；升级4xx/5xx/6xx在MIGC2或3时置MIG1和MIGC1。若服务器处于emergency=true而授权的imminent=true请求走.4.7响应分支，则200带Warning149，ACK后发INFO说明imminent=false、emergency=true；客户端收到会话内符合6.2.8.1.13接收条件的INFO（Info-Package为g.3gpp.mcptt-info、关联的mcptt-info正文且至少设置alert、imminent或emergency指示之一）即回INFO200；另在MIGC2或3且正文imminent=false、emergency=true时，置MIG1、MIGC1、MEG2。取消收到2xx则置MIG1/MIGC1；取消失败只有正文imminent=true或没有该字段时明确置MIG2。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "10.1.1.2.1.3 response paragraphs",
+            "6.2.8.1.4 step2",
+            "6.2.8.1.5 step2",
+            "10.1.1.2.1.5 response paragraphs",
+            "10.1.1.4.7 response steps7-9,NOTE5,ACK paragraph",
+            "6.3.3.1.18 opening,steps1-4 with3(c)",
+            "6.2.8.1.13 reception conditions,steps1,3",
+            "10.1.1.4.8 step2 (comparison: cancellation403 false)"
+          ],
+          "printed_pages": [
+            77,
+            78,
+            81,
+            82,
+            142,
+            143,
+            273,
+            275,
+            307,
+            308,
+            309
+          ]
+        }
+      ],
+      "limitations": [
+        "Warning149不是迫近危险获准：该分支说明迫近危险请求未获准，但以更高紧急级别参与；也不是释放原通话。CF发起许可回指问题仍未由此响应段解决。",
+        "CF取消拒绝正文明确false，而客户端取消失败分支未列false时状态动作；不补统一“失败恢复MIG2”，也不反推false拒绝表示取消成功。",
+        "INFO200只确认该INFO事务，不证明原升级请求获准或所有成员一致。媒体交互依赖被调用实现，不由这些信令状态推导音频成功。"
+      ],
+      "normative_strength": "所列响应分支内的200、Warning149、ACK后的INFO发送及客户端状态转换为 SHALL；符合INFO接收条件即回200也是 SHALL，MIGC2/3及false/true字段组合只限制相应状态转换。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "imminent-recipient-update",
+      "title": "参与者收到更新时按字段改本端状态，无需再手动接听",
+      "conditions": [
+        "T-PF实际收到面向终端的优先状态re-INVITE，或客户端实际收到该既有会话更新。"
+      ],
+      "conclusion": "T-PF调用对应re-INVITE转送和SDP过程，向终端发送；收到终端200后按响应helper转回并调用媒体接口。客户端收到imminent=true时宜显示发起者与迫近危险提示（SHOULD），置MIG2；收到imminent=false时宜显示取消者（SHOULD），置MIG1/MIGC1。若同时收到helper生成的emergency=false，客户端另执行其emergency=false分支；该分支没有alert=false及相应身份条件就不能推导清MEA。随后接受re-INVITE并回200，按需分支附SDP answer，再调用媒体接口。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "10.1.1.3.6",
+            "10.1.1.2.1.6 steps1-12 (including step3 comparison for emergency=false)",
+            "6.3.3.1.15 steps1-5",
+            "10.1.1.4.8 step3,NOTE2 (comparison: notification wording)"
+          ],
+          "printed_pages": [
+            141,
+            275,
+            276,
+            277,
+            289,
+            290,
+            309
+          ]
+        }
+      ],
+      "limitations": [
+        "接收端更新与发起端请求获准不是同一事件；显示为SHOULD，不等于用户必须再次人工确认。不从初始INVITE的接续模式规则替换这里的接受动作。",
+        "已归属但未参加者的MESSAGE仅在本页记录CF发送责任，不展开完整PF转送/接收状态链；不把发送通知当作这些终端已经入会或全部状态一致。"
+      ],
+      "normative_strength": "T-PF的请求转送与响应处理、客户端状态设置、接受re-INVITE并回200及调用媒体接口为 SHALL；客户端显示迫近危险发起者、提示或取消者为 SHOULD。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [
+    "CF发起许可回指、取消helper入口及取消失败false反馈存在上述具体未闭合处。本页是有界信令责任说明，不是修正后的可执行完整状态机。"
+  ],
+  "related": [
+    "group-inprogress-upgrade.md",
+    "group-inprogress-cancel.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

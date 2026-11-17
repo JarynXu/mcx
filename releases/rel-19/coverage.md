@@ -34,7 +34,7 @@
 ### FD：HTTP与MSRP媒体面分别判断
 
 - **能回答：**可查文件上限、HTTP存入/可用/下载证据，以及MSRP空SEND、分块收尾、服务器先响应、暂存和终端重组。另可查PF条件完成通知、CF直接或条件聚合路由、目标PF及客户端通知交付；普通媒体面FD服务器无预告释放另按类型策略及CF/PF/客户端事件区分BYE、原因与逐段资源收尾。 其他已参与授权用户的媒体FD无预告请求另可查INFO生成、PF条件转发及CF配置授权/释放调用。
-- **只到条件或接口：**终端内部下载完成指示不同于PF有条件的完成通知；PF暂存完成不等于终端下载。HTTP调用不能补到媒体面。 路由从实际PF完成事件及完成更新请求起，CF/目标PF各按实际收到与入口守卫执行；不补helper未逐项列出的CF入口字段。 授权者INFO200只表示请求接受，不证明媒体停止、跨段收尾或文件删除。
+- **只到条件或接口：**终端内部下载完成指示不同于PF有条件的完成通知；PF暂存完成不等于终端下载。HTTP调用不能补到媒体面。 路由从实际PF完成事件及完成更新请求起，CF/目标PF各按实际收到与入口守卫执行；不补helper未逐项列出的CF入口字段。 授权者INFO200只表示请求接受，不证明媒体停止、跨段收尾或文件删除。 §11.3延期组文件列表查询同时适用于HTTP与媒体面，但须有PF存储记录；不要求已下载成功，不扩展HTTP下载算法。
 - **尚未建立的结论：**媒体面ACK错引、SDP/MIME差异及普通转发中PF如何获知终端完整下载仍未闭合；未给完整文件系统、断点续传或全端交付保证。聚合策略选择、TDC1表的SDS实例范围与FD正文差异、晚到通知、PSI发现、完整事务恢复及客户端专门200/关联算法仍未闭合；NOTE6为容量说明，聚合放行及202不证明全员下载或原主叫已看到结果。
 
 入口：[FD 发送准入：文件上限、单次额度与拒绝来源](topics/mcdata/fd-size-admission.md)；[HTTP 文件分发：文件已存、URL 已通知与下载成功](topics/mcdata/fd-http-file-and-signalling-evidence.md)；[FD 接收决定：自动下载、接受、延期与完成通知](topics/mcdata/fd-download-decision-and-completion.md)；[媒体面 FD：何时能发文件，响应如何触发收尾](topics/mcdata/fd-msrp-start-and-originator-result.md)；[媒体面 FD：服务器 200、转发与暂存分别证明什么](topics/mcdata/fd-msrp-hop-ack-and-storage.md)；[媒体面 FD：收齐文件、信令面完成指示与业务通知](topics/mcdata/fd-media-reception-and-signalling-report.md)。 另查[媒体面FD的服务器主动释放：BYE、原因与逐段资源收尾](topics/mcdata/media-fd-server-release.md)。 另查[媒体面FD：授权参与用户请求无预告释放](topics/mcdata/media-fd-authorized-user-release.md)。
@@ -636,6 +636,14 @@
 - **尚未建立的结论：**无通话纯告警取消的 CF caller 未闭合，不能由客户端可发起就跳入 helper；取消授权回指、通知收件人范围和接收指示身份差异保留，不证明全组同步、通话释放或完整互通。
 
 入口：[独立 MESSAGE 取消组告警：本人、他人与结果条件](topics/emergency/standalone-alert-cancellation.md)。
+
+### 已有组呼的迫近危险请求与反馈
+
+- **能回答：**可查已有按需预安排组呼的客户端许可及MIG/MIGC、PF转送、CF实际分派与状态动作，以及发起端响应/INFO和参与端更新。
+- **只到条件或接口：**在网按需预安排既有组呼，各角色按实际事件读取；升级与取消分别适用，客户端许可不替代CF许可，组emergency=false仅用于明确列出的分派守卫。
+- **尚未建立的结论：**不套初始建会、独立告警或通话释放；保留CF许可回指、取消helper入口及失败false反馈缺口。INFO200不受状态转换的MIGC守卫限制，也不证明原请求获准或全员一致。
+
+入口：[已有组呼的迫近危险请求：升级、取消与状态反馈](topics/emergency/group-imminent-request-feedback.md)。
 
 ## 阅读结果时仍须分开的证据
 
