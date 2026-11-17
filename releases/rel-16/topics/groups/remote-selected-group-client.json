@@ -1,0 +1,140 @@
+{
+  "topic_id": "r16-groups-remote-selected-group-client",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "远程改变 MCPTT 所选组：谁可提出，目标何时切换，发起方怎样知道结果？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "在网 MCPTT，Release 16，Stage 3。甲请求把乙的所选组改为 G。只讨论两个客户端；甲的本地许可、乙对 G 的归属和乙实际选中 G 是三件不同的事。",
+    "各条按本机事件入口分别适用。结果失败不以换组已成功为前提。"
+  ],
+  "claims": [
+    {
+      "id": "requester-permission-target",
+      "title": "许可名单里要有乙，还是要有 G？",
+      "conditions": [
+        "甲要求本机发起这次变更。只有通过本机许可检查，才进入请求构造和发送。"
+      ],
+      "conclusion": "甲的客户端在甲的用户配置中查看 RemoteGroupSelectionURIList，匹配的是乙的 MCPTT ID，不是组 G。没有含至少一个条目的名单，或名单中没有乙，客户端必须停止，不发送这次请求；规范建议告诉甲其无权更改乙的所选组。通过检查后，客户端用 SIP MESSAGE 发出类型为 group-selection-change-request 的选组变更请求。请求发往服务甲的参与 MCPTT 功能：SIP 层 Request-URI 指向该功能，业务正文的 mcptt-request-uri 标出要选的组 G，资源列表标出目标用户乙。",
+      "normative_strength": "未获许可时停止是 SHALL，提示甲是 SHOULD；通过本机检查后构造、寻址和发送是 SHALL。",
+      "limitations": [
+        "本机获准发起不证明网络已受理，也不说明乙已归属或已换组。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.4.2.1, initiation steps 1–4 (local permission and addressing)"
+          ],
+          "printed_pages": [
+            308
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "target-affiliation-gate",
+      "title": "乙先做归属，还是直接改变所选组？",
+      "conditions": [
+        "乙的客户端收到选组变更请求；这里的组 G 取自乙收到的 mcptt-calling-group-id。"
+      ],
+      "conclusion": "乙从收到的业务正文 mcptt-calling-group-id 识别组 G。若 affiliation-required 为 true，乙必须对 G 调用显式归属程序（§9.2.1.2）；尚未启动状态观察（§9.2.1.3）才启动，不重复启动。收到的 NOTIFY 必须带有与这次 PUBLISH 相符的 p-id，才能按本步骤判定这次对 G 的归属是否成功。标识相符只说明是哪次发布，不能代替对 G 的结果判断。归属成功才改变所选组；归属失败不进入换组步骤。若请求里没有 affiliation-required，乙直接进入换组步骤。两条可进入的分支都要求乙判断换组动作本身是否成功。",
+      "normative_strength": "在各自条件下，调用归属、必要时启动观察、判定归属结果以及执行并检查换组均为 SHALL。",
+      "limitations": [
+        "缺省与显式 false 不可互换。第 2 项列出的是“true 且归属成功”或“元素不存在”，未列显式 false；不能据此为 false 指定换组动作或结果值。尚未收到相符的通知，也不能直接判归属失败、宣告换组成功或推定超时处理。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.4.2.2, incoming request steps 1(a–c) and 2(a–b)"
+          ],
+          "printed_pages": [
+            309
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "target-business-outcome",
+      "title": "归属成功但换组失败，乙回报什么？",
+      "conditions": [
+        "乙处理了本次请求，已按相应分支确定归属或换组结果；生成结果消息本身见第 3 项。"
+      ],
+      "conclusion": "乙另发一条 SIP MESSAGE 报告结果。只有实际换组成功，selected-group-change-outcome 才是 success；要求先归属却归属失败，或者归属门槛已过而实际换组失败，均为 fail。请求未携带 affiliation-required 时，换组失败同样报 fail。结果消息类型为 group-selection-change-response；资源列表取来请求中的 mcptt-calling-user-id，即原请求者甲，业务正文标出组 G，SIP 的 Request-URI 指向服务发送者乙的参与 MCPTT 功能。规范建议乙的客户端将成功或失败提示给乙。",
+      "normative_strength": "生成并发送结果 MESSAGE 以及在所列条件下设置结果是 SHALL；本地提示乙是 SHOULD。",
+      "limitations": [
+        "两种已知失败共用 fail；仅凭此值不能定位故障发生在归属还是换组。这里的 success 只报告所选组已改变，不是入组呼、获话权或收到语音的证明。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.4.2.2, step 3(d) and 3(e)(i)–(ii)(C); steps 4–6"
+          ],
+          "printed_pages": [
+            309,
+            310
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "requester-transaction-versus-result",
+      "title": "甲看见 SIP 响应时，能向用户宣布换组成功吗？",
+      "conditions": [
+        "甲已发出请求。给原 MESSAGE 的 SIP 响应与乙回报业务结果的新 MESSAGE 是两种事件。"
+      ],
+      "conclusion": "甲若收到对原 MESSAGE 的 4xx、5xx 或 6xx，规范建议甲的客户端向甲提示请求失败，也建议它停止后续步骤；这两项都是 SHOULD。收到承载变更结果的新 MESSAGE 时，甲必须从 selected-group-change-outcome 判断这次操作的成败，规范建议把结果提示给甲。只看到原请求的 2xx 而没有业务结果，不能断言乙已经选中 G。",
+      "normative_strength": "对原请求的 4xx、5xx 或 6xx，提示甲请求失败与停止后续步骤两项均为 SHOULD；收到结果 MESSAGE 后读取 outcome 判定是 SHALL，向甲提示是 SHOULD。",
+      "limitations": [
+        "未见业务结果不等于已失败；这两个客户端条款不定义据此触发的超时、重试或补救。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.4.2.1, paragraph after step 4 and received change-response steps 1–2"
+          ],
+          "printed_pages": [
+            308
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [
+    "不展开参与/控制功能如何转送请求、为何附加归属要求，也不规定 SIP 实现或完整归属状态机。"
+  ],
+  "related": [
+    "r16-groups-explicit-affiliation-client"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
