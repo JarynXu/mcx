@@ -1,0 +1,195 @@
+{
+  "topic_id": "r16-mcdata-offnetwork-object-upload",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCData：离网时留在终端的通信记录，重连后怎样存回自己的账户？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "固定 3GPP TS 23.282 V16.8.0，Release 16，Stage 2。主过程为离网本地对象重连后存入本人 MCData 消息存储账户；同步和单系统一对一 HTTP FD 仅作方向及证据对照。"
+  ],
+  "claims": [
+    {
+      "id": "offline-source-and-reconnection",
+      "title": "离网记录在哪里，何时可以上传",
+      "conditions": [
+        "离网通信的参与用户有 MCData 消息存储账户；终端重新连接提供 MCData 服务的网络。"
+      ],
+      "conclusion": "终端在本地消息存储的特定文件夹将离网通信保存为对象。重连后可以把这些新对象上传至本人账户。上传程序的两个前提是已有账户、存储客户端与消息存储间的认证和授权均已成功。",
+      "normative_strength": "重连后可以上传；并未说一重连就自动发起或完成上传。",
+      "limitations": [
+        "本地对象、联网记录均不证明请求已发或远端存储成功。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.16.1 and 7.13.3.16.2, off-network local objects, reconnection and preconditions 1–2"
+          ],
+          "printed_pages": [
+            161
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "target-folder-and-request",
+      "title": "有标识但文件夹尚不存在，与请求漏给标识有何不同",
+      "conditions": [
+        "消息存储客户端要将本地新对象上传至本人账户，且上传程序的账户及认证授权前提满足。"
+      ],
+      "conclusion": "客户端向 MCData 消息存储发送请求，用户的 MCData ID、目标文件夹标识、待上传对象三项均必填。消息存储把对象写入指定文件夹；如果文件夹尚不存在，消息存储创建它，不以客户端另发建夹请求为前提。",
+      "normative_strength": "文件夹不存在时创建是对已指定目标的处理；请求表中的目标标识始终为 M。",
+      "limitations": [
+        "不得将缺标识解释为自动建某个文件夹或默认根目录，本条未规定该情形的错误码。发出请求不是收到成功结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.16.1 and 7.13.3.16.2, off-network local objects, reconnection and preconditions 1–2"
+          ],
+          "printed_pages": [
+            161
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.29, Table 7.13.3.1.29-1, mandatory upload request elements"
+          ],
+          "printed_pages": [
+            147
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.16.2, Figure 7.13.3.16.2-1 and steps 1–3, missing target folder and result"
+          ],
+          "printed_pages": [
+            162
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "upload-response-evidence",
+      "title": "收到响应时，如何判断结果",
+      "conditions": [
+        "针对该用户此次对象上传，消息存储返回响应。"
+      ],
+      "conclusion": "响应由消息存储发给客户端。必填项为用户的 MCData ID 和本次对象上传的结果。实际读到成功值，才能据该响应认定消息存储报告本次成功；失败也是可能的响应结果。",
+      "normative_strength": "此表列出本次操作的成功或失败，不报告逐对象结果或对象标识。",
+      "limitations": [
+        "响应的存在不保证成功，成功值不证明本地副本被删除或其他设备已同步。未规定失败时逐对象状态、事务或重试语义。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.16.2, Figure 7.13.3.16.2-1 and steps 1–3, missing target folder and result"
+          ],
+          "printed_pages": [
+            162
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.30, Table 7.13.3.1.30-1, mandatory upload response elements"
+          ],
+          "printed_pages": [
+            148
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "payload-direction-and-destination",
+      "title": "如何区分个人上存、下行同步与面向他人的文件分发",
+      "conditions": [
+        "区分存储客户端与消息存储之间的上传或同步，以及单系统一对一 HTTP 文件分发的目的和数据流。"
+      ],
+      "conclusion": "离网对象在上传请求中从本机去往本人账户；下行同步也由客户端发请求，但服务端把符合请求的对象放进响应送往客户端。一对一 HTTP FD 的文件先存入内容服务器的媒体存储功能，再在面向目标用户的分发请求中携带文件 URL；对方的下载完成及按请求发出的完成报告是后续事件。",
+      "normative_strength": "区分消息内承载的信息、账户或接收人的方向和实际报告的事件；不是同一流程的三个必经阶段。",
+      "limitations": [
+        "个人账户上传成功不证明已发分发请求，也不证明另一用户已下载；下载须看接收端完成记录或所请求的完成报告。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.29, Table 7.13.3.1.29-1, mandatory upload request elements"
+          ],
+          "printed_pages": [
+            147
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.16.2, Figure 7.13.3.16.2-1 and steps 1–3, missing target folder and result"
+          ],
+          "printed_pages": [
+            162
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.6.1–2, synchronization precondition, Figure 7.13.3.6.2-1 and steps 1–2"
+          ],
+          "printed_pages": [
+            151,
+            152
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.4.2, single-system one-to-one HTTP FD, Figure 7.5.2.4.2-1, precondition 2 and steps 1–2, 9–10"
+          ],
+          "printed_pages": [
+            91,
+            92
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcdata-message-store-sync",
+    "r16-mcdata-http-fd-client"
+  ],
+  "limitations": [
+    "不定义线上编码、HTTP 错误码、重复上传的去重或重试、部分失败处置及本地清除策略。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
