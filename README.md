@@ -5,7 +5,7 @@
 ## 阅读入口
 
 - [Release 19](releases/rel-19/README.md)：MCPTT 呼叫信令、预建立媒体控制与话权、身份和安全、组文档与 LMR 互通，以及位置、网络策略、部分 MCVideo/MCData 业务要求与指定客户端、服务器协议路径。各主题覆盖范围和证据强度不同，详见版本入口。
-- [Release 16](releases/rel-16/README.md)：MCPTT 在网/离网呼叫、显式组归属与客户端话权，以及既有 Idle 状态的服务器请求与条件授予；MCData Stage 2 功能角色、Stage 3 私聊 SDS、私聊 SDS 会话信令/媒体与 HTTP FD，以及预安排组 standalone SDS 控制面客户端；MCVideo Stage 2 功能职责、普通按需私呼及预安排组呼客户端建立、普通私呼客户端传输/接收控制。仅所列固定版本与局部职责，不代表完整组服务器分发、组媒体或端到端实现。
+- [Release 16](releases/rel-16/README.md)：MCPTT 在网/离网呼叫、显式组归属与客户端话权，以及既有 Idle 状态的服务器请求与条件授予；MCData Stage 2 功能角色、Stage 3 私聊 SDS、私聊 SDS 会话信令/媒体与 HTTP FD，以及预安排组 standalone SDS 控制面客户端；MCVideo Stage 2 功能职责、普通按需私呼及预安排组呼客户端建立、普通私呼客户端传输/接收控制及普通预安排组服务器的显式传输请求、许可与结束职责。仅所列固定版本与局部职责，不代表完整组服务器分发、组媒体或端到端实现。
 - [Agent 使用说明](AGENTS.md)与[版本目录](catalog.json)：按版本和问题逐层定位。
 - [编写与维护约定](CONTRIBUTING.md)：内容、来源和核验状态的含义。
 

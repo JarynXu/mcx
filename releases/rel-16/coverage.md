@@ -232,6 +232,16 @@ Stage 2 功能与信息流说明不替代 Stage 3；许可、媒体可用、实�
 
 [读取主题](topics/mcvideo/prearranged-group-client-establishment.md)
 
+## 普通预安排组呼：服务器显式传输请求、许可与结束职责
+
+普通预安排组服务器U/G职责、条件授予、实际RTP、按状态结束及基本接口两步释放。
+
+初始化、拒绝、授予、RTP、End和应用释放是替代事件；许可不等于交付，End不等于SIP释放。
+
+尚未建立：不覆盖完整初始化、授权策略、队列/竞争/抢占、PF跨节点、接收仲裁或呈现；Grant、RTP、End及应用释放分别取证，不能套私呼条件。
+
+[读取主题](topics/mcvideo/prearranged-group-transmission-server.md)
+
 ## 显式组归属：本客户端的建立、解除与状态观察
 
 本客户端显式兴趣发布、解除、订阅观察及必要服务器接收和状态证据。
