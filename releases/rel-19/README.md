@@ -13,7 +13,7 @@
 | --- | --- |
 | [MCPTT 通话与话权](topics-calls.json) | 私呼、组呼、chat、预建立会话、加入与释放；话权另分普通、优先、多发言者、双话权和有限离网路径。远程请求起呼、环境监听、MBMS公告与5G MBS接收意愿分别查域索引，不互作同一流程；远程改变selected group到组管理域。呼叫控制、话权许可与媒体结果分别判断。 |
 | [组管理与 MCPTT 组呼入口](topics-groups.json) | 组文档与XCAP操作、订阅、显式/隐式归属、会议状态，以及广播、ad hoc初建/用户修改/持续选人、预配置重组创建与移除。远程改变selected group也从此域查；远程请求起呼到通话域。文档权限、归属、入会和通话成功分别判断；MCData、MCVideo专有流程回各自业务域。 |
-| [MCData 数据业务](topics-mcdata.json) | SDS（单条消息或会话）、FD（HTTP或媒体面）、IP Connectivity、MBMS/MBS、Message Store、功能别名，以及本业务授权、归属、保护、紧急状态和释放。先区分在网/离网及业务类型，再按域索引的问题选页；初建、用户修改、服务器自动变化分别读取。MCData本地直接ID位置请求也在此域，公共Stage 2位置架构另见位置域；控制响应不证明数据交付。 |
+| [MCData 数据业务](topics-mcdata.json) | SDS（单条消息或会话）、FD（HTTP或媒体面）、IP Connectivity、MBMS/MBS、Message Store、功能别名，以及本业务授权、归属、保护、紧急状态和释放。先区分在网/离网及业务类型，再按域索引的问题选页；初建、用户修改、服务器自动变化分别读取。MCData本地直接ID位置请求与配置也在此域，公共Stage 2位置架构另见位置域；控制响应不证明数据交付。 |
 | [MCVideo 视频业务](topics-mcvideo.json) | 私呼、预安排组呼、chat、广播、video pull/push、有限离网自动/手动私呼和普通组呼探测、自动或需用户应答的有限加入及BASIC同类型条件合并；本业务授权、归属、会议/组动态观察、发送接收许可、紧急条件和释放。不套用 MCPTT 话权规则；[功能别名私呼](topics/mcvideo/private-call-functional-alias.md)另按权限、目标选择与300重试条件进入。 [独立纯告警取消](topics/mcvideo/standalone-emergency-alert-cancellation.md)另按本人/他人、实际 caller 和回执事件读取，不套 MCPTT 的 ongoing 守卫。 [离网远程推视频](topics/mcvideo/offnetwork-remote-video-push.md)另按三方角色、实际消息与私呼 helper 条件读取，不借在网 push 拼成完整闭环。 |
 | [身份、注册与配置](topics-identity.json) | 身份认证、SIP 注册、服务授权、令牌、HTTP 身份、伙伴系统迁移和用户配置取得/更新/切换。各步骤的成功不能互相代替；主系统已注册且已有token时，MCPTT另查[PUBLISH服务授权与设置](topics/identity/mcptt-publish-service-authorization.md)，不以通用安全授权或INVITE绑定检查替代。 |
 | [安全与密钥](topics-security.json) | 接入保护、KMS、私呼/组密钥、成员变化、保存清理及信令/媒体保护。取得密钥不等于业务准入或媒体连通；[离网两用户私呼密钥](topics/security/offnetwork-private-key-protection.md)按独立分发与验证入口读取，不套在线登录或组GMK步骤。 |

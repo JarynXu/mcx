@@ -1,0 +1,314 @@
+{
+  "topic_id": "r19-calls-preestablished-private-origination",
+  "release": 19,
+  "standard_stage": 3,
+  "state": "clause-checked",
+  "title": "预建立会话上的私呼与FTA发起：业务准入、REFER提示和后续结果",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v19.4.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "TS24.379 V19.4.0的在网、带话权控制业务，使用客户端与participating MCPTT function之间已经存在的预建立会话。主题是用户主动向直接MCPTT ID发起普通私呼或多目标first-to-answer（FTA），及其请求、拒绝与返回事件；不是要求先取得业务许可或先成功接通才适用。",
+    "正常私呼构造使用一个直接ID，FTA使用多个直接ID；PF的缺列表、数量/类型不符等差错检查仍按本页所列入口解释。排除功能别名呼叫、转接、转发、远程发起、ambient listening及无话权变体；对照这些分支只用于说明本入口不能被相邻程序代替。",
+    "用户未请求紧急私呼，也不处于会触发客户端紧急发起程序的已设MCPTT emergency状态或MEPP 2状态；不携应用优先级或主叫功能别名扩展。客户端、O-PF与CF的不同事件分别适用，不把REFER成功、INVITE成功、安全校验成功设为失败分支的共同前提。"
+  ],
+  "claims": [
+    {
+      "id": "client-target-and-type",
+      "title": "客户端把既有承载与本次业务目标分开",
+      "conditions": [
+        "用户要求在既有预建立会话上发起本页范围的私呼或FTA。"
+      ],
+      "conclusion": "客户端生成dialog之外的REFER。FTA的allow-request-first-to-answer-call缺失或为false时，客户端通知用户并退出。Request-URI使用预建立会话在服务器上的公共服务身份，Target-Dialog标识该预建立会话；Refer-To的cid指向resource-lists正文，Content-ID与该cid相配。私呼列一个目标ID并嵌入session-type=private；FTA按目标逐项列ID并嵌入session-type=first-to-answer。Refer-Sub=false、Supported=norefersub、Require=multiple-refer及MCPTT P-Preferred-Service按本程序设置；P-Preferred-Identity可选。主动普通私呼还将forwarding-sequence-number设为0。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "11.1.1.2.2.1 opening and construction steps1-9,10-13 (scope comparison)",
+            "6.3.1.2 pre-established REFER classification",
+            "F.1.3 session-type definitions",
+            "11.1.2.2 pre-established no-floor exceptions (comparison)"
+          ],
+          "printed_pages": [
+            95,
+            96,
+            428,
+            429,
+            430,
+            431,
+            432,
+            433,
+            462,
+            726,
+            727
+          ]
+        }
+      ],
+      "limitations": [
+        "既有预建立会话只提供复用承载，不代替下面的业务身份绑定和许可检查。客户端FTA许可检查不等于PF也已授权。",
+        "客户端step9也允许单个被叫功能别名entry；但PF的单entry检查要求private，见后文。本页不据此补别名豁免，也不将直接ID多目标路径解释为所有FTA输入都能通过。",
+        "安全上下文需要建立时，私呼客户端在构造前另有密钥材料、PCK/PCK-ID及MIKEY处理；本页保留该程序依赖，不提供密码算法实现。"
+      ],
+      "normative_strength": "所列构造、发送前FTA许可拒绝后的通知/退出为SHALL；P-Preferred-Identity为MAY。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "client-answer-and-media-input",
+      "title": "应答方式、SDP与位置各有自己的条件",
+      "conditions": [
+        "客户端继续构造本页范围的REFER；相应的用户应答方式、既有SDP、安全与隐式话权条件按分支判断。"
+      ],
+      "conclusion": "私呼用户要求强制自动应答时嵌入Priv-Answer-Mode=Auto；未要求强制时，自动请求写Answer-Mode=Automatic，手动请求写Manual。私呼在既有SDP没有media-floor control节或要求端到端安全时携带SDP；FTA的此处SDP条件是既有SDP没有该节。携带的SDP在需要隐式话权且原会话未以隐式请求建立时加入相应请求。若需要隐式话权、原预建立会话未以隐式话权请求建立、且REFER尚未含位置，则加入位置Report。随后发送REFER。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "11.1.1.2.2.1 steps8(a-b,c(i)),9(a),12-13 and send",
+            "11.1.1.2.2.1 security-context opening (dependency)",
+            "11.1.1.3.1.2 step10(a-c) (comparison)"
+          ],
+          "printed_pages": [
+            428,
+            429,
+            430,
+            432,
+            433,
+            442,
+            443
+          ]
+        }
+      ],
+      "limitations": [
+        "原客户端自动值为Automatic，而PF step10(a)检查Auto；两种拼写不在这里统一，不能把本页当作已经消除该字段差异的报文模板。",
+        "客户端step13没有另列allow-location-info-when-talking守卫；PF转送位置的许可条件另述，不能把组呼或服务器条件倒加到本客户端步骤。",
+        "SDP、隐式话权和安全仅说明本程序何时提供输入；完整SDP生成、媒体及密码实现仍由被调用规范负责。"
+      ],
+      "normative_strength": "相应条件成立时的应答方式字段、SDP、位置加入及发送为SHALL。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "opf-binding-and-shape",
+      "title": "O-PF重新核身份、名单形状与CF路由",
+      "conditions": [
+        "PF收到分类为预建立会话REFER的私呼/FTA发起请求，按11.1.1.3.1.2的cid、目标及嵌入类型入口处理；错误检查不以绑定或名单有效为前提。"
+      ],
+      "conclusion": "PF由入站PAI公共身份确定主叫MCPTT ID；绑定不存在或过期时拒绝404/141并停止。没有Refer-To cid引用的resource-lists时拒绝403/145并停止。多entry要求相应session-type为first-to-answer，否则403/145；单entry要求private，否则403/145；通过时分别判作FTA或私呼。PF按主叫ID选择相应私呼或FTA服务的CF公共身份，不能确定时404/142并停止。缺资源或存在拥塞风险时可500并可加Retry-After；采用该拒绝时不再继续。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "6.3.1.2 pre-established REFER classification",
+            "11.1.1.3.1.2 opening and steps1-8",
+            "11.1.1.2.2.1 step9 (comparison: single alias entry)"
+          ],
+          "printed_pages": [
+            95,
+            96,
+            432,
+            441,
+            442
+          ]
+        }
+      ],
+      "limitations": [
+        "程序opening写一个或多个目标entry，后续又明确检查缺列表；这里保留二者，不把opening改成提前成功验证而抹掉拒绝，也不补零entry的未列处理算法。",
+        "单entry FTA的类型会触发本段145检查；不能从客户端允许单别名FTA倒推PF会自动跳过step6。",
+        "CF服务选择依据是主叫MCPTT ID和已判业务类型，不是把被叫ID直接当CF身份。"
+      ],
+      "normative_strength": "绑定/缺名单/类型/路由拒绝及所列停止为SHALL；资源性500与Retry-After为MAY。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "opf-business-permissions",
+      "title": "私呼许可、应答许可与FTA目标名单并非同一个检查",
+      "conditions": [
+        "O-PF执行该发起程序的业务许可步骤；私呼及FTA各按本条分支，不能把后续200作为适用前提。"
+      ],
+      "conclusion": "step9在allow-private-call缺失或false时拒绝403/107。对private，收到Answer-Mode=Auto且allow-automatic-commencement缺失/false时403/125；Manual且allow-manual-commencement缺失/false时403/126；Priv-Answer-Mode=Auto且allow-force-auto-answer缺失/false时403/143。普通私呼的transfer和forwarding标志各为缺失或false时，若PrivateCall名单非空、目标不匹配且未配置允许名单外呼叫，则403/144。FTA的allow-request-first-to-answer-call缺失/false时403/156；若PrivateCall名单非空、每个请求目标都不匹配且未配置允许名单外呼叫，则403/153。step10、10A和11的上述拒绝均明确不继续后续步骤。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "11.1.1.3.1.2 steps9-11",
+            "11.1.1.3.1.2 step12 (comparison: excluded alias permission)",
+            "11.1.1.2.2.1 step8(b)(i) (comparison: Automatic)"
+          ],
+          "printed_pages": [
+            429,
+            442,
+            443,
+            444
+          ]
+        }
+      ],
+      "limitations": [
+        "step9原文没有另写停止句；这里保留拒绝107本身，不替它增补相邻步骤的停止措辞。它也没有把该检查限定为仅private分支，不能由后续FTA许可推定其免检。",
+        "FTA拒绝153要求所有请求目标不匹配，不能改成只要有一个不匹配就拒绝；后续INVITE名单筛选还有单独条件。",
+        "Automatic与Auto文字差异仍在，不能凭概念上都是自动应答就把两处输入判定视为已一致。"
+      ],
+      "normative_strength": "所列业务许可拒绝为SHALL；step10、10A、11明确的停止为SHALL。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "opf-refer-accept-and-invite",
+      "title": "REFER200先发送，业务INVITE仍需构造、筛选和交给CF",
+      "conditions": [
+        "O-PF继续执行已通过此前适用步骤的本页直接ID分支；这里不适用于被叫功能别名的等待分支。"
+      ],
+      "conclusion": "Refer-Sub=false且Supported=norefersub时按程序处理而不建立隐式订阅。PF生成REFER最终200；本页直接ID路径发送该200后，调用6.3.2.1.4生成业务INVITE。helper复制资源URI嵌入头、以已协商预建立SDP及嵌入offer构造SDP，设置PF身份及calling-user-id，并复制去掉body参数的资源列表。FTA且PrivateCall名单非空时，只在INVITE中保留匹配该名单的entry并保持FTA类型。INVITE的Request-URI是前面按主叫确定的CF身份。CF收到业务INVITE后按11.1.1.4.2处理，直接ID邀请实际调用11.1.1.4.1。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "11.1.1.3.1.2 steps13-20",
+            "6.3.2.1.4 full",
+            "6.3.1.1 controlling private/FTA classification",
+            "11.1.1.4.2 steps12-13 (actual downstream caller)",
+            "11.1.1.3.1.2 step11 (comparison: admission versus filtering)"
+          ],
+          "printed_pages": [
+            95,
+            106,
+            107,
+            108,
+            444,
+            445,
+            446,
+            455,
+            456
+          ]
+        }
+      ],
+      "limitations": [
+        "被叫功能别名存在时，step15要求等后续INVITE的响应；这是本页直接ID路径的对照，不可把提前200普遍化为全部输入。",
+        "名单筛选实际位于step16(a)，没有重复step11的“未允许名单外呼叫”条件。即使前序未因153拒绝，也不能因此保留全部名单外目标；原文未在此给筛空后的恢复算法。",
+        "私呼应答头按step18条件复制；step18(c)对前述复制回指step16，号次按原文保留，不能据此改写程序顺序。",
+        "若REFER被判含隐式话权请求，PF在已收到Report且allow-location-info-when-talking=true时复制；否则在有可用位置且该许可为true时加入Report。无隐式请求时helper另按收到Report及许可true复制。客户端与PF位置条件不合并。",
+        "本条不是完整CF或终接重写。控制结果需按既有control-routing-results各分支条件读取；按需终接页不能取消其common_conditions后当作预建立完整终接实现。"
+      ],
+      "normative_strength": "PF条件订阅处理、200生成/发送、INVITE构造/筛选/转送及实际CF邀请调用为SHALL；helper Session-Expires不含refresher为SHOULD，若包含则uac为SHALL。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "response-events-and-success-evidence",
+      "title": "成功提示、临时响应与下游错误分别属于不同事件",
+      "conditions": [
+        "以下为三个替代事件：客户端收到其REFER最终2xx；或O-PF收到业务INVITE临时响应；或O-PF收到该INVITE的300/4xx/5xx/6xx。失败事件不要求先出现成功响应。"
+      ],
+      "conclusion": "客户端收到REFER最终2xx时调用媒体交互，并须通知用户呼叫已成功建立；如果是FTA且所收200包含mcptt-called-party-id，可显示该ID。另一方面，O-PF收到业务INVITE临时响应时直接丢弃而不转送。O-PF收到业务INVITE的300/4xx/5xx/6xx时调用媒体交互，且仅在step15尚未发送REFER最终200时转送该响应。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "11.1.1.2.2.1 final2xx response handling",
+            "11.1.1.3.1.2 provisional and300/4xx/5xx/6xx response handling",
+            "11.1.1.3.1.2 steps14-16 (comparison: earlier200)",
+            "F.1.3 mcptt-called-party-id definition",
+            "11.1.1.2.2.1 emergency error response branch (comparison)"
+          ],
+          "printed_pages": [
+            433,
+            434,
+            445,
+            446,
+            447,
+            727
+          ]
+        }
+      ],
+      "limitations": [
+        "客户端SHALL成功提示是原文明写的用户行为，不能擅改为“仅提示已接受请求”。但PF的直接ID200发送先于业务INVITE，故该提示本身不足以证明被叫已接听、CF已完成或媒体已送达。",
+        "后续INVITE错误与REFER响应是不同事务；不能承诺已确认REFER还会收到同样错误，也不能把按需PF的临时响应转送规则搬来。",
+        "本客户端段另列的是紧急REFER错误和转发480特殊处理；本页不据此虚构普通直接ID失败的统一恢复状态、超时或补发结果。"
+      ],
+      "normative_strength": "客户端媒体调用与成功通知、PF丢弃临时响应、错误媒体调用及条件转送为SHALL；FTA200含被叫ID时的显示为MAY。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "fta-security-handoff",
+      "title": "含MIKEY的FTA结果需要再交给主叫客户端",
+      "conditions": [
+        "替代入口分别为O-PF收到业务INVITE200，或主叫客户端收到其先前REFER所指预建立会话内的re-INVITE；客户端安全失败不继承验证成功条件。"
+      ],
+      "conclusion": "PF的INVITE200响应程序中，private结果或FTA结果不含所列MIKEY-SAKKE I_MESSAGE时直接调用媒体交互。普通FTA结果包含该MIKEY时，PF调用6.3.2.1.8.7，以原预建立SDP及收到的key-mgmt属性和值生成re-INVITE并发送给主叫，收到该re-INVITE的2xx后才执行该分支的媒体交互。客户端对FTA re-INVITE所含MIKEY提取发送者MCPTT ID、转换UID并验证签名；验证成功才解密PCK并提取PCK-ID。没有命中失败停止分支时，客户端按既有协商参数生成SDP answer并接受、返回200。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "11.1.1.3.1.2 INVITE200 response steps1 and3",
+            "6.3.2.1.8.7 full",
+            "11.1.1.2.2.1 re-INVITE reception steps1,3-6",
+            "11.1.3.1.2.1 full (called failure-release dependency)",
+            "6.2.5.2 full (failure-release interface comparison)",
+            "F.1.3 release-reason definition (comparison)",
+            "11.1.1.2.2.2 full (terminating-boundary comparison)"
+          ],
+          "printed_pages": [
+            74,
+            113,
+            114,
+            434,
+            435,
+            446,
+            447,
+            463,
+            464,
+            728
+          ]
+        }
+      ],
+      "limitations": [
+        "本PF外层事件明确是收到INVITE200；内部条件写2xx，不能扩大成任意2xx都必定进入整个外层程序。媒体和安全算法仅保留实际规范调用，不在本页展开。",
+        "MIKEY验证失败时，客户端原文要求重置MEPC为MEPC1；MEPP4时改MEPP1，原紧急请求alert=true时清到MPEA1，随后调用11.1.3.1.2.1释放并跳过剩余步骤。这些失败动作不能被“验证成功后接受200”的条件排除。",
+        "失败caller又要求在SIP BYE中放release-reason；被调用11.1.3.1.2.1转到6.2.5.2，后者实际生成dialog之外的REFER并在Refer-To中用method=BYE。保留该接口文字差异，不自行选择一种报文修复，也不据此宣称承载已删除。",
+        "预建立终接客户端11.1.1.2.2.2对旧程序有修改：普通private接收re-INVITE，FTA接收initial INVITE；因此本页的主叫安全re-INVITE与被叫终接入口不能混为同一角色事件。"
+      ],
+      "normative_strength": "所列PF构造/发送/条件媒体调用、客户端校验、成功提取、失败动作及非失败分支200处理为SHALL；Resource-Priority额外动作在原客户端段为MAY，本页不展开该扩展。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [
+    "本页覆盖发起与结果交接，不提供完整终接接听、媒体/密码实现、呼叫释放或预建立承载删除。原文的字段值、号次和失败释放接口差异均保留；不能把这些说明当成已经统一差异的报文实现。"
+  ],
+  "related": [
+    "preestablished-session-lifecycle.md",
+    "preestablished-group-association.md",
+    "originating-authorization.md",
+    "control-routing-results.md",
+    "private-client-acceptance.md",
+    "without-floor-control.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
