@@ -1,0 +1,91 @@
+# 普通预安排组重入与晚入：会话身份、准入和恢复证据
+
+## 适用条件
+
+- 固定TS24.379 V16.14.0及TS24.380 V16.9.0；普通在网按需预安排组、无implicit floor request。排除预建立、chat、临时/重组、广播、紧急/危急、ambient和完整NCF链；用户及组不处于会触发优先级程序的状态。
+- 主动重入与CF收到新归属/回覆盖通知后的晚入邀请是替代入口。各请求、响应和媒体事件按其角色分别适用，不把服务器仍有会话、已授权、已归属、容量充足或收到200设为全页共同前提。
+- 本页说明实际输入下的有界职责与接口。客户端需要目标session identity才能构造定向重入，但不保证身份缓存/路由/映射已恢复；拒绝路径仍在范围内。不是完整断线自动恢复、媒体重建或全组交付实现。
+
+## 主动重入使用会话URI，组身份仍留在请求正文
+
+条件：用户要求重入，或客户端被触发为返回覆盖；请求针对普通预安排组的既有会话身份，不要求服务器仍能找到该会话。此条不将后续准入成功设为前提。
+
+客户端须生成initial SIP INVITE，而不是用re-INVITE代替。§10.1.1.2.4.1继承初建§10.1.1.2.1.1，仅将step10的Request-URI改为待重入MCPTT session identity。初建step10原为服务该用户的PF PSI，group ID原在正文mcptt-request-uri；重入没有把正文group ID也改成session URI。session-type仍为prearranged，并包含发起client-id、所需服务标记和按§6.2.1生成的SDP；本页不请求implicit floor。§4.5定义session identity为服务器分配的GRUU形式SIP URI，PF向客户端的Contact给本地分配身份并维持与CF身份的映射；客户端可以缓存至不再需要。
+
+强度：initial INVITE、继承构造和目标替换为SHALL；初建Supported timer及Session-Expires为SHOULD、P-Preferred-Identity为MAY，不能把这些改成全部必填；客户端缓存是can表述。
+
+- 客户端如何得知已经回到覆盖范围明确不在§10.1.1.2.4.1范围。可缓存不是断线后身份必然仍存在的保证，本页不提供丢失session URI后的发现/恢复算法。
+- §6.3.1.1通过iFC/PSI等分类服务器入口，§4.5说明会话身份可供IM CN路由initial请求。不能把session URI直接替换成配置中的PF PSI，也不能仅因URI文字不同就断言该重入入口不可路由。完整SIP路由仍依TS24.229。
+- 预建立重入另发REFER，NCF重入另有本地Contact身份规则；本页不把它们并入普通按需流程。
+
+依据：3gpp-ts-24.379-v16.14.0 §4.5；§10.1.1.2.4.1–2 (pre-established comparison)；§10.1.1.2.1.1；§6.2.1;6.4；§6.3.1.1；§F.1.3 field representation/items2–3；§10.1.1.5.3.1 (NCF comparison)，印刷页 38,39,56,57,77,78,136,137,220,221,229,262,547,548。
+
+## PF仍核主叫与准入，映射的是会话身份
+
+条件：O-PF实际收到§10.1.1.3.5.1的originating-PF INVITE且session-type=prearranged；或收到其转发请求的2xx/4xx/5xx/6xx响应。请求与响应为替代事件。
+
+重入PF须继承§10.1.1.3.1.1的处理，step10改为与入站Request-URI会话身份对应的映射身份。PAI公共身份没有有效MCPTT ID绑定时须拒绝404/141并停止；本地策略不许发起预安排组呼时须拒绝403/109；不支持所需语音编解码拒绝488；超过用户N6并发限制拒绝486/103；无法确定组控制方拒绝404/142并停止。通过相应前序处理后按共同INVITE helper转发，移除入站Answer-Mode/Priv-Answer-Mode，设置calling-user-id并处理SDP。收到下游2xx时生成200、处理SDP、Warning与PAI、包含映射会话身份并送客户端；§4.5共同规则要求向客户端的Contact携带PF身份并维持映射。收到4xx/5xx/6xx时生成响应、携带收到的Warning并转送客户端。
+
+强度：所列绑定、拒绝、构造、映射和响应处理为SHALL；资源/拥塞时拒绝500及Retry-After为MAY。
+
+- 资源/拥塞检查仍可先发生。原文step3的403/109没有另写停止，不补成与step2a相同的stop语句；各拒绝/继续语句按其本身处理，不能因本页有转发说明推所有拒绝仍须转发。
+- §10.1.1.3.1.1响应step6未重复说明映射身份安放在哪个header，但§4.5已明确Contact共同规则；这不是缺少任何header依据。映射义务不证明现网缓存一定有效。
+- 该继承保留组控制方发现步骤，其发现方法在原文NOTE7中不展开。本页不把组文档/配置和服务授权数据库的取得算法补全；priority触发的implicit affiliation不属于普通主线。
+
+依据：3gpp-ts-24.379-v16.14.0 §10.1.1.3.5.1；§10.1.1.3.1.1 full；§4.5；§6.3.2.1.1.1;6.3.2.1.2.1;6.3.2.1.3;6.3.2.1.5.2，印刷页 38,39,83,84,85,87,230,231,232,233,239。
+
+## CF重入拒绝区分会话、权限、归属与容量
+
+条件：CF收到§10.1.1.4.5.1所述Request-URI包含待重入会话身份的INVITE；后续检查也覆盖会话已不存在或资格不满足，不能预设所有守卫已通过。
+
+CF可因资源/拥塞拒绝500并可带Retry-After；若Request-URI所指组呼不存在须拒绝404。媒体/语音编解码不可接受拒绝488；缺所需mcptt或ICSI Accept-Contact标记拒绝403并停止。确定calling MCPTT ID后，加入许可不满足须403/121，归属不满足须403/120。加入许可按§6.3.5.3核组成员entry、适用join-handling规则及条件supported-services；归属按§6.3.6另核组entry、user entry、client ID及未到期，不能只查成员名单。容量上限已到时，本地策略认为新用户优先级更高可移除一个既有参与者并跳过下一拒绝步；否则该容量分支返回486/122。成功路径生成200及SDP，完成所调用媒体处理后才发送200，再生成并发送已订阅客户端的conference通知。
+
+强度：所列检查/拒绝与成功路径200、SDP、媒体接口、通知为SHALL；资源拒绝/Retry-After、Resource-Priority优待和容量满时按本地策略移除为MAY。
+
+- 403/121加入许可与403/120归属是两个不同门槛；原文特定拒绝步骤未统一写skip rest，不擅自增补通用停止算法。成功路径只适用于未被前序处理拒绝的请求，不能给所有入站请求承诺200。
+- 容量例外通过§10.1.1.4.4.3调用共同BYE移除helper；它说明移除所选参与者，不是整个组呼必然结束。媒体和SIP释放完整实现不在此展开。
+- group ID初始请求另在§10.1.1.4.2判断组呼是否ongoing；它不能替代本条定向session URI的重入入口。本页不把重入当再次创建新会话或重置整个组的初始化。
+
+依据：3gpp-ts-24.379-v16.14.0 §10.1.1.4.5.1 full；§6.3.5.3;6.3.6；§6.3.3.2.1–2;6.3.3.2.3.2；§6.3.3.4；§10.1.1.4.4.3;6.3.3.1.5；§10.1.1.4.2 steps9/14e (initial group-target comparison)，印刷页 106,119,120,121,124,134,135,136,244,245,251,252,253。
+
+## 服务器晚入是另一入口，不是主动重入的必经步骤
+
+条件：CF实际被通知某客户端新归属或返回覆盖，且存在ongoing组呼；或收到本条邀请产生的指定183/200响应。它与客户端主动重入是替代入口。
+
+§10.1.1.4.6要求CF邀请该客户端加入ongoing组呼，调用§10.1.1.4.1。目标客户端邀请按§10.1.1.4.1.1以其T-PF PSI为Request-URI，以目标用户MCPTT ID为正文mcptt-request-uri，并给calling-group-id；共同INVITE helper在Contact带会话身份。§6.3.3.1.1明确给既有会话添加用户时offer包含当前使用的媒体流。收到同时含100rel和P-Answer-State=Unconfirmed的183时须发PRACK；收到该INVITE的200时另与媒体交互、向已订阅参与者发conference通知并增加收到200的本地计数。邀请、183、200及通知分别是不同证据。
+
+强度：实际晚入触发后的邀请及所列183/200处理为SHALL；不因SHALL邀请而宣称目标必接受或媒体必达。
+
+- 如何得知客户端回覆盖、如何发现其T-PF地址，分别在§10.1.1.4.6和§10.1.1.4.1.1的NOTE中不展开。新归属与已进呼不能等同。
+- §10.1.1.4.1.1 opening列4.2或403触发，但4.6另有显式调用，不删除这个晚入caller。4.1.1 step5及共同helper仍使用received/incoming INVITE的SDP/正文；6.3.3.1.1给当前媒体流原则，却未在晚入触发段规定完整原始INVITE上下文保存/选择方法。不能假定回覆盖通知本身就是新收到的INVITE。
+- 终接客户端的拒绝、Auto/Manual应答须按普通组呼客户端页的实际条件处理，不从服务器发出邀请推定终端已接受。conference通知不能证明所有成员已读或已听；§4.1.1 NOTE4也提醒通知不证明初建必成功。
+
+依据：3gpp-ts-24.379-v16.14.0 §10.1.1.4.6；§10.1.1.4.1.1 full；§6.3.3.1.1–2；§6.3.3.4;10.1.3.1–3 (notification interface)；§10.1.1.2.1.2 (terminating boundary)，印刷页 105,106,124,222,223,224,240,241,253,301,302。
+
+## 重入200与本地无话权状态分开，保留服务器回指差异
+
+条件：主动重入客户端收到INVITE的2xx或相应媒体重入事件；或服务端为重入/邀请参与者建立实际SIP关联并进入对应媒体入口。客户端与服务器、重入与受邀是分别适用的角色事件。
+
+客户端按§10.1.1.2.1.1收到2xx后与用户面交互，可显示收到的P-Answer-State，也可订阅conference；不是收到200就能发话。TS24.380 §6.2.4.2.2明确重入ongoing呼叫时客户端进入U: has no permission；该段也允许在200前先保存收到的控制消息。服务端逐参与者association在originating侧发送200、terminating侧收到200时建立。对不带implicit的主动重入：若已有其他持有人，服务器SHOULD发送Floor Taken并进入not-permitted/Floor-Taken；若无人持有，SHOULD发送Floor Idle，但其目标状态名称与所指helper存在下述差异。主动邀请分支另在有/无持有人时分别进入not-permitted/Floor-Taken或not-permitted/Floor-Idle，不能用邀请分支修补主动重入分支。
+
+强度：客户端重入进入has-no-permission、关联创建及各指定状态动作为SHALL；所述初始化Floor Idle/Taken发送为SHOULD；答案状态显示和conference订阅为MAY。
+
+- TS24.380 §6.3.5.2.2 step2a(ii)写U: not permitted and Floor Idle，却回指§6.3.5.5.2，后者实际设置U: permitted。该文字差异保留，不把它解释为重入已获话权，也不静默改为§6.3.5.3.2。邀请分支step4b(ii)的§6.3.5.3.2回指不同且正确。
+- 本页不请求implicit；§6.3.5.2.2 step3使用attempts to initiate an already existing call with implicit的表述，不把它改写成所有主动重入的默认授权路径。完整G初始化、排队调度及后续请求/授予各按对应媒体owner，不以ordinary Idle页补本回指。
+- conference订阅按client参与中的会话以及非广播条件进行；NOTIFY到达后处理和MAY显示依RFC接口，不能用通知代替语音呈现、全员接收或floor permission。
+
+依据：3gpp-ts-24.379-v16.14.0 §10.1.1.2.1.1 responses;10.1.1.2.4.1；§10.1.3.1–3，印刷页 221,229,301,302。
+依据：3gpp-ts-24.380-v16.9.0 §6.2.4.2.1–3；§6.3.5.1–2.2；§6.3.5.3.2;6.3.5.4.2;6.3.5.5.2，印刷页 37,71,72,73,74,75,78,85。
+
+## 共同边界与关联
+
+- §6.5多MIME封装和§6.6适用保护须按实际请求/响应执行；F.1普通URI/String包装与加密字段不同。本页不提供可直接发送的完整XML/SDP模板或外部TS24.229、配置、RFC和密码实现。
+- 组身份、各段session identity、公共用户身份及client-id不能互换。归属不等于参加会话，参加会话不等于获话权，返回覆盖不等于服务器已获知。
+
+依据：3gpp-ts-24.379-v16.14.0 §6.2.1;6.4;6.5;6.6.1；§F.1.3 representation/items2–6；§4.5，印刷页 38,39,56,57,136,137,138,139,547,548。
+
+- [prearranged-client-establishment](prearranged-client-establishment.md)
+- [prearranged-server-admission-routing](prearranged-server-admission-routing.md)
+- [explicit-affiliation-client](../groups/explicit-affiliation-client.md)
+- [on-network-floor-client](../media/on-network-floor-client.md)
+- [on-network-idle-floor-server](../media/on-network-idle-floor-server.md)

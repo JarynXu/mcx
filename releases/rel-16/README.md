@@ -54,6 +54,8 @@
 
 - [普通离网组 single 仲裁者：非抢占授予、重发与发送者记录](topics/mcvideo/offnetwork-single-arbitrator.md)：仅普通离网组single实际仲裁状态，不补上游自任或交接成功。
 
+- [普通预安排组重入与晚入：会话身份、准入和恢复证据](topics/calls/rejoin-late-entry.md)：按定向主动重入或实际CF晚入通知分别进入，200不等于获话权。
+
 先读主题共同条件，再按实际角色与事件选取结论；不把拒绝、应答、取消或后续数据处理拼成同时必备的条件。这些主题均不构成完整端到端实现，也不证明版本组合互通。
 
 [业务域](domains.json) · [主题索引](topics.json) · [条件阅读路径](reading-paths.json) · [覆盖边界](coverage.md) · [来源](sources.json) · [状态](status.json)

@@ -54,7 +54,12 @@
       "id": "r16-calls-prearranged-client-establishment",
       "question": "普通按需预安排组呼：客户端发起与应答证据",
       "start": "topics/calls/prearranged-client-establishment.md",
-      "next_if": [],
+      "next_if": [
+        {
+          "condition": "仅用户实际要求重入或客户端被触发返回覆盖、且针对既有session identity时读取主动重入入口；不是初建成功后的必经步骤，也不是把正文组身份改为session URI",
+          "read": "topics/calls/rejoin-late-entry.md"
+        }
+      ],
       "boundary": "不覆盖紧急/迫近危险、chat、广播、晚入重入、完整服务器成员选择与媒体生命周期。"
     },
     {
@@ -131,7 +136,12 @@
       "id": "r16-calls-prearranged-server-admission-routing",
       "question": "普通按需预安排组呼：服务器准入与邀请路由",
       "start": "topics/calls/prearranged-server-admission-routing.md",
-      "next_if": [],
+      "next_if": [
+        {
+          "condition": "仅PF/CF实际收到定向会话身份重入INVITE，或CF收到新归属/回覆盖通知且已有ongoing组呼时按对应入口读取；初始准入不自动证明重入/晚入条件通过",
+          "read": "topics/calls/rejoin-late-entry.md"
+        }
+      ],
       "boundary": "不覆盖完整响应聚合、会议事件、组呼释放或媒体/安全实现。"
     },
     {
@@ -318,6 +328,13 @@
       "start": "topics/mcvideo/offnetwork-single-arbitrator.md",
       "next_if": [],
       "boundary": "仅实际已处于普通离网组single的O:transmission arbitration，并分别发生请求、RTP、Release、计时或本机结束事件时进入。不覆盖完整自任/选举、容量记账、身份映射、排队/抢占、交接完成或全局唯一仲裁；非抢占和QueueUsage=false仅限Request分支，其他事件不附加该前提。"
+    },
+    {
+      "id": "r16-mcptt-rejoin-late-entry",
+      "question": "普通预安排组重入与晚入：会话身份、准入和恢复证据",
+      "start": "topics/calls/rejoin-late-entry.md",
+      "next_if": [],
+      "boundary": "主动重入以initial INVITE的Request-URI携session identity，正文仍为group ID；CF晚入须实际新归属/回覆盖通知且有ongoing呼叫。PF PSI与session URI、各角色分别判断；4.5提供Contact/PF映射依据。不覆盖完整断线自动恢复、丢失会话身份发现、NCF、媒体重建或全组交付；主动重入和CF晚入为替代入口，SIP200不证明话权，媒体初始化回指差异不由普通Idle页修补。"
     }
   ]
 }
