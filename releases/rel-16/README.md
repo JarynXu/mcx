@@ -42,6 +42,8 @@
 
 - [在网紧急预安排组呼：客户端发起、本人取消与结果证据](topics/calls/emergency-group-client.md)：按发起、升级、本人取消或反馈事件进入，不由普通呼叫或话权流程推定适用。
 
+- [普通预安排组呼：接收服务器逐流许可与结束职责](topics/mcvideo/prearranged-group-reception-server.md)：仅普通预安排组服务器对应角色、状态和事件。
+
 先读主题共同条件，再按实际角色与事件选取结论；不把拒绝、应答、取消或后续数据处理拼成同时必备的条件。这些主题均不构成完整端到端实现，也不证明版本组合互通。
 
 [业务域](domains.json) · [主题索引](topics.json) · [条件阅读路径](reading-paths.json) · [覆盖边界](coverage.md) · [来源](sources.json) · [状态](status.json)

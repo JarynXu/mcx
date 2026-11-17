@@ -1,0 +1,88 @@
+# 普通预安排组呼：接收服务器逐流许可与结束职责
+
+## 适用范围
+
+- 固定 TS24.581 V16.9.0；普通在网预安排组呼的 controlling MCVideo function 接收控制职责，不含私呼、chat、广播、系统、紧急、危急、临时组、离网、MBMS、接收覆盖或抢占。
+- 范围为所属呼叫的 general reception 仲裁 Gr 与逐客户端 basic reception 接口 U。C11 按媒体发送者流关联，C9 和 Active SSRC list 属各接收者接口；C7 限所属呼叫，不是全系统计数。
+- 创建、通知、请求、拒绝、授予、实际 RTP 和结束分别按本条角色、状态和事件适用。协商、授权及适用保护义务仍须执行，不以全部检查成功、已有接收许可或媒体已交付作为共同前提；本页不提供完整策略、配置获取、安全算法或 SIP 建立实现。
+
+共同依据：
+- TS24.581 V16.9.0 §6.3.1–2.2; 13.3.4 steps1–2 (protection boundary only)；正文页 52,53,222
+
+## 发送许可触发通知，不等于接收者获准
+
+适用条件：分别观察预安排组的实例创建/normal-group 会话建立事件，或 Gr Idle/Accepted 及对应 U 收到通知的事件；不把后续通知作为创建前提。
+
+每个呼叫有 general reception 实例，每个客户端有 basic reception 实例。预安排组主叫侧在服务器发送 SIP 200 时创建 basic，终接侧在服务器收到 200 时创建。normal-group 新呼主叫进入 U: not permitted to receive 并调用 general 初始化；受邀成员也先无接收许可，若已有其他发送者获准还发送媒体传输通知。general 初始化另须满足确认要求、等待 basic 初始化和非临时组条件。传输仲裁获准分支向接收仲裁发送通知并调用接收实例；普通组的 Gr 通知携 Reception Mode=1，启动与发送者 SSRC 或 User ID 关联的 T11，将对应 C11 初始化为0；Gr 原为 Idle 则仍Idle，原为Accepted则仍Accepted。U发送通知，携发送者User ID及SSRC；Mode=1不自动授予接收许可，原无许可U仍无许可。
+
+规范强度：所述创建、状态、字段和条件通知动作为 SHALL；U 为通知请求 Ack 为 MAY，其丢失处理是实现选项。
+
+边界：
+- SIP 200 只提供本版所列创建事件，不证明所有初始化或授权完成。§6.3.6.1 接收章节仍写 general transmission control 实例，§6.3.2.2明确区分接收实例；不据该用词新增每流 general 实例。
+- §6.3.4.4.2 的上游通知只在未请求隐私时列User ID，§6.3.7.3.3/.4.5却要求发送者User ID；本页不补隐私时的取值或披露规则。上游序列号义务与§9.2.13布局缺该字段的差异仍保留。
+- Reception Mode=1定义为未获自动接收许可，不是永久禁止请求；Mode=0自动分支只作对照，不纳本页普通组主链。
+
+依据：
+- TS24.581 V16.9.0 §6.3.2.2; 6.3.4.4.2 (notification caller); 6.3.6.1–3.3;6.3.6.4.10; 6.3.7.1–3.3;6.3.7.4.5; 9.2.3.21;9.2.13；正文页 52,58,59,84,85,86,87,90,91,92,93,94,95,96,98,156,157,167,168
+
+## 接收请求按接收者与所选流分别判断
+
+适用条件：替代事件：U 无许可或已许可收到关联参与者的 Receive Media Request；Gr Idle/Accepted处理该请求；或U收到仲裁授予决定。拒绝不以预先获准为前提。
+
+请求头SSRC标识请求接收者，SSRC of transmitter标识所选媒体发送者，不能互换。普通非广播U将请求转交接收仲裁；已许可U若C9达到上限，须拒绝并跳过转交。仲裁拒绝时响应Result=0：U程序列cause0（下行带宽不足）、1（无接收权限），已许可状态还列7（同时接收流数上限），可加原因文字；U仍保持原许可状态。带Reception Priority的请求按请求值和已协商上限的较低值处理。Gr授予时停止T5和正在运行的T11，按发送流增加C11并保存请求接收者SSRC，响应Result=1，C7未到上限则增加；Idle转Accepted，原Accepted保持且其程序另列启动T6。U授予时发送Granted响应，C9未到上限则加1，将该媒体发送者SSRC存入Active SSRC list，并进入或保持permitted。
+
+规范强度：所述条件拒绝、转交、字段、计数和状态动作为 SHALL；U原因文字与请求Ack为 MAY。
+
+边界：
+- 这里不补决定grant/reject的完整权限或资源策略。表11.2.3给C7/C9/C11限值及到限拒绝：默认分别2/4/4，均可配置，未配置用默认；不得把程序中的有条件增值解释为绕过表限值。
+- §9.2.15.2列cause2/4/5/6/7/255，却未列U程序使用的0/1；保留差异，不用其他码暗替。§9.2.14开头称请求permission to send，而字段与程序描述接收，本页不由该句授予发送权。
+- §6.3.6的Response段把subtype首位=1和shall send Ack写在一起；U段则may设置请求Ack位。两层文字未在本页统一为重传或等待Ack算法。
+- T6表11.1.3限定已排队且协商queueing的授予；Gr Accepted授予程序未列同一限制，Gr Idle授予未列启动T6。本页保留这些差异，不推出所有接收grant均启动T6，也不补完整可靠性。
+- Reception Priority字段缺省为0；14.3.6在offer含mc_reception_priority时按offer与组文档user-reception-priority较低值确定answer值。组文档获取/schema未展开，不能借传输优先级算法替代。
+
+依据：
+- TS24.581 V16.9.0 §6.3.6.3.6;6.3.6.4.3; 6.3.7.3.4;6.3.7.3.6;6.3.7.4.10–11; 9.2.3.17;9.2.3.19;9.2.14–15; 11.1.3 T6;11.2.3 C7/C9/C11; 14.2.6;14.3.6；正文页 87,88,89,96,97,99,100,154,155,156,169,170,171,208,212,224,226
+
+## 接口已许可，仍须逐流检查实际 RTP
+
+适用条件：Gr Idle或Accepted收到实际RTP，或U permitted执行其实际接收许可对应的RTP处理；各角色事件分别适用，不以所有接收者已许可为前提。
+
+Gr Idle收到RTP时按本地策略要求distributor处理：无接收者时策略为discard则丢弃，为buffer则缓存，仍Idle。Gr Accepted收到RTP也按本地策略要求转发并保持Accepted。U permitted按Active SSRC list检查：收到包的SSRC在列表中则按原文要求network media interface将RTP送到distributor，不在列表则丢弃，仍permitted。因此一个流获准不等于所有流获准，也不证明接收客户端已显示画面。
+
+规范强度：所述条件RTP处理与状态保持为 SHALL；本地策略的选择不是本页新增的固定策略。
+
+边界：
+- §6.3.7.4.3标题是Send RTP，动作却写network media interface forward to distributor；本页保留方向文字，不改写为已完成最终下行交付。
+- C9/Active SSRC list是该接收者的流集合，C11是该流的接收计数，C7是所属呼叫的接收计数；不能将其中一个替换成物理服务器数或全系统人数。
+- 未展开接收覆盖、抢占、跨节点转发或显示。组共同条件不能借用私呼接收客户端页来闭合组客户端算法。
+
+依据：
+- TS24.581 V16.9.0 §6.3.6.3.7;6.3.6.4.7; 6.3.7.3.2;6.3.7.3.6;6.3.7.4.3; 6.3.6.3.3;6.3.6.4.10 (counter scope)；正文页 86,87,88,90,91,95,97
+
+## 接收者结束、服务器结束和发送流结束分别处理
+
+适用条件：替代事件：U permitted收到接收者End Request；Gr Accepted收到End Request/Response；服务器决定结束某接收者下行并发送End Request或End Response；或Gr/U收到实际Transmission End Notify。各事件只继承自己的状态与守卫。
+
+U收到接收者End Request先转交，仍permitted。Gr Accepted收到End Request时发送End Response、停止T6，C11未到下限则减1，到下限启动T11；C7未到下限则减1，C7到下限才进入Idle，否则仍Accepted。收到End Response的Gr分支另按Ack位处理并执行相应停止/计数动作。服务器主动向接收者发送End Request时停止下行、携发送者SSRC并进入U无许可；发送End Response时停止下行，若发送者SSRC在Active列表且C9未到下限则减1，移除该SSRC，按C9是否到下限进入无许可或保持permitted。发送流结束通知按初态分别处理：Gr Idle向其他参与者发通知，停止正在运行的该流T11，仍Idle；Gr Accepted发通知、停止正在运行的该流T11，按该流C11减少C7，再据C7下限保持Accepted或转Idle。U无许可时发携发送者SSRC的通知并仍无许可；仅U permitted按发送者SSRC存在检查及C9下限更新列表/状态，发送通知并移除该SSRC，C9到下限才转无许可，否则仍permitted。
+
+规范强度：所述按事件守卫的转交、停止、计数、通知和状态动作为 SHALL；U End Response请求Ack为 MAY。
+
+边界：
+- §6.3.7.4.4将接收End转交目标写作general transmission control/arbitration；本页不无声改路由。Gr接收End处理位于§6.3.6.4.4–5，不能据并列内容声称跨接口已无歧义闭合。
+- Gr EndResponse程序列Message Type=y，但§9.2.27消息布局未列该字段；不自定y或新增编码。
+- 图6.3.7.1-1返无许可边提Active SSRC list zero；正文主动End Request直接进无许可，End Response与发送流End按C9下限。保持各自条件，不强制统一。
+- U收到客户端EndResponse时，原无许可分支释放其下行资源并保持无许可；已许可分支释放所请求结束媒体的下行资源却仍permitted，不能套发送EndResponse的状态动作。
+- T11到期要求通知传输仲裁终止对应流，采用Revoke或End Request由本地策略决定；T11是否复用在末接收者结束时也属策略。T5表写到期释放，§6.3.6.3.5却允许应用不释放并SHOULD重启，故计时到期不在本页变成确定SIP释放。
+- 本页不展开应用两步释放：general有程序，但basic图有Releasing，正文到§6.3.7.4.12后即转§6.4，不能借传输basic尾段拼成完整接收释放算法。
+
+依据：
+- TS24.581 V16.9.0 §6.3.6.3.5;6.3.6.3.8–9;6.3.6.4.4–5;6.3.6.4.11–12; 6.3.7.1 figure6.3.7.1-1; 6.3.7.3.5;6.3.7.3.7;6.3.7.4.4;6.3.7.4.7–9;6.3.7.4.12; 9.2.26–27; 11.1.3 T5/T6/T11; 6.3.6.5–6;6.4 (release comparison only)；正文页 87,88,89,90,91,92,93,96,97,98,99,100,101,176,177,178,208,209
+
+## 未闭合范围
+
+- 只说明本版controlling功能内的有界事件职责，不是从SIP准入到全员呈现、媒体或安全完整实现。协商保护时controlling功能按13.3.4透明转发加密媒体；控制保护另有协商及SPK配置守卫，不能以此宣称密钥获取/算法已核。
+- 相关传输服务器页仅用于区分传输许可与接收许可；不改变其范围，也不补私呼ReceptionMode生成算法。
+
+## 相关主题
+
+- [预安排组传输服务器](prearranged-group-transmission-server.md)：按实际传输侧事件比较，非接收必经成功链。
