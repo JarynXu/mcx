@@ -1,0 +1,275 @@
+{
+  "topic_id": "r16-identity-active-functional-alias-lookup",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "功能别名：查谁正在用这个别名，还是查这个人正在用哪些别名？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0，Release 16，Stage 2；限在网的 MC 业务客户端与业务服务器。正常结果的判读以查询者获准并收到含结果的响应作为前提。"
+  ],
+  "condition_rule": "继承在网范围；根据用户查询或使用情况查询选择目标字段和结果，不交换两种 Null 的指向。",
+  "claims": [
+    {
+      "id": "usage-query-selector-and-authorization",
+      "title": "按别名找启用者时的请求与授权",
+      "conditions": [
+        "目标是查询一个或多个功能别名当前由哪些业务用户启用。"
+      ],
+      "conclusion": "发起人的客户端向 MC 业务服务器发使用情况查询。请求中查询者自己的 MC 业务 ID 与待查的一个或多个功能别名分别必带。服务器检查该业务用户是否有权执行查询；获准才按别名检索启用者，向客户端返回其信息。",
+      "normative_strength": "§10.13.7 允许获授权者查询；表 10.13.2.1a-1 的两项均为 M；图的步骤 2 以授权为检索条件。",
+      "limitations": [
+        "不要求预先给出候选启用者的 ID；所引流程不指定授权失败的协议码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.1, on-network scope and separate procedures"
+          ],
+          "printed_pages": [
+            192
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.2.1a, Table 10.13.2.1a-1"
+          ],
+          "printed_pages": [
+            192
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.7, introduction"
+          ],
+          "printed_pages": [
+            200
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.7, Figure 10.13.7-1 and steps 1–3"
+          ],
+          "printed_pages": [
+            201
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "usage-result-active-users-or-null",
+      "title": "按别名返回当前启用者，或返回无人启用",
+      "conditions": [
+        "取得按别名检索的正常响应，并针对每个被查别名判读结果。"
+      ],
+      "conclusion": "响应必带查询者的 MC 业务 ID、所查别名和查询结果。对一个别名，结果是当前启用它的用户的 MC 业务 ID 列表；无人启用则为 Null，不是省略结果项。名单不等于当前或历史获配人员清单。",
+      "normative_strength": "表 10.13.2.2a-1 的三项均为 M；表内定义该方向的 Null 语义。",
+      "limitations": [
+        "没有响应、没有结果项、授权失败都不能按此 Null 解读。一次查询不提供配给历史，也不订阅更新、启用、停用或接管别名。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.1, on-network scope and separate procedures"
+          ],
+          "printed_pages": [
+            192
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.2.2a, Table 10.13.2.2a-1"
+          ],
+          "printed_pages": [
+            193
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.7, Figure 10.13.7-1 and steps 1–3"
+          ],
+          "printed_pages": [
+            201
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "user-query-active-aliases-or-null",
+      "title": "按用户查询时，Null 限于该人没有活动别名",
+      "conditions": [
+        "目标是查一个或多个指定用户各自已启用的功能别名。"
+      ],
+      "conclusion": "发起人的客户端向 MC 业务服务器发送查询者自己的业务 ID 和待查用户的业务 ID，两项必带。服务器核查查询者的查询权限，获准才按所给业务 ID 检索。回复必带查询者业务 ID、所查用户的业务 ID 和结果，逐人给出活动别名信息；某人没有活动别名时该人的结果为 Null。",
+      "normative_strength": "§10.13.3 的步骤 1–3；表 10.13.2.1-1 两项和表 10.13.2.2-1 三项均为 M；后表明确该用户没有活动别名时为 Null。",
+      "limitations": [
+        "不能据某人的 Null 断定某一别名对其他人也不活动；不表示该人未获配任何别名，也不是未获准、漏项或未收到响应的证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.1, on-network scope and separate procedures"
+          ],
+          "printed_pages": [
+            192
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.2.1, Table 10.13.2.1-1"
+          ],
+          "printed_pages": [
+            192
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.2.2, Table 10.13.2.2-1"
+          ],
+          "printed_pages": [
+            193
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.3, introduction"
+          ],
+          "printed_pages": [
+            196
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.3, Figure 10.13.3-1 and steps 1–3"
+          ],
+          "printed_pages": [
+            197
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.1, on-network scope and separate procedures"
+      ],
+      "printed_pages": [
+        192
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.2.1a, Table 10.13.2.1a-1"
+      ],
+      "printed_pages": [
+        192
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.2.2a, Table 10.13.2.2a-1"
+      ],
+      "printed_pages": [
+        193
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.7, introduction"
+      ],
+      "printed_pages": [
+        200
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.7, Figure 10.13.7-1 and steps 1–3"
+      ],
+      "printed_pages": [
+        201
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.2.1, Table 10.13.2.1-1"
+      ],
+      "printed_pages": [
+        192
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.2.2, Table 10.13.2.2-1"
+      ],
+      "printed_pages": [
+        193
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.3, introduction"
+      ],
+      "printed_pages": [
+        196
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.3, Figure 10.13.3-1 and steps 1–3"
+      ],
+      "printed_pages": [
+        197
+      ]
+    }
+  ],
+  "limitations": [
+    "不说明如何配置或变更功能别名，不指定 SIP 消息、编码、错误码或离网行为。"
+  ],
+  "related": [
+    "r16-mcptt-functional-alias-client",
+    "r16-identity-cross-service-user-mapping"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
