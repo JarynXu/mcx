@@ -1,0 +1,100 @@
+{
+  "topic_id": "r16-mcdata-offnetwork-monp-carrier",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "离网 MCData 消息在 MONP 中的识别与封装",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 24.379 V16.14.0，Release 16，Stage 3；对象是离网 MONP 消息的外层编码。"
+  ],
+  "claims": [
+    {
+      "id": "identify-service-carrier",
+      "title": "从 MONP 消息类型识别 MCData",
+      "conditions": [
+        "已确定 MONP 消息的起点。"
+      ],
+      "conclusion": "第一个八位组 0x15（00010101）是 MCDATA MESSAGE CARRIER，方向为终端到其他终端；0x16 是 MCVIDEO MESSAGE CARRIER。",
+      "limitations": [
+        "该类型码标明所承载的业务；具体 MCData 消息类型由内层给出。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "15.1.23.1"
+          ],
+          "printed_pages": [
+            487
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "15.2.1 including figure 15.2.1-2",
+            "15.2.2 including table 15.2.2-1"
+          ],
+          "printed_pages": [
+            488,
+            489
+          ]
+        }
+      ],
+      "normative_strength": "§15.1.23.1 定义载体及方向，§15.2.2 的消息类型表规定编码。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "locate-inner-mcdata-message",
+      "title": "从第二个八位组读取内层消息",
+      "conditions": [
+        "外层类型已识别为 MCDATA MESSAGE CARRIER。"
+      ],
+      "conclusion": "类型字段占一个八位组，紧随其后的是必填的 MCData 消息。两项都是 V 格式，外层不为内层值添加 IE 标识或长度前缀。表 15.1.23.1-1 第二行的 2-x 是该信息元素的长度范围，内层格式引用 TS 24.282 §15.1.1。",
+      "limitations": [],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "15.1.23.1 including table 15.1.23.1-1"
+          ],
+          "printed_pages": [
+            487,
+            488
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "I.2.2 including table I.2.2-1",
+            "I.2.2.8 (M)",
+            "I.2.2.9 (length and order)"
+          ],
+          "printed_pages": [
+            598,
+            603,
+            604
+          ]
+        }
+      ],
+      "normative_strength": "表 15.1.23.1-1 的两项均标为 M；附录 I 规定 M 的含义及 V 格式。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

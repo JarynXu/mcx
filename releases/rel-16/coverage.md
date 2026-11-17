@@ -244,6 +244,16 @@ Stage 2服务能力与功能角色，以及文件存储和消息历史的职责�
 
 [读取主题](topics/mcdata/group-sds-control-client.md)
 
+## 离网 MCData 消息在 MONP 中的识别与封装
+
+从 MONP 消息起点识别 0x15（MCData）和 0x16（MCVideo）；在 MCData 载体中，内层从第二个八位组开始，外层不插入字段标识或长度前缀。
+
+须先定位 MONP 消息起点。表中的 2-x 是内层消息的长度范围，不是报文中的长度值。
+
+尚未建立：具体 MCData 消息类型及其内层格式；载体表将其指向 TS 24.282 §15.1.1。
+
+[读取主题](topics/mcdata/offnetwork-monp-carrier.md)
+
 ## 普通按需 MCVideo 私呼：客户端请求、应答与结果证据
 
 普通MCVideo私呼客户端请求、拒绝、应答、结果和取消证据。
