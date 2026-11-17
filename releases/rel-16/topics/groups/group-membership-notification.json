@@ -1,0 +1,188 @@
+{
+  "topic_id": "r16-groups-group-membership-notification",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "组成员名单变了，业务服务器和成员各收到什么？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "Release 16 的组管理过程；组管理服务器与 MC 业务服务器服务于同一 MC 系统。"
+  ],
+  "claims": [
+    {
+      "id": "two-notification-recipients",
+      "title": "业务服务器所见与成员客户端所见",
+      "conditions": [
+        "组管理服务器上的某组成员名单发生增删。"
+      ],
+      "conclusion": "组管理服务器向一个或多个 MC 业务服务器通知组 ID、受影响用户的业务 ID 列表及增删操作；向被加入或移出成员的组管理客户端通知组 ID 及增删操作。列表指受本次操作影响的用户，不是全组名册。",
+      "normative_strength": "两张信息流表所列各项均为必选；客户端表未列用户 ID 列表，不能把它作为本表的可选或必选项。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.20, Table 10.2.2.20-1"
+          ],
+          "printed_pages": [
+            91
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.20, Table 10.2.2.20-2"
+          ],
+          "printed_pages": [
+            91,
+            92
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.6.1, Figure 10.2.6.1-1"
+          ],
+          "printed_pages": [
+            102,
+            103
+          ]
+        }
+      ],
+      "limitations": [],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "client-config-after-membership-change",
+      "title": "新增成员取配置，移出成员可清理本地副本",
+      "conditions": [
+        "在一般成员变动通知过程中，受影响用户已被加入或移出。"
+      ],
+      "conclusion": "若新增，组管理客户端向组管理服务器请求相关组配置；若移出，终端可删除本地保存的该组配置。",
+      "normative_strength": "§10.2.6.1 步骤 4 对新增和移出的动作表述不同；本地清理是允许的，不是强制的。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.6.1"
+          ],
+          "printed_pages": [
+            102,
+            103
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.2"
+          ],
+          "printed_pages": [
+            78,
+            79
+          ]
+        }
+      ],
+      "limitations": [],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "authorized-update-initiator-response",
+      "title": "发起者的结果与成员所收通知",
+      "conditions": [
+        "发起者为管理员、调度员或获授权用户，了解当前组成员及拟增删用户的身份。"
+      ],
+      "conclusion": "授权发起者的组管理客户端向组管理服务器提交组 ID、受影响用户的业务 ID 列表和增删操作。组管理服务器可以检查成员总数上限 Nc6。图示的名单实际改变流程依次更新名单、通知业务服务器和受影响成员、向发起者的组管理客户端返回结果。结果响应含组 ID 和成功或失败的操作结果；失败结果本身不证明名单已经改变，也不证明组管理服务器已发出通知，或业务服务器、成员已收到通知。",
+      "normative_strength": "表 10.2.2.18-1 的三项请求信息和表 10.2.2.19-1 的两项响应信息均为 M（必选）。Nc6 上限检查可选。变更通知以名单发生变化为前提，不从失败响应推断该通知。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.18, Table 10.2.2.18-1",
+            "10.2.2.19, Table 10.2.2.19-1"
+          ],
+          "printed_pages": [
+            91
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.6.2, Figure 10.2.6.2-1"
+          ],
+          "printed_pages": [
+            103,
+            104
+          ]
+        }
+      ],
+      "limitations": [],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "membership-affiliation-call-distinction",
+      "title": "成员名册、业务归属与呼叫参与",
+      "conditions": [
+        "根据成员关系通知判断一名用户的状态。"
+      ],
+      "conclusion": "成为某业务组的已归属成员以先有成员资格为前提。归属可以显式或隐式建立。成员通知只表示名册变化；它不证明归属已经建立、组呼正在进行或该用户已参加某次组呼。",
+      "normative_strength": "成员先于归属见 §5.2.5 注 1；呼叫状态独立列作动态数据，具体呼叫是否参与不能由成员通知推出。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.5"
+          ],
+          "printed_pages": [
+            19,
+            20
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.5.1, Table 10.1.5.5.1-1"
+          ],
+          "printed_pages": [
+            80
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.20"
+          ],
+          "printed_pages": [
+            91,
+            92
+          ]
+        }
+      ],
+      "limitations": [],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true,
+    "entire_source_verified": false
+  }
+}
