@@ -1,0 +1,83 @@
+# 在网广播组呼：按需请求、邀请与接续证据
+
+广播按需组呼通过 prearranged 入口携带广播指示。排查时应依次区分请求是否正确标记、是否通过准入、谁收到邀请，以及上游响应究竟证明了什么。
+
+## 版本功能边界
+
+§4.12（印刷页 57）明确：本版广播功能不符合 TS 22.179、TS 22.280、TS 23.379 对 user-broadcast group 与 group-broadcast group call 的要求。用户可在自己所属 MCPTT 组上发起广播，不代表这些广播组类型的创建和层级体系已实现。该条 NOTE 1 说明相应创建授权配置未用于本版 TS 24.481 过程，NOTE 2 说明广播组层级配置未用于本版 TS 24.380 过程；这里仅转述本规范的版本边界。
+
+## 适用范围
+
+在网 MCPTT 广播组呼，采用按需 prearranged 会话；目标为普通 GMS 管理、未重组的 MCPTT group ID。
+
+不涉及 TGI、预配置组重组、用户重组、远程发起、监听或预建立会话；不含 associated-group-id、ambient-listening-type、Priv-Answer-Mode，不触发隐式归属分支。
+
+请求没有 emergency-ind、imminentperil-ind 或 alert-ind；客户端及组均无进行中的紧急或迫近危险状态。控制功能处原先没有该组的 active 会话。
+
+各声明分别约束客户端、发起参与功能（O-PF）、控制功能（CF）或终接端；完成一段不是下一段检查通过的证明。
+
+## 广播使用预安排入口，不改成 chat
+
+发起客户端收到用户发起广播组呼的请求。
+
+客户端先检查组文档：preconfigured-group-use-only 存在且为 true 时 SHOULD 告知不允许呼叫，SHALL 停止。否则按 §10.1.1.2.1.1 形成初始 INVITE，调用 §6.2.8.2 在 mcptt-info+xml 中置 broadcast-ind=true；session-type 仍为 prearranged。Request-URI 指向服务该用户的 O-PF PSI，mcptt-request-uri 是目标组 ID，mcptt-client-id 是发起客户端 ID；主叫 MCPTT ID 留给 O-PF 加入。
+
+上述仅列决定业务入口和身份的字段；其余 SIP/SDP 要求仍适用。不能把 Request-URI 换成目标组 ID，也不能用离网 GROUP CALL BROADCAST 消息替代本入口。
+
+依据：TS 24.379 V19.4.0 §10.1.1.2.1.1 opening, steps 3,10,14(a-c), NOTE 2，印刷页 268,269；TS 24.379 V19.4.0 §6.2.8.2 step 1，印刷页 88。
+
+## 广播标记随请求传递，身份和目标逐跳设置
+
+O-PF 收到本请求，§10.1.1.3.1.1 前序检查未拒绝，进入不含 associated-group-id 的分支。
+
+O-PF 确定目标组 CF 的 PSI；无法确定时 404 + Warning 142 并停止。成功时按 §6.3.2.1.3 复制已有 mcptt-info+xml 正文，因此保留广播指示；发往 CF 的 Request-URI 改为该 PSI，mcptt-calling-user-id 设为从 P-Asserted-Identity 公共用户标识映射出的主叫 MCPTT ID，不复制来话 Answer-Mode 或 Priv-Answer-Mode。
+
+前序检查包括身份绑定、发起权限、语音 codec、并发上限等，broadcast-ind 不豁免这些检查。这里不把字段转发成功等同 CF 准入成功。
+
+原文该分支 step 3 写 determined in step 8，而 PSI 识别出现在本分支 step 1；保留交叉引用疑点，不据此补造步骤。
+
+依据：TS 24.379 V19.4.0 §10.1.1.3.1.1 steps 2,2a; no-associated-group-id branch steps 1-5，印刷页 279,280,281；TS 24.379 V19.4.0 §6.3.2.1.3 step 8，印刷页 106。
+
+## 通过准入后才向所选成员发邀请
+
+CF 收到本请求，§10.1.1.4.2 前置资源/媒体/标签、组文档和普通新呼叫准入检查均已通过，进入 step 14(g)；并非仅收到 broadcast-ind=true。
+
+CF 按 §6.3.5.5 只选已归属成员。归属人数低于 on-network-minimum-number-of-affiliated-members，或任一 on-network-affiliation-to-group-required 成员未归属，须 480 + 112 并停止。通过后，必要时按 §6.3.3.3 启动 TNG1，按 §10.1.1.4.1.1 邀请所选成员。该邀请调用 §6.3.3.1.2 复制 mcptt-info+xml，保留广播指示，同时 Request-URI 指向目标 T-PF PSI，正文 mcptt-request-uri 改为终接用户 MCPTT ID、mcptt-calling-group-id 为组 ID。
+
+超过 on-network-max-participant-count 时只邀请该数量并优先 on-network-required 成员；其余选择策略未规定。归属必须成员与应答必须成员不是同一标志。
+
+前置准入还包括主叫在本客户端归属、组发起授权等；这里不是全部拒绝码清单，也不保证每个被邀端接受。
+
+原文 step 14(g)(v) 回指 13(g)(i)，保留原引用异常；不改写编号作为规范修订。
+
+§10.1.1.4.1.1 的 PSI 发现方式不在规范该条范围内。
+
+依据：TS 24.379 V19.4.0 §10.1.1.4.2 step 14(g)(i,ii,v)，印刷页 296,297；TS 24.379 V19.4.0 §6.3.5.5，印刷页 163；TS 24.379 V19.4.0 §10.1.1.4.1.1 steps 1-5,9，印刷页 290,291；TS 24.379 V19.4.0 §6.3.3.1.2 step 11，印刷页 131。
+
+## 上游 200 仍可能是 Unconfirmed
+
+CF 收到针对 §10.1.1.4.1 邀请的 183，P-Answer-State=Unconfirmed；同时 TNG1 未运行、CF 支持媒体缓冲、尚未向邀请方发出 SIP final response。
+
+CF 依 §10.1.1.4.2 的该分支生成上游 200 和 SDP answer，仍带 P-Answer-State=Unconfirmed；组成员数超过 on-network-max-participant-count 时加 Warning 122。调用 TS 24.380 §6.3 的媒体处理，按 NOTE 11 在该处理完成后向邀请客户端发出 200。主叫客户端收到其 INVITE 的 2xx 时调用 TS 24.380 用户面；若收到 P-Answer-State，MAY 向用户显示 Unconfirmed 或 Confirmed。这条 200 不能证明全体被邀成员已接受。
+
+这是一条四项守卫同时成立的明确分支，不替代 required 成员全部应答或其他计数门槛分支；本分支没有另列最低 200 计数条件。
+
+正文对已订阅 conference 的客户端列出通知动作；广播会话的 conference 订阅限制另见 §10.1.3.2/.4.1，不能凭通用通知步骤承诺广播成员可订阅。
+
+媒体完成是源文给定的发送前顺序；这里只保留接口和顺序，未证明内部处理成功标准、获话权或音频送达。
+
+依据：TS 24.379 V19.4.0 §10.1.1.4.2 183/Unconfirmed branch steps 1-4,7-10, NOTE 11，印刷页 299,300；TS 24.379 V19.4.0 §10.1.1.2.1.1 receipt of 2xx steps 1,2A，印刷页 269,270。
+
+## 接听与成功的边界
+
+这是广播按需建立的有限信令链，不是完整 SIP/SDP 编码模板、全部失败处理或媒体实现。广播指示不能替代准入，也不能证明所有成员已接听。
+
+终接端没有前序拒绝时，§10.1.1.2.1.2 step 7（印刷页 272）的自动接续条件为：Answer-Mode=Auto，并且（本端设置为自动，或本端设置为手动且允许此次自动接续）。step 8 的手动接续条件为：Answer-Mode=Manual，并且（本端设置为手动，或本端设置为自动且允许此次手动接续）。这些是替代分支，broadcast-ind=true 本身不能替代任何一组条件。
+
+TS 24.380 的媒体/话权内部流程、实际发送权限和收听送达未覆盖；TS 24.229、RFC SIP 事务及 TS 24.481/24.484 配置合法性未在此展开。
+
+不覆盖已有会话加入、预建立广播、跨系统网关、完整 TNG1 失败链、并发响应去重或全组释放。
+
+[终接模式条件](../calls/group-terminating-mode.md)、[其他成立门槛](../calls/group-acknowledged-start.md)、[广播 conference 订阅限制](conference-state.md)和[组呼释放计时](../calls/group-release-timers.md)分别回答后续问题，不自动成为本分支的必经步骤。[普通预安排发起](prearranged-origination.md)与[准入](prearranged-admission.md)可用于比较，不能解除这些页面自身的范围限制。
+
+来源：[ETSI TS 124 379 V19.4.0（Release 19）](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/19.04.00_60/ts_124379v190400p.pdf)。

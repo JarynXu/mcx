@@ -752,7 +752,7 @@
           "read": "topics/calls/implicit-floor-request.md"
         }
       ],
-      "boundary": "普通在网按需组呼的有界路径；紧急/重组/远程分支、完整媒体与话权状态机未完成，不把接收 200 等同所有成员已确认。"
+      "boundary": "本路径不含广播；广播按需入口见独立条件路径。普通在网按需组呼的有界路径；紧急/重组/远程分支、完整媒体与话权状态机未完成，不把接收 200 等同所有成员已确认。"
     },
     {
       "id": "group-termination-confirmation",
@@ -1114,26 +1114,36 @@
     },
     {
       "id": "mcdata-http-fd-outcomes",
-      "question": "文件分发已收到200却没有下载，延期或到期后如何判断结果？",
+      "question": "已确定是HTTP文件分发：响应来自哪一段、谁已下载，何时可删除共享文件？",
       "select_one_by_question": [
         {
-          "condition": "文件上限、单次额度或403/208拒绝来源",
+          "condition": "HTTP FD发送准入：文件上限、单次额度或403/208拒绝来源",
           "read": "topics/mcdata/fd-size-admission.md"
         },
         {
-          "condition": "区分上传201、SIP202/200、GET200和文件取得",
+          "condition": "观察到上传201、HEAD/GET200或SIP202/200：先按上传者、CF、接收客户端及事务段辨认证据",
           "read": "topics/mcdata/fd-http-file-and-signalling-evidence.md"
         },
         {
-          "condition": "强制下载、等待用户、TDU2与接受/完成通知",
+          "condition": "接收用户或应用的下载决定、TDU2等待、接受/拒绝/延期，或已请求的完成更新与原FD关联",
           "read": "topics/mcdata/fd-download-decision-and-completion.md"
         },
         {
-          "condition": "TDC2可用期、过期通知及共享文件删除条件",
+          "condition": "CF判断可用期/到期目标或收到拒绝后能否删共享文件：区分本次Conversation ID/Message ID、其他被邀请组员及同一物理文件的其他计时器",
           "read": "topics/mcdata/fd-file-availability-and-expiry.md"
         }
       ],
-      "boundary": "仅TS24.282 V19.7.0普通HTTP FD；HTTP依赖内部流程与媒体面FD未核。未请求完成更新的发送义务存在原文矛盾，不自行裁决。"
+      "boundary": "仅普通在网HTTP FD，逐页满足角色及共同条件；尚未确定HTTP还是媒体面时不能仅按200/202选结论。一个组员的拒绝、请求成功或完成通知不能直接授权物理删除，删除集合和其他计时器守卫见可用期页；不补全员下载状态取得或存储并发算法。未请求完成更新的发送义务存在原文冲突，保留不裁决。媒体面另用mcdata-fd-media-evidence，不把HTTP GET、可用期或删除规则搬过去。",
+      "next_if": [
+        {
+          "condition": "问题变为已上传且已发分发信令的HTTP原主叫主动终止，而非接收者拒绝",
+          "read": "topics/mcdata/http-fd-originator-termination.md"
+        },
+        {
+          "condition": "实际收到服务器停止状态或FILE DELETED，需区分原主叫与接收者的通知",
+          "read": "topics/mcdata/http-fd-server-stop.md"
+        }
+      ]
     },
     {
       "id": "mcdata-registration-binding-settings",
@@ -1659,22 +1669,36 @@
     },
     {
       "id": "mcdata-http-fd-stop-and-extension",
-      "question": "HTTP文件分发怎样取消或停止，202和延期200各证明什么？",
+      "question": "已确定是HTTP FD：谁要求停止，谁收到结果，预告后的延期由谁决定？",
       "select_one_by_question": [
         {
-          "condition": "原发起者请求终止已分发文件",
+          "condition": "原通信发起者要求终止，文件已上传成功且分发信令已发向服务器；不是上传中止或接收者拒绝",
           "read": "topics/mcdata/http-fd-originator-termination.md"
         },
         {
-          "condition": "服务器主动停止及FILE DELETED通知",
+          "condition": "服务器按策略主动停止，分别核原发起者TRANSMISSION STOPPED与参与接收者FILE DELETED",
           "read": "topics/mcdata/http-fd-server-stop.md"
         },
         {
-          "condition": "服务器先预告，发起者申请延期",
+          "condition": "服务器先预告，原发起者求延期，需区分请求200、延期决定和停止触发",
           "read": "topics/mcdata/http-fd-release-extension.md"
+        },
+        {
+          "condition": "原发起者以外的授权参与用户要求无预告HTTP释放，需核权限、三元传输关联及其独立结果",
+          "read": "topics/mcdata/authorized-user-http-release.md"
+        },
+        {
+          "condition": "授权参与用户先预告HTTP释放，原发起者求延期：仅阅读该页HTTP条件分支和决定归属/未闭合回指",
+          "read": "topics/mcdata/authorized-user-release-intent-and-decision.md"
         }
       ],
-      "boundary": "TS24.282 V19.7.0 HTTP FD；MESSAGE业务结果不等同媒体INFO/BYE或上传中止，路由/编码缺口按页保留。"
+      "boundary": "TS24.282 V19.7.0普通HTTP FD；先区分原发起者、服务器与其他授权用户，不能按“停止”串成必经步骤。TRANSMISSION STOPPED、FILE DELETED、授权者TERMINATION RESPONSE有不同目标；任何一个200/202不代表全员已见结果、文件字节已删除或已下载副本已撤回。授权者预告页只使用HTTP分支，不借其SDS媒体部分回答媒体FD。身份取得、字段及路由缺口仍按各页保留；延期接受不自动证明TDC2或存储TTL刷新。",
+      "next_if": [
+        {
+          "condition": "实际问题是一个接收者拒绝后或可用期到期后能否删除共享HTTP文件，而不是主动停止请求",
+          "read": "topics/mcdata/fd-file-availability-and-expiry.md"
+        }
+      ]
     },
     {
       "id": "mcvideo-group-dynamic-data",
@@ -1728,12 +1752,20 @@
     },
     {
       "id": "mcdata-pre-established-session",
-      "question": "MCData预建立会话与具体私聊SDS业务",
-      "start": "topics/mcdata/pre-established-session-admission.md",
-      "next_if": [
+      "question": "MCData预建立会话怎样承载具体私聊或普通组SDS业务",
+      "boundary": "仅TS24.282 V19.7.0的所列条件；业务标识和预建立标识不可互换，PCC与媒体内部过程未展开。 私聊与组业务按各自条件选页，REFER200不是业务reINVITE成功或媒体交付；组路径仅有限接口钩子，不补CF分发。 组分支从已存在可用承载进入，不要求先走私聊准入页，也不把该页私聊共同条件推广成组准入。",
+      "select_one_by_question": [
+        {
+          "condition": "判断承载准入页所列前提；该页共同条件为后续私聊SDS上下文，不作为全部组承载准入证明",
+          "read": "topics/mcdata/pre-established-session-admission.md"
+        },
         {
           "condition": "会话已存在，需要发起或接收具体私聊SDS",
           "read": "topics/mcdata/pre-established-private-sds-use.md"
+        },
+        {
+          "condition": "已存在可用预建立承载，按新页条件独立进入普通预安排组SDS session；不是由私聊准入页推导，非standalone或FD",
+          "read": "topics/mcdata/pre-established-group-sds-use.md"
         },
         {
           "condition": "需要离开业务或销毁预建立会话",
@@ -1743,8 +1775,7 @@
           "condition": "需要判断单条消息是否已送达或已读",
           "read": "topics/mcdata/sds-session-message-evidence.md"
         }
-      ],
-      "boundary": "仅TS24.282 V19.7.0的所列条件；业务标识和预建立标识不可互换，PCC与媒体内部过程未展开。"
+      ]
     },
     {
       "id": "mcdata-private-emergency-server",
@@ -1840,26 +1871,30 @@
     },
     {
       "id": "mcdata-fd-media-evidence",
-      "question": "媒体面FD何时能发送、哪里确认、怎样报告完成",
+      "question": "已确定是单播媒体面FD：哪个角色确认了什么，完成通知覆盖谁，服务器释放是否等于文件删除？",
       "select_one_by_question": [
         {
-          "condition": "初始响应、发送与分块收尾",
+          "condition": "原发送客户端观察初始SIP响应、首个MSRP200、分块最后200或发送失败BYE，判断发送与收尾边界",
           "read": "topics/mcdata/fd-msrp-start-and-originator-result.md"
         },
         {
-          "condition": "服务器响应、转发与暂存",
+          "condition": "O-PF、CF或T-PF的逐跳MSRP200、已建立下游连接集合，或有later-delivery指示的PF暂存",
           "read": "topics/mcdata/fd-msrp-hop-ack-and-storage.md"
         },
         {
-          "condition": "接收端收齐、内部指示，以及PF完成事件已发生且要求更新时的直接或条件聚合通知路由",
+          "condition": "接收客户端分块收齐/内部指示，或合法PF完成事件且要求更新后的报告：按原Conversation ID/Message ID、通知目标、组聚合条件及实际收到逐段判断",
           "read": "topics/mcdata/fd-media-reception-and-signalling-report.md"
         },
         {
-          "condition": "普通在网单播媒体面FD服务器主动、无预告释放；按one-to-one或预安排组及逐角色事件",
+          "condition": "普通在网one-to-one或预安排组媒体FD，服务器主动无预告释放；按具体参与者集合及CF/PF/客户端各自BYE事件判断资源收尾",
           "read": "topics/mcdata/media-fd-server-release.md"
+        },
+        {
+          "condition": "已有普通在网媒体FD，其他已参与授权用户要求无预告释放；按dialog/包/MIME/type及CF配置授权判断，不是用户自行离开",
+          "read": "topics/mcdata/media-fd-authorized-user-release.md"
         }
       ],
-      "boundary": "普通在网单播媒体面FD；不移植HTTP caller，保留精确版本间的引用及MIME差异。 不补PF获知终端完成的caller或helper到CF入口字段完整性；202不等于客户端已收通知，不扩成全组完成。 聚合只在需要且未发送等守卫成立时进入；TDC1表的SDS实例范围差异及发送后晚到策略仍未闭合，计时放行不等于全员完成。"
+      "boundary": "普通在网单播媒体面FD，按页固定24.282 V19.7.0与24.582 V19.0.0，不保证快照完整互通。逐跳200、PF暂存、CF聚合发出或202不能替代目标客户端收齐、原主叫收到报告或全组完成；聚合计时放行与所有成员通知齐备不是同一证据。PF获知终端完成的caller、完整接收通知接口、TDC1表的SDS范围差异及聚合后晚到处理仍未闭合。服务器主动释放与其他授权参与者无预告请求分别选页；授权者INFO200只表示请求接受，身份绑定、成功200目的地差异、媒体停止实现和跨段收尾仍未闭合。任意成员停收不能直接等同整组释放，也不借SDS页补齐媒体实现。BYE资源收尾不转成HTTP FILE DELETED、物理删除或历史副本撤回。"
     },
     {
       "id": "mcvideo-client-video-pull",
@@ -2145,6 +2180,18 @@
       "question": "离网紧急组呼怎样按本地事件回到普通类型",
       "start": "topics/mcvideo/offnetwork-group-emergency-downgrade.md",
       "boundary": "分别判断T1用户降级、T1收END、T1的TFG13到期；明确降级后的T2重发另按TFG11事件。用户资格只限制用户入口，不要求三个触发同时成立。类型T2不等于媒体、告警或全组结束，接收关联/安全及helper消息命名差异保留。"
+    },
+    {
+      "id": "mcptt-offnetwork-manual-private",
+      "question": "普通离网手动私呼怎样等待、人工应答、取消和正常释放",
+      "start": "topics/calls/offnetwork-private-manual-answer.md",
+      "boundary": "普通PRIVATE CALL、发起关联紧急状态false；自动模式资格优先，手动选择按独立条件。两端等待/Reason、建立取消、终接收RELEASE、已建正常确认及P/Q各按状态事件读取；接受后TFP4重叠、无ACK重传与竞态调度仍未闭合。旧自动取消和释放页不是手动流程的必经后续。"
+    },
+    {
+      "id": "mcptt-broadcast-ondemand",
+      "question": "普通在网按需广播如何请求、邀请并判断接续证据",
+      "start": "topics/groups/broadcast-ondemand-signalling.md",
+      "boundary": "普通GMS组、未重组、无活跃会话、非紧急/远程/预建立。§4.12版本限制及终接Answer-Mode AND（本端模式或获准切换）不可省略；Unconfirmed200不是全员接听。非广播路径不是广播的必经流程，仅有限信令钩子。"
     }
   ]
 }

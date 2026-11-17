@@ -105,8 +105,8 @@
         {
           "domain": "mcdata",
           "title": "FD：HTTP与MSRP媒体面分别判断",
-          "can_answer": "可查文件上限、HTTP存入/可用/下载证据，以及MSRP空SEND、分块收尾、服务器先响应、暂存和终端重组。另可查PF条件完成通知、CF直接或条件聚合路由、目标PF及客户端通知交付；普通媒体面FD服务器无预告释放另按类型策略及CF/PF/客户端事件区分BYE、原因与逐段资源收尾。",
-          "conditional_or_interface_only": "终端内部下载完成指示不同于PF有条件的完成通知；PF暂存完成不等于终端下载。HTTP调用不能补到媒体面。 路由从实际PF完成事件及完成更新请求起，CF/目标PF各按实际收到与入口守卫执行；不补helper未逐项列出的CF入口字段。",
+          "can_answer": "可查文件上限、HTTP存入/可用/下载证据，以及MSRP空SEND、分块收尾、服务器先响应、暂存和终端重组。另可查PF条件完成通知、CF直接或条件聚合路由、目标PF及客户端通知交付；普通媒体面FD服务器无预告释放另按类型策略及CF/PF/客户端事件区分BYE、原因与逐段资源收尾。 其他已参与授权用户的媒体FD无预告请求另可查INFO生成、PF条件转发及CF配置授权/释放调用。",
+          "conditional_or_interface_only": "终端内部下载完成指示不同于PF有条件的完成通知；PF暂存完成不等于终端下载。HTTP调用不能补到媒体面。 路由从实际PF完成事件及完成更新请求起，CF/目标PF各按实际收到与入口守卫执行；不补helper未逐项列出的CF入口字段。 授权者INFO200只表示请求接受，不证明媒体停止、跨段收尾或文件删除。",
           "not_established": "媒体面ACK错引、SDP/MIME差异及普通转发中PF如何获知终端完整下载仍未闭合；未给完整文件系统、断点续传或全端交付保证。聚合策略选择、TDC1表的SDS实例范围与FD正文差异、晚到通知、PSI发现、完整事务恢复及客户端专门200/关联算法仍未闭合；NOTE6为容量说明，聚合放行及202不证明全员下载或原主叫已看到结果。",
           "read": [
             {
@@ -157,6 +157,13 @@
             {
               "title": "媒体面FD的服务器主动释放：BYE、原因与逐段资源收尾",
               "path": "topics/mcdata/media-fd-server-release.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0"
+              ]
+            },
+            {
+              "title": "媒体面FD：授权参与用户请求无预告释放",
+              "path": "topics/mcdata/media-fd-authorized-user-release.md",
               "source_ids": [
                 "3gpp-ts-24.282-v19.7.0"
               ]
@@ -293,6 +300,22 @@
             {
               "title": "5G MBS 组播接收意愿：join/leave触发与PF反馈边界",
               "path": "topics/mcdata/mbs-multicast-join-feedback-boundary.md",
+              "source_ids": [
+                "3gpp-ts-24.282-v19.7.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "mcdata",
+          "title": "预建立会话上的普通组SDS业务",
+          "can_answer": "可查普通组SDS session的REFER身份、PF准入与有限业务reINVITE和终接结果钩子。",
+          "conditional_or_interface_only": "已存在预建立会话；REFER200、业务响应与预建立承载身份分别判断。客户端与PF按实际事件处理，不以一段成功证明后段成功。",
+          "not_established": "不补CF分发、完整安全/SIP、资源共享或全端交付；不扩私聊、standalone、FD或紧急过程。",
+          "read": [
+            {
+              "title": "预建立会话内发起组SDS session：身份、接入与业务结果",
+              "path": "topics/mcdata/pre-established-group-sds-use.md",
               "source_ids": [
                 "3gpp-ts-24.282-v19.7.0"
               ]
@@ -821,6 +844,22 @@
               ]
             }
           ]
+        },
+        {
+          "domain": "calls",
+          "title": "普通离网MCPTT手动私呼",
+          "can_answer": "可查自动优先后的手动发起资格、两端等待、人工接受/拒绝及超时Reason、P/Q独立完成与接受后TFP4重传/失败。 另按各自状态事件查建立取消、终接收RELEASE、已建正常释放确认及P/Q清理。",
+          "conditional_or_interface_only": "普通已知双用户、非紧急PRIVATE CALL；按端点、模式和实际状态事件读取。用户接受不等于两端已完成，P的RTP完成不补Q转换；TFP4重叠入口保留。",
+          "not_established": "无ACK重传、竞态调度、完整安全、配置取得、媒体/话权许可和TFP4调度仍未闭合；旧自动主题不能自动成为手动后续流程。",
+          "read": [
+            {
+              "title": "普通离网MCPTT手动私呼：等待、人工应答与控制完成",
+              "path": "topics/calls/offnetwork-private-manual-answer.md",
+              "source_ids": [
+                "3gpp-ts-24.379-v19.4.0"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -869,6 +908,22 @@
               "path": "topics/groups/conference-state-merge.md",
               "source_ids": [
                 "ietf-rfc4575"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "groups",
+          "title": "在网MCPTT按需广播有限信令",
+          "can_answer": "可查普通GMS组无活跃会话时，客户端请求、O-PF转发、CF邀请与有限响应接续。",
+          "conditional_or_interface_only": "固定24.379 V19.4.0，保留§4.12版本限制；终接Answer-Mode与本端设置/许可按AND(OR)组合。各角色独立检查，Unconfirmed200不等于全员接听。",
+          "not_established": "不覆盖完整广播组创建层级、已有会话加入、预建立广播、重组/紧急/远程、完整失败和媒体/话权内部实现。",
+          "read": [
+            {
+              "title": "在网广播组呼：按需请求、邀请与接续证据",
+              "path": "topics/groups/broadcast-ondemand-signalling.md",
+              "source_ids": [
+                "3gpp-ts-24.379-v19.4.0"
               ]
             }
           ]
