@@ -1,0 +1,166 @@
+{
+  "topic_id": "r19-mcdata-media-group-fd-controller-setup",
+  "title": "普通组媒体FD：控制侧准入、逐成员邀请与响应边界",
+  "release": 19,
+  "state": "clause-checked",
+  "standard_stage": 3,
+  "common_conditions": [
+    "固定TS24.282 V19.7.0，并对照TS24.582 V19.0.0。仅普通在网、本地、非重组group-fd的单播媒体FD；组身份来自入站mcdata-request-uri，主叫身份来自mcdata-calling-user-id。",
+    "没有emergency-ind、imminentperil-ind、alert请求或Resource-Priority，组的in-progress emergency及imminent peril状态均为false；排除别名、跨系统、预建立会话、MBMS/MBS、HTTP及SDS。",
+    "各claim只在其实际事件及前序未停止条件下适用。此前PF/客户端身份、资源、安全与授权仍须满足。本页不是完整端到端建立或完整媒体传输算法；不借private-only页闭合组链。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.282-v19.7.0",
+  "claims": [
+    {
+      "id": "media-group-gates-before-invitation",
+      "title": "媒体组邀请前逐项核准入，不借HTTP响应表",
+      "role": "控制MCData功能（CF）",
+      "conditions": [
+        "实际进入§10.2.5.4.4的group-fd分支；前序媒体准入没有停止。"
+      ],
+      "conclusion": "step9a先按§6.3.3取得组文档，成功才继续。依次检查：on-network-disabled存在→403/115；preconfigured-group-use-only=true→403/167；成员mcdata-mcdata-id的uri不匹配主叫calling-user-id→403/116；allow-file-distribution=false→403/213；supported-services缺失或含非FD enabler条目→488/214。随后§11.1 step2发送权限失败→403/201，step8单次额度超限→403/208，step6文件上限超限→403/219；文件大小取入站SDP file-selector的size。各失败分支停止。",
+      "limitations": [
+        "实际入口为路由至CF的FD INVITE：FD ICSI-ref、FD P-Asserted-Service及group-fd类型。前序排队回100/215并停止；SDP不可接受或缺MSRP URI回488，缺载荷用适当拒绝码，缺所需FD标签回403。这里不以HTTP的202代替。",
+        "禁用看元素存在；FD许可此处只写false。supported-services保持“含非FD条目”量词，不能改成“没有任何FD条目”。成员字段保持源文mcdata-mcdata-id。",
+        "组发送权限缺失或false都失败；大小具体上限责任沿用fd-size-admission。HTTP文件上限也是208，媒体这里是219，不能互换。",
+        "§6.3.3未订阅时订阅组文档xcap-diff；404/113、其他4xx/5xx/6xx加114为该helper失败路径。本页不展开组配置schema及其默认值。"
+      ],
+      "normative_strength": "shall；本条前序资源处理的may分别保留",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clauses": [
+            "6.3.1.2 FD CF classification",
+            "10.2.5.4.4 opening,steps1–7,9a–f",
+            "6.3.3",
+            "11.1 steps2,6,8"
+          ],
+          "printed_pages": [
+            94,
+            305,
+            306,
+            307,
+            308,
+            97,
+            310,
+            311
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clauses": [
+            "10.2.4.4.2 steps2,12f(iii) (HTTP comparison only)"
+          ],
+          "printed_pages": [
+            282,
+            284
+          ]
+        }
+      ]
+    },
+    {
+      "id": "media-group-affiliates-invite-identities",
+      "title": "组目标按归属筛选，再逐个生成媒体邀请",
+      "role": "控制MCData功能（CF）",
+      "conditions": [
+        "step9a–f通过；普通非重组group-fd，继续9g–k。"
+      ],
+      "conclusion": "主叫未按§6.3.5归属则403/120并停止。CF按§6.3.4从组文档list成员确定归属目标；没有归属成员则403/198并停止，否则9j对每个已确定成员调用§10.2.5.4.3，9k调用FD媒体§7.3。出站XML request-uri为目标用户ID、calling-group-id为组ID、calling-user-id为原主叫；SIP Request-URI指向目标PF PSI，PAI为CF PSI，Contact是CF会话身份。",
+      "limitations": [
+        "归属helper要求相应组、用户、client记录及用户信息项未过期；静态成员资格不是归属，筛选也不自动创建隐式归属。",
+        "本caller没有最少接听人数、全员响应或加入既有组会话的条件；不能借其他组通话策略补入。",
+        "4.3 step9A缺Mandatory download IE时仍执行媒体自动接收过程，见媒体下载决定页。出站offer按4.1，不从HTTP FILEURL消息或私聊页的common条件推导。",
+        "4.3 step12写P-Asserted-Service-Id而分类写P-Asserted-Service；普通request-type复制未像紧急1A(e)显式列出，4.1正文主体又写client。这些构造边界保留，不宣称完整互通配方。"
+      ],
+      "normative_strength": "shall；出站邀请Session-Expires的should分别保留",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clauses": [
+            "10.2.5.4.4 steps9g–k",
+            "6.3.4",
+            "6.3.5",
+            "10.2.5.4.3 opening,steps1A(e),1B (scope comparison),3 (Session-Expires should/refresher),7–14",
+            "10.2.5.4.1 opening",
+            "6.3.1.2 FD terminating-PF classification"
+          ],
+          "printed_pages": [
+            308,
+            97,
+            98,
+            303,
+            304,
+            305,
+            302,
+            94
+          ]
+        }
+      ]
+    },
+    {
+      "id": "media-group-upstream-result-not-quorum",
+      "title": "一个目标200与整个组完成不同",
+      "role": "控制MCData功能（CF）",
+      "conditions": [
+        "CF实际收到4.3发出的INVITE对应200；分别满足匹配目标ID分支或Warning232分支。"
+      ],
+      "conclusion": "正常入口要求响应MCData ID匹配对应邀请目标ID，调用§6.3.7.1.23并指明FD，生成和发送邀请侧200；本段没有等待所有成员或最少成员数量的条件。另有200带Warning232的暂存入口同样生成上游200。helper用CF会话Contact和FD/isfocus标签、FD SDP answer，并复制收到的Warning及存在的mcdata-info。",
+      "limitations": [
+        "232入口未重复正常段ID匹配条件；不增加统一守卫，也不为多个目标200发明去重/全组汇聚规则。",
+        "FD answer由4.2生成，为recvonly/passive和CF自身path；它不是全组下载完成或所有客户端都已连接的证明。",
+        "helper step10指向24.582 §6.3.1（standalone SDS），而FD caller写§7.3；不静默修正。4.1/4.2的mcdata-signalling accept-types与固定媒体版文件SEND的mcdata-file也不同，不据此宣称协商兼容。"
+      ],
+      "normative_strength": "shall",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.282-v19.7.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124200_124299/124282/19.07.00_60/ts_124282v190700p.pdf",
+          "clauses": [
+            "10.2.5.4.4 response200 and Warning232 branches",
+            "6.3.7.1.23",
+            "10.2.5.4.2",
+            "10.2.5.4.1",
+            "10.2.5.4.3 response200"
+          ],
+          "printed_pages": [
+            309,
+            115,
+            116,
+            303,
+            302,
+            305
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v19.0.0",
+          "url": "https://www.etsi.org/deliver/etsi_ts/124500_124599/124582/19.00.00_60/ts_124582v190000p.pdf",
+          "clauses": [
+            "6.3.1.1 (comparison only)",
+            "7.1.2.1 (comparison only: MIME)"
+          ],
+          "printed_pages": [
+            23,
+            29,
+            30
+          ]
+        }
+      ]
+    }
+  ],
+  "related": [
+    "fd-size-admission.md",
+    "media-fd-download-decision.md",
+    "fd-msrp-hop-ack-and-storage.md",
+    "fd-media-reception-and-signalling-report.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

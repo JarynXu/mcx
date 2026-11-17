@@ -1,0 +1,219 @@
+{
+  "topic_id": "r19-groups-adhoc-user-participant-update",
+  "release": 19,
+  "standard_stage": 3,
+  "state": "clause-checked",
+  "title": "用户修改 ad hoc 组呼：名单动作、条件更新与响应证据",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v19.4.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "TS24.379 V19.4.0；单一主系统、普通在网按需 MCPTT ad hoc 组呼的进行中会话。这里处理用户主动修改，不是初建，也不是 PF 自动匹配变化通知。",
+    "客户端、PF、CF 各段按实际收到的请求或响应分别适用；名单动作与 criteria 修改是替代入口，不要求同时满足。criteria 修改另须当前会话原本按用户指定的 criteria 建立。",
+    "不展开紧急/迫近危险、预建立、跨系统、功能别名、完整终接应答、SDP/媒体安全实现和媒体释放。被调用邀请、确定和释放过程保留自己的条件，不由修改请求成功推导全部完成。"
+  ],
+  "claims": [
+    {
+      "id": "adhoc-update-client",
+      "title": "用户选择改名单或改条件，客户端保留当前会话参数",
+      "conditions": [
+        "授权用户请求修改进行中的按需 ad hoc 会话；各输入分支按其条件适用。"
+      ],
+      "conclusion": "客户端生成 re-INVITE，mcptt-info 按当前已建会话填充，SDP 使用当前媒体参数。改名单时，resource-lists 的每个用户 ID entry 用 method=INVITE 表示邀请，method=BYE 表示移除。改 criteria 仅限原来按用户指定 criteria 建立的会话，传入一项或多项逗号分隔 criteria。用户同时要求改名单和 criteria 时，客户端拒绝；具体拒绝方式不在该条规定范围内。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "17.2.6.0",
+            "17.2.6.1.1 opening,steps1-4,NOTE",
+            "17.3.5.1.1 opening (dependency: on-demand session identity)",
+            "17.4.5.1.1 opening and identity definitions (dependency: distinct initiating/invited/removed IDs)"
+          ],
+          "printed_pages": [
+            652,
+            653,
+            664,
+            676
+          ]
+        }
+      ],
+      "limitations": [
+        "method=BYE 是名单 entry 的动作参数，不是客户端直接发送 SIP BYE；授权用户前提不等于服务器已经通过修改许可。",
+        "不把会话 URI、组 ID、发起用户 ID 和目标用户 ID 混为一项；本页不补规范未在该修改入口列出的寻址构造。"
+      ],
+      "normative_strength": "保留 SHALL/MAY、各角色守卫和原文回指；未规定的算法不补默认。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "adhoc-update-pf",
+      "title": "PF 从身份绑定取发起者，不替 CF 判定修改许可",
+      "conditions": [
+        "PF 收到标识按需 ad hoc 会话的 re-INVITE。"
+      ],
+      "conclusion": "PF 可因资源不足或拥塞拒绝500并可附 Retry-After；从 P-Asserted-Identity 公共用户标识确定发起用户 MCPTT ID，绑定缺失或过期则404+Warning141并停止。未提供 MCPTT speech codec 时拒绝488。通过后生成转发 re-INVITE，复制 mcptt-info，把该发起者 ID 放入 mcptt-calling-user-id，按被调用 SDP 过程构造 offer，复制 resource-lists 并转发。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "17.3.5.1.1 opening,steps1-10",
+            "17.4.5.1.1 step3 (comparison: separate CF modification permission)"
+          ],
+          "printed_pages": [
+            664,
+            677
+          ]
+        }
+      ],
+      "limitations": [
+        "PF 这里没有另列与 CF 相同的修改许可守卫，不从初建 allow-adhoc-group-call 检查移植新条件。",
+        "PF step9 无条件表述复制 resource-lists，而客户端合法 criteria 分支可以不携该正文；保留这种表述，不为 criteria 请求补造空列表，也不声称已获得完整编码实现。",
+        "SDP offer 回指6.3.2.1.1仅登记调用接口，不展开其媒体实现。"
+      ],
+      "normative_strength": "保留 SHALL/MAY、各角色守卫和原文回指；未规定的算法不补默认。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "adhoc-update-list",
+      "title": "CF 先检查许可和名单容量，再调用邀请或移除",
+      "conditions": [
+        "CF 收到标识按需 ad hoc 会话的 re-INVITE；名单动作另以存在相应 resource-lists 正文为条件。"
+      ],
+      "conclusion": "CF 可因资源/拥塞拒绝500；媒体不可接受或缺 speech codec 则488并停止。修改许可 allow-to-modify-adhoc-group-call-participants-info=false 时403+Warning190并停止。名单分支检查“现有参与者与新邀请用户数量”是否在配置限额内，超限403+Warning189并停止。之后按本地策略和 entry 确定邀请或移除目标：邀请调用17.4.2.1.1，移除调用17.4.3.1；将被邀请者视为隐式归属，取消已移出者的归属。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "17.4.5.1.1 identity definitions,steps1-4(a)",
+            "17.4.2.1.1 opening,steps1-4(a-b) (invitation interface and scope wording comparison)",
+            "17.4.3.1.1.1 and17.4.3.1.2.1 (comparison: whole-call release versus single-client removal)",
+            "17.4.5.2.1 steps4(a),5(a) (comparison only: manual history consumed by automatic delta)"
+          ],
+          "printed_pages": [
+            668,
+            669,
+            674,
+            675,
+            676,
+            677,
+            678,
+            679
+          ]
+        }
+      ],
+      "limitations": [
+        "CF 许可条只写 false，不将缺失许可字段改写为拒绝，也不据此宣布缺失必然获准。",
+        "容量检查原文是现有加新邀，没有先扣除同次待移除人数的规则；不能据“加一减一”保证通过。名单逐项决定含本地策略，不能保证每个请求目标都执行成功。 CF step4(a)(ii) 的邀请与移除分支以 OR 连接；不因客户端可列两种 method 就补出同批同时执行的顺序或原子净额算法。",
+        "移除回指宽泛17.4.3.1，同时包含整组与单客户端释放，不静默改号成17.4.3.1.2.1；本页不据此宣称整组已释放或媒体全部回收。邀请 helper 开头只提17.4.2.2，而这里另有明确调用，保留两个位置的表述。",
+        "自动 delta 后续会判断手动移除/手动邀请历史，但本次已核手动条款没有明确历史标记写入字段、时点或清除算法；不以隐式归属替代历史标记，也不保证手动移除后永不自动再邀。"
+      ],
+      "normative_strength": "保留 SHALL/MAY、各角色守卫和原文回指；未规定的算法不补默认。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "adhoc-update-criteria",
+      "title": "修改 criteria 调用确定过程，不承诺原子替换",
+      "conditions": [
+        "客户端 criteria 修改前提满足；CF 前序未拒绝，收到 call-participants-criterias 字段。"
+      ],
+      "conclusion": "CF 在17.4.5.1.1 step4(b) 使用收到的 criteria 调用17.4.6.1。该过程可由 CF 按本地策略确定，也可向所选 PF 查询；查询关联 ad hoc group ID。后续匹配结果在符合响应类型和组 ID 条件时处理，重复 ID 只发一个 INVITE，现有参与者若不在相关返回列表中则考虑移出。调用关系不同于初建17.4.2.2 step12(ii)，也不同于 PF 自动增删通知入口。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "17.2.6.1.1 step2a,NOTE (caller dependency)",
+            "17.4.5.1.1 steps1-4(b)",
+            "17.4.6.1 opening,steps1-6,result-reception conditions and steps1,1a,1b,2",
+            "17.4.6.2 opening (comparison only: stopping determination is separate)",
+            "17.4.2.2 step12(ii) (comparison only: initial caller)",
+            "17.4.5.2.1 opening,steps4-5 (comparison only: automatic delta)"
+          ],
+          "printed_pages": [
+            653,
+            673,
+            677,
+            678,
+            679,
+            680
+          ]
+        }
+      ],
+      "limitations": [
+        "确定过程具体请求/结果/自动变化责任见既有 criteria 页面；本页新增的是修改 caller，不把旧页限定初建的 common_conditions 直接套给本次修改。",
+        "修改条款没有规定先停止旧 PF 查询、清理旧条件、等待所有结果再提交，或失败后回滚旧名单/criteria；不能把17.4.6.2自动加成每次修改必经步骤，不能把回应200解释为原子替换完成。",
+        "不从初建分支搬入“建立时限内无匹配用户则403/187”的整体修改失败规则。结果处理的考虑移出没有重述自动 delta 的手动历史例外，不自行补入。"
+      ],
+      "normative_strength": "保留 SHALL/MAY、各角色守卫和原文回指；未规定的算法不补默认。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "adhoc-update-result",
+      "title": "修改响应与逐个成员完成证据分开读取",
+      "conditions": [
+        "CF 执行至响应阶段，或 PF/客户端收到各自修改事务的响应；互不作为全局同时成立条件。"
+      ],
+      "conclusion": "CF 在列出的 step4 名单动作或 criteria 调用之后，step5开始生成200，加入 SDP answer、Supported 的 norefersub/tdialog、CF PSI 的 P-Asserted-Identity 和所列 Contact 标签，再发送。PF 收到2xx时生成客户端侧200，带其 SDP answer、收到的 Warning 和 PF PSI 的 P-Asserted-Identity。收到403时另复制存在的 mcptt-info 和 Warning；一般4xx/5xx/6xx按本条生成并转发响应及 Warning。客户端收到2xx可通知修改请求成功；收到4xx/5xx/6xx可通知失败及说明。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v19.4.0",
+          "clauses": [
+            "17.4.5.1.1 steps4-11",
+            "17.3.5.1.1 response paragraphs",
+            "17.2.6.1.1 response paragraphs",
+            "17.4.6.1 result-reception steps1,1a,2 (comparison: later membership result)",
+            "17.4.3.1.2.1 (comparison: successful single-client removal notification)"
+          ],
+          "printed_pages": [
+            653,
+            664,
+            665,
+            675,
+            677,
+            678,
+            680
+          ]
+        }
+      ],
+      "limitations": [
+        "客户端提示均为 MAY，不保证每次显示。PF 的响应身份是 PF PSI，CF 的是 CF PSI，不能当目标用户 ID。",
+        "条文编号先调用动作后生成响应，不等于规定等待全部被邀用户接听、每个 BYE 完成或所有 PF 返回；200不证明媒体可用、全员结果成功或全局状态原子提交。",
+        "CF SDP answer 回指6.3.3.2.1；PF final-response/answer回指6.3.2.1.5.2和6.3.2.1.2.1，本页只登记接口。完整 SIP/SDP及被调用媒体实现不在此展开。",
+        "失败通知不是旧成员/criteria必然原样保留的承诺；本条没有完整事务补偿或部分成功结果协议，不把失败响应统一解释为所有先前动作撤销。"
+      ],
+      "normative_strength": "保留 SHALL/MAY、各角色守卫和原文回指；未规定的算法不补默认。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [
+    "用户请求修改、PF 自动 delta 和初建是三个入口；不得用一个入口的成功或限制代替另一个。",
+    "本页只核明确的信令责任与接口，不补历史标记维护、criteria 原子替换、完整媒体或失败回滚实现。"
+  ],
+  "related": [
+    "adhoc-explicit-list-establishment.md",
+    "adhoc-criteria-membership-lifecycle.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

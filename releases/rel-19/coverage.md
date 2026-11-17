@@ -145,6 +145,14 @@
 
 入口：[媒体面文件分发：自动接收判定与终端下载决定](topics/mcdata/media-fd-download-decision.md)。
 
+### 普通组媒体 FD 控制侧建立
+
+- **能回答：**可查普通非重组单播组媒体FD的CF前序准入、组配置与权限、大小门槛、归属目标选择、逐成员邀请及响应边界。
+- **只到条件或接口：**普通本地在网group-fd，无紧急/迫近危险/alert或Resource-Priority，组优先状态均为false；各段依实际事件和前序未停止条件读取，不借private-only页闭合组链。
+- **尚未建立的结论：**不搬HTTP202、FILEURL、默认值或其他组呼门槛；媒体文件上限219与单次额度208分开。正常目标ID匹配200与232入口不合并，不推全组汇聚或完成，保留信令字段、主体及跨快照SDS/MIME差异。
+
+入口：[普通组媒体FD：控制侧准入、逐成员邀请与响应边界](topics/mcdata/media-group-fd-controller-setup.md)。
+
 ## MCVideo视频业务
 
 [查看本域全部主题](topics-mcvideo.json)
@@ -426,6 +434,14 @@
 - **尚未建立的结论：**不把criteria变成显式名单初建的必经后续，也不修复旧页响应字段来源缺口；保留req-type/resp-type差异、增员历史OR条件及多PF结果边界，不补全局原子替换、实际criteria算法或完整释放。
 
 入口：[按条件建立 ad hoc 组呼：选人、持续变化与停止](topics/groups/adhoc-criteria-membership-lifecycle.md)。
+
+### 用户修改进行中的 ad hoc 组呼
+
+- **能回答：**可查用户名单动作或criteria修改、PF身份绑定、CF修改许可与容量、被调用邀请/移除/确定接口，以及修改事务响应。
+- **只到条件或接口：**单一主系统普通在网按需进行中会话；各角色按实际事件读取。criteria修改须会话原本按用户指定criteria建立，不能与名单修改同时请求。
+- **尚未建立的结论：**不将初建或PF自动delta条件套入手动修改，不把200当全员接听或原子替换；保留宽泛释放回指、邀请helper范围措辞、历史标记维护和失败回滚缺口。
+
+入口：[用户修改 ad hoc 组呼：名单动作、条件更新与响应证据](topics/groups/adhoc-user-participant-update.md)。
 
 ## 身份、注册与配置
 
