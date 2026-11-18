@@ -1,0 +1,292 @@
+{
+  "topic_id": "r16-mcdata-group-sds-emergency-upgrade",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "在网组短数据（SDS）升级为紧急通信：谁的承载升优先级，服务器要等全组回执吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "common_conditions": [
+    "Release 16 在网组 SDS 紧急升级；组已在组管理服务器定义，全部组员同属一个 MCData 系统。例中甲、乙、丙均已归属，甲是获授权的发起用户所在端。",
+    "按 §7.4.2.6 建立的媒体面独立组 SDS 或按 §7.4.2.7 建立的组 SDS 会话仍在进行。例中甲已配置为在此次升级时发紧急告警。"
+  ],
+  "condition_rule": "每条声明承接上述场景。符合本程序的前提、程序规定的动作、合成记录实际记到哪一步须分别判断。例中三端不是固定门槛。",
+  "claims": [
+    {
+      "id": "grp-sds-up-scope",
+      "title": "获授权用户按本程序升级的是同系统内已建立且在进行的媒体面独立组 SDS 或组 SDS 会话",
+      "conditions": [
+        "判断现有记录能否采用本组紧急升级程序。"
+      ],
+      "conclusion": "已定义组、例中三端已归属且发起端已配告警。只有建会请求不足以证明已建立并仍在进行；仅走信令控制面的独立传送不属于这两个起点。",
+      "normative_strength": "“仅适用于”限定现有通信的建立程序；三个客户端是本例的前提，不是组人数门槛。",
+      "limitations": [
+        "各项前提满足不等于用户已实际发起升级。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.9.1",
+            "7.4.2.9.2, opening paragraph, NOTE 1 and pre-conditions 1–4"
+          ],
+          "printed_pages": [
+            70
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "grp-sds-up-initiate",
+      "title": "在网组 SDS 紧急升级时，发起端设置自己的紧急状态直至明确取消；升级请求设置紧急指示，按告警配置另带告警指示",
+      "conditions": [
+        "获授权的甲用户实际发起组紧急事件，甲客户端向 MCData 服务器请求升级。"
+      ],
+      "conclusion": "甲自己的本地状态保持至明确取消；请求中的紧急指示针对组的进行中紧急状态。例中甲已配置为在升级时发紧急告警，请求另带指示，以发起该告警。",
+      "normative_strength": "步骤 1 规定甲本地状态的保持条件，步骤 2 将告警指示与发起端的配置相联系。",
+      "limitations": [
+        "紧急指示一项不是告警已经发出的依据；发出升级请求也不是组员已获通知的凭据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.9.1",
+            "7.4.2.9.2, opening paragraph, NOTE 1 and pre-conditions 1–4"
+          ],
+          "printed_pages": [
+            70
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.9.2, steps 1–2"
+          ],
+          "printed_pages": [
+            71
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "grp-sds-up-bearer",
+      "title": "在网组 SDS 紧急升级中，服务器调整以单播接收该通信的全部或选定参与者的底层承载优先级；选哪些人由实现确定",
+      "conditions": [
+        "已到本程序步骤 3，要判断服务器的承载调整对象。"
+      ],
+      "conclusion": "单播接收限定候选范围，服务器可覆盖其中全部或选定参与者。组成员身份本身不能证明接收方式；一名单播接收者已调，不足以判定另一名单播接收者是否也已调。",
+      "normative_strength": "步骤 3 规定调整范围；注 2 将选定参与者的办法留给实现。",
+      "limitations": [
+        "本步骤不要求把组播接收者的承载也一并调整，亦不规定参与者选择算法、调整数值或保持期限。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.9.2, step 3 and NOTE 2"
+          ],
+          "printed_pages": [
+            71
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "grp-sds-up-members",
+      "title": "在网组 SDS 紧急升级中，服务器向已归属组员客户端发请求并依原请求携带告警指示；用户获通知，组播场景不发接收端给服务器的升级回执",
+      "conditions": [
+        "按步骤 4–6 区分转出的升级请求、用户通知以及接收客户端给服务器的响应。"
+      ],
+      "conclusion": "原请求带紧急告警指示时，服务器向相应已归属组员的客户端转出的升级请求也带此指示。用户获知组的进行中紧急状态。接收客户端发给服务器的升级响应确认的是组紧急请求；组播场景不发这些响应。",
+      "normative_strength": "程序区分转发、用户获通知和接收端确认；组播例外针对步骤 6 的回执。",
+      "limitations": [
+        "只见服务器向组员客户端发出请求，不能登记各端已收到或用户已获通知；用户获通知也不是逐人批准。成员回执不证明短消息交付，也不能代替服务器给发起者的确认。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.9.2, steps 4–5"
+          ],
+          "printed_pages": [
+            71
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.9.2, step 6"
+          ],
+          "printed_pages": [
+            71
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.9.2, step 7"
+          ],
+          "printed_pages": [
+            71
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "grp-sds-up-confirm",
+      "title": "在网组 SDS 紧急升级中，服务器依继续通信的条件可在步骤 3（仅涉及单播接收者）之后、步骤 8（三端继续已转为紧急的原组通信）之前向发起者确认，不必一概等齐成员回执",
+      "conditions": [
+        "判断服务器向甲的升级响应何时可发，以及其出站记录能证明什么。"
+      ],
+      "conclusion": "组播场景不发步骤 6 的成员回执，仍有服务器向甲发步骤 7 确认。依继续通信的条件，步骤 7 可在步骤 3（只对以单播接收通信的全部或选定参与者调承载）之后、步骤 8（三端继续已转为紧急的原组 SDS）之前发生；没有统一的全员回执门槛。",
+      "normative_strength": "注 3 给出允许窗口，并没有规定到达该窗口起点就必须立即确认。",
+      "limitations": [
+        "只见服务器向甲发出响应，不能据此补记哪位参与者的承载曾实际调整；组播例中没有已知单播接收者时同理。本条也不把该出站响应视为甲已收、三端已继续或一条短消息已交付的证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.9.2, step 3 and NOTE 2"
+          ],
+          "printed_pages": [
+            71
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.9.2, step 6"
+          ],
+          "printed_pages": [
+            71
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.9.2, step 7"
+          ],
+          "printed_pages": [
+            71
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.9.2, NOTE 3 following step 7 and concluding paragraph"
+          ],
+          "printed_pages": [
+            72
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.9.1",
+        "7.4.2.9.2, opening paragraph, NOTE 1 and pre-conditions 1–4"
+      ],
+      "printed_pages": [
+        70
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.9.2, steps 1–2"
+      ],
+      "printed_pages": [
+        71
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.9.2, step 3 and NOTE 2"
+      ],
+      "printed_pages": [
+        71
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.9.2, steps 4–5"
+      ],
+      "printed_pages": [
+        71
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.9.2, step 6"
+      ],
+      "printed_pages": [
+        71
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.9.2, step 7"
+      ],
+      "printed_pages": [
+        71
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.9.2, NOTE 3 following step 7 and concluding paragraph"
+      ],
+      "printed_pages": [
+        72
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcdata-one-to-one-sds-emergency-upgrade",
+    "r16-mcdata-group-sds-emergency-cancel",
+    "r16-mcdata-group-media-plane-sds-session"
+  ],
+  "limitations": [
+    "只解释本版同系统在网组 SDS 升级。不能从本节推定其他业务、跨系统或其他传送方式是否支持同类升级。",
+    "不据此指定承载优先级数值、保持到何时、挑选哪些人的算法、固定回执数、具体空口编码或实际网络结果。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
