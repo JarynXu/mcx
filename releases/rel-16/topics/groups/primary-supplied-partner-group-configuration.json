@@ -1,0 +1,312 @@
+{
+  "topic_id": "r16-groups-primary-supplied-partner-group-configuration",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "伙伴没来索取，主系统也能把组配置发过去吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "各项声明继承通用条件，并叠加本项条件。",
+  "common_conditions": [
+    "限 TS 23.280 V16.7.0 Release 16 Stage 2 的跨系统组配置主动提供；“主”和“伙伴”均按该 MC 业务组区分，交换主体是两侧的组管理服务器（GMS）。"
+  ],
+  "claims": [
+    {
+      "id": "primary-provides",
+      "title": "主系统主动提供组配置的四项前提：组在主系统定义、至少一名组成员在伙伴系统定义、主系统已配置伙伴 GMS 的寻址信息，并获准向伙伴提供组配置",
+      "conditions": [
+        "该组在主系统定义，至少一名组成员在伙伴系统定义；主系统已配置伙伴 GMS 寻址信息，且获准向伙伴提供组配置。"
+      ],
+      "conclusion": "主 GMS 可主动向伙伴 GMS 提供组配置，不要求伙伴先索取或订阅。管理员操作是可能的起因。若主侧配置的是代理地址，由伙伴内部路由选出实际接收的 GMS。",
+      "normative_strength": "引言举例；四项前提共同适用；注 1 描述可选的代理寻址。",
+      "limitations": [
+        "不能将管理员的操作当成唯一触发条件，也不能把组员的存在当作系统间提供权限。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.2, introduction and four preconditions"
+          ],
+          "printed_pages": [
+            105
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.2, numbered step 1"
+          ],
+          "printed_pages": [
+            105
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.2, NOTE 1"
+          ],
+          "printed_pages": [
+            105
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "provision-request",
+      "title": "主 GMS 向伙伴 GMS 提供配置的请求，组 ID 和该组的配置信息均必带",
+      "conditions": [
+        "主 GMS 发的是提供组信息请求。"
+      ],
+      "conclusion": "发件方是该组主系统的 GMS，收件方是伙伴 GMS；组 ID 标识所涉及的组，配置信息对应这个组。",
+      "normative_strength": "表 10.2.2.24-1 中这两个信息项均为 M。",
+      "limitations": [
+        "这不是伙伴向主系统索取组配置的请求。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.24, Table 10.2.2.24-1"
+          ],
+          "printed_pages": [
+            92
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.2, numbered step 1"
+          ],
+          "printed_pages": [
+            105
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "partner-adjusts-and-stores",
+      "title": "伙伴 GMS 在主动提供流程中保存按本地策略和配置调整后的组配置，通知本系统业务服务器是可选的",
+      "conditions": [
+        "伙伴 GMS 已收到主 GMS 主动提供的组配置；按流程步骤 2–4 处理。"
+      ],
+      "conclusion": "伙伴先依据本系统策略和本地配置信息修改，再保存修改后的配置；它可以通知本系统的 MC 业务服务器。未看到这项可选通知不能推断伙伴未保存。",
+      "normative_strength": "步骤 2、3 描述修改及保存；步骤 4 用 may 描述通知。",
+      "limitations": [
+        "不要求逐字保存主侧发来的版本。可选通知的对象不是组员终端。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.2, numbered step 2"
+          ],
+          "printed_pages": [
+            105
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.2, numbered step 3"
+          ],
+          "printed_pages": [
+            106
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.2, numbered step 4"
+          ],
+          "printed_pages": [
+            106
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "provision-result",
+      "title": "伙伴 GMS 的提供响应报告组配置接收、修改和保存的结果，不是终端回执",
+      "conditions": [
+        "伙伴 GMS 向主 GMS 回应本次组配置提供。"
+      ],
+      "conclusion": "提供响应必带组 ID 和结果，结果表示接收、修改和保存成功或失败。成功流程的末步确认伙伴 GMS 已正确接收并存储。失败结果本身不指明是哪一步失败。",
+      "normative_strength": "表 10.2.2.25-1 的两项为 M；步骤 5 描述成功路径，不是保证每次请求成功。",
+      "limitations": [
+        "伙伴有向由本系统服务的组员提供配置的职责，但两台 GMS 之间的成功响应不证明某个终端已收到、保存或加入组呼。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.25, Table 10.2.2.25-1"
+          ],
+          "printed_pages": [
+            93
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.2, numbered step 5"
+          ],
+          "printed_pages": [
+            106
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.2, NOTE 2"
+          ],
+          "printed_pages": [
+            105
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.2, numbered step 2"
+          ],
+          "printed_pages": [
+            105
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.2, numbered step 3"
+          ],
+          "printed_pages": [
+            106
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.7.2, introduction and four preconditions"
+      ],
+      "printed_pages": [
+        105
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.7.2, numbered step 1"
+      ],
+      "printed_pages": [
+        105
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.7.2, NOTE 1"
+      ],
+      "printed_pages": [
+        105
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.2.24, Table 10.2.2.24-1"
+      ],
+      "printed_pages": [
+        92
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.7.2, numbered step 2"
+      ],
+      "printed_pages": [
+        105
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.7.2, numbered step 3"
+      ],
+      "printed_pages": [
+        106
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.7.2, numbered step 4"
+      ],
+      "printed_pages": [
+        106
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.2.25, Table 10.2.2.25-1"
+      ],
+      "printed_pages": [
+        93
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.7.2, numbered step 5"
+      ],
+      "printed_pages": [
+        106
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.7.2, NOTE 2"
+      ],
+      "printed_pages": [
+        105
+      ]
+    }
+  ],
+  "related": [
+    "r16-groups-partner-group-configuration",
+    "r16-groups-client-group-configuration"
+  ],
+  "limitations": [
+    "不据 GMS 间的信息流判断某台终端的配置或组呼状态，不规定 Stage 3 编码、实际配置差异或失败后的恢复。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
