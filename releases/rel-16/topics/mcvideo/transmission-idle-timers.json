@@ -1,0 +1,179 @@
+{
+  "topic_id": "r16-mcvideo-transmission-idle-timers",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "在网 MCVideo：发送控制空闲时，T2 或 T1 到期就是挂断吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.581-v16.9.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 24.581 V16.9.0，Release 16，Stage 3，在网 MCVideo 发送控制服务器的一般发送控制仲裁；按各条区分进入 G: Transmit Idle、已在 Idle 且某计时器到期，以及同版定时器表对照，不把这些事件串成发生于每通呼叫的时序。"
+  ],
+  "claims": [
+    {
+      "id": "idle-entry-and-queue",
+      "title": "怎样进入 Idle，何时群发并启动计时器",
+      "conditions": [
+        "对照进入 G: Transmit Idle 的动作时，先确认前态不是 Start-stop，且没有任何 MCVideo 客户端协商支持发送请求排队；再按活动队列是否为空区分动作。"
+      ],
+      "conclusion": "Idle 表示本呼叫当前无人获准发送媒体，期间 T1、T2 均可能运行。满足上述入口条件且队列为空时，向所有发送控制参与者群发 Transmission Idle，消息序列号加 1；若为组呼，且属于广播组呼、系统呼叫、紧急呼叫、紧迫危险呼叫或临时组会话之一，消息还须带相应 Transmission Indicator。启动 T2、把 C2 置为 1，启动 T1、把一般状态设为 G: Transmit Idle、把 Cx 置为 0。若在同样入口条件下队列非空，选择并移除队首请求，对其参与者进入 G: Transmit Taken。",
+      "normative_strength": "状态说明为 can be running，不是永远运行；满足各自守卫的进入动作为 SHALL。",
+      "limitations": [
+        "不能从 Idle 标签反推先前状态、协商结果、队列情况或两计时器已经启动。非 Start-stop 和未协商排队是进入动作的守卫，不是 Idle 中到期处理的共同前提。",
+        "§6.3.4.3.2 步骤 1.a.ii 的组呼条件限定整个类别列表。即使是紧急私呼，本条也不能证明必须携带该字段，或证明禁止携带。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.4.3.1, G: Transmit Idle and timers that can be running"
+          ],
+          "printed_pages": [
+            56
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.4.3.2, state-entry guard and active queue branches (steps 1–2); step 1.a.ii, group-call condition for the Transmission Indicator"
+          ],
+          "printed_pages": [
+            56,
+            57
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "t2-idle-retransmission",
+      "title": "T2 到期时何时重发，重发给谁",
+      "conditions": [
+        "服务器一般发送仲裁已在 G: Transmit Idle，且 T2（Transmit Idle）到期。"
+      ],
+      "conclusion": "步骤 1：C2 未达上限时重启 T2 并将 C2 加 1。步骤 2 单列 C2 未达上限的条件，满足时向该呼叫的所有发送控制参与者发 Transmission Idle，消息序列号加 1。步骤 3：仍留在 G: Transmit Idle。C2 上限可配置，未配置时用默认值 10；达到上限不再重发。",
+      "normative_strength": "两个受 C2 条件约束的步骤为 SHALL；保持 Idle 为 SHALL。计数表将 C2 与 T2 配对，并给出上限、可配置性及达到上限时的行为。",
+      "limitations": [
+        "不能把两个步骤合成逢到期必发，也不能把 10 写成每次呼叫固定重发十次。上限不触发呼叫释放；向所有参与者发送不是全员收妥的证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.4.3.4, T2 expiry (steps 1–3)"
+          ],
+          "printed_pages": [
+            57,
+            58
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "11.2.3, Table 11.2.3-1, C2 row and NOTE on unconfigured values"
+          ],
+          "printed_pages": [
+            212
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "t1-release-decision",
+      "title": "T1 到期后由谁决定是否释放",
+      "conditions": [
+        "服务器一般发送仲裁已在 G: Transmit Idle，且 T1（Inactivity）到期；按可配置的服务提供商策略处理。"
+      ],
+      "conclusion": "仲裁向应用面和信令面指示 T1 到期。若应用面和信令面发起释放，仲裁进入 Releasing；若未发起，仍留在 G: Transmit Idle，并宜重启 T1。",
+      "normative_strength": "通知、发起释放后的状态转换、未发起时保持 Idle 均为 SHALL；未发起时重启 T1 为 SHOULD。",
+      "limitations": [
+        "收到 T1 到期指示不证明已经发起释放；进入 Releasing 也不证明已释放完毕。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.4.3.5, T1 expiry (steps 1–3)"
+          ],
+          "printed_pages": [
+            58
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "timer-table-vs-procedure",
+      "title": "同一固定版中的表文差异",
+      "conditions": [
+        "解释表 11.1.3-1 的 T1、T2 两行时，与 Idle 状态中各计时器的专门到期程序逐项比较。"
+      ],
+      "conclusion": "表中 T1 到期栏写呼叫被释放，未展开专门程序按是否发起释放的分支。表中 T2 行的到期栏字面写 T5 到期后再发空闲消息，而 §6.3.4.3.4 明确处理 T2 到期，并分别检查 C2。",
+      "normative_strength": "表项原样记录；描述 Idle 的行为用对应专门程序说明条件，不把专门程序中的 SHOULD 改为 SHALL。",
+      "limitations": [
+        "不声称存在经确认的勘误，不把 T5 静默改为 T2，不新增等待 T5 的步骤，也不用 T1 表项推断一定挂断。本页不是 MCPTT 同名计时器的依据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "11.1.3, Table 11.1.3-1, T1 and T2 rows, On expiry column"
+          ],
+          "printed_pages": [
+            207
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.4.3.4, T2 expiry (steps 1–3)"
+          ],
+          "printed_pages": [
+            57,
+            58
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.4.3.5, T1 expiry (steps 1–3)"
+          ],
+          "printed_pages": [
+            58
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcvideo-prearranged-group-transmission-server",
+    "r16-mcptt-onnetwork-floor-media-timeouts"
+  ],
+  "limitations": [
+    "不说明具体产品是否遵从，不从控制状态、计时器或一次发送推出媒体实际收妥或呼叫释放完成。不处理客户端或离网状态机。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
