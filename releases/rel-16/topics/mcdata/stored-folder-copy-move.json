@@ -1,0 +1,274 @@
+{
+  "topic_id": "r16-mcdata-stored-folder-copy-move",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCData 消息存储：复制或移动整个文件夹，里面的子文件夹和对象去哪儿？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 23.282 V16.8.0，Release 16，Stage 2；已在 MCData 消息存储中持有本人账户，账户采用文件夹层级，消息存储客户端与 MCData 消息存储之间已成功完成认证和授权。操作的是该账户的已有文件夹。"
+  ],
+  "claims": [
+    {
+      "id": "account-and-hierarchy",
+      "title": "操作限于本人账户里的文件夹层级",
+      "conditions": [
+        "用户要把本人已有的文件夹放到同一账户下的另一位置。"
+      ],
+      "conclusion": "用户须在 MCData 消息存储中有账户，且消息存储客户端与 MCData 消息存储之间已成功完成认证和授权。客户端代表用户向消息存储发起请求；消息存储在该用户本人的存储区执行操作。",
+      "normative_strength": "文件夹复制和移动均以账户采用文件夹层级为适用条件；有账户不等于已完成认证和授权。",
+      "limitations": [
+        "知道他人文件夹标识不授予访问权，跨用户转交不属于该流程。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.1, access limited to the user’s own storage area"
+          ],
+          "printed_pages": [
+            140
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.13.1–2, folder hierarchy, original account and completed authentication/authorization for folder copy"
+          ],
+          "printed_pages": [
+            158
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.14.1–2, folder hierarchy, original account and completed authentication/authorization for folder move"
+          ],
+          "printed_pages": [
+            159
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.13.2, numbered steps 1–3 accompanying Figure 7.13.3.13.2-1, whole folder copy, naming and response"
+          ],
+          "printed_pages": [
+            159
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.14.2, numbered steps 1–3 accompanying Figure 7.13.3.14.2-1, whole folder move, naming and response"
+          ],
+          "printed_pages": [
+            160
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "request-and-naming",
+      "title": "请求怎样点名源和目标，名称能否省略",
+      "conditions": [
+        "客户端准备发起复制或移动整个文件夹的请求。"
+      ],
+      "conclusion": "消息存储客户端向 MCData 消息存储发送相应请求。两张请求表的必填项均为用户 MCData ID、源文件夹标识和目标文件夹标识；可另给新文件夹名。省略时沿用源文件夹名。名称用于目标位置的复制品或移入的文件夹，不改变目标父文件夹的名字。",
+      "normative_strength": "三项标识均为 M；新文件夹名为 O。步骤 1 提及名称，不把它改成必填。",
+      "limitations": [
+        "源端按文件夹标识选定处理范围，不是按某个对象标识操作。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.23, Table 7.13.3.1.23-1 including NOTE, copy folder request"
+          ],
+          "printed_pages": [
+            146
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.25, Table 7.13.3.1.25-1 including NOTE, move folder request"
+          ],
+          "printed_pages": [
+            146
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.13.2, numbered steps 1–3 accompanying Figure 7.13.3.13.2-1, whole folder copy, naming and response"
+          ],
+          "printed_pages": [
+            159
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.14.2, numbered steps 1–3 accompanying Figure 7.13.3.14.2-1, whole folder move, naming and response"
+          ],
+          "printed_pages": [
+            160
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "whole-folder-effect",
+      "title": "成功时子文件夹和对象随整份文件夹处理",
+      "conditions": [
+        "消息存储已报告相应的复制或移动成功。"
+      ],
+      "conclusion": "复制时，原文件夹保留，目标位置得到一份包含源文件夹全部子文件夹和存储对象的副本；移动时，原文件夹及其中全部子文件夹和存储对象转到目标位置，原处不再保留该文件夹。请求无需枚举子项。",
+      "normative_strength": "这是成功后对整份目录的操作，不是让客户端逐个复制或移动对象。",
+      "limitations": [
+        "本条款不规定实现内部如何遍历、遇到同名项是覆盖还是拒绝，或失败如何回滚。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.13.1–2, folder hierarchy, original account and completed authentication/authorization for folder copy"
+          ],
+          "printed_pages": [
+            158
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.14.1–2, folder hierarchy, original account and completed authentication/authorization for folder move"
+          ],
+          "printed_pages": [
+            159
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.23, Table 7.13.3.1.23-1 including NOTE, copy folder request"
+          ],
+          "printed_pages": [
+            146
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.25, Table 7.13.3.1.25-1 including NOTE, move folder request"
+          ],
+          "printed_pages": [
+            146
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.13.2, numbered steps 1–3 accompanying Figure 7.13.3.13.2-1, whole folder copy, naming and response"
+          ],
+          "printed_pages": [
+            159
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.14.2, numbered steps 1–3 accompanying Figure 7.13.3.14.2-1, whole folder move, naming and response"
+          ],
+          "printed_pages": [
+            160
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "result-and-folder-id",
+      "title": "响应里的结果和新文件夹标识分别说明什么",
+      "conditions": [
+        "消息存储向发起请求的消息存储客户端发回对应的文件夹复制或移动响应。"
+      ],
+      "conclusion": "两张响应表均将用户的 MCData ID、操作结果（成功或失败）、新文件夹标识列为必填。成功时，该标识对应目标位置上被复制或移动过去的文件夹，不是请求中作为目的地的父文件夹或其子对象。判断成功看结果，不看响应名或标识的存在。",
+      "normative_strength": "三项均为 M。“新文件夹标识”是字段名，不承诺移动时数值改变或保持不变。",
+      "limitations": [
+        "只有请求、响应名或标识不能证明成功；表和流程没有说明失败时标识如何取值。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.24, Table 7.13.3.1.24-1, copy folder response"
+          ],
+          "printed_pages": [
+            146
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.26, Table 7.13.3.1.26-1, move folder response"
+          ],
+          "printed_pages": [
+            147
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.13.2, numbered steps 1–3 accompanying Figure 7.13.3.13.2-1, whole folder copy, naming and response"
+          ],
+          "printed_pages": [
+            159
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.14.2, numbered steps 1–3 accompanying Figure 7.13.3.14.2-1, whole folder move, naming and response"
+          ],
+          "printed_pages": [
+            160
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcdata-stored-object-copy-move",
+    "r16-mcdata-stored-object-update-delete"
+  ],
+  "limitations": [
+    "只解释文件夹级复制与移动，不把单个对象的规则套到目录；不规定冲突、失败回滚、标识值的生成或持久性，也不涉及 Stage 3 消息编码。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
