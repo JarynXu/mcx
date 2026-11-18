@@ -1,0 +1,436 @@
+{
+  "topic_id": "r16-mcvideo-push-to-server-recording",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "向 MCVideo 服务器推送录制：拿到文件 URL，录像就录完了吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.281-v16.4.0",
+  "common_conditions": [
+    "3GPP TS 23.281 V16.4.0，Release 16，Stage 2；在网 MCVideo 主叫向服务器推送视频、由服务器录成文件。"
+  ],
+  "condition_rule": "每条声明继承上述范围，再按条件区分接受、传流、结束和可选通知；涉及其他程序的内容只用于辨别方向。",
+  "claims": [
+    {
+      "id": "admit-server-recording-push",
+      "title": "服务准入与向服务器推送的授权分别检查",
+      "conditions": [
+        "主叫客户端向 MCVideo 服务器发起录制推送。"
+      ],
+      "conclusion": "主叫用户已通过认证且获准使用 MCVideo 服务，客户端已注册。请求必带主叫的 MCVideo ID 和 SDP 媒体提议；所请求的录制时长和应用优先级是可选项。服务器还要检查客户端是否有权向它推送视频。",
+      "normative_strength": "流程前提、步骤 1–2 及请求表的必需或可选字段。",
+      "limitations": [
+        "已有业务授权和注册并不能代替本次推送权限检查。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.4.1"
+          ],
+          "printed_pages": [
+            94
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.4.2, pre-conditions and Figure 7.4.2.4.2-1, steps 1–2"
+          ],
+          "printed_pages": [
+            94,
+            95
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.2.4, Table 7.4.2.2.4-1"
+          ],
+          "printed_pages": [
+            92
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "accept-file-location-before-recording",
+      "title": "接受响应给出录制目的地，不是录制结果",
+      "conditions": [
+        "服务器接受本次推送。"
+      ],
+      "conclusion": "接受响应必带主叫的 MCVideo ID、选定媒体参数的 SDP 应答和将要写入的文件 URL。双方可协商最长传输时间；响应若带时限，表示服务器接受或设定的上限。",
+      "normative_strength": "步骤 3、注 1 及响应表的必需或可选字段。",
+      "limitations": [
+        "该时限不是已录时长；此时不能断定已建媒体面、已收流、已完成录制。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.2.5, Table 7.4.2.2.5-1"
+          ],
+          "printed_pages": [
+            92
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.4.2, Figure 7.4.2.4.2-1, step 3 and NOTE 1"
+          ],
+          "printed_pages": [
+            95
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.4.2, Figure 7.4.2.4.2-1, steps 4–5"
+          ],
+          "printed_pages": [
+            95
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "record-stream-to-returned-url",
+      "title": "先建媒体面和传输控制，再把收到的视频流写入指定文件",
+      "conditions": [
+        "图示接受推送后的步骤 4–5。"
+      ],
+      "conclusion": "客户端与服务器建立媒体面和传输控制；随后视频从客户端流向服务器，服务器将流写入接受响应所给 URL 对应的文件。",
+      "normative_strength": "成功路径中的两个不同步骤。",
+      "limitations": [
+        "控制已建立不等于已有视频；正在写入不等于传输已经结束。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.4.2, Figure 7.4.2.4.2-1, step 3 and NOTE 1"
+          ],
+          "printed_pages": [
+            95
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.4.2, Figure 7.4.2.4.2-1, steps 4–5"
+          ],
+          "printed_pages": [
+            95
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "end-communication-with-cause",
+      "title": "完成应答确认通信结束；谁发起结束，要看交换方向",
+      "conditions": [
+        "推送停止，区分图示客户端发起的结束与服务器可选择的结束。"
+      ],
+      "conclusion": "图示主叫用户停止推送或客户端按预设条件停止；客户端发送完成请求，服务器回送完成应答。服务器也可按自己的条件（例如录像时长上限）结束传输。双向适用的完成请求必带主叫 ID 与结束原因；完成应答表只列主叫 ID。",
+      "normative_strength": "步骤 6–7 为图示路径，注 4 为有条件替代；两张完成信息表均适用于两个方向。",
+      "limitations": [
+        "时长是条件举例，不是每次都由服务器结束的规则。应答中的主叫 ID 不能单独指明谁先停止或原因；通信结束确认不是录像完整性、通知送达或观看证明。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.4.1"
+          ],
+          "printed_pages": [
+            94
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.4.2, Figure 7.4.2.4.2-1, steps 6–7 and NOTE 4"
+          ],
+          "printed_pages": [
+            95
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.2.6, flow direction and Table 7.4.2.2.6-1"
+          ],
+          "printed_pages": [
+            92,
+            93
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.2.7, Table 7.4.2.2.7-1"
+          ],
+          "printed_pages": [
+            93
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "notify-and-pull-separately",
+      "title": "新媒体通知可选，回放要另行拉取",
+      "conditions": [
+        "有人希望使用本次推送接受响应中的录像 URL。"
+      ],
+      "conclusion": "发起推送的用户或服务器可用该 URL 告知新媒体可用。收到通知的客户端可自行择时用通知里的地址按 §7.3.2.4.2 向服务器发起拉取。",
+      "normative_strength": "步骤 5 后两条注释描述可选通知及后续程序，不是推送完成的必经步骤。",
+      "limitations": [
+        "初始接受、推送结束应答或新媒体通知都不证明接收方已拉取或观看。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.4.2, NOTEs 2–3"
+          ],
+          "printed_pages": [
+            95
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.3.2.4.1"
+          ],
+          "printed_pages": [
+            86
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.4.2, Figure 7.4.2.4.2-1, steps 6–7 and NOTE 4"
+          ],
+          "printed_pages": [
+            95
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "distinguish-user-endpoints",
+      "title": "按视频去向分辨录制、给另一用户推送和两种拉取",
+      "conditions": [
+        "需要识别由谁提供视频以及视频流向哪一端。"
+      ],
+      "conclusion": "在本次录制中，视频从主叫流向录制服务器。甲向乙推送是主叫向被叫发视频；甲向乙拉取是被叫向主叫发视频；回放服务器中的文件则由服务器向请求方提供视频。",
+      "normative_strength": "只就业务对象和方向指向相邻主题。",
+      "limitations": [
+        "三个相关流程都不是本次录制的必要步骤。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.4.1"
+          ],
+          "printed_pages": [
+            94
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.3.1"
+          ],
+          "printed_pages": [
+            93
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.3.2.3.1"
+          ],
+          "printed_pages": [
+            85
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.3.2.4.1"
+          ],
+          "printed_pages": [
+            86
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.4.2.4.1"
+      ],
+      "printed_pages": [
+        94
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.4.2.4.2, pre-conditions and Figure 7.4.2.4.2-1, steps 1–2"
+      ],
+      "printed_pages": [
+        94,
+        95
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.4.2.2.4, Table 7.4.2.2.4-1"
+      ],
+      "printed_pages": [
+        92
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.4.2.2.5, Table 7.4.2.2.5-1"
+      ],
+      "printed_pages": [
+        92
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.4.2.4.2, Figure 7.4.2.4.2-1, step 3 and NOTE 1"
+      ],
+      "printed_pages": [
+        95
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.4.2.4.2, Figure 7.4.2.4.2-1, steps 4–5"
+      ],
+      "printed_pages": [
+        95
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.4.2.4.2, Figure 7.4.2.4.2-1, steps 6–7 and NOTE 4"
+      ],
+      "printed_pages": [
+        95
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.4.2.2.6, flow direction and Table 7.4.2.2.6-1"
+      ],
+      "printed_pages": [
+        92,
+        93
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.4.2.2.7, Table 7.4.2.2.7-1"
+      ],
+      "printed_pages": [
+        93
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.4.2.4.2, NOTEs 2–3"
+      ],
+      "printed_pages": [
+        95
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.3.2.4.1"
+      ],
+      "printed_pages": [
+        86
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.4.2.3.1"
+      ],
+      "printed_pages": [
+        93
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.3.2.3.1"
+      ],
+      "printed_pages": [
+        85
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcvideo-stored-video-server-pull",
+    "r16-mcvideo-one-to-one-video-push",
+    "r16-mcvideo-one-to-one-video-pull"
+  ],
+  "limitations": [
+    "只述服务器录制推送；不从回放程序反推本次媒体许可，也不规定具体 SIP 报文、文件完整性校验或播放回执。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
