@@ -1,0 +1,426 @@
+{
+  "topic_id": "r16-bearers-mbms-fec-encoding-roles",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MBMS 承载通告里有前向纠错信息，谁负责编码？丢包已经恢复了吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "每项声明继承通用条件，并叠加本项条件。",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0，Release 16，Stage 2；§§10.7.3.11.1–3，范围限于 MC 业务经 MBMS 下行传输时的应用层前向纠错。"
+  ],
+  "claims": [
+    {
+      "id": "announcement-and-decoding",
+      "title": "两种 MBMS 前向纠错方法均由业务服务器通告、客户端解码；通告本身不能区分编码方或证明某次丢包恢复",
+      "conditions": [
+        "只掌握含 FEC 信息的公共 MBMS 承载通告。"
+      ],
+      "conclusion": "采用 FEC 时，BM-SC 应服务器请求编码与服务器自行编码是独立方法。发通告的一方不是判断编码方的充分线索；解码属于客户端职责，具体终端是否收包并成功恢复某个包是另一回事。",
+      "normative_strength": "两种程序规定角色分工；对单条通告能说明什么的判断来自通告与后续媒体处理步骤的区分。",
+      "limitations": [
+        "不承诺所有客户端都能解码或每个丢包都能恢复。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.11.1, paragraphs 1–5"
+          ],
+          "printed_pages": [
+            142
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.11.2, numbered step 3"
+          ],
+          "printed_pages": [
+            143
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.11.2, numbered steps 5–7"
+          ],
+          "printed_pages": [
+            143
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.11.3, opening paragraph"
+          ],
+          "printed_pages": [
+            143
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.11.3, numbered steps 1–5"
+          ],
+          "printed_pages": [
+            144
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "setup-on-active-bearer",
+      "title": "请 BM-SC 为指定媒体流编码时，业务服务器在已激活的 MBMS 承载上经 MB2-C 请求设置 FEC",
+      "conditions": [
+        "MC 业务服务器选择由 BM-SC 编码；可采用预建立或动态承载。"
+      ],
+      "conclusion": "服务器在请求中列承载 TMGI、媒体描述、修复流目的 IP 和端口、FEC 额外时延上限。同一承载上的不同媒体流集合可分别申请保护。",
+      "normative_strength": "这是 BM-SC 编码流程的前提与请求内容；重复请求为可选。",
+      "limitations": [
+        "该前提和请求不是本款为服务器自行编码另列的步骤。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.11.2, opening paragraphs and precondition 1"
+          ],
+          "printed_pages": [
+            142
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.11.2, numbered step 1"
+          ],
+          "printed_pages": [
+            142,
+            143
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.11.3, numbered steps 1–5"
+          ],
+          "printed_pages": [
+            144
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "response-and-release-scope",
+      "title": "BM-SC 能满足 FEC 请求时返回媒体与 FEC 信息及实例标识；标识可用于解除相应媒体流的保护",
+      "conditions": [
+        "业务服务器已向 BM-SC 请求为一组媒体流设置 FEC；此处只谈 BM-SC 能满足请求的分支。"
+      ],
+      "conclusion": "应答的更新后媒体信息列表和 FEC 信息进入业务服务器向客户端所发承载通告的 SDP；实例标识可用于解除这些媒体流的 FEC。",
+      "normative_strength": "步骤 2 是有条件的应答，标识可用于释放；步骤 3 说明通告内容。",
+      "limitations": [
+        "不能从标识本身推断已经释放，也不能由一个实例的释放判定其他实例或整个承载的状态。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.11.2, numbered step 1"
+          ],
+          "printed_pages": [
+            142,
+            143
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.11.2, numbered step 2"
+          ],
+          "printed_pages": [
+            143
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.11.2, numbered step 3"
+          ],
+          "printed_pages": [
+            143
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "bmsc-data-path",
+      "title": "由 BM-SC 编码时，业务服务器经 MB2-U 交付下行媒体，BM-SC 编码发送，客户端按通告解码",
+      "conditions": [
+        "选择由 BM-SC 编码且按该已建立的 FEC 流程发送下行媒体。"
+      ],
+      "conclusion": "BM-SC 按通告的算法和参数编码、经 MBMS 发送；客户端依通告的 FEC 信息解码，将解码后的流交给播放器。",
+      "normative_strength": "编号步骤描述这条路径的媒体处理。",
+      "limitations": [
+        "这段步骤不能证明特定终端实际收到或成功还原某一包。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.11.2, numbered step 3"
+          ],
+          "printed_pages": [
+            143
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.11.2, numbered steps 5–7"
+          ],
+          "printed_pages": [
+            143
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "server-data-path",
+      "title": "由业务服务器自行编码时，源包与修复包均经 MB2-U 到 BM-SC，BM-SC 将两者原样转发给客户端",
+      "conditions": [
+        "选择 MC 业务服务器自行编码。"
+      ],
+      "conclusion": "业务服务器通告 FEC 信息，经媒体分发功能处理发端终端传来的媒体并按选定算法编码。两类包在交给 BM-SC 前已备好，接收端的 MC 业务客户端按所选算法解码。",
+      "normative_strength": "独立于 BM-SC 编码的另一条程序，不是对同批包再做一次 BM-SC 编码。",
+      "limitations": [
+        "本路径没有列出请 BM-SC 编码的 Setup FEC 请求、应答或实例标识为其前置步骤。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.11.1, paragraphs 1–5"
+          ],
+          "printed_pages": [
+            142
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.11.3, opening paragraph"
+          ],
+          "printed_pages": [
+            143
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.11.3, numbered steps 1–5"
+          ],
+          "printed_pages": [
+            144
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "optional-support-delay-and-history",
+      "title": "服务器与客户端可选支持 MBMS FEC；参数可参考以往监听报告，额外时延须受限",
+      "conditions": [
+        "考察 MC 业务服务器和 MC 业务客户端的支持要求，以及业务服务器为新 MBMS 承载选用 FEC 参数的依据。"
+      ],
+      "conclusion": "历史监听报告可用于调整参数，但不构成启用前提。应用 FEC 所增加的端到端媒体传输时延受任务关键业务低时延要求约束；本款未给统一毫秒数。在请求 BM-SC 编码的方案中，请求给出额外时延上限。",
+      "normative_strength": "区分可选支持、可参考报告，以及对实际应用 FEC 的时延限制。",
+      "limitations": [
+        "先前承载的质量报告不能证明新承载上某个包已经得到恢复。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.11.1, paragraphs 1–5"
+          ],
+          "printed_pages": [
+            142
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.11.2, numbered step 1"
+          ],
+          "printed_pages": [
+            142,
+            143
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "repair-switch-editor-note",
+      "title": "传输中由业务服务器启停 BM-SC 修复包生成仍是编者注中的讨论事项",
+      "conditions": [
+        "讨论媒体传输进行中由业务服务器控制 BM-SC 生成修复包，而非解除整组媒体流的 FEC 保护。"
+      ],
+      "conclusion": "编者注讨论是否需要这一能力及其可能影响；该版该款没有给出传输中启停修复包的程序。",
+      "normative_strength": "编者注不是已经规定的操作。",
+      "limitations": [
+        "实例标识可用于释放相应流的 FEC，不能把该用途当作已标准化的修复包开关。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.11.2, numbered step 2"
+          ],
+          "printed_pages": [
+            143
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.11.2, editor’s note following step 7"
+          ],
+          "printed_pages": [
+            143
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.11.1, paragraphs 1–5"
+      ],
+      "printed_pages": [
+        142
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.11.2, opening paragraphs and precondition 1"
+      ],
+      "printed_pages": [
+        142
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.11.2, numbered step 1"
+      ],
+      "printed_pages": [
+        142,
+        143
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.11.2, numbered step 2"
+      ],
+      "printed_pages": [
+        143
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.11.2, numbered step 3"
+      ],
+      "printed_pages": [
+        143
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.11.2, numbered steps 5–7"
+      ],
+      "printed_pages": [
+        143
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.11.2, editor’s note following step 7"
+      ],
+      "printed_pages": [
+        143
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.11.3, opening paragraph"
+      ],
+      "printed_pages": [
+        143
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.11.3, numbered steps 1–5"
+      ],
+      "printed_pages": [
+        144
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcvideo-mbms-media-fec"
+  ],
+  "limitations": [
+    "本款不展开 FEC 算法实现或特定部署表现；不把 MCVideo 的 Stage 3 媒体面要求倒推为公共流程。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
