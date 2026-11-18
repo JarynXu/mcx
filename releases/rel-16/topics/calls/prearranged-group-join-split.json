@@ -1,0 +1,306 @@
+{
+  "topic_id": "r16-calls-prearranged-group-join-split",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "已有的在网 MCPTT 预安排组呼怎样并接？拆开后原组呼还能继续吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "各项声明继承共同范围，分别按邀请、确认和拆分的实际触发及本项条件使用。",
+  "common_conditions": [
+    "在网 MCPTT 已有预安排组呼，讨论组成组的非控制 MCPTT 功能在组级并接或拆分中的职责。"
+  ],
+  "claims": [
+    {
+      "id": "reject-media-or-service",
+      "title": "并接已有预安排组呼时，媒体参数不可接受或未提供 MCPTT 语音编解码器应拒绝（488）；媒体检查通过后，任一规定业务标签缺失或 ICSI 值不符应拒绝（403）",
+      "conditions": [
+        "组成组非控制功能收到给本功能的组级邀请，且本组已有预安排组呼。"
+      ],
+      "conclusion": "先检查媒体参数及所提供的编解码器。通过后再检查是否同时具备 MCPTT 媒体特性标签及标识 MCPTT 业务的 ICSI 引用标签。",
+      "normative_strength": "两类检查依次进行，失败时按该项拒绝，不继续并接。",
+      "limitations": [
+        "不是对单个客户端重入的准入规则。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.2.3, INVITE opening and numbered step 1"
+          ],
+          "printed_pages": [
+            261
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.2.3, INVITE steps 2(a)–(b) and 3"
+          ],
+          "printed_pages": [
+            261
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "reject-no-mutual-aid",
+      "title": "通过媒体和业务标签检查仍不足以并接：伙伴与该请求标识的主系统无相应互助关系时，以 403 拒绝并附控制焦点警告",
+      "conditions": [
+        "媒体和业务标识检查已通过；检查伙伴系统与请求标识的主系统是否有并接这场既有组呼的互助关系。"
+      ],
+      "conclusion": "没有这种互助关系时，本组功能拒绝并附已有控制焦点的警告，不再继续。缺少规定业务标签也会引起 403，状态码本身不能区分原因。",
+      "normative_strength": "互助关系检查是独立门槛；并非任一伙伴均可并接。",
+      "limitations": [
+        "不能把每个 403 解释成无互助关系。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.2.3, INVITE steps 2(a)–(b) and 3"
+          ],
+          "printed_pages": [
+            261
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "initialise-before-sending-ok",
+      "title": "已有组呼接受并接时，先生成含媒体应答的 200，再初始化媒体面切换；相关媒体处理完成后才发送 200",
+      "conditions": [
+        "组级邀请进入接受分支。"
+      ],
+      "conclusion": "本组功能先生成成功响应并填入媒体协商应答，然后要求媒体面初始化向非控制模式的切换。媒体面指示话权状态；若话权被占用，还提供当前讲话者信息。本组功能在取得讲话者信息时缓存它，再向控制功能发 200。",
+      "normative_strength": "步骤的先后及初始化阶段的完成边界见步骤 6–10、注 2；发送 200 尚不是最终切换。",
+      "limitations": [
+        "本条不覆盖请求缓存、优先处理等其余逐字段事项。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.2.3, INVITE steps 6–7"
+          ],
+          "printed_pages": [
+            261
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.2.3, INVITE steps 8–10 and NOTE 2"
+          ],
+          "printed_pages": [
+            262
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.2.3, ACK steps 1(a)–(b), 2 and 3"
+          ],
+          "printed_pages": [
+            262
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ack-finalise-and-subscribe",
+      "title": "并接已有组呼收到 ACK 后要求媒体面最终切换；缓存讲话者信息才发 INFO，本组会话已有会议事件订阅者才向控制功能订阅",
+      "conditions": [
+        "本组非控制功能已收到对方的 ACK。"
+      ],
+      "conclusion": "若有当前讲话者缓存，本组功能先向控制功能发 INFO。无论有无缓存，都要求本组媒体面最终切换到非控制模式。若本组会话至少有一个客户端已订阅会议事件，本组功能向控制功能订阅会议事件。",
+      "normative_strength": "两项附加动作分别取决于缓存与订阅，均不是最终切换的前提。",
+      "limitations": [
+        "收到成功响应不能替代本组收到 ACK，更不能据此认定最终切换已完成。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.2.3, INVITE steps 8–10 and NOTE 2"
+          ],
+          "printed_pages": [
+            262
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.2.3, ACK steps 1(a)–(b), 2 and 3"
+          ],
+          "printed_pages": [
+            262
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "split-trigger-and-local-policy",
+      "title": "组成组非控制功能收到对方控制功能的来件（BYE 或最终拒绝）后进入拆分；释放策略要求保留原组呼时才要求媒体面切回控制模式，只对 BYE 回 200",
+      "conditions": [
+        "本组功能收到控制功能的 BYE 或最终拒绝响应。"
+      ],
+      "conclusion": "若释放策略要求保留本组预安排组呼，本组功能请求媒体面切回控制模式。该步的媒体处理在下一步前完成。若触发项为 BYE，向对方回复针对该 BYE 的 200，不以保留原组呼为条件。",
+      "normative_strength": "是否要求切回控制模式取决于释放策略；是否回 200 取决于触发项。",
+      "limitations": [
+        "对 BYE 的 200 不能证明原组呼已结束或一定继续；不把同样的成功应答发送给最终拒绝。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.2.4, opening, steps 1–2 and NOTE 1"
+          ],
+          "printed_pages": [
+            262
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "split-notify-audience",
+      "title": "拆分时，若策略保留原组呼且余下客户端中有人订阅会议事件，通知发给所有已订阅参与者；通知列为离会的是本组成组用户以外的参与者",
+      "conditions": [
+        "收到控制功能的拆分触发；策略保留本组预安排组呼，且至少一名余下客户端已订阅会议事件。"
+      ],
+      "conclusion": "本组功能向所有订阅会议事件的参与者发 NOTIFY。通知中，除该功能所服务组成组的 MCPTT 用户以外，其他参与者均已离开这场组会话。",
+      "normative_strength": "步骤 3 的两个发送前提须同时满足；注 2 说明通知的离会范围。",
+      "limitations": [
+        "收到通知只说明已订阅会议事件；仅凭订阅不能判定此人是否列为离会。离开会话不是退出组成员名册；不据通知缺席反推是否保留组呼。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.2.4, opening, steps 1–2 and NOTE 1"
+          ],
+          "printed_pages": [
+            262
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.2.4, step 3 and NOTE 2"
+          ],
+          "printed_pages": [
+            262
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.5.2.3, INVITE opening and numbered step 1"
+      ],
+      "printed_pages": [
+        261
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.5.2.3, INVITE steps 2(a)–(b) and 3"
+      ],
+      "printed_pages": [
+        261
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.5.2.3, INVITE steps 6–7"
+      ],
+      "printed_pages": [
+        261
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.5.2.3, INVITE steps 8–10 and NOTE 2"
+      ],
+      "printed_pages": [
+        262
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.5.2.3, ACK steps 1(a)–(b), 2 and 3"
+      ],
+      "printed_pages": [
+        262
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.5.2.4, opening, steps 1–2 and NOTE 1"
+      ],
+      "printed_pages": [
+        262
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.5.2.4, step 3 and NOTE 2"
+      ],
+      "printed_pages": [
+        262
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcptt-rejoin-late-entry",
+    "r16-calls-offnetwork-group-call-merge",
+    "r16-calls-conference-participant-status"
+  ],
+  "limitations": [
+    "不涉及客户端重入、离网同组呼叫择一或临时组创建。说明信令和媒体面职责边界，不给出报文构造、实现或实测证据。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
