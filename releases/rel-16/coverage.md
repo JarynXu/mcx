@@ -1404,6 +1404,16 @@ T2 到期要分别按 C2 上限判定重启、递增和重发，仲裁仍在空�
 
 [读取主题](topics/mcvideo/offnetwork-simultaneous-transmission-requests.md)
 
+## 在网 MCVideo 组呼映射到 MBMS：什么时候必须带 TMGI，解除映射又解除了什么？
+
+在网 MCVideo 组呼 Map 从服务器发给客户端，组 ID 和视频流标识必填。消息与组呼媒体走不同 MBMS 承载时必须带媒体承载的 TMGI，同承载时可以带也可以省略。
+
+在网 MCVideo 组呼 Map 的音频流标识是可选项，供音视频使用独立编解码器时使用；呼叫应答指示也是可选项，表示需要接收端应答，不是回执。Unmap 用必填组 ID 指明哪个组不再使用该承载。
+
+尚未建立：仅由在网 MCVideo 组呼 Map 出现 TMGI，不能判定它与媒体走不同承载；服务器发送 Map 不证明已发媒体、终端已收或用户已播放。Unmap 不证明整条承载停用。
+
+[读取主题](topics/mcvideo/mbms-group-map-unmap.md)
+
 
 ## 显式组归属：本客户端的建立、解除与状态观察
 

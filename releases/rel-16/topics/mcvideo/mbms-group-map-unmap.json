@@ -1,0 +1,241 @@
+{
+  "topic_id": "r16-mcvideo-mbms-group-map-unmap",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "在网 MCVideo 组呼映射到 MBMS：什么时候必须带 TMGI，解除映射又解除了什么？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.281-v16.4.0",
+  "common_conditions": [
+    "在网 MCVideo 组呼使用 MBMS；本题按固定版 Stage 2 信息流区分服务器向客户端发关联信息、解除关联和媒体本身。"
+  ],
+  "condition_rule": "各项分别适用映射、解除映射或组呼经 MBMS 发媒体的条件。",
+  "claims": [
+    {
+      "id": "map-group-video-identifiers",
+      "title": "在网 MCVideo 组呼的 Map 由服务器发给客户端，组 ID 和视频媒体流标识都必填",
+      "conditions": [
+        "对象是 MapGroupToBearer 的 Stage 2 信息流。"
+      ],
+      "conclusion": "组 ID 标识呼叫在哪个组发起；视频流标识指明会话描述中的视频媒体流。承载标识不能替代视频流标识。",
+      "normative_strength": "表中两项均列 M；条款导语指定方向。",
+      "limitations": [
+        "服务器发出信息不等于客户端已经收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.10.1.2, introduction and table 7.10.1.2-1: MCVideo group ID and video media stream identifier"
+          ],
+          "printed_pages": [
+            156
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.10.1.2, table 7.10.1.2-1: TMGI row and NOTE"
+          ],
+          "printed_pages": [
+            156
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "map-audio-and-call-ack",
+      "title": "MCVideo 组呼 Map 的音频流标识和呼叫应答指示均为可选；要求确认不代表收到确认",
+      "conditions": [
+        "音频流和呼叫应答指示是两个彼此不同的信息项。"
+      ],
+      "conclusion": "音频流标识供音频与视频采用独立编解码器时使用。应答指示表明该组呼要求接收端确认；它本身不是任何接收端的应答。",
+      "normative_strength": "表中两项均列 O；音频行另说明其用途。",
+      "limitations": [
+        "不能因缺少独立的音频流标识就认定呼叫没有音频。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.10.1.2, table 7.10.1.2-1: audio media stream identifier and call acknowledgement indicator"
+          ],
+          "printed_pages": [
+            156
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "map-tmgi-same-different",
+      "title": "MCVideo 组呼 Map 与媒体走不同 MBMS 承载时须带媒体承载的 TMGI，走同一承载时可带可不带",
+      "conditions": [
+        "比较承载 MapGroupToBearer 的 MBMS 承载与传送该组呼媒体的 MBMS 承载。"
+      ],
+      "conclusion": "TMGI 在字段表里标 O；表注将两种情况分开。异承载时缺少 TMGI 不符合表注；同承载时带或不带均符合该字段规则。",
+      "normative_strength": "表注针对异承载规定必带，针对同承载允许携带。",
+      "limitations": [
+        "有 TMGI 可见于两种情况，不能反推映射和媒体走不同承载。若不知道承载关系，也不能对一个缺少 TMGI 的消息直接判合规或不合规。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.10.1.2, table 7.10.1.2-1: TMGI row and NOTE"
+          ],
+          "printed_pages": [
+            156
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "map-before-media",
+      "title": "在网 MCVideo 组呼要经 MBMS 发媒体，服务器须先发关联信息；通告或映射已发都不是已发媒体的证据",
+      "conditions": [
+        "区分承载激活与通告、服务器发送组呼与承载关联信息，以及向该组呼发送媒体包。"
+      ],
+      "conclusion": "所述连接程序之前已激活并通告承载。服务器发组呼媒体包之前须发关联信息。若记录止于通告，未证实已发映射；若记录止于已发映射，仍未证实首包已发、客户端收到了映射或收到并播放了媒体。",
+      "normative_strength": "发送媒体包前的规定顺序；关于记录的结论是对证据范围的判断，不是对实际事件的否定。",
+      "limitations": [
+        "不把材料中缺少一项事件记录解释成该事件一定没有发生。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.10.4.1, first paragraph: temporary association, order before media, end of association and prior bearer announcement"
+          ],
+          "printed_pages": [
+            158
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.10.1.2, introduction and table 7.10.1.2-1: MCVideo group ID and video media stream identifier"
+          ],
+          "printed_pages": [
+            156
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "unmap-group-resource-only",
+      "title": "在网 MCVideo 组呼的 Unmap 由服务器发给客户端，用必填组 ID 指明哪一组不再用该承载，并非停用整条承载",
+      "conditions": [
+        "组呼与 MBMS 承载上特定资源的关联是临时的，组呼在该条承载上的通信结束时解除。"
+      ],
+      "conclusion": "解除映射表只列必填组 ID，所解除的是指定组呼和该承载资源的关联。它不是其他组的解除通知，也不报告整条承载停用或客户端已处理该通知。",
+      "normative_strength": "解除消息表和组呼临时关联说明。",
+      "limitations": [
+        "不能由该消息认定其他组还在使用或也已停用该承载；这些状态需另有依据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.10.1.3, introduction and table 7.10.1.3-1: MCVideo group ID"
+          ],
+          "printed_pages": [
+            157
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.10.4.1, first paragraph: temporary association, order before media, end of association and prior bearer announcement"
+          ],
+          "printed_pages": [
+            158
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.10.1.2, introduction and table 7.10.1.2-1: MCVideo group ID and video media stream identifier"
+      ],
+      "printed_pages": [
+        156
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.10.1.2, table 7.10.1.2-1: audio media stream identifier and call acknowledgement indicator"
+      ],
+      "printed_pages": [
+        156
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.10.1.2, table 7.10.1.2-1: TMGI row and NOTE"
+      ],
+      "printed_pages": [
+        156
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.10.1.3, introduction and table 7.10.1.3-1: MCVideo group ID"
+      ],
+      "printed_pages": [
+        157
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.10.4.1, first paragraph: temporary association, order before media, end of association and prior bearer announcement"
+      ],
+      "printed_pages": [
+        158
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcvideo-mbms-group-downlink",
+    "r16-bearers-mbms-bearer-announcement"
+  ],
+  "limitations": [
+    "仅解读本版两张信息流表和 §7.10.4.1 总则文字，不据此判定 Stage 3 编码细节、客户端实际接收或播放，也不外推到其他业务。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
