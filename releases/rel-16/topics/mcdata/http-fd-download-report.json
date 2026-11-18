@@ -1,0 +1,441 @@
+{
+  "topic_id": "r16-mcdata-http-fd-download-report",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "在网 MCData 一对一 HTTP 文件分发：哪份记录能把下载完成对应到某个文件？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "common_conditions": [
+    "Release 16，Stage 2。三表属 §7.5.2/.1 的在网 MCData 文件分发信息流；表内信息不同于具体报文字节。"
+  ],
+  "condition_rule": "在网是一项共同条件。一对一 HTTP 来自请求、响应表引言所指程序，不能当成一般在网完成报告的共同条件；该程序的单系统示例也不能删去表中伙伴服务器方向。",
+  "claims": [
+    {
+      "id": "fd-http-request-users-reference",
+      "title": "在网一对一 HTTP FD 请求必带收发文件两名用户的身份、对话、本笔事务和内容引用；回复标识可选",
+      "conditions": [
+        "正在按 §7.5.2.1.5 的表判断一笔 HTTP FD 请求。"
+      ],
+      "conclusion": "请求用两个 MCData ID 标识发、收文件的用户，用对话标识认对话、用事务标识认本笔。内容引用的描述包含内容 URL 和文件元数据。若有回复标识，它关联本笔正在回复的原事务。",
+      "normative_strength": "两项用户 ID、对话、当前事务和整个内容引用均 M；Reply Identifier 为 O。",
+      "limitations": [
+        "不能从 URL 推定已下载，不能把整项 M 解释为每项元数据均有独立的强制编码规定。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2 and 7.5.2.1, parent headings only (on-network FD information flows)"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.4, heading only (one-to-one HTTP FD); 7.5.2.4.2, heading and opening paragraph only (procedure named by the request and response tables)"
+          ],
+          "printed_pages": [
+            91
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.5, introductory paragraph before Table 7.5.2.1.5-1"
+          ],
+          "printed_pages": [
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.5, Table 7.5.2.1.5-1, two MCData ID rows, Conversation Identifier, Transaction Identifier, Reply Identifier and Content reference"
+          ],
+          "printed_pages": [
+            83
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "fd-http-expected-report-and-mandatory-download",
+      "title": "在网一对一 HTTP FD 请求把期望下载完成报告和要求强制下载列为两个独立可选指示",
+      "conditions": [
+        "正解读分发请求中的指示，不是接收客户端已经给出的完成报告。"
+      ],
+      "conclusion": "Disposition indication 表达是否期望回报；Download indication 表达强制下载。任一项不推出另一项。发件用户别名和紧急指示也为可选。",
+      "normative_strength": "表中两种意图分别为 O，无一表示实际下载已完成。",
+      "limitations": [
+        "两项都出现也不是成功证据，缺少后续报告不能证明下载失败。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2 and 7.5.2.1, parent headings only (on-network FD information flows)"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.4, heading only (one-to-one HTTP FD); 7.5.2.4.2, heading and opening paragraph only (procedure named by the request and response tables)"
+          ],
+          "printed_pages": [
+            91
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.5, introductory paragraph before Table 7.5.2.1.5-1"
+          ],
+          "printed_pages": [
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.5, Table 7.5.2.1.5-1, Functional alias, Disposition indication, Download indication and Emergency indicator"
+          ],
+          "printed_pages": [
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.7, Table 7.5.2.1.7-1, all six rows"
+          ],
+          "printed_pages": [
+            83
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "fd-http-response-not-transaction-confirmation",
+      "title": "在网一对一 HTTP FD 响应列请求用户、响应用户和对话；这些不能在同用户同对话的多笔事务间定位下载完成",
+      "conditions": [
+        "两笔在网一对一 HTTP 文件分发的用户相同、Conversation Identifier 也相同；手中仅有 §7.5.2.1.6 响应表所列信息。"
+      ],
+      "conclusion": "两个 MCData ID 依次指发送 FD 请求和发送本响应的用户。Conversation Identifier 识别对话。本表未列事务、回复或完成确认；不能靠时间先后选中一笔，也不能拿响应当完成报告。",
+      "normative_strength": "本响应表只有三个信息元素，全为 M；未列是本表的边界，不宣称线上的所有编码或日志都不能有其他上下文。",
+      "limitations": [
+        "只有这三项不能推断文件确已下完或没有下载。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2 and 7.5.2.1, parent headings only (on-network FD information flows)"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.4, heading only (one-to-one HTTP FD); 7.5.2.4.2, heading and opening paragraph only (procedure named by the request and response tables)"
+          ],
+          "printed_pages": [
+            91
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.6, introductory paragraph before Table 7.5.2.1.6-1"
+          ],
+          "printed_pages": [
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.6, Table 7.5.2.1.6-1, all three rows"
+          ],
+          "printed_pages": [
+            83
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "fd-onnetwork-report-original-transaction",
+      "title": "在网 FD 完成报告须用回复标识指回原事务，以完成确认表明报告端已下完；报告自己的事务号不能代替回复标识",
+      "conditions": [
+        "正在判读同一份在网下载完成报告，且知道原始文件请求与原事务号的对应。"
+      ],
+      "conclusion": "两名用户 ID 分别指 FD 请求发起用户与发送响应的用户，另有对话、本报告事务、指回原事务的 Reply Identifier 和 Disposition confirmation。确认和回复标识合读，才知道该客户端报告哪笔下载已完成。",
+      "normative_strength": "本表六项均为 M；请求表中的回复标识则为 O。该在网报告表不限于 HTTP。",
+      "limitations": [
+        "缺回复标识或完成确认的节选不足以给特定原事务记完整回报；这并非下载失败。报告不能代证同对话别笔、另一设备、用户已读或发件端实收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2 and 7.5.2.1, parent headings only (on-network FD information flows)"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.4, heading only (one-to-one HTTP FD); 7.5.2.4.2, heading and opening paragraph only (procedure named by the request and response tables)"
+          ],
+          "printed_pages": [
+            91
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.5, Table 7.5.2.1.5-1, two MCData ID rows, Conversation Identifier, Transaction Identifier, Reply Identifier and Content reference"
+          ],
+          "printed_pages": [
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.7, heading and introductory paragraph before Table 7.5.2.1.7-1"
+          ],
+          "printed_pages": [
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.7, Table 7.5.2.1.7-1, all six rows"
+          ],
+          "printed_pages": [
+            83
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "fd-onnetwork-flow-hop-and-user-identities",
+      "title": "在网一对一 HTTP FD 请求和响应、一般在网 FD 完成报告都列出伙伴服务器传递段；两个 MCData ID 仍标识用户",
+      "conditions": [
+        "正在判断在网一对一 HTTP FD 请求、该类请求的响应或一般在网 FD 下载完成报告，须区分一次传递段和业务身份。"
+      ],
+      "conclusion": "在网一对一 HTTP FD 请求、相应响应和一般在网 FD 下载完成报告的引言均列客户端到服务器、服务器到另一客户端、服务器到伙伴服务器。一对一 HTTP 请求列发、收文件用户；一对一 HTTP 响应和在网完成报告列发起 FD 请求和发送响应的用户。前两表明指 §7.5.2.4.2 的一对一 HTTP 单系统例子，仍明列伙伴段；在网完成报告表不限定为 HTTP。",
+      "normative_strength": "引言列信息流方向，不要求每笔经过全部方向；身份行均 M。",
+      "limitations": [
+        "一对一 HTTP 请求、响应的方向和三个响应信息元素，不能套作组 HTTP 的表项；在网完成报告的发送记录不证明发件端已收。三张 Stage 2 表都不规定 HTTP 头名、状态码或报文字节。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2 and 7.5.2.1, parent headings only (on-network FD information flows)"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.4, heading only (one-to-one HTTP FD); 7.5.2.4.2, heading and opening paragraph only (procedure named by the request and response tables)"
+          ],
+          "printed_pages": [
+            91
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.5, introductory paragraph before Table 7.5.2.1.5-1"
+          ],
+          "printed_pages": [
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.5, Table 7.5.2.1.5-1, two MCData ID rows, Conversation Identifier, Transaction Identifier, Reply Identifier and Content reference"
+          ],
+          "printed_pages": [
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.6, introductory paragraph before Table 7.5.2.1.6-1"
+          ],
+          "printed_pages": [
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.6, Table 7.5.2.1.6-1, all three rows"
+          ],
+          "printed_pages": [
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.7, heading and introductory paragraph before Table 7.5.2.1.7-1"
+          ],
+          "printed_pages": [
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.7, Table 7.5.2.1.7-1, all six rows"
+          ],
+          "printed_pages": [
+            83
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2 and 7.5.2.1, parent headings only (on-network FD information flows)"
+      ],
+      "printed_pages": [
+        81
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.4, heading only (one-to-one HTTP FD); 7.5.2.4.2, heading and opening paragraph only (procedure named by the request and response tables)"
+      ],
+      "printed_pages": [
+        91
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.1.5, introductory paragraph before Table 7.5.2.1.5-1"
+      ],
+      "printed_pages": [
+        83
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.1.5, Table 7.5.2.1.5-1, two MCData ID rows, Conversation Identifier, Transaction Identifier, Reply Identifier and Content reference"
+      ],
+      "printed_pages": [
+        83
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.1.5, Table 7.5.2.1.5-1, Functional alias, Disposition indication, Download indication and Emergency indicator"
+      ],
+      "printed_pages": [
+        83
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.1.6, introductory paragraph before Table 7.5.2.1.6-1"
+      ],
+      "printed_pages": [
+        83
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.1.6, Table 7.5.2.1.6-1, all three rows"
+      ],
+      "printed_pages": [
+        83
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.1.7, heading and introductory paragraph before Table 7.5.2.1.7-1"
+      ],
+      "printed_pages": [
+        83
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.1.7, Table 7.5.2.1.7-1, all six rows"
+      ],
+      "printed_pages": [
+        83
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcdata-one-to-one-http-file-distribution",
+    "r16-mcdata-offnetwork-one-to-one-fd",
+    "r16-mcdata-fd-reference-points"
+  ],
+  "limitations": [
+    "不据表内用户身份反推某跳的网络身份，不以电子记录代证人已读或另一端实际收件。",
+    "不在这三表之外新增覆盖：离网报告、流程、参考点均只分流，不规定编码、状态码或实际运行结果。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
