@@ -1,0 +1,334 @@
+{
+  "topic_id": "r16-bearers-separate-control-media-resources",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "在网组呼：释放这一次组呼的媒体资源，会连控制资源也释放吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "适用于 TS 23.280 V16.7.0 在网 MC 资源管理中的可选程序。",
+    "控制指 MCPTT 的话权控制或 MCVideo、MCData 的传输控制。"
+  ],
+  "condition_rule": "先确认本场景采用控制与媒体资源分开申请的程序，再分别判断所观察的通信会话、组呼和资源；适用例不证明某系统已经选择。",
+  "claims": [
+    {
+      "id": "separate-optional",
+      "title": "在网 MC 组呼的控制与媒体资源可以分开申请，不是所有系统的必选程序",
+      "conditions": [
+        "按 TS 23.280 V16.7.0 判断在网 MCPTT、MCVideo 或 MCData 资源管理的适用程序。"
+      ],
+      "conclusion": "控制与媒体资源可分别处理；适合预建立会话，也可用于聊天模式下同一通信会话中的连续组呼。",
+      "normative_strength": "可选程序及适用例，不是仅限于预建立会话，也不是所有组呼都要求使用。",
+      "limitations": [
+        "只能据此判断标准允许什么；部署或某次组呼是否使用，需要对应系统资料。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11 heading and 10.11.1, opening service list (scope only)"
+          ],
+          "printed_pages": [
+            184
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.6.1, paragraphs 1–2: independent resources, both Rx paths, session description and group-call trigger"
+          ],
+          "printed_pages": [
+            188
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.6.1, paragraph 3: optional use and the pre-established/chat examples"
+          ],
+          "printed_pages": [
+            188
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "session-control-request",
+      "title": "采用分开申请程序时，业务服务器调整请求带宽，SIP 核心按建会请求向 PCRF 申请控制资源",
+      "conditions": [
+        "在网 MC 业务已选择本程序，MC 业务客户端请求组归属并向 MC 业务服务器请求建立通信会话。"
+      ],
+      "conclusion": "服务器应答并将会话描述中的请求带宽减至足以承载话权控制信令（MCVideo、MCData 为传输控制信令）。SIP 核心经 Rx 向 PCRF 请求资源，随后建会请求完成，响应发往客户端。",
+      "normative_strength": "选用本程序后的带宽要求和步骤 1–5 的角色分工。",
+      "limitations": [
+        "建会响应不证明已为本次组呼建立媒体面；未给出固定带宽值或组归属成功响应。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.6.1, paragraphs 1–2: independent resources, both Rx paths, session description and group-call trigger"
+          ],
+          "printed_pages": [
+            188
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.6.2, numbered steps 1–5: affiliation request, session request, bandwidth, SIP core request and completion"
+          ],
+          "printed_pages": [
+            189
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "call-media-request",
+      "title": "采用分开申请程序时，建组呼才由业务服务器直接向 PCRF 申请媒体资源",
+      "conditions": [
+        "在网 MC 业务已选择本程序，通信会话已建立，开始建立组呼。"
+      ],
+      "conclusion": "客户端按现有程序发起；MC 业务服务器经 Rx 直接向 PCRF 发带相关媒体描述的资源请求。编号步骤 7 写媒体面由此建立，步骤 8 才写组呼正在该通信会话中进行。",
+      "normative_strength": "所选程序中媒体面的触发、申请路径及结果。",
+      "limitations": [
+        "不能从建会响应推定完成步骤 7；步骤 7 或 8 也不能证明某接收终端实际播放媒体。正文第 6 步与图中可提取的文字标签用词不同，不增设独立无线动作。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.6.1, paragraphs 1–2: independent resources, both Rx paths, session description and group-call trigger"
+          ],
+          "printed_pages": [
+            188
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.6.2, extracted label 6 of figure 10.11.6.2-1 compared with numbered step 6"
+          ],
+          "printed_pages": [
+            189
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.6.2, numbered steps 6–8: client setup, media description, PCRF request and ongoing group call"
+          ],
+          "printed_pages": [
+            189
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "release-media-keep-control",
+      "title": "采用分开申请程序时，结束该组呼的媒体面不释放传输控制资源",
+      "conditions": [
+        "在网 MC 组呼采用控制与媒体分开申请程序，走到本次组呼的媒体资源释放步骤。"
+      ],
+      "conclusion": "MC 业务服务器向 PCRF 释放这次组呼的媒体资源，媒体面随之终止；传输控制资源保留。",
+      "normative_strength": "步骤 9 是该组呼媒体面的结束，注 1 明确保留控制资源。",
+      "limitations": [
+        "不能由本次媒体释放登记整项通信会话已结束，也不能保证通信会话结束后控制资源仍会保留。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.6.2, numbered step 9 and note 1: release media but retain transmission-control resources"
+          ],
+          "printed_pages": [
+            189
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.6.2, note 2 after step 9: repetition within the lifetime of one communication session"
+          ],
+          "printed_pages": [
+            189
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "repeat-in-same-session",
+      "title": "在网 MC 组呼采用控制与媒体资源分开申请程序、且同一通信会话仍存续时，可在该会话中重复步骤 6–9",
+      "conditions": [
+        "在网 MC 业务选用分开申请程序，同一通信会话仍存续。"
+      ],
+      "conclusion": "在同一次通信会话中，可重新从建组呼到媒体申请、组呼进行、媒体释放，不必为此重复步骤 1–5。聊天模式的连续组呼是适用例。",
+      "normative_strength": "注 2 描述可能的多次循环，不是每个会话必须发生第二次组呼。",
+      "limitations": [
+        "不能由上一场释放推定下一场已经建立、已经申请媒体或已经完成。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.6.1, paragraph 3: optional use and the pre-established/chat examples"
+          ],
+          "printed_pages": [
+            188
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.6.2, numbered steps 1–5: affiliation request, session request, bandwidth, SIP core request and completion"
+          ],
+          "printed_pages": [
+            189
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.6.2, numbered steps 6–8: client setup, media description, PCRF request and ongoing group call"
+          ],
+          "printed_pages": [
+            189
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.6.2, numbered step 9 and note 1: release media but retain transmission-control resources"
+          ],
+          "printed_pages": [
+            189
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.6.2, note 2 after step 9: repetition within the lifetime of one communication session"
+          ],
+          "printed_pages": [
+            189
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.11 heading and 10.11.1, opening service list (scope only)"
+      ],
+      "printed_pages": [
+        184
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.11.6.1, paragraphs 1–2: independent resources, both Rx paths, session description and group-call trigger"
+      ],
+      "printed_pages": [
+        188
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.11.6.1, paragraph 3: optional use and the pre-established/chat examples"
+      ],
+      "printed_pages": [
+        188
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.11.6.2, numbered steps 1–5: affiliation request, session request, bandwidth, SIP core request and completion"
+      ],
+      "printed_pages": [
+        189
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.11.6.2, extracted label 6 of figure 10.11.6.2-1 compared with numbered step 6"
+      ],
+      "printed_pages": [
+        189
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.11.6.2, numbered steps 6–8: client setup, media description, PCRF request and ongoing group call"
+      ],
+      "printed_pages": [
+        189
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.11.6.2, numbered step 9 and note 1: release media but retain transmission-control resources"
+      ],
+      "printed_pages": [
+        189
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.11.6.2, note 2 after step 9: repetition within the lifetime of one communication session"
+      ],
+      "printed_pages": [
+        189
+      ]
+    }
+  ],
+  "related": [
+    "r16-bearers-unicast-resource-establishment-modification",
+    "r16-bearers-common-preestablished-session-creation",
+    "r16-bearers-common-preestablished-media-change-release"
+  ],
+  "limitations": [
+    "不推断某终端接收媒体、实网选择、会话结束后的保留期限或具体无线程序。",
+    "不将本程序当作普通单播资源修改或修改、释放整项预建立会话。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
