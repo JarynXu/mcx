@@ -1,0 +1,323 @@
+{
+  "topic_id": "r16-mcdata-point-to-point-ip-connectivity",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "在网 MCData 点到点 IP 互通：服务器放行后，能否认定对端已接受、数据已到达？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "condition_rule": "每条主张继承通用条件，再叠加自身条件。",
+  "common_conditions": [
+    "在同一 MCData 系统内，发起方和目标方的客户端均支持 IP 互通，各连接一台已有 IP 地址、获准借该客户端建立连接的数据主机。本次连接不受时长或数据量配额阻止。服务器已订阅功能别名的激活及去激活变化，发起客户端已知道目标主机的 IP 地址对应哪个目标客户端。"
+  ],
+  "claims": [
+    {
+      "id": "ipcon-scope",
+      "title": "在网点到点 IP 互通例程预设主机已获准、发起端已知目标地址对应关系，并不指定其取得方式",
+      "conditions": [
+        "判断是否可以套用本例的建立流程。"
+      ],
+      "conclusion": "在同一 MCData 系统内，发起方和目标方的客户端均支持 IP 互通，各连接一台已有 IP 地址、获准借该客户端建立连接的数据主机。本次连接不受时长或数据量配额阻止。服务器已订阅功能别名的激活及去激活变化，发起客户端已知道目标主机的 IP 地址对应哪个目标客户端。发起端已知地址对应关系，不能理解成服务器要在这一步替它发现主机。",
+      "normative_strength": "§7.14.2.2.2 的前提和范围注，不是要在本流程内再次实施的步骤。",
+      "limitations": [
+        "不要把两客户端有能力解释为已经建成媒体面，也不要把别名订阅理解为必须随请求发送别名。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.14.2.2.1, general: data hosts and the point-to-point media plane between IP connectivity clients"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.14.2.2.2, preconditions including usage limits, host authorization note, alias subscription and target address correspondence"
+          ],
+          "printed_pages": [
+            166,
+            167
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.14.2.1.1, table 7.14.2.1.1-1: both MCData identities, originating functional alias, application priority default and proposed time limit"
+          ],
+          "printed_pages": [
+            166
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ipcon-request",
+      "title": "在网 IPcon 点到点请求可建议时限；省略应用优先级时，在收到 IPcon 答复后应用默认优先级",
+      "conditions": [
+        "客户端 1 有 IP 数据要发并向服务器提出点到点请求。"
+      ],
+      "conclusion": "请求须列发起用户与目标客户端的 MCData ID。发起用户的别名、应用优先级和从 1 分钟到不限时的建议时限是可选项；未给应用优先级时，收到答复后应用预定义默认应用优先级。",
+      "normative_strength": "表 7.14.2.1.1-1 区分两项 M 与这些 O；时限范围仅修饰可选的时限；默认优先级规则只在未给优先级时适用。",
+      "limitations": [
+        "不把建议时限当成对端已协商的时限。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.14.2.1.1, table 7.14.2.1.1-1: both MCData identities, originating functional alias, application priority default and proposed time limit"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.14.2.2.2, steps 1–2: initiating client with IP data, target identity and optional originating alias"
+          ],
+          "printed_pages": [
+            167
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ipcon-authorization",
+      "title": "向目标客户端发起 IPcon 请求前，服务器分查发起用户的发送请求权和目标客户端的服务接收权；放行不等于对端接受",
+      "conditions": [
+        "服务器收到点到点请求；向客户端 2 发起请求描述的是放行路径。"
+      ],
+      "conclusion": "服务器查的是客户端 1 用户能否发送 IPcon 点到点请求、客户端 2 能否接收此 IP 互通服务。客户端 2 对这次请求的实际决定在后续响应中给出。",
+      "normative_strength": "程序步骤 3–4 的权限检查和请求、步骤 5 客户端作答是不同动作。",
+      "limitations": [
+        "本段未给出权限检查失败时的报文或错误码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.14.2.2.2, steps 3–4: sending-user permission, receiving-client permission and outgoing request"
+          ],
+          "printed_pages": [
+            167
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.14.2.2.2, steps 5–6: target decision or rejection reason, optional time limit on acceptance and server forwarding"
+          ],
+          "printed_pages": [
+            167
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ipcon-response",
+      "title": "IPcon 点到点答复必须说明建立结果；由对端接受或给出拒因，接受时可带协商时限，服务器转发",
+      "conditions": [
+        "目标客户端答复本次点到点请求。"
+      ],
+      "conclusion": "客户端 2 答复服务器，报告接受或说明拒绝原因。答复须含双方用户的 MCData ID 和建立结果，协商后的时限（1 分钟到不限时）为可选；接受时可带时限。服务器将该答复转给客户端 1。",
+      "normative_strength": "响应表规定 M/O；步骤 5 单独说明拒绝原因，不据此新设独立必填字段；步骤 6 指明转发者和收件方。",
+      "limitations": [
+        "省略时限不足以断定拒绝或不限时；建立结果不是某个包的回执。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.14.2.2.2, steps 5–6: target decision or rejection reason, optional time limit on acceptance and server forwarding"
+          ],
+          "printed_pages": [
+            167
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.14.2.1.2, table 7.14.2.1.2-1: both MCData identities, negotiated time limit and establishment result"
+          ],
+          "printed_pages": [
+            166
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ipcon-data",
+      "title": "IPcon 成功路径另有服务器收发控制及策略，媒体面建立后由两个客户端交换 IP 数据；接受答复不是主机收包凭据",
+      "conditions": [
+        "区分已收到接受答复和后续成功传输的证据。"
+      ],
+      "conclusion": "服务器实施发送控制、接收控制及必要策略。成功建立数据通信媒体面后，客户端 1 与客户端 2 交换 IP 数据。",
+      "normative_strength": "步骤 7 写服务器控制，步骤 8 写成功建立媒体面并交换 IP 数据时的客户端行为。",
+      "limitations": [
+        "不能从接受答复推出已交换数据，不能用该程序描述证明特定附接主机收到特定包。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.14.2.2.1, general: data hosts and the point-to-point media plane between IP connectivity clients"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.14.2.2.2, steps 5–6: target decision or rejection reason, optional time limit on acceptance and server forwarding"
+          ],
+          "printed_pages": [
+            167
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.14.2.2.2, step 7: server transmission and reception control and necessary policy"
+          ],
+          "printed_pages": [
+            167
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.14.2.2.2, step 8: successfully established media plane and IP data exchange between the two clients"
+          ],
+          "printed_pages": [
+            168
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.14.2.2.1, general: data hosts and the point-to-point media plane between IP connectivity clients"
+      ],
+      "printed_pages": [
+        166
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.14.2.2.2, preconditions including usage limits, host authorization note, alias subscription and target address correspondence"
+      ],
+      "printed_pages": [
+        166,
+        167
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.14.2.1.1, table 7.14.2.1.1-1: both MCData identities, originating functional alias, application priority default and proposed time limit"
+      ],
+      "printed_pages": [
+        166
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.14.2.2.2, steps 1–2: initiating client with IP data, target identity and optional originating alias"
+      ],
+      "printed_pages": [
+        167
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.14.2.2.2, steps 3–4: sending-user permission, receiving-client permission and outgoing request"
+      ],
+      "printed_pages": [
+        167
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.14.2.2.2, steps 5–6: target decision or rejection reason, optional time limit on acceptance and server forwarding"
+      ],
+      "printed_pages": [
+        167
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.14.2.1.2, table 7.14.2.1.2-1: both MCData identities, negotiated time limit and establishment result"
+      ],
+      "printed_pages": [
+        166
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.14.2.2.2, step 7: server transmission and reception control and necessary policy"
+      ],
+      "printed_pages": [
+        167
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.14.2.2.2, step 8: successfully established media plane and IP data exchange between the two clients"
+      ],
+      "printed_pages": [
+        168
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcdata-service-capability-and-functional-roles"
+  ],
+  "limitations": [
+    "仅限同系统在网点到点 IP 互通的 Stage 2 建立；不解释离网、具体协议报文、网络配置或实际交付。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
