@@ -1,0 +1,373 @@
+{
+  "topic_id": "r16-mcdata-one-to-one-media-plane-fd",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "在网一对一媒体面文件分发：谁回“已接受”，服务器要等文件收齐才转发吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "condition_rule": "各项声明继承通用条件，并叠加本项条件。",
+  "common_conditions": [
+    "在网一对一独立文件分发：甲选择乙为唯一目标，双方用户已注册接收 MCData 服务。",
+    "本流程的 MCData 服务器已向本系统的功能别名控制服务器订阅激活／停用更新；客户端使用已激活别名是可选项。"
+  ],
+  "claims": [
+    {
+      "id": "request-and-authorization",
+      "title": "在网一对一媒体面 FD 可不带强制下载指示；服务器核查发送权，带别名时还要查其使用权与激活状态",
+      "conditions": [
+        "甲用户选定乙为目标，甲客户端向 MCData 服务器发送一对一 FD 请求。"
+      ],
+      "conclusion": "请求带一个目标用户及标识线程的会话标识；强制下载和下载完成报告指示可分别选择。服务器核查甲的发送权限，若甲提供别名则核实其可用性及是否已为甲激活；实施收发控制和必要策略，再向乙发起请求。",
+      "normative_strength": "流程适用于强制下载，但强制指示可选；步骤 3–5 描述服务器职责。",
+      "limitations": [
+        "服务器订阅别名状态与甲这次请求实际携带别名不是同一件事。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.5.1",
+            "7.5.2.5.2, introduction and pre-conditions 1–2"
+          ],
+          "printed_pages": [
+            94
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.5.2, pre-condition 3"
+          ],
+          "printed_pages": [
+            95
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.5.2, numbered steps 1–2 (before substep 2a)"
+          ],
+          "printed_pages": [
+            95
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.5.2, numbered steps 3–5"
+          ],
+          "printed_pages": [
+            95
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "recipient-acceptance",
+      "title": "一对一媒体面 FD 请求带强制下载指示时，接收客户端自动回复接受，服务器只转回该应答",
+      "conditions": [
+        "接收客户端已收到本次 FD 请求，区分有无强制下载指示。"
+      ],
+      "conclusion": "乙端通知用户，如有文件元数据则一并告知。无强制指示时用户可接受、拒绝或忽略；有明确答复时乙端据此应答。有强制指示时，乙端自动向服务器回复接受。服务器将乙端发来的 FD 应答转回甲端。",
+      "normative_strength": "步骤 6–8 描述通知、条件应答和服务器转回。",
+      "limitations": [
+        "忽略不是明确拒绝；转回应答不表示服务器代乙选择，也不证明乙已下载。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.5.2, numbered steps 6–7"
+          ],
+          "printed_pages": [
+            95
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.5.2, numbered step 8"
+          ],
+          "printed_pages": [
+            96
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.5.2, numbered steps 9–10"
+          ],
+          "printed_pages": [
+            96
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "two-leg-forwarding",
+      "title": "一对一媒体面 FD 的服务器不必等从发送端收齐再向接收端分发；也不要求必须提前转发",
+      "conditions": [
+        "文件在已建立的媒体面上传送。"
+      ],
+      "conclusion": "甲端发往服务器，服务器再分发给乙端。开始第二段无须以第一段整份下载完成为前提；步骤 9、10 的编号并不规定两段必须串行。",
+      "normative_strength": "步骤 9–10 限定两段主体与路径，步骤 10 后的注放宽整份收齐的等待条件。",
+      "limitations": [
+        "不从转发开始推定服务器或乙端已收齐；不规定开始转发的字节数、并行策略或实际时序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.5.2, numbered steps 9–10"
+          ],
+          "printed_pages": [
+            96
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.5.2, NOTE following numbered step 10"
+          ],
+          "printed_pages": [
+            96
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "recipient-completion",
+      "title": "一对一媒体面 FD 的文件事务完成后释放媒体面，接收客户端记录下载完成并通知接收用户",
+      "conditions": [
+        "本次文件事务已完成；区别于先前收到 FD 请求。"
+      ],
+      "conclusion": "乙端对来件请求的通知在步骤 6；步骤 10 另行说明事务完成后释放媒体面，乙端记录下载完成并通知乙用户。乙端的完成记录与用户通知不以甲要求报告为条件。",
+      "normative_strength": "步骤 10 的文件事务结束与乙端的本地处理，不同于按请求上报。",
+      "limitations": [
+        "这些动作不等于乙用户已打开文件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.5.2, numbered steps 6–7"
+          ],
+          "printed_pages": [
+            95
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.5.2, numbered steps 9–10"
+          ],
+          "printed_pages": [
+            96
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.5.2, numbered steps 11–12"
+          ],
+          "printed_pages": [
+            96
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "conditional-report",
+      "title": "接收端已下载完成，且发送用户在初始一对一媒体面 FD 请求中要求完成报告时，接收端才发起报告；服务器转给发送用户，并可保存供获授权用户查询",
+      "conditions": [
+        "甲用户在初始 FD 请求中要求报告，且乙已完成下载。"
+      ],
+      "conclusion": "乙端下载完成，且甲用户曾在初始 FD 请求中要求完成报告时，乙端发起报告，服务器将报告送给甲用户。服务器可将报告存作下载历史，供获授权的 MCData 用户查询。",
+      "normative_strength": "下载完成且初始请求要求报告时发起完成报告；服务器保存报告是许可，不是必做步骤。",
+      "limitations": [
+        "没有要求报告时，甲未收到报告不足以判断下载失败；接受应答不能替代完成报告，有完成报告也不证明用户已打开文件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.5.1",
+            "7.5.2.5.2, introduction and pre-conditions 1–2"
+          ],
+          "printed_pages": [
+            94
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.5.2, numbered steps 1–2 (before substep 2a)"
+          ],
+          "printed_pages": [
+            95
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.5.2, numbered steps 6–7"
+          ],
+          "printed_pages": [
+            95
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.5.2, numbered step 8"
+          ],
+          "printed_pages": [
+            96
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.5.2, numbered steps 9–10"
+          ],
+          "printed_pages": [
+            96
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.5.2, numbered steps 11–12"
+          ],
+          "printed_pages": [
+            96
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.5.1",
+        "7.5.2.5.2, introduction and pre-conditions 1–2"
+      ],
+      "printed_pages": [
+        94
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.5.2, pre-condition 3"
+      ],
+      "printed_pages": [
+        95
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.5.2, numbered steps 1–2 (before substep 2a)"
+      ],
+      "printed_pages": [
+        95
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.5.2, numbered steps 3–5"
+      ],
+      "printed_pages": [
+        95
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.5.2, numbered steps 6–7"
+      ],
+      "printed_pages": [
+        95
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.5.2, numbered step 8"
+      ],
+      "printed_pages": [
+        96
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.5.2, numbered steps 9–10"
+      ],
+      "printed_pages": [
+        96
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.5.2, NOTE following numbered step 10"
+      ],
+      "printed_pages": [
+        96
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.5.2, numbered steps 11–12"
+      ],
+      "printed_pages": [
+        96
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcdata-one-to-one-fd-emergency-upgrade",
+    "r16-mcdata-cross-system-http-file-distribution",
+    "r16-mcdata-mbms-group-file-delivery",
+    "r16-mcdata-msrp-file-server-forwarding"
+  ],
+  "limitations": [
+    "仅解释 TS 23.282 V16.8.0 的 Stage 2 业务流程；不展开紧急指示及发起紧急分发的分支，不推导具体协议编码、分片／流水实现或实网时序。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
