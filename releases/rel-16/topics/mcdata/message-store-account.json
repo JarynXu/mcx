@@ -1,0 +1,201 @@
+{
+  "topic_id": "r16-mcdata-message-store-account",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCData 消息存储：开户成功，能证明第一份通信对象已经存下吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 23.282 V16.8.0，Release 16，Stage 2。仅讨论指定 MCData 用户的消息存储账户，以及服务器开户与存入对象各自能证明的结果。"
+  ],
+  "claims": [
+    {
+      "id": "account-before-deposit",
+      "title": "存入之前要有用户存储区",
+      "conditions": [
+        "服务器准备把通信对象存入指定用户的消息存储区。"
+      ],
+      "conclusion": "开户是为指定用户分配专用安全存储区。已有存储区可作为随后存入的前提；尚未有账户时，服务器须先开户再存入后续通信。账户也可能通过服务配置预先创建。",
+      "normative_strength": "先开户再存入是无账户分支的要求；服务配置是总述注记指出的另一种可能。",
+      "limitations": [
+        "本规范不规定用服务配置开户的做法。未见服务器开户请求不能证明没有账户；开户也不是用户注册 MCData 业务的证明。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.7.1, general and NOTE: prior storage allocation and service provisioning"
+          ],
+          "printed_pages": [
+            152
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.7.2, numbered steps 1–2 accompanying Figure 7.13.3.7.2-1, specified user and allocation result"
+          ],
+          "printed_pages": [
+            153
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "three-server-preconditions",
+      "title": "服务器开户的三项前提",
+      "conditions": [
+        "评估能否采用服务器发起的开户流程。"
+      ],
+      "conclusion": "服务器与消息存储之间已成功完成认证和授权；用户尚无获配的存储区；服务器有权在该消息存储上开户。",
+      "normative_strength": "三项是该服务器开户程序分别列出的前提。",
+      "limitations": [
+        "服务器与存储之间已认证授权，不等于已经证实具体开户权限；没有列出某项前提不满足时必须返回的错误码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.7.2, preconditions 1–3 for server-initiated account creation"
+          ],
+          "printed_pages": [
+            152
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "request-and-result",
+      "title": "两条消息中的 ID 都标识开户用户，开户响应发给服务器",
+      "conditions": [
+        "按目标用户判读服务器发起的开户信息流。"
+      ],
+      "conclusion": "服务器向消息存储发请求，目标用户的 MCData ID 为必填。消息存储向服务器返回该用户的 MCData ID 和开户结果，两项均必填；结果可以是成功或失败。成功表示已为该用户分配专用安全存储区。 响应中的用户 ID 标识开户针对哪位用户，不标识哪个节点收到响应。",
+      "normative_strength": "请求和响应字段的必填性及结果的取值含义来自各自的信息表；编号步骤说明方向和创建对象。",
+      "limitations": [
+        "只看到请求或记录中看不到结果值，均不能确认开户成功。响应不报告某份通信是否存入。 响应含某用户的 ID 也不能证明该用户的终端收到这条响应，或本人已获通知。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.11, Table 7.13.3.1.11-1, create a user account request"
+          ],
+          "printed_pages": [
+            143
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.12, Table 7.13.3.1.12-1, create a user account response"
+          ],
+          "printed_pages": [
+            144
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.7.2, numbered steps 1–2 accompanying Figure 7.13.3.7.2-1, specified user and allocation result"
+          ],
+          "printed_pages": [
+            153
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "separate-object-evidence",
+      "title": "一份对象是否存下另有凭据",
+      "conditions": [
+        "需要判断一份具体通信对象是否存入；只有在活动通信中服务器与消息存储已成功认证授权、该用户已有安全存储区时，才适用这里对照的服务器存入流程。"
+      ],
+      "conclusion": "服务器单独发存入请求，指明用户并附对象；消息存储在该次存入响应中返回用户 ID 与对象标识。标识有值表示该对象存入成功，标识字段存在但值为空表示本次未存入。",
+      "normative_strength": "开户和对象存入是两笔信息流；结果须对应用户、操作及对象。",
+      "limitations": [
+        "仅见开户成功不能判定某对象已存或未存；开户或对象存入的响应都不是收件人的送达凭据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.7.2, numbered steps 1–2 accompanying Figure 7.13.3.7.2-1, specified user and allocation result"
+          ],
+          "printed_pages": [
+            153
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.12, Table 7.13.3.1.12-1, create a user account response"
+          ],
+          "printed_pages": [
+            144
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.8.1 and 7.13.3.8.2, active communication and deposit preconditions"
+          ],
+          "printed_pages": [
+            153
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.8.2, numbered steps 1–2 accompanying Figure 7.13.3.8.2-1, deposit an object"
+          ],
+          "printed_pages": [
+            154
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.13 and 7.13.3.1.14, Tables 7.13.3.1.13-1 and 7.13.3.1.14-1, deposit request and response"
+          ],
+          "printed_pages": [
+            144
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcdata-sds-message-store-deposit"
+  ],
+  "limitations": [
+    "不规定服务配置的实施、Stage 3 编码或重试策略；不从消息存储响应推断某端已收到业务。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
