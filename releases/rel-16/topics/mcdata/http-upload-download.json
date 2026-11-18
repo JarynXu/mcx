@@ -1,0 +1,386 @@
+{
+  "topic_id": "r16-mcdata-http-upload-download",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCData HTTP 文件上传与下载：两端分别凭什么设置紧急指示？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "common_conditions": [
+    "Release 16、Stage 2，在网 MCData 通过 HTTP 存取独立数据文件。上传或下载的前提及步骤分别适用，不把任一方成功当作全篇前提。"
+  ],
+  "condition_rule": "各项声明继承通用条件，并叠加本项条件。",
+  "claims": [
+    {
+      "id": "upload-emergency-state",
+      "title": "MCData HTTP 上传：若媒体存储客户端因先前的 MCData 紧急告警已处于紧急状态，客户端在上传请求中设置紧急指示",
+      "conditions": [
+        "用户选择文件并发起上传；用户已注册接收 MCData 服务，内容服务器有能力核查该用户的上传授权。"
+      ],
+      "conclusion": "判断的是上传时已经存在的客户端状态，并保留该状态与先前紧急告警的关系。满足该条件，媒体存储客户端就在这次请求中设置紧急指示。",
+      "normative_strength": "这是置位的正向条件；没有记到这个条件，不能据此断言请求不带指示。",
+      "limitations": [
+        "服务器能够核查不证明用户已经获准；过去触发过告警也不能单独证明上传时该状态仍在。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.2.1",
+            "7.5.2.2.2, introduction and pre-conditions 1–2"
+          ],
+          "printed_pages": [
+            89
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.2.2, numbered step 1, prior emergency alert and existing state"
+          ],
+          "printed_pages": [
+            90
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "upload-fd-size",
+      "title": "MCData HTTP 上传时，媒体存储客户端按拟发的 FD 请求核文件大小：组请求查组配置，一对一请求查业务配置",
+      "conditions": [
+        "拟上传的文件将用于一份组 FD 请求或一对一 FD 请求。"
+      ],
+      "conclusion": "媒体存储客户端核实文件大小是否在相应配置的 FD 最大数据量以内。同一文件换了目标类型，就要按另一类配置判断。",
+      "normative_strength": "上传步骤的大小检查，不取决于紧急指示是否置位。",
+      "limitations": [
+        "条文不在这里指定统一的数值上限或超限响应码；通过大小检查并不等于上传成功。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.2.1",
+            "7.5.2.2.2, introduction and pre-conditions 1–2"
+          ],
+          "printed_pages": [
+            89
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.2.2, numbered step 1, maximum FD data size and intended request type"
+          ],
+          "printed_pages": [
+            90
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.2.2, numbered steps 2–3"
+          ],
+          "printed_pages": [
+            90
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "upload-response-url",
+      "title": "MCData HTTP 上传：内容服务器在存储前可应用发送控制策略；成功的上传响应把文件 URL 返回给上传端，不证明收件端已下载",
+      "conditions": [
+        "上传端的媒体存储客户端正把选定文件发送给 MCData 内容服务器的媒体存储功能，以供存储。"
+      ],
+      "conclusion": "内容服务器可在存储前应用发送控制策略。它向上传端媒体存储客户端返回上传结果：成功时附文件 URL，也可能报告失败。",
+      "normative_strength": "策略是可选的；带文件 URL 的正向结果限于上传成功。",
+      "limitations": [
+        "该响应的接收方是上传端，响应并不确认收件人发起下载，更不能作为完整收件的证明。",
+        "上传步骤 2 点名媒体存储功能，是说文件的存储去向；步骤 3 只指定内容服务器，未把应用发送控制策略或返回上传响应分配给某个内部功能。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.2.1",
+            "7.5.2.2.2, introduction and pre-conditions 1–2"
+          ],
+          "printed_pages": [
+            89
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.2.2, numbered steps 2–3"
+          ],
+          "printed_pages": [
+            90
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.3.2, numbered steps 1–2"
+          ],
+          "printed_pages": [
+            90
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "download-fd-indicator",
+      "title": "MCData HTTP 下载：收到的 MCData FD 请求或组独立 FD 请求已置紧急指示时，媒体存储客户端在下载数据请求中置位",
+      "conditions": [
+        "下载用户已注册接收 MCData 服务并发起取件；按当前接收端实际收到的 MCData FD 请求或 MCData 组独立 FD 请求判断。"
+      ],
+      "conclusion": "媒体存储客户端按收到的分发请求中的 URL，向内容服务器的媒体存储功能请求下载文件。若这份入站分发请求已置紧急指示，客户端在下载数据请求中设置紧急指示。",
+      "normative_strength": "这是基于入站请求的正向置位条件，不以下载端自己触发告警为前提。",
+      "limitations": [
+        "上传指示并非下载程序读取的那份入站指示。未见入站记录不能推出下载请求置位，也不能推出一定不置位。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.3.1",
+            "7.5.2.3.2, introduction and pre-condition 1"
+          ],
+          "printed_pages": [
+            90
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.3.2, numbered steps 1–2"
+          ],
+          "printed_pages": [
+            90
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.2.2, numbered step 1, prior emergency alert and existing state"
+          ],
+          "printed_pages": [
+            90
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "download-response",
+      "title": "MCData HTTP 下载：内容服务器的媒体存储功能可应用接收控制策略，返回含文件的下载响应并非接收端已收齐的证明",
+      "conditions": [
+        "下载端的媒体存储客户端已经请求内容服务器的媒体存储功能提供文件。"
+      ],
+      "conclusion": "内容服务器的媒体存储功能向请求方的媒体存储客户端提供包含文件的下载响应，可以应用接收控制策略。",
+      "normative_strength": "策略不是强制步骤。含文件的下载响应是服务器侧动作，须与客户端实际收齐的结果区分。",
+      "limitations": [
+        "不能仅凭缺少策略应用记录断言违反本条，或仅凭返回响应把客户端登记为完整收件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.3.1",
+            "7.5.2.3.2, introduction and pre-condition 1"
+          ],
+          "printed_pages": [
+            90
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.3.2, numbered steps 1–2"
+          ],
+          "printed_pages": [
+            90
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.3.2, numbered step 3"
+          ],
+          "printed_pages": [
+            90
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.3.2, NOTE following numbered step 2"
+          ],
+          "printed_pages": [
+            90
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "partial-download",
+      "title": "MCData HTTP 文件下载不完整时，下载端媒体存储客户端可请求缺失部分；发出请求不证明已补齐",
+      "conditions": [
+        "文件下载传送不完整，仍有内容缺失。"
+      ],
+      "conclusion": "文件未下载完整时，下载端媒体存储客户端可以针对缺少的部分发起下载请求；发出请求不表示缺少的部分已收到。",
+      "normative_strength": "步骤 2 后的注描述可以采用的做法，不保证自动启动、尝试次数或最终成功。",
+      "limitations": [
+        "只有下载中断记录不能判定实际已发起补缺；只有请求记录不能判定所缺内容已收齐。下载步骤 2 后的注不规定上传中断后如何恢复。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.3.1",
+            "7.5.2.3.2, introduction and pre-condition 1"
+          ],
+          "printed_pages": [
+            90
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.3.2, NOTE following numbered step 2"
+          ],
+          "printed_pages": [
+            90
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.3.2, numbered step 3"
+          ],
+          "printed_pages": [
+            90
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.2.1",
+        "7.5.2.2.2, introduction and pre-conditions 1–2"
+      ],
+      "printed_pages": [
+        89
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.2.2, numbered step 1, prior emergency alert and existing state"
+      ],
+      "printed_pages": [
+        90
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.2.2, numbered step 1, maximum FD data size and intended request type"
+      ],
+      "printed_pages": [
+        90
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.2.2, numbered steps 2–3"
+      ],
+      "printed_pages": [
+        90
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.3.1",
+        "7.5.2.3.2, introduction and pre-condition 1"
+      ],
+      "printed_pages": [
+        90
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.3.2, numbered steps 1–2"
+      ],
+      "printed_pages": [
+        90
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.3.2, NOTE following numbered step 2"
+      ],
+      "printed_pages": [
+        90
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.3.2, numbered step 3"
+      ],
+      "printed_pages": [
+        90
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcdata-http-group-standalone-fd",
+    "r16-mcdata-cross-system-http-file-distribution"
+  ],
+  "limitations": [
+    "仅涉及客户端与内容服务器的两个存取程序，不定义组分发接受或报告、跨系统选路、Stage 3 报文、失败响应码或恢复算法。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
