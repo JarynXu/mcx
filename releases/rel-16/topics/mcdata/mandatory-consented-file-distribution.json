@@ -1,0 +1,277 @@
+{
+  "topic_id": "r16-mcdata-mandatory-consented-file-distribution",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCData 文件分发：选了“强制下载”，服务器还查什么？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 23.282 V16.8.0，Release 16，Stage 2；在网 MCData 发送控制，比较强制下载与由收件人选择的文件分发。"
+  ],
+  "claims": [
+    {
+      "id": "sender-choice-and-checks",
+      "title": "强制标志不取代发送端检查",
+      "conditions": [
+        "发送者选择文件以及一名 MCData 用户或一个 MCData 组。"
+      ],
+      "conclusion": "强制模式的前提包括发送权限、管理员配置的 FD 最大大小、用户单次的数据量和时长上限；客户端查权限并计算请求总大小，选择过程，在请求中携带强制下载指示。非强制模式预配发送权限、单次数据量或时长上限、待投递数据的暂存期限；客户端查权限及允许的数据大小，再计算总大小、选择过程，请求不带强制下载指示。",
+      "normative_strength": "两段都写客户端计算总大小，只有非强制段在步骤 2 明写客户端已检查数据大小未超限。",
+      "limitations": [
+        "发送者的选择不能使服务器免于核查，也不证明目标已接收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.3.1–2, mandatory download definition and pre-conditions"
+          ],
+          "printed_pages": [
+            117
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.3.2, Figure 7.6.2.3.2-1 steps 1–3: sender and server checks"
+          ],
+          "printed_pages": [
+            118
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.4.1–2, recipient choice, pre-conditions and Figure 7.6.2.4.2-1 steps 1–3"
+          ],
+          "printed_pages": [
+            119
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "server-admission-and-alias",
+      "title": "服务器核准本次发送和已提供的功能别名",
+      "conditions": [
+        "服务器收到一次强制或非强制传送请求。"
+      ],
+      "conclusion": "服务器核对用户的发送授权、请求的数据大小和单次允许的传送时长。若带功能别名，服务器还核对别名是否可用且已为该用户激活。",
+      "normative_strength": "功能别名可选；客户端可有激活别名，服务器可以订阅其激活或停用更新，不要求所有用户使用别名。",
+      "limitations": [
+        "核查时长不能推出两种模式对超时拒绝的规则完全相同。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.3.1–2, mandatory download definition and pre-conditions"
+          ],
+          "printed_pages": [
+            117
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.3.2, Figure 7.6.2.3.2-1 steps 1–3: sender and server checks"
+          ],
+          "printed_pages": [
+            118
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.4.1–2, recipient choice, pre-conditions and Figure 7.6.2.4.2-1 steps 1–3"
+          ],
+          "printed_pages": [
+            119
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "control-indication-and-limits",
+      "title": "控制指示所指的请求、原因和时长限制",
+      "conditions": [
+        "服务器判断发送权限、单次请求大小和时长、目标组是否有已归属成员，或决定将请求排队。"
+      ],
+      "conclusion": "给发送端的控制指示必带接收该指示的用户 MCData ID、会话标识、事务标识和一种指示类型。无权限、目标组无已归属成员是不同指示；单次数据量超限是拒绝。强制步骤 4c 列超时拒绝而未限制业务类型；非强制步骤 4d 仅对 DS（数据流传输）给出这项拒绝。服务器可以把当前请求放进队列，留待稍后传送，并向发送端指示这笔请求已经入队。",
+      "normative_strength": "表中四项均为 M；流程步骤 4 总述服务器可发相应指示，不是五种类型逐一必发。排队不是拒绝。",
+      "limitations": [
+        "不能把非强制步骤 4d 套到普通非强制 FD；没有已归属成员不等于组名册为空。排队指示不要求发送端重新提交，也不证明文件已转送。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.3.2, Figure 7.6.2.3.2-1 step 4a–e: control outcomes including time limit; queuing the current request for later transmission"
+          ],
+          "printed_pages": [
+            118
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.4.2, Figure 7.6.2.4.2-1 step 4a–e: control outcomes, DS-only qualification in 4d and current-request queue status in 4e"
+          ],
+          "printed_pages": [
+            119,
+            120
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.1.1, Table 7.6.2.1.1-1: MCData control indication"
+          ],
+          "printed_pages": [
+            115
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "recipient-scope-and-choice",
+      "title": "转送对象与接收端的选择",
+      "conditions": [
+        "服务器按所选过程继续到步骤 5，向选定的用户或组传送。"
+      ],
+      "conclusion": "传给选定用户、目标组已归属成员，或在无损通信条件下传给该组所有成员；如有可用的发起方功能别名也随数据传递。强制下载时接收客户端自动接收；无强制指示时可以接受、推迟（不响应）或拒绝（如删除通知项）。",
+      "normative_strength": "非强制步骤 5 说客户端可自动接收，不等于必须下载，也不能由自动接收倒推出请求带有强制指示。",
+      "limitations": [
+        "目标名单不是各客户端成功完成下载的证明。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.3.1–2, mandatory download definition and pre-conditions"
+          ],
+          "printed_pages": [
+            117
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.4.1–2, recipient choice, pre-conditions and Figure 7.6.2.4.2-1 steps 1–3"
+          ],
+          "printed_pages": [
+            119
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.3.2, Figure 7.6.2.3.2-1 step 5: transmission scope and automatic reception"
+          ],
+          "printed_pages": [
+            118
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.4.2, Figure 7.6.2.4.2-1 step 5: transmission scope and possible automatic reception"
+          ],
+          "printed_pages": [
+            120
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "defer-store-and-expire",
+      "title": "收方不响应、服务器暂存、通知和到期",
+      "conditions": [
+        "发送者未选强制下载；服务器面对用户推迟、暂不可达或网络拥塞等情况。"
+      ],
+      "conclusion": "服务器可以暂存，也可以通知收件人有数据可取。周期通告定时器到期时，等待的接收端收到待取数据的引用清单；暂存数据本身过期时，服务器可以清理数据，也可以告知收件人已不可下载。",
+      "normative_strength": "暂存、通知、过期清理及告知不是每次分发的必经步骤；收到引用不能当作下载完成。",
+      "limitations": [
+        "服务端通知不等于收件人主动查询暂存组数据；FFS 注仅针对 §7.6.2.5.1 说明的查询程序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.4.1–2, recipient choice, pre-conditions and Figure 7.6.2.4.2-1 steps 1–3"
+          ],
+          "printed_pages": [
+            119
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.4.2, Figure 7.6.2.4.2-1 step 6a–b: temporary storage, periodic notification and expiry"
+          ],
+          "printed_pages": [
+            119,
+            120
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.1.2, Table 7.6.2.1.2-1: deferred-data references in the MCData indication"
+          ],
+          "printed_pages": [
+            115
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.5.1, editor’s note on the separate deferred-group-list procedure (contrast only)"
+          ],
+          "printed_pages": [
+            120
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcdata-deferred-group-list",
+    "r16-mcdata-http-fd-client"
+  ],
+  "limitations": [
+    "不展开协议字段编码、承载选择、HTTP 下载、主动查询延期组数据或逐接收者下载完成报告。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
