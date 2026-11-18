@@ -1,0 +1,178 @@
+{
+  "topic_id": "r16-groups-remote-selected-group-controlling",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 远程换组：目标尚未归属，控制功能该拒绝还是转送？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 24.379 V16.14.0，Release 16，Stage 3，在网 MCPTT 远程改变所选组。仅描述 §10.1.4.4 控制 MCPTT 功能；收到两类业务 MESSAGE 与收到对出站 MESSAGE 的 SIP 响应是不同事件，各条按自身入口适用。"
+  ],
+  "claims": [
+    {
+      "id": "common-message-checks",
+      "title": "两类 MESSAGE 的通用检查",
+      "conditions": [
+        "控制功能收到选组变更请求 MESSAGE 或报告选组结果的 MESSAGE；两者在 SIP 层都是请求。"
+      ],
+      "conclusion": "资源不足以处理或存在拥塞风险，可用 SIP 500 拒绝，可附 Retry-After。继续处理时，若入站 Accept-Contact 缺少值为 urn:urn-7:3gpp-service.ims.icsi.mcptt 的 g.3gpp.icsi-ref，须回 SIP 403 并停止。",
+      "normative_strength": "资源或拥塞情形下的 500 和 Retry-After 均为 MAY；服务标签不合要求时拒绝并停止是 SHALL。",
+      "limitations": [
+        "服务标签不合要求的 403 不以目标无归属资格为前提。业务结果 MESSAGE 不是对先前 MESSAGE 的 SIP 状态响应。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.4.4, opening and steps 1–2 (both MESSAGE types, resource/congestion and service-tag checks)"
+          ],
+          "printed_pages": [
+            311,
+            312
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "change-request-affiliation",
+      "title": "未归属的两种结果",
+      "conditions": [
+        "通用检查已通过，入站 MCPTT 业务正文的 request-type 为 group-selection-change-request。目标用户取自入站 application/resource-lists，组取自入站业务正文 mcptt-request-uri；依 §6.3.6 判断归属。"
+      ],
+      "conclusion": "已归属则继续转送，步骤 3 不要求查资格，步骤 8 不要求加先归属指示。未归属则按 §9.2.2.3.8 查资格：有资格须继续转送并在出站 MCPTT 业务正文的 anyExt 中加入 affiliation-required=true；无资格须以 SIP 403 拒绝，Warning 写 120 user is not affiliated to this group，停止后续步骤。",
+      "normative_strength": "未归属才须查资格；无资格时的 403、Warning 和停止，以及未归属但有资格时加入 true，分别为有条件的 SHALL。",
+      "limitations": [
+        "这些分支仅用于变更请求，不用于报告结果的 MESSAGE。加入 true 不是完成归属；没有须加 true 的条件不等于须写 false。403 数字本身不足以判定无资格。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.4.4, step 3(a)(i)–(ii) (request-type, affiliation, eligibility and Warning 120)"
+          ],
+          "printed_pages": [
+            312
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.4.4, step 8(a) (affiliation-required on eligible but unaffiliated change-request target)"
+          ],
+          "printed_pages": [
+            312
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.4.4, opening and steps 1–2 (both MESSAGE types, resource/congestion and service-tag checks)"
+          ],
+          "printed_pages": [
+            311,
+            312
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "forwarded-group-user-next-hop",
+      "title": "出站组、目标用户和 SIP 下一跳",
+      "conditions": [
+        "两类入站 MESSAGE 均适用；控制功能未在先前步骤拒绝，进入生成与发送出站消息的步骤。目标用户指本条 MESSAGE 的目标。"
+      ],
+      "conclusion": "生成新的 SIP MESSAGE。复制入站 MCPTT 业务正文，将入站正文 mcptt-request-uri 中的组标识写入出站正文 mcptt-calling-group-id，将入站资源列表中的目标用户 MCPTT ID 写入出站正文 mcptt-request-uri。SIP Request-URI 填该目标用户对应的终接参与 MCPTT 功能的公共服务标识。出站 Accept-Contact 含 g.3gpp.mcptt 和带规定 MCPTT 服务值的 g.3gpp.icsi-ref，各配 require、explicit；P-Asserted-Service 使用该服务值，P-Asserted-Identity 复制入站同名字段的呼叫用户公共用户标识。按 TS 24.229 发送。",
+      "normative_strength": "在未拒绝而转送的分支，生成、设置、复制及发送均为 SHALL；地址发现的边界来自步骤 9 后的 NOTE。",
+      "limitations": [
+        "组标识、目标用户 MCPTT ID 和 SIP 下一跳不是同一对象。业务结果回程也取本条入站消息的资源列表，不能总填原变更目标。本版不规定控制功能如何找到终接参与功能的地址。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.4.4, steps 4–7 (new MESSAGE, feature tags and two outgoing body identities)"
+          ],
+          "printed_pages": [
+            312
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.4.4, steps 9–12 and NOTE following step 9 (SIP routing, service and caller identities, transmission)"
+          ],
+          "printed_pages": [
+            312,
+            313
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "sip-response-vs-change-outcome",
+      "title": "事务状态响应不是换组结果",
+      "conditions": [
+        "控制功能的出站 MESSAGE 收到下游的 SIP 状态响应。"
+      ],
+      "conclusion": "若下游回 SIP 2xx，控制功能生成 SIP 200 (OK) 回给本条 MESSAGE 的发起参与 MCPTT 功能；若下游回 SIP 4xx、5xx 或 6xx，则转送该错误响应给这个上游。",
+      "normative_strength": "2xx 分支的生成并转交、列出的错误分支的转交均为 SHALL。",
+      "limitations": [
+        "200 只说明 MESSAGE 的事务结果；不能据此认定目标已归属、已换组或换组失败。目标的业务结果另以 MESSAGE 报告；客户端行为由相邻主题说明。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.4.4, opening and steps 1–2 (both MESSAGE types, resource/congestion and service-tag checks)"
+          ],
+          "printed_pages": [
+            311,
+            312
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.4.4, two response paragraphs following step 12 (generate upstream 200 or forward error)"
+          ],
+          "printed_pages": [
+            313
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "limitations": [
+    "不展开两端客户端的许可、实际换组与结果生成，不解释发起参与功能的标识解析、不展开归属资格算法，也不推断真实系统的执行结果。"
+  ],
+  "related": [
+    "r16-groups-remote-selected-group-client"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
