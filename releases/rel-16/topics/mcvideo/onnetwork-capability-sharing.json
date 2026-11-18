@@ -1,0 +1,292 @@
+{
+  "topic_id": "r16-mcvideo-onnetwork-capability-sharing",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "在网 MCVideo 终端能力：怎样上报本机能力、按用户或组查询、订阅变化？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.281-v16.4.0",
+  "common_conditions": [
+    "3GPP TS 23.281 V16.4.0（Release 16，Stage 2），在网 MCVideo 客户端与 MCVideo 服务器之间共享终端能力信息。"
+  ],
+  "condition_rule": "分别按更新、一次查询或订阅通知的条件阅读；订阅不是查询的前提。",
+  "claims": [
+    {
+      "id": "report-local-ue-capabilities",
+      "title": "由能力所属终端上报",
+      "conditions": [
+        "登录用户的客户端要更新本机在服务器保存的能力信息。"
+      ],
+      "conclusion": "客户端向服务器发送登录本机的用户 MCVideo ID 与本机可用能力列表；两项均必填。服务器保存更新，向客户端应答成功或失败。",
+      "normative_strength": "更新流程及信息流表的必填项。",
+      "limitations": [
+        "同一用户登录多个终端时，具体提供能力的设备如何标识由 Stage 3 规定。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.5.2.2.1, Table 7.5.2.2.1-1 including NOTE; 7.5.2.2.2, Table 7.5.2.2.2-1"
+          ],
+          "printed_pages": [
+            106
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.5.2.3, Figure 7.5.2.3-1 and steps 1–3"
+          ],
+          "printed_pages": [
+            107,
+            108
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "select-query-targets",
+      "title": "查询者身份与查询目标分别指定",
+      "conditions": [
+        "服务器已接收并保存客户端能力；查询者有权访问能力信息，且与目标用户、组同属一个 MCVideo 系统。"
+      ],
+      "conclusion": "查询请求必带查询者 MCVideo ID；目标用户 ID 列表、目标组 ID 列表可提供一种或两种，不能两种都省略。服务器检查查询者能否读取所请求的具体能力信息，获准才提供。",
+      "normative_strength": "查询前提、表注的至少一项要求和逐请求授权检查。",
+      "limitations": [
+        "请求者和目标不在同一系统的查询，§7.5.2.4 编者注列为待研究（FFS）。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.5.2.2.3, Table 7.5.2.2.3-1 including NOTE"
+          ],
+          "printed_pages": [
+            106
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.5.2.4, preconditions, Figure 7.5.2.4-1, steps 1–3 and editor’s note"
+          ],
+          "printed_pages": [
+            108
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "interpret-query-response",
+      "title": "按组只返回已归属成员，失败时不返回能力对",
+      "conditions": [
+        "判断同一系统内一次能力查询的响应；请求按用户、组或两者指定目标。"
+      ],
+      "conclusion": "响应含成功或失败结果。成功时目标用户 ID 与该用户终端的能力列表对应，可有多对。按组查询只返回被查询组中已归属该组的成员。结果为失败时，目标用户 ID 和能力列表均不得出现。",
+      "normative_strength": "响应表的字段状态须连同条件表注解释。",
+      "limitations": [],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.5.2.2.4, Table 7.5.2.2.4-1 including NOTE"
+          ],
+          "printed_pages": [
+            106
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.5.2.4, preconditions, Figure 7.5.2.4-1, steps 1–3 and editor’s note"
+          ],
+          "printed_pages": [
+            108
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "subscribe-to-authorized-updates",
+      "title": "订阅请求的结果与能力变更是两回事",
+      "conditions": [
+        "服务器已保存一些能力信息，客户端希望接收自己有权获得的更新。"
+      ],
+      "conclusion": "客户端发订阅请求，请求者 MCVideo ID 必填，目标用户 MCVideo ID 可选。服务器回复订阅成功或失败。",
+      "normative_strength": "订阅流程的前提、字段状态及应答；成功表示接受订阅，不表明刚发生更新。",
+      "limitations": [],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.5.2.2.5, Table 7.5.2.2.5-1; 7.5.2.2.6, Table 7.5.2.2.6-1"
+          ],
+          "printed_pages": [
+            107
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.5.2.5, subscription precondition, Figure 7.5.2.5-1 and steps 1–2"
+          ],
+          "printed_pages": [
+            108,
+            109
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "notify-with-capabilities-and-optional-get",
+      "title": "通知携带目标能力，再次查询由客户端选择",
+      "conditions": [
+        "客户端已订阅，且服务器已收到并保存新的或更新的能力信息。"
+      ],
+      "conclusion": "服务器向已订阅的客户端发送通知请求，必须含登录目标终端的用户 MCVideo ID 和该终端的能力列表。客户端向服务器回复通知结果（成功或失败）。客户端随后可以依 §7.5.2.4 再查。",
+      "normative_strength": "通知请求两项均为 M；通知响应的结果为 M，另行查询是可选动作。",
+      "limitations": [],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.5.2.2.7, Table 7.5.2.2.7-1; 7.5.2.2.8, Table 7.5.2.2.8-1"
+          ],
+          "printed_pages": [
+            107
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.5.2.5, notification preconditions, Figure 7.5.2.5-2, steps 1–2 and final paragraph"
+          ],
+          "printed_pages": [
+            109
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.5.2.2.1, Table 7.5.2.2.1-1 including NOTE; 7.5.2.2.2, Table 7.5.2.2.2-1"
+      ],
+      "printed_pages": [
+        106
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.5.2.3, Figure 7.5.2.3-1 and steps 1–3"
+      ],
+      "printed_pages": [
+        107,
+        108
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.5.2.2.3, Table 7.5.2.2.3-1 including NOTE"
+      ],
+      "printed_pages": [
+        106
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.5.2.4, preconditions, Figure 7.5.2.4-1, steps 1–3 and editor’s note"
+      ],
+      "printed_pages": [
+        108
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.5.2.2.4, Table 7.5.2.2.4-1 including NOTE"
+      ],
+      "printed_pages": [
+        106
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.5.2.2.5, Table 7.5.2.2.5-1; 7.5.2.2.6, Table 7.5.2.2.6-1"
+      ],
+      "printed_pages": [
+        107
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.5.2.5, subscription precondition, Figure 7.5.2.5-1 and steps 1–2"
+      ],
+      "printed_pages": [
+        108,
+        109
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.5.2.2.7, Table 7.5.2.2.7-1; 7.5.2.2.8, Table 7.5.2.2.8-1"
+      ],
+      "printed_pages": [
+        107
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.5.2.5, notification preconditions, Figure 7.5.2.5-2, steps 1–2 and final paragraph"
+      ],
+      "printed_pages": [
+        109
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcvideo-stored-video-server-pull"
+  ],
+  "limitations": [
+    "本主题仅解释在网能力信息的 Stage 2 程序。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
