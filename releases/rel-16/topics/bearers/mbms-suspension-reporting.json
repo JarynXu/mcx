@@ -1,0 +1,325 @@
+{
+  "topic_id": "r16-bearers-mbms-suspension-reporting",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MC 公共业务的 MBMS 承载暂停：没被选为上报者，还要检测吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0，Release 16，Stage 2 公共 MBMS 暂停通知程序；该程序假定至少一条活动 MBMS 承载。"
+  ],
+  "claims": [
+    {
+      "id": "reporter-selection",
+      "title": "至少一条 MBMS 承载处于活动状态时，MC 业务服务器可只选广播区内的部分终端上报暂停，选择时须考虑终端位置",
+      "conditions": [
+        "按暂停通知程序，从 MBMS 广播区内的终端中选择上报者。"
+      ],
+      "conclusion": "MC 业务服务器可仅要求一部分终端上报。选择子集时须考虑终端位置；由于终端移动，指令可能需要定期更新。指令可随承载通告发送。",
+      "normative_strength": "程序假定至少一条活动 MBMS 承载。须考虑位置，不是每次移动均须更新；随通告发送也是可选。",
+      "limitations": [
+        "不能把已发上报指令当作承载已暂停的证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.8.1, description"
+          ],
+          "printed_pages": [
+            135
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.8.2, opening paragraphs and precondition"
+          ],
+          "printed_pages": [
+            135
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.8.2, step 1 and note"
+          ],
+          "printed_pages": [
+            135
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "instruction-addressing",
+      "title": "MBMS 暂停上报：单播对指定客户端开关，多播指明须上报的子集",
+      "conditions": [
+        "MC 业务服务器通过单播或多播承载向客户端发送暂停上报指令。"
+      ],
+      "conclusion": "单播指令有两个必填项：MC service ID 表示 MC 业务身份，暂停上报设置负责启用或禁用这条指令所针对的客户端的上报。表中没有把前一项定义为客户端或设备标识。多播指令以必填字段指明能唯一确定的上报客户端子集。",
+      "normative_strength": "单播的两个字段和多播的子集字段，在各自的信息流表中均标为必填。",
+      "limitations": [
+        "不能由 MC service ID 独自判定是哪一台终端；把上报开关用于特定客户端，不会改变身份字段的含义。收到多播指令也不能证明自己入选。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.2.3, table 10.7.2.3-1 (unicast)"
+          ],
+          "printed_pages": [
+            119
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.2.3, table 10.7.2.3-2 (multicast)"
+          ],
+          "printed_pages": [
+            120
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.8.2, step 1 and note"
+          ],
+          "printed_pages": [
+            135
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "network-and-reporter",
+      "title": "RAN 决定暂停 MBMS 承载并发出指示；获选客户端检测后向 MC 业务服务器上报暂停",
+      "conditions": [
+        "对应承载发生暂停，客户端已被指示上报。"
+      ],
+      "conclusion": "决定暂停 MBMS 承载的是 RAN；RAN 通过 MSI（MCH 调度信息）发送暂停指示。被指定上报的 MC 业务客户端检测到暂停后，向 MC 业务服务器发暂停报告。",
+      "normative_strength": "按暂停通知步骤 2–4 区分决定、指示和上报；步骤 1 是事先给客户端的上报指令。",
+      "limitations": [
+        "业务服务器并非此程序中决定暂停的实体，RAN 发出的指示也不是客户端发给服务器的报告。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.8.2, opening paragraphs and precondition"
+          ],
+          "printed_pages": [
+            135
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.8.2, step 1 and note"
+          ],
+          "printed_pages": [
+            135
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.8.2, steps 2–4"
+          ],
+          "printed_pages": [
+            135,
+            136
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "non-reporter",
+      "title": "未被要求上报的 MC 业务客户端仍须检测 MBMS 暂停指示，不得因这次暂停改发监听等其他报告",
+      "conditions": [
+        "在本次暂停中，该客户端未被指示发送暂停报告。"
+      ],
+      "conclusion": "客户端仍须检测 RAN 的暂停指示，但不发送暂停报告；也不得因这次暂停用监听报告或其他类别报告代替。未见该客户端报告不足以断定它未检测或承载未暂停。",
+      "normative_strength": "步骤 4 后紧接的两条要求分别规定仍须检测、在此情况下不得另发其他类别报告。关于缺少报告的判断是据角色分工得到的证据边界。",
+      "limitations": [
+        "这项限制只针对该客户端在这种情况下的报告，不是对其他事件或其他流程的永久禁令。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.8.1, description"
+          ],
+          "printed_pages": [
+            135
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.8.2, steps 2–4"
+          ],
+          "printed_pages": [
+            135,
+            136
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.8.2, paragraph immediately after step 4"
+          ],
+          "printed_pages": [
+            136
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "reuse-for-other-events",
+      "title": "MBMS 暂停上报程序也可用于承载恢复，或 MC 业务客户端能检测到的其他 MBMS 事件，并非每次必用",
+      "conditions": [
+        "事件是 MBMS 恢复，或是 MC 业务客户端可检测到的其他 MBMS 事件。"
+      ],
+      "conclusion": "同一程序可以用于上述事件；条款没有规定每次恢复都要采用，也没有规定全体客户端都必须报告恢复。",
+      "normative_strength": "条款末段是适用可能性，未规定普遍义务。",
+      "limitations": [
+        "不能凭本条推断当前视频已改走单播、已释放子信道实例或某一客户端实际收到媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.8.2, final paragraph"
+          ],
+          "printed_pages": [
+            136
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.8.1, description"
+          ],
+          "printed_pages": [
+            135
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.2.3, table 10.7.2.3-1 (unicast)"
+      ],
+      "printed_pages": [
+        119
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.2.3, table 10.7.2.3-2 (multicast)"
+      ],
+      "printed_pages": [
+        120
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.8.1, description"
+      ],
+      "printed_pages": [
+        135
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.8.2, opening paragraphs and precondition"
+      ],
+      "printed_pages": [
+        135
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.8.2, step 1 and note"
+      ],
+      "printed_pages": [
+        135
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.8.2, steps 2–4"
+      ],
+      "printed_pages": [
+        135,
+        136
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.8.2, paragraph immediately after step 4"
+      ],
+      "printed_pages": [
+        136
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.8.2, final paragraph"
+      ],
+      "printed_pages": [
+        136
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcvideo-mbms-group-downlink",
+    "r16-mcvideo-mbms-to-unicast"
+  ],
+  "limitations": [
+    "仅限所列暂停上报信息流和程序，以及本条允许在其他事件中沿用的范围；不涉及具体无线编码、承载实施、MCVideo 切换或实际系统状态。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
