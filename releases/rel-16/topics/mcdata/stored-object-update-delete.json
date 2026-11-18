@@ -1,0 +1,258 @@
+{
+  "topic_id": "r16-mcdata-stored-object-update-delete",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCData 消息存储：给存档加标记和永久删除存档，各改变什么？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 23.282 V16.8.0，Release 16，Stage 2；对象已存于该 MCData 用户自己的消息存储区，消息存储客户端与 MCData 消息存储之间已成功完成认证和授权，且客户端已知对象标识。"
+  ],
+  "claims": [
+    {
+      "id": "update-metadata",
+      "title": "用对象标识更新元数据",
+      "conditions": [
+        "用户想改变对象的元数据，例如给存档加标记。"
+      ],
+      "conclusion": "消息存储客户端向 MCData 消息存储发送更新请求，必带用户 MCData ID、对象标识与要更新的元数据；消息存储用对象标识定位，按请求修改元数据并回报结果。",
+      "normative_strength": "加标记是条文的例子，不是每次更新都必设的值；三项请求信息均为必填。",
+      "limitations": [
+        "不是用新正文或新文件替换存档内容。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13 and 7.13.1, stored object, local copy and access limited to the user’s own storage area"
+          ],
+          "printed_pages": [
+            140
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.4.1, metadata update and flagged example"
+          ],
+          "printed_pages": [
+            149
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.4.2, pre-conditions and Figure 7.13.3.4.2-1 steps 1–2"
+          ],
+          "printed_pages": [
+            150
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.5, Table 7.13.3.1.5-1: update request"
+          ],
+          "printed_pages": [
+            142
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "delete-authority-and-effect",
+      "title": "何时能删，永久移除什么",
+      "conditions": [
+        "除了客户端与消息存储已成功完成认证和授权、客户端已知对象标识，用户还获准删除这一特定对象。"
+      ],
+      "conclusion": "消息存储客户端向 MCData 消息存储发送删除请求，必带用户 MCData ID 和对象标识。成功时消息存储按对象标识找到存档并将其永久移除，再向该客户端回报结果。",
+      "normative_strength": "访问本人的存储区、知道标识或曾经更新元数据，不替代具体对象的删除权限。",
+      "limitations": [
+        "只看到请求，不证明已永久删除；这里的成功也不是仅设置删除标记。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13 and 7.13.1, stored object, local copy and access limited to the user’s own storage area"
+          ],
+          "printed_pages": [
+            140
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.5.1–2, authority to delete the stored object and other pre-conditions"
+          ],
+          "printed_pages": [
+            150
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.5.2, Figure 7.13.3.5.2-1 steps 1–2: permanent removal from the MCData message store"
+          ],
+          "printed_pages": [
+            151
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.7, Table 7.13.3.1.7-1: delete request"
+          ],
+          "printed_pages": [
+            143
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "response-evidence",
+      "title": "怎样区分收到响应与成功",
+      "conditions": [
+        "消息存储就客户端发起的元数据更新或对象删除返回相应响应。"
+      ],
+      "conclusion": "两张响应表都列两项必填：MCData ID 标识消息存储中的用户存储区，结果给出该次更新或删除成功还是失败；两表均不列对象标识或对象内容。与此不同，请求中的 MCData ID 标识发起用户，对象另由其标识点名。",
+      "normative_strength": "操作名不代表成功；对成功的判断须看结果。",
+      "limitations": [
+        "没读到结果，或结果为失败，均不能据此确认成功改动。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.5, Table 7.13.3.1.5-1: update request"
+          ],
+          "printed_pages": [
+            142
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.6, Table 7.13.3.1.6-1: update response"
+          ],
+          "printed_pages": [
+            142
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.7, Table 7.13.3.1.7-1: delete request"
+          ],
+          "printed_pages": [
+            143
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.8, Table 7.13.3.1.8-1: delete response"
+          ],
+          "printed_pages": [
+            143
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "scope-not-cascade",
+      "title": "存档成功删除不能替哪些地方作证",
+      "conditions": [
+        "收到消息存储就本人存储区中指定对象返回的删除成功结果。"
+      ],
+      "conclusion": "成功的适用范围是该消息存储对象；不能据此断定别的账户或设备本地的副本已删，也不能判断原下载 URL 当前是否可用。按 URL 从内容服务器移除先前上传的文件属于另一项操作。",
+      "normative_strength": "删除流程针对指定存储区及对象；本地、跨账户或内容服务器的删除不由该响应证明。",
+      "limitations": [
+        "既不推出原 URL 必然失效，也不保证它仍然可用；不把此响应当作终端同步完成的证明。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13 and 7.13.1, stored object, local copy and access limited to the user’s own storage area"
+          ],
+          "printed_pages": [
+            140
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.5.2, Figure 7.13.3.5.2-1 steps 1–2: permanent removal from the MCData message store"
+          ],
+          "printed_pages": [
+            151
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.7, Table 7.13.3.1.7-1: delete request"
+          ],
+          "printed_pages": [
+            143
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.8, Table 7.13.3.1.8-1: delete response"
+          ],
+          "printed_pages": [
+            143
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.8.2, Figure 7.5.2.8.2-1 steps 2–3, single-system file removal by URL (contrast only)"
+          ],
+          "printed_pages": [
+            101,
+            102
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcdata-http-file-removal",
+    "r16-mcdata-message-store-sync",
+    "r16-mcdata-stored-object-lookup"
+  ],
+  "limitations": [
+    "只讨论已存对象的元数据更新、永久删除及其回执，不规定备份介质擦除、其他终端刷新时点、失败回滚或 Stage 3 方法和状态码。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
