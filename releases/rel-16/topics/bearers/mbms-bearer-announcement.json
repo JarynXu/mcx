@@ -1,0 +1,287 @@
+{
+  "topic_id": "r16-bearers-mbms-bearer-announcement",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "客户端怎样知道该监听哪条 MBMS 承载，收到撤告后又停听哪条？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0，Release 16，Stage 2，§§10.7.3.5.1–2：MC 业务服务器经应用控制消息用的 MBMS 承载向客户端通告另一条 MBMS 承载。"
+  ],
+  "condition_rule": "声明继承上述流程范围，并叠加本条所列条件；区分承载通告消息的载体与消息标识的对象。",
+  "claims": [
+    {
+      "id": "known-control-bearer",
+      "title": "经 MBMS 通告另一条承载时，应用控制承载须预先建立并已向该客户端通告",
+      "conditions": [
+        "服务器选择在同一业务区经 MBMS 而非单播通告另一条承载。"
+      ],
+      "conclusion": "客户端先在已建立且已向它通告的 MBMS 承载上监听应用控制消息。",
+      "normative_strength": "单播或 MBMS 是可选途径；预建立、已向客户端通告两项前提属于这里经 MBMS 发送的程序。",
+      "limitations": [
+        "仅有网络侧已建立控制承载的记录，不能证明已向该客户端通告。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.5.1, paragraphs 1–3"
+          ],
+          "printed_pages": [
+            127
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.5.2, pre-conditions (two bullets)"
+          ],
+          "printed_pages": [
+            127
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.5.2, step 1 (numbered prose)"
+          ],
+          "printed_pages": [
+            128
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "new-to-client-not-newly-active",
+      "title": "服务器既可通告刚激活的 MBMS 承载，也可按需通告已运行一段时间的承载或再次通告",
+      "conditions": [
+        "MC 业务服务器准备向客户端通告另一条 MBMS 承载。"
+      ],
+      "conclusion": "步骤 2 给出一次新激活；步骤 3 明确也允许通告已运行一段时间的承载，并允许按需重复通告。",
+      "normative_strength": "步骤 2 不是每次通告之前都要重新激活的要求。",
+      "limitations": [
+        "仅凭通告到达的时点或重复次数，不能确定目标承载的激活时间。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.5.2, steps 2–3 (numbered prose)"
+          ],
+          "printed_pages": [
+            128
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "target-identity-and-lookup",
+      "title": "经 MBMS 控制承载发出的通告包含被通告承载的 TMGI；详情此前已给过时可按标识查找",
+      "conditions": [
+        "服务器在应用控制承载上发送另一条 MBMS 承载的通告。"
+      ],
+      "conclusion": "通告标识的是被通告的承载，可以附上该承载的其他信息。客户端若已取得详情，这次可用标识作键查找。",
+      "normative_strength": "标识随通告提供；附加信息与在满足前提时将标识作为键都是可选的。",
+      "limitations": [
+        "仅凭通告只带标识，不能推出所有详情此前均已提供。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.5.2, pre-conditions (two bullets)"
+          ],
+          "printed_pages": [
+            127
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.5.2, step 4 (numbered prose)"
+          ],
+          "printed_pages": [
+            128
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "monitor-and-requested-ack",
+      "title": "经 MBMS 控制承载收到另一条承载的通告后，客户端开始监听被通告承载；服务器请求确认时，客户端向其回执",
+      "conditions": [
+        "客户端收到经 MBMS 应用控制承载传来的另一条承载的通告。"
+      ],
+      "conclusion": "客户端开始监听新通告的承载。如果 MC 业务服务器请求确认，客户端向该服务器发送承载确认。",
+      "normative_strength": "步骤 5 的监听动作不以请求确认为条件；步骤 6 规定服务器请求确认时怎么做。未请求时，这一步没有要求客户端发送回执，也不能单凭它认定不得回执。",
+      "limitations": [
+        "本程序的回执不是业务媒体已送达或接收质量合格的报告；未请求确认时，缺少回执也不能证明没有监听。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.5.2, step 4 (numbered prose)"
+          ],
+          "printed_pages": [
+            128
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.5.2, steps 5–6 (numbered prose)"
+          ],
+          "printed_pages": [
+            128
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "withdraw-by-identity",
+      "title": "MBMS 承载撤告指明被撤告承载；客户端停听该承载，不据此判定网络已将其停用",
+      "conditions": [
+        "服务器撤告一条 MBMS 承载，客户端收到指明该承载身份的撤告。"
+      ],
+      "conclusion": "客户端停止监听标识所指的承载。这几步没有要求它一并停听用于传送通告的另一条控制承载。",
+      "normative_strength": "步骤 7–9 的结果限定在被撤告对象和客户端的监听行为。",
+      "limitations": [
+        "只凭撤告或客户端停听不能判断网络侧承载是否停用，也不能确认此前任何业务媒体的送达情况。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.5.2, step 4 (numbered prose)"
+          ],
+          "printed_pages": [
+            128
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.5.2, steps 5–6 (numbered prose)"
+          ],
+          "printed_pages": [
+            128
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.5.2, steps 7–9 (numbered prose)"
+          ],
+          "printed_pages": [
+            128
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.5.1, paragraphs 1–3"
+      ],
+      "printed_pages": [
+        127
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.5.2, pre-conditions (two bullets)"
+      ],
+      "printed_pages": [
+        127
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.5.2, step 1 (numbered prose)"
+      ],
+      "printed_pages": [
+        128
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.5.2, steps 2–3 (numbered prose)"
+      ],
+      "printed_pages": [
+        128
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.5.2, step 4 (numbered prose)"
+      ],
+      "printed_pages": [
+        128
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.5.2, steps 5–6 (numbered prose)"
+      ],
+      "printed_pages": [
+        128
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.5.2, steps 7–9 (numbered prose)"
+      ],
+      "printed_pages": [
+        128
+      ]
+    }
+  ],
+  "related": [
+    "r16-bearers-mbms-reception-quality",
+    "r16-bearers-mbms-overlapping-mbsfn-continuity",
+    "r16-bearers-mbms-network-bearer-events"
+  ],
+  "limitations": [
+    "仅解释通告与撤告，不细述单播通告过程、承载质量、区域间媒体接续、网络激活或停用机制，也不规定具体协议编码或设备表现。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
