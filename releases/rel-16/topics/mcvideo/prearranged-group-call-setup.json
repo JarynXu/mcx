@@ -1,0 +1,318 @@
+{
+  "topic_id": "r16-mcvideo-prearranged-group-call-setup",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "在网 MCVideo 预安排组呼：发起方收到成功响应，必答成员就都确认了吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.281-v16.4.0",
+  "common_conditions": [
+    "同一 MC 系统内，普通在网预安排 MCVideo 组呼的单播信令建立程序；GMS 已定义组 ID 和成员名单。示例三个客户端的用户已注册并已归属该组。"
+  ],
+  "condition_rule": "每条声明继承共同条件；按对应分支判断，已有呼叫和获准新建不是同一个场景。",
+  "claims": [
+    {
+      "id": "existing-call-or-new-invites",
+      "title": "同系统在网预安排 MCVideo 组呼：处理获准的发起请求时，已有同组呼叫则加入已有呼叫；若新建则邀请其他已归属成员",
+      "conditions": [
+        "同系统普通在网预安排 MCVideo 组呼的单播建呼程序；比较服务器处理本次已获准的发起请求时，所选组 ID 已有呼叫和没有正在进行的呼叫两种情况。"
+      ],
+      "conclusion": "服务器先检查发起权；如带了功能别名，再查该别名是否允许使用并已为该用户激活。若获准且同组已有呼叫，服务器把发起端加入已有呼叫并告知其正在进行；在获准新建分支，服务器按组成员及归属状态向其他所有已归属成员发组呼请求。",
+      "normative_strength": "总则、示例前提及编号步骤的行为描述；使用别名不是前提。",
+      "limitations": [
+        "新建时不邀请名单里的未归属成员。把发起端加入已有呼叫不证明服务器针对这次发起请求重新邀请了其他人；不排除服务器另按迟入程序向某个成员发邀请。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.1.1.1, opening paragraph; 7.1.2.3.1.1.2, introductory text and pre-conditions 1–3"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.1.1.2, steps 1–3"
+          ],
+          "printed_pages": [
+            30
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.1.1.2, step 4"
+          ],
+          "printed_pages": [
+            30,
+            31
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "invitation-response-ack",
+      "title": "新建预安排 MCVideo 组呼时，受邀端回组呼响应，不等于该响应带了确认",
+      "conditions": [
+        "服务器发起本次邀请，接收端接受组呼请求。"
+      ],
+      "conclusion": "服务器向已归属成员发邀请时指示是否要求确认。接收端接受邀请后向主持服务器回组呼响应，该响应可以带确认；发送确认的条件可取决于配置。",
+      "normative_strength": "第 5 步对响应内确认及其发送条件都使用可选措辞。",
+      "limitations": [
+        "发出的邀请不等于接受；收到乙的响应而不知道有无确认，不能据此把乙或丙计入已确认者。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.1.1.1, opening paragraph; 7.1.2.3.1.1.2, introductory text and pre-conditions 1–3"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.1.1.2, step 4"
+          ],
+          "printed_pages": [
+            30,
+            31
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.1.1.2, step 5"
+          ],
+          "printed_pages": [
+            31
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "initiator-success-timing",
+      "title": "预安排 MCVideo 组呼中，服务器向发起端回建呼成功，不以收到所有必答成员的确认为固定前提",
+      "conditions": [
+        "所读为服务器发给发起端的步骤 6 组呼响应，不是接收端发给服务器的步骤 5 响应。"
+      ],
+      "conclusion": "步骤 6 回送选定的媒体参数并告知发起端建呼成功。依注 3，视继续呼叫的条件而定，可以在步骤 4b 之后、步骤 7 之前的任何时点发送，不必等所有成员的步骤 5 响应。",
+      "normative_strength": "程序说明步骤 6 的作用；注 3 给出条件性的时间窗口，并非规定一律早于或晚于步骤 5。",
+      "limitations": [
+        "单凭步骤 6 向发起端报告建呼成功，不能认定每一名必答成员都已确认。这是在判断成功结果能证明什么，不是规定响应禁止携带哪些信息。记录里没有丙的响应，既不证明丙拒绝，也不能替丙确认。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.1.1.2, step 4"
+          ],
+          "printed_pages": [
+            30,
+            31
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.1.1.2, step 5"
+          ],
+          "printed_pages": [
+            31
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.1.1.2, step 6 and note 3"
+          ],
+          "printed_pages": [
+            31
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.1.1.2, step 7"
+          ],
+          "printed_pages": [
+            31
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "missing-required-acks",
+      "title": "同系统普通在网预安排 MCVideo 组呼建呼时，若发起人要求确认而必答成员未在配置时限内确认，服务器可继续或放弃，再按组策略通知发起人确认不全",
+      "conditions": [
+        "同系统普通在网预安排 MCVideo 组呼的单播建呼程序。发起人要求已归属成员确认，且至少一名被要求确认的成员未在配置的建呼确认时限内确认。"
+      ],
+      "conclusion": "在该同系统普通在网预安排 MCVideo 组呼的建呼分支中，服务器可继续或放弃本次呼叫，然后按组策略告知发起人，收到的确认没有覆盖所有必答成员。呼叫期间若有用户加入或离开，该通知可不止一次。",
+      "normative_strength": "时限由配置给出；继续和放弃是可选分支，通知按组策略，用户加入或离开时再次通知也是可能而非必然。",
+      "limitations": [
+        "确认不全不证明本次一定放弃或一定继续，重复通知不证明又建呼。条文本身不提供固定秒数。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.1.1.1, opening paragraph; 7.1.2.3.1.1.2, introductory text and pre-conditions 1–3"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.1.1.2, step 7"
+          ],
+          "printed_pages": [
+            31
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "media-establishment-evidence",
+      "title": "预安排 MCVideo 组呼的成功响应不能替代各示例终端已建立媒体面和传输控制的记录",
+      "conditions": [
+        "比较成功响应（步骤 6）与示例三个客户端完成步骤 8 的记载。"
+      ],
+      "conclusion": "步骤 6 通知发起端建呼成功并给出选定媒体参数；步骤 8 才描述三个客户端已为通信建立媒体面和传输控制。",
+      "normative_strength": "步骤 6 和 8 是两项不同的程序陈述；对观察结果的上限是证据判断。",
+      "limitations": [
+        "两份记录都不能证明某用户实际看到画面，步骤 8 也不是其他所有组成员确认的清单。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.1.1.2, step 6 and note 3"
+          ],
+          "printed_pages": [
+            31
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.1.1.2, step 8"
+          ],
+          "printed_pages": [
+            31
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.3.1.1.1, opening paragraph; 7.1.2.3.1.1.2, introductory text and pre-conditions 1–3"
+      ],
+      "printed_pages": [
+        29
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.3.1.1.2, steps 1–3"
+      ],
+      "printed_pages": [
+        30
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.3.1.1.2, step 4"
+      ],
+      "printed_pages": [
+        30,
+        31
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.3.1.1.2, step 5"
+      ],
+      "printed_pages": [
+        31
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.3.1.1.2, step 6 and note 3"
+      ],
+      "printed_pages": [
+        31
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.3.1.1.2, step 7"
+      ],
+      "printed_pages": [
+        31
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.3.1.1.2, step 8"
+      ],
+      "printed_pages": [
+        31
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcvideo-prearranged-late-entry-rejoin",
+    "r16-mcvideo-chat-group-join",
+    "r16-mcvideo-server-group-call-release"
+  ],
+  "limitations": [
+    "仅限固定版 Stage 2 的组呼建立程序；不规定具体消息编码、配置秒数或播放结果，不适用于受限聊天组、离网或跨系统场景。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
