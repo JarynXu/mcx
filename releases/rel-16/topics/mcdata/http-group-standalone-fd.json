@@ -1,0 +1,345 @@
+{
+  "topic_id": "r16-mcdata-http-group-standalone-fd",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "在网 HTTP 组文件分发：请求里有文件链接，怎样判断哪位组员已经下载？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "condition_rule": "各项声明继承通用条件，并叠加本项条件。",
+  "common_conditions": [
+    "Release 16、Stage 2：通过 HTTP 取文件的在网 MCData 组独立文件分发。归属前提只描述所举示例；步骤 2a 的其他输入单独判断。"
+  ],
+  "claims": [
+    {
+      "id": "group-url-targets",
+      "title": "在网 HTTP 组独立 FD 的文件已预上传；请求用组 ID 或选定收件人寻址，URL 与会话标识都不是收件证明",
+      "conditions": [
+        "在 §7.5.2.6.2 的组分发示例中，文件已经上传到 MCData 内容服务器的媒体存储功能；示例用户同组、已注册接收 MCData 服务且已归属。"
+      ],
+      "conclusion": "甲选择预配置组，可选择组内特定成员。甲端的请求带所选组 ID 或所选目标收件人，以 URL 作为内容载荷，会话标识用于指明消息线程。可带文件元数据；客户端可选用已激活的功能别名，示例服务器已在本系统订阅别名激活和停用更新。",
+      "normative_strength": "目标可以是整组或选定成员；URL 和会话标识在该请求中出现，元数据和别名并非必有。",
+      "limitations": [
+        "已上传、被选中、发出链接和在线程中出现均不等于接收端下载成功。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.6.1",
+            "7.5.2.6.2, introduction and pre-conditions 1–4"
+          ],
+          "printed_pages": [
+            96
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.6.2, numbered steps 1–2, target selection, URL payload, thread identifier and optional indications"
+          ],
+          "printed_pages": [
+            97
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.6.2, numbered step 9"
+          ],
+          "printed_pages": [
+            98
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "conditional-affiliation",
+      "title": "在网 HTTP 组独立 FD 中，服务器收到带紧急或迫近危险指示的请求，且发起端尚未归属时，才在步骤 2a 使发起端隐式归属",
+      "conditions": [
+        "区分 §7.5.2.6.2 示例已归属的前提与步骤 2a 单列的条件。"
+      ],
+      "conclusion": "服务器检查其收到的请求是否含紧急指示或迫近危险指示，并区分发起客户端是否已归属该组。当请求含其中之一且发起端未归属时，它隐式地让发起端归属该组。",
+      "normative_strength": "步骤 2a 的两个条件须同时成立；前提 1 描述的示例用户已经归属，不能从示例推出再次归属。",
+      "limitations": [
+        "不含两种指示的普通请求不触发这一步；此处不处理目标收件人的归属，也不是进行中文件分发的升级／取消程序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.6.1",
+            "7.5.2.6.2, introduction and pre-conditions 1–4"
+          ],
+          "printed_pages": [
+            96
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.6.2, numbered step 2a"
+          ],
+          "printed_pages": [
+            98
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "admission-and-resolution",
+      "title": "在网 HTTP 组独立 FD 既查发起权也查文件大小严格低于组上限；提供别名时另查可用性与激活，用组 ID 时解析成员及归属",
+      "conditions": [
+        "MCData 服务器收到发起端的组独立 FD 请求。"
+      ],
+      "conclusion": "服务器检查甲的发送资格和文件大小是否低于组配置的 FD 上限。附别名时，核实它能否由甲使用并已为甲激活；使用组 ID 时，依组管理信息确定该组成员及其归属。服务器执行收发控制及必要策略，向确定的每个目标发出请求。",
+      "normative_strength": "等于上限不满足大小条件。别名检查以附带别名为条件；此处解析组 ID 以在请求中使用组 ID 为条件。",
+      "limitations": [
+        "核准发送、组名册或向某端发请求均不构成该端成功收件的证据；本条不规定失败响应码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.6.2, numbered steps 1–2, target selection, URL payload, thread identifier and optional indications"
+          ],
+          "printed_pages": [
+            97
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.6.2, numbered step 3, sender authorization, file size, functional alias and group-ID resolution"
+          ],
+          "printed_pages": [
+            98
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.6.2, numbered steps 4–5, controls and requests to the users determined in step 3"
+          ],
+          "printed_pages": [
+            98
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.6.2, numbered step 9"
+          ],
+          "printed_pages": [
+            98
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "acceptance-and-retrieval",
+      "title": "在网 HTTP 组独立 FD：强制下载指示使接收端自动回复接受并自动取文件，非强制下载由用户后续操作触发；接受不是完成",
+      "conditions": [
+        "区分入站请求是否带强制下载指示；甲要求接收方强制下载时，甲端提交的请求带该指示。"
+      ],
+      "conclusion": "目标客户端通知本端用户，若有元数据则一并告知。普通请求可接受、拒绝或忽略；带强制下载指示时接收端自动向服务器答复接受。服务器把分发应答转给甲；按传送条件，这可在向目标发请求后、实际下载前发生。接收端的媒体存储客户端自动执行强制下载，否则根据用户后续操作取文件。",
+      "normative_strength": "自动接受和自动取文件是强制下载的两步；步骤 8 注给出可用的转回时段，而非证明下载已经发生。",
+      "limitations": [
+        "即使是自动接受，也不是用户主动点击或下载已经成功的证据；不从“忽略”推导具体信令内容。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.6.2, numbered steps 1–2, target selection, URL payload, thread identifier and optional indications"
+          ],
+          "printed_pages": [
+            97
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.6.2, numbered steps 6–8 and NOTE after step 8"
+          ],
+          "printed_pages": [
+            98
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.6.2, numbered step 9"
+          ],
+          "printed_pages": [
+            98
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "per-recipient-completion-report",
+      "title": "在网 HTTP 组独立 FD 的接收端成功收件才记录完成并通知本端；若发起用户要求报告，成功收件端另发起完成报告",
+      "conditions": [
+        "就同一次分发区分具体接收端是否成功收到文件、发起用户是否要求完成报告。"
+      ],
+      "conclusion": "成功收件的客户端记录本端完成并通知用户，不依赖甲是否要求完成报告。若甲要求报告，由成功收件端发起报告。服务器可保存报告供获授权者查历史，也可汇总（步骤 11）；在步骤 12 由服务器向甲发送汇总结果或逐份报告。",
+      "normative_strength": "本地记录与通知以本端成功收件为条件，另行上报还以发起用户已要求报告为条件。存储或汇总是可选的；在报告流程中，两种形式的报告都由服务器送回发起者。",
+      "limitations": [
+        "无报告请求时，缺少报告不证明下载失败。只反映乙的下载完成报告不能证明丙也下载完成。",
+        "仅汇总保存而未发送没有执行步骤 12；服务器已发不证明甲已实际收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.6.1",
+            "7.5.2.6.2, introduction and pre-conditions 1–4"
+          ],
+          "printed_pages": [
+            96
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.6.2, numbered steps 1–2, target selection, URL payload, thread identifier and optional indications"
+          ],
+          "printed_pages": [
+            97
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.6.2, numbered step 9"
+          ],
+          "printed_pages": [
+            98
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.6.2, numbered steps 10–12"
+          ],
+          "printed_pages": [
+            98
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.6.1",
+        "7.5.2.6.2, introduction and pre-conditions 1–4"
+      ],
+      "printed_pages": [
+        96
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.6.2, numbered steps 1–2, target selection, URL payload, thread identifier and optional indications"
+      ],
+      "printed_pages": [
+        97
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.6.2, numbered step 2a"
+      ],
+      "printed_pages": [
+        98
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.6.2, numbered step 3, sender authorization, file size, functional alias and group-ID resolution"
+      ],
+      "printed_pages": [
+        98
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.6.2, numbered steps 4–5, controls and requests to the users determined in step 3"
+      ],
+      "printed_pages": [
+        98
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.6.2, numbered steps 6–8 and NOTE after step 8"
+      ],
+      "printed_pages": [
+        98
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.6.2, numbered step 9"
+      ],
+      "printed_pages": [
+        98
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.6.2, numbered steps 10–12"
+      ],
+      "printed_pages": [
+        98
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcdata-group-media-plane-fd-reports",
+    "r16-mcdata-cross-system-http-file-distribution"
+  ],
+  "limitations": [
+    "仅解释 TS 23.282 V16.8.0 §7.5.2.6 的在网 HTTP 组独立文件分发以及步骤 2a 的归属条件；不展开紧急或迫近危险状态机、正在传送中的升级取消、一对一跨系统、媒体面、MBMS 专用传送、具体 HTTP 或信令编码。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
