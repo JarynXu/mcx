@@ -1,0 +1,315 @@
+{
+  "topic_id": "r16-bearers-mbms-edge-to-unicast",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "即将离开 MBMS 覆盖：怎样判断这台终端的下行已经切到单播？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "Release 16，3GPP TS 23.280 V16.7.0，Stage 2；MC 业务服务器已激活用于下行传送的 MBMS 承载，UE 即将移出 MBMS 覆盖。"
+  ],
+  "condition_rule": "声明继承主题前提，再叠加自身条件。步骤 1 是 MC 业务终端检测对应 MBMS 业务的接收条件差，步骤 2 是客户端向服务器报告；注 1 另说客户端发现质量下降或达到不足等级时可主动发带等级的报告。服务器的发送与客户端的接收分别判断。",
+  "claims": [
+    {
+      "id": "edge-detect",
+      "title": "MC 业务终端即将离开 MBMS 覆盖且服务器已激活该业务的下行 MBMS 承载时，终端检测该承载接收条件差；检测方法由实现决定",
+      "conditions": [
+        "对应 MC 业务使用已激活的 MBMS 下行承载。"
+      ],
+      "conclusion": "终端发现对应业务的 MBMS 承载条件差，是本机检测；仅知计划开通承载，不能确认已满足激活前提。",
+      "normative_strength": "下行承载已激活是本程序前提，检测方法没有统一规定。",
+      "limitations": [
+        "本机检测记录本身不是客户端发给服务器的报告。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.3, introduction, pre-condition and step 1"
+          ],
+          "printed_pages": [
+            125
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.3, step 2 and note 1"
+          ],
+          "printed_pages": [
+            125
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "edge-report",
+      "title": "终端即将离开 MBMS 覆盖而从已激活的下行承载转向单播：检测到该业务的 MBMS 接收条件差后，客户端以监听状态报告告知服务器；客户端发现质量下降或已不足时，可主动上报并附等级",
+      "conditions": [
+        "离开覆盖时的切换场景，服务器已激活该业务的下行 MBMS 承载。步骤 1 由终端检测到该承载条件差；注 1 另举客户端发现质量下降或达到不足等级时主动报告的情形。"
+      ],
+      "conclusion": "步骤 2 的客户端用监听状态报告告诉服务器该业务的 MBMS 接收条件差。注 1 允许客户端发现质量下降或达到不足等级时主动发送含接收质量等级的报告。这不表示每份报告都须附等级，本节也未指定统一数值门限。",
+      "normative_strength": "区分步骤 2 的报告动作与注 1 举例允许的主动报告及其所附等级。",
+      "limitations": [
+        "仅见客户端发出监听状态报告，不能认定服务器已发单播下行，更不能代客户端登记已收到单播数据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.3, introduction, pre-condition and step 1"
+          ],
+          "printed_pages": [
+            125
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.3, step 2 and note 1"
+          ],
+          "printed_pages": [
+            125
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.3, step 3"
+          ],
+          "printed_pages": [
+            125
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.3, step 4"
+          ],
+          "printed_pages": [
+            126
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "edge-send",
+      "title": "在终端即将离开 MBMS 覆盖的下行转单播流程中，可在该客户端报告本业务 MBMS 接收条件差之前或之后按需建立单播承载；服务器用单播实际给它发数据是另一步",
+      "conditions": [
+        "按覆盖边缘切换程序考察同一 MC 业务客户端的承载建立与数据发送。"
+      ],
+      "conclusion": "注 2 允许在步骤 2 前或后按需建立单播承载；步骤 3 才描述服务器把下行数据通过单播发给该客户端。",
+      "normative_strength": "报告并非按需建立的固定先决条件；建立不是已发送的同义词。",
+      "limitations": [
+        "仅见服务器发送，不能判客户端已收到或已停止从 MBMS 接收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.3, step 2 and note 1"
+          ],
+          "printed_pages": [
+            125
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.3, step 3"
+          ],
+          "printed_pages": [
+            125
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.3, note 2"
+          ],
+          "printed_pages": [
+            126
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.3, step 4"
+          ],
+          "printed_pages": [
+            126
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.3, step 5"
+          ],
+          "printed_pages": [
+            126
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "edge-overlap",
+      "title": "终端将离开 MBMS 覆盖而从已激活的下行 MBMS 承载转向单播时，有给该客户端的下行数据时，该客户端同时经 MBMS 和单播接收；没有给它的数据时可跳过双收",
+      "conditions": [
+        "考察切换间隔内是否有发给该客户端的下行数据。"
+      ],
+      "conclusion": "步骤 4 说的是数据在两条路径同时被该客户端接收。跳过条件是当时没有给该端的下行数据，不是简表少列一条记录。",
+      "normative_strength": "无下行时可以跳过，不是一律必经的验收门槛。",
+      "limitations": [
+        "双收只说明过渡，单独看到一个单播数据包也不能判 MBMS 已停。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.3, step 4"
+          ],
+          "printed_pages": [
+            126
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.3, step 5"
+          ],
+          "printed_pages": [
+            126
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "edge-end",
+      "title": "终端将离开 MBMS 覆盖而转单播时，该客户端停止经 MBMS 接收并继续从单播收下行数据，才是它的接收终点；不能据此登记全区承载已释放",
+      "conditions": [
+        "判断的是正离开覆盖的这台终端对该业务下行的接收。"
+      ],
+      "conclusion": "步骤 5 同时限定停止的旧接收路径和继续使用的新接收路径；只有已停止旧路的记录，尚不能确认已在新路继续接收。",
+      "normative_strength": "本步骤的动作主体为该客户端，不是所有终端或服务器的承载释放程序。",
+      "limitations": [
+        "不能从一台设备的接收状态推断另一台已切换，或原承载已经被释放。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.3, step 4"
+          ],
+          "printed_pages": [
+            126
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.3, step 5"
+          ],
+          "printed_pages": [
+            126
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.3, introduction, pre-condition and step 1"
+      ],
+      "printed_pages": [
+        125
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.3, step 2 and note 1"
+      ],
+      "printed_pages": [
+        125
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.3, step 3"
+      ],
+      "printed_pages": [
+        125
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.3, note 2"
+      ],
+      "printed_pages": [
+        126
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.3, step 4"
+      ],
+      "printed_pages": [
+        126
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.3, step 5"
+      ],
+      "printed_pages": [
+        126
+      ]
+    }
+  ],
+  "related": [
+    "r16-bearers-mbms-reception-quality",
+    "r16-bearers-mbms-overlapping-mbsfn-continuity",
+    "r16-bearers-mbms-suspension-reporting",
+    "r16-mcvideo-mbms-to-unicast"
+  ],
+  "limitations": [
+    "只说明公共 MC 业务在覆盖边缘的下行路径切换，不说明所有组员的接收结果或 MBMS 资源释放；不把步骤解释为特定实现的抓包字段。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
