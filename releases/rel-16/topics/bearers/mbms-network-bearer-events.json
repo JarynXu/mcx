@@ -1,0 +1,313 @@
+{
+  "topic_id": "r16-bearers-mbms-network-bearer-events",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "网络已答复 MBMS 承载激活，MC 业务服务器就能开始使用吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0，Release 16，Stage 2 公共 MBMS 承载事件通知程序；该程序依赖 GCSE 和 RAN 增强及 EPC 和 RAN 的实现。"
+  ],
+  "claims": [
+    {
+      "id": "activation-not-ready",
+      "title": "MBMS 激活响应只答复请求；BM-SC 首次获知会话启动成功后另发可用通知",
+      "conditions": [
+        "MC 业务服务器按本程序经 MB2-C 发起激活。"
+      ],
+      "conclusion": "BM-SC 先答复激活；EPC 与 RAN 发起会话启动。BM-SC 首次获知启动成功时通知业务服务器该承载可用，业务服务器随后开始使用。",
+      "normative_strength": "按步骤 1–5 区分两条消息和服务器开始使用承载的先后关系。",
+      "limitations": [
+        "单有激活响应不能证明承载已经可用或服务器已经开始使用。会话启动的内部程序不在本规范范围内。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.10.1, general"
+          ],
+          "printed_pages": [
+            140
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.10.2, steps 1–3"
+          ],
+          "printed_pages": [
+            141
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.10.2, steps 4–5"
+          ],
+          "printed_pages": [
+            141
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "first-indication-scope",
+      "title": "MBMS 会话启动首次出现成功迹象时 BM-SC 通知承载可用，不证明各小区都已分到资源",
+      "conditions": [
+        "BM-SC 已收到会话启动成功的首个迹象；所讨论的是同一条 MBMS 承载。"
+      ],
+      "conclusion": "首个小区分配到资源是会话启动成功迹象的一例。启动结果包含有无小区未能为该承载分配资源的信息；概述未规定这项信息的编码格式，也未要求逐一标出失败小区。",
+      "normative_strength": "首个成功是步骤 4 的通知触发条件；首个小区成功是概述中的例子，而非唯一判据。",
+      "limitations": [
+        "只有首个成功迹象，不能判定另一小区是否分配成功。只有“有小区失败”而没有能与某个小区对应的证据，也不能判定具体是哪个小区。步骤 7 的范围说明不能倒推为启动结果必须附小区清单。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.10.1, general"
+          ],
+          "printed_pages": [
+            140
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.10.2, steps 4–5"
+          ],
+          "printed_pages": [
+            141
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.10.2, steps 6–7"
+          ],
+          "printed_pages": [
+            141
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "event-direction-scope",
+      "title": "BM-SC 向 MC 业务服务器通报某些 MBMS 事件，并注明受影响的服务区或小区",
+      "conditions": [
+        "BM-SC 从 RAN 收到会话相关事件，且该事件属于步骤 7 所述通知范围。"
+      ],
+      "conclusion": "步骤 6 的接收方是 BM-SC；步骤 7 的发方是 BM-SC，收方是 MC 业务服务器。BM-SC 只对某些 MBMS 相关事件作这里的通知，注明受影响的 MBMS 服务区或列出小区。无线资源不可用、过载和暂停都是例子。",
+      "normative_strength": "条款没有说要逐一转告 RAN 的每个会话相关事件。通知按列明的受影响范围解读，不能把局部影响扩大为全网；所举事件也不是封闭清单。",
+      "limitations": [
+        "图前文字从业务服务器向 BM-SC 概括信息流；此处事件通知的方向据概述与步骤 7 的具体文字，而非由引言推断。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.10.1, general"
+          ],
+          "printed_pages": [
+            140
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.10.2, sentence before figure 10.7.3.10.2-1"
+          ],
+          "printed_pages": [
+            141
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.10.2, steps 6–7"
+          ],
+          "printed_pages": [
+            141
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "optional-unicast",
+      "title": "收到 MBMS 网络事件后，业务服务器可决定让相关客户端改走单播；在承载存续期间可反复处理事件",
+      "conditions": [
+        "MC 业务服务器收到与该 MBMS 会话有关的网络事件。"
+      ],
+      "conclusion": "业务服务器可依据事件决定让相关客户端改走单播。步骤 6–8 举例说明网络事件与可能的处理，承载存续期间随时可能重复。",
+      "normative_strength": "切换是可能的决定，不是每个事件都必须执行的动作；这些步骤也不是只在承载结束时执行一次。",
+      "limitations": [
+        "一份局部事件通知不证明全体客户端都须切换或某个客户端已在收单播。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.10.2, steps 6–7"
+          ],
+          "printed_pages": [
+            141
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.10.2, step 8 and concluding note"
+          ],
+          "printed_pages": [
+            141
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "implementation-dependency",
+      "title": "MBMS 承载事件通知程序依赖 GCSE 与 RAN 增强，是否可用取决于 EPC 和 RAN 的实现",
+      "conditions": [
+        "判断特定网络是否支持本版所述公共承载事件通知程序。"
+      ],
+      "conclusion": "本程序需要 GCSE 与 RAN 增强，编者注据此将程序与 EPC 和 RAN 的实现联系起来。",
+      "normative_strength": "编者注限定程序的实现条件，不是产品支持或现网可用的声明。",
+      "limitations": [
+        "仅有规范条文或一条激活响应，不能证实某部署已支持；也不能仅凭这条响应否定支持。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.10.1, editor’s note"
+          ],
+          "printed_pages": [
+            141
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.10.2, steps 1–3"
+          ],
+          "printed_pages": [
+            141
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.10.2, steps 4–5"
+          ],
+          "printed_pages": [
+            141
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.10.1, general"
+      ],
+      "printed_pages": [
+        140
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.10.1, editor’s note"
+      ],
+      "printed_pages": [
+        141
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.10.2, sentence before figure 10.7.3.10.2-1"
+      ],
+      "printed_pages": [
+        141
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.10.2, steps 1–3"
+      ],
+      "printed_pages": [
+        141
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.10.2, steps 4–5"
+      ],
+      "printed_pages": [
+        141
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.10.2, steps 6–7"
+      ],
+      "printed_pages": [
+        141
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.10.2, step 8 and concluding note"
+      ],
+      "printed_pages": [
+        141
+      ]
+    }
+  ],
+  "related": [
+    "r16-bearers-mbms-suspension-reporting",
+    "r16-mcvideo-mbms-to-unicast"
+  ],
+  "limitations": [
+    "仅限 BM-SC 与 MC 业务服务器之间的公共承载事件；不覆盖客户端暂停上报、MCVideo 切换后的实例释放、网络内部会话启动细则或任何现网的实现状态。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
