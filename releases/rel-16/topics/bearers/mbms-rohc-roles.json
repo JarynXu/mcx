@@ -1,0 +1,366 @@
+{
+  "topic_id": "r16-bearers-mbms-rohc-roles",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "公共 MBMS 下行：谁用 ROHC 压缩包头？它和 FEC 编码谁先做？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "每项声明继承通用条件，并叠加本项条件。",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0，Release 16，Stage 2；§§10.7.3.12.1–3，范围限于 MC 业务在 MBMS 下行使用 ROHC 的流程。"
+  ],
+  "claims": [
+    {
+      "id": "announcer-and-decompressor",
+      "title": "公共 MBMS 两种 ROHC 流程都由业务服务器发通告、客户端解压，不能据通告认定压缩方或某次解压结果",
+      "conditions": [
+        "只有带 ROHC 信息的 MBMS 承载通告。"
+      ],
+      "conclusion": "压缩方可以是 MC 业务服务器，也可以是应其请求的 BM-SC。通告给出接收侧需要的信息，并不是客户端处理某个包的回执。",
+      "normative_strength": "两条流程的角色均出自编号步骤；对通告证明力的限定来自通告与后续处理的区分。",
+      "limitations": [
+        "不据此认定某客户端已经收到下行媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.12.2, opening paragraph"
+          ],
+          "printed_pages": [
+            144
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.12.2, numbered steps 1–2"
+          ],
+          "printed_pages": [
+            145
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.12.2, numbered steps 3–6"
+          ],
+          "printed_pages": [
+            145
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.12.3, numbered steps 3–4"
+          ],
+          "printed_pages": [
+            146
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.12.3, numbered steps 5–7"
+          ],
+          "printed_pages": [
+            146
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "optional-and-fec-order",
+      "title": "同一 MBMS 通信同时使用 FEC 与 ROHC 时，先做 FEC 编码，再压缩包头",
+      "conditions": [
+        "比较公共 MBMS 下行处理，区分能力支持和同一通信实际应用两种处理。"
+      ],
+      "conclusion": "服务器和客户端均可选支持 MBMS 上的 ROHC；预建立和动态承载都可使用这两条流程。只有两种处理都应用时，规范才要求这个先后顺序。",
+      "normative_strength": "支持为可选；同时使用时的发送侧顺序为强制。",
+      "limitations": [
+        "不据此要求两种处理捆绑启用，亦不能仅凭顺序断定编码方和压缩方是同一实体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.12.1, paragraphs 1–2"
+          ],
+          "printed_pages": [
+            144
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.12.2, opening paragraph"
+          ],
+          "printed_pages": [
+            144
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.12.3, opening paragraph and precondition 1"
+          ],
+          "printed_pages": [
+            145
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "server-compression",
+      "title": "业务服务器自行压缩 MBMS 包头时，在承载通告列出配置档和上下文标识符范围，媒体分发处理后才压缩发送",
+      "conditions": [
+        "MC 业务服务器自行执行 ROHC 头部压缩。"
+      ],
+      "conclusion": "业务服务器决定传送组通信媒体时另向组说明媒体流和 TMGI。发端媒体经服务器的媒体分发功能处理，服务器依 ROHC 信息压缩包头并发送，客户端依该信息解压。",
+      "normative_strength": "这是服务器自行压缩流程的步骤，不是先后执行两个压缩流程。",
+      "limitations": [
+        "本款未将向 BM-SC 请求代压缩列作此流程前置步骤。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.12.2, opening paragraph"
+          ],
+          "printed_pages": [
+            144
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.12.2, numbered steps 1–2"
+          ],
+          "printed_pages": [
+            145
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.12.2, numbered steps 3–6"
+          ],
+          "printed_pages": [
+            145
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.12.3, opening paragraph and precondition 1"
+          ],
+          "printed_pages": [
+            145
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "bmsc-setup",
+      "title": "委托 BM-SC 执行 ROHC 时，业务服务器在已激活的 MBMS 承载上经 MB2-C 请求为指定流压缩包头",
+      "conditions": [
+        "MC 业务服务器选择请 BM-SC 压缩包头。"
+      ],
+      "conclusion": "Setup ROHC 请求含配置和 RTP、UDP 流列表，用目的 IP 地址和端口识别要处理的流。每条流完整包头的目标周期可选，后续可以再次发送请求更改配置。",
+      "normative_strength": "已激活是此分支前提；目标周期和再次请求均为可选。",
+      "limitations": [
+        "目标周期不是每个请求的必填字段；已发请求也不是处理成功的证明。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.12.3, opening paragraph and precondition 1"
+          ],
+          "printed_pages": [
+            145
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.12.3, numbered step 1 and note 1"
+          ],
+          "printed_pages": [
+            146
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.12.3, numbered step 2"
+          ],
+          "printed_pages": [
+            146
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "bmsc-response-and-media",
+      "title": "委托 BM-SC 时，条件性设置响应与承载通告不是同一条消息；业务服务器经 MB2-U 交付媒体，BM-SC 压缩、客户端解压",
+      "conditions": [
+        "区分请求阶段与 BM-SC 能满足请求时描述的后续 MBMS 下行程序。"
+      ],
+      "conclusion": "BM-SC 能满足请求时，设置响应确认应用压缩。服务器随后向客户端通告 ROHC 信息；决定发送组通信媒体时另向组指出媒体流和承载 TMGI。经 MB2-U 收到媒体的 BM-SC 按通告参数压缩包头，经 MBMS 发送，客户端按 ROHC 信息解压。",
+      "normative_strength": "设置响应有条件；后续编号步骤规定分工，不是某次投递或解压的实测记录。",
+      "limitations": [
+        "本款不规定不能满足请求时一定采用何种回退；成功设置不等于某客户端已成功解压。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.12.3, numbered step 2"
+          ],
+          "printed_pages": [
+            146
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.12.3, numbered steps 3–4"
+          ],
+          "printed_pages": [
+            146
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.12.3, numbered steps 5–7"
+          ],
+          "printed_pages": [
+            146
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.12.1, paragraphs 1–2"
+      ],
+      "printed_pages": [
+        144
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.12.2, opening paragraph"
+      ],
+      "printed_pages": [
+        144
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.12.2, numbered steps 1–2"
+      ],
+      "printed_pages": [
+        145
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.12.2, numbered steps 3–6"
+      ],
+      "printed_pages": [
+        145
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.12.3, opening paragraph and precondition 1"
+      ],
+      "printed_pages": [
+        145
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.12.3, numbered step 1 and note 1"
+      ],
+      "printed_pages": [
+        146
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.12.3, numbered step 2"
+      ],
+      "printed_pages": [
+        146
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.12.3, numbered steps 3–4"
+      ],
+      "printed_pages": [
+        146
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.12.3, numbered steps 5–7"
+      ],
+      "printed_pages": [
+        146
+      ]
+    }
+  ],
+  "related": [
+    "r16-bearers-mbms-fec-encoding-roles"
+  ],
+  "limitations": [
+    "不规定 ROHC 算法、其他协议的报文字段或部署效果；FEC 修复数据的生成另见相关主题。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
