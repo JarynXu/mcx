@@ -1,0 +1,439 @@
+{
+  "topic_id": "r16-mcdata-one-to-one-sds-session",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "在网一对一 SDS 会话：对端接受了建会请求，哪一条短消息算送到？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "common_conditions": [
+    "Release 16；同一 MCData 系统内普通在网一对一 SDS 会话。",
+    "客户端 1（甲）和客户端 2（乙）的用户均已注册接收 MCData 服务。"
+  ],
+  "condition_rule": "甲、乙是建会角色；数据发送者、接收者和报告请求人须按每笔确定。媒体面建成、逐笔处置请求、载荷供用户使用、事务完成均不是建会的共同前提。",
+  "claims": [
+    {
+      "id": "oto-session-scope",
+      "title": "本例适用于同一 MCData 系统内、双方用户已注册的普通在网一对一 SDS 会话；可不用别名，服务器也可不订阅别名更新，但请求带别名时须核实发起用户能使用它且它已为该用户激活",
+      "conditions": [
+        "两位用户要建立会话以交换至少一笔 SDS 数据。"
+      ],
+      "conclusion": "会话不要求使用功能别名。若甲提供别名，服务器核实甲能否使用及别名是否已为甲激活。服务器可预先订阅别名激活与停用更新；这项订阅不是建会前提。逐笔处置回报也可不要求。",
+      "normative_strength": "同系统与注册是范围和前提。不提供别名可建会；若提供，服务器执行该别名检查。订阅状态更新可选。",
+      "limitations": [
+        "只知两人已注册，不能反推属于同系统；范围之外不等于不支持服务。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2, opening scope sentence"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.4.1",
+            "7.4.2.4.2, introduction and pre-conditions 1–3"
+          ],
+          "printed_pages": [
+            59
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.4.2, steps 1–4 (ordinary branch)"
+          ],
+          "printed_pages": [
+            60
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "oto-session-request",
+      "title": "普通同系统一对一 SDS 建会：服务器检查发送权和适用策略，带别名时还核能否使用且已激活，再向确定的接收端发请求",
+      "conditions": [
+        "甲为选定的乙请求建立普通会话。"
+      ],
+      "conclusion": "甲端发起会话数据请求；服务器检查甲的资格及消息或内容限制策略，按策略确定接收方，提供别名则还核甲可用该别名且别名已为甲激活。服务器向乙端发请求不是乙端已经接受。",
+      "normative_strength": "检查与向确定的接收方发请求为该流程步骤；别名核实以请求是否提供别名为条件。",
+      "limitations": [
+        "不把乙列为收件目标或服务器发出请求记作乙端已收到或已接受，不由此推断人的动作。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.4.2, steps 1–4 (ordinary branch)"
+          ],
+          "printed_pages": [
+            60
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.4.2, steps 6–7"
+          ],
+          "printed_pages": [
+            61
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "oto-session-accept",
+      "title": "普通同系统一对一 SDS 建会时是接收客户端接受并答复，由服务器转给发起方；不能以此登记某笔已发送、已交付或已读",
+      "conditions": [
+        "乙端收到服务器向它发起的会话请求，进入接受步骤。"
+      ],
+      "conclusion": "接受的是建会请求。乙端答复给服务器，由服务器把该接受响应转给甲。步骤 5 说的是带紧急指示时的来会通知，不规定普通建会必然提示用户。",
+      "normative_strength": "接收客户端在此程序中接受并答复，不是声称普通用户必须手动确认。",
+      "limitations": [
+        "没有证据表明乙本人按键、一定看见来会提示，或任何一笔已有传送结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.4.2, steps 1–4 (ordinary branch)"
+          ],
+          "printed_pages": [
+            60
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.4.2, step 5"
+          ],
+          "printed_pages": [
+            60
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.4.2, steps 6–7"
+          ],
+          "printed_pages": [
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.4.2, steps 8 and 10 (joint description, transmission)"
+          ],
+          "printed_pages": [
+            61
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "oto-session-media",
+      "title": "同系统一对一 SDS 会话的媒体面建成后，任一端都可发；这不证明任何一端已发出特定一笔",
+      "conditions": [
+        "两端已经成功建立进行数据通信的媒体面。"
+      ],
+      "conclusion": "甲端和乙端都有发送能力；若只见乙端发送某一笔，能登记该笔已由乙发出，不能据此登记甲已收或已读。",
+      "normative_strength": "步骤 8、10 的合述给出任一端可发送的能力，并非两端必须各发一次。",
+      "limitations": [
+        "不凭这段文字把两个步骤固定分配给两个发送方向；不把某个示例方向当普遍顺序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.4.2, steps 8 and 10 (joint description, transmission)"
+          ],
+          "printed_pages": [
+            61
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "oto-session-disposition",
+      "title": "同系统一对一 SDS 会话中，用户就一笔数据要求处置回报时，由该笔接收端向请求人发起相应交付或已读报告",
+      "conditions": [
+        "发送端按用户指示在这一笔的数据请求中要求处置回报。"
+      ],
+      "conclusion": "把报告和消息、方向、种类对应。某笔的交付报告不是该笔的已读报告，不能替另一笔证明交付或已读。未要求报告，没见报告也不能据此断言没有交付或阅读。",
+      "normative_strength": "可要求回报；已要求时，接收端发起相应报告。",
+      "limitations": [
+        "合述的步骤 8、10 没有在这里分述两种报告的详细时序；不要移植一对一独立 SDS 的分步条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.4.1",
+            "7.4.2.4.2, introduction and pre-conditions 1–3"
+          ],
+          "printed_pages": [
+            59
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.4.2, steps 8 and 10 (joint description, transmission)"
+          ],
+          "printed_pages": [
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.4.2, steps 8 and 10 (joint description, disposition)"
+          ],
+          "printed_pages": [
+            61
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "oto-session-history",
+      "title": "同系统一对一 SDS 会话中，服务器可保存处置通知供获授权用户查历史；存档不证明请求人已收到报告",
+      "conditions": [
+        "接收端已针对一笔数据向请求人发起处置通知。"
+      ],
+      "conclusion": "可选保存的是通知，由获授权用户查其历史；查到存档不等于查到请求人的接收记录。没有存档也不能否定报告曾被发起。",
+      "normative_strength": "通知面向处置请求者，服务器保存可选。",
+      "limitations": [
+        "不得把可查历史改成所有用户均可见、全部报告必定存档或请求者必定已经收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.4.2, steps 8 and 10 (joint description, disposition)"
+          ],
+          "printed_pages": [
+            61
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "oto-session-user",
+      "title": "同系统一对一 SDS 会话的步骤 9、11 只说明客户端 2 的用户：供用户使用的载荷可提示，其他载荷不得提示",
+      "conditions": [
+        "判断本程序客户端 2 的用户是否应收到有关这一笔载荷的提示。"
+      ],
+      "conclusion": "给人看的短消息可以提示乙；给后台应用处理而不供人使用的指令不得就该载荷提示乙。屏幕提示不是数据处置报告；无提示也不能否定客户端收到数据。",
+      "normative_strength": "供用户使用时为可选；不供用户使用时为明确禁止。",
+      "limitations": [
+        "不要由这两步给客户端 1 的用户设同样义务，也不要混同有紧急指示时关于来会请求的通知。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.4.2, step 5"
+          ],
+          "printed_pages": [
+            60
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.4.2, steps 9 and 11 (joint description)"
+          ],
+          "printed_pages": [
+            61
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "oto-session-release",
+      "title": "本一对一 SDS 会话例在所述数据事务完成后释放已建媒体面，不是在接受建会请求时释放",
+      "conditions": [
+        "所述 SDS 数据事务已经完成。"
+      ],
+      "conclusion": "步骤 12 在该事务完成后释放此前建立的媒体面；建会接受本身不是完成数据事务的凭据。",
+      "normative_strength": "这是例示程序中附在事务完成之后的释放步骤。",
+      "limitations": [
+        "不借该步骤给其他会话、每条消息或所有实现定义通用媒体释放时序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.4.2, steps 6–7"
+          ],
+          "printed_pages": [
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.4.2, steps 8 and 10 (joint description, transmission)"
+          ],
+          "printed_pages": [
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.4.2, step 12"
+          ],
+          "printed_pages": [
+            61
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2, opening scope sentence"
+      ],
+      "printed_pages": [
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.4.1",
+        "7.4.2.4.2, introduction and pre-conditions 1–3"
+      ],
+      "printed_pages": [
+        59
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.4.2, steps 1–4 (ordinary branch)"
+      ],
+      "printed_pages": [
+        60
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.4.2, step 5"
+      ],
+      "printed_pages": [
+        60
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.4.2, steps 6–7"
+      ],
+      "printed_pages": [
+        61
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.4.2, steps 8 and 10 (joint description, transmission)"
+      ],
+      "printed_pages": [
+        61
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.4.2, steps 8 and 10 (joint description, disposition)"
+      ],
+      "printed_pages": [
+        61
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.4.2, steps 9 and 11 (joint description)"
+      ],
+      "printed_pages": [
+        61
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.4.2, step 12"
+      ],
+      "printed_pages": [
+        61
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcdata-one-to-one-standalone-sds",
+    "r16-mcdata-group-media-plane-sds-session",
+    "r16-mcdata-sds-session-client"
+  ],
+  "limitations": [
+    "只读普通、同系统、在网一对一会话的固定 Stage 2 文字；不移用组会话与独立传送的规定。",
+    "不把紧急指示下的来会通知列作普通义务；不据此规定离网、伙伴系统或具体协议信令。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
