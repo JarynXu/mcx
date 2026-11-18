@@ -1,0 +1,192 @@
+{
+  "topic_id": "r16-calls-offnetwork-group-call-merge",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "离网 MCPTT：同一个组出现两通呼叫，已在通话的客户端选哪一通？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 24.379 V16.14.0，Release 16，Stage 3。讨论离网 MCPTT 客户端对合法 GROUP CALL ANNOUNCEMENT 的本地处理；所比类型限普通、迫近危险和紧急组呼。基本呼叫控制和类型控制是并行状态机，各声明按自身入口和守卫适用。"
+  ],
+  "claims": [
+    {
+      "id": "candidate-identity",
+      "title": "什么才进入两通呼叫的比较",
+      "conditions": [
+        "基本呼叫控制在 S3，或就并行的类型控制而言，该状态机在 T1、T2 或 T3。客户端收到 GROUP CALL ANNOUNCEMENT，正在判断它是否涉及同组另一通呼叫。"
+      ],
+      "conclusion": "公告的 MCPTT 组 ID 必须与保存值相同；公告中的发起者 MCPTT 用户 ID 或呼叫标识（call ID）至少一项与保存值不同。不要求两者同时不同。",
+      "normative_strength": "两条合并程序各自列明状态与消息的入口；匹配这些条件尚不等于采用公告。",
+      "limitations": [
+        "仅类型改变、两个身份字段均相同，或组 ID 不同的公告，不能据此触发本合并程序；不由此判定其他程序的行为。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.4.6.1, S3 and announcement identity guard; four conditions for adopting the announced call"
+          ],
+          "printed_pages": [
+            331
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.4.9, T1/T2/T3, announcement identity guard and four conditions"
+          ],
+          "printed_pages": [
+            344
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.1, parallel basic and call type control state machines"
+          ],
+          "printed_pages": [
+            332
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "select-announced-call",
+      "title": "类型优先，其次比开始时间，再比呼叫标识",
+      "conditions": [
+        "相应状态机满足入口状态；公告的组 ID 与本机保存值相同，发起者 MCPTT 用户 ID 或 call ID 至少一项不同。"
+      ],
+      "conclusion": "以下任一条件成立时采用公告：本机普通而公告为迫近危险或紧急；本机迫近危险而公告为紧急；类型相同且公告的呼叫开始时间更早；或类型和开始时间都相同且公告的 call ID 数值更小。",
+      "normative_strength": "按基本呼叫控制与类型控制的四个选中条件分别核对；只有在同类时才比较开始时间，前两项相等才比较 call ID。",
+      "limitations": [
+        "不以消息到达先后、最后类型变更时间或发起者 ID 大小决胜；三项都相同、仅发起者不同时，入口虽满足但这两段未规定采用公告。本地判断不等于全组已经切换。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.4.6.1, S3 and announcement identity guard; four conditions for adopting the announced call"
+          ],
+          "printed_pages": [
+            331
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.4.9, T1/T2/T3, announcement identity guard and four conditions"
+          ],
+          "printed_pages": [
+            344
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "adopt-session-stay-s3",
+      "title": "基本呼叫控制调整哪一通会话",
+      "conditions": [
+        "基本呼叫控制在 S3；收到同组公告，发起者或 call ID 不同，并满足合并的四个选中条件之一。"
+      ],
+      "conclusion": "须从公告保存 SDP、call ID、发起者 MCPTT 用户 ID、刷新间隔和呼叫开始时间；按所存 SDP 调整媒体会话，以终接话权参与者身份重新启动话权控制。先停再按所引用的规则启动 TFG6（最长时长），再停并按其规则启动 TFG2（呼叫公告）；仍在 S3。",
+      "normative_strength": "选中后的动作 1–11 为 SHALL；两只计时器均有明确的停止、启动步骤。",
+      "limitations": [
+        "重启终接侧话权不是获得话权的证明；本条不证明其他参与者已切换、收到或播放媒体，也不规定话权协议内部动作。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.4.6.1, S3 and announcement identity guard; four conditions for adopting the announced call"
+          ],
+          "printed_pages": [
+            331
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.4.6.1, client actions 1–11: session fields, media, floor role, TFG6, TFG2 and S3"
+          ],
+          "printed_pages": [
+            331
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "adopt-type-and-downgrade-timers",
+      "title": "类型控制保存的历史与有条件启动的计时器",
+      "conditions": [
+        "类型控制在 T1（紧急）、T2（普通）或 T3（迫近危险）；收到同组公告，发起者或 call ID 不同，并满足合并的四个选中条件之一。"
+      ],
+      "conclusion": "先从公告保存最后类型变更时间、最后变更类型的用户及当前类型。公告为紧急：设紧急组呼对应的 ProSe 逐包优先级，TFG14 运行才停，TFG13 未启动才启动，进入 T1。为迫近危险：设对应优先级，TFG14 未启动才启动，进入 T3。普通类型也保存三项通用值，条文未为它另列优先级、计时器或转态步骤。",
+      "normative_strength": "动作 1–3 为 SHALL；动作 4–5 在对应类型下为 SHALL，相关计时器动作另受运行状态限定。",
+      "limitations": [
+        "不能把 TFG13/TFG14 一律停启，或为迫近危险分支增写停止 TFG13。S3 与 T1/T2/T3 是不同状态机，不是前后两次进入同一个状态机。此处不指定逐包优先级数值、隐式降级时长或跨终端收敛。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.4.9, T1/T2/T3, announcement identity guard and four conditions"
+          ],
+          "printed_pages": [
+            344
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.1, parallel basic and call type control state machines"
+          ],
+          "printed_pages": [
+            332
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.4.9, client actions 1–5: common type history, emergency and imminent-peril branches"
+          ],
+          "printed_pages": [
+            345
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-offnetwork-group-client"
+  ],
+  "limitations": [
+    "不涵盖广播组呼、私呼、输入构造、话权算法、优先级配置值或真实网络收敛证明。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
