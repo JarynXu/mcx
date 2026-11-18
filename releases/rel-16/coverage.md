@@ -242,6 +242,16 @@ settings-only PUBLISH 的身份字段与保护配置、服务器保护/绑定拒
 
 [读取主题](topics/calls/private-no-floor-control-identification.md)
 
+## 在网 MCPTT 普通私呼：挂断一次通话，会拆掉预建立会话吗？
+
+按需私呼仍在建立时发 CANCEL，跳过其余释放步骤；已建立的按需私呼用 BYE。预建立会话内的业务则用对话外 REFER 指定要释放的私呼。
+
+客户端收到私呼 BYE 才按相应流程应答。若终接侧参与功能收到控制功能的 BYE，且业务会话身份指向与它有预建立会话的用户，它须保留面向该客户端的预建立会话。
+
+尚未建立：收到 REFER 的 2xx 不等于客户端收到 BYE，也不证明预建立会话已拆除，或所有媒体资源都已释放。
+
+[读取主题](topics/calls/private-client-release.md)
+
 
 
 ## 普通私聊SDS控制面：发送资格、请求与接收证据

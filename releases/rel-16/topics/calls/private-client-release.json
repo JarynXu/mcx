@@ -1,0 +1,298 @@
+{
+  "topic_id": "r16-calls-private-client-release",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "在网 MCPTT 普通私呼：挂断一次通话，会拆掉预建立会话吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "common_conditions": [
+    "3GPP TS 24.379 V16.14.0（Release 16，Stage 3），在网普通 MCPTT 私呼由客户端发起结束；看本地角色、会话类型、状态和实际到达的信令。"
+  ],
+  "condition_rule": "前两项按需发起分支互斥；预建私呼的发起方、实际收到 BYE 的客户端、收到 CF 的 BYE 的终接侧 PF 分别进入各自的程序，不得串成每次必经的步骤。",
+  "claims": [
+    {
+      "id": "cancel-pending-on-demand",
+      "title": "按需呼叫仍在建立时取消",
+      "conditions": [
+        "用户要求结束按需私呼，客户端的会话仍在建立。"
+      ],
+      "conclusion": "客户端按 TS 24.229 发送 SIP CANCEL，并跳过 §6.2.5.1 的其余步骤。",
+      "normative_strength": "有条件的 SHALL；跳过余下步骤也是该分支的要求。",
+      "limitations": [
+        "本释放程序中不再走后续媒体交互或发 BYE；不裁决最终应答晚到等竞态。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.3.1.1.1"
+          ],
+          "printed_pages": [
+            388
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.5.1, step 1"
+          ],
+          "printed_pages": [
+            60
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "bye-established-on-demand",
+      "title": "结束已建立的按需业务会话",
+      "conditions": [
+        "用户要求结束已建立的按需私呼。"
+      ],
+      "conclusion": "客户端先按 TS 24.380 与媒体面交互，再按 TS 24.229 生成 SIP BYE，以待释放 MCPTT 业务会话身份为 Request-URI，向 MCPTT 服务器发送。",
+      "normative_strength": "所列客户端动作均为 SHALL。",
+      "limitations": [
+        "该 URI 标识业务会话，不能替换为被叫用户的个人身份。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.3.1.1.1"
+          ],
+          "printed_pages": [
+            388
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.5.1, steps 2–5"
+          ],
+          "printed_pages": [
+            60,
+            61
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "refer-release-contained-call",
+      "title": "用对话外 REFER 结束预建会话内的私呼",
+      "conditions": [
+        "用户要求结束正在使用预建立会话的这一项私呼。"
+      ],
+      "conclusion": "客户端先按 TS 24.380 与媒体面交互，生成并发送初始对话外 SIP REFER。Request-URI 为服务该用户的 MCPTT 服务器上标识预建立会话的公共服务身份；Refer-To 为待释放的业务会话身份，并在其中的 URI 上设 method=BYE；Target-Dialog 标识预建立会话。请求还带 Refer-Sub: false 与 Supported: norefersub。实际收到这个 REFER 的 2xx 后，客户端再次按 TS 24.380 与媒体面交互。",
+      "normative_strength": "上述字段、值、发送及收到对应 2xx 后的媒体面交互均为 SHALL。",
+      "limitations": [
+        "REFER 并非发在预建对话内的 BYE；仅凭该 2xx 不能判定容器拆除或对端客户端已收到 BYE。主动拆除空闲容器另见预建立会话生命周期。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.3.1.2.1"
+          ],
+          "printed_pages": [
+            389
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.5.2, steps 1–9 and final paragraph"
+          ],
+          "printed_pages": [
+            61
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "client-receives-private-bye",
+      "title": "客户端实际收到针对私呼的 BYE",
+      "conditions": [
+        "按需或使用预建立会话的私呼，客户端实际收到针对该业务的 SIP BYE。"
+      ],
+      "conclusion": "客户端按 TS 24.380 与媒体面交互，再按 TS 24.229 向 MCPTT 服务器回复 SIP 200 (OK)，应答收到的 BYE。",
+      "normative_strength": "以实际收到 BYE 为条件，两步均为 SHALL。",
+      "limitations": [
+        "用户在另一端挂断或其 REFER 得到 2xx，均不能单独证明本客户端收到 BYE。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.3.1.1.2"
+          ],
+          "printed_pages": [
+            388
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.3.1.2.2"
+          ],
+          "printed_pages": [
+            389
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.6, steps 1–2"
+          ],
+          "printed_pages": [
+            61
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "pf-retains-terminal-session",
+      "title": "终接侧参与功能保留面向客户端的预建立会话",
+      "conditions": [
+        "终接侧参与 MCPTT 功能（PF）收到来自控制 MCPTT 功能（CF）的 SIP BYE，且其中的 MCPTT 会话 ID 指向一名与该 PF 有预建立会话的用户。"
+      ],
+      "conclusion": "PF 通过媒体面断开面向 CF 的媒体资源，向 CF 回 SIP 200 (OK)，再通过媒体面把面向客户端的资源与面向 CF 的资源断开；PF 保留面向客户端的预建立会话。",
+      "normative_strength": "该条件下的两次媒体交互、对 CF 的应答和保留预建立会话均为 SHALL。",
+      "limitations": [
+        "此分支不要求 PF 将同一个 BYE 转发到客户端。PF 给 CF 的 200 不是客户端给服务器的 200，更不表示所有媒体资源释放完毕或容器从此不会释放。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.3.2.2.2, preconditions and steps 1–4"
+          ],
+          "printed_pages": [
+            389
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.3.1.1.1"
+      ],
+      "printed_pages": [
+        388
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.2.5.1, step 1"
+      ],
+      "printed_pages": [
+        60
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.2.5.1, steps 2–5"
+      ],
+      "printed_pages": [
+        60,
+        61
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.3.1.2.1"
+      ],
+      "printed_pages": [
+        389
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.2.5.2, steps 1–9 and final paragraph"
+      ],
+      "printed_pages": [
+        61
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.3.1.1.2"
+      ],
+      "printed_pages": [
+        388
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.3.1.2.2"
+      ],
+      "printed_pages": [
+        389
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.2.6, steps 1–2"
+      ],
+      "printed_pages": [
+        61
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.3.2.2.2, preconditions and steps 1–4"
+      ],
+      "printed_pages": [
+        389
+      ]
+    }
+  ],
+  "related": [
+    "r16-calls-private-client-answer-evidence",
+    "r16-mcptt-preestablished-session-lifecycle"
+  ],
+  "limitations": [
+    "不覆盖服务器主动发起的释放、离网私呼、完整服务端链路、SIP 竞态和完整媒体面资源生命周期。",
+    "预建立会话本身的释放由另一主题负责。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
