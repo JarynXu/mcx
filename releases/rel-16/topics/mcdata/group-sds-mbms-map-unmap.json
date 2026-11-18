@@ -1,0 +1,287 @@
+{
+  "topic_id": "r16-mcdata-group-sds-mbms-map-unmap",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "在网 MCData 组短数据：切到 MBMS，又切回单播，还是同一条媒体流吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.582-v16.3.0",
+  "condition_rule": "每条声明继承全部通用条件，再叠加自身条件。",
+  "common_conditions": [
+    "Rel-16 在网组 SDS 经媒体面投递，角色为终接 MCData 客户端。§6.5.1 的非规范性背景假定会话已建立、双方已完成 SDP 协商、接收端已处理承载公告；不把映射、收包、解除映射视为同一个事件。"
+  ],
+  "claims": [
+    {
+      "id": "listen-and-map",
+      "title": "预计组 SDS 经 MBMS 投递时，接收端监听通用子信道；收到组映射后，按组、承载和媒体子信道接收",
+      "conditions": [
+        "预计经 MBMS 投递；映射动作以接收端在通用子信道实际收到该组的映射消息为条件。"
+      ],
+      "conclusion": "预计经 MBMS 投递时须监听通用子信道。收到映射后，接收端把 MCData 组 ID、TMGI 和媒体子信道关联起来，开始或继续媒体接收程序；预计经 MBMS 投递期间须监听映射指定的承载及媒体子信道。",
+      "normative_strength": "§6.5.1 是非规范性的适用背景；§6.5.2.1 要求执行所指的 MSRP 连接建立程序。§§6.5.2.2–3 的监听、关联及开始或继续接收是各自条件下的要求。",
+      "limitations": [
+        "不能从预计期间的监听义务推出其他时候禁止监听。收到映射不等于建立了新的会话，也不证明收到了短数据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.1, non-normative overview: established group SDS session, completed SDP negotiation and processed bearer announcement"
+          ],
+          "printed_pages": [
+            26,
+            27
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.2.1, terminating client uses the MSRP establishment procedure in 6.1.2.3.1"
+          ],
+          "printed_pages": [
+            27
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.2.2, opening paragraph: expected MBMS delivery and general-purpose subchannel"
+          ],
+          "printed_pages": [
+            27
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.2.2, Map Group To Bearer, points 1–2: group identity, TMGI, media subchannel and start or continuation of reception"
+          ],
+          "printed_pages": [
+            27
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.2.3, point 1: monitoring the bearer and subchannel indicated by the map while MBMS delivery is expected"
+          ],
+          "printed_pages": [
+            27
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "receive-media",
+      "title": "尚未收到 SIP BYE 且未发生实现相关超时时，组 SDS 接收端将 MBMS 收到的媒体包载荷放在此前经单播或 MBMS 收到的 MSRP SEND 所形成的媒体流中处理",
+      "conditions": [
+        "接收端实际收到 (S)RTP 媒体包，尚未收到 SIP BYE，也未发生该实现的超时。"
+      ],
+      "conclusion": "逐包取出载荷；SRTP 还须解密并验证载荷。按 §6.1.2.3.1 将载荷作为收到的 MSRP SEND，在先前收到的 SEND 所构成的媒体流中处理，无论此前经单播还是 MBMS。",
+      "normative_strength": "§6.5.2.3 步骤 2a–b 分别规定取出并按需解密、验证载荷，以及在既有媒体流上下文处理。",
+      "limitations": [
+        "逐包处理以 SIP BYE 或由实现决定的超时为界，并无统一秒数。媒体流的连续性不表示相邻 SEND 都是同一条消息。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.2.3, point 2 and point 2a: per-packet processing until BYE or implementation-dependent timeout, RTP and SRTP"
+          ],
+          "printed_pages": [
+            27
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.2.3, point 2b: received MSRP SEND processed within the flow of previously received SEND messages on either delivery path"
+          ],
+          "printed_pages": [
+            28
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "unmap-scope",
+      "title": "解除映射指向当前组 SDS 通信时，接收端只移除对应且已存在的关联，停听相应承载及媒体子信道",
+      "conditions": [
+        "接收端在 MBMS 子信道收到解除映射消息，而且该消息指向当前通信；只有对应关联存在，才有可移除的关联。"
+      ],
+      "conclusion": "按 MCData 组 ID 定位组会话，移除对应 TMGI 与媒体子信道的关联（如果存在），停止监听相关联的承载和媒体子信道。",
+      "normative_strength": "§6.5.2.2 解除映射的引导句限于当前通信，步骤 1 的存在条件针对移除；步骤 2 单列停止监听。",
+      "limitations": [
+        "不清除别的组映射；不能由此推出停止监听所有通用子信道。指向另一通信的解除消息不触发本次通信的这项处理。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.2.2, Unmap Group To Bearer lead-in and point 1: current communication and removal of an existing association"
+          ],
+          "printed_pages": [
+            27
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.2.2, Unmap Group To Bearer point 2: affected bearer and media subchannel; unicast delivery if the SDS session continues"
+          ],
+          "printed_pages": [
+            27
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "continue-unicast",
+      "title": "收到指向当前通信的解除映射后，只有组 SDS 会话仍在进行才恢复或继续经单播媒体面投递",
+      "conditions": [
+        "接收端收到指向当前通信的解除映射；恢复或继续单播另以 SDS 会话仍在进行为条件。"
+      ],
+      "conclusion": "会话仍在进行则恢复或继续经单播媒体面投递；已结束则该条不要求重开单播。",
+      "normative_strength": "§6.5.2.2 解除映射步骤 2 把会话仍在进行作为单播后续动作的条件。",
+      "limitations": [
+        "解除映射并非会话结束的凭证，也不能据此判定下一条短数据已经到达。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.2.2, Unmap Group To Bearer lead-in and point 1: current communication and removal of an existing association"
+          ],
+          "printed_pages": [
+            27
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.2.2, Unmap Group To Bearer point 2: affected bearer and media subchannel; unicast delivery if the SDS session continues"
+          ],
+          "printed_pages": [
+            27
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.5.1, non-normative overview: established group SDS session, completed SDP negotiation and processed bearer announcement"
+      ],
+      "printed_pages": [
+        26,
+        27
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.5.2.1, terminating client uses the MSRP establishment procedure in 6.1.2.3.1"
+      ],
+      "printed_pages": [
+        27
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.5.2.2, opening paragraph: expected MBMS delivery and general-purpose subchannel"
+      ],
+      "printed_pages": [
+        27
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.5.2.2, Map Group To Bearer, points 1–2: group identity, TMGI, media subchannel and start or continuation of reception"
+      ],
+      "printed_pages": [
+        27
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.5.2.3, point 1: monitoring the bearer and subchannel indicated by the map while MBMS delivery is expected"
+      ],
+      "printed_pages": [
+        27
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.5.2.3, point 2 and point 2a: per-packet processing until BYE or implementation-dependent timeout, RTP and SRTP"
+      ],
+      "printed_pages": [
+        27
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.5.2.3, point 2b: received MSRP SEND processed within the flow of previously received SEND messages on either delivery path"
+      ],
+      "printed_pages": [
+        28
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.5.2.2, Unmap Group To Bearer lead-in and point 1: current communication and removal of an existing association"
+      ],
+      "printed_pages": [
+        27
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.5.2.2, Unmap Group To Bearer point 2: affected bearer and media subchannel; unicast delivery if the SDS session continues"
+      ],
+      "printed_pages": [
+        27
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcdata-mbms-group-file-delivery",
+    "r16-mcdata-sds-session-media-client"
+  ],
+  "limitations": [
+    "不解释组文件分发、单播资源的保留或重建、服务器选择承载的策略，也不据映射消息推断实际投递成功。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
