@@ -1,0 +1,288 @@
+{
+  "topic_id": "r16-mcdata-sds-reference-points",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "在网短数据：载荷等于为信令控制面 SDS 配置的最大载荷，能走信令面吗？建会信令能确定正文路径吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "common_conditions": [
+    "在网 SDS 的应用平面功能模型；参考点表示 MCData 客户端的 SDS 功能和服务器的 SDS 分发功能间的交互，区分载荷许可、传送功能与实际记录。"
+  ],
+  "condition_rule": "载荷上限约束经信令控制面传输的 SDS 载荷，不用它判定是否可观察到建会信令。方向针对客户端和服务器；参考点能力并非某笔实际传送的结果。",
+  "claims": [
+    {
+      "id": "sds1-payload-limit-inclusive",
+      "title": "在网 SDS 载荷等于为信令控制面 SDS 配置的最大载荷时，允许经 MCData-SDS-1 传载荷，不等于已选用它",
+      "conditions": [
+        "要知道的是该笔 SDS 的载荷大小和为信令控制面 SDS 配置的最大载荷；不能用含开销的整份消息大小代替前者，也不能用 SDS 业务的最大数据量代替后者。"
+      ],
+      "conclusion": "SDS 载荷不超过信令控制面 SDS 的配置载荷上限时，允许用 MCData-SDS-1 传载荷；恰好等于该上限也符合。若只知道含开销的整份消息大于这项上限，不知道其中的载荷或开销有多大，就不能以整份消息超限证明 SDS 载荷也超限。",
+      "normative_strength": "架构许可，不指定某笔实际传送的唯一路径。",
+      "limitations": [
+        "本条不给所有系统共用的字节数，不据此指定一对一独立消息的具体程序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.5.4.1.1, second paragraph"
+          ],
+          "printed_pages": [
+            29
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "sds1-setup-vs-content",
+      "title": "在网 MCData-SDS-1 可承载建会信令，也可承载上下行单播短数据；建会记录不能证明正文走信令面",
+      "conditions": [
+        "在网 SDS；区分记录所述的是为 SDS 传输而建会，还是客户端与服务器之间的单播正文传送。"
+      ],
+      "conclusion": "主要用途是传输短数据所需的建会应用信令；另一用途是信令控制面上下行单播 SDS。若另有信令控制面向乙单播发出 X 载荷的记录，就可确认这次下行发送；仅有建会记录不能。",
+      "normative_strength": "同一参考点的不同功能，不规定每次一起发生。",
+      "limitations": [
+        "发送不等于客户端实际收到；缺少载荷记录也不等于未传送。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.5.1, text following figure 6.5.1-1, first bullet"
+          ],
+          "printed_pages": [
+            27
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.5.4.1.1, first paragraph"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.5.4.1.1, second paragraph"
+          ],
+          "printed_pages": [
+            29
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "sds1-report-request-vs-outcome",
+      "title": "在网 MCData-SDS-1 支持交付、已读的请求和通知；请求通知不能替代该笔通知或收件、阅读的证据",
+      "conditions": [
+        "判断的是指定消息与指定接收方；记录只记有请求而无结果。"
+      ],
+      "conclusion": "SDS-1 按情况支持交付和已读请求与通知。请求已读回报能证明提出了请求，不能从中认定接收端已收到正文、用户已读或通知已经返回。",
+      "normative_strength": "参考点对请求和通知的支持，不是每笔都要求通知。",
+      "limitations": [
+        "也不能从缺少通知反推用户一定没读。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.5.4.1.1, third paragraph"
+          ],
+          "printed_pages": [
+            29
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "sds2-media-unicast",
+      "title": "在网 SDS 超过信令控制面 SDS 的配置载荷上限时，媒体面上下行单播可走 MCData-SDS-2；超限并不指定组播",
+      "conditions": [
+        "在网 SDS；用该笔载荷与信令控制面 SDS 的配置载荷上限比较。区分两种记录：已有媒体面单播和方向，或仅知载荷超过这项上限。"
+      ],
+      "conclusion": "客户端 SDS 功能到服务器 SDS 分发功能的单播是上行，反向单播是下行；两种媒体面单播都对应 SDS-2。只知道载荷超限，不能选定组播。",
+      "normative_strength": "比较架构允许的参考点，按实际传送的方向和单播/组播区分。",
+      "limitations": [
+        "单播发送记录不证明对端实际收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.5.1, text following figure 6.5.1-1, second bullet"
+          ],
+          "printed_pages": [
+            27
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.5.4.1.1, second paragraph"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.5.4.1.2, first paragraph"
+          ],
+          "printed_pages": [
+            29
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "sds3-server-downlink-multicast",
+      "title": "在网 MCData-SDS-3 供服务器向客户端下行组播短数据；发出组播不证明某个客户端已收到",
+      "conditions": [
+        "服务器的 SDS 分发功能经媒体面向客户端的 SDS 功能组播。"
+      ],
+      "conclusion": "该方向是下行，不能把客户端向服务器上行组播记成 SDS-3。已知服务器组播发出 X 时，仅能确认发送。若补有乙端收到 X 的独立记录，可确认乙端收件，不能据乙端记录替丙端确认。",
+      "normative_strength": "功能方向为下行组播；实际收件需有指向相应客户端及消息的依据。",
+      "limitations": [
+        "不能从没有某成员收件记录推断该成员一定漏收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.5.1, text following figure 6.5.1-1, third bullet"
+          ],
+          "printed_pages": [
+            27
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.5.4.1.3"
+          ],
+          "printed_pages": [
+            29
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "6.5.1, text following figure 6.5.1-1, first bullet"
+      ],
+      "printed_pages": [
+        27
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "6.5.1, text following figure 6.5.1-1, second bullet"
+      ],
+      "printed_pages": [
+        27
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "6.5.1, text following figure 6.5.1-1, third bullet"
+      ],
+      "printed_pages": [
+        27
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "6.5.4.1.1, first paragraph"
+      ],
+      "printed_pages": [
+        29
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "6.5.4.1.1, second paragraph"
+      ],
+      "printed_pages": [
+        29
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "6.5.4.1.1, third paragraph"
+      ],
+      "printed_pages": [
+        29
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "6.5.4.1.2, first paragraph"
+      ],
+      "printed_pages": [
+        29
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "6.5.4.1.3"
+      ],
+      "printed_pages": [
+        29
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcdata-one-to-one-standalone-sds",
+    "r16-mcdata-group-media-plane-sds-session",
+    "r16-mcdata-group-sds-mbms-map-unmap"
+  ],
+  "limitations": [
+    "上述是架构许可和用途，不提供实现跟踪或某终端收件、已读的事实。",
+    "一对一独立消息示例、组会话收件及组到承载映射程序另查所链接的对应主题，不以此页改写其前提。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
