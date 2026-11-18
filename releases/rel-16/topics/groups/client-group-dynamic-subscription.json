@@ -1,0 +1,468 @@
+{
+  "topic_id": "r16-groups-client-group-dynamic-subscription",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MC 业务客户端订阅组动态数据：收到成功响应，就收到新数据了吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "MC 业务客户端与 MC 业务服务器之间，讨论指定 MC 业务组的动态数据。"
+  ],
+  "condition_rule": "依次区分订阅前提、响应、通知前提与已关联的实际收件证据；寻址说明只用于表中明确写出的客户端方向。 通知程序的应答步骤不能跳过 MBMS 组寻址应用层控制信令的应答限制。",
+  "claims": [
+    {
+      "id": "request-and-receive-authority",
+      "title": "MC 业务客户端有权请求某组的动态数据，服务器收到订阅请求后仍检查该端是否有权接收该组数据",
+      "conditions": [
+        "MC 业务客户端与 MC 业务服务器之间，讨论指定 MC 业务组的动态数据。",
+        "服务器已有该组的动态数据，获授权用户的业务客户端有权请求该组数据，并发出了订阅请求。"
+      ],
+      "conclusion": "客户端在请求中标明组 ID。服务器核查该客户端有无接收该组数据的资格，再返回请求结果。",
+      "normative_strength": "订阅的两个前提和步骤 1–3；订阅请求表把组 ID 标为 M。",
+      "limitations": [
+        "未见服务器处理结果，不能把有权请求记为订阅已获准；本条不规定如何实现访问控制。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.6, opening paragraphs distinguishing the authorized user and GMS"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.6.2, subscription introduction, both preconditions and steps 1–3"
+          ],
+          "printed_pages": [
+            82,
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.6.1.1, introductory direction and table headed Subscribe group dynamic data request, required group ID"
+          ],
+          "printed_pages": [
+            81
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "subscription-outcome",
+      "title": "MC 业务客户端收到的组动态数据订阅成功响应说明本次订阅成功，不确认客户端收到了该组的新数据",
+      "conditions": [
+        "MC 业务客户端与 MC 业务服务器之间，讨论指定 MC 业务组的动态数据。",
+        "客户端收到服务器对本组订阅请求的响应。"
+      ],
+      "conclusion": "订阅响应必填组 ID 和请求结果；成功可登记该组订阅成功，失败则登记这次请求失败。数据列在另一条同向的通知请求中。",
+      "normative_strength": "订阅响应表与通知请求表分别定义两个必填项；通知程序有自己的两个前提。",
+      "limitations": [
+        "失败不证明其他订阅也失败；缺少针对实际接收端的通知或相关收件证据时，不能断定它收到了或没收到更新。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.6.2, subscription introduction, both preconditions and steps 1–3"
+          ],
+          "printed_pages": [
+            82,
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.6.1.2, direction and client addressing; table 10.1.5.6.1.2-1, both M rows"
+          ],
+          "printed_pages": [
+            81,
+            82
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.6.2, notification introduction, both preconditions and steps 1–2"
+          ],
+          "printed_pages": [
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.6.1.3, heading and introductory wording/direction/client addressing; table 10.1.5.6.1.3-1, both M rows"
+          ],
+          "printed_pages": [
+            82
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "new-data-and-receipt",
+      "title": "MC 业务客户端已订阅某组且服务器有该组新动态数据时，服务器以通知请求发出数据；一端的通知响应不能替另一端确认收件",
+      "conditions": [
+        "MC 业务客户端与 MC 业务服务器之间，讨论指定 MC 业务组的动态数据。",
+        "区分客户端所订的组、服务器有新数据的组和实际响应的客户端；通知响应与本次通知对应。 若经 MBMS 发送组寻址的应用层控制信令，要区分该端是否被指示或配置回复。"
+      ],
+      "conclusion": "服务器发给已订阅客户端的通知请求必填组 ID 和该组动态数据。如客户端实际回复，通知响应必填所收数据的组 ID，不要求重复数据或另报成败。",
+      "normative_strength": "通知前提与两步程序；通知请求和通知响应两表的 M 行。 通知请求的引言还引用 §10.7.3.4.1，限制特定 MBMS 组寻址信令的应答。",
+      "limitations": [
+        "只有其他组出现更新，不满足本组有新数据的前提。服务器侧只见发出记录不能证实送达或未送达。通知请求引言的称呼与表题不同，不能据此反转方向。",
+        "业务服务器经 MBMS 以按组寻址的应用层控制信令传组动态数据时，没有相应回复指示或配置的客户端不得应答；收到而不回是可能的。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.6.2, notification introduction, both preconditions and steps 1–2"
+          ],
+          "printed_pages": [
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.6.1.3, heading and introductory wording/direction/client addressing; table 10.1.5.6.1.3-1, both M rows"
+          ],
+          "printed_pages": [
+            82
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.6.1.4, direction and table 10.1.5.6.1.4-1, required group ID and its description"
+          ],
+          "printed_pages": [
+            82
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.4.1, MBMS application-level control signalling: introductory text, group dynamic data item and final paragraph on group-addressed responses"
+          ],
+          "printed_pages": [
+            126
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "addressing-vs-delivery",
+      "title": "服务器发给 MC 业务客户端的组动态数据订阅响应单独寻址，通知请求可单独或按组寻址；两者都可单播或组播",
+      "conditions": [
+        "MC 业务客户端与 MC 业务服务器之间，讨论指定 MC 业务组的动态数据。",
+        "看的是业务服务器发给业务客户端的订阅响应或通知请求，不是发给 GMS 的流，也不是客户端返回的通知响应。"
+      ],
+      "conclusion": "收件对象如何寻址与选择单播或组播是两件事。只见组播不能判定是通知、按组寻址或所有成员已收到；通知走单播也不能仅凭单播确定寻址方式。",
+      "normative_strength": "两张表前的文字分别限定服务器至业务客户端方向：订阅响应单独寻址，通知允许两种寻址方式。",
+      "limitations": [
+        "不将客户端分支的寻址选项推广到全部四种信息流，不用规范选项证明某次实收。",
+        "不能由传送方式推断有无回复义务；§10.7.3.4.1 对 MBMS 组寻址应用层控制信令另设限制。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.6.1.2, direction and client addressing; table 10.1.5.6.1.2-1, both M rows"
+          ],
+          "printed_pages": [
+            81,
+            82
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.6.1.3, heading and introductory wording/direction/client addressing; table 10.1.5.6.1.3-1, both M rows"
+          ],
+          "printed_pages": [
+            82
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.4.1, MBMS application-level control signalling: introductory text, group dynamic data item and final paragraph on group-addressed responses"
+          ],
+          "printed_pages": [
+            126
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "client-not-gms",
+      "title": "组动态数据信息流表也列 GMS，但由 MC 业务客户端订阅该组动态数据时，不照搬 GMS 订阅归属状态的服务器位置和数据范围",
+      "conditions": [
+        "MC 业务客户端与 MC 业务服务器之间，讨论指定 MC 业务组的动态数据。",
+        "区分指定组的 MC 业务客户端订阅，与 GMS 向业务服务器订阅该组归属状态。"
+      ],
+      "conclusion": "四表列两种角色；.6.2 由业务客户端订阅组动态数据；.6.3 才把 GMS 的订阅对象限定为隐式和显式归属状态，并以业务服务器在定义该组的系统内为前提。",
+      "normative_strength": "两种订阅程序分别描述角色、对象和前提；四表的方向同时覆盖客户端、GMS。",
+      "limitations": [
+        "未把 .6.2 没有列出某个位置前提解释成可向任意服务器订阅，也不由 Stage 2 揣测 SIP 实现。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.6, opening paragraphs distinguishing the authorized user and GMS"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.6.2, subscription introduction, both preconditions and steps 1–3"
+          ],
+          "printed_pages": [
+            82,
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.6.1.1, introductory direction and table headed Subscribe group dynamic data request, required group ID"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.6.1.2, direction and client addressing; table 10.1.5.6.1.2-1, both M rows"
+          ],
+          "printed_pages": [
+            81,
+            82
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.6.1.3, heading and introductory wording/direction/client addressing; table 10.1.5.6.1.3-1, both M rows"
+          ],
+          "printed_pages": [
+            82
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.6.1.4, direction and table 10.1.5.6.1.4-1, required group ID and its description"
+          ],
+          "printed_pages": [
+            82
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.6.3, GMS subscription introduction and server-location precondition (comparison only)"
+          ],
+          "printed_pages": [
+            83
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "group-addressed-mbms-notify-reply",
+      "title": "MC 业务客户端收到经 MBMS 按组寻址的应用层组动态数据通知，若未被指示或配置回复该消息，则不得应答",
+      "conditions": [
+        "MC 业务客户端与 MC 业务服务器之间，讨论指定 MC 业务组的动态数据。",
+        "业务服务器使用 MBMS 承载，以组为收件对象发送承载该组动态数据的应用层控制信令；判断的是此客户端是否被指示或配置回复这条消息。"
+      ],
+      "conclusion": "业务服务器经 MBMS 以按组寻址的应用层控制信令传组动态数据时，没有相应回复指示或配置的客户端不得应答；收到而不回是可能的。因此未见回复不能单独证明客户端没收到。",
+      "normative_strength": "通知请求寻址段显式引用的 §10.7.3.4.1 先把组动态数据列为可传的内容，末段用 shall not…unless 限制客户端应答。",
+      "limitations": [
+        "不能推为所有组播消息都不得回复，或有一项回复配置就必须给每条通知应答。实际有指示或配置时，要看它适用的消息和条件。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      },
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.6.1.3, heading and introductory wording/direction/client addressing; table 10.1.5.6.1.3-1, both M rows"
+          ],
+          "printed_pages": [
+            82
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.6.2, notification introduction, both preconditions and steps 1–2"
+          ],
+          "printed_pages": [
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.6.1.4, direction and table 10.1.5.6.1.4-1, required group ID and its description"
+          ],
+          "printed_pages": [
+            82
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.4.1, MBMS application-level control signalling: introductory text, group dynamic data item and final paragraph on group-addressed responses"
+          ],
+          "printed_pages": [
+            126
+          ]
+        }
+      ]
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.5.6, opening paragraphs distinguishing the authorized user and GMS"
+      ],
+      "printed_pages": [
+        81
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.5.6.2, subscription introduction, both preconditions and steps 1–3"
+      ],
+      "printed_pages": [
+        82,
+        83
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.5.6.1.1, introductory direction and table headed Subscribe group dynamic data request, required group ID"
+      ],
+      "printed_pages": [
+        81
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.5.6.1.2, direction and client addressing; table 10.1.5.6.1.2-1, both M rows"
+      ],
+      "printed_pages": [
+        81,
+        82
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.5.6.2, notification introduction, both preconditions and steps 1–2"
+      ],
+      "printed_pages": [
+        83
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.5.6.1.3, heading and introductory wording/direction/client addressing; table 10.1.5.6.1.3-1, both M rows"
+      ],
+      "printed_pages": [
+        82
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.5.6.1.4, direction and table 10.1.5.6.1.4-1, required group ID and its description"
+      ],
+      "printed_pages": [
+        82
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.5.6.3, GMS subscription introduction and server-location precondition (comparison only)"
+      ],
+      "printed_pages": [
+        83
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.4.1, MBMS application-level control signalling: introductory text, group dynamic data item and final paragraph on group-addressed responses"
+      ],
+      "printed_pages": [
+        126
+      ]
+    }
+  ],
+  "related": [
+    "r16-groups-gms-affiliation-subscription",
+    "r16-mcptt-group-dynamic-data",
+    "r16-groups-client-group-configuration",
+    "r16-groups-group-membership-notification",
+    "r16-bearers-mbms-application-control-signalling"
+  ],
+  "limitations": [
+    "固定版本 Stage 2 的客户端信息流；GMS 专项限定仅作比较。未查报文编码、实现或实际投递。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
