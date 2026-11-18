@@ -1,0 +1,258 @@
+{
+  "topic_id": "r16-groups-preconfigured-regroup-notification",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "收到预配置组重组的创建或移除通知，MCPTT 客户端怎样认定归属？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 24.379 V16.14.0，Release 16，Stage 3；MCPTT 客户端接收以预配置组为基础的重组创建或移除通知。"
+  ],
+  "claims": [
+    {
+      "id": "notification-and-affiliation",
+      "title": "收到预配置组重组的创建或移除通知时，接收端均须回 200，但对本端归属的认定相反",
+      "conditions": [
+        "MCPTT 客户端收到请求创建或移除预配置组重组的相应通知。"
+      ],
+      "conclusion": "两种情况下都宜提醒 MCPTT 用户，都必须向 MCPTT 服务器回 200 (OK)。创建时须视本端已归属该重组；移除时须视本端已解除对该重组的归属。",
+      "normative_strength": "提醒为 should；回复 200 和认定相应归属状态为 shall。",
+      "limitations": [
+        "回执不能证明用户看过提示或已参加一次通话。这里是接收通知的客户端，不是创建或移除请求的发起者。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.1.3, introductory condition and items 1, 2, 4"
+          ],
+          "printed_pages": [
+            496
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.1.4, introductory condition and items 1–3"
+          ],
+          "printed_pages": [
+            497
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "list-kind-and-storage",
+      "title": "创建通知列出用户或组时，须记录临时身份和对应重组类型；相应名单宜保存",
+      "conditions": [
+        "创建通知的重组消息体包含 users-for-regroup 或 groups-for-regroup 列表元素，分别适用第 3a 或 3b 项。"
+      ],
+      "conclusion": "两种分支均须保存 mcptt-regroup-uri 的值作为临时组身份，并记录创建的是哪类重组。users-for-regroup 标明用户重组，宜存其内容作用户列表；groups-for-regroup 标明组重组，宜存其内容作组成组列表。",
+      "normative_strength": "临时身份、关联及重组类型随 shall store；保存列表另用 should store。",
+      "limitations": [
+        "组列表不列用户。关于关联字段的回指，须与本条两个分支的字面措辞一起读，不能补成一条确定的预配置组映射。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.1.3, item 3(a)"
+          ],
+          "printed_pages": [
+            496
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.1.3, item 3(b)"
+          ],
+          "printed_pages": [
+            496
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "identity-reference-boundary",
+      "title": "预配置组的身份有明确定义，但创建通知的两个列表分支都把关联对象写成重组 URI",
+      "conditions": [
+        "区分 §16.1 对收到消息的身份定义，与 §16.2.1.3 第 3a、3b 项对创建通知的存储要求。"
+      ],
+      "conclusion": "重组沿用预配置组的配置。总则把临时组身份定为 mcptt-regroup-uri 的值，把预配置组身份定为 preconfigured-group 的值。创建通知两个列表分支都要求把临时身份与一个组身份关联，写到关联对象时却再次指向 mcptt-regroup-uri。",
+      "normative_strength": "总则定义与两个 shall 存储分支分别按本版原文保留。",
+      "limitations": [
+        "不能以总则为由替换条文回指，也不据重复的字段名断定应如何实现该关联。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.1, items 1–2 and following first paragraph"
+          ],
+          "printed_pages": [
+            494
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.1.3, item 3(a)"
+          ],
+          "printed_pages": [
+            496
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.1.3, item 3(b)"
+          ],
+          "printed_pages": [
+            496
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "call-target-and-chat-join",
+      "title": "组重组存续期间发起呼叫宜以重组为目标；聊天组另有收到创建通知时宜加入的建议",
+      "conditions": [
+        "区分创建通知后的归属、组重组持续期间的发起呼叫、以聊天组为对象的加入。"
+      ],
+      "conclusion": "在组重组存续期间，客户端不宜以组成组为呼叫目标，宜改以重组为目标。若重组为聊天组，客户端收到创建通知时宜加入。",
+      "normative_strength": "呼叫目标用 should not ... but instead，加入用以聊天组为条件的 should；两者不同于必须认定已归属。",
+      "limitations": [
+        "不是对呼叫组成组的绝对禁令；没有要求收到通知就发起呼叫。第 6 项不要求任何类型的重组都加入，归属也不能证明实际加入成功。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.1.3, introductory condition and items 1, 2, 4"
+          ],
+          "printed_pages": [
+            496
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.1.3, item 5"
+          ],
+          "printed_pages": [
+            497
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.1.3, item 6"
+          ],
+          "printed_pages": [
+            497
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "16.1, items 1–2 and following first paragraph"
+      ],
+      "printed_pages": [
+        494
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "16.2.1.3, introductory condition and items 1, 2, 4"
+      ],
+      "printed_pages": [
+        496
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "16.2.1.3, item 3(a)"
+      ],
+      "printed_pages": [
+        496
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "16.2.1.3, item 3(b)"
+      ],
+      "printed_pages": [
+        496
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "16.2.1.3, item 5"
+      ],
+      "printed_pages": [
+        497
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "16.2.1.3, item 6"
+      ],
+      "printed_pages": [
+        497
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "16.2.1.4, introductory condition and items 1–3"
+      ],
+      "printed_pages": [
+        497
+      ]
+    }
+  ],
+  "related": [
+    "r16-groups-single-system-temporary-regroup",
+    "r16-groups-temporary-regroup-teardown"
+  ],
+  "limitations": [
+    "限通知接收方，不规定请求生成、服务器鉴权或完整呼叫过程；不预设任何实际客户端已合规执行。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
