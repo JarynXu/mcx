@@ -1,0 +1,323 @@
+{
+  "topic_id": "r16-groups-partner-system-regroup",
+  "title": "跨系统临时重组：伙伴接受了请求，主系统就拿到了用户名单吗？",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0，Release 16，Stage 2；主、伙伴 MC 系统管理配置相同 MC 业务的组成组，拟跨系统形成一个临时组，按 §10.2.4.2 讨论。两组仅为示例。"
+  ],
+  "claims": [
+    {
+      "id": "separate-checks",
+      "title": "授权和组成组状态由哪侧检查",
+      "conditions": [
+        "主侧组管理客户端已取到所有待重组组的配置，主侧和伙伴侧各管理本侧组成组。"
+      ],
+      "conclusion": "客户端向一个组成组的 GMS1 提交待合并组 ID、指明是否广播，可提出安全级别和优先级。GMS1 按组策略核实发起者权限，检查其组 A 是否为临时组。授权通过且 A 不是临时组时，GMS1 向 GMS2 转交 GMS2 所管的目标组成组 ID 列表，GMS2 检查自己所管的 B 是否是临时组。",
+      "normative_strength": "A 或 B 本身是临时组须拒绝，两个检查分别位于步骤 2、4。服务器间请求表把属于目标服务器的组成组 ID 列表标为必选。",
+      "limitations": [
+        "客户端请求列出拟合并的组；不要把它与发给特定伙伴的列表混为一谈。查的是组状态，不是逐个审查或传输伙伴组成员身份。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.2, opening note and pre-conditions 1–4"
+          ],
+          "printed_pages": [
+            98
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.2, steps 1–4: client request, primary authorization and group1 check, forwarding, partner group2 check"
+          ],
+          "printed_pages": [
+            98,
+            99
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.12, table 10.2.2.12-1: request between group management servers"
+          ],
+          "printed_pages": [
+            89
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "regroup-rule-failure",
+      "title": "违反规则时保留步骤 5 的否定结果与原文回指",
+      "conditions": [
+        "判断组成组资格时还须适用 §10.2.4.4 的系统策略和控制角色规则；步骤 5 涉及伙伴对服务器间请求作答。"
+      ],
+      "conclusion": "组成组不能本身是临时组，也不能已编入另一临时组；策略不准纳入紧急状态组时，组成组不得处于紧急状态。允许纳入外系统组与仅有成员分布跨系统的控制角色条件有别。若违反 §10.2.4.4，步骤 5 给否定响应并明确转步骤 15。步骤 15 的正文是 GMS1 通知自己一侧已归属成员，步骤 17 才向发起客户端回复。",
+      "normative_strength": "不能把步骤 5 的跳转自行订正为步骤 17。",
+      "limitations": [
+        "不能凭否定响应断言建组、两侧成功存储、成功通知或成员获取临时组配置；本文不从回指推定一个单独定义的错误通知内容。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.4, group eligibility, emergency policy and the separate controlling-role rules according to cross-system group policy"
+          ],
+          "printed_pages": [
+            101
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.2, step 5: partner response, negative response on a rule violation and explicit reference to step 15"
+          ],
+          "printed_pages": [
+            99
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.2, steps 9–16: each group management server notifies its MC service server and its affiliated constituent group members"
+          ],
+          "printed_pages": [
+            99
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.2, steps 17–18: response to initiating group management client and individual requests for temporary group configuration"
+          ],
+          "printed_pages": [
+            100
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.2, steps 6–8: primary creation and storage, inter-server notification, partner acknowledgment and storage"
+          ],
+          "printed_pages": [
+            99
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "group-ids-and-user-sharing",
+      "title": "伙伴的组 ID 列表与用户信息共享",
+      "conditions": [
+        "GMS2 正在向主侧 GMS1 给出步骤 5 的服务器间重组响应。跨系统共享用户信息的安全事项受双方服务提供商协议约束。"
+      ],
+      "conclusion": "响应表的两项必选内容是伙伴接受或拒绝的结果及伙伴侧组成组 ID 列表。条款所举情形不向主侧共享伙伴所管组的用户信息；两家服务提供商存在信任关系时，步骤 5 后的注允许伙伴在此时共享用户信息。",
+      "normative_strength": "组 ID 列表必传，不是用户 ID 列表；有信任关系是可以共享用户信息，不是必须共享或必传完整名册。",
+      "limitations": [
+        "步骤 5 的接受结果不证明步骤 6 已经创建临时组，也不是步骤 17 向发起客户端的答复。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.2, opening note and pre-conditions 1–4"
+          ],
+          "printed_pages": [
+            98
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.13, table 10.2.2.13-1: result and constituent group identifiers in the partner response"
+          ],
+          "printed_pages": [
+            90
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.2, step 5: partner response, negative response on a rule violation and explicit reference to step 15"
+          ],
+          "printed_pages": [
+            99
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.2, note following step 5: trust relationship, possible sharing at this step and membership-change synchronization outside scope"
+          ],
+          "printed_pages": [
+            99
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.2, steps 6–8: primary creation and storage, inter-server notification, partner acknowledgment and storage"
+          ],
+          "printed_pages": [
+            99
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.2, steps 17–18: response to initiating group management client and individual requests for temporary group configuration"
+          ],
+          "printed_pages": [
+            100
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "subsequent-membership",
+      "title": "伙伴日后更改组成组成员时的同步边界",
+      "conditions": [
+        "伙伴 MC 系统的某一组成组后来改变成员关系。"
+      ],
+      "conclusion": "就临时组与主 MC 系统同步该变更的程序不在本规范范围内，即使伙伴在步骤 5 曾共享用户信息也是如此。",
+      "normative_strength": "超出本规范范围，不是禁止双方同步，也不保证会同步。",
+      "limitations": [
+        "不能用之前一次共享证明后续变动已经到达主侧，更不能据此补写同步机制。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.2, note following step 5: trust relationship, possible sharing at this step and membership-change synchronization outside scope"
+          ],
+          "printed_pages": [
+            99
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "accepted-formation-and-notification",
+      "title": "成功后建组、存储与两侧通知的分工",
+      "conditions": [
+        "伙伴接受且其余组建条件均满足；下述为成功形成临时组时的流程。"
+      ],
+      "conclusion": "GMS1 创建并保存临时组 ID、组成组标识、离网信息、优先级、安全级别及广播属性；若安全级别、优先级两者都未指定，分别取组成组较低的安全级别和较高的优先级。GMS1 通知 GMS2；GMS2 确认并保存临时组 ID、组成组 ID、优先级和安全级别。两侧各自通知本侧业务服务器及本侧组成组已归属成员，成员各自向本侧 GMS 回执。GMS1 在步骤 17 回复发起客户端；已归属成员再分别请求临时组配置。",
+      "normative_strength": "GMS→本侧 MC 业务服务器（9、13）用表 10.2.2.8-1：组成组 ID 列表、临时组 ID 均 M；MC 业务列表与广播指示均 O；表未列优先级、安全级别。GMS1→GMS2（7）或本侧 GMS→已归属成员的组管理客户端（11、15），用表 10.2.2.14-1：上述两类组标识 M，优先级、安全级别、广播指示 O。GMS2→GMS1（8）或成员的组管理客户端→本侧 GMS（12、16）的通知响应用表 10.2.2.15-1：两类组标识、优先级、安全级别 M，广播指示 O。",
+      "limitations": [
+        "不是让主侧直接通知伙伴名册全员；成员回执不是人员名单，也不能代替伙伴的步骤 5 结果。两个级别只省略一项时，不从这里的双项默认条件补写取值。",
+        "步骤 10、14 是业务服务器对步骤 9、13 的确认，不是组管理客户端或 GMS 之间的表 10.2.2.15-1 回执，不能套用其字段。步骤 5 和 8 虽然都是伙伴 GMS 回主侧 GMS，前者对请求给出结果与伙伴组成组 ID，后者确认建组通知。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.2, steps 6–8: primary creation and storage, inter-server notification, partner acknowledgment and storage"
+          ],
+          "printed_pages": [
+            99
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.2, steps 9–16: each group management server notifies its MC service server and its affiliated constituent group members"
+          ],
+          "printed_pages": [
+            99
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.8, direction and table 10.2.2.8-1: group management server to MC service server; constituent group identifiers and temporary group identifier mandatory, MC service list and broadcast indication optional"
+          ],
+          "printed_pages": [
+            88,
+            89
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.2, steps 17–18: response to initiating group management client and individual requests for temporary group configuration"
+          ],
+          "printed_pages": [
+            100
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.14, table 10.2.2.14-1: information elements of the group regroup notification"
+          ],
+          "printed_pages": [
+            90
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.15, table 10.2.2.15-1: information elements of the group regroup notification response"
+          ],
+          "printed_pages": [
+            90
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.13, table 10.2.2.13-1: result and constituent group identifiers in the partner response"
+          ],
+          "printed_pages": [
+            90
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-groups-single-system-temporary-regroup",
+    "r16-groups-temporary-regroup-teardown"
+  ],
+  "limitations": [
+    "不以本条推定 Stage 3 协议信令、实际部署互通、伙伴成员变化的同步机制或失败时另有一套未明文给出的后续动作。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
