@@ -1,0 +1,203 @@
+{
+  "topic_id": "r16-mcdata-msrp-file-delivery",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCData 用 MSRP 发文件：发送端收到最后一个 200，谁已收齐？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.582-v16.3.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 24.582 V16.3.0 Release 16，Stage 3；只讨论通过 MSRP 进行一对一或组文件分发时客户端的媒体面职责。各条件按所在角色及其可观察事件分别适用。"
+  ],
+  "claims": [
+    {
+      "id": "scope-and-permission",
+      "title": "一对一、组分发都适用；未获准发送者不宜使用发起程序",
+      "conditions": [
+        "判断客户端能否使用文件分发发起程序。"
+      ],
+      "conclusion": "用户或用户应用请求分发文件后，发起客户端建立媒体面；发起、接收两套程序均适用于一对一和组。客户端若不获准传数据，不宜使用发起程序。",
+      "normative_strength": "未获准发送时为 should not，并非 shall not。",
+      "limitations": [
+        "只说明这条建议的强度，不授予发送权限。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "7.1.1, user or application request; one-to-one and group FD; sender permission"
+          ],
+          "printed_pages": [
+            29
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "binding-and-first-response",
+      "title": "主动端用空 SEND 绑定连接；首个 MSRP 200 后发起端可以发送文件",
+      "conditions": [
+        "按角色分别处理发起或接收客户端的建连指示；首个响应的发送条件只述发起端。"
+      ],
+      "conclusion": "发起端按携有 SDP 应答的 SIP 200 建立连接；接收端也可以是主动端。在各自连接上，作为主动端的客户端须用空 SEND 让被动端将连接绑定到 MSRP 会话。发起端收到第一条 SEND 对应的 MSRP 200 后可发送文件；承载文件的 SEND 携带整个文件或一部分。",
+      "normative_strength": "主动端绑定是条件性要求；首个 MSRP 200 之后可以发文件，不表示已发送或送达。",
+      "limitations": [
+        "SIP 200 不替代 MSRP 响应；文件发送方与传输连接主动端不是同一角色定义，不能断言发起端总会发空 SEND。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "7.1.2.1, originating connection establishment steps 2–4: active/passive setup, SIP 200 SDP answer, empty SEND"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "7.1.3.1, terminating connection establishment steps 2–4: active/passive endpoint and empty SEND"
+          ],
+          "printed_pages": [
+            30
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "7.1.2.1, first MSRP 200 before file sending; file transmission steps 1 (including 1c) and 2"
+          ],
+          "printed_pages": [
+            29
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "chunk-responses-and-sip-termination",
+      "title": "分块时等每条 SEND 的 200，最后一个 200 触发发起端终止 SIP 会话",
+      "conditions": [
+        "发起客户端正在用 MSRP 分块发送文件。"
+      ],
+      "conclusion": "按需继续发送承载文件的 SEND，并等待每条已发 SEND 的 200；收到最后一个 200，须按规定终止 SIP 会话。",
+      "normative_strength": "以上收尾在本款明确的分块条件下为 shall。",
+      "limitations": [
+        "不能把这一条当作未分块发送成功时的终止规则；也不能据发送端的响应认定某个接收客户端或全组已收齐。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "7.1.2.1, if chunking is used, steps 1–3: each SEND response and last 200"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "7.1.3.2, steps 1–2: decode the file body and indicate completed download to the signalling plane after all chunks are received successfully"
+          ],
+          "printed_pages": [
+            30
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "non-200-and-remaining-chunks",
+      "title": "非 200 后，只有中止余块取决于是否还有分块待发",
+      "conditions": [
+        "发起客户端收到对 MSRP SEND 的非 200 响应。"
+      ],
+      "conclusion": "按规范所引 MSRP 错误规则处理；若还有分块待发送，应中止其发送。告知 MCData 用户本次文件不能分发，并按规定终止 SIP 会话。",
+      "normative_strength": "错误处理、通知用户及终止是该段的要求；是否仍有分块只限定中止其发送这一项。",
+      "limitations": [
+        "不补写外部错误处理或 SIP 终止的具体交互。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "7.1.2.1, non-200 error paragraph and termination steps 1–3"
+          ],
+          "printed_pages": [
+            30
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "recipient-reassembly-and-completion",
+      "title": "收齐重组后才交应用；下载完成由该接收客户端指示给信令面",
+      "conditions": [
+        "按接收客户端本地的文件接收事件判断；重组规则适用于 SEND 表明使用分块时。"
+      ],
+      "conclusion": "接收客户端须等全部余块到齐并重组成整个文件，才交应用；收到文件时须解码文件 MIME 正文，全部分块成功收到后须向信令面指示下载完成。",
+      "normative_strength": "重组在应用交付之前；成功收齐是向信令面给完成指示的条件。",
+      "limitations": [
+        "该指示对应给出指示的客户端，不证明用户已阅、其他组员也收齐，或发起端已获送达报告。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "7.1.3.1, established MSRP session, steps 2–3: all remaining chunks, reassembly before delivering to the application"
+          ],
+          "printed_pages": [
+            30
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "7.1.3.2, steps 1–2: decode the file body and indicate completed download to the signalling plane after all chunks are received successfully"
+          ],
+          "printed_pages": [
+            30
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcdata-mandatory-consented-file-distribution",
+    "r16-mcdata-http-fd-client"
+  ],
+  "limitations": [
+    "不处理服务器转发链、HTTP 文件传输、SDS 或离网文件分发。不据此断言真实互通、用户已读或组内每个接收端都收齐。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
