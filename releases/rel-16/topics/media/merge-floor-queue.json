@@ -1,0 +1,549 @@
+{
+  "topic_id": "r16-mcptt-merge-floor-queue",
+  "title": "MCPTT 在网组会话合并：原控制方何时交接，原队列里的人能直接讲话吗？",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "common_conditions": [
+    "Release 16，在网 MCPTT 组会话；原控制 MCPTT 功能因与另一场组会话合并，要从控制模式改为非控制模式。不是新 SIP 会话第一次建立组会话。"
+  ],
+  "condition_rule": "各项分别适用于准备、进入第二步、原队列存在或后来收到参会指示等明确条件；不可把某一分支或记录反推为所有条件均已满足。",
+  "claims": [
+    {
+      "id": "prepare-not-change",
+      "title": "在网 MCPTT 原话权控制服务器收到组会话合并准备请求时，只有处于 G: taken 才须上报当前讲话者信息",
+      "conditions": [
+        "原话权控制服务器收到应用与信令面的准备合并请求。"
+      ],
+      "conclusion": "原侧须释放一般话权控制实例；若处于 G: taken，须向该平面提供当前讲话者信息。注解释该平面会用此信息提出话权请求。",
+      "normative_strength": "准备及满足条件的告知是 SHALL；注解释用途，不是又一次授予。",
+      "limitations": [
+        "释放一般控制实例不是整场会话释放；不是最终切换，不证明林在并接后继续获准，不触发旧队列逐项重递。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6 (on-network floor control heading); 6.1 (item 4)"
+          ],
+          "printed_pages": [
+            34,
+            35
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.1 (new group session vs mode switch)"
+          ],
+          "printed_pages": [
+            103
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.3.1 (step 1, intervening SIP confirmation, step 2)"
+          ],
+          "printed_pages": [
+            104
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.3.2 (opening; items 1, 2 and note)"
+          ],
+          "printed_pages": [
+            104
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "prepare-per-local-participant",
+      "title": "在网 MCPTT 原控制侧收到组会话合并准备请求，须为其所控组内正在参会的每个客户端准备话权参与者接口",
+      "conditions": [
+        "原服务器接到准备请求；逐人同时核对本组归属及在场参与，不限当前讲话者或排队者。"
+      ],
+      "conclusion": "生成范围为 0 至 4294967295 的随机临时标识并保存与话权参与者接口的关联，保存已协商的 mc_queueing 和 mc_priority 能力、是否请求隐私，并按 §6.3.5.8.3 启动该参与者的状态机实例。",
+      "normative_strength": "对符合两个条件的每个客户端为 SHALL。",
+      "limitations": [
+        "未参加本场的本组成员不因成员身份落入此项；另组成员在场也不因在场落入甲的这份名单。",
+        "有接口记录不能证明入队、获准或发过媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6 (on-network floor control heading); 6.1 (item 4)"
+          ],
+          "printed_pages": [
+            34,
+            35
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.1 (new group session vs mode switch)"
+          ],
+          "printed_pages": [
+            103
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.3.2 (opening; items 1, 2 and note)"
+          ],
+          "printed_pages": [
+            104
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.3.2 (item 3a–e)"
+          ],
+          "printed_pages": [
+            104
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "confirmed-link-and-finalize",
+      "title": "在网 MCPTT 并接组会话，应用与信令面收到话权控制服务器与其接口间的 SIP 建联确认，不等于原控制侧已收到完成切换请求",
+      "conditions": [
+        "原侧准备并接；应用与信令面须先收到话权控制服务器与面向该服务器的接口之间的 SIP 会话已建立的确认。"
+      ],
+      "conclusion": "进入第二步时，原服务器收到应用与信令面的完成切换请求，须开始充当话权控制服务器接口并执行 §6.5.4。后续另收到该平面指示客户端已加入，由话权参与者接口执行 §6.5.5。",
+      "normative_strength": "建联确认是进入第二步的前提；完成请求所触发的接口职责与加入指示的接口动作均有明确角色和 SHALL。",
+      "limitations": [
+        "无主动队列不免除开始承担接口及执行 §6.5.4 的义务。",
+        "泛称某个 SIP 会话成功，不能替代该平面收到所指两端的确认；有正确确认仍不证明旧侧已收完成请求或已执行角色切换。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6 (on-network floor control heading); 6.1 (item 4)"
+          ],
+          "printed_pages": [
+            34,
+            35
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.1 (new group session vs mode switch)"
+          ],
+          "printed_pages": [
+            103
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.3.1 (step 1, intervening SIP confirmation, step 2)"
+          ],
+          "printed_pages": [
+            104
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.3.2 (opening; items 1, 2 and note)"
+          ],
+          "printed_pages": [
+            104
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.3.3 (opening and item 1)"
+          ],
+          "printed_pages": [
+            104
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.3.3 (item 2 opening and note)"
+          ],
+          "printed_pages": [
+            104
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.3.3 (items 3–4 and final paragraph)"
+          ],
+          "printed_pages": [
+            105
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "resubmit-track-information",
+      "title": "在网 MCPTT 组会话合并：应用与信令面收到话权控制服务器与其接口间的 SIP 建联确认后，原控制侧收到完成切换请求，才须对已有主动队列逐项重递 Floor Request，区分原有与新建 Track Info",
+      "conditions": [
+        "已满足进入第二步的建联确认、原服务器收到完成请求；旧主动话权请求队列存在。"
+      ],
+      "conclusion": "对旧主动队列每项，由现充当接口的原服务器向话权控制服务器发 Floor Request，保留参与者原给的全部字段。有 Track Info 则把对应临时标识追加到 Floor Participant Reference 末尾；无则新建，排队能力取协商的 mc_queueing，类型取可用的 participant-type、无值才填 unknown，以对应临时标识为首个参照。",
+      "normative_strength": "当且仅当进入这里的队列处理分支，逐项送出及两种字段处理为 SHALL；不将字段的适用性扩展至任一其他消息。",
+      "limitations": [
+        "不以新标识覆盖已有参照，不用 mc_priority 或隐私请求猜参与者类型。",
+        "旧讲话者信息是另一阶段的记录，不能用来代替逐项转送或证明消息已收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6 (on-network floor control heading); 6.1 (item 4)"
+          ],
+          "printed_pages": [
+            34,
+            35
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.1 (new group session vs mode switch)"
+          ],
+          "printed_pages": [
+            103
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.3.1 (step 1, intervening SIP confirmation, step 2)"
+          ],
+          "printed_pages": [
+            104
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.3.2 (opening; items 1, 2 and note)"
+          ],
+          "printed_pages": [
+            104
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.3.2 (item 3a–e)"
+          ],
+          "printed_pages": [
+            104
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.3.3 (opening and item 1)"
+          ],
+          "printed_pages": [
+            104
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.3.3 (item 2 opening and note)"
+          ],
+          "printed_pages": [
+            104
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.3.3 (items 2a, 2a.i, 2a.ii)"
+          ],
+          "printed_pages": [
+            105
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.3.3 (item 2a.iii.A–C)"
+          ],
+          "printed_pages": [
+            105
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "passive-queue-not-permission",
+      "title": "在网 MCPTT 组会话合并时，旧话权请求重递及主动队列转为被动，这些动作本身不是授予；单凭它们不能判定谁已获准或最先获准",
+      "conditions": [
+        "已满足第二步前提，原服务器收到完成请求；若有旧主动队列，执行逐项重递。"
+      ],
+      "conclusion": "重递后将原主动队列移为被动；没有旧主动队列则这两项均不适用。旧排位和重递不等同于新一方授予许可，亦不能确定授予次序或证明客户端已发语音。",
+      "normative_strength": "移队是有队列才触发的 SHALL；不得将请求语义升级成授权或媒体发送的证据。",
+      "limitations": [
+        "本场某人获准要有与其及该会话对应的授予依据，不等于他第一个获准；实际发声须有相应终端、会话及媒体的实发依据。未见记录不能径称事件没有发生。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6 (on-network floor control heading); 6.1 (item 4)"
+          ],
+          "printed_pages": [
+            34,
+            35
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.1 (new group session vs mode switch)"
+          ],
+          "printed_pages": [
+            103
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.3.1 (step 1, intervening SIP confirmation, step 2)"
+          ],
+          "printed_pages": [
+            104
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.3.2 (opening; items 1, 2 and note)"
+          ],
+          "printed_pages": [
+            104
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.3.3 (opening and item 1)"
+          ],
+          "printed_pages": [
+            104
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.3.3 (item 2 opening and note)"
+          ],
+          "printed_pages": [
+            104
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.3.3 (items 2a, 2a.i, 2a.ii)"
+          ],
+          "printed_pages": [
+            105
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.3.3 (items 3–4 and final paragraph)"
+          ],
+          "printed_pages": [
+            105
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.4 (opening sentence: request semantics only)"
+          ],
+          "printed_pages": [
+            161
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.5 (opening sentence: grant semantics only)"
+          ],
+          "printed_pages": [
+            162
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-prearranged-group-join-split",
+    "r16-media-on-network-floor-client",
+    "r16-mcvideo-role-switch-transmission-queue"
+  ],
+  "limitations": [
+    "只论在网 MCPTT 由控制变非控制的媒体面程序。反向接任、首次建组、呼叫信令如何拆分及 MCVideo 的同号条款不在此篇裁定。",
+    "按条文记录程序要求、交接角色及证据边界，不给具体网络或客户端补出未观察的动作，不复述引用规范的信令或参与者类型细节。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6 (on-network floor control heading); 6.1 (item 4)"
+      ],
+      "printed_pages": [
+        34,
+        35
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.2.1 (new group session vs mode switch)"
+      ],
+      "printed_pages": [
+        103
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.2.3.1 (step 1, intervening SIP confirmation, step 2)"
+      ],
+      "printed_pages": [
+        104
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.2.3.2 (opening; items 1, 2 and note)"
+      ],
+      "printed_pages": [
+        104
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.2.3.2 (item 3a–e)"
+      ],
+      "printed_pages": [
+        104
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.2.3.3 (opening and item 1)"
+      ],
+      "printed_pages": [
+        104
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.2.3.3 (item 2 opening and note)"
+      ],
+      "printed_pages": [
+        104
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.2.3.3 (items 2a, 2a.i, 2a.ii)"
+      ],
+      "printed_pages": [
+        105
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.2.3.3 (item 2a.iii.A–C)"
+      ],
+      "printed_pages": [
+        105
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.2.3.3 (items 3–4 and final paragraph)"
+      ],
+      "printed_pages": [
+        105
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "8.2.4 (opening sentence: request semantics only)"
+      ],
+      "printed_pages": [
+        161
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "8.2.5 (opening sentence: grant semantics only)"
+      ],
+      "printed_pages": [
+        162
+      ]
+    }
+  ]
+}
