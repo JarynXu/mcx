@@ -1,0 +1,385 @@
+{
+  "topic_id": "r16-mcvideo-imminent-peril-group-call-commencement",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "在网 MCVideo 发起迫近危险组呼时，谁会被隐式归属？建呼确认能证明可以发视频吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.281-v16.4.0",
+  "common_conditions": [
+    "TS 23.281 V16.4.0，Release 16，Stage 2，在网 MCVideo 新发起迫近危险组呼。例中组已在组管理服务器定义，全组属于同一 MC 系统；甲、乙、丙均是该组成员，乙、丙已归属。甲有在所指组发起这种呼叫的权限，客户端已按指定组或注 1 的选定组方案预配。"
+  ],
+  "condition_rule": "各项声明继承上述例程条件；是否已归属、有无别名、是否隐含请求发送、是否组播及媒体面示例另按各项文字判断。",
+  "claims": [
+    {
+      "id": "initiator-conditional-implicit-affiliation",
+      "title": "在网 MCVideo 新发起迫近危险组呼时，服务器仅在发起端尚未归属时将它隐式归属",
+      "conditions": [
+        "客户端 1（甲）是组成员，其用户有权发起该组的迫近危险组呼；客户端 2、3（乙、丙）已归属。"
+      ],
+      "conclusion": "甲可在预配指定的迫近危险通信组发起；也可按注 1 为选定组预配相应行为。甲尚未归属时由 MCVideo 服务器将甲的客户端隐式归属，已归属时无须重复归属。",
+      "normative_strength": "前提 1–3、注 1 和步骤 3：两种预配是选择；归属带有条件且仅针对发起端。",
+      "limitations": [
+        "组成员身份、是否归属和发起权限是三个不同判断。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.2.1, introduction"
+          ],
+          "printed_pages": [
+            48
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.2.1, pre-conditions 1–5 and NOTE 1"
+          ],
+          "printed_pages": [
+            48
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.2.1, numbered step 3"
+          ],
+          "printed_pages": [
+            49
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "request-alias-and-targets",
+      "title": "新发起在网 MCVideo 迫近危险组呼时，请求带状态指示、别名可选；服务器核实发起权限，获准后才解析组 ID，确定成员及其归属",
+      "conditions": [
+        "甲向 MCVideo 服务器发起请求；服务器据权限检查决定是否解析组 ID。"
+      ],
+      "conclusion": "请求带进行中迫近危险指示，可带功能别名或隐含媒体发送请求指示；有别名时，服务器检查甲能否使用、是否已为甲激活。不论是否带别名，服务器均核甲在所指组的发起权；获权后按组管理服务器的信息解析组 ID，确定成员及归属，再向已归属成员客户端发送带状态指示的请求。",
+      "normative_strength": "前提 4–5 和步骤 2、4、6 区分可选项与授权后的路由。",
+      "limitations": [
+        "已有激活别名和服务器订阅别名变化都不是这类建呼的普遍前提。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.2.1, pre-conditions 1–5 and NOTE 1"
+          ],
+          "printed_pages": [
+            48
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.2.1, numbered steps 1–2"
+          ],
+          "printed_pages": [
+            49
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.2.1, numbered step 4"
+          ],
+          "printed_pages": [
+            49
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.2.1, numbered step 6"
+          ],
+          "printed_pages": [
+            49
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "peril-state-and-bearer-priority",
+      "title": "在网 MCVideo 组的迫近危险状态及发起人记录持续至取消，状态内后续呼叫沿用调整后的承载优先级",
+      "conditions": [
+        "组的迫近危险呼叫已发起；讨论后续呼叫时，该组的状态尚未取消。"
+      ],
+      "conclusion": "服务器记录发起人身份直到组状态取消，并为该组所有参与者配置底层承载优先级。在组仍处于该状态时，后续呼叫都得到调整后的优先级。MCVideo 客户端若尚无提升的接入权限，本程序使其取得该权限；其他应用的接入权限不一定受影响。",
+      "normative_strength": "步骤 2、5 和注 2 区分组状态持续期与呼叫；引言另述客户端的接入权限。",
+      "limitations": [
+        "不能从本次建呼推断设备上所有应用的接入权限或具体承载参数。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.2.1, introduction"
+          ],
+          "printed_pages": [
+            48
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.2.1, numbered steps 1–2"
+          ],
+          "printed_pages": [
+            49
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.2.1, numbered step 5 and NOTE 2"
+          ],
+          "printed_pages": [
+            49
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "member-ack-vs-establishment",
+      "title": "在网 MCVideo 迫近危险组呼中，成员回执不同于服务器对发起人的建呼确认，组播例外仅指成员回执",
+      "conditions": [
+        "服务器处理甲的建呼请求；回执的组播措辞只在组播呼叫条件下适用。"
+      ],
+      "conclusion": "已归属成员客户端收到带状态指示的请求，向用户通知来电，可用时显示发起人别名。步骤 8 是接收客户端向服务器确认请求；对组播，原文称这些回执“not set”。步骤 9 是服务器向甲确认建呼成功，依继续呼叫的条件可在步骤 5 后、不等齐成员回执就发生。",
+      "normative_strength": "步骤 6–9 和注 3 区分方向、目的与时机；注 3 还将步骤 9 置于所称的“步骤 10”之前。",
+      "limitations": [
+        "本版注 3 后为无编号的媒体段落；不据此补造第 10 条编号消息，也不将步骤 8 的例外扩及建呼响应、来电通知或媒体控制。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.2.1, numbered step 6"
+          ],
+          "printed_pages": [
+            49
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.2.1, numbered step 7"
+          ],
+          "printed_pages": [
+            50
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.2.1, numbered step 8"
+          ],
+          "printed_pages": [
+            50
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.2.1, numbered step 9 and NOTE 3"
+          ],
+          "printed_pages": [
+            50
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.2.1, unnumbered media paragraph after NOTE 3"
+          ],
+          "printed_pages": [
+            50
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "establishment-vs-media-grant",
+      "title": "在网 MCVideo 迫近危险组呼的建呼成功不保证发送许可：含隐含发送请求时，OK 另带该请求的结果",
+      "conditions": [
+        "区分步骤 9 的建呼响应与本款末段已建媒体面上的传输控制例子。"
+      ],
+      "conclusion": "若甲的原请求含隐含发送请求，OK 带该发送请求的结果；仅知建呼成功，不能推断结果是获准。末段的示例中，传输控制参与者在已建媒体面交换信息，甲的客户端收到发送许可并通知甲，其他客户端收到带强制接收模式信息的媒体可用通知。",
+      "normative_strength": "步骤 2 使用可选措辞，步骤 9 的结果带有条件；末段举的是发送许可已给出的例子，不是每次建呼的无条件结果。",
+      "limitations": [
+        "发送许可与媒体可用通知不证明对端已收到某一帧视频。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.2.1, numbered steps 1–2"
+          ],
+          "printed_pages": [
+            49
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.2.1, numbered step 9 and NOTE 3"
+          ],
+          "printed_pages": [
+            50
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.2.1, unnumbered media paragraph after NOTE 3"
+          ],
+          "printed_pages": [
+            50
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.2.1, introduction"
+      ],
+      "printed_pages": [
+        48
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.2.1, pre-conditions 1–5 and NOTE 1"
+      ],
+      "printed_pages": [
+        48
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.2.1, numbered steps 1–2"
+      ],
+      "printed_pages": [
+        49
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.2.1, numbered step 3"
+      ],
+      "printed_pages": [
+        49
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.2.1, numbered step 4"
+      ],
+      "printed_pages": [
+        49
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.2.1, numbered step 5 and NOTE 2"
+      ],
+      "printed_pages": [
+        49
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.2.1, numbered step 6"
+      ],
+      "printed_pages": [
+        49
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.2.1, numbered step 7"
+      ],
+      "printed_pages": [
+        50
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.2.1, numbered step 8"
+      ],
+      "printed_pages": [
+        50
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.2.1, numbered step 9 and NOTE 3"
+      ],
+      "printed_pages": [
+        50
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.2.1, unnumbered media paragraph after NOTE 3"
+      ],
+      "printed_pages": [
+        50
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcvideo-group-emergency-state-cancel",
+    "r16-mcvideo-private-emergency-upgrade"
+  ],
+  "limitations": [
+    "仅论在网迫近危险组呼的新发起；不以紧急组状态取消、正在进行的组呼升级或紧急私呼程序替代，也不由 Stage 2 程序推断某次部署或视频送达。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
