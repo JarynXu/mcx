@@ -1,0 +1,410 @@
+{
+  "topic_id": "r16-mcdata-one-to-one-standalone-sds",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "同一 MCData 系统内一对一发短消息：选哪条传送路径，“接受”算送达吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "common_conditions": [
+    "Release 16，Stage 2；普通在网一对一独立 SDS，单笔单向，本文限供人阅读的消息。",
+    "双方的用户都已注册接收 MCData 服务，两客户端属于同一 MCData 系统。"
+  ],
+  "condition_rule": "各项继承共通条件；大小对比对应各自程序，不把某一面的条件挪作两面的共同条件。请求交付回报、请求已读回报、已经阅读都不是传送本身的共通前提。",
+  "claims": [
+    {
+      "id": "standalone-sds-payload-boundary",
+      "title": "同系统一对一独立 SDS 的信令面例要求有效载荷低于配置上限，媒体面例假定高于；两例都不裁定相等情形",
+      "conditions": [
+        "已知这一笔消息的有效载荷大小，并知道为信令面 SDS 配置的最大有效载荷大小。"
+      ],
+      "conclusion": "比较的是有效载荷，不是请求总大小。两例均为单笔单向传送；激活功能别名和服务器订阅其状态更新都是可选的。",
+      "normative_strength": "信令面的大小条件是明列前提，媒体面的大小条件是引言假设；不是所有实现的一条穷尽选路规则。",
+      "limitations": [
+        "只知道整份请求大小，或只知道两端在线而不知道是否在同一系统内，不能凭此选用本例。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.2.1",
+            "7.4.2.2.2, introduction and pre-conditions 1–5"
+          ],
+          "printed_pages": [
+            55,
+            56
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.3.1",
+            "7.4.2.3.2, introduction and pre-conditions 1–4"
+          ],
+          "printed_pages": [
+            57
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "standalone-sds-signal-data",
+      "title": "同系统一对一独立 SDS 的信令面例中，服务器核发送资格及适用策略后向乙发独立数据请求；仅对供乙使用的载荷，乙端才可提示乙",
+      "conditions": [
+        "此笔载荷低于信令面 SDS 配置上限，甲选定乙发一条供人阅读的消息。"
+      ],
+      "conclusion": "甲端向服务器发送独立数据请求。服务器核甲有权发送；若带别名，同时核它可否为甲使用且已为甲激活；检查有无须应用的消息或内容限制策略。服务器向乙发独立数据请求，乙端处理收到的载荷，仅对供乙使用的载荷，乙端才可在本地提示乙。",
+      "normative_strength": "服务端执行所列检查；仅在载荷供乙使用时，乙端才可自行决定是否提示乙。",
+      "limitations": [
+        "本例不要求先收到媒体面例中的建传送接受响应；没有弹窗不能据此断定未交付或未读。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.2.1",
+            "7.4.2.2.2, introduction and pre-conditions 1–5"
+          ],
+          "printed_pages": [
+            55,
+            56
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.2.2, numbered steps 1–3 (ordinary case)"
+          ],
+          "printed_pages": [
+            56
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.2.2, numbered steps 4–5 (user-consumable payload)"
+          ],
+          "printed_pages": [
+            57
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "standalone-sds-media-accept",
+      "title": "同系统一对一独立 SDS 的媒体面例中，乙端自动接受传送请求；甲端在媒体面建成后另行发送 SDS",
+      "conditions": [
+        "此笔载荷高于信令面 SDS 配置上限，甲端已为选定的乙发起传送建立请求。"
+      ],
+      "conclusion": "服务器核发送资格及适用策略，若带别名则核能否用于甲且已为甲激活；按策略确定合资格的接收方后向乙发请求。乙端自动接受并回给服务器，服务器转给甲。两端成功建媒体面，甲端才发送该笔 SDS；仅对供乙使用的载荷，乙端才可提示乙。",
+      "normative_strength": "接收端对该请求自动接受；实际传数是随后独立的一步，仅在载荷供乙使用时，乙端才可自行决定是否提示乙。",
+      "limitations": [
+        "接受不是乙手动同意，也不是正文已发、已到或已读；有甲端发送记录不能代替乙端交付或阅读证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.3.1",
+            "7.4.2.3.2, introduction and pre-conditions 1–4"
+          ],
+          "printed_pages": [
+            57
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.3.2, numbered steps 1–4 (ordinary case)"
+          ],
+          "printed_pages": [
+            58
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.3.2, numbered steps 5–6"
+          ],
+          "printed_pages": [
+            58,
+            59
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.3.2, numbered steps 7–8 (user-consumable payload)"
+          ],
+          "printed_pages": [
+            59
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "standalone-sds-delivery-report",
+      "title": "同系统一对一独立 SDS 在信令面和媒体面两例中，甲要求交付回报时，由乙端发起交付报告",
+      "conditions": [
+        "甲要求交付回报，乙端收到本笔数据。"
+      ],
+      "conclusion": "接收客户端报告这笔数据的交付；交付报告不要求收件用户先阅读这条消息。",
+      "normative_strength": "交付回报取决于是否请求这一类报告，不由媒体面建立响应或本地提示触发。",
+      "limitations": [
+        "没有交付报告不能单凭沉默否定交付；有交付报告也不证明人已读。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.2.2, numbered steps 6–7"
+          ],
+          "printed_pages": [
+            57
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.3.2, numbered steps 9–10"
+          ],
+          "printed_pages": [
+            59
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "standalone-sds-read-report",
+      "title": "同系统一对一独立 SDS 在信令面和媒体面两例中，甲要求已读回报且乙阅读该消息后，乙端才发起已读报告",
+      "conditions": [
+        "甲对本笔数据要求已读回报，且收件用户实际阅读了它。"
+      ],
+      "conclusion": "乙的客户端发起已读报告；仅提示乙或发出交付报告，都不能替代乙的阅读。",
+      "normative_strength": "请求与实际阅读两个条件须同时具备。",
+      "limitations": [
+        "未见已读报告不能单凭沉默认定乙没读，尤其不能在甲并未请求时作此推断。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.2.2, numbered steps 8–9"
+          ],
+          "printed_pages": [
+            57
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.3.2, numbered steps 11–12"
+          ],
+          "printed_pages": [
+            59
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "standalone-sds-report-path",
+      "title": "同系统一对一独立 SDS 的交付或已读报告会发给请求者；服务器可以保存，已发给请求者不等于其客户端已收到",
+      "conditions": [
+        "在两条程序之一中，乙端已按相应条件发起本笔的交付报告或已读报告。"
+      ],
+      "conclusion": "MCData 服务器可保存通知供获授权的 MCData 用户查历史。通知发送给请求回报的甲；发送不以已存档为条件。将乙端发起、服务器保存、向甲发送和甲端收到分别登记。",
+      "normative_strength": "保存是可选动作；已有通知发送给请求者，不是仅在保存后才发送。",
+      "limitations": [
+        "只有保存记录不足以证明已发给甲；只有发送记录不能断言甲端已收到。已读步骤中重复陈述可保存，不代表一定存两份。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.2.2, numbered steps 6–7"
+          ],
+          "printed_pages": [
+            57
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.2.2, numbered steps 8–9"
+          ],
+          "printed_pages": [
+            57
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.3.2, numbered steps 9–10"
+          ],
+          "printed_pages": [
+            59
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.3.2, numbered steps 11–12"
+          ],
+          "printed_pages": [
+            59
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.2.1",
+        "7.4.2.2.2, introduction and pre-conditions 1–5"
+      ],
+      "printed_pages": [
+        55,
+        56
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.3.1",
+        "7.4.2.3.2, introduction and pre-conditions 1–4"
+      ],
+      "printed_pages": [
+        57
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.2.2, numbered steps 1–3 (ordinary case)"
+      ],
+      "printed_pages": [
+        56
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.2.2, numbered steps 4–5 (user-consumable payload)"
+      ],
+      "printed_pages": [
+        57
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.3.2, numbered steps 1–4 (ordinary case)"
+      ],
+      "printed_pages": [
+        58
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.3.2, numbered steps 5–6"
+      ],
+      "printed_pages": [
+        58,
+        59
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.3.2, numbered steps 7–8 (user-consumable payload)"
+      ],
+      "printed_pages": [
+        59
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.2.2, numbered steps 6–7"
+      ],
+      "printed_pages": [
+        57
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.2.2, numbered steps 8–9"
+      ],
+      "printed_pages": [
+        57
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.3.2, numbered steps 9–10"
+      ],
+      "printed_pages": [
+        59
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.3.2, numbered steps 11–12"
+      ],
+      "printed_pages": [
+        59
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcdata-sds-control-client",
+    "r16-mcdata-automatic-sds-transmission",
+    "r16-mcdata-group-media-plane-sds-session",
+    "r16-mcdata-offnetwork-one-to-one-sds-disposition"
+  ],
+  "limitations": [
+    "只据两条例示判断路径，不为恰等于配置门槛的情况补出规则，也不替实际终端证明成功。",
+    "不涵盖应用处理、紧急、伙伴系统、组或离网；不规定 Stage 3 报文字段或状态码。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
