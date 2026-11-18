@@ -1,0 +1,473 @@
+{
+  "topic_id": "r16-mcvideo-transmission-revoke-queue-termination",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "在网 MCVideo：服务器给甲发送许可，怎么判断被抢占的乙是排队还是终止？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.281-v16.4.0",
+  "common_conditions": [
+    "在网 MCVideo 传输控制信息流；另读同一 MC 系统内的发送抢占示例。"
+  ],
+  "condition_rule": "过程断言限于各自事件已经发生的同系统满发送容量示例；字段断言按在网信息流表及本行的条件，不继承该示例的前提。",
+  "claims": [
+    {
+      "id": "session-limit-and-server-choice",
+      "title": "同系统在网 MCVideo 会话的媒体发送数已满时，甲的发送优先级不是抢占裁决；是否接受甲及如何处置乙要看服务器决定",
+      "conditions": [
+        "在同一个 MC 系统内，MCVideo 会话与传输控制已建立，乙已有发送许可（不要求先证明乙正在发包），且会话的媒体发送数已到上限。",
+        "甲端想发送并发来含发送优先级的请求。"
+      ],
+      "conclusion": "乙收流数已满不能替代会话发送数已满；乙获准也不证明乙已开始上行。示例中的服务器接受甲的请求，决定将乙的这路发送排队或终止。",
+      "normative_strength": "示例的四项前提及步骤 1–3；排队与终止是两种处置。",
+      "limitations": [
+        "不提供使某一优先级必获抢占的算法，没有服务器决定的记录不能推断拒绝。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1, heading and 7.7.1.1 opening; 7.7.1.2 heading"
+          ],
+          "printed_pages": [
+            123
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.3, heading only"
+          ],
+          "printed_pages": [
+            129
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.3.3, opening and preconditions 1–4"
+          ],
+          "printed_pages": [
+            135
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.3.3, numbered steps 1–3"
+          ],
+          "printed_pages": [
+            136
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "revoked-old-granted-new",
+      "title": "同系统在网 MCVideo 会话的发送数已满，服务器接受甲并抢占乙：给乙的撤销说明乙的去向，给甲的授予不说明乙排队还是终止",
+      "conditions": [
+        "在同一个 MC 系统内，MCVideo 会话与传输控制已建立，乙已有发送许可（不要求先证明乙正在发包），且会话的媒体发送数已到上限。",
+        "甲端向传输控制服务器请求发送；服务器已决定接受并抢占乙的当前发送。"
+      ],
+      "conclusion": "服务器分别向乙端发撤销、向甲端发授予。收到后，乙的传输控制参与端获知排队或终止，甲端用户获授予通知。服务器发出的记录不能替代收件端记录。",
+      "normative_strength": "示例步骤 4 为服务器两项响应；步骤 5 的通知使用 shall。",
+      "limitations": [
+        "不把乙端写成乙用户必已获知，也不要求 4a、4b 有这里未规定的严格先后。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1, heading and 7.7.1.1 opening; 7.7.1.2 heading"
+          ],
+          "printed_pages": [
+            123
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.3, heading only"
+          ],
+          "printed_pages": [
+            129
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.3.3, opening and preconditions 1–4"
+          ],
+          "printed_pages": [
+            135
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.3.3, numbered steps 1–3"
+          ],
+          "printed_pages": [
+            136
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.3.3, numbered steps 4–5"
+          ],
+          "printed_pages": [
+            136
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "new-uplink-not-delivery",
+      "title": "同系统在网 MCVideo 发送抢占示例中，甲用户获知发送授予不证明甲已开始上行；甲向服务器开始发送也不证明其他端看到画面",
+      "conditions": [
+        "在同一个 MC 系统内，MCVideo 会话与传输控制已建立，乙已有发送许可（不要求先证明乙正在发包），且会话的媒体发送数已到上限。",
+        "甲端向传输控制服务器请求发送；服务器已决定接受并抢占乙的当前发送。",
+        "分别判读甲端用户获授予通知、甲端向服务器开始发视频的记录。"
+      ],
+      "conclusion": "甲获知许可与甲向传输控制服务器发视频分列两步。只有后一记录才能在两者中证明甲开始上行，不能据它证明画面到达接收者。",
+      "normative_strength": "示例步骤 5–6 说明两个动作；其他端交付不在这两步。",
+      "limitations": [
+        "没有后续记录也不等于后续失败。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1, heading and 7.7.1.1 opening; 7.7.1.2 heading"
+          ],
+          "printed_pages": [
+            123
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.3, heading only"
+          ],
+          "printed_pages": [
+            129
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.3.3, opening and preconditions 1–4"
+          ],
+          "printed_pages": [
+            135
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.3.3, numbered steps 1–3"
+          ],
+          "printed_pages": [
+            136
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.3.3, numbered steps 4–5"
+          ],
+          "printed_pages": [
+            136
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.3.3, numbered step 6"
+          ],
+          "printed_pages": [
+            136
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "revoke-reason-and-queue",
+      "title": "在网 MCVideo 发送撤销原因必选；因排队而撤销时应附队位，该位置不保证重新获准发送",
+      "conditions": [
+        "读取在网传输控制服务器发给参与端的撤销信息流；不把单系统抢占示例的容量和人物前提施加给字段表。"
+      ],
+      "conclusion": "撤销原因标 M，队位标 O、带注 1。原因是排队时要带位置；终止指这路发送，不是整场会话释放。",
+      "normative_strength": "在网信息流表的 M/O 与注 1 的条件包含；不把示例结果写成普遍强制排队。",
+      "limitations": [
+        "位置是本次撤销给出的队位，不是重新授予、确定的等待时长或恢复承诺。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1, heading and 7.7.1.1 opening; 7.7.1.2 heading"
+          ],
+          "printed_pages": [
+            123
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.2.10, information-flow introduction"
+          ],
+          "printed_pages": [
+            125
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.2.10, table 7.7.1.2.10-1, revoke reason, queue position info and note 1"
+          ],
+          "printed_pages": [
+            126
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "termination-id-boundary",
+      "title": "在网 MCVideo 发送撤销的媒体标识标 O；字段描述限定复用，注 2 又要求终止时带标识，不能据此裁决非复用终止时缺标识的合规性",
+      "conditions": [
+        "读取在网传输控制服务器发给参与端的撤销信息流；不把单系统抢占示例的容量和人物前提施加给字段表。"
+      ],
+      "conclusion": "使用媒体复用且终止时，注 2 要求带媒体标识；已知非复用且终止时，不擅自择一覆盖另一处原文。摘录只有媒体标识，不能倒推原因为终止。",
+      "normative_strength": "字段状态 O、行描述及终止条件注 2 须同时保留。",
+      "limitations": [
+        "不把注 2 读成充要条件，不把 O 改成无论原因都可省略。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1, heading and 7.7.1.1 opening; 7.7.1.2 heading"
+          ],
+          "printed_pages": [
+            123
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.2.10, information-flow introduction"
+          ],
+          "printed_pages": [
+            125
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.2.10, table 7.7.1.2.10-1, revoke reason, queue position info and note 1"
+          ],
+          "printed_pages": [
+            126
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.2.10, table 7.7.1.2.10-1, media identifier and note 2"
+          ],
+          "printed_pages": [
+            126
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ack-request-not-reply",
+      "title": "在网 MCVideo 发送撤销中的可选确认要求不证明参与端已经回执",
+      "conditions": [
+        "读取在网传输控制服务器发给参与端的撤销信息流；不把单系统抢占示例的容量和人物前提施加给字段表。"
+      ],
+      "conclusion": "是否要求确认标 O。看到“要求确认”只说明此次提出要求，不是对端的回复，也不能补出摘录未给的撤销原因。",
+      "normative_strength": "撤销信息表的确认要求字段为 O，撤销原因是另一字段。",
+      "limitations": [
+        "未见回执记录也不证明对端未回。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1, heading and 7.7.1.1 opening; 7.7.1.2 heading"
+          ],
+          "printed_pages": [
+            123
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.2.10, information-flow introduction"
+          ],
+          "printed_pages": [
+            125
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.2.10, table 7.7.1.2.10-1, revoke reason, queue position info and note 1"
+          ],
+          "printed_pages": [
+            126
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.2.10, table 7.7.1.2.10-1, acknowledgement required"
+          ],
+          "printed_pages": [
+            126
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.7.1, heading and 7.7.1.1 opening; 7.7.1.2 heading"
+      ],
+      "printed_pages": [
+        123
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.7.1.3, heading only"
+      ],
+      "printed_pages": [
+        129
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.7.1.3.3, opening and preconditions 1–4"
+      ],
+      "printed_pages": [
+        135
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.7.1.3.3, numbered steps 1–3"
+      ],
+      "printed_pages": [
+        136
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.7.1.3.3, numbered steps 4–5"
+      ],
+      "printed_pages": [
+        136
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.7.1.3.3, numbered step 6"
+      ],
+      "printed_pages": [
+        136
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.7.1.2.10, information-flow introduction"
+      ],
+      "printed_pages": [
+        125
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.7.1.2.10, table 7.7.1.2.10-1, revoke reason, queue position info and note 1"
+      ],
+      "printed_pages": [
+        126
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.7.1.2.10, table 7.7.1.2.10-1, media identifier and note 2"
+      ],
+      "printed_pages": [
+        126
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.7.1.2.10, table 7.7.1.2.10-1, acknowledgement required"
+      ],
+      "printed_pages": [
+        126
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcvideo-current-queue-position",
+    "r16-mcvideo-onnetwork-preemption-revoke",
+    "r16-mcvideo-reception-override-modes",
+    "r16-mcvideo-reception-override-downlink"
+  ],
+  "limitations": [
+    "只核固定版 Stage 2 指定条文，邻文仅用于分流。不推断实际端到端交付、编码、完整状态机或具体系统是否合规。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
