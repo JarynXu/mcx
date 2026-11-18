@@ -1,0 +1,259 @@
+{
+  "topic_id": "r16-groups-partner-group-affiliation",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "归属伙伴系统的组：主系统检查通过，还要谁准许？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0，Release 16，Stage 2：单一 MC 业务、无需拓扑隐藏，用户本人显式申请归属伙伴系统定义的一个或多个组。"
+  ],
+  "claims": [
+    {
+      "id": "starting-conditions",
+      "title": "哪些信息必须已有，哪些只是可能已备妥？",
+      "conditions": [
+        "按 §10.8.3.2.2 的程序核对开始条件。"
+      ],
+      "conclusion": "客户端已获配允许归属的组信息或其指针；用户本人显式触发；GMS 已向组定义所在系统的业务服务器订阅归属状态更新。主业务服务器可能已缓存用户归属状态，伙伴业务服务器可能已从 GMS 取得组资料，客户端可能已向伙伴 GMS 表示希望接收组配置更新。",
+      "normative_strength": "前提 1、5、6 是所述程序的前提，2、3、4 使用 may。",
+      "limitations": [
+        "不能把客户端希望得到组配置更新，等同于 GMS 已订阅归属状态更新。已配组信息或指针也不证明用户已归属。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.3.2.2, preconditions 1–6"
+          ],
+          "printed_pages": [
+            152
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "authorization-and-primary-check",
+      "title": "伙伴授权必需；所列程序的主业务服务器检查订阅许可和 N2",
+      "conditions": [
+        "用户向主业务服务器申请归属一个或多个组。"
+      ],
+      "conclusion": "就该功能而言，是否还需主系统授权有条件；在所列程序中，主业务服务器按用户订阅查归属许可，并查用户可同时归属的组总数上限 N2，再依据请求中的组信息发往对应的伙伴业务服务器。伙伴系统的授权不能由主系统的检查代替。",
+      "normative_strength": "§10.8.3.2.1 要求伙伴授权，把主系统授权写为有条件；§10.8.3.2.2 的步骤 2 明列主侧检查。步骤 3 允许经中间信令节点。",
+      "limitations": [
+        "N2 不是单笔请求中的组数。不能由所列程序推断所有情形一律需要两地授权，也不能由无需拓扑隐藏推定路径没有中间节点。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.3.2.1, functional description"
+          ],
+          "printed_pages": [
+            151
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.3.2.2, steps 1–2"
+          ],
+          "printed_pages": [
+            152
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.3.2.2, step 3"
+          ],
+          "printed_pages": [
+            153
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "partner-policy-and-status",
+      "title": "伙伴只在缺少缓存时订阅组策略；获准后才保存归属状态",
+      "conditions": [
+        "对应的伙伴业务服务器收到归属请求。"
+      ],
+      "conclusion": "伙伴业务服务器检查本地组策略缓存；策略未缓存时，向 GMS 订阅组策略，收到通知后缓存。无论有无缓存，它都依据组策略检查所请求的组没有禁用、该用户获准归属；若获准，则保存该用户对所请求组的归属状态。",
+      "normative_strength": "步骤 4a–4b 的取策分支以策略不在本地缓存为条件；步骤 5 的检查不因策略已有缓存而免除，步骤 6 以用户获准为条件。",
+      "limitations": [
+        "取得策略只是取得判断依据，不等于已授权或已存归属状态。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.3.2.2, steps 4a–4b"
+          ],
+          "printed_pages": [
+            153
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.3.2.2, steps 5–6"
+          ],
+          "printed_pages": [
+            153
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "results-and-stores",
+      "title": "用户获准归属时，两侧业务服务器保存归属状态；伙伴回主系统和更新 GMS 无固定先后，客户端由主系统答复",
+      "conditions": [
+        "区分所述获准流程中的状态保存、发送结果与客户端收件。"
+      ],
+      "conclusion": "伙伴业务服务器保存用户对所请求组的归属状态；它向主业务服务器发所请求组的归属结果（7a），向 GMS 更新该用户对所请求组的归属状态（7b）。主业务服务器保存所请求组的用户归属状态（8），再向客户端发所请求组的归属结果（9）。",
+      "normative_strength": "步骤 7 后的注只规定 7a 与 7b 谁先均可，也可并行。",
+      "limitations": [
+        "单独看到 GMS 已获状态更新不能证明主系统已收到结果、主系统已保存或客户端已收到。主系统保存也不能代替客户端收到结果的证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.3.2.2, steps 5–6"
+          ],
+          "printed_pages": [
+            153
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.3.2.2, step 7 and following NOTE"
+          ],
+          "printed_pages": [
+            153
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.3.2.2, steps 8–9"
+          ],
+          "printed_pages": [
+            153
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.3.2.1, functional description"
+      ],
+      "printed_pages": [
+        151
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.3.2.2, preconditions 1–6"
+      ],
+      "printed_pages": [
+        152
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.3.2.2, steps 1–2"
+      ],
+      "printed_pages": [
+        152
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.3.2.2, step 3"
+      ],
+      "printed_pages": [
+        153
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.3.2.2, steps 4a–4b"
+      ],
+      "printed_pages": [
+        153
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.3.2.2, steps 5–6"
+      ],
+      "printed_pages": [
+        153
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.3.2.2, step 7 and following NOTE"
+      ],
+      "printed_pages": [
+        153
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.3.2.2, steps 8–9"
+      ],
+      "printed_pages": [
+        153
+      ]
+    }
+  ],
+  "related": [
+    "r16-identity-partner-migration-authorization",
+    "r16-groups-partner-group-configuration",
+    "r16-groups-explicit-affiliation-client"
+  ],
+  "limitations": [
+    "不覆盖使用拓扑隐藏的程序、迁移业务授权、客户端 Stage 3 编码，也不据流程规定推断实际系统的收件状态。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
