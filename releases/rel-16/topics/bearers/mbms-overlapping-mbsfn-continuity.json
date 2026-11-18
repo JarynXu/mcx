@@ -1,0 +1,358 @@
+{
+  "topic_id": "r16-bearers-mbms-overlapping-mbsfn-continuity",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "终端穿过两个 MBSFN 区的重叠地带，媒体要先转单播吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0，Release 16，Stage 2，§10.7.3.7.2 第一种部署：两个部分重叠的 MBSFN 区各激活一条不同的 MBMS 承载（TMGI 1、TMGI 2），客户端感兴趣的同一媒体流在这两条承载上广播。"
+  ],
+  "condition_rule": "每条声明继承共同前提，再叠加本条条件；出发小区、重叠小区和目的小区的活动承载不同。",
+  "claims": [
+    {
+      "id": "origin-success-not-quality",
+      "title": "在区 1 的出发小区，客户端上报经 TMGI 1 成功接收；该承载的质量级别可选",
+      "conditions": [
+        "终端可监听 TMGI 1，当前小区没有其他已激活且客户端感兴趣的 MBMS 承载。"
+      ],
+      "conclusion": "客户端告知 MC 业务服务器已通过 TMGI 1 成功接收媒体，可以附这条承载的接收质量级别。服务器可据级别决定改用另一 MBMS 承载或单播，或仅准备切换。",
+      "normative_strength": "步骤 2 区分成功接收通知和可选级别；注说明级别可能有何用途。",
+      "limitations": [
+        "不能把区域在地图上相交、报告没有质量级别或服务器收到级别，分别当作同一媒体确实双播、收取失败或已经切换的证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.2, first two paragraphs, first deployment (described before figure 10.7.3.7.2-1)"
+          ],
+          "printed_pages": [
+            130
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.2, first deployment, steps 1–2 (numbered prose after figure 10.7.3.7.2-2)"
+          ],
+          "printed_pages": [
+            131
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.2, first deployment, NOTE following step 2"
+          ],
+          "printed_pages": [
+            132
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "location-and-conditional-announcement",
+      "title": "第一种部署未另设覆盖两区的应用信令承载：进入双承载同播的重叠小区时，客户端报告位置；若此前未向该客户端通告 TMGI 2，服务器才发送这项承载通告",
+      "conditions": [
+        "终端已进入属于两个 MBSFN 区的新小区，两条承载均处于活动状态且播送同一业务。"
+      ],
+      "conclusion": "客户端向 MC 业务服务器报告位置，依据是终端从小区广播的系统信息块（SIB）取得的服务区标识（SAI）信息。若此前未通告 TMGI 2，服务器向客户端发承载通告，使其知道第二条承载也传送目标媒体。",
+      "normative_strength": "步骤 4 是位置上报；步骤 5 是否发送取决于此前是否已通告。",
+      "limitations": [
+        "位置报告和服务器的承载通告都不能替代客户端随后报告实际接收情况。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.2, first deployment, steps 3–4"
+          ],
+          "printed_pages": [
+            132
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.2, first deployment, step 5"
+          ],
+          "printed_pages": [
+            132
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.2, first deployment, step 6"
+          ],
+          "printed_pages": [
+            132
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "two-bearers-and-duplicates",
+      "title": "在同播小区，客户端报告成功接收两条承载；逐承载质量级别、同时接收媒体、内容比对和用重复包纠错均为可选",
+      "conditions": [
+        "客户端已在重叠小区，知道 TMGI 2 也传目标媒体。"
+      ],
+      "conclusion": "客户端向服务器报告 TMGI 1 和 TMGI 2 均已成功接收，可逐个 TMGI 附接收质量级别。客户端可以同时从两条承载接收媒体，也可以核对内容是否相同、利用重复包纠错。",
+      "normative_strength": "步骤 6 给出通知，质量级别可选；步骤 7 的同时接收、核对内容和利用重复包纠错均为可选。",
+      "limitations": [
+        "既不要求逐包比对或纠错，也不能承诺不丢包。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.2, first deployment, step 6"
+          ],
+          "printed_pages": [
+            132
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.2, first deployment, step 7"
+          ],
+          "printed_pages": [
+            132
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.2, first deployment, first paragraph after step 10, before the improved deployment"
+          ],
+          "printed_pages": [
+            132
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "destination-only-second",
+      "title": "终端进入只有 TMGI 2 活动的区 2 小区后，客户端报告经 TMGI 2 成功接收，媒体只从这条承载接收",
+      "conditions": [
+        "终端已离开双播小区，到达区 2 中只有 TMGI 2 活动的新小区。"
+      ],
+      "conclusion": "客户端通知服务器已通过 TMGI 2 成功接收目标媒体，接收质量级别可附可不附；此后只经 TMGI 2 接收媒体。",
+      "normative_strength": "步骤 9 的接收通知与可选质量级别有别；步骤 10 指明在这处小区的媒体承载。",
+      "limitations": [
+        "仅到达区 2 不能证明已经离开重叠区，须区分双承载小区和仅 TMGI 2 活动的小区。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.2, first deployment, steps 3–4"
+          ],
+          "printed_pages": [
+            132
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.2, first deployment, steps 8–10"
+          ],
+          "printed_pages": [
+            132
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "uplink-unicast-not-downlink",
+      "title": "第一种重叠 MBSFN 部署中，位置和监听报告须走单播；下行同一媒体无需先转单播再回组播",
+      "conditions": [
+        "两个 MBMS 承载均传送目标媒体；采用本节的第一种部署，未引入改进部署的跨区应用信令承载。"
+      ],
+      "conclusion": "客户端用单播向 MC 业务服务器发送位置和 MBMS 监听状态报告。通过重叠区继续用 MBMS 接收媒体，可降低先转单播再切回组播所带来的丢包风险。服务器若不知道终端已进入新区，可能仍把所需媒体发到终端已听不到的旧区承载。",
+      "normative_strength": "步骤 10 后的说明区分必需的单播上报和可避免的下行媒体往返切换；描述的是风险降低，不是无损保证。",
+      "limitations": [
+        "有上行单播记录不等于下行媒体已改走单播。不能把第一种部署的上报要求推广到同节的改进部署。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.2, first two paragraphs, first deployment (described before figure 10.7.3.7.2-1)"
+          ],
+          "printed_pages": [
+            130
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.2, first deployment, steps 3–4"
+          ],
+          "printed_pages": [
+            132
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.2, first deployment, step 6"
+          ],
+          "printed_pages": [
+            132
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.2, first deployment, step 7"
+          ],
+          "printed_pages": [
+            132
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.2, first deployment, steps 8–10"
+          ],
+          "printed_pages": [
+            132
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.2, first deployment, first paragraph after step 10, before the improved deployment"
+          ],
+          "printed_pages": [
+            132
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.7.2, first two paragraphs, first deployment (described before figure 10.7.3.7.2-1)"
+      ],
+      "printed_pages": [
+        130
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.7.2, first deployment, steps 1–2 (numbered prose after figure 10.7.3.7.2-2)"
+      ],
+      "printed_pages": [
+        131
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.7.2, first deployment, NOTE following step 2"
+      ],
+      "printed_pages": [
+        132
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.7.2, first deployment, steps 3–4"
+      ],
+      "printed_pages": [
+        132
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.7.2, first deployment, step 5"
+      ],
+      "printed_pages": [
+        132
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.7.2, first deployment, step 6"
+      ],
+      "printed_pages": [
+        132
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.7.2, first deployment, step 7"
+      ],
+      "printed_pages": [
+        132
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.7.2, first deployment, steps 8–10"
+      ],
+      "printed_pages": [
+        132
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.7.2, first deployment, first paragraph after step 10, before the improved deployment"
+      ],
+      "printed_pages": [
+        132
+      ]
+    }
+  ],
+  "related": [
+    "r16-bearers-mbms-reception-quality",
+    "r16-mcvideo-mbms-to-unicast"
+  ],
+  "limitations": [
+    "不涵盖同节另设跨区应用信令承载的改进部署，也不规定实际切换的 MCVideo 协议、质量估计方法或无线设备表现。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
