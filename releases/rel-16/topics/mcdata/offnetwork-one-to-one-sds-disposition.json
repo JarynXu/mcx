@@ -1,0 +1,271 @@
+{
+  "topic_id": "r16-mcdata-offnetwork-one-to-one-sds-disposition",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "离网 MCData 一对一短消息：哪一条送达了，哪一条读过了？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "condition_rule": "每项声明继承通用条件，并按该项所列条件适用。",
+  "common_conditions": [
+    "3GPP TS 23.282 V16.8.0（Release 16，Stage 2）；离网客户端间的一对一独立 SDS，使用信令控制面，内容供接收用户阅读。"
+  ],
+  "claims": [
+    {
+      "id": "discovery-and-authorization",
+      "title": "离网一对一独立 SDS：发现附近目标后，发起端还要查发送权限",
+      "conditions": [
+        "核对用户发起独立 SDS 通信的前提和发送步骤。"
+      ],
+      "conclusion": "甲用户已发起向乙用户发送消息的通信，两端同属一个 ProSe 发现组，都具备 ProSe 一对一直连能力；甲客户端已通过 ProSe 发现程序找到附近与乙用户关联的客户端。甲客户端检查甲用户是否获准发送这种请求，获准后才向乙客户端发请求。",
+      "normative_strength": "前提 1–3 给出发起、两端能力和实际发现；步骤 1–2 把查权和获准后发送分开。",
+      "limitations": [
+        "在附近或同组不证明已发现，已发现不证明获准。独立发送指数据在单笔事务中单向发送，不排斥乙另发报告。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.3.2, introductory paragraph and preconditions 1–3"
+          ],
+          "printed_pages": [
+            76
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.3.2, numbered steps 1–2: authorization and selected disposition request"
+          ],
+          "printed_pages": [
+            77
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "requested-vs-reported",
+      "title": "独立 SDS 原请求可选要什么报告，处置通知则必填实际结果",
+      "conditions": [
+        "比较发起端的独立数据请求与接收端就该请求发出的处置通知。"
+      ],
+      "conclusion": "原请求的 Disposition Type 表达甲希望乙报告送达、已读或两者；处置通知的 Disposition 给出乙报告的送达、已读或两者。",
+      "normative_strength": "表 7.4.3.2.1-1 的所求处置类型为 O；表 7.4.3.2.2-1 的处置结果为 M。步骤 2 允许按甲用户选择带处置请求。",
+      "limitations": [
+        "发起端有所请求不等于接收端已达到该状态；通知内字段必填不表示每笔原请求都必须回报。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.2.1, introduction and Table 7.4.3.2.1-1: conversation, transaction, reply and disposition type"
+          ],
+          "printed_pages": [
+            74,
+            75
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.2.2, Table 7.4.3.2.2-1: conversation, reply and disposition"
+          ],
+          "printed_pages": [
+            75
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.3.2, numbered steps 1–2: authorization and selected disposition request"
+          ],
+          "printed_pages": [
+            77
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "delivery-read-evidence",
+      "title": "要求送达报告时由接收端发起；要求已读报告时，还须等收件用户读过",
+      "conditions": [
+        "向乙用户发送独立 SDS；按甲用户请求的类型分别判断乙客户端何时发起报告，并解读甲实际收到的通知。"
+      ],
+      "conclusion": "甲要求送达报告时，由乙客户端发起；甲要求已读报告时，乙用户读过数据后，乙客户端才发起。甲收到该笔事务仅报送达的通知，仅能据此认定乙报告送达，不能由它判断乙用户是否已读。",
+      "normative_strength": "步骤 5、6 的发起行为分别取决于相应请求；步骤 6 另以收件用户已读为条件。",
+      "limitations": [
+        "发起报告不等于甲收到。即使已要求相应报告，也不能单凭未见通知断定未送达或未读；此处是对证据限度的判断，不是另设的超时或失败程序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.2.1, introduction and Table 7.4.3.2.1-1: conversation, transaction, reply and disposition type"
+          ],
+          "printed_pages": [
+            74,
+            75
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.2.2, Table 7.4.3.2.2-1: conversation, reply and disposition"
+          ],
+          "printed_pages": [
+            75
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.3.2, numbered step 5: requested delivery report"
+          ],
+          "printed_pages": [
+            77
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.3.2, numbered step 6: requested read report after user reads"
+          ],
+          "printed_pages": [
+            77
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "request-and-notification-identifiers",
+      "title": "离网独立 SDS 按通知的回复标识找原事务，不能只凭会话标识认领回报",
+      "conditions": [
+        "同一会话内有一笔或多笔独立 SDS，须把一份处置通知对应到原请求。"
+      ],
+      "conclusion": "请求的 Conversation Identifier 标识会话，Transaction Identifier 标识本笔请求所属事务。请求自己的 Reply Identifier 若出现，指向该请求所回复的先前事务。处置通知中的 Reply Identifier 指向所报告的原事务，用它找对应原请求的 Transaction Identifier，结合通知中的 Disposition 判断哪条消息得到了什么确认。",
+      "normative_strength": "请求表：会话标识和事务标识 M，回复标识 O。通知表：会话标识、回复标识及处置结果 M。",
+      "limitations": [
+        "同一会话标识可对应多笔事务，仅见会话和处置结果的摘录不能区分同一会话内两笔原请求。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.2.1, introduction and Table 7.4.3.2.1-1: conversation, transaction, reply and disposition type"
+          ],
+          "printed_pages": [
+            74,
+            75
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.2.2, Table 7.4.3.2.2-1: conversation, reply and disposition"
+          ],
+          "printed_pages": [
+            75
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.3.2, numbered steps 1–2: authorization and selected disposition request"
+          ],
+          "printed_pages": [
+            77
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.3.2.1, introduction and Table 7.4.3.2.1-1: conversation, transaction, reply and disposition type"
+      ],
+      "printed_pages": [
+        74,
+        75
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.3.2.2, Table 7.4.3.2.2-1: conversation, reply and disposition"
+      ],
+      "printed_pages": [
+        75
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.3.3.2, introductory paragraph and preconditions 1–3"
+      ],
+      "printed_pages": [
+        76
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.3.3.2, numbered steps 1–2: authorization and selected disposition request"
+      ],
+      "printed_pages": [
+        77
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.3.3.2, numbered step 5: requested delivery report"
+      ],
+      "printed_pages": [
+        77
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.3.3.2, numbered step 6: requested read report after user reads"
+      ],
+      "printed_pages": [
+        77
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcdata-conversation",
+    "r16-mcdata-offnetwork-one-to-one-fd"
+  ],
+  "limitations": [
+    "不涵盖在网或群组短数据、媒体面文件传送、终端实现或业务外的载荷处理；不规定消息编码或报告超时。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
