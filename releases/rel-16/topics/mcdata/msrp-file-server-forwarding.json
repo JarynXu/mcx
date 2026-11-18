@@ -1,0 +1,194 @@
+{
+  "topic_id": "r16-mcdata-msrp-file-server-forwarding",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCData 用 MSRP 分发文件：谁回复 200，文件往哪些客户端转发？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.582-v16.3.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 24.582 V16.3.0 Release 16，Stage 3。仅讨论 MSRP 文件分发时指定参与功能或控制功能实际接收相应请求或响应的情形，各角色及接收事件分别适用。"
+  ],
+  "claims": [
+    {
+      "id": "originating-connection-and-responses",
+      "title": "发起侧对控制功能的连接按需建立或复用，返回的响应转给发起客户端",
+      "conditions": [
+        "发起侧参与功能收到发起客户端的 MSRP SEND；响应分支则以它实际收到控制功能的相应响应为条件。"
+      ],
+      "conclusion": "尚无到控制功能的 MSRP 连接时须按 §7.2.4.2 建立，已有则复用；然后将 SEND 转给控制功能。收到控制功能的 200 或错误响应时，分别将收到的响应转给发起客户端。",
+      "normative_strength": "在本声明所列接收事件及分支条件下为 shall。",
+      "limitations": [
+        "发起侧参与功能不把转来的 200 当作自己生成的应答；也不要求先有 200 再处理错误。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "7.2.4.3, originating participating function, items 1–2: establish or reuse the connection toward controlling function; forward SEND"
+          ],
+          "printed_pages": [
+            31
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "7.2.4.3, response paragraphs after item 2: forward 200 or error from controlling function to originating client"
+          ],
+          "printed_pages": [
+            31
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "controlling-local-200",
+      "title": "控制功能生成给发起侧参与功能的 200",
+      "conditions": [
+        "控制功能收到发起侧参与功能的 MSRP SEND。"
+      ],
+      "conclusion": "控制功能为收到的 SEND 生成并发出 200，收件方为发起侧参与功能。",
+      "normative_strength": "在本声明所列接收事件及分支条件下为 shall。",
+      "limitations": [
+        "需要将观察到的 200 与这条 SEND 对应；仅凭一个稍后出现的 200，无法判定它是否回答这条请求。§7.3.3 没有要求在该 200 中列出目标；单凭状态码不能确定已建连或实际转发的目标名单，也不能据此判定终接客户端收齐或用户已读。不据此断言报文不能附带目标信息。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "7.3.3, controlling function, item 1: generate and return 200 for SEND from originating participating function"
+          ],
+          "printed_pages": [
+            33
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "7.3.3, item 2 and points a–b: recipients with successful MSRP connections; destination and origin path headers"
+          ],
+          "printed_pages": [
+            33
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "controlling-targets-and-paths",
+      "title": "控制功能向每个成功建连的终接客户端转发，并分别修改路径头",
+      "conditions": [
+        "控制功能收到发起侧参与功能的 MSRP SEND；逐个判断到各终接客户端的 MSRP 连接是否成功建立。"
+      ],
+      "conclusion": "控制功能向每个已成功建立 MSRP 连接的终接客户端转发收到的 SEND。转发时按相应客户端的 SDP 应答所给 MSRP URI 修改 To-Path，将 From-Path 改为控制功能自己的 MSRP URI。",
+      "normative_strength": "在本声明所列接收事件及分支条件下为 shall。",
+      "limitations": [
+        "组员身份不等于已建连；入选转发也不等于该客户端实际收齐。没有扩大到未成功建连目标或排队重试规则。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "7.3.3, item 2 and points a–b: recipients with successful MSRP connections; destination and origin path headers"
+          ],
+          "printed_pages": [
+            33
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "terminating-local-200-and-forward",
+      "title": "终接侧参与功能另生成 200 给控制功能，并向终接客户端转发 SEND",
+      "conditions": [
+        "终接侧参与功能收到控制功能的 MSRP SEND。"
+      ],
+      "conclusion": "终接侧参与功能针对这条 SEND 生成 200 并发给控制功能，同时负有将收到的 SEND 转发给终接客户端的职责。",
+      "normative_strength": "在本声明所列接收事件及分支条件下为 shall。",
+      "limitations": [
+        "这个 200 不是终接客户端的下载完成回执。单凭服务端响应不能确认客户端重组、用户阅读或组内其他人的收件情况。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "7.2.5.3, terminating participating function, items 1–2: generate 200 to controlling function and forward SEND to terminating client"
+          ],
+          "printed_pages": [
+            32
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "terminating-client-error",
+      "title": "终接侧参与功能收到客户端的错误时，目的端是发起客户端",
+      "conditions": [
+        "终接侧参与功能收到终接客户端发来的 MSRP 错误响应。"
+      ],
+      "conclusion": "终接侧参与功能应将收到的错误响应转给发起客户端。",
+      "normative_strength": "在本声明所列接收事件及分支条件下为 shall。",
+      "limitations": [
+        "这是错误响应的目的端，不是该段列出了一条逐跳回程；先前的终接侧参与功能 200 与终接客户端报错并不矛盾。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "7.2.5.3, error paragraph after item 2: error from terminating client forwarded to originating client"
+          ],
+          "printed_pages": [
+            32
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "7.2.5.3, terminating participating function, items 1–2: generate 200 to controlling function and forward SEND to terminating client"
+          ],
+          "printed_pages": [
+            32
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcdata-msrp-file-delivery",
+    "r16-mcdata-sds-session-media-server"
+  ],
+  "limitations": [
+    "不据服务端局部 200、选中目标或转发动作证明文件收齐、用户已读或全组已收。本主题不说明信令准入、失败重试、每种部署的物理路由或会话 SDS。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
