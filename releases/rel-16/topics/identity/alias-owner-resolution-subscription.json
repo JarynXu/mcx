@@ -1,0 +1,340 @@
+{
+  "topic_id": "r16-identity-alias-owner-resolution-subscription",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 功能别名解析：订阅收到 200，就知道谁启用了别名吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "common_conditions": [
+    "3GPP TS 24.379 V16.14.0，Release 16，Stage 3；主体为拥有功能别名的 MCPTT 服务器，讨论按所请求别名筛选的解析订阅及其通知。"
+  ],
+  "condition_rule": "每项声明继承共同前提；区分请求接收条件、期限早退、别名检查，以及为该订阅发送通知的条件。",
+  "claims": [
+    {
+      "id": "service-id-vs-alias-id",
+      "title": "MCPTT 别名解析订阅发给关联的控制功能，正文标识所查别名而不是用户",
+      "conditions": [
+        "接收的是 §9A.2.2.3.7 所述的 SIP SUBSCRIBE：Request-URI 含与所请求别名关联的控制 MCPTT 功能的公共服务身份；P-Asserted-Service 内的 ICSI 指明 MCPTT，Event 含 presence 事件类型，application/simple-filter+xml 正文按别名限制该事件包通知的内容。"
+      ],
+      "conclusion": "服务器从 application/vnd.3gpp.mcptt-info+xml 正文的 mcptt-request-uri 元素中识别所请求别名 ID。服务身份标识处理功能，目标别名决定要列哪些成功启用它的用户。",
+      "normative_strength": "本款规定该接收程序的适用条件和服务器的识别动作。",
+      "limitations": [
+        "不把本款当作按已知用户查其全部别名的程序，也不把 Request-URI 中的服务身份当作正文的目标别名 ID。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.7, incoming SUBSCRIBE conditions 1–4 and server step 1"
+          ],
+          "printed_pages": [
+            215
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.8, introduction and steps 1–3: requested alias, associated user list and per-alias PIDF body"
+          ],
+          "printed_pages": [
+            216
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "too-brief-stops-before-alias-check",
+      "title": "MCPTT 别名解析订阅缺少期限或期限非零且低于 4294967295 时，服务器先返回 423 并停止",
+      "conditions": [
+        "收到符合本款接收条件的请求，已从正文识别目标别名 ID。"
+      ],
+      "conclusion": "Expires 缺失，或非零且小于 4294967295，服务器须对订阅请求返回 423，响应中 Min-Expires 为 4294967295，并跳过后续步骤，包括检查别名是否存在。0 和 4294967295 均不命中这个拒绝条件。",
+      "normative_strength": "第 2 步的条件和停止指令均为明确规定。",
+      "limitations": [
+        "423 不证明别名存在或不存在；不能仅凭 0 未命中该条件，就说已成功、已退订或只查一次。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.7, incoming SUBSCRIBE conditions 1–4 and server step 1"
+          ],
+          "printed_pages": [
+            215
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.7, server step 2: Expires guard, 423 with Min-Expires and early exit"
+          ],
+          "printed_pages": [
+            215
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.7, server step 3: alias missing, 403, mixed SUBSCRIBE/PUBLISH wording and early exit"
+          ],
+          "printed_pages": [
+            215
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "missing-alias-vs-accepted-subscription",
+      "title": "通过期限检查后，目标别名不存在则按 403 分支停止；存在时对订阅请求生成 200",
+      "conditions": [
+        "符合本款接收条件，且未因第 2 步的 Expires 检查而提前返回。"
+      ],
+      "conclusion": "第 3 步若所请求别名不存在，拒绝订阅并停止；固定原文同句先写拒绝 SUBSCRIBE，又将 403 写成对 PUBLISH 的答复。若别名存在，则走到第 4 步，对 SUBSCRIBE 生成 200。别名存在但无人启用不是别名不存在。",
+      "normative_strength": "保留第 3 步内部的请求名称冲突；不据此增设一次 PUBLISH 或擅改规范。第 4 步的 200 明确对应 SUBSCRIBE。",
+      "limitations": [
+        "200 不表示订阅者或其他特定人启用了别名，也不证明一份名单已经发出或送达。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.2, stored information: functional alias entry and its MCPTT user information entries"
+          ],
+          "printed_pages": [
+            211
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.7, server step 2: Expires guard, 423 with Min-Expires and early exit"
+          ],
+          "printed_pages": [
+            215
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.7, server step 3: alias missing, 403, mixed SUBSCRIBE/PUBLISH wording and early exit"
+          ],
+          "printed_pages": [
+            215
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.7, server step 4: 200 response to SUBSCRIBE"
+          ],
+          "printed_pages": [
+            215
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.8, introduction and steps 1–3: requested alias, associated user list and per-alias PIDF body"
+          ],
+          "printed_pages": [
+            216
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.8, step 4: NOTIFY with the generated PIDF for the subscription created in 9A.2.2.3.7"
+          ],
+          "printed_pages": [
+            216
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "changes-during-subscription",
+      "title": "别名解析订阅有效期间，服务器须就该别名的信息变更通知订阅者",
+      "conditions": [
+        "存在这项仍在持续的别名解析订阅，所请求别名的信息发生变化。"
+      ],
+      "conclusion": "服务器须通知订阅者。§9A.2.2.3.7 末句的条号原样为 9.2.2.3.y；§9A.2.2.3.8 第 4 步反向明确，该通知属于 §9A.2.2.3.7 创建的订阅。",
+      "normative_strength": "通知义务来自 §9A.2.2.3.7 末段，两条款之间的明确回指来自 §9A.2.2.3.8 第 4 步。",
+      "limitations": [
+        "不将未写全的前向条号冒充已正式更正的条号；本条不据此断定首份通知的具体时机。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.7, closing paragraph: changes for subscription duration and incomplete cross-reference"
+          ],
+          "printed_pages": [
+            215
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.8, step 4: NOTIFY with the generated PIDF for the subscription created in 9A.2.2.3.7"
+          ],
+          "printed_pages": [
+            216
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "reported-users-vs-notification-recipient",
+      "title": "别名解析 NOTIFY 向订阅者报告成功启用目标别名的用户；所列用户不是收件人清单",
+      "conditions": [
+        "服务器按 §9A.2.2.3.8 为所请求的功能别名生成并发送解析通知。"
+      ],
+      "conclusion": "以别名 ID 选定对应条目，再取该别名下的 MCPTT 用户条目；每条在该列表内由 MCPTT ID 标识。服务器以这些条目生成按别名组织的 application/pidf+xml 正文，并在为原订阅发送的 NOTIFY 中携带它。",
+      "normative_strength": "引言界定名单的含义；步骤 1–4 分别规定选择对象、生成正文及对应哪项订阅发送。",
+      "limitations": [
+        "名单不表示所有获准启用该别名的用户；列名既不表示这些人是该通知的收件人，也不等于知道订阅者已收妥。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.2, stored information: functional alias entry and its MCPTT user information entries"
+          ],
+          "printed_pages": [
+            211
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.8, introduction and steps 1–3: requested alias, associated user list and per-alias PIDF body"
+          ],
+          "printed_pages": [
+            216
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.8, step 4: NOTIFY with the generated PIDF for the subscription created in 9A.2.2.3.7"
+          ],
+          "printed_pages": [
+            216
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.2.3.2, stored information: functional alias entry and its MCPTT user information entries"
+      ],
+      "printed_pages": [
+        211
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.2.3.7, incoming SUBSCRIBE conditions 1–4 and server step 1"
+      ],
+      "printed_pages": [
+        215
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.2.3.7, server step 2: Expires guard, 423 with Min-Expires and early exit"
+      ],
+      "printed_pages": [
+        215
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.2.3.7, server step 3: alias missing, 403, mixed SUBSCRIBE/PUBLISH wording and early exit"
+      ],
+      "printed_pages": [
+        215
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.2.3.7, server step 4: 200 response to SUBSCRIBE"
+      ],
+      "printed_pages": [
+        215
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.2.3.7, closing paragraph: changes for subscription duration and incomplete cross-reference"
+      ],
+      "printed_pages": [
+        215
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.2.3.8, introduction and steps 1–3: requested alias, associated user list and per-alias PIDF body"
+      ],
+      "printed_pages": [
+        216
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.2.3.8, step 4: NOTIFY with the generated PIDF for the subscription created in 9A.2.2.3.7"
+      ],
+      "printed_pages": [
+        216
+      ]
+    }
+  ],
+  "related": [
+    "r16-identity-active-functional-alias-lookup",
+    "r16-identity-owner-alias-auto-deactivation"
+  ],
+  "limitations": [
+    "不处理用户侧订阅/退订的一般规则，不规定实际部署是否已送达通知，也不把另一个业务阶段的一次性查询、别名自动停用或真实用户状态当作这里的处理结果。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
