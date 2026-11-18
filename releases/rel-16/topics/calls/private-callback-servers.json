@@ -1,0 +1,462 @@
+{
+  "topic_id": "r16-calls-private-callback-servers",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 私呼回电：谁转发成功响应，谁生成 200？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "各项继承通用范围，再按本角色收到的消息、绑定、许可或响应类别判断，不预设三个角色均已成功。",
+  "common_conditions": [
+    "限定 TS 24.379 V16.14.0，Release 16，Stage 3，在网 MCPTT 私呼回电的发起侧参与功能、控制功能和终接侧参与功能。以甲请乙回电说明角色；MESSAGE 事务响应与用另一条 MESSAGE 承载的业务答复分开。"
+  ],
+  "claims": [
+    {
+      "id": "two-binding-checks",
+      "title": "在网私呼回电的发起侧查发方绑定：无绑定或过期回 404 并带文本 141；终接侧查目标，缺绑定回 404",
+      "conditions": [
+        "分别判断发起侧已到达发方标识检查，或终接侧已到达目标标识检查；两次检查的对象和方向不同。"
+      ],
+      "conclusion": "发起侧从来件断言的公共用户标识查发方的 MCPTT ID；缺绑定或原绑定过期，回 404，Warning 文本以 141 开头，并停止。终接侧按来件业务体中的目标 MCPTT ID 查公共用户标识，无绑定回 404。",
+      "normative_strength": "两个检查各有自己的条件性 SHALL。",
+      "limitations": [
+        "只看 404 不足以定位哪一侧。终接侧步骤 3 没有指定 141 或另列过期条件；不据此断言一定不带任何 Warning。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.3.1, steps 2 and 2a"
+          ],
+          "printed_pages": [
+            394
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.3.2, steps 2 and 3"
+          ],
+          "printed_pages": [
+            395
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "request-vs-cancel",
+      "title": "在网私呼回电：发起侧参与功能按本次请求或取消分别判许可；所需项缺失或为假时回 403，文本分别为 151 或 152",
+      "conditions": [
+        "已通过发起侧的标识绑定检查，且来件类型分别是回电请求或回电取消请求。"
+      ],
+      "conclusion": "用户配置 ruleset 中，请求看 allow-request-private-call-call-back，取消看 allow-cancel-private-call-call-back。对应项缺失或为 false，须拒绝并停止；SIP 状态码都是 403，两者的 Warning 文本编号分别是 151 和 152。",
+      "normative_strength": "对两种请求类型分别适用的 SHALL。",
+      "limitations": [
+        "一种许可不推出另一种；许可检查通过不保证控制功能或终接侧也能处理，也不证明目标方已确认。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.3.1, steps 2 and 2a"
+          ],
+          "printed_pages": [
+            394
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.3.1, steps 3 and 4"
+          ],
+          "printed_pages": [
+            394
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "control-checks-and-destination",
+      "title": "在网私呼回电：控制功能按业务标记、资源列表分别判 403；继续时将请求送到服务目标用户的终接侧参与功能",
+      "conditions": [
+        "控制功能处理承载回电请求、取消请求或回电业务答复的 MESSAGE；拒绝和继续转送分别适用。"
+      ],
+      "conclusion": "Accept-Contact 缺少带规定 MCPTT 服务标识值的 g.3gpp.icsi-ref 标签，须回 403 并停止；缺资源列表消息体或其中含多个条目，须回 403 并带 Warning 文本 145，停止。能继续时，将列表中的目标 MCPTT ID 写入发送给终接侧的业务体，以目标所属终接参与功能的公共服务标识为请求目的地。",
+      "normative_strength": "拒绝和转送各为条件性 SHALL；地址发现方式按步骤 9 的注限定范围。",
+      "limitations": [
+        "已带列表体但零条目并非步骤 3 明列的拒绝条件，不能反推必然通过。如何查到该终接参与功能的地址，本版不规定。单凭 403 也不能认定是取消许可不足。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.4, opening list of incoming SIP MESSAGE requests"
+          ],
+          "printed_pages": [
+            395
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.4, steps 2 and 3"
+          ],
+          "printed_pages": [
+            395
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.4, steps 4, 8–9 with note, and 12"
+          ],
+          "printed_pages": [
+            395,
+            396
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.3.1, steps 3 and 4"
+          ],
+          "printed_pages": [
+            394
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "capacity-and-retry",
+      "title": "在网私呼回电的三种服务器角色各自因资源不足不能处理或有拥塞风险时，可以拒绝回 500，Retry-After 也可选",
+      "conditions": [
+        "发起侧参与功能、终接侧参与功能或控制功能正在处理自己的回电 MESSAGE，且因缺资源不能处理，或有拥塞风险。"
+      ],
+      "conclusion": "三个程序的步骤 1 各允许该角色拒绝请求并回 500。选用 500 后，可以附上 Retry-After；既不是必须用 500，也非必须指示重试时间。",
+      "normative_strength": "两项均为 MAY。",
+      "limitations": [
+        "没有 Retry-After 本身不违反这项可选规定；500 不是用户许可结论，本条不规定必须重试。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.3.1, step 1"
+          ],
+          "printed_pages": [
+            393
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.3.2, step 1"
+          ],
+          "printed_pages": [
+            395
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.4, step 1"
+          ],
+          "printed_pages": [
+            395
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "success-and-error-returns",
+      "title": "对在网回电 MESSAGE 的 2xx，终接侧转给控制功能，控制功能与发起侧各自生成 200；4xx、5xx、6xx 按原错误方向转回",
+      "conditions": [
+        "以甲请求乙回电为例，各角色分别收到对其出站 SIP MESSAGE 的成功或错误响应，而不是收到承载回电业务答复的新 MESSAGE 请求。"
+      ],
+      "conclusion": "发起侧把请求送往控制功能，控制功能再送往服务目标的终接侧。响应的方向相反：终接侧转发收到的 2xx 给控制功能；控制功能收到 2xx，生成 200 发回发起侧参与功能；发起侧收到 2xx，生成 200 发回其客户端。对于收到的 4xx、5xx、6xx，终接侧、控制功能、发起侧分别把错误转给控制功能、发起侧、发起客户端。",
+      "normative_strength": "各段处理该出站 MESSAGE 的条件性 SHALL；不是对真实通话的观测。",
+      "limitations": [
+        "客户端最终可见的 200 不能倒推终接侧最初收到的必是 200。它不等于另发 MESSAGE 承载的回电或取消业务答复，不证明已回拨或接听。角色顺序不等于必须分设三台服务器；不规定未列状态码的处置。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.3.1, steps 5–7 and 15"
+          ],
+          "printed_pages": [
+            394
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.4, steps 4, 8–9 with note, and 12"
+          ],
+          "printed_pages": [
+            395,
+            396
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.3.2, steps 4–6"
+          ],
+          "printed_pages": [
+            395
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.3.2, final success and error paragraphs"
+          ],
+          "printed_pages": [
+            395
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.4, final success and error paragraphs"
+          ],
+          "printed_pages": [
+            396
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.3.1, final success and error paragraphs"
+          ],
+          "printed_pages": [
+            394,
+            395
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.4, opening list of incoming SIP MESSAGE requests"
+          ],
+          "printed_pages": [
+            395
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "literal-discrepancies",
+      "title": "V16.14.0 私呼回电服务器条款：发起侧成功段回指步骤 13 而发送列在 15；终接侧步骤 5 的 INVITE 不同于前后步骤的 MESSAGE",
+      "conditions": [
+        "需要核对本版发起侧所引发送步骤，或终接侧描述出站消息的方法名。"
+      ],
+      "conclusion": "发起侧成功段把对 2xx 的处理指向在第 13 步发送的 MESSAGE；实际第 13 步添加 Accept-Contact、第 15 步列出发送。终接侧第 4 步生成 MESSAGE，第 5 步写出站 INVITE，第 6 步发送 MESSAGE。",
+      "normative_strength": "对该固定印本编号与字样的直接对照；不是新规范、勘误或实现要求。",
+      "limitations": [
+        "不悄悄更改原文，不因第 5 步单独出现 INVITE 就断定另有一次呼叫建立。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.3.1, steps 13 and 15 and success paragraph immediately after step 15"
+          ],
+          "printed_pages": [
+            394
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.5.3.2, steps 4–6"
+          ],
+          "printed_pages": [
+            395
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.5.3.1, step 1"
+      ],
+      "printed_pages": [
+        393
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.5.3.1, steps 2 and 2a"
+      ],
+      "printed_pages": [
+        394
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.5.3.1, steps 3 and 4"
+      ],
+      "printed_pages": [
+        394
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.5.3.1, steps 5–7 and 15"
+      ],
+      "printed_pages": [
+        394
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.5.3.1, steps 13 and 15 and success paragraph immediately after step 15"
+      ],
+      "printed_pages": [
+        394
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.5.3.1, final success and error paragraphs"
+      ],
+      "printed_pages": [
+        394,
+        395
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.5.3.2, step 1"
+      ],
+      "printed_pages": [
+        395
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.5.3.2, steps 2 and 3"
+      ],
+      "printed_pages": [
+        395
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.5.3.2, steps 4–6"
+      ],
+      "printed_pages": [
+        395
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.5.3.2, final success and error paragraphs"
+      ],
+      "printed_pages": [
+        395
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.5.4, opening list of incoming SIP MESSAGE requests"
+      ],
+      "printed_pages": [
+        395
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.5.4, step 1"
+      ],
+      "printed_pages": [
+        395
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.5.4, steps 2 and 3"
+      ],
+      "printed_pages": [
+        395
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.5.4, steps 4, 8–9 with note, and 12"
+      ],
+      "printed_pages": [
+        395,
+        396
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.5.4, final success and error paragraphs"
+      ],
+      "printed_pages": [
+        396
+      ]
+    }
+  ],
+  "related": [
+    "r16-calls-private-callback"
+  ],
+  "limitations": [
+    "仅核服务器相关入口、判据和响应；不展开报文构造、部署、客户端状态机、协议栈实现或业务实测。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
