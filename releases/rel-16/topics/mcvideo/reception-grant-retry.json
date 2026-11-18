@@ -1,0 +1,477 @@
+{
+  "topic_id": "r16-mcvideo-reception-grant-retry",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "在网 MCVideo：接收授予重发到上限，是谁拒绝了接收？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.581-v16.9.0",
+  "common_conditions": [
+    "普通在网预安排 MCVideo 组呼，讨论传输控制服务器的一般接收仲裁。核心判断处于该呼叫 Gr: Reception accepted，意即已有其他用户接受接收邀请；仅作对照时另指明 Gr 空闲态或表项。"
+  ],
+  "condition_rule": "每条声明继承共同条件，再各按自己的请求、到期事件或表项比较适用。T6 已运行并到期是两个重发判断的前提，不是初次授予或拒绝请求的前提。",
+  "claims": [
+    {
+      "id": "grant-versus-rejection",
+      "title": "一般接收仲裁已处于 Gr: Reception accepted 时，服务器无论授予还是拒绝新的接收请求，都须保持该状态",
+      "conditions": [
+        "服务器在 Gr: Reception accepted 状态收到一项 Receive Media Request，分别按拒绝或授予分支判断。"
+      ],
+      "conclusion": "服务器拒绝请求时发送 Rejected 响应，Result=0；授予时发送 Granted 响应，Result=1，授予程序列有启动 T6。两个分支都要求保持已接受状态。",
+      "normative_strength": "响应发送、字段取值、授予分支启动 T6 和状态保持均为对应分支的 SHALL。",
+      "limitations": [
+        "拒绝是服务器对这项请求的决定，不是用户拒看。服务器发出响应不证明对方收到或显示画面。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.1, item 2 (on-network server scope)"
+          ],
+          "printed_pages": [
+            33
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.1 and 6.3.2.2, general reception control instance"
+          ],
+          "printed_pages": [
+            52
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.7.2.2, note 1 (pre-arranged group within normal group; scope only)"
+          ],
+          "printed_pages": [
+            95
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.6.4 heading and 6.3.6.4.1"
+          ],
+          "printed_pages": [
+            88
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.6.4.3, branch 1a–b"
+          ],
+          "printed_pages": [
+            88,
+            89
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.6.4.3, branch 2e(ii), 2f, 2h"
+          ],
+          "printed_pages": [
+            89
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "retry-below-limit",
+      "title": "接收已接受状态下，T6 到期而 C6 未到限，服务器重发接收授予给获准者",
+      "conditions": [
+        "该授予的 T6 已运行并到期。处理本次到期时，C6 小于其上限。"
+      ],
+      "conclusion": "服务器向获准参与者再发 Receive Media Response (Granted)，重新启动 T6，C6 加 1，保持接收已接受状态。若这次加一正好到限，不会撤销本次重发。",
+      "normative_strength": "上述条件动作均为 SHALL；加一次正好到限是代入程序的算例。",
+      "limitations": [
+        "此处重发的是响应，不是媒体、向全组发出的通知或新的接收许可申请；一次发出不能证明客户端收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.1, item 2 (on-network server scope)"
+          ],
+          "printed_pages": [
+            33
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.1 and 6.3.2.2, general reception control instance"
+          ],
+          "printed_pages": [
+            52
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.7.2.2, note 1 (pre-arranged group within normal group; scope only)"
+          ],
+          "printed_pages": [
+            95
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.6.4 heading and 6.3.6.4.1"
+          ],
+          "printed_pages": [
+            88
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.6.4.8, items 1–3"
+          ],
+          "printed_pages": [
+            90
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "Table 11.1.3-1, T6 row: timer value, cause of start and on expiry"
+          ],
+          "printed_pages": [
+            208
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "Table 11.2.3-1, C6 row and table note"
+          ],
+          "printed_pages": [
+            212
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "at-limit-no-rejection",
+      "title": "接收已接受状态下，T6 到期且 C6 已到限，服务器不再重发这份授予；这不是拒绝",
+      "conditions": [
+        "T6 到期时 C6 已达到该计数器上限；按 C6 表项说明停止重发时，该表项指排队者获准接收。"
+      ],
+      "conclusion": "到限程序要求保持接收已接受状态。重发、重启 T6 和 C6 加一属于未到限分支；到限程序不再要求这些动作。上位标题写 Gr，两段末行写 G，均写保持，没有另列一次状态转换。",
+      "normative_strength": "状态保持是 SHALL。停止重发的说明见 C6 表项，结合程序的未到限守卫；不从动作清单的缺项外推出禁止一切后续事件。",
+      "limitations": [
+        "不能由到限证明客户端已获知授予、拒绝接收、已显示画面、发送者停发或呼叫释放；若要判断服务器拒绝某项请求，查 Rejected 响应而非 C6。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.1, item 2 (on-network server scope)"
+          ],
+          "printed_pages": [
+            33
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.1 and 6.3.2.2, general reception control instance"
+          ],
+          "printed_pages": [
+            52
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.7.2.2, note 1 (pre-arranged group within normal group; scope only)"
+          ],
+          "printed_pages": [
+            95
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.6.4 heading and 6.3.6.4.1"
+          ],
+          "printed_pages": [
+            88
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.6.4.8, items 1–3"
+          ],
+          "printed_pages": [
+            90
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.6.4.9, trigger and item 1"
+          ],
+          "printed_pages": [
+            90
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "Table 11.2.3-1, C6 row and table note"
+          ],
+          "printed_pages": [
+            212
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.6.4.3, branch 1a–b"
+          ],
+          "printed_pages": [
+            88,
+            89
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "timer-scope-and-wording",
+      "title": "T6 表中的排队条件和重启消息措辞，与一般接收仲裁的授予、到期程序不能互换",
+      "conditions": [
+        "比较服务器的一般接收仲裁程序与服务器定时器、计数器表；例中具体 T6、C6 取值必须与其配置和记录区分。"
+      ],
+      "conclusion": "T6 默认 1 秒，C6 默认上限 3，均可配置。T6 表的初始启动栏限定排过队且协商排队，已接受状态授予程序列启动 T6 而未重列这两个条件，空闲态授予动作清单未列启动。T6 表的重启文字是服务器到期时收到 Transmission Granted，到期栏写发送 Reception Granted；.4.8 则在未到限时重发 Receive Media Response (Granted) 给获准者并重启。C6 表的到限栏针对排队者获准接收。",
+      "normative_strength": "数值是可配置的默认值；表项与程序各依其限定解读，不将词义差别升级成新的规范义务。",
+      "limitations": [
+        "一条 Granted 发送记录不能确认 T6 实际启动并到期，也不能据默认值重建实际间隔或总发送数。不补等待确认的机制或校正表中消息名。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.1, item 2 (on-network server scope)"
+          ],
+          "printed_pages": [
+            33
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.1 and 6.3.2.2, general reception control instance"
+          ],
+          "printed_pages": [
+            52
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.7.2.2, note 1 (pre-arranged group within normal group; scope only)"
+          ],
+          "printed_pages": [
+            95
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.6.4 heading and 6.3.6.4.1"
+          ],
+          "printed_pages": [
+            88
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.6.4.3, branch 2e(ii), 2f, 2h"
+          ],
+          "printed_pages": [
+            89
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.6.3.6, branch 2a–g (comparison only)"
+          ],
+          "printed_pages": [
+            87
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.6.4.8, items 1–3"
+          ],
+          "printed_pages": [
+            90
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "Table 11.1.3-1, T6 row: timer value, cause of start and on expiry"
+          ],
+          "printed_pages": [
+            208
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "Table 11.2.3-1, C6 row and table note"
+          ],
+          "printed_pages": [
+            212
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.1, item 2 (on-network server scope)"
+      ],
+      "printed_pages": [
+        33
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.3.1 and 6.3.2.2, general reception control instance"
+      ],
+      "printed_pages": [
+        52
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.3.7.2.2, note 1 (pre-arranged group within normal group; scope only)"
+      ],
+      "printed_pages": [
+        95
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.3.6.4 heading and 6.3.6.4.1"
+      ],
+      "printed_pages": [
+        88
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.3.6.4.3, branch 1a–b"
+      ],
+      "printed_pages": [
+        88,
+        89
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.3.6.4.3, branch 2e(ii), 2f, 2h"
+      ],
+      "printed_pages": [
+        89
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.3.6.3.6, branch 2a–g (comparison only)"
+      ],
+      "printed_pages": [
+        87
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.3.6.4.8, items 1–3"
+      ],
+      "printed_pages": [
+        90
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.3.6.4.9, trigger and item 1"
+      ],
+      "printed_pages": [
+        90
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "Table 11.1.3-1, T6 row: timer value, cause of start and on expiry"
+      ],
+      "printed_pages": [
+        208
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "Table 11.2.3-1, C6 row and table note"
+      ],
+      "printed_pages": [
+        212
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcvideo-prearranged-group-reception-server",
+    "r16-mcvideo-transmission-idle-timers"
+  ],
+  "limitations": [
+    "只解释这一固定版本服务器接收控制的请求决定与两条 T6 到期程序。不解释私呼客户端、发送控制空闲、完整确认算法或整场呼叫释放。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
