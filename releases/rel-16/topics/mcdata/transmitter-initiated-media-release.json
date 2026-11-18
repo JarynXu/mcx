@@ -1,0 +1,202 @@
+{
+  "topic_id": "r16-mcdata-transmitter-initiated-media-release",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCData：发送方要求停止传输后，什么时候算这次通信已经释放？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 23.282 V16.8.0，Release 16，Stage 2；在网、由发送方发起释放，业务为已建立的媒体面 SDS、SDS 会话或媒体面 FD，一对一或组均可。图中两端用户均已注册、客户端 1 为当前发送方及原发起端；不预设响应是肯定或所有参与方已释放。"
+  ],
+  "claims": [
+    {
+      "id": "transmitter-request",
+      "title": "发送方何时可要求停止，谁收到请求",
+      "conditions": [
+        "图中客户端用户已注册 MCData 服务、通信已建立，客户端 1 既是当前发送方也是原发起端。"
+      ],
+      "conclusion": "发送方可随时向服务器表示停止传输。由用户提出，客户端 1 发控制面释放请求给服务器；服务器向本次一对一或组通信的所有参与方发送释放请求。",
+      "normative_strength": "发起是发送方可作的选择，无须先出现服务器预告或超限。",
+      "limitations": [
+        "接收范围是本次参与者，不是全组名册；发出请求不等于资源已释放。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.7.1 and 7.7.2 heading: initiators of release and on-network scope"
+          ],
+          "printed_pages": [
+            121
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.7.2.2.1 and 7.7.2.2.2.1, participant-initiated release, three media cases, MBMS editor’s note"
+          ],
+          "printed_pages": [
+            126
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.7.2.2.2.2, applicability, pre-conditions and Figure 7.7.2.2.2.2-1 steps 1–3"
+          ],
+          "printed_pages": [
+            127
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "response-route",
+      "title": "接收方通知用户后向谁反馈",
+      "conditions": [
+        "接收客户端收到了服务器针对这次通信发出的释放请求。"
+      ],
+      "conclusion": "各接收客户端先通知自己的用户，再将释放响应发回 MCData 服务器；服务器随后将释放响应发给客户端 1，即原发起端。",
+      "normative_strength": "图中步骤 4–6 描述两段返回路径；接收方不直接回复发起方。",
+      "limitations": [
+        "接收侧较早的通知不是发送方最终收到的本地通知。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.7.2.2.2.2, Figure 7.7.2.2.2.2-1 steps 4–6"
+          ],
+          "printed_pages": [
+            127
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.7.2.2.2.2, Figure 7.7.2.2.2.2-1 steps 7–8"
+          ],
+          "printed_pages": [
+            127
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "identities-and-confirmation",
+      "title": "一对一和组通信各用哪些身份，如何看回应",
+      "conditions": [
+        "按本次通信是一对一还是组、属于请求还是响应选择相应信息流表。"
+      ],
+      "conclusion": "请求和响应都要标明上传用户和目标：一对一为上传方与目标用户的两个 MCData ID；组通信为上传方的 MCData ID 和目标 MCData 组 ID。两类响应还必须注明是否已释放。",
+      "normative_strength": "两项标识均为必填，Release confirmation 是响应的必填项，有未释放的可能。",
+      "limitations": [
+        "一份响应的名称不能代替结果字段，单个参与方的已释放也不能代替全体状态。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.7.2.1.1, Table 7.7.2.1.1-1: one-to-one request"
+          ],
+          "printed_pages": [
+            121
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.7.2.1.2–4, Tables 7.7.2.1.2-1, 7.7.2.1.3-1 and 7.7.2.1.4-1: one-to-one response and group request/response"
+          ],
+          "printed_pages": [
+            122
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.7.2.2.2.2, Figure 7.7.2.2.2.2-1 steps 7–8"
+          ],
+          "printed_pages": [
+            127
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "completion-and-local-notification",
+      "title": "成功末态及发起端的用户通知",
+      "conditions": [
+        "沿图示成功路径，在服务器向发起端发出释放响应之后。"
+      ],
+      "conclusion": "成功末态是所有参与者都已释放与本次通信关联的媒体面资源；然后客户端 1 才通知自己的用户通信已释放。",
+      "normative_strength": "第 7 步描述业务状态，第 8 步描述发起端本地通知；没有给第 7 步定义一条额外的汇总信令。",
+      "limitations": [
+        "仅有请求或响应的片段不能证明各方资源均已释放。这不是消息送达、已读或文件删除证明；本流程没有定义无响应时的重试时限。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.7.2.2.2.2, Figure 7.7.2.2.2.2-1 steps 4–6"
+          ],
+          "printed_pages": [
+            127
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.7.2.2.2.2, Figure 7.7.2.2.2.2-1 steps 7–8"
+          ],
+          "printed_pages": [
+            127
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.7.2.1.2–4, Tables 7.7.2.1.2-1, 7.7.2.1.3-1 and 7.7.2.1.4-1: one-to-one response and group request/response"
+          ],
+          "printed_pages": [
+            122
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcdata-server-release-intent",
+    "r16-mcdata-http-file-removal"
+  ],
+  "limitations": [
+    "本版此处将 MBMS 释放列为待研究，不据此推断 MBMS 不受支持；不定义 HTTP 文件删除、服务器预告释放、离网或 Stage 3 信令。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
