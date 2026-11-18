@@ -1,0 +1,503 @@
+{
+  "topic_id": "r16-mcdata-group-sds-mbms-forwarding",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "在网 MCData 组短数据：终接参与功能两次回了 MSRP 200，就组播了两份吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.582-v16.3.0",
+  "common_conditions": [
+    "Release 16 Stage 3；在网组 SDS 会话通过 MBMS 进行媒体面投递，主体为终接 MCData 参与功能。§4.1.1 限定在网，§6.5.1 的已建会话等仅是非规范性背景。"
+  ],
+  "condition_rule": "各项继承在网组 SDS 的媒体面场景。适合性与监听是 SEND 组播分支的双条件，不是建会、结束时 Unmap 或转发终端错误的通用前提。",
+  "claims": [
+    {
+      "id": "sds-mbms-two-msrp-peers",
+      "title": "在网组 SDS 的 MBMS 投递中，终接参与功能分别与控制功能、终接客户端建立 MSRP 会话",
+      "conditions": [
+        "终接参与功能执行 §6.5.3.1。"
+      ],
+      "conclusion": "两端分别依同版 §6.2.2.5.1、§6.2.2.5.2 所指程序建会；参与功能是两段的共同一端。",
+      "normative_strength": "两项均为 shall；非规范背景中的假设不是实测。",
+      "limitations": [
+        "不是控制功能与终接客户端之间的一条直连；建立 MSRP 会话不是消息送达。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "4.1.1, first sentence only: on-network scope of SDS media-plane control"
+          ],
+          "printed_pages": [
+            10
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.1, non-normative group SDS overview and assumptions for media-plane MBMS delivery"
+          ],
+          "printed_pages": [
+            26,
+            27
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.3.1, items 1 and 2: MSRP sessions on the controlling-function side and on the terminating-client side"
+          ],
+          "printed_pages": [
+            28
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "sds-mbms-map-unmap-cadence",
+      "title": "已建在网 MCData 组 SDS 会话采用 MBMS 媒体面投递时，终接参与功能在通用子信道按短间隔重复 Map，会话结束时在同处发对应 Unmap",
+      "conditions": [
+        "已建立的在网 MCData 组 SDS 会话实际采用 MBMS 媒体面投递；在这个场景中通告映射，并在会话结束时解除相应映射。"
+      ],
+      "conclusion": "已建在网 MCData 组 SDS 会话采用 MBMS 媒体面投递时，终接参与功能在通用子信道重复 Map，包含承载 TMGI、媒体流标识与 MCData 组标识；短间隔由实现决定。这个会话结束时，终接参与功能在同处发送对应 Unmap。",
+      "normative_strength": "两类发送均有规范义务，短间隔重复明指 Map。",
+      "limitations": [
+        "不给 Unmap 推出必重复、禁止重复或固定次数；Map 次数不等于媒体包、承载或收件次数。始终单播、从未启用此 MBMS 映射的会话不能仅因已建或已结束就推定有这项义务。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "4.1.1, first sentence only: on-network scope of SDS media-plane control"
+          ],
+          "printed_pages": [
+            10
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.1, non-normative group SDS overview and assumptions for media-plane MBMS delivery"
+          ],
+          "printed_pages": [
+            26,
+            27
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.1, NOTE 3 only (non-normative): terminating participating function can select unicast or MBMS for a client and an SDS"
+          ],
+          "printed_pages": [
+            27
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.3.2, items 1a–1c and 2: Map identifiers, subchannel and repetition interval"
+          ],
+          "printed_pages": [
+            28
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.3.2, final paragraph: corresponding Unmap at session end on the general-purpose subchannel"
+          ],
+          "printed_pages": [
+            28
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "sds-mbms-eligibility-and-ack",
+      "title": "在网组 SDS：终接参与功能判定当前 SEND 适合 MBMS 且目的客户端正监听相应子信道时，先向控制功能回复 MSRP 200，再判断封装当前 SEND 的媒体包是否已在该子信道发过",
+      "conditions": [
+        "收到一份发往终接 MCData 客户端的 MSRP SEND，分别检查适合性与目的端是否监听相应子信道。"
+      ],
+      "conclusion": "满足两条件，参与功能针对本份 SEND 生成并回复 200，再行查重。任一不满足则按单播 SEND 处理。",
+      "normative_strength": "前者为有条件的 shall 步骤；后者是注 1 说明。",
+      "limitations": [
+        "200 不是由终端发出的送达或已读证明；不能从组播段推出单播响应规则。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "4.1.1, first sentence only: on-network scope of SDS media-plane control"
+          ],
+          "printed_pages": [
+            10
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.1, non-normative group SDS overview and assumptions for media-plane MBMS delivery"
+          ],
+          "printed_pages": [
+            26,
+            27
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.3.3, opening guard and NOTE 1: eligibility and destination listening on the subchannel; unicast alternative"
+          ],
+          "printed_pages": [
+            28
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.3.3, item 1: normal response generated and sent by the participating function to the controlling function"
+          ],
+          "printed_pages": [
+            28
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.3.3, items 2, 3 and 4a–b: same-subchannel prior transmission check, discard versus new transmission on mapped bearer"
+          ],
+          "printed_pages": [
+            28
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "sds-mbms-same-subchannel-dedup",
+      "title": "在网组 SDS：符合 MBMS 条件且发往监听端的 SEND，在相应子信道已发过对应媒体包才丢弃本次输入；未发过则在映射承载上传送",
+      "conditions": [
+        "终接参与功能已判消息适合 MBMS 且目的客户端正监听该子信道；查重对象是封装本次收到的 SEND 的媒体包，查重范围是这个子信道；只知同一条业务短消息、相同文字或其他子信道的记录，都不能替代这个判据。"
+      ],
+      "conclusion": "已发时不为本份 SEND 再发该包；未发时构建承载该 SEND 的媒体包，在已发 Map 的 TMGI 所标识的承载传送。分支都在向控制功能回复 200 之后。",
+      "normative_strength": "步骤 2–4 的有条件 shall。",
+      "limitations": [
+        "更换目的客户端本身既不证明也不排除同一子信道上已发过对应包；不以业务消息标识、内容相同或其他子信道的发送记录推导已发。该款未给出匹配算法。单凭 200 不能证明新组播，发送也不证明实收或已读。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "4.1.1, first sentence only: on-network scope of SDS media-plane control"
+          ],
+          "printed_pages": [
+            10
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.1, non-normative group SDS overview and assumptions for media-plane MBMS delivery"
+          ],
+          "printed_pages": [
+            26,
+            27
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.1, NOTE 1 only (non-normative): MSRP chunking also supported on MBMS delivery"
+          ],
+          "printed_pages": [
+            27
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.3.3, opening guard and NOTE 1: eligibility and destination listening on the subchannel; unicast alternative"
+          ],
+          "printed_pages": [
+            28
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.3.3, item 1: normal response generated and sent by the participating function to the controlling function"
+          ],
+          "printed_pages": [
+            28
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.3.3, items 2, 3 and 4a–b: same-subchannel prior transmission check, discard versus new transmission on mapped bearer"
+          ],
+          "printed_pages": [
+            28
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "sds-mbms-unicast-bearer-options",
+      "title": "在网组 SDS 的 MBMS 投递可为快速切换保持单播下行承载原样，不必一律拆掉",
+      "conditions": [
+        "讨论终接参与功能管理原用于单播 SDS 投递的下行承载。"
+      ],
+      "conclusion": "为节省空口资源可释放承载或降低带宽；为快速切换单播与 MBMS 可维持原承载。",
+      "normative_strength": "来自注 2 的资源处置说明；不是一律释放的 shall。",
+      "limitations": [
+        "不能由一个响应或组播开始推知某条承载的带宽或释放结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "4.1.1, first sentence only: on-network scope of SDS media-plane control"
+          ],
+          "printed_pages": [
+            10
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.1, non-normative group SDS overview and assumptions for media-plane MBMS delivery"
+          ],
+          "printed_pages": [
+            26,
+            27
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.3.3, NOTE 2: unicast downlink resource savings and rapid switching alternative"
+          ],
+          "printed_pages": [
+            28
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "sds-mbms-client-error-direction",
+      "title": "在网组 SDS：终接参与功能收到终接客户端的 MSRP 错误响应才触发本条的向发起客户端方向转发",
+      "conditions": [
+        "收到终接客户端发出的 MSRP 错误响应；不同于参与功能向控制功能发送的正常 200。"
+      ],
+      "conclusion": "终接参与功能向发起客户端方向转发收到的错误响应。",
+      "normative_strength": "末段有条件的 shall。",
+      "limitations": [
+        "转发不证发起端实收，不表明直接一跳；没有错误不等于终端签收或用户已读。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "4.1.1, first sentence only: on-network scope of SDS media-plane control"
+          ],
+          "printed_pages": [
+            10
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.1, non-normative group SDS overview and assumptions for media-plane MBMS delivery"
+          ],
+          "printed_pages": [
+            26,
+            27
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.3.3, final paragraph: errors received from the terminating client are forwarded towards the originating client"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.3.3, opening guard and NOTE 1: eligibility and destination listening on the subchannel; unicast alternative"
+          ],
+          "printed_pages": [
+            28
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.3.3, item 1: normal response generated and sent by the participating function to the controlling function"
+          ],
+          "printed_pages": [
+            28
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "4.1.1, first sentence only: on-network scope of SDS media-plane control"
+      ],
+      "printed_pages": [
+        10
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.5.1, non-normative group SDS overview and assumptions for media-plane MBMS delivery"
+      ],
+      "printed_pages": [
+        26,
+        27
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.5.1, NOTE 1 only (non-normative): MSRP chunking also supported on MBMS delivery"
+      ],
+      "printed_pages": [
+        27
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.5.1, NOTE 3 only (non-normative): terminating participating function can select unicast or MBMS for a client and an SDS"
+      ],
+      "printed_pages": [
+        27
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.5.3.1, items 1 and 2: MSRP sessions on the controlling-function side and on the terminating-client side"
+      ],
+      "printed_pages": [
+        28
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.5.3.2, items 1a–1c and 2: Map identifiers, subchannel and repetition interval"
+      ],
+      "printed_pages": [
+        28
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.5.3.2, final paragraph: corresponding Unmap at session end on the general-purpose subchannel"
+      ],
+      "printed_pages": [
+        28
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.5.3.3, opening guard and NOTE 1: eligibility and destination listening on the subchannel; unicast alternative"
+      ],
+      "printed_pages": [
+        28
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.5.3.3, item 1: normal response generated and sent by the participating function to the controlling function"
+      ],
+      "printed_pages": [
+        28
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.5.3.3, items 2, 3 and 4a–b: same-subchannel prior transmission check, discard versus new transmission on mapped bearer"
+      ],
+      "printed_pages": [
+        28
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.5.3.3, NOTE 2: unicast downlink resource savings and rapid switching alternative"
+      ],
+      "printed_pages": [
+        28
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.5.3.3, final paragraph: errors received from the terminating client are forwarded towards the originating client"
+      ],
+      "printed_pages": [
+        29
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcdata-group-sds-mbms-map-unmap",
+    "r16-mcdata-group-media-plane-sds-session",
+    "r16-mcdata-sds-session-media-server"
+  ],
+  "limitations": [
+    "限定于终接参与功能的责任；组播协议义务不代替任何发送、接收、阅读或错误到达记录。",
+    "不展开构包、密钥或外部回指，不由三小节推断整份规范或本版完成覆盖。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
