@@ -1,0 +1,316 @@
+{
+  "topic_id": "r16-mcdata-configured-service-limits",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "在网 MCData 配置：SDS 信令面上限要等于 SDS 总上限吗？终端栏的 N 表示禁止配置吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "common_conditions": [
+    "表 A.5-2 的所选参数属于在网 MCData 业务配置；A.1 的读表和 UE 更新规则是一般规则，不以 A.5-2 的参数必可离线配置为前提。"
+  ],
+  "condition_rule": "比较配置取值、功能实体的配置要求及实际提供给终端的配置记录时，各用其对应来源；一份配置表不能证明某次实装或发送。",
+  "claims": [
+    {
+      "id": "mcdata-config-sds-fd-size-limits",
+      "title": "在网 MCData 配置中，信令控制面 SDS 最大载荷不能超过 SDS 总上限；FD 上限另列，不参与该比较",
+      "conditions": [
+        "在同一份在网业务配置中比较三个参数的取值；不是比较三笔消息。"
+      ],
+      "conclusion": "信令控制面 SDS 最大载荷可小于或等于 SDS 总上限，不得大于它。仅知这两项之一，可以约束另一项的范围，却不能确定其准确值；表注也没有据此求 FD 上限的规则。",
+      "normative_strength": "表注使用不得超出的约束；它不指定通用字节数或一笔消息的传法。",
+      "limitations": [
+        "示例数值并非规范默认值；符合这条表注不等于整个配置符合规范。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "Table A.5-2, caption, entity headings and first three data-size rows under transmission and reception control"
+          ],
+          "printed_pages": [
+            181
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "Table A.5-2, NOTE comparing maximum signalling-control-plane SDS payload size and maximum data size for SDS"
+          ],
+          "printed_pages": [
+            181
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mcdata-config-entity-flags",
+      "title": "在网 MCData 大小和时限参数的 Y/N 表示各实体是否需要配置，不表明值已下发，也不把 N 写成禁止",
+      "conditions": [
+        "实体列依次为 MCData UE、MCData 服务器和配置管理服务器。"
+      ],
+      "conclusion": "SDS 总上限、信令控制面 SDS 最大载荷、FD 最大数据量这三行都是 Y/Y/Y。暂存待投递时限和自动接收的最大数据量均为 N/Y/Y：不要求给 UE 配置，两个服务器则都需要。",
+      "normative_strength": "Y/N 是对每一行和每一列的配置要求。",
+      "limitations": [
+        "不同参数对应相同的 Y/N 并不要求数值相同；不能用这些符号证明某实体实际持有或缺少一个值。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "A.1, column meanings: functional-entity columns, Y and N"
+          ],
+          "printed_pages": [
+            169
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "Table A.5-2, caption, entity headings and first three data-size rows under transmission and reception control"
+          ],
+          "printed_pages": [
+            181
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "Table A.5-2, temporary-storage time limit and auto-receive maximum-size rows under transmission and reception control"
+          ],
+          "printed_pages": [
+            181
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mcdata-config-parent-container",
+      "title": "在网 MCData 的“收发控制”归集 SDS、FD 等子参数，父项本身没有数值",
+      "conditions": [
+        "参数行中的 > 标记层级；A.5-2 的收发控制父项及其子项。"
+      ],
+      "conclusion": "每多一个 > 表示再深一层；子项归属于向上最近的、比它少一个 > 的参数。父项是容器，不能把 SDS 或 FD 的上限填给父项。",
+      "normative_strength": "附录 A 的层级读法，适用于表中的父子项。",
+      "limitations": [
+        "同处一个父项下不表示各子项共享数值。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "A.1, configuration hierarchy paragraph: level marker and parent parameters"
+          ],
+          "printed_pages": [
+            169
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "Table A.5-2, caption, entity headings and first three data-size rows under transmission and reception control"
+          ],
+          "printed_pages": [
+            181
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mcdata-config-service-table-scope",
+      "title": "MCData 表 A.5-2 用于在网业务；A.5 明列可经 CSC-11 离线配置的是 A.5-1 和 A.5-3 的数据",
+      "conditions": [
+        "区分业务适用场景（在网、离网）和向终端提供配置的机制（在线、离线）。"
+      ],
+      "conclusion": "在网业务用 A.5-1、A.5-2，离网业务用 A.5-1、A.5-3。A.5 的 CSC-11 说明指 A.5-1 和 A.5-3，不能凭这句话把 A.5-2 中的信令面 SDS 最大载荷列入 CSC-11 离线配置清单。",
+      "normative_strength": "只界定 A.5 这段话明示的表和途径。",
+      "limitations": [
+        "这不是对所有来源和所有配置途径作普遍禁止的判断。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "A.5, opening text: on-network and off-network table pairs and CSC-11 offline scope"
+          ],
+          "printed_pages": [
+            180
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "Table A.5-2, caption, entity headings and first three data-size rows under transmission and reception control"
+          ],
+          "printed_pages": [
+            181
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mcdata-config-one-point-per-mechanism",
+      "title": "可在线配置的每个 MCData 参数只通过一个在线参考点配置；可离线配置的每个参数只通过一个离线参考点配置",
+      "conditions": [
+        "各自的规则限于可按相应方式配置的参数；例中 P 已另行确认允许两种方式。"
+      ],
+      "conclusion": "对可在线配置的每个参数，只能通过一个在线参考点配置。对可离线配置的每个参数，只能通过一个离线参考点配置。已另行确认可用两种方式的参数 P，采用一个在线加一个离线参考点不违反此项限制；通过两个不同的在线参考点配置 P 则违反。",
+      "normative_strength": "A.1 对每个参数、每种可用方式分别施加的限制。",
+      "limitations": [
+        "不能凭这项一般规则认定每个参数都有两种方式。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "A.1, final paragraph, first two sentences: one reference point per parameter and mechanism"
+          ],
+          "printed_pages": [
+            169
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mcdata-config-ue-most-recent",
+      "title": "同一 MCData UE 的同一参数，以最近提供给该 UE 的配置覆盖旧配置，不设在线或离线方式优先",
+      "conditions": [
+        "同一参数可用两种方式提供；比较已提供给同一台 UE 的两份配置。"
+      ],
+      "conclusion": "先在线后离线，后提供的离线值覆盖先前在线值；顺序相反，后提供的在线值覆盖先前离线值。仅有服务器拟定新值的记录，不足以认定已经提供给某台 UE。",
+      "normative_strength": "A.1 规定最近提供给 UE 的配置总是覆盖以前的，不论提供方式。",
+      "limitations": [
+        "不能把服务器上的拟稿顺序当成该 UE 获得配置的顺序，或据一台 UE 的记录推定另一台 UE 的值。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "A.1, final paragraph, last sentence: configuration data made available to the MCData UE"
+          ],
+          "printed_pages": [
+            169
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "A.1, column meanings: functional-entity columns, Y and N"
+      ],
+      "printed_pages": [
+        169
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "A.1, configuration hierarchy paragraph: level marker and parent parameters"
+      ],
+      "printed_pages": [
+        169
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "A.1, final paragraph, first two sentences: one reference point per parameter and mechanism"
+      ],
+      "printed_pages": [
+        169
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "A.1, final paragraph, last sentence: configuration data made available to the MCData UE"
+      ],
+      "printed_pages": [
+        169
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "A.5, opening text: on-network and off-network table pairs and CSC-11 offline scope"
+      ],
+      "printed_pages": [
+        180
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "Table A.5-2, caption, entity headings and first three data-size rows under transmission and reception control"
+      ],
+      "printed_pages": [
+        181
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "Table A.5-2, temporary-storage time limit and auto-receive maximum-size rows under transmission and reception control"
+      ],
+      "printed_pages": [
+        181
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "Table A.5-2, NOTE comparing maximum signalling-control-plane SDS payload size and maximum data size for SDS"
+      ],
+      "printed_pages": [
+        181
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcdata-sds-reference-points",
+    "r16-mcdata-automatic-sds-transmission",
+    "r16-mcdata-http-group-standalone-fd"
+  ],
+  "limitations": [
+    "只覆盖 A.1 的实体列义、参数层级、配置参考点和 UE 覆盖规则，以及 A.5 开头和表 A.5-2 的所列行、表注；不是全附录核验。",
+    "虚构例中的数值和提供顺序只用于判读，不是规范默认值或真实设备记录。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
