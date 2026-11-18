@@ -1,0 +1,223 @@
+{
+  "topic_id": "r16-bearers-mbms-application-control-signalling",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "经 MBMS 向组发送控制消息：客户端何时不得应答，监听状态报告又说明什么？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "Release 16，3GPP TS 23.280 V16.7.0，Stage 2：MC 业务服务器使用 MBMS 承载传应用层控制信令的程序。"
+  ],
+  "condition_rule": "声明继承本主题范围并叠加各自条件；组寻址是限制单条消息应答的条件，不是将监听状态报告当成应答的理由。",
+  "claims": [
+    {
+      "id": "no-response-unless-instructed-or-configured",
+      "title": "经 MBMS 发给组的应用控制信令：无适用的回复指示且无适用的回复配置时，客户端不得应答",
+      "conditions": [
+        "控制消息以组为收件对象；判断该客户端针对这条消息是否有适用的回复指示或配置。"
+      ],
+      "conclusion": "两项都没有时，客户端不得应答这条组寻址的应用控制消息。只有未看到应答的记录，不能据此认定它没收到消息。",
+      "normative_strength": "“不得……除非……”规定何时禁止；不能把存在某项回复指示或配置倒推为所有控制消息都必须回执。",
+      "limitations": [
+        "此款不直接裁决单独寻址给某个客户端的消息。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.4.1, opening paragraph and message examples"
+          ],
+          "printed_pages": [
+            126
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.4.1, final paragraph on responses"
+          ],
+          "printed_pages": [
+            126
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "tmgi-to-monitor",
+      "title": "为监听已通告的 MBMS 控制承载，客户端从业务描述取得其 TMGI，保存相关信息并启动终端监听",
+      "conditions": [
+        "服务器决定激活用于应用层控制信令的 MBMS 承载，并向客户端传递承载信息。"
+      ],
+      "conclusion": "客户端从业务描述得到标识该承载的 TMGI，保存与该标识相关的信息，再用 TMGI 及其他承载信息启动终端监听。",
+      "normative_strength": "步骤 1–3 区分服务器提供承载信息与客户端实际启动监听。",
+      "limitations": [
+        "只见取得标识不能证明监听已启动，更不能当作某条应用控制消息的回执。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.4.2, steps 1–3 (numbered prose)"
+          ],
+          "printed_pages": [
+            127
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "reported-ability-and-optional-media-quality",
+      "title": "客户端已启动终端监听所通告的 MBMS 承载，进入或已在该 TMGI 的服务区时，向服务器报告能经此承载接收应用控制消息；可附自己在同一承载上所收 MC 业务媒体的质量级别",
+      "conditions": [
+        "客户端已按该程序启动终端监听，进入或已在与所通告 TMGI 对应的服务区。"
+      ],
+      "conclusion": "该客户端向 MC 业务服务器报告自己能够经这条承载接收应用层控制消息。可另外附上自己在同一承载接收 MC 业务媒体的 MBMS 接收质量级别。",
+      "normative_strength": "步骤 4 将能力指示与可选的质量级别分开；不必等到重新进入服务区，已经处于该区也属于所述情形。",
+      "limitations": [
+        "未附质量级别本身不表示客户端报了无法接收，所附级别也不是某条控制消息的回执。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.4.2, steps 1–3 (numbered prose)"
+          ],
+          "printed_pages": [
+            127
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.4.2, step 4 (first two sentences of numbered prose)"
+          ],
+          "printed_pages": [
+            127
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.4.2, step 4 (final sentence) and step 5 (numbered prose)"
+          ],
+          "printed_pages": [
+            127
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "server-may-choose-not-delivery",
+      "title": "客户端报告能经该 MBMS 承载接收应用控制消息后，服务器可据此选用它发送此类消息；报告本身不能证明某条消息已发送或已送达组员",
+      "conditions": [
+        "服务器收到客户端处于所通告服务区时作出的、能在该承载上接收应用控制消息的报告。"
+      ],
+      "conclusion": "报告可作为服务器决定采用该 MBMS 承载传应用控制消息的依据。服务器发送属于后续步骤；即使有服务器发送的记录，也不等于已经得到客户端对那条消息的收讫确认。",
+      "normative_strength": "步骤 4 给出服务器可以作出的选择，步骤 5 描述发送；不能把可选决定、实际发送和客户端实际收到合并。",
+      "limitations": [
+        "一名客户端的报告不替其他组员证明任何具体消息已经送达。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.4.2, step 4 (first two sentences of numbered prose)"
+          ],
+          "printed_pages": [
+            127
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.4.2, step 4 (final sentence) and step 5 (numbered prose)"
+          ],
+          "printed_pages": [
+            127
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.4.1, opening paragraph and message examples"
+      ],
+      "printed_pages": [
+        126
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.4.1, final paragraph on responses"
+      ],
+      "printed_pages": [
+        126
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.4.2, steps 1–3 (numbered prose)"
+      ],
+      "printed_pages": [
+        127
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.4.2, step 4 (first two sentences of numbered prose)"
+      ],
+      "printed_pages": [
+        127
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.4.2, step 4 (final sentence) and step 5 (numbered prose)"
+      ],
+      "printed_pages": [
+        127
+      ]
+    }
+  ],
+  "related": [
+    "r16-bearers-mbms-bearer-announcement",
+    "r16-bearers-mbms-reception-quality",
+    "r16-calls-mcptt-mbms-group-status"
+  ],
+  "limitations": [
+    "不据这些条款确定单独寻址消息的应答、每类控制消息的具体回执程序或协议编码；不把客户端能力上报当作实际设备或逐消息送达的验证。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
