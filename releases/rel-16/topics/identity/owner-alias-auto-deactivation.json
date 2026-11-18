@@ -1,0 +1,213 @@
+{
+  "topic_id": "r16-identity-owner-alias-auto-deactivation",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "用户没申请停用，谁能解除他的 MCPTT 功能别名？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 24.379 V16.14.0，Release 16，Stage 3；以拥有所处理功能别名的 MCPTT 服务器为主体。"
+  ],
+  "claims": [
+    {
+      "id": "automatic-trigger",
+      "title": "用户不主动停用时的两种触发途径",
+      "conditions": [
+        "要停用某个目标 MCPTT ID 与所服务功能别名之间的关联。"
+      ],
+      "conclusion": "MCPTT 管理员可从外部触发，也可由拥有别名的 MCPTT 功能因内部事件直接触发；两者都无需先收到目标用户的停用请求。",
+      "normative_strength": "关联到期是内部触发的示例，不是唯一原因。",
+      "limitations": [
+        "管理员外部触发所用机制不在标准范围内；只见关联消失不能倒推出它到期。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.6, opening alternatives 1 and 2: external or internal trigger"
+          ],
+          "printed_pages": [
+            215
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "match-alias-and-user",
+      "title": "按别名 ID、目标 MCPTT ID 两层定位",
+      "conditions": [
+        "服务器因前述管理员外部触发或拥有别名的功能内部触发，要停用目标用户与该别名的既有关联。"
+      ],
+      "conclusion": "别名 ID 唯一标识外层条目。其用户列表内，MCPTT ID 唯一标识用户记录，记录还含能否接管的指示和到期时间。服务器须先找到所服务别名的条目，再从其列表中移除与目标 MCPTT ID 匹配的那条用户记录。",
+      "normative_strength": "本步骤移除的是一条用户记录。",
+      "limitations": [
+        "操作不移除该别名下其他人的记录，也不移除目标用户在另一个别名下的记录；即使移除后列表为空，此步骤也未要求删除别名条目。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.2, stored information: functional alias entry and its MCPTT user information entries"
+          ],
+          "printed_pages": [
+            211
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.6, opening alternatives 1 and 2: external or internal trigger"
+          ],
+          "printed_pages": [
+            215
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.6, server steps 1 and 2: select served alias, remove matching target user information entry"
+          ],
+          "printed_pages": [
+            215
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "notify-subscription",
+      "title": "移除后须调用通知程序，构造通知还须选到订阅者的记录",
+      "conditions": [
+        "服务器已按 §9A.2.2.3.6 移除指定别名下目标用户的记录。若要沿 §9A.2.2.3.5 步骤 1–4 构造并发送通知，相关订阅须按 §9A.2.2.3.4 建立且仍有效，并能在所服务别名的列表内选到与 handled MCPTT ID 匹配的用户记录。"
+      ],
+      "conclusion": "移除后服务器须对同一个别名 ID 执行通知程序。该程序再次定位所服务别名，并从其用户列表中选取 MCPTT ID 等于本次订阅者 handled MCPTT ID 的记录。若能选到，服务器据此构造按别名组织的 application/pidf+xml 消息体，其中的 functionalAlias 元素须带 expires 属性，并为该订阅发送 SIP NOTIFY。被移除的 target MCPTT ID 和标识订阅者的 handled MCPTT ID 用在不同步骤。",
+      "normative_strength": "§9A.2.2.3.6 步骤 3 要求调用通知程序；这项要求不以是否找到用户记录为前提，也不等于已经发出通知。按 §9A.2.2.3.5 步骤 2 选到匹配记录才具备步骤 3 所用的条目。",
+      "limitations": [
+        "如果 handled MCPTT ID 正是刚被移除的 target MCPTT ID，或以其他原因没有匹配条目，有效订阅本身不能补出该条目。§§9A.2.2.3.5–6 未说明在这种情况下如何选条目、构造正文或处理发送；不能保证必发或断言禁发、豁免调用通知程序或要求重建记录。",
+        "这不是向所有使用者广播；服务器的发送记录不证明某台终端已收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.6, server step 3: perform the status change notification procedure for the served alias ID"
+          ],
+          "printed_pages": [
+            215
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.4, closing paragraph: notification during the subscription"
+          ],
+          "printed_pages": [
+            214
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.5, introduction and steps 1–4: identify subscriber by handled MCPTT ID, select served alias and matching user entry, construct per-alias PIDF and send for the subscription"
+          ],
+          "printed_pages": [
+            214
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.5, step 3(a): expires attribute in the functionalAlias element"
+          ],
+          "printed_pages": [
+            214
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "publish-correlation",
+      "title": "到期属性不能替代或证明发布标识",
+      "conditions": [
+        "本条说明 §9A.2.2.3.5 生成通知正文时的标识复制规则；按该程序步骤 1–4 构造并发送时已有 §9A.2.2.3.4 的有效相关订阅，且在所服务别名下选到与 handled MCPTT ID 匹配的用户记录。"
+      ],
+      "conclusion": "若 §9A.2.2.3.3 处理 SIP PUBLISH 时已识别到 p-id-fa，并由其调用通知程序，服务器须将识别到的值写入 NOTIFY 的 PIDF 消息体，在 presence 根元素下作为 p-id-fa 子元素。由 §9A.2.2.3.6 内部到期直接触发，不满足该复制规则。",
+      "normative_strength": "p-id-fa 的赋值要求有特定调用条件，与 functionalAlias 元素须带 expires 属性是不同要求。",
+      "limitations": [
+        "不能由到期推出必带 p-id-fa，也不能由缺少 p-id-fa 判定原因是到期。",
+        "不能用这条字段规则填补没有匹配用户记录时的通知行为。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.6, server step 3: perform the status change notification procedure for the served alias ID"
+          ],
+          "printed_pages": [
+            215
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.3, server steps 13–14: identify handled p-id-fa and invoke status change notification"
+          ],
+          "printed_pages": [
+            213
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.5, step 3(b): conditional p-id-fa value under the presence root element"
+          ],
+          "printed_pages": [
+            214
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.5, step 3(a): expires attribute in the functionalAlias element"
+          ],
+          "printed_pages": [
+            214
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcptt-functional-alias-client",
+    "r16-identity-active-functional-alias-lookup"
+  ],
+  "limitations": [
+    "只解释针对既有关联的自动停用、通知程序及发布标识的复制条件，不把客户端主动变更或当前使用情况查询列为前置步骤；不扩展管理员接口或用户终端对通知的处理。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
