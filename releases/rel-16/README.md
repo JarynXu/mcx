@@ -2,6 +2,8 @@
 
 本版只收录所列固定版本的部分条款，不用其他 Release 补齐。Stage 2 说明功能职责，Stage 3 说明具体信令与媒体处理；两者不能互相替代。
 
+查到标为 `draft` 的主题，不等于其中的条款没有核对。请按具体问题阅读正文与声明，看相应层级实际登记的核验；[主题状态与核验字段的读法](../../CONTRIBUTING.md)列出了区别。
+
 ## 按问题查
 
 - [MCPTT 呼叫与设置、MCVideo/MCData 区域紧急告警](topics-calls.json)：[普通私呼的服务器怎样检查准入](topics/calls/private-server-admission-routing.md)？紧急呼叫、重入、预建立会话与服务设置分别由谁处理？ [离开预设区域后，谁决定取消 MCVideo 或 MCData 告警](topics/calls/emergency-alert-area-entry-exit.md)？
