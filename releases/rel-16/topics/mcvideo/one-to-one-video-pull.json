@@ -1,0 +1,308 @@
+{
+  "topic_id": "r16-mcvideo-one-to-one-video-pull",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "在网一对一视频拉取：我请对方传来画面，谁在接通时请求发送？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.281-v16.4.0",
+  "common_conditions": [
+    "3GPP TS 23.281 V16.4.0（Release 16，Stage 2），在网一对一视频拉取，主叫甲请求被叫乙向甲提供视频。"
+  ],
+  "condition_rule": "以在网一对一拉取为主；区分建呼授权、可选进展、被叫接受和传输完成各自的条件。相邻流程是阅读路标。",
+  "claims": [
+    {
+      "id": "select-user-pull-direction",
+      "title": "主叫发起拉取，只有被叫可向主叫发送视频",
+      "conditions": [
+        "甲发起在网一对一私呼，要从被邀请的 MCVideo 用户乙处获取视频。"
+      ],
+      "conclusion": "甲是视频接收方；本次拉取只允许乙向甲发送视频。若是甲要向乙发自己的视频，应查一对一推送；若是服务器提供其保存的文件，应查从服务器拉取录像。",
+      "normative_strength": "拉取私呼对视频方向的限定；相邻程序只用于辨别对象。",
+      "limitations": [
+        "乙端提供视频并不限定其必须是摄像头实况；请求经过服务器不能证明视频由服务器提供。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.3.2.3.1; 7.3.2.3.2, introductory paragraphs"
+          ],
+          "printed_pages": [
+            85
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.4.2.3.1"
+          ],
+          "printed_pages": [
+            93
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.3.2.4.1"
+          ],
+          "printed_pages": [
+            86
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "request-and-check-both-users",
+      "title": "按拉取私呼检查主被叫及所提供的别名",
+      "conditions": [
+        "甲端向 MCVideo 服务器请求与乙建立拉取私呼。"
+      ],
+      "conclusion": "请求指定乙的 MCVideo ID、列出一种或多种媒体类型的 SDP 提议并指明视频拉取。服务器核查甲可否发起以及乙可否接收这种拉取私呼。如甲提供了功能别名，另查该别名可否由甲使用、是否已为甲激活。",
+      "normative_strength": "步骤 1–2 所述请求及准入检查；功能别名可选。",
+      "limitations": [],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.3.2.3.2, Figure 7.3.2.3.2-1 and steps 1–2"
+          ],
+          "printed_pages": [
+            85
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "route-to-designated-device",
+      "title": "指定来话终端时，只有该终端收到请求",
+      "conditions": [
+        "服务器对拉取私呼授权后，向被叫端转送请求。"
+      ],
+      "conclusion": "转送的媒体类型为初始提议的全部或子集；拉取可自动或手动开始，请求中的自动开始模式指示依据甲请求的开始模式或乙端设置。若乙以多台终端注册 MCVideo 且已指定接私呼的一台，则仅向该台投递。乙端通知用户有来呼，收到甲的功能别名时显示。",
+      "normative_strength": "步骤 4–5 指定投递的限定条件，两项须同时成立。",
+      "limitations": [
+        "只有多终端注册的事实，不能用此条断定投递数量或选定设备。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.3.2.3.1; 7.3.2.3.2, introductory paragraphs"
+          ],
+          "printed_pages": [
+            85
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.3.2.3.2, Figure 7.3.2.3.2-1 and steps 4–5"
+          ],
+          "printed_pages": [
+            85,
+            86
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "distinguish-optional-progress",
+      "title": "进展提示可跨过图中的转发步骤",
+      "conditions": [
+        "在建呼阶段解释服务器给甲端的私呼进展提示。"
+      ],
+      "conclusion": "进展提示可选。图画作步骤 3；注 1 还允许在服务器向乙发请求（步骤 4）后、乙端应答（步骤 6）前报告进展。",
+      "normative_strength": "可选动作及编号顺序的明示例外。",
+      "limitations": [
+        "看到提示不能当作乙接受，未看到提示也不足以判定建呼失败。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.3.2.3.2, Figure 7.3.2.3.2-1, step 3 and NOTE 1"
+          ],
+          "printed_pages": [
+            85
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "accept-with-implicit-transmit-request",
+      "title": "乙端接受时隐式提出发送媒体的请求",
+      "conditions": [
+        "图示成功路径：乙端收到请求并接受这次拉取私呼。"
+      ],
+      "conclusion": "乙端将私呼接受应答发给服务器，隐式请求发送媒体（步骤 6）。服务器收到后向甲端报告建呼成功（步骤 7）；步骤 8 表明两端已建立媒体面与传输控制。",
+      "normative_strength": "步骤 6–8 分别描述请求、建呼结果和媒体通信条件。",
+      "limitations": [
+        "隐式请求不是已获发送许可的凭据；上述建呼和控制状态不证明乙已发送媒体、甲端已收到画面或甲已经观看。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.3.2.3.2, Figure 7.3.2.3.2-1 and steps 6–8"
+          ],
+          "printed_pages": [
+            85,
+            86
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "release-on-transfer-completion",
+      "title": "视频传输完成后沿用私呼释放程序",
+      "conditions": [
+        "本次一对一拉取的视频传输完成。"
+      ],
+      "conclusion": "本次私呼释放，所用程序为 §7.2.2.3.3。",
+      "normative_strength": "本场景的完成条件和明确的程序引用。",
+      "limitations": [
+        "不要求甲确认观看，也不能据此指定每次均由乙首先挂断。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.3.2.3.1; 7.3.2.3.2, introductory paragraphs"
+          ],
+          "printed_pages": [
+            85
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.3.2.3.2, NOTE 2; 7.3.2.3.3"
+          ],
+          "printed_pages": [
+            86
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.3.2.3.1; 7.3.2.3.2, introductory paragraphs"
+      ],
+      "printed_pages": [
+        85
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.4.2.3.1"
+      ],
+      "printed_pages": [
+        93
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.3.2.4.1"
+      ],
+      "printed_pages": [
+        86
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.3.2.3.2, Figure 7.3.2.3.2-1 and steps 1–2"
+      ],
+      "printed_pages": [
+        85
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.3.2.3.2, Figure 7.3.2.3.2-1 and steps 4–5"
+      ],
+      "printed_pages": [
+        85,
+        86
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.3.2.3.2, Figure 7.3.2.3.2-1, step 3 and NOTE 1"
+      ],
+      "printed_pages": [
+        85
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.3.2.3.2, Figure 7.3.2.3.2-1 and steps 6–8"
+      ],
+      "printed_pages": [
+        85,
+        86
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.3.2.3.2, NOTE 2; 7.3.2.3.3"
+      ],
+      "printed_pages": [
+        86
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcvideo-one-to-one-video-push",
+    "r16-mcvideo-stored-video-server-pull",
+    "r16-mcvideo-private-call-release"
+  ],
+  "limitations": [
+    "本页不规定具体 SIP 信令，不展开一对一推送、服务器录像回放、离网通信或通用私呼释放的内部步骤。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
