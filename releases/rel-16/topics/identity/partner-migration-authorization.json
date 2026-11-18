@@ -1,0 +1,357 @@
+{
+  "topic_id": "r16-identity-partner-migration-authorization",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "迁到伙伴系统：已通过用户认证，所选配置档的业务就获准了吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0，Release 16，Stage 2：MC 业务用户从其主系统迁移到伙伴系统时的业务授权。"
+  ],
+  "claims": [
+    {
+      "id": "authentication-and-request",
+      "title": "伙伴认证后可申请：两个业务 ID 标识同一用户，索引指向所选配置档",
+      "conditions": [
+        "用户想迁往伙伴系统；客户端已配置含有连接该伙伴所需参数的用户配置档，认证流程已把在伙伴系统申请业务授权所需的凭据提供给客户端。"
+      ],
+      "conclusion": "客户端向伙伴业务服务器请求迁移业务授权。请求标出同一用户在伙伴系统和主系统的两个 MC 业务 ID，以及所选用户配置档索引；伙伴 ID 由伙伴身份管理服务器在认证时提供，索引指向主系统提供并由用户为这次迁往伙伴而选定的配置档。步骤 1 另说明客户端提供认证凭据。",
+      "normative_strength": "请求表中两个业务 ID 和档索引均为 M。步骤 1 的注 1 把具体凭据规定指向 TS 33.180。",
+      "limitations": [
+        "具备连接配置、取得认证凭据，不证明本次所选档的迁移业务授权已获准。此处不规定凭据格式。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.3.3, three preconditions preceding Figure 10.6.3.3-1"
+          ],
+          "printed_pages": [
+            116
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.3.2.1, Table 10.6.3.2.1-1 including table notes 1 and 2"
+          ],
+          "printed_pages": [
+            116
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.3.3, step 1 and NOTE 1"
+          ],
+          "printed_pages": [
+            117
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "two-authorization-checks",
+      "title": "伙伴查是否准许该用户从其主系统迁入，主系统查是否准许该用户按所选档迁往该伙伴",
+      "conditions": [
+        "迁移用户已认证，客户端向伙伴业务服务器提出此次授权请求，并指明所选配置档。"
+      ],
+      "conclusion": "伙伴业务服务器先核实该用户是否获准由其主系统迁入此伙伴系统。主系统业务服务器另核实该用户能否使用请求指明的配置档迁往这个伙伴系统。",
+      "normative_strength": "前后是两个不同的授权检查；伙伴初审的具体标准不在本规范范围内，预配置的预计申请用户名单仅为例子。",
+      "limitations": [
+        "通过伙伴的初审不能替代主系统对该用户、目的系统和所选配置档的核查。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.3.3, three preconditions preceding Figure 10.6.3.3-1"
+          ],
+          "printed_pages": [
+            116
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.3.3, step 1 and NOTE 1"
+          ],
+          "printed_pages": [
+            117
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.3.3, step 2 and NOTE 2"
+          ],
+          "printed_pages": [
+            117
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.3.3, step 6"
+          ],
+          "printed_pages": [
+            117
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "gateway-and-direct-paths",
+      "title": "请求与响应跨系统时怎么走",
+      "conditions": [
+        "用户申请迁往伙伴系统；区分条款编号步骤中的两个网关路径和注 3 明示的不使用拓扑隐藏情形。"
+      ],
+      "conclusion": "在所述网关路径中，伙伴业务服务器用用户的主系统业务 ID 辨认主系统，发往伙伴网关；伙伴网关依据该 ID 辨认主系统并转至主系统网关，主系统网关再依据该 ID 找到主系统业务服务器。响应从主系统业务服务器经主系统网关、伙伴网关回到伙伴业务服务器，该服务器发给客户端。若不使用拓扑隐藏，双方业务服务器之间的请求和响应无需经 MC 网关。",
+      "normative_strength": "步骤 3–5、8–11 与注 3 对应不同传送路径；注 3 同时适用于请求和响应。",
+      "limitations": [
+        "业务服务器间直传不是客户端直连主系统，也不取消双方的授权检查。网关转送本身不是授权决定。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.3.3, step 1 and NOTE 1"
+          ],
+          "printed_pages": [
+            117
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.3.3, step 2 and NOTE 2"
+          ],
+          "printed_pages": [
+            117
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.3.3, steps 3–5"
+          ],
+          "printed_pages": [
+            117
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.3.3, step 6"
+          ],
+          "printed_pages": [
+            117
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.3.3, steps 7–8"
+          ],
+          "printed_pages": [
+            117
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.3.3, steps 9–11"
+          ],
+          "printed_pages": [
+            118
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.3.3, NOTE 3 following step 11"
+          ],
+          "printed_pages": [
+            118
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "record-and-result",
+      "title": "主系统登记、伙伴向客户端答复及响应成败是不同的证据",
+      "conditions": [
+        "解释编号步骤所述成功流程，或判断请求、主系统记录和响应能够分别说明什么。"
+      ],
+      "conclusion": "在成功流程中，主系统业务服务器将用户标记为已迁移、记下迁往的伙伴，随后发送响应。最后由伙伴业务服务器向客户端发响应，确认成功迁移及业务授权。响应表列出请求原有的两地业务 ID 和本次授权成功或失败的结果。",
+      "normative_strength": "响应表三项均为 M；结果不是由响应的名称或两个 ID 推断。所选档索引在请求表中为 M，不是响应表列出的必填项。",
+      "limitations": [
+        "主系统记录不足以证明客户端已收成功响应，未见客户端响应也不能推定失败。列出的编号步骤没有给出失败后的回滚或重试时机。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.3.2.1, Table 10.6.3.2.1-1 including table notes 1 and 2"
+          ],
+          "printed_pages": [
+            116
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.3.2.2, Table 10.6.3.2.2-1 including table note"
+          ],
+          "printed_pages": [
+            116
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.3.3, steps 7–8"
+          ],
+          "printed_pages": [
+            117
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.3.3, steps 9–11"
+          ],
+          "printed_pages": [
+            118
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.6.3.2.1, Table 10.6.3.2.1-1 including table notes 1 and 2"
+      ],
+      "printed_pages": [
+        116
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.6.3.2.2, Table 10.6.3.2.2-1 including table note"
+      ],
+      "printed_pages": [
+        116
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.6.3.3, three preconditions preceding Figure 10.6.3.3-1"
+      ],
+      "printed_pages": [
+        116
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.6.3.3, step 1 and NOTE 1"
+      ],
+      "printed_pages": [
+        117
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.6.3.3, step 2 and NOTE 2"
+      ],
+      "printed_pages": [
+        117
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.6.3.3, steps 3–5"
+      ],
+      "printed_pages": [
+        117
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.6.3.3, step 6"
+      ],
+      "printed_pages": [
+        117
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.6.3.3, steps 7–8"
+      ],
+      "printed_pages": [
+        117
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.6.3.3, steps 9–11"
+      ],
+      "printed_pages": [
+        118
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.6.3.3, NOTE 3 following step 11"
+      ],
+      "printed_pages": [
+        118
+      ]
+    }
+  ],
+  "related": [
+    "r16-identity-user-profile-download",
+    "r16-identity-user-profile-switch"
+  ],
+  "limitations": [
+    "限迁移授权的信息流与 Stage 2 程序，不推导协议编码、凭据内容、失败恢复或真实系统的状态。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
