@@ -1,0 +1,326 @@
+{
+  "topic_id": "r16-mcdata-group-sds-emergency-cancel",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "在网组短数据（SDS）取消紧急状态：告警和发起端的本地状态会一起清除吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "condition_rule": "各项声明继承通用条件，并叠加本项条件。",
+  "common_conditions": [
+    "在网组 SDS；组管理服务器上已定义该组，客户端 1、2、3 都已附属于该组。",
+    "全体组员属于同一 MCData 系统，且已获知进行中的紧急情况。",
+    "组处于进行中紧急状态，已有优先承载支持；原先由客户端 1 发起这次组紧急状态。本例执行取消的是获授权用户。"
+  ],
+  "claims": [
+    {
+      "id": "cancel-authority",
+      "title": "在网组 SDS：取消组紧急状态的权限不自动授予取消告警的权限；只有原发起者能取消自己的本地紧急状态",
+      "conditions": [
+        "比较示例原发起者与另一位有权取消该组进行中紧急状态的用户。"
+      ],
+      "conclusion": "示例由客户端 1 的获授权用户发起取消；其他有权取消该组紧急状态的用户也可能另获取消告警的授权，但无权代原发起者取消其本地紧急状态。",
+      "normative_strength": "步骤 1 说明示例发起者；注 1 区分可另获的告警权限和本地状态的专属权限。",
+      "limitations": [
+        "不将所有组员都视为已获授权。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.10.1",
+            "7.4.2.10.2, introduction and pre-conditions 1–5"
+          ],
+          "printed_pages": [
+            72
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.10.2, numbered step 1 and NOTE 1"
+          ],
+          "printed_pages": [
+            73
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "request-and-alert",
+      "title": "在网组 SDS 取消请求中复位紧急指示针对组状态；若一并取消同组生效的告警，请求另带告警指示",
+      "conditions": [
+        "客户端 1 向 MCData 服务器请求取消组紧急状态；一并取消告警的分支只适用于同一组的告警也在生效，且此次确实同时取消。"
+      ],
+      "conclusion": "客户端 1 在组 SDS 优先状态取消请求里复位 Emergency indicator。同组告警在特定情况下可以一并取消；若一并取消，该请求还带 Alert indicator。",
+      "normative_strength": "复位紧急指示是步骤 2 的动作，同时取消告警是注 2 的条件分支。",
+      "limitations": [
+        "仅凭紧急指示复位不能断言告警也被取消；本条不枚举可一并取消告警的全部情形。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.10.2, numbered step 2 and NOTE 2"
+          ],
+          "printed_pages": [
+            73
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.10.2, numbered step 7"
+          ],
+          "printed_pages": [
+            74
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "bearer-and-group",
+      "title": "取消在网组 SDS 的紧急状态时，服务器调整底层承载优先级，并复位组的进行中紧急状态",
+      "conditions": [
+        "服务器处理步骤 2 的组 SDS 优先状态取消请求。"
+      ],
+      "conclusion": "步骤 3 中，服务器调整底层承载的优先级，不再需要紧急优先待遇，并取消或复位该组的进行中紧急状态。",
+      "normative_strength": "编号步骤 3 明确了两个动作及其对象。",
+      "limitations": [
+        "不是拆除通信或承载、删除文件或复位发起端本地状态的凭据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.10.2, numbered step 2 and NOTE 2"
+          ],
+          "printed_pages": [
+            73
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.10.2, numbered step 3"
+          ],
+          "printed_pages": [
+            73
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.10.2, numbered step 7"
+          ],
+          "printed_pages": [
+            74
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "member-and-origin-responses",
+      "title": "在网组 SDS 紧急状态取消：组播不发成员回执；服务器可视条件在步骤 3 之后向原发起者确认，不必等齐回执",
+      "conditions": [
+        "服务器在步骤 3 调整了承载优先级并复位组状态；分别考察成员接收与服务器向用户 1 的确认。"
+      ],
+      "conclusion": "服务器向组员发送取消请求，组员获知取消。接收客户端向服务器发送取消响应，组播时不发送这些成员回执。服务器另向用户 1 确认组状态取消；视继续通信的条件，这个确认可在步骤 3 后的任何时点发出。",
+      "normative_strength": "步骤 6 的组播例外只针对成员回执；注 3 给步骤 7 的确认留下时间弹性。",
+      "limitations": [
+        "成员回执与给用户 1 的确认不是同一条；不能把步骤编号读成必待全部成员回复。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.10.2, numbered step 3"
+          ],
+          "printed_pages": [
+            73
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.10.2, numbered steps 4–6"
+          ],
+          "printed_pages": [
+            73
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.10.2, numbered step 7"
+          ],
+          "printed_pages": [
+            74
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.10.2, NOTE 3 following numbered step 7"
+          ],
+          "printed_pages": [
+            74
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "origin-local-reset",
+      "title": "在网组 SDS 的原发起者本人取消时，若步骤 2 请求含告警指示，客户端 1 在步骤 7 复位本地紧急状态；条文未将复位时刻绑定到收件",
+      "conditions": [
+        "示例由原发起者本人发起取消，考察步骤 2 原请求是否包含告警指示。"
+      ],
+      "conclusion": "步骤 7 中服务器向用户 1 发出组取消确认；若步骤 2 请求含 Alert indicator，客户端 1 复位本地紧急状态。若不知道原请求是否带该指示，仅凭组取消确认，不能判定是否发生本地复位。",
+      "normative_strength": "注 1 限定本地取消权，步骤 7 指明本地复位的条件；未规定客户端收到确认与本地复位的精确时点或先后。",
+      "limitations": [
+        "服务器发出响应与客户端收到响应的时间戳不等于本地复位时间。不能把收件写成复位的明文前提，也不由服务器在步骤 3 代为清除。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.10.2, numbered step 1 and NOTE 1"
+          ],
+          "printed_pages": [
+            73
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.10.2, numbered step 2 and NOTE 2"
+          ],
+          "printed_pages": [
+            73
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.10.2, numbered step 3"
+          ],
+          "printed_pages": [
+            73
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.10.2, numbered step 7"
+          ],
+          "printed_pages": [
+            74
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.10.1",
+        "7.4.2.10.2, introduction and pre-conditions 1–5"
+      ],
+      "printed_pages": [
+        72
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.10.2, numbered step 1 and NOTE 1"
+      ],
+      "printed_pages": [
+        73
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.10.2, numbered step 2 and NOTE 2"
+      ],
+      "printed_pages": [
+        73
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.10.2, numbered step 3"
+      ],
+      "printed_pages": [
+        73
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.10.2, numbered steps 4–6"
+      ],
+      "printed_pages": [
+        73
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.10.2, numbered step 7"
+      ],
+      "printed_pages": [
+        74
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.10.2, NOTE 3 following numbered step 7"
+      ],
+      "printed_pages": [
+        74
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcdata-group-fd-emergency",
+    "r16-mcdata-one-to-one-fd-emergency-upgrade"
+  ],
+  "limitations": [
+    "限同系统、在网组 SDS 的进行中紧急状态取消；不移用文件分发流程的末态，不推导实际通信已终止或继续、文件处置、承载优先级数值及信令编码。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
