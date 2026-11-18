@@ -1,0 +1,349 @@
+{
+  "topic_id": "r16-identity-partner-migration-configuration-timeline",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "连续几天迁到同一伙伴系统：哪份配置档要留，哪份档在迁移期间用？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "Release 16 MC 业务用户从主 MC 系统迁往伙伴 MC 系统；按 §10.1.1.2 的一般配置时间线解释。"
+  ],
+  "condition_rule": "各项继承共同条件。保留主系统档是为复用而取得接入信息的必要条件，不是对每次迁移一定能复用或所有用户永远不得删除资料的规定。",
+  "claims": [
+    {
+      "id": "single-system-and-home-profiles",
+      "title": "主系统的每份用户档限定可用该档迁往的伙伴；名单不表示同一用户可同时在多套 MC 系统接受业务",
+      "conditions": [
+        "用户和终端按主系统的配置与用户业务授权步骤取得一份或多份 MC 业务用户配置档。"
+      ],
+      "conclusion": "每份档列出按该档允许迁往的伙伴系统，并给出联系相应伙伴应用层服务器所需的接入信息。同一用户在任一时刻只能从一个 MC 系统接受 MC 业务。",
+      "normative_strength": "同时接受业务仅限一个系统；每份档的许可范围按该档解释。",
+      "limitations": [
+        "名单与接入信息不证明其中任一伙伴已在向用户提供业务。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.1.2, opening paragraph before Figure 10.1.1.2-1"
+          ],
+          "printed_pages": [
+            60
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.1.2, first paragraph after Figure 10.1.1.2-1, first three sentences"
+          ],
+          "printed_pages": [
+            60
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "advance-preparation-and-retention",
+      "title": "反复迁入时初始配置有可能复用；保留主系统档是取得接入信息的必要条件，不保证本次整套配置都不用重取",
+      "conditions": [
+        "用户为伙伴迁移做准备；注 1 的复用情形是多次获得迁移业务而无须在每段业务前重新取得初始配置。"
+      ],
+      "conclusion": "除主系统档外，用户还取得伙伴认证和业务授权所需的安全参数，准备可以提前做。此时用户具备使用有限服务的配置条件。反复迁入时，初始配置有可能跨几次迁入使用。要这样复用，必须保留主系统用户档以提供接入信息；单凭该档还在，不能断定整套初始配置都无须重取。",
+      "normative_strength": "提前准备和跨次复用都是可能；必须保留主系统档仅是这种复用方式的必要条件，不是充分条件。",
+      "limitations": [
+        "不能把连续多天的例子当成有效期规定，也不能从留存主系统档推出其他准备仍然可用，或本次伙伴认证及业务授权已完成。安全参数的取得机制见本节引用的 TS 33.180。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.1.2, first paragraph after Figure 10.1.1.2-1, first three sentences"
+          ],
+          "printed_pages": [
+            60
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.1.2, first paragraph after Figure 10.1.1.2-1, last two sentences"
+          ],
+          "printed_pages": [
+            60
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.1.2, NOTE 1 (advance preparation and repeated periods)"
+          ],
+          "printed_pages": [
+            60
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.1.2, first paragraph after NOTE 2"
+          ],
+          "printed_pages": [
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.1.2, first paragraph after NOTE 3"
+          ],
+          "printed_pages": [
+            61
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "select-partner-and-authenticate",
+      "title": "启动迁移时从所选主系统档的名单选伙伴，手动和应用自动选择都可以；选中伙伴不能替代用户认证",
+      "conditions": [
+        "用户要发起一次伙伴迁移，已经有选定的主系统用户档。"
+      ],
+      "conclusion": "从该档列出的伙伴中选目标，以档内接入信息初次联系伙伴。可以由用户手动选择，也可由终端应用自动选择，例如依据位置或当前服务的移动网络。用户随后在伙伴系统进行身份认证。",
+      "normative_strength": "两种触发均为可行方式；位置和当前服务网络是示例，不是必要条件。认证是另一步。",
+      "limitations": [
+        "选中伙伴或已联系其服务器不能证明用户已通过认证。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.1.2, first paragraph after Figure 10.1.1.2-1, first three sentences"
+          ],
+          "printed_pages": [
+            60
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.1.2, paragraph immediately before NOTE 2 and NOTE 2"
+          ],
+          "printed_pages": [
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.1.2, first paragraph after NOTE 2"
+          ],
+          "printed_pages": [
+            61
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "download-and-use-partner-profiles",
+      "title": "用户在伙伴认证后，迁移期间使用伙伴下发到终端的一份或多份档；原主系统档只供取得接入信息",
+      "conditions": [
+        "在所述迁移时间线中，用户已在目标伙伴系统完成身份认证。"
+      ],
+      "conclusion": "伙伴系统将该用户迁移期间要使用的一份或多份用户档下发到终端的配置管理客户端，随后在伙伴服务期间使用这些档。MC 业务客户端在迁移服务期间除取得伙伴接入信息外不使用原先保留的主系统档。",
+      "normative_strength": "正文给出认证与下发的先后，并允许单份或多份；注 3 限定主系统接入档的用途。",
+      "limitations": [
+        "伙伴向终端下发不等于档的全部内容最初都由伙伴编制；留存主系统档不表示迁移期间同时使用两地的业务配置。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.1.2, first paragraph after NOTE 2"
+          ],
+          "printed_pages": [
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.1.2, second paragraph after NOTE 2 and NOTE 3"
+          ],
+          "printed_pages": [
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.1.2, NOTE 1 (advance preparation and repeated periods)"
+          ],
+          "printed_pages": [
+            60
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "group-config-and-authorized-operation",
+      "title": "迁移时先取用户档所列组的配置，再获伙伴授权；伙伴要求使用本流程提供的档及组配置，即使没有后续更新",
+      "conditions": [
+        "在所述迁移流程中，伙伴已向终端下发迁移期间使用的用户档。"
+      ],
+      "conclusion": "终端组管理客户端取得用户档所列各 MC 业务组的配置。这些配置步骤完成后，用户在伙伴获得业务授权。伙伴要求在授权后的业务期间使用本流程提供的用户档和组配置，无论有无新的配置变更。伙伴可以在这段时间提供后续变更，不要求每次发生。",
+      "normative_strength": "组配置在所述伙伴业务授权之前。执行使用已供配置的要求是伙伴系统的既定行为；可能而非必定发生的是另行提供配置变更。",
+      "limitations": [
+        "仅知用户档已到，不能判定组配置已取得或伙伴业务授权成功，也不能证明授权失败。授权后没有新的配置变更不表示可以任意选用别的档。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.1.2, second paragraph after NOTE 2 and NOTE 3"
+          ],
+          "printed_pages": [
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.1.2, first paragraph after NOTE 3"
+          ],
+          "printed_pages": [
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.1.2, final paragraph before subclause 10.1.2"
+          ],
+          "printed_pages": [
+            61
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.1.2, opening paragraph before Figure 10.1.1.2-1"
+      ],
+      "printed_pages": [
+        60
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.1.2, first paragraph after Figure 10.1.1.2-1, first three sentences"
+      ],
+      "printed_pages": [
+        60
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.1.2, first paragraph after Figure 10.1.1.2-1, last two sentences"
+      ],
+      "printed_pages": [
+        60
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.1.2, NOTE 1 (advance preparation and repeated periods)"
+      ],
+      "printed_pages": [
+        60
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.1.2, paragraph immediately before NOTE 2 and NOTE 2"
+      ],
+      "printed_pages": [
+        61
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.1.2, first paragraph after NOTE 2"
+      ],
+      "printed_pages": [
+        61
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.1.2, second paragraph after NOTE 2 and NOTE 3"
+      ],
+      "printed_pages": [
+        61
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.1.2, first paragraph after NOTE 3"
+      ],
+      "printed_pages": [
+        61
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.1.2, final paragraph before subclause 10.1.2"
+      ],
+      "printed_pages": [
+        61
+      ]
+    }
+  ],
+  "related": [
+    "r16-identity-user-profile-download",
+    "r16-identity-partner-migration-authorization"
+  ],
+  "limitations": [
+    "仅据本节说明配置和授权先后，不说明安全参数的取得机制、有限服务清单、授权判据或一次真实迁移结果。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
