@@ -1,0 +1,385 @@
+{
+  "topic_id": "r16-bearers-unicast-bearer-priority-sharing",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "并行 MC 组呼的应用优先级不同，网络就要再建一条承载吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "每项声明继承通用条件，并叠加本项条件。",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0，Release 16，Stage 2；范围限定于 MC 组呼 EPS 承载的共享优先级及本条所述不支持共享时的处理。"
+  ],
+  "claims": [
+    {
+      "id": "group-shared-priority",
+      "title": "启用共享处理时，关联相同共享信息的并行 MC 组呼会话共用一条 EPS 承载，应用优先级可以不同",
+      "conditions": [
+        "服务器支持并行会话；采用该共享程序，且会话关联相同的优先级共享信息。"
+      ],
+      "conclusion": "承载优先级依据这些会话所请求的最高优先级；不要求把各组呼的应用优先级改为同一值。",
+      "normative_strength": "概述规定采用共享处理时，同一共享信息关联的会话共用一条承载，并说明优先级的选取依据；是否采用本程序取决于运营商策略。",
+      "limitations": [
+        "应用优先级不同并不要求分开承载。条款只保证相同共享信息的会话用一条承载，没有规定不同共享信息的会话必然用不同承载；仅凭不同值推不出承载总数。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.5.1, first paragraph: simultaneous sessions, common EPS bearer and highest requested priority"
+          ],
+          "printed_pages": [
+            187
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.5.1, final paragraph: operator policy"
+          ],
+          "printed_pages": [
+            187
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.5.2, Note 1 after step 6: PCC enhancement and EPC/IMS support"
+          ],
+          "printed_pages": [
+            188
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "prior-information",
+      "title": "采用共享优先级调整程序取决于运营商策略，且该 MC 业务以往各次资源请求均须已带共享信息",
+      "conditions": [
+        "要判断 §10.11.5.2 的进行中呼叫调整程序是否适用。"
+      ],
+      "conclusion": "前提要求先前每次请求都有共享信息；若有一笔没有携带，不能只因本次补上就套用本程序。并非要求全部既往请求使用同一个值。",
+      "normative_strength": "运营商策略为适用条件；先前请求均带共享信息为明确前提。",
+      "limitations": [
+        "先前请求都带共享信息，不足以证明网络支持此程序；同一共享信息关联的会话共用一条承载，也不意味着不同信息必定分用不同承载。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.5.1, final paragraph: operator policy"
+          ],
+          "printed_pages": [
+            187
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.5.2, precondition before Figure 10.11.5.2-1"
+          ],
+          "printed_pages": [
+            187
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.5.1, first paragraph: simultaneous sessions, common EPS bearer and highest requested priority"
+          ],
+          "printed_pages": [
+            187
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.5.2, Note 1 after step 6: PCC enhancement and EPC/IMS support"
+          ],
+          "printed_pages": [
+            188
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ongoing-request",
+      "title": "共享优先级调整程序中，业务服务器根据客户端的请求作出决定，SIP 核心网代理经 Rx 向 PCRF 请求调整",
+      "conditions": [
+        "对进行中的 MC 呼叫采用此程序，先前每次资源请求均带共享信息。"
+      ],
+      "conclusion": "服务器决定需要调整后，向 SIP 核心网请求会话更新；这项更新请求及代理经 Rx 发往 PCRF 的调整请求都包括共享信息。",
+      "normative_strength": "步骤 1–3 依次列出决定及两段请求。",
+      "limitations": [
+        "客户端发起请求不等于客户端决定或执行网络承载更新。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.5.2, precondition before Figure 10.11.5.2-1"
+          ],
+          "printed_pages": [
+            187
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.5.2, steps 1–3 following Figure 10.11.5.2-1"
+          ],
+          "printed_pages": [
+            187
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ack-not-update",
+      "title": "共享优先级程序中 PCRF 确认的是请求，PCC 更新承载和向客户端转发会话更新另有步骤",
+      "conditions": [
+        "收到代理经 Rx 发出的共享优先级调整请求。"
+      ],
+      "conclusion": "步骤 4 是 PCRF 确认请求；步骤 5 是 PCC 更新承载；步骤 6 才把会话更新转给客户端。",
+      "normative_strength": "编号程序分别列出确认、更新、转发。",
+      "limitations": [
+        "只见 PCRF 确认，不能证明步骤 5 已执行或客户端已回确认；步骤 6 不是客户端回确认。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.5.2, steps 1–3 following Figure 10.11.5.2-1"
+          ],
+          "printed_pages": [
+            187
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.5.2, step 4: PCRF acknowledgement"
+          ],
+          "printed_pages": [
+            188
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.5.2, step 5: associated SDFs, highest priority, default bearer and no additional bearer"
+          ],
+          "printed_pages": [
+            188
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.5.2, step 6: session update forwarded to the MC service client"
+          ],
+          "printed_pages": [
+            188
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "highest-associated-sdf",
+      "title": "共享优先级更新只在同一共享信息关联的流中取最高优先级（最低 ARP），同时相应更新默认承载优先级，不另建承载",
+      "conditions": [
+        "采用共享处理，PCC 正执行 §10.11.5.2 步骤 5。"
+      ],
+      "conclusion": "PCC 更新承载这些业务数据流的承载，在这些流中取最低 ARP 数值。默认承载的优先级也相应更新，此步骤不增建承载。",
+      "normative_strength": "步骤 5 明列比较范围、取值方向及更新结果。",
+      "limitations": [
+        "不纳入其他共享集合中的流；不将默认承载的“相应更新”另解释成一条具体数值公式。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.5.1, first paragraph: simultaneous sessions, common EPS bearer and highest requested priority"
+          ],
+          "printed_pages": [
+            187
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.5.2, step 5: associated SDFs, highest priority, default bearer and no additional bearer"
+          ],
+          "printed_pages": [
+            188
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "unsupported-branch",
+      "title": "EPC 与 IMS 不支持 MC 优先级共享时，不作共享处理，按 QCI 与 ARP 的组合新建 EPS 承载",
+      "conditions": [
+        "区分网络实现不支持共享与运营商未选择使用该程序。"
+      ],
+      "conclusion": "该程序依赖增强的 PCC，要求 EPC 和 IMS 都支持。EPC 与 IMS 不支持来自 MC 系统的共享时，不作共享优先级处理，按 QCI/ARP 组合建立新承载。",
+      "normative_strength": "注 1 说明必要能力，注 2 明列不支持时的处理。",
+      "limitations": [
+        "只知道运营商没有采用本程序，不足以证明能力缺失或新承载已建立；不能把回退解释为每种应用层优先级都新建一条承载。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.5.1, final paragraph: operator policy"
+          ],
+          "printed_pages": [
+            187
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.5.2, Note 1 after step 6: PCC enhancement and EPC/IMS support"
+          ],
+          "printed_pages": [
+            188
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.11.5.2, Note 2 after step 6: no priority-sharing support and EPS bearer setup based on QCI/ARP combination"
+          ],
+          "printed_pages": [
+            188
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.11.5.1, first paragraph: simultaneous sessions, common EPS bearer and highest requested priority"
+      ],
+      "printed_pages": [
+        187
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.11.5.1, final paragraph: operator policy"
+      ],
+      "printed_pages": [
+        187
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.11.5.2, precondition before Figure 10.11.5.2-1"
+      ],
+      "printed_pages": [
+        187
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.11.5.2, steps 1–3 following Figure 10.11.5.2-1"
+      ],
+      "printed_pages": [
+        187
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.11.5.2, step 4: PCRF acknowledgement"
+      ],
+      "printed_pages": [
+        188
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.11.5.2, step 5: associated SDFs, highest priority, default bearer and no additional bearer"
+      ],
+      "printed_pages": [
+        188
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.11.5.2, step 6: session update forwarded to the MC service client"
+      ],
+      "printed_pages": [
+        188
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.11.5.2, Note 1 after step 6: PCC enhancement and EPC/IMS support"
+      ],
+      "printed_pages": [
+        188
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.11.5.2, Note 2 after step 6: no priority-sharing support and EPS bearer setup based on QCI/ARP combination"
+      ],
+      "printed_pages": [
+        188
+      ]
+    }
+  ],
+  "related": [
+    "r16-bearers-unicast-resource-establishment-modification"
+  ],
+  "limitations": [
+    "不规定提供商的运营策略、某次部署的能力或现网执行状态，不据这两款推断其他呼叫类型或承载的优先级。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
