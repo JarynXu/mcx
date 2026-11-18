@@ -1,0 +1,368 @@
+{
+  "topic_id": "r16-mcvideo-onnetwork-manual-private-call",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "在网 MCVideo 手动私呼：主叫收到响铃，能确认对方接听了吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.281-v16.4.0",
+  "condition_rule": "各项声明继承通用条件，并叠加本项条件。",
+  "common_conditions": [
+    "在网、同一 MC 系统，甲为主叫，乙为被叫，两客户端均由主 MC 服务提供者服务，均已注册；两名用户都已认证且获准使用 MCVideo。",
+    "甲选择手动开始或未指定开始模式，且乙端设置为手动开始。"
+  ],
+  "claims": [
+    {
+      "id": "call-authority-and-routing",
+      "title": "手动私呼的权限检查与多终端投递",
+      "conditions": [
+        "甲向选定的乙发起私呼。若有功能别名，检查其可用性及为甲激活的状态；仅当乙多终端注册且已指定接收私呼的终端时，才适用仅投指定端的规则。"
+      ],
+      "conclusion": "甲端请求按乙的 MC 服务 ID 寻址，SDP 提议列出一种或多种媒体类型；若甲要求手动，可显式指明。服务器核对双方此次私呼权限、乙端模式及甲发起手动私呼的权限。给乙端的请求包含甲的 MC 服务 ID 和可用的甲方别名，媒体类型可为原提议的全部或子集；满足指定条件时仅送指定终端。",
+      "normative_strength": "已激活的功能别名和服务器对别名更新的订阅均为可选；本次私呼的权限由服务器另行检查。",
+      "limitations": [
+        "已注册不等于每次手动私呼均获授权；不据指定端规则推断未指定时会如何选端。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.2.2.3.2.2, introductory sentence and pre-conditions 1–5"
+          ],
+          "printed_pages": [
+            69
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.2.2.3.2.2, numbered steps 1–2"
+          ],
+          "printed_pages": [
+            70
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.2.2.3.2.2, numbered step 3"
+          ],
+          "printed_pages": [
+            70
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.2.2.3.2.2, numbered step 4"
+          ],
+          "printed_pages": [
+            70
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "initial-transmit-request",
+      "title": "在网 MCVideo 手动私呼：初始私呼请求若捎带媒体发送请求，主叫在呼叫开始时获准发送；若未捎带，被叫可以先请求发送",
+      "conditions": [
+        "在建立手动私呼的原始请求中选择是否一并请求发送媒体。"
+      ],
+      "conclusion": "若一并请求，甲在呼叫开始时获准发送，不必在建立媒体面时另发初始媒体发送请求。若不带，允许乙先请求发送，并非乙自动获准。两者都不能替代乙在界面上接受来电。",
+      "normative_strength": "描述给出两个允许选项；不是收到初始私呼请求就已建立媒体面。",
+      "limitations": [
+        "不证明已经发送或收到实际视频，也不指定谁必然先发媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.2.2.3.2.1, description"
+          ],
+          "printed_pages": [
+            69
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.2.2.3.2.2, numbered step 7"
+          ],
+          "printed_pages": [
+            71
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.2.2.3.2.2, numbered steps 9–10"
+          ],
+          "printed_pages": [
+            71
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "setup-progress-and-ringing",
+      "title": "在网 MCVideo 手动私呼的进度指示可选；响铃从被叫端经服务器到主叫端，表示被叫端正被提醒，不表示被叫已接听",
+      "conditions": [
+        "服务器已检查本次呼叫；比较步骤 5 与步骤 6a、6b。"
+      ],
+      "conclusion": "若服务器给甲端进度指示，时机在步骤 3 后、步骤 6b 前，不限于步骤 4 之后。步骤 6a 乙受到提醒，乙端向服务器发响铃；步骤 6b 服务器向甲端发响铃，表示乙端正在被提醒。",
+      "normative_strength": "步骤 5 为可选；步骤 5 后的注规定可处于该窗口中的任何时点；响铃由 6a、6b 描述。",
+      "limitations": [
+        "缺少进度指示本身不证明失败，收到响铃不证明乙完成了界面接受。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.2.2.3.2.2, numbered step 3"
+          ],
+          "printed_pages": [
+            70
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.2.2.3.2.2, numbered step 5 and its NOTE"
+          ],
+          "printed_pages": [
+            70
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.2.2.3.2.2, numbered steps 6a–6b"
+          ],
+          "printed_pages": [
+            71
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.2.2.3.2.2, numbered step 7"
+          ],
+          "printed_pages": [
+            71
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "manual-acceptance-and-media",
+      "title": "在网 MCVideo 手动私呼中，被叫通过界面接受后，主叫从服务器的私呼响应获知接受的媒体参数",
+      "conditions": [
+        "乙已被提醒，并实际通过用户界面操作接受来电；仅限成功分支。"
+      ],
+      "conclusion": "乙端向服务器发送私呼响应；服务器向甲端返回私呼响应，表明乙接受并携带接受的媒体参数。步骤 10 随后建立媒体面和传输控制。",
+      "normative_strength": "用户接受、两段私呼响应与建立媒体面分列在成功流程步骤 7–10。",
+      "limitations": [
+        "响铃不是成功响应；媒体面建立或已知媒体参数不证明已传来画面。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.2.2.3.2.2, numbered steps 6a–6b"
+          ],
+          "printed_pages": [
+            71
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.2.2.3.2.2, numbered step 7"
+          ],
+          "printed_pages": [
+            71
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.2.2.3.2.2, numbered step 8"
+          ],
+          "printed_pages": [
+            71
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.2.2.3.2.2, numbered steps 9–10"
+          ],
+          "printed_pages": [
+            71
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "unaccepted-failure-response",
+      "title": "同一系统内的在网 MCVideo 手动私呼：被叫未接受时，被叫端发给服务器的呼叫失败响应不添加失败原因",
+      "conditions": [
+        "乙用户未接受来电，只考察步骤 8 乙端向服务器发送的消息。"
+      ],
+      "conclusion": "乙端向服务器发送呼叫失败响应，不添加呼叫失败原因。不能把后续成功流程中的媒体建立套用到这次未接受的来电。",
+      "normative_strength": "步骤 8 以未接受为条件，限定本发送方、接收方与本响应。",
+      "limitations": [
+        "不能据此规定所有拒绝或服务器给甲的消息一律不带原因，也不能据此诊断失败的具体原因。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.2.2.3.2.2, numbered step 8"
+          ],
+          "printed_pages": [
+            71
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.2.2.3.2.2, numbered steps 9–10"
+          ],
+          "printed_pages": [
+            71
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.2.2.3.2.2, introductory sentence and pre-conditions 1–5"
+      ],
+      "printed_pages": [
+        69
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.2.2.3.2.1, description"
+      ],
+      "printed_pages": [
+        69
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.2.2.3.2.2, numbered steps 1–2"
+      ],
+      "printed_pages": [
+        70
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.2.2.3.2.2, numbered step 3"
+      ],
+      "printed_pages": [
+        70
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.2.2.3.2.2, numbered step 4"
+      ],
+      "printed_pages": [
+        70
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.2.2.3.2.2, numbered step 5 and its NOTE"
+      ],
+      "printed_pages": [
+        70
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.2.2.3.2.2, numbered steps 6a–6b"
+      ],
+      "printed_pages": [
+        71
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.2.2.3.2.2, numbered step 7"
+      ],
+      "printed_pages": [
+        71
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.2.2.3.2.2, numbered step 8"
+      ],
+      "printed_pages": [
+        71
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.2.2.3.2.2, numbered steps 9–10"
+      ],
+      "printed_pages": [
+        71
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcvideo-offnetwork-manual-private-call",
+    "r16-mcvideo-private-call-release"
+  ],
+  "limitations": [
+    "限固定版本 Stage 2 建立流程，不定义 SIP 状态码、重试策略、实际获准发送的时刻测量或端到端视频收发结果；不涉及离网呼叫和已建呼叫的释放。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
