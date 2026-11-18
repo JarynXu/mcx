@@ -1,0 +1,259 @@
+{
+  "topic_id": "r16-mcptt-area-alert-notification",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 终端进出预设紧急告警区：200 响应确认了什么？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "common_conditions": [
+    "对象是 3GPP TS 24.379 V16.14.0 专项协议中，参与 MCPTT 功能与目标客户端之间的预设紧急告警区域通知。"
+  ],
+  "condition_rule": "各声明继承共同对象，仍须区分参与功能的区域判定、客户端实际收到通知、参与功能收到对应 200。用户先前是否处于紧急状态只限制相应状态分支。",
+  "claims": [
+    {
+      "id": "direction-and-target",
+      "title": "参与 MCPTT 功能判定目标客户端进入或离开预设紧急告警区后，向该客户端发相应方向的通知",
+      "conditions": [
+        "参与功能判定一个目标 MCPTT 客户端已进入或离开预设紧急告警区域。"
+      ],
+      "conclusion": "参与 MCPTT 功能判定目标客户端进入或离开预设紧急告警区后，须向该客户端发通知。该通知的 emergency-alert-area-ind 为 true 表示进入，为 false 表示离开。",
+      "normative_strength": "本程序由参与功能在作出判定后启动；指示取值及发送是相应步骤的 SHALL。",
+      "limitations": [
+        "该字段表示区域方向，不是本机紧急状态值。仅有通知发出记录，不证明目标客户端已收到，更不证明组内其他成员收到了紧急告警。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.4.1, introduction and item 1"
+          ],
+          "printed_pages": [
+            103
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.4.1, items 8a–b and 9"
+          ],
+          "printed_pages": [
+            104
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.4.1, final paragraph and response items 1–2"
+          ],
+          "printed_pages": [
+            104
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "matching-response",
+      "title": "参与 MCPTT 功能收到对该条预设紧急告警区通知的 200 时，须按原通知方向记录目标客户端已收进区或离区通知",
+      "conditions": [
+        "客户端收到预设紧急告警区的进区或离区通知；另看参与功能收到对这条通知的 SIP 200 (OK) 时应作何记录。"
+      ],
+      "conclusion": "MCPTT 客户端收到预设紧急告警区的进区或离区通知，须生成 SIP 200 (OK) 并发往 MCPTT 服务器。参与 MCPTT 功能收到对该条预设紧急告警区通知的 SIP 200 (OK) 时，须按原通知的 true 或 false，分别登记目标客户端收到进区或离区通知。",
+      "normative_strength": "生成、发送 200 和对匹配响应的登记均为 SHALL，各有各的触发事件。",
+      "limitations": [
+        "客户端生成或发出不等于参与功能收到；无法关联的 200 也不足以登记。此响应不是用户阅读回执、告警成功回执或全组接收证明。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.4.1, final paragraph and response items 1–2"
+          ],
+          "printed_pages": [
+            104
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "12.1.1.5, opening and items 2–3"
+          ],
+          "printed_pages": [
+            449
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "12.1.1.5, opening, item 1 and 1a(i)–(ii)"
+          ],
+          "printed_pages": [
+            449
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "12.1.1.5, item 1b(i) and accompanying note"
+          ],
+          "printed_pages": [
+            449
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "entry-originates-conditionally",
+      "title": "MCPTT 客户端收到预设紧急告警区的进区通知时可提示；用户原不在紧急状态时须启动告警发起程序",
+      "conditions": [
+        "客户端收到本区域通知，MCPTT 信息正文中的 emergency-alert-area-ind 为 true；另按用户当时是否处于紧急状态区分。"
+      ],
+      "conclusion": "MCPTT 客户端收到预设紧急告警区的进区通知（区域指示 true）时，可显示进区提示。对该进区通知，若用户当时不在紧急状态，客户端须启动 §12.1.1.1 的紧急告警发起程序；若用户已处于紧急状态，本进区分支没有要求再次发起。",
+      "normative_strength": "显示为 MAY，符合用户状态条件时的程序启动为 SHALL。",
+      "limitations": [
+        "是否显示、用户是否看见或点击不是本条的发起守卫。启动程序不证明告警请求成功或组内成员已收到；不讨论该被引程序的其他守卫。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "12.1.1.5, opening, item 1 and 1a(i)–(ii)"
+          ],
+          "printed_pages": [
+            449
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "exit-retains-state",
+      "title": "MCPTT 客户端收到预设紧急告警区的离区通知时可提示；已置位的本机紧急状态不会因离开该区自动清除",
+      "conditions": [
+        "客户端收到本区域通知，MCPTT 信息正文中的 emergency-alert-area-ind 为 false；讨论保留状态时，本机紧急状态先前已置位。"
+      ],
+      "conclusion": "MCPTT 客户端收到预设紧急告警区的离区通知（区域指示 false）时，可显示离区提示。关于离开该紧急告警区，条文注说明本机原已置位的紧急状态保持，MCPTT 用户需要时可以手动清除。",
+      "normative_strength": "显示为 MAY；状态保持和用户手动清除的说明来自注，不改写为额外的强制步骤。",
+      "limitations": [
+        "这不是给所有原先未置位的终端置位，也不是取消全组告警。显示离区或收到这条通知的 200，都不证明用户已经手动清除或组员已收到取消告警。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "12.1.1.5, item 1b(i) and accompanying note"
+          ],
+          "printed_pages": [
+            449
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "12.1.1.5, opening and items 2–3"
+          ],
+          "printed_pages": [
+            449
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.4.1, final paragraph and response items 1–2"
+          ],
+          "printed_pages": [
+            104
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.4.1, introduction and item 1"
+      ],
+      "printed_pages": [
+        103
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.4.1, items 8a–b and 9"
+      ],
+      "printed_pages": [
+        104
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.4.1, final paragraph and response items 1–2"
+      ],
+      "printed_pages": [
+        104
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "12.1.1.5, opening, item 1 and 1a(i)–(ii)"
+      ],
+      "printed_pages": [
+        449
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "12.1.1.5, item 1b(i) and accompanying note"
+      ],
+      "printed_pages": [
+        449
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "12.1.1.5, opening and items 2–3"
+      ],
+      "printed_pages": [
+        449
+      ]
+    }
+  ],
+  "related": [
+    "r16-calls-emergency-alert-area-entry-exit",
+    "r16-mcptt-standalone-group-alert-client"
+  ],
+  "limitations": [
+    "此处只解释区域通知收发、可选提示与本机状态，告警发起程序只说明触发条件，不证明后续成功、组员收到或用户看到。",
+    "另见公共 Stage 2 来源 TS 23.280 V16.7.0 §10.10.1.1（印刷页 176）：所列公共发起和取消程序用于 MCVideo、MCData，是否也适用 MCPTT 仍待研究。本条款比较不改变该版公共程序或其核验记录。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
