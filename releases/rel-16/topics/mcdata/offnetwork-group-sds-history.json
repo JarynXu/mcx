@@ -1,0 +1,286 @@
+{
+  "topic_id": "r16-mcdata-offnetwork-group-sds-history",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCData：离网组里的短消息先存在哪里？重新联网后会自动上传吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "condition_rule": "每项声明继承通用条件，并叠加本项条件。",
+  "common_conditions": [
+    "限 3GPP TS 23.282 V16.8.0，Release 16，Stage 2，§§7.4.3.6.1–2 的离网组独立 SDS 场景；特指同组客户端中已有本人消息存储账户的用户 2。"
+  ],
+  "claims": [
+    {
+      "id": "account-and-group",
+      "title": "离网组 SDS 的个人留存流程以同组直通通信和该用户已有消息存储账户为前提",
+      "conditions": [
+        "用户 1 到 N 正在离网组通信，各客户端是同一 MCData 组成员，并已预先配置本组 ProSe 直通通信信息以及本组到 ProSe 二层组 ID 的映射。"
+      ],
+      "conclusion": "组内客户端按 §7.4.3.4 交换 SDS。本节说明用户 2 如何将这段通信纳入本人历史，前提只明确用户 2 已有消息存储账户。",
+      "normative_strength": "§7.4.3.6.1 说明业务目的；§7.4.3.6.2 的开户前提和个人留存流程针对用户 2。",
+      "limitations": [
+        "不能据此断定其余成员都有账户，也不能说他们没有账户。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.6.1, sole paragraph"
+          ],
+          "printed_pages": [
+            80
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.6.2, introductory paragraph and pre-conditions 1–4"
+          ],
+          "printed_pages": [
+            80
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.6.2, step 1"
+          ],
+          "printed_pages": [
+            81
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "user-consumption-local",
+      "title": "例中用户 2 已有消息存储账户；离网组内供用户使用的 SDS 存入其终端上的本地消息存储",
+      "conditions": [
+        "消息是这次离网组通信中交换的 SDS，供例中已有账户的用户 2 使用。"
+      ],
+      "conclusion": "此时保存位置是用户 2 终端上的本地消息存储，不是网络侧账户。条件取决于 SDS 的用途，不是用户已打开或阅读。",
+      "normative_strength": "步骤 2 给出用户消费型 SDS 的条件性本地存储。",
+      "limitations": [
+        "不能用本步骤确定应用消费型 SDS 存在何处或一定不保存。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.6.2, introductory paragraph and pre-conditions 1–4"
+          ],
+          "printed_pages": [
+            80
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.6.2, step 1"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.6.2, step 2"
+          ],
+          "printed_pages": [
+            81
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "optional-sync-folders",
+      "title": "终端和本人账户可以预置离网通信对象的同步文件夹；预置本身不代表上传",
+      "conditions": [
+        "拟为离网通信对象配置用于同步的文件夹。"
+      ],
+      "conclusion": "文件夹可在 UE 和用户的 MCData 消息存储账户两处预置；这并非本节上传前必须完成的动作。",
+      "normative_strength": "步骤 2 后的注给出可选安排。",
+      "limitations": [
+        "文件夹的存在不能证明本次有对象上传。上传请求的字段另见通用对象上传程序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.6.2, note after step 2"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.6.2, step 5"
+          ],
+          "printed_pages": [
+            81
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "user-decides-upload",
+      "title": "离网组通信结束、用户重连并决定保留后，由其消息存储客户端上传本地对象到本人账户",
+      "conditions": [
+        "组通信已结束，用户 2 恢复网络连接，决定将这次通信保存在本人 MCData 消息存储账户。"
+      ],
+      "conclusion": "消息存储客户端 2 把离网通信对象从终端的本地消息存储上传到 MCData 消息存储。仅已重连，不能说明用户已决定保留，更不能证明对象已在网上存妥。",
+      "normative_strength": "按步骤 3–5 的顺序与角色处理；重连与用户决定是两件事。",
+      "limitations": [
+        "不推出其他组员的选择或结果；本节没有说明用户决定不保留时本地副本如何处置。",
+        "核对谁上传时，以本节步骤 3–5 为据：§7.4.3.6.2 导语指向图 7.4.3.5.2-1，本流程图题却是图 7.4.3.6.2-1。不要将相邻流程中的服务器代收套到这里。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.6.2, introductory paragraph and pre-conditions 1–4"
+          ],
+          "printed_pages": [
+            80
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.6.2, steps 3–4"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.6.2, step 5"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.6.2, caption to figure 7.4.3.6.2-1"
+          ],
+          "printed_pages": [
+            81
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.3.6.1, sole paragraph"
+      ],
+      "printed_pages": [
+        80
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.3.6.2, introductory paragraph and pre-conditions 1–4"
+      ],
+      "printed_pages": [
+        80
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.3.6.2, step 1"
+      ],
+      "printed_pages": [
+        81
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.3.6.2, step 2"
+      ],
+      "printed_pages": [
+        81
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.3.6.2, note after step 2"
+      ],
+      "printed_pages": [
+        81
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.3.6.2, step 5"
+      ],
+      "printed_pages": [
+        81
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.3.6.2, steps 3–4"
+      ],
+      "printed_pages": [
+        81
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.3.6.2, caption to figure 7.4.3.6.2-1"
+      ],
+      "printed_pages": [
+        81
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcdata-offnetwork-object-upload",
+    "r16-mcdata-late-group-conversation-history"
+  ],
+  "limitations": [
+    "不描述所有组员的同步结果，也不代替通用上传请求、响应的判读或服务器为晚加入者代收的其他程序。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
