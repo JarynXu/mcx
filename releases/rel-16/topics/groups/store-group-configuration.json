@@ -1,0 +1,241 @@
+{
+  "topic_id": "r16-groups-store-group-configuration",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "组配置保存失败，说明组管理服务器查出了配置错误吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0，Release 16 Stage 2。获授权用户的组管理客户端向 GMS 请求保存组配置。"
+  ],
+  "condition_rule": "各条继承共同条件；逐笔区分请求、保存前验证、服务器保存及对同一客户端的响应。",
+  "claims": [
+    {
+      "id": "gms-store-request",
+      "title": "组管理客户端向 GMS 请求保存组配置时，组标识和配置数据均必填",
+      "conditions": [
+        "获授权用户的组管理客户端已经收到组配置。"
+      ],
+      "conclusion": "客户端将收到的配置发往 GMS 请求保存。请求必带 MC 业务组标识、该组的配置数据。",
+      "normative_strength": "表中两项均为 M。",
+      "limitations": [
+        "截取的一行日志不等于完整请求；发出请求不能证明服务器已完成保存。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.1, numbered text, steps 1 and 2"
+          ],
+          "printed_pages": [
+            78
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.2.1, introductory sentence and Table 10.1.2.1-1, both M rows"
+          ],
+          "printed_pages": [
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.1, numbered text, steps 4 and 5"
+          ],
+          "printed_pages": [
+            78
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "gms-store-validation",
+      "title": "GMS 受理组配置保存请求时，保存前验证可选，已有验证资料也不证明本次运行过验证",
+      "conditions": [
+        "GMS 按本节处理客户端的组配置保存请求。"
+      ],
+      "conclusion": "GMS 可能预先持有可供在线验证的数据；它可以在保存组配置前验证，不要求每次验证。",
+      "normative_strength": "前提中的预有资料和步骤 3 中的验证都是可能事项。",
+      "limitations": [
+        "预有资料不证明验证执行或通过；不能因未见预有资料而断定不允许开始本过程。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.1, pre-condition and numbered text, step 3"
+          ],
+          "printed_pages": [
+            78
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "gms-store-failure",
+      "title": "GMS 对客户端的组配置保存请求回失败时，不能单凭结果区分验证失败与保存失败",
+      "conditions": [
+        "组管理客户端收到 GMS 对该组配置保存请求的失败结果。"
+      ],
+      "conclusion": "如果验证失败，或保存操作失败，GMS 都在保存响应中指示失败。一条失败结果不能单独证明已执行验证、判出配置错误，或定位为保存环节故障。",
+      "normative_strength": "失败指示适用于两类失败；结论不能逆推为某个特定原因。",
+      "limitations": [
+        "核对原因应另有同笔操作的验证或保存依据；不假定规范要求额外诊断字段、日志或特定失败码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.1, pre-condition and numbered text, step 3"
+          ],
+          "printed_pages": [
+            78
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.1, numbered text, steps 4 and 5"
+          ],
+          "printed_pages": [
+            78
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.2.2, introductory sentence and Table 10.1.2.2-1, both M rows"
+          ],
+          "printed_pages": [
+            61
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "gms-store-response",
+      "title": "GMS 的组配置保存成功响应带组标识和结果，只报告服务器保存，不是终端获取或建组回执",
+      "conditions": [
+        "按本流程，GMS 向发起保存请求的组管理客户端答复。"
+      ],
+      "conclusion": "响应中的 MC 业务组标识和结果都必填。成功表示 GMS 报告该次组配置保存成功；响应表不要求附上配置正文。",
+      "normative_strength": "两字段为 M；这条结果针对本次服务器保存请求。",
+      "limitations": [
+        "不能用成功结果确认其他终端已取回并保存配置、新组已创建、伙伴系统已收配置或用户已参加呼叫。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.1, numbered text, steps 1 and 2"
+          ],
+          "printed_pages": [
+            78
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.5.1, numbered text, steps 4 and 5"
+          ],
+          "printed_pages": [
+            78
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.2.2, introductory sentence and Table 10.1.2.2-1, both M rows"
+          ],
+          "printed_pages": [
+            61
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.5.1, numbered text, steps 1 and 2"
+      ],
+      "printed_pages": [
+        78
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.2.1, introductory sentence and Table 10.1.2.1-1, both M rows"
+      ],
+      "printed_pages": [
+        61
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.5.1, pre-condition and numbered text, step 3"
+      ],
+      "printed_pages": [
+        78
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.5.1, numbered text, steps 4 and 5"
+      ],
+      "printed_pages": [
+        78
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.2.2, introductory sentence and Table 10.1.2.2-1, both M rows"
+      ],
+      "printed_pages": [
+        61
+      ]
+    }
+  ],
+  "related": [
+    "r16-groups-client-group-configuration",
+    "r16-groups-normal-group-creation",
+    "r16-groups-primary-supplied-partner-group-configuration"
+  ],
+  "limitations": [
+    "这一组 Stage 2 信息流不规定实际实现的诊断日志格式；不以保存结果代替客户端获取、普通建组、跨系统供配或呼叫加入的记录。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
