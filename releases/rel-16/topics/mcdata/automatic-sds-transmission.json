@@ -1,0 +1,314 @@
+{
+  "topic_id": "r16-mcdata-automatic-sds-transmission",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "在网 MCData 自动发短数据：谁检查发权，组里发给谁？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "condition_rule": "每条声明继承全部通用条件，再叠加自身条件。",
+  "common_conditions": [
+    "3GPP TS 23.282 V16.8.0（Rel-16，Stage 2）§§7.6.2.2.1–2 的在网短数据业务（SDS）自动传送：用户已配置数据发送权限，选择向一名 MCData 用户或一个 MCData 组发送。",
+    "已配置发送权限不表示已获准向所选目标发送。按发送端、服务器及实际进入的步骤判断，不以已经转送为共同前提。"
+  ],
+  "claims": [
+    {
+      "id": "auto-scope",
+      "title": "在网 SDS 自动传送省去请求／授予和收方显式操作；发送者仍要选目标并接受发权检查",
+      "conditions": [
+        "MCData 用户打算在网向一名用户或一个组发送短数据。"
+      ],
+      "conclusion": "发起用户选数据和收件用户或组。收方不必先请求、取得授予或显式接受；用户配置发送权限是本例前提，客户端和服务器仍各自检查。",
+      "normative_strength": "概述说明自动方式；前提 1、步骤 1–3 分别说明发送配置、选择与核权。",
+      "limitations": [
+        "自动方式本身既不授权向某个目标发送，也不证明已经转送或收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.2.1, general: no request/grant or explicit action by the receiving client"
+          ],
+          "printed_pages": [
+            116
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.2.2, opening and preconditions 1–3: send permission and optional alias context"
+          ],
+          "printed_pages": [
+            116
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.2.2, step 1: originator chooses data and recipient user or group; optional alias"
+          ],
+          "printed_pages": [
+            116
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.2.2, step 2: permission, data smaller than SDS limit, total request size and procedure selection"
+          ],
+          "printed_pages": [
+            117
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.2.2, step 3: transmission authorization, data no greater than SDS limit and any supplied alias"
+          ],
+          "printed_pages": [
+            117
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "size-and-procedure",
+      "title": "在网 SDS 客户端查数据小于上限、另算请求总大小并选程序；服务器查收到请求中的数据不超过上限",
+      "conditions": [
+        "在网 SDS 客户端处理发送，或服务器收到其传输请求。"
+      ],
+      "conclusion": "客户端核权、查数据是否小于 SDS 上限，另算请求总大小，从 §7.4.2.2、§7.4.2.3、§7.4.2.5、§7.4.2.6 中选程序。服务器核验发送授权与请求中的数据是否不超过上限。",
+      "normative_strength": "步骤 2、3 的比较对象是数据，比较关系分别为小于、不超过；计算总请求大小属于步骤 2。",
+      "limitations": [
+        "不能把两个比较符统一，也不能只用服务器的一句推断数据恰好等于上限时的端到端结果。四个被指向的程序仅列为入口。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.2.2, step 2: permission, data smaller than SDS limit, total request size and procedure selection"
+          ],
+          "printed_pages": [
+            117
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.2.2, step 3: transmission authorization, data no greater than SDS limit and any supplied alias"
+          ],
+          "printed_pages": [
+            117
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "alias-guards",
+      "title": "发在网 SDS 可不带功能别名；请求提供别名时，服务器核验该用户能否使用及其是否已为该用户激活",
+      "conditions": [
+        "区分发起方可用的功能别名、服务器可选订阅和请求中实际提供的别名。"
+      ],
+      "conclusion": "客户端可持有已激活的功能别名，用户可以选用。服务器可以订阅本系统别名控制服务器的激活／停用更新；请求若提供别名，服务器核其对该用户的可用性及激活状态。",
+      "normative_strength": "前提 2–3 和步骤 1 可选；步骤 3 的别名核验以实际提供为条件。",
+      "limitations": [
+        "没有使用别名不妨碍发起此程序；未规定每次发送都必须先订阅。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.2.2, opening and preconditions 1–3: send permission and optional alias context"
+          ],
+          "printed_pages": [
+            116
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.2.2, step 1: originator chooses data and recipient user or group; optional alias"
+          ],
+          "printed_pages": [
+            116
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.2.2, step 3: transmission authorization, data no greater than SDS limit and any supplied alias"
+          ],
+          "printed_pages": [
+            117
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "indication-or-queue",
+      "title": "在网 SDS 的服务器可指示用户对目标无发权、组内无人归属，或把请求排队留待稍后传送",
+      "conditions": [
+        "根据本次发送的目标权限、组归属情况或服务器排队决定判读步骤 4。"
+      ],
+      "conclusion": "无权向所选用户或组发送时，指示的是对目标无发权。选的是组且没有已归属成员时，服务器按 4b 指示无人归属，未对无损通信另设例外。服务器也可将请求排队，留待稍后传送。",
+      "normative_strength": "步骤 4 总述是服务器可发所列指示之一；4a、4b 各写明其条件下的指示，4c 是服务器可选的排队处理。",
+      "limitations": [
+        "无人归属不等于组没有登记成员，也不是对请求的永久拒绝。排队指示不是让发送端重交，也不证明送达；没看到指示不能证明已转送。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.2.2, step 4a–c and otherwise branch: permission, affiliation or server queue"
+          ],
+          "printed_pages": [
+            117
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "delivery-targets",
+      "title": "在网 SDS 进入转送步骤才按选定程序发给目标用户或组的已归属成员；无损通信时发给全组成员",
+      "conditions": [
+        "不属步骤 4 所列情况，按其末句继续到步骤 5。"
+      ],
+      "conclusion": "服务器按发起客户端所选的程序自动传送数据；有可用的发起方功能别名就随数据传送。单发目标为选定用户，组发目标为已归属成员；无损通信时，目标为所选组的全体成员。",
+      "normative_strength": "步骤 4 的末句将步骤 5 限在其他情形；步骤 5 的无损条件规定的是已进入转送时的组成员范围。",
+      "limitations": [
+        "若所选组无人归属，即符合步骤 4b；无损通信并不豁免该分支。指示没有判定消息最终送达或永久拒绝。即便已进入步骤 5，其目标名单也不能证明各接收终端已收到或呈现。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.2.2, step 2: permission, data smaller than SDS limit, total request size and procedure selection"
+          ],
+          "printed_pages": [
+            117
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.2.2, step 4a–c and otherwise branch: permission, affiliation or server queue"
+          ],
+          "printed_pages": [
+            117
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.6.2.2.2, step 5: data, available originating alias and single, affiliated or lossless-group targets"
+          ],
+          "printed_pages": [
+            117
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.6.2.2.1, general: no request/grant or explicit action by the receiving client"
+      ],
+      "printed_pages": [
+        116
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.6.2.2.2, opening and preconditions 1–3: send permission and optional alias context"
+      ],
+      "printed_pages": [
+        116
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.6.2.2.2, step 1: originator chooses data and recipient user or group; optional alias"
+      ],
+      "printed_pages": [
+        116
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.6.2.2.2, step 2: permission, data smaller than SDS limit, total request size and procedure selection"
+      ],
+      "printed_pages": [
+        117
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.6.2.2.2, step 3: transmission authorization, data no greater than SDS limit and any supplied alias"
+      ],
+      "printed_pages": [
+        117
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.6.2.2.2, step 4a–c and otherwise branch: permission, affiliation or server queue"
+      ],
+      "printed_pages": [
+        117
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.6.2.2.2, step 5: data, available originating alias and single, affiliated or lossless-group targets"
+      ],
+      "printed_pages": [
+        117
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcdata-sds-control-client",
+    "r16-mcdata-group-sds-control-client"
+  ],
+  "limitations": [
+    "仅说明在网 SDS 的通用自动传送与控制指示，不由此规定控制面门限、报文、收方实际呈现、无损重投方式或排队时长。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
