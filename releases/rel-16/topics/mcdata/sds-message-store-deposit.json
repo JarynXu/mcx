@@ -1,0 +1,209 @@
+{
+  "topic_id": "r16-mcdata-sds-message-store-deposit",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCData：在网短数据存进了谁的账户？能据此判断对方已收到吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "固定 TS 23.282 V16.8.0，Release 16，Stage 2；以 §7.4.2 的单一 MCData 系统在网 SDS 为范围，分别判断业务流程和存入操作。不预设有完整响应、成功存入或实际递送。"
+  ],
+  "claims": [
+    {
+      "id": "outgoing-account-and-order",
+      "title": "发给个人或组时，何时为谁存入",
+      "conditions": [
+        "发件人受消息存储支持，已建账户且已要求存储本人的通信；客户端发起一对一或组 SDS 业务请求。"
+      ],
+      "conclusion": "该范围内发出的全部通信均须存入发件人账户。图中服务器先把通信作为对象存入发件人账户，再检查、授权 SDS 业务请求并按 §7.4.2 向目标继续处理。",
+      "normative_strength": "存储是对符合条件用户的要求，不是只要有账户就默认启用。",
+      "limitations": [
+        "发件人存入结果既不证明业务已获授权，也不证明任何收件人已收到、已读或已为自己存副本。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2, opening: on-network short data service limited to a single MCData system"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.4.1–2, outgoing applicability and preconditions, Figure 7.13.4.2-1 and steps 1–3"
+          ],
+          "printed_pages": [
+            163,
+            164
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "incoming-account-and-order",
+      "title": "服务器收到业务时，何时为谁存入",
+      "conditions": [
+        "收件人受消息存储支持，已建账户且已要求存储本人的通信；服务器收到面向该人的 SDS 业务。"
+      ],
+      "conclusion": "该范围内收到的全部通信均须存入收件人账户。来件可以是任一发件人的新请求，也可以是对该收件人此前所发请求的响应。服务器先把通信作为对象存入这位收件人的账户，再按 §7.4.2 向该用户递送。",
+      "normative_strength": "同一用户的收、发取决于该用户的存储条件，不是发件人的设置自动适用于全组。",
+      "limitations": [
+        "服务器已收到来件与目标终端已收到不同；收件人账户的存入响应不是终端送达或已读回执。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2, opening: on-network short data service limited to a single MCData system"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.5.1–2, incoming applicability and preconditions, Figure 7.13.5.2-1 and steps 1–3"
+          ],
+          "printed_pages": [
+            164,
+            165
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "server-deposit-request",
+      "title": "哪两个实体之间发起存入，必须已有何种授权、空间和字段",
+      "conditions": [
+        "MCData 活动通信期间，服务器需为该用户保存通信对象。"
+      ],
+      "conclusion": "须已在 MCData 服务器与消息存储之间成功完成认证和授权，且用户已有分配给自己的安全存储空间。服务器用通信信息构造对象，向消息存储发送存入请求，包含该用户的 MCData ID 和对象本身。",
+      "normative_strength": "两项请求字段均为 M；该认证授权是服务器与存储之间的前提，不是发信程序步骤 3 对 SDS 业务的授权。",
+      "limitations": [
+        "发送存入请求不能证明存入成功；不要套用终端上传对象的发起者或目标文件夹字段。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.4.1–2, outgoing applicability and preconditions, Figure 7.13.4.2-1 and steps 1–3"
+          ],
+          "printed_pages": [
+            163,
+            164
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.8.1–2, active communication and preconditions, Figure 7.13.3.8.2-1 and steps 1–2"
+          ],
+          "printed_pages": [
+            153,
+            154
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.13, Table 7.13.3.1.13-1, mandatory deposit request elements"
+          ],
+          "printed_pages": [
+            144
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "deposit-response-and-delivery",
+      "title": "对象标识有值、空值或看不到时，分别能证明什么",
+      "conditions": [
+        "核对指定用户此次存入操作，区分完整响应的字段和值与不完整日志。"
+      ],
+      "conclusion": "消息存储回给 MCData 服务器的用户 MCData ID 和对象标识均为 M。标识非空指出存下的对象，可用于直接取回；字段存在但值为空明确表示这次未存。完整响应不带字段是缺必填项，没看到完整响应或其值则不能判断结果。",
+      "normative_strength": "M 约束字段须存在，并不排除标准明定的空值。存入不是取回、递送或阅读的证明。",
+      "limitations": [
+        "成功或未存都不能单凭存入响应判断业务送达。所列条款不指定存入失败时必须中止、继续还是自动重试 SDS。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.4.1–2, outgoing applicability and preconditions, Figure 7.13.4.2-1 and steps 1–3"
+          ],
+          "printed_pages": [
+            163,
+            164
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.5.1–2, incoming applicability and preconditions, Figure 7.13.5.2-1 and steps 1–3"
+          ],
+          "printed_pages": [
+            164,
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.8.1–2, active communication and preconditions, Figure 7.13.3.8.2-1 and steps 1–2"
+          ],
+          "printed_pages": [
+            153,
+            154
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.14, Table 7.13.3.1.14-1, mandatory response elements, empty object identifier and direct retrieval"
+          ],
+          "printed_pages": [
+            144
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcdata-stored-object-lookup",
+    "r16-mcdata-offnetwork-object-upload"
+  ],
+  "limitations": [
+    "不定义编码、SIP 状态码、具体接收回执或存储失败后的恢复策略，不扩展到跨系统或离网 SDS。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
