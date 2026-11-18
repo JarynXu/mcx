@@ -1,0 +1,337 @@
+{
+  "topic_id": "r16-mcdata-offnetwork-group-fd",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "离网 MCData 向组发文件：一名成员的回信能证明谁已下载？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "condition_rule": "各声明先限于通用条件，再按所列的消息、成员与处理阶段适用。",
+  "common_conditions": [
+    "固定 3GPP TS 23.282 V16.8.0（Release 16，Stage 2），离网 MCData 组独立文件分发，使用媒体面；不讨论在网服务器的发送控制或离网一对一分发。"
+  ],
+  "claims": [
+    {
+      "id": "selected-group",
+      "title": "所选组和实际收件人不是一回事",
+      "conditions": [
+        "判断本次离网组独立分发是否适用。"
+      ],
+      "conclusion": "发送用户已发起面向所选组的文件分发通信，发送客户端已预配该组的 ProSe 直通通信信息及到 ProSe 二层组标识的映射，参与双方同属该 MCData 组。发出的请求带所选组及会话标识。",
+      "normative_strength": "同组、预配与发起是程序前提；组请求表把目标组标识及会话标识列为必填。",
+      "limitations": [
+        "知道组号或成员关系不能证明每个成员都收到了文件；本组程序未把逐一邻近发现列为前提。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.3.4.1–2, group scope and pre-conditions 1–3"
+          ],
+          "printed_pages": [
+            113,
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.3.4.2, numbered step 1: selected group, conversation and optional indications"
+          ],
+          "printed_pages": [
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.3.2.4, Table 7.5.3.2.4-1: group, conversation and separate optional indications"
+          ],
+          "printed_pages": [
+            111,
+            112
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "member-decision",
+      "title": "策略和接受选择按接收成员处理",
+      "conditions": [
+        "接收客户端收到了面向本组的独立 FD 请求。"
+      ],
+      "conclusion": "各客户端先检查是否要按位置、权限等条件限制某类消息或内容；策略允许时通知其用户，附上请求带来的元数据（如有）。无强制下载指示时，用户可接受、拒绝或忽略，只有明确接受或拒绝才按该分支发响应。策略允许且带强制下载指示时，步骤 3 允许客户端不征求用户同意、只告知下载；步骤 4 规定客户端自动发肯定响应，是否发响应不是任选。",
+      "normative_strength": "请求可带或不带强制指示。有该指示并适用该分支时，免征用户同意是可选；自动发肯定响应是步骤 4 的规定行为。先前的策略检查仍执行。",
+      "limitations": [
+        "忽略不等于发出拒绝；一人响应不能证明其他成员已响应，自动肯定也不是用户手动同意的证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.3.4.2, numbered steps 2–4: per-recipient policy, notification and response"
+          ],
+          "printed_pages": [
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.3.2.4, Table 7.5.3.2.4-1: group, conversation and separate optional indications"
+          ],
+          "printed_pages": [
+            111,
+            112
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "responder-identity",
+      "title": "组响应能认出应答者，不能仅凭身份在同一会话中逐笔配对",
+      "conditions": [
+        "发送端收到组 FD 响应，需要判定其归属与含义。"
+      ],
+      "conclusion": "组响应中的原请求用户、目标组、应答用户及会话标识表明谁在何组、何会话中对谁应答。还要看接受确认才能判断应答端是否接受；SDP 应答列的是选定的媒体参数。组响应表没有事务标识或原事务关联。",
+      "normative_strength": "组响应表把这六项均列为必填；文件传输与成功接收列在另一步。",
+      "limitations": [
+        "若相同发起者、目标组、应答者及会话有多笔分发，只凭这些值不能锁定哪一笔。不能由单一应答推断其他成员接受；肯定响应不能断定该应答者已下载或尚未下载。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.3.2.5, Table 7.5.3.2.5-1: requester, group, responder and acceptance"
+          ],
+          "printed_pages": [
+            112
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.3.4.2, numbered steps 2–4: per-recipient policy, notification and response"
+          ],
+          "printed_pages": [
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.3.4.2, numbered steps 5–6: established media plane and successful receivers"
+          ],
+          "printed_pages": [
+            114
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "receiver-local",
+      "title": "媒体面传输和本地完成各有条件",
+      "conditions": [
+        "询问发送端何时传文件、哪些接收端记录完成。"
+      ],
+      "conclusion": "媒体面成功建立后，发送端经该面传文件。成功收到文件的各客户端记录本地下载完成并通知各自的用户；这些本地动作不取决于发送者是否要求完成报告。",
+      "normative_strength": "步骤 5 写传输，步骤 6 明确限于成功接收的客户端；步骤 7 才引入请求报告的条件。",
+      "limitations": [
+        "发送动作不证明每个组成员完成；接收端通知用户也不证明用户已读。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.3.4.2, numbered steps 5–6: established media plane and successful receivers"
+          ],
+          "printed_pages": [
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.3.4.2, numbered step 7: download completed reports when requested"
+          ],
+          "printed_pages": [
+            114
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "per-member-report",
+      "title": "一份下载完成报告只说明一名成员的一笔下载",
+      "conditions": [
+        "对照本次组请求的报告指示及实际观察到的完成报告。"
+      ],
+      "conclusion": "完成报告指示与强制下载指示相互独立。发送用户要求回报时，相应的成功接收端发起完成报告。报告列明发起者、报告者、会话及事务标识，报告自身的事务标识与指向原分发的原事务关联是两个字段，后者标明报告对应哪笔分发，完成确认表示报告端已下载。",
+      "normative_strength": "组请求表将两项指示分别列为可选；组程序步骤 7 有条件，报告表使用客户端级的身份和下载完成确认。",
+      "limitations": [
+        "未要求回报也能下载成功；即使要求，发起报告不保证发送端收到。只有乙的报告不能证明整组下载或丙失败；本程序不规定以一份汇总回执代替成员结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.3.4.2, numbered step 1: selected group, conversation and optional indications"
+          ],
+          "printed_pages": [
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.3.2.4, Table 7.5.3.2.4-1: group, conversation and separate optional indications"
+          ],
+          "printed_pages": [
+            111,
+            112
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.3.4.2, numbered steps 5–6: established media plane and successful receivers"
+          ],
+          "printed_pages": [
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.3.4.2, numbered step 7: download completed reports when requested"
+          ],
+          "printed_pages": [
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.3.2.3, Table 7.5.3.2.3-1: parties, identifiers, original transaction and confirmation"
+          ],
+          "printed_pages": [
+            111
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.3.4.1–2, group scope and pre-conditions 1–3"
+      ],
+      "printed_pages": [
+        113,
+        114
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.3.4.2, numbered step 1: selected group, conversation and optional indications"
+      ],
+      "printed_pages": [
+        114
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.3.2.4, Table 7.5.3.2.4-1: group, conversation and separate optional indications"
+      ],
+      "printed_pages": [
+        111,
+        112
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.3.4.2, numbered steps 2–4: per-recipient policy, notification and response"
+      ],
+      "printed_pages": [
+        114
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.3.2.5, Table 7.5.3.2.5-1: requester, group, responder and acceptance"
+      ],
+      "printed_pages": [
+        112
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.3.4.2, numbered steps 5–6: established media plane and successful receivers"
+      ],
+      "printed_pages": [
+        114
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.3.4.2, numbered step 7: download completed reports when requested"
+      ],
+      "printed_pages": [
+        114
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.3.2.3, Table 7.5.3.2.3-1: parties, identifiers, original transaction and confirmation"
+      ],
+      "printed_pages": [
+        111
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcdata-offnetwork-one-to-one-fd",
+    "r16-mcdata-mandatory-consented-file-distribution"
+  ],
+  "limitations": [
+    "本页讨论成员级确认、完成和回报的证据，不推定实际事件发生、全组汇总或用户已读，不描述协议编码。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
