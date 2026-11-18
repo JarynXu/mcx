@@ -1,0 +1,422 @@
+{
+  "topic_id": "r16-groups-remote-partner-group-affiliation",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "替别人改变伙伴组归属：发起端收到“接受”，目标的归属一定变了吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0，Release 16 Stage 2，§10.8.5.2.1。单项 MC 业务；获授权者替他人强制改变伙伴系统定义组的归属；双方客户端及主业务服务器属同一 MC 系统。"
+  ],
+  "condition_rule": "各条均继承共同条件。按所涉用户与组区分请求状态和当前状态；主系统检查与组宿主检查不能相互替代。",
+  "claims": [
+    {
+      "id": "partner-remote-scope-request",
+      "title": "替他人强制变更伙伴组归属时，两端同属主系统，甲端的请求说明期望状态",
+      "conditions": [
+        "在单项 MC 业务中，获授权的甲替乙改变对伙伴系统定义组的归属。"
+      ],
+      "conclusion": "甲端、乙端和主业务服务器同属一个 MC 系统。甲端已获配目标用户及其可归属或解除归属的组信息；伙伴业务服务器可能已取组资料，主业务服务器可能已取用户策略。伙伴 GMS 已向组定义所在系统的业务服务器订阅归属状态更新。甲端向主业务服务器指明强制模式、目标用户标识、组标识和期望状态，可涉及一个或多个用户和组。",
+      "normative_strength": "强制模式无需乙本人同意；区分已满足的前提与可能已取得的资料。",
+      "limitations": [
+        "甲发出请求不证明期望状态已实现；伙伴定义组不意味着乙端属于伙伴系统。本例不排除其他条款中的协商过程。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.5.2.1, introductory paragraph and pre-condition 2"
+          ],
+          "printed_pages": [
+            163
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.5.2.1, pre-conditions 1 and 3–5"
+          ],
+          "printed_pages": [
+            163
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.5.2.1, numbered text, step 1"
+          ],
+          "printed_pages": [
+            164
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "partner-remote-primary-checks",
+      "title": "替他人强制变更伙伴组归属：主业务服务器查发起权、目标签约资格和同时归属上限，再按组找到宿主",
+      "conditions": [
+        "甲端已向主业务服务器发出强制归属变更请求。"
+      ],
+      "conclusion": "主业务服务器分别核甲能否发起此次变更、乙按用户签约能否具有所求关系，还须核乙同时可归属的组总数上限 N2。按请求中的组信息向对应的伙伴业务服务器（组宿主）发变更请求。",
+      "normative_strength": "检查分别针对发起者、目标用户及其同时归属的组数。",
+      "limitations": [
+        "N2 不限制单张请求能填几个组；主系统检查通过不能证明伙伴组宿主的资格检查也已通过或新状态已经保存。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.5.2.1, introductory paragraph and pre-condition 2"
+          ],
+          "printed_pages": [
+            163
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.5.2.1, numbered text, steps 2 and 3"
+          ],
+          "printed_pages": [
+            164
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.5.2.1, numbered text, step 1"
+          ],
+          "printed_pages": [
+            164
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.5.2.1, numbered text, steps 5 and 6"
+          ],
+          "printed_pages": [
+            164
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "partner-remote-policy-cache",
+      "title": "替他人强制变更伙伴组归属：组宿主须按组策略核目标资格，缺缓存才向 GMS 订阅策略",
+      "conditions": [
+        "主服务器把变更请求转给对应的伙伴组宿主后。"
+      ],
+      "conclusion": "伙伴组宿主检查本地组策略。若无缓存，向 GMS 订阅组策略，收到 GMS 的策略通知后在本地缓存；已有缓存则使用它核查。由组宿主按组策略核目标用户所求的资格。伙伴 GMS 已订阅的是归属状态更新，订阅方向、内容均不同。",
+      "normative_strength": "缺缓存决定是否订阅，不决定是否按组策略核查。",
+      "limitations": [
+        "已订阅归属状态更新不证明宿主缓存了组策略；主系统按用户签约所作检查不能代替组宿主的检查。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.5.2.1, introductory paragraph and pre-condition 2"
+          ],
+          "printed_pages": [
+            163
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.5.2.1, pre-conditions 1 and 3–5"
+          ],
+          "printed_pages": [
+            163
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.5.2.1, numbered text, steps 2 and 3"
+          ],
+          "printed_pages": [
+            164
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.5.2.1, numbered text, steps 4a and 4b"
+          ],
+          "printed_pages": [
+            164
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.5.2.1, numbered text, steps 5 and 6"
+          ],
+          "printed_pages": [
+            164
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "partner-remote-host-store",
+      "title": "甲替乙强制变更伙伴系统定义组的归属时，乙获准且所求与现状不同，组宿主才保存乙的新状态",
+      "conditions": [
+        "获授权的甲要求强制改变乙对伙伴系统定义组的归属；按所涉用户与组看期望状态。"
+      ],
+      "conclusion": "一次变更可同时要求乙归属一些组、解除对另一些组的归属。伙伴组宿主按组策略核查；目标用户获准执行所求归属或解除归属，且所求与现状不同，伙伴组宿主才保存目标用户对相关组的新状态。",
+      "normative_strength": "新状态的保存有两个条件，获准和确有状态差异。",
+      "limitations": [
+        "只知甲有发起权、乙获准，或只知期望状态，并不能确认某一组的归属关系实际变过。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.5.2.1, introductory paragraph and pre-condition 2"
+          ],
+          "printed_pages": [
+            163
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.5.2.1, numbered text, step 1"
+          ],
+          "printed_pages": [
+            164
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.5.2.1, numbered text, steps 2 and 3"
+          ],
+          "printed_pages": [
+            164
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.5.2.1, numbered text, steps 5 and 6"
+          ],
+          "printed_pages": [
+            164
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "partner-remote-two-recipients",
+      "title": "伙伴组宿主给主服务器的变更响应与给 GMS 的状态更新可交换先后或并行",
+      "conditions": [
+        "单项业务内，获授权者替目标用户强制变更伙伴组归属。"
+      ],
+      "conclusion": "伙伴组宿主把变更响应发给主业务服务器，另将乙对有关组的归属状态更新给 GMS。步骤 7、8 可任意先后或并行。",
+      "normative_strength": "换序和并行的许可明确针对步骤 7、8。",
+      "limitations": [
+        "仅见其中一路收件，不足以证明另一路已经送达；不能把这条注扩展为后续所有动作都可换序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.5.2.1, introductory paragraph and pre-condition 2"
+          ],
+          "printed_pages": [
+            163
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.5.2.1, numbered text, steps 7 and 8 and the note immediately after step 8"
+          ],
+          "printed_pages": [
+            164
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "partner-remote-target-vs-requester",
+      "title": "替他人强制变更伙伴组归属：状态不变时主服务器也给发起端回“接受”，不证明目标端收到变更或本人同意",
+      "conditions": [
+        "比较同一笔请求所求状态与目标用户对相应组的当前状态；按本节强制程序解释两端的记录。"
+      ],
+      "conclusion": "有状态差异时，主业务服务器才保存乙的新状态、向乙端发送带强制标记的变更请求，告知最新归属。乙端可向 GMS 订阅已归属组的信息，并向主业务服务器回应变更请求。另由主业务服务器答复发起端。已符合所求状态时，主业务服务器仍给甲端适当的接受答复；这不是目标端的回执，更不是目标本人批准。",
+      "normative_strength": "步骤 9 和 10a 各有状态差异条件；10a 的附加订阅是可选项；强制模式不要求目标本人批准。",
+      "limitations": [
+        "发起端单条接受答复不能证明有新状态或目标端确实收件。核实际改变应区分两个服务器各自的状态记录，核实际收件应区分发送方与接收方证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.5.2.1, introductory paragraph and pre-condition 2"
+          ],
+          "printed_pages": [
+            163
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.5.2.1, numbered text, steps 5 and 6"
+          ],
+          "printed_pages": [
+            164
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.5.2.1, numbered text, steps 9, 10a and 10b"
+          ],
+          "printed_pages": [
+            164
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.5.2.1, numbered text, step 11"
+          ],
+          "printed_pages": [
+            164
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.5.2.1, introductory paragraph and pre-condition 2"
+      ],
+      "printed_pages": [
+        163
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.5.2.1, pre-conditions 1 and 3–5"
+      ],
+      "printed_pages": [
+        163
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.5.2.1, numbered text, step 1"
+      ],
+      "printed_pages": [
+        164
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.5.2.1, numbered text, steps 2 and 3"
+      ],
+      "printed_pages": [
+        164
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.5.2.1, numbered text, steps 4a and 4b"
+      ],
+      "printed_pages": [
+        164
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.5.2.1, numbered text, steps 5 and 6"
+      ],
+      "printed_pages": [
+        164
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.5.2.1, numbered text, steps 7 and 8 and the note immediately after step 8"
+      ],
+      "printed_pages": [
+        164
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.5.2.1, numbered text, steps 9, 10a and 10b"
+      ],
+      "printed_pages": [
+        164
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.5.2.1, numbered text, step 11"
+      ],
+      "printed_pages": [
+        164
+      ]
+    }
+  ],
+  "related": [
+    "r16-groups-remote-primary-group-affiliation",
+    "r16-groups-partner-group-affiliation"
+  ],
+  "limitations": [
+    "仅限本节列出的伙伴定义组的强制过程；不覆盖其他系统或模式的完整能力，不从 Stage 2 推出真实终端送达、用户确认或生产运行结果。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
