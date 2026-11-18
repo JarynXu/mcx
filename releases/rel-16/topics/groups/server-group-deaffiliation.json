@@ -1,0 +1,345 @@
+{
+  "topic_id": "r16-groups-server-group-deaffiliation",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "服务器发起解除组归属：谁改记录，谁通知客户端？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "每项声明继承通用条件，并按该项所列条件适用。",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0，Release 16，Stage 2；讨论业务服务器因相关触发条件发起解除，用户此前已归属目标组，业务服务器已保存归属状态，GMS 已向定义组的系统内的业务服务器订阅归属更新。"
+  ],
+  "claims": [
+    {
+      "id": "server-trigger",
+      "title": "相关条件使业务服务器决定解除已有组归属；作业区域调整本身不能证明已解除",
+      "conditions": [
+        "适用一般服务器发起流程；用户已归属、业务服务器保存该状态，GMS 已向组所在系统的业务服务器订阅归属状态更新。"
+      ],
+      "conclusion": "业务服务器针对相应用户和组作判断；用户移到允许区域外，或调整后用户落在允许区域外，是所举触发例子。",
+      "normative_strength": "按一般程序前提和首步解释业务服务器的触发判断。",
+      "limitations": [
+        "这些例子不是唯一触发条件，也不是说区域调整后所有用户都会被解除。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.4.4, opening and pre-conditions 1–3"
+          ],
+          "printed_pages": [
+            157,
+            158
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.4.4, step 1"
+          ],
+          "printed_pages": [
+            158
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "basic-record-and-recipients",
+      "title": "一般服务器发起流程中，业务服务器改归属、向 GMS 更新状态，再给业务客户端发带组信息的解除通知",
+      "conditions": [
+        "在一般流程中，业务服务器已判断应解除该用户对有关组的归属。"
+      ],
+      "conclusion": "状态记录由业务服务器变更，GMS 得到该用户对相关组的解除状态，业务客户端的通知带组信息。改变的是该用户的归属；仅凭该更新不能判定用户已收通知、组成员资格已取消或组本身已删除。",
+      "normative_strength": "一般程序的步骤 2–4；边界据该程序所更改的对象及接收方。",
+      "limitations": [
+        "对 GMS 的状态更新与给客户端的通知不是同一次交付。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.4.4, steps 2–4"
+          ],
+          "printed_pages": [
+            158
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "partner-subscriptions-and-request",
+      "title": "服务器发起解除用户对伙伴组的归属时，两边业务服务器已向 GMS 订阅组信息并在本地保存，GMS 已向伙伴业务服务器订阅归属更新；主业务服务器向伙伴发解除请求",
+      "conditions": [
+        "主系统服务该用户；组定义在伙伴系统。先前已有归属与归属记录，业务服务器因相关条件发起解除。"
+      ],
+      "conclusion": "主、伙伴两业务服务器都已向 GMS 订阅组信息并保存相关组数据；GMS 向定义组的伙伴系统内的业务服务器订阅归属更新。主服务器依据所存组信息向相应伙伴发请求，不是主服务器代替伙伴执行解除。",
+      "normative_strength": "伙伴程序列明前提、触发判断和主系统请求的依据。",
+      "limitations": [
+        "不能把两个订阅方向混为一次订阅，也不能把资料已备或已发请求当作解除已获准。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.4.5, opening and pre-conditions 1–4"
+          ],
+          "printed_pages": [
+            158,
+            159
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.4.5, steps 1–2"
+          ],
+          "printed_pages": [
+            159
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.4.5, steps 3–4"
+          ],
+          "printed_pages": [
+            159
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "partner-check-and-remove",
+      "title": "伙伴服务器按既存策略查组未禁用、用户已归属且获准解除；通过后移除该用户对指定组的归属",
+      "conditions": [
+        "主系统已将服务器发起的解除请求发给定义该组的伙伴系统，伙伴业务服务器收到请求。"
+      ],
+      "conclusion": "伙伴进行三项检查。在检查通过的情况下，由伙伴移除用户对所请求组的归属状态。用户没有解除权限时不能认定已按此步骤成功移除。",
+      "normative_strength": "步骤 3 列三项检查，步骤 4 特别点明已归属且获授权的成功情形。",
+      "limitations": [
+        "这里移除的是用户的归属状态，没有说明将用户从成员名单移除或删除组。本文不推定具体拒绝响应或错误码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.4.5, steps 1–2"
+          ],
+          "printed_pages": [
+            159
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.4.5, steps 3–4"
+          ],
+          "printed_pages": [
+            159
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "partner-response-and-update-order",
+      "title": "伙伴移除归属后，给主服务器的解除答复与给 GMS 的状态更新可任意先后或并行",
+      "conditions": [
+        "伙伴已按本流程移除该用户对相应组的归属。"
+      ],
+      "conclusion": "伙伴向主业务服务器回解除答复（5a），向 GMS 更新用户对该组的解除状态（5b）。看见其中一条不证明另一方已收到，也不证明客户端已接到通知。",
+      "normative_strength": "步骤 5 指明收发双方，步骤 5 后注专门说明 5a 与 5b 的关系。",
+      "limitations": [
+        "换序或并行只针对这两条，不代表步骤 4 至 7 都能任意换序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.4.5, steps 3–4"
+          ],
+          "printed_pages": [
+            159
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.4.5, step 5 (5a and 5b) and following note"
+          ],
+          "printed_pages": [
+            159
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.4.5, steps 6–7"
+          ],
+          "printed_pages": [
+            159
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "primary-record-and-client-notice",
+      "title": "伙伴组成功解除后，主业务服务器更改用户归属，随后业务服务器向客户端发送带组信息的解除通知",
+      "conditions": [
+        "在伙伴已移除用户归属的成功路径上，区分伙伴给主系统的答复、给 GMS 的更新与客户端通知。"
+      ],
+      "conclusion": "主服务器更新自己保存的该用户归属状态（6），业务服务器再向业务客户端发带组信息的解除通知（7）；伙伴的解除答复送给主服务器，不是这份客户端通知。",
+      "normative_strength": "据步骤 4–7 的文字及步骤 5 后针对 5a/5b 的注。",
+      "limitations": [
+        "发送通知不证明客户端已收到；不据此规定传送时延或确认机制。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.4.5, steps 3–4"
+          ],
+          "printed_pages": [
+            159
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.4.5, step 5 (5a and 5b) and following note"
+          ],
+          "printed_pages": [
+            159
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.4.5, steps 6–7"
+          ],
+          "printed_pages": [
+            159
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.4.4, opening and pre-conditions 1–3"
+      ],
+      "printed_pages": [
+        157,
+        158
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.4.4, step 1"
+      ],
+      "printed_pages": [
+        158
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.4.4, steps 2–4"
+      ],
+      "printed_pages": [
+        158
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.4.5, opening and pre-conditions 1–4"
+      ],
+      "printed_pages": [
+        158,
+        159
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.4.5, steps 1–2"
+      ],
+      "printed_pages": [
+        159
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.4.5, steps 3–4"
+      ],
+      "printed_pages": [
+        159
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.4.5, step 5 (5a and 5b) and following note"
+      ],
+      "printed_pages": [
+        159
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.4.5, steps 6–7"
+      ],
+      "printed_pages": [
+        159
+      ]
+    }
+  ],
+  "related": [
+    "r16-groups-gms-affiliation-subscription",
+    "r16-groups-partner-group-affiliation"
+  ],
+  "limitations": [
+    "只解释一般程序与组定义在伙伴系统时的服务器发起程序；不推定用户自发退组、成员资格变更、组删除、终端收妥、协议报文编码或实际系统结果。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
