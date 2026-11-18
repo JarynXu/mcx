@@ -1,0 +1,359 @@
+{
+  "topic_id": "r16-bearers-common-preestablished-session-creation",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MC 预建立会话：收到创建响应，能判断语音承载已启用吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "Release 16 公共 Stage 2，在网 MC 业务客户端与 MC 业务服务器之间的预建立会话。",
+    "新建公共预建立会话时，客户端已完成 SIP 注册，用户已获 MC 业务授权；该会话在客户端向其他 MC 业务用户发起相关业务程序之前建立。"
+  ],
+  "condition_rule": "新建时两项前提均适用，这里不规定注册与授权的相对先后。区分预建立会话的创建响应、会话建成及业务呼叫发起，不能把已建会话的承载性质直接归给创建响应。修改既有会话的对照另据 §10.3.2.3。",
+  "claims": [
+    {
+      "id": "prepare-not-user-call",
+      "title": "客户端已完成 SIP 注册且用户已获 MC 业务授权时，可在向其他用户发起业务程序前与服务器建立预建立会话；创建响应不是另一名用户的呼叫应答",
+      "conditions": [
+        "新建公共预建立会话时，客户端已完成 SIP 注册，用户已获 MC 业务授权；该会话在客户端向其他 MC 业务用户发起相关业务程序之前建立。"
+      ],
+      "conclusion": "满足两项前提后，客户端可在向其他用户发起业务程序前先与 MC 业务服务器建立预建立会话，交换供后续业务呼叫使用的媒体承载参数。步骤 4 是服务器对客户端创建请求的响应。",
+      "normative_strength": "§10.3.1 将预建立会话置于客户端完成 SIP 注册之后、向其他用户发起相关业务程序之前，§10.3.2.1 说明用户获 MC 业务授权后才可建立。仅有其中一项不满足这里的条件；这两段没有规定注册与授权二者之间谁先发生，也没有说两项具备就自动建立。",
+      "limitations": [
+        "创建响应不是发起、接通另一通业务呼叫或用户已有通话媒体的证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.3 heading and 10.3.1, first three paragraphs"
+          ],
+          "printed_pages": [
+            110
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.3.2.1, first sentence and second paragraph before bearer states"
+          ],
+          "printed_pages": [
+            110
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.3.2.2, numbered steps 1–4 after Figure 10.3.2.2-1"
+          ],
+          "printed_pages": [
+            111
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "creation-candidate-gathering",
+      "title": "新建预建立会话时，客户端先收集 ICE 候选再请求创建；服务器取得媒体参数并收集候选后答复创建请求",
+      "conditions": [
+        "新建流程中的客户端向 MC 业务服务器提出创建请求。"
+      ],
+      "conclusion": "客户端先收集自身候选再发出创建请求。服务器执行必要的业务控制、取得媒体参数、收集候选，然后向客户端发创建响应。",
+      "normative_strength": "借助服务器的媒体分发功能取得参数只是一例，不是唯一方式。",
+      "limitations": [
+        "两侧收集候选不等于已经检查候选对。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.3 heading and 10.3.1, first three paragraphs"
+          ],
+          "printed_pages": [
+            110
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.3.2.2, opening paragraph before Figure 10.3.2.2-1"
+          ],
+          "printed_pages": [
+            110
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.3.2.2, numbered steps 1–4 after Figure 10.3.2.2-1"
+          ],
+          "printed_pages": [
+            111
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.3.2.2, numbered step 5 after Figure 10.3.2.2-1"
+          ],
+          "printed_pages": [
+            111
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "creation-check-and-conditional-update",
+      "title": "新建预建立会话的创建响应之后才检查候选对；只有需要更新时才另发修改请求，由服务器用修改响应接受更新",
+      "conditions": [
+        "按 §10.3.2.2 的新建流程读步骤 4–7，不与修改既有会话的编号混用。"
+      ],
+      "conclusion": "第 5 步检查候选对，例如由客户端与服务器的媒体分发功能进行；如需更新，客户端在第 6 步请求更新这项会话的候选对，服务器在第 7 步响应并接受该更新。",
+      "normative_strength": "建立流程的第 5 步直接规定检查；第 6 步有条件，第 7 步应答那一次修改请求。",
+      "limitations": [
+        "只见创建响应不能证明已检查，也不能证明往后没有检查；即使有检查记录，也不能单凭它证明需要更新或更新已被接受。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.3.2.2, numbered steps 1–4 after Figure 10.3.2.2-1"
+          ],
+          "printed_pages": [
+            111
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.3.2.2, numbered step 5 after Figure 10.3.2.2-1"
+          ],
+          "printed_pages": [
+            111
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.3.2.2, numbered steps 6–7 after Figure 10.3.2.2-1"
+          ],
+          "printed_pages": [
+            111
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "which-four-and-five",
+      "title": "新建预建立会话第 4 步答创建、第 5 步做检查；客户端发起修改既有会话时第 4 步答修改、第 5 步只在需要时检查",
+      "conditions": [
+        "比较 §10.3.2.2 新建与 §10.3.2.3 客户端发起的修改示例。"
+      ],
+      "conclusion": "两个第 4 步都应答各自第 2 步的请求，但对象不同；新建和修改对第 5 步规定的执行条件也不同。",
+      "normative_strength": "新建的检查并非按需；修改示例明确以需要检查为条件。",
+      "limitations": [
+        "不能只见步骤号就判断响应类型，或把任一第 4 步认作接受后续候选对更新的响应。修改既有会话的完整内容见相邻主题。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.3.2.2, numbered steps 1–4 after Figure 10.3.2.2-1"
+          ],
+          "printed_pages": [
+            111
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.3.2.2, numbered step 5 after Figure 10.3.2.2-1"
+          ],
+          "printed_pages": [
+            111
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.3.2.2, numbered steps 6–7 after Figure 10.3.2.2-1"
+          ],
+          "printed_pages": [
+            111
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.3.2.3, numbered steps 2, 4–7 and NOTE 1 after Figure 10.3.2.3-1 (comparison only)"
+          ],
+          "printed_pages": [
+            112
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "floor-voice-distinction",
+      "title": "预建立会话建成后话权控制承载始终活动；客户端可按需立即启用语音承载，或在发起业务呼叫时以 SIP 信令启用",
+      "conditions": [
+        "已知预建立会话建成；区分承载话权控制消息的媒体承载与承载语音的媒体承载。"
+      ],
+      "conclusion": "前者在预建立会话建成后始终活动；后者按需要可在预建立程序完成后立即启用，也可推迟到发起 MC 业务呼叫时由客户端通过 SIP 信令启用。",
+      "normative_strength": "始终活动限定在话权控制承载；两种语音启用时机是可选做法，不是先后必经。",
+      "limitations": [
+        "只有创建响应不能确定语音承载何时启用；未发起呼叫不排除语音承载已经启用。承载活动本身并非取得话权或正在通话的记录。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.3 heading and 10.3.1, first three paragraphs"
+          ],
+          "printed_pages": [
+            110
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.3.2.1, first sentence and second paragraph before bearer states"
+          ],
+          "printed_pages": [
+            110
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.3.2.1, second paragraph and both voice activation alternatives"
+          ],
+          "printed_pages": [
+            110
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.3.2.2, numbered steps 1–4 after Figure 10.3.2.2-1"
+          ],
+          "printed_pages": [
+            111
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.3 heading and 10.3.1, first three paragraphs"
+      ],
+      "printed_pages": [
+        110
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.3.2.1, first sentence and second paragraph before bearer states"
+      ],
+      "printed_pages": [
+        110
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.3.2.1, second paragraph and both voice activation alternatives"
+      ],
+      "printed_pages": [
+        110
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.3.2.2, opening paragraph before Figure 10.3.2.2-1"
+      ],
+      "printed_pages": [
+        110
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.3.2.2, numbered steps 1–4 after Figure 10.3.2.2-1"
+      ],
+      "printed_pages": [
+        111
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.3.2.2, numbered step 5 after Figure 10.3.2.2-1"
+      ],
+      "printed_pages": [
+        111
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.3.2.2, numbered steps 6–7 after Figure 10.3.2.2-1"
+      ],
+      "printed_pages": [
+        111
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.3.2.3, numbered steps 2, 4–7 and NOTE 1 after Figure 10.3.2.3-1 (comparison only)"
+      ],
+      "printed_pages": [
+        112
+      ]
+    }
+  ],
+  "related": [
+    "r16-bearers-common-preestablished-media-change-release",
+    "r16-mcptt-preestablished-session-lifecycle"
+  ],
+  "limitations": [
+    "不规定业务呼叫的应答程序、话权分配、端到端语音实收、MCPTT 专用消息字段或 ICE 检查算法；创建流程里的条件更新不等于泛讲修改既有会话。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
