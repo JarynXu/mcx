@@ -1,0 +1,363 @@
+{
+  "topic_id": "r16-mcptt-implicit-affiliation-n2",
+  "title": "MCPTT 请求触发隐式归属：同一用户有两台终端，N2 怎么数，哪一条记录会变？",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "common_conditions": [
+    "处理角色为参与 MCPTT 功能；原 SIP 请求明确需要发送 MCPTT 客户端对目标组隐式归属。身份、候选计算、完成和取消分别按各自主条件适用。"
+  ],
+  "condition_rule": "须在同一用户、对应客户端及原触发请求的上下文中分别核实各条记录；候选、保存、完成及取消不是四个必定顺次发生的事件。",
+  "claims": [
+    {
+      "id": "candidate-at-sending-client",
+      "title": "MCPTT 请求触发隐式归属时，候选列表只从受服务用户的发送客户端复制",
+      "conditions": [
+        "参与 MCPTT 功能收到使发送客户端需隐式归属目标组的 SIP 请求。"
+      ],
+      "conclusion": "由请求的 MCPTT 信息体内 mcptt-client-id、mcptt-request-uri 分别确定客户端和目标组，由 P-Asserted-Identity 内公共用户身份确定受服务 MCPTT ID。按用户及其下的客户端定位，复制本端列表，将各原组项复制到候选。若原表中目标缺失或其项过期，须为目标新增一项，初态 affiliating，到期时刻为当前时刻加候选有效期。",
+      "normative_strength": "识别、复制及满足新增条件时的三项操作为条款要求；用户身份绑定见注 1。",
+      "limitations": [
+        "另一端有同组记录不排除本端需要新增；本端已有未过期的目标项则第 7b 项不要求再新增或刷新。",
+        "有候选记录不等于替换已经执行；初态不是 affiliated。不从头字段单独证明授权、安全实现或呼叫结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.12 (opening, items 1–5 and note 1)"
+          ],
+          "printed_pages": [
+            183,
+            184
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.12 (items 6–7a)"
+          ],
+          "printed_pages": [
+            184
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.12 (item 7b.i–iii)"
+          ],
+          "printed_pages": [
+            184
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "count-distinct-valid-groups",
+      "title": "MCPTT 隐式归属的 N2 检查按同一用户跨客户端去重，只计符合状态和期限的组",
+      "conditions": [
+        "本客户端候选表已构成，用它与同一受服务用户其他客户端各自的组列表一起计算。"
+      ],
+      "conclusion": "在所有这些列表内，选期限未过且为 affiliating 或 affiliated 的记录，统计不同 MCPTT 组 ID；同一组在多端只贡献一个，再与受服务 MCPTT ID 的 N2 比较。",
+      "normative_strength": "第 8 项规定计数口径；第 9 项只在严格大于 N2 时启动缩减。",
+      "limitations": [
+        "不按原始行数、设备数或全系统用户数计；过期、其他状态、其他用户的记录均不纳入。",
+        "计数范围跨端不等于保存候选时也跨端写入。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.12 (items 6–7a)"
+          ],
+          "printed_pages": [
+            184
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.12 (item 8a–b and trailing qualification)"
+          ],
+          "printed_pages": [
+            184,
+            185
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.12 (item 9 and note 2)"
+          ],
+          "printed_pages": [
+            185
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.12 (items 10–11)"
+          ],
+          "printed_pages": [
+            185
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "policy-and-client-replacement",
+      "title": "SIP 请求要求发送客户端隐式归属目标组：若候选组数超过该用户 N2，参与 MCPTT 功能按服务商策略缩减；若目标仍因 N2 加不进，则弃候选表",
+      "conditions": [
+        "已按本端候选及同用户其他端的有效状态计出不同组数；上限属于该受服务用户。"
+      ],
+      "conclusion": "超过 N2 时参与功能须依服务商策略减至 N2。若因 N2 不可加入目标组，则弃候选、跳过余步，不替换原表；否则用候选替换本客户端保存的组列表。恰好等于 N2 不触发超限缩减。",
+      "normative_strength": "超过才须缩减；弃表以目标因 N2 不能加入为条件。注 2 所列策略依据是例，不是写死的取舍顺序。",
+      "limitations": [
+        "不由超限本身推断必拒、固定淘汰某组或某一 SIP 状态码。",
+        "替换仅作用于受服务客户端；不把政策选择当作其他客户端已被改写。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.12 (item 8a–b and trailing qualification)"
+          ],
+          "printed_pages": [
+            184,
+            185
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.12 (item 9 and note 2)"
+          ],
+          "printed_pages": [
+            185
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.12 (items 10–11)"
+          ],
+          "printed_pages": [
+            185
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "complete-on-correlated-success",
+      "title": "原 SIP 请求要求发送客户端隐式归属目标组且已为此新增记录：参与 MCPTT 功能收到控制 MCPTT 功能对该请求的 2xx，须将新增项置为已归属，并为受服务 MCPTT ID 执行通知程序",
+      "conditions": [
+        "本次依 §9.2.2.2.12 新增了组项，参与功能收到控制 MCPTT 功能对触发该程序的 SIP 请求的 2xx 响应。"
+      ],
+      "conclusion": "须把该新增项的状态从 affiliating 置为 affiliated，并对受服务 MCPTT ID 执行 §9.2.2.2.5 的归属状态变更通知程序。",
+      "normative_strength": "两个动作为满足同一触发条件时的 SHALL，不能把收到响应直接当成实际执行或远端收件的观测。",
+      "limitations": [
+        "其他请求的 2xx 不构成此项完成条件。证明实际改写或某订阅者实收还需相应记录。",
+        "§9.2.2.2.5 仅说明所引通知义务，未在本篇重建所有通知环节。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.12 (item 7b.i–iii)"
+          ],
+          "printed_pages": [
+            184
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.13 (opening and items 1–2)"
+          ],
+          "printed_pages": [
+            185
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.5 (heading and item 4; notification reference only)"
+          ],
+          "printed_pages": [
+            176,
+            177
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "cancel-only-the-new-entry",
+      "title": "原 SIP 请求要求发送客户端隐式归属目标组且已为此新增记录：参与 MCPTT 功能判定该请求需拒绝，或收到控制 MCPTT 功能对该请求的 4xx、5xx、6xx，均须仅移除这次新增项",
+      "conditions": [
+        "参与 MCPTT 功能已就原请求新增目标组项；它判定原请求需要拒绝，或收到控制功能对该请求的 4xx、5xx、6xx。"
+      ],
+      "conclusion": "须移除由本次隐式归属新增且同时匹配请求发送者 MCPTT ID、请求客户端 ID 和目标组 ID 的记录。两个触发为或关系，无须本地判拒且同时接到远端错误。",
+      "normative_strength": "满足任一种取消前提，移除所指新增项为 SHALL。对不在这些条件内的观测不补规定。",
+      "limitations": [
+        "另一端既有同组项、本端其他组项并非此次移除对象；不推断所有终端失去归属、整表复原或曾作出未观察到的删除。",
+        "只有 1xx、3xx 或其他请求的错误响应，不能依这三节裁定本案完成或取消。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.12 (item 7b.i–iii)"
+          ],
+          "printed_pages": [
+            184
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.13 (opening and items 1–2)"
+          ],
+          "printed_pages": [
+            185
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.14 (opening and item 1a–c)"
+          ],
+          "printed_pages": [
+            185
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-groups-explicit-affiliation-client",
+    "r16-mcptt-negotiated-affiliation-client",
+    "r16-groups-remote-primary-group-affiliation"
+  ],
+  "limitations": [
+    "范围为 Release 16、TS 24.379 V16.14.0 中，参与 MCPTT 功能处理原 SIP 请求所触发的隐式归属；不把事件扩展为所有 SIP 请求，也不替代显式本端归属、协商改变他人归属或服务授权后按配置组自动处理。",
+    "不设特定服务商的取舍算法、拒绝码、存储格式或鉴权实现；记录的证据力与规范义务分开，未见日志不等于相应事件绝无发生。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.2.2.12 (opening, items 1–5 and note 1)"
+      ],
+      "printed_pages": [
+        183,
+        184
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.2.2.12 (items 6–7a)"
+      ],
+      "printed_pages": [
+        184
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.2.2.12 (item 7b.i–iii)"
+      ],
+      "printed_pages": [
+        184
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.2.2.12 (item 8a–b and trailing qualification)"
+      ],
+      "printed_pages": [
+        184,
+        185
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.2.2.12 (item 9 and note 2)"
+      ],
+      "printed_pages": [
+        185
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.2.2.12 (items 10–11)"
+      ],
+      "printed_pages": [
+        185
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.2.2.13 (opening and items 1–2)"
+      ],
+      "printed_pages": [
+        185
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.2.2.5 (heading and item 4; notification reference only)"
+      ],
+      "printed_pages": [
+        176,
+        177
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.2.2.14 (opening and item 1a–c)"
+      ],
+      "printed_pages": [
+        185
+      ]
+    }
+  ]
+}
