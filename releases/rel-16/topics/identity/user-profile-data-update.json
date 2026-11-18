@@ -1,0 +1,257 @@
+{
+  "topic_id": "r16-identity-user-profile-data-update",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MC 业务用户配置档：收到变更通知，还是把修改写回服务器？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0，Release 16，Stage 2；两条内容更新流程均以用户已在身份管理服务器完成认证、终端可安全访问配置管理服务器且已取得至少一份 MC 业务用户配置档为前提。"
+  ],
+  "claims": [
+    {
+      "id": "network-notification-and-retrieval",
+      "title": "网络发起：通知指向变更，获取响应才给出新值",
+      "conditions": [
+        "配置管理服务器能访问与该用户的 MC 业务 ID 关联的用户配置档。"
+      ],
+      "conclusion": "配置管理服务器取得新数据后通知配置管理客户端，通知必带指向已修改数据的指针。客户端向配置管理服务器发出获取请求，必带发起用户的 MC 业务 ID 和该指针；服务器的获取响应必带请求所指的更新数据。",
+      "normative_strength": "通知、获取请求和获取响应各有自己的必填项。",
+      "limitations": [
+        "只收到通知或只看到获取请求，不表明客户端已收到新值。服务器可访问关联配置档是网络发起流程明列的额外前提，不把它列为两方向共有。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.4, four preconditions and Figure 10.1.4.4-1 steps 1–4"
+          ],
+          "printed_pages": [
+            74
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.5, three preconditions and Figure 10.1.4.5-1 steps 1–4"
+          ],
+          "printed_pages": [
+            75
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.2.3, direction of the configuration data update notification"
+          ],
+          "printed_pages": [
+            69,
+            70
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.2.3, Table 10.1.4.2.3-1: change notification"
+          ],
+          "printed_pages": [
+            69,
+            70
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.2.4, Table 10.1.4.2.4-1: get updated data request"
+          ],
+          "printed_pages": [
+            70
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.2.5, Table 10.1.4.2.5-1: get updated data response"
+          ],
+          "printed_pages": [
+            70
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "client-writeback-and-result",
+      "title": "客户端发起：把修改写回服务器",
+      "conditions": [
+        "配置管理客户端受触发，要更新配置管理服务器上的用户配置数据。"
+      ],
+      "conclusion": "配置管理客户端发出更新请求，必带发起用户的 MC 业务 ID 和要写入的数据本身。成功流程中配置管理服务器先保存收到的数据，再向客户端返回更新响应；必填的结果指示成功或失败。",
+      "normative_strength": "由用户操作触发是例子，并非唯一方式。请求中传的是内容，响应中报告的是结果。",
+      "limitations": [
+        "只见请求、响应名称或失败结果，都不能确认成功保存。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.5, three preconditions and Figure 10.1.4.5-1 steps 1–4"
+          ],
+          "printed_pages": [
+            75
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.2.6, Table 10.1.4.2.6-1: update data request"
+          ],
+          "printed_pages": [
+            70
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.2.7, Table 10.1.4.2.7-1: update data response"
+          ],
+          "printed_pages": [
+            70
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "profile-data-granularity",
+      "title": "更新范围不等于全量",
+      "conditions": [
+        "网络发起获取更新数据或客户端发起向配置管理服务器写回数据；网络发起时还须满足该服务器可访问关联配置档这一前提。"
+      ],
+      "conclusion": "在两个方向上，数据都可以只是某份配置档中的一个参数，也可以涉及一份配置档、一组配置档或该 MC 业务 ID 下的全部配置档。具体的用户配置数据按 MC 业务定义。",
+      "normative_strength": "注中列明可有不同范围，并不要求每次更换所有配置。",
+      "limitations": [
+        "不从这两条通用流程推导各业务的具体参数。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.4, four preconditions and Figure 10.1.4.4-1 steps 1–4"
+          ],
+          "printed_pages": [
+            74
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.5, three preconditions and Figure 10.1.4.5-1 steps 1–4"
+          ],
+          "printed_pages": [
+            75
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.4, NOTE after step 4: granularity and per-service definition"
+          ],
+          "printed_pages": [
+            74
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.5, NOTE after step 4: granularity and per-service definition"
+          ],
+          "printed_pages": [
+            75
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "data-not-selection",
+      "title": "内容更新不证明配置已切换",
+      "conditions": [
+        "所见证据是配置数据获取或写回，而非一次选择配置档的成功流程；网络发起获取还以服务器能访问该用户关联配置档为前提。"
+      ],
+      "conclusion": "收到新数据或成功写回内容，不表明下次业务授权已改用另一份配置档，也不表明某客户端当前正在使用的一项业务已切换。前者查预选配置档的程序；后者查该业务客户端与业务服务器之间更新当前所选配置档的程序。两项选择均由索引指明配置档。",
+      "normative_strength": "区分更新的数据与选择的索引；这里只给出两个选择流程的定位。",
+      "limitations": [
+        "数据操作的成功回执不能替选择操作作证。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.4, four preconditions and Figure 10.1.4.4-1 steps 1–4"
+          ],
+          "printed_pages": [
+            74
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.5, three preconditions and Figure 10.1.4.5-1 steps 1–4"
+          ],
+          "printed_pages": [
+            75
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.6, step 1 and text following Figure 10.1.4.6-1: pre-selection for next service authorization (contrast only)"
+          ],
+          "printed_pages": [
+            76
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.7, Figure 10.1.4.7-1 steps 1 and 3: selected index for current client (contrast only)"
+          ],
+          "printed_pages": [
+            77
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-identity-user-profile-switch"
+  ],
+  "limitations": [
+    "仅覆盖配置档数据的网络通知后获取、客户端写回及判读边界，不展开首次取得配置、配置选择的完整程序或 Stage 3 编码。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
