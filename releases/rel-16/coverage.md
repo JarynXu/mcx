@@ -232,6 +232,16 @@ settings-only PUBLISH 的身份字段与保护配置、服务器保护/绑定拒
 
 [读取主题](topics/calls/emergency-alert-area-entry-exit.md)
 
+## MCPTT 无话权控制私呼与首接：按需 INVITE 和预建 REFER 各看什么？
+
+按请求种类和接收角色区分判据：按需主叫不提供话权控制实体的媒体段；起始参与功能收到预建 REFER 时，还要看控制消息媒体段里的 mc_no_floor_ctrl。
+
+预建 REFER 的私呼和首接资源条目分别按各自的条件附 SDP。控制通道可用于预建会话的呼叫控制，并不表示本次请求发言或已获话权。
+
+尚未建立：固定版对 answer 的一般说明、专项参数和通则文字不同；不能仅凭请求断言必回显某一参数、实现如何处理或已经互通。
+
+[读取主题](topics/calls/private-no-floor-control-identification.md)
+
 
 
 ## 普通私聊SDS控制面：发送资格、请求与接收证据

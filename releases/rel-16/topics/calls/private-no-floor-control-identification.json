@@ -1,0 +1,312 @@
+{
+  "topic_id": "r16-calls-private-no-floor-control-identification",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 无话权控制私呼与首接：按需 INVITE 和预建 REFER 各看什么？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "限 Release 16、在网 MCPTT 的普通私呼和首接呼叫。先确认呼叫类型及请求的用途，再看完整的 SDP offer；不是用一个字段识别任意 SIP 报文。"
+  ],
+  "claims": [
+    {
+      "id": "ondemand-invite",
+      "title": "按需发起：缺的是哪一段？",
+      "conditions": [
+        "主叫正按需发起在网 MCPTT 私呼或首接呼叫，要求本次不使用话权控制。"
+      ],
+      "conclusion": "主叫仍按 §11.1.1.2.1.1 生成初始 SIP INVITE 和 SDP offer。第 12 项改为不提供媒体话权控制实体的媒体级描述，第 13 项（涉及隐式话权控制）整项跳过。起始侧参与 MCPTT 功能接到这类业务的 INVITE，见 offer 没有供媒体面控制消息使用的媒体段，就按无话权控制请求识别，并进入按需程序 §11.1.1.3.1.1。",
+      "normative_strength": "§11.1.2 明定的例外和起始参与功能在所列条件下的处理均为必做。",
+      "limitations": [
+        "不提供指定媒体段并非删去整个 SDP，也不说明没有音频、对端已接听或已经发声。没有 SDP offer 的不完整记录，不能当作一份可核其缺段的 offer。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.2.1 and 11.1.2.2, on-demand originating exceptions"
+          ],
+          "printed_pages": [
+            387
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.1, opening and items 12–13 as modified by 11.1.2.2"
+          ],
+          "printed_pages": [
+            353,
+            354
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.2.3.1, originating participating function: INVITE and REFER cases"
+          ],
+          "printed_pages": [
+            388
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "refer-entry-body",
+      "title": "使用预建立会话：哪一项要放 SDP 正文？",
+      "conditions": [
+        "主叫构造在已有预建立会话上发起业务的对话外 SIP REFER。以下判断只涉及资源列表条目所指 URI 的 body 参数，并非任意顶层消息体。"
+      ],
+      "conclusion": "普通私呼看唯一被叫条目的第 8(c)(i) 项：既有会话的 SDP 参数含媒体话权控制实体段，或者该私呼要求端到端安全，就在该处加入含预建立会话 SDP 参数的 application/sdp 正文。首接看各目标用户条目的第 9(a) 项：所列条件是既有参数含该媒体段，没有另列端到端安全条件。两处改写都规定：若预建立会话当初是用隐式话权控制建立的，这份 SDP 正文不得带隐式话权请求。",
+      "normative_strength": "两项引用 §11.1.1.2.2.1 的条目结构，正文条件以 §11.1.2.2 改写后的文字为准。",
+      "limitations": [
+        "不能把“或者私呼要求端到端安全”抄给首接，也不能把未触发某一条目条件当作对整个 REFER 一切 SDP 用法的禁止。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.2.2, rewrites of 8(c)(i) and 9(a) for pre-established use"
+          ],
+          "printed_pages": [
+            387
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.2.1, opening; REFER entries 8(c)(i) and 9(a) as modified by 11.1.2.2"
+          ],
+          "printed_pages": [
+            362,
+            363,
+            364
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "preestablished-control-channel",
+      "title": "预建 REFER 有控制媒体段，为什么还可能没有话权控制？",
+      "conditions": [
+        "分别观察为无话权私呼或首接建立预建立会话的初始 INVITE、后来使用该会话的业务请求，以及起始侧参与功能收到的预建 REFER。"
+      ],
+      "conclusion": "建立该预建立会话时，若后续私呼或首接不使用话权控制，客户端须在建立会话的初始 INVITE 的 SDP offer 中带 mc_no_floor_ctrl。后来用预建会话发起无话权私呼或首接时，§14.2.6 同样要求业务请求的 SDP offer 带这个 fmtp 参数；两处 offer 均不得包含话权控制相关的 fmtp 参数。起始侧参与功能收到预建 REFER，若其 offer 含媒体面控制消息的媒体段，且该段 fmtp 带 mc_no_floor_ctrl，就把它识别为无话权控制业务，转 §11.1.1.3.1.2。此标记请求用该媒体面控制通道传送预建会话的呼叫控制，不是向对方请求或授予发言权。",
+      "normative_strength": "字段和接收分支是相应条件下的强制规则；标记的用途见 §12.1.2.2。",
+      "limitations": [
+        "建立预建立会话的初始 INVITE 不等于在它上面发起业务的 REFER。仅见控制段不足以套用该 REFER 的正向识别条件；没有完整证据时，不能反推已启用话权控制，也不能断言应拒绝该请求。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "14.2.6, offer for an actual call using a pre-established session; initial INVITE establishing the pre-established session"
+          ],
+          "printed_pages": [
+            238
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "12.1.2.2, offer and answer semantics of mc_no_floor_ctrl"
+          ],
+          "printed_pages": [
+            226
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.2.3.1, originating participating function: INVITE and REFER cases"
+          ],
+          "printed_pages": [
+            388
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "receiving-role",
+      "title": "同是 INVITE，接收者要进入哪一段程序？",
+      "conditions": [
+        "接收的是私呼或首接 INVITE，实际 SDP offer 中没有媒体话权控制实体的媒体级描述。角色与会话方式已知。"
+      ],
+      "conclusion": "被叫客户端遇到这样的初始 INVITE，按无话权控制私呼请求处理：按需会话转 §11.1.1.2.1.2，预建会话转 §11.1.1.2.2.2。终接侧参与功能收到发给自己的相应 INVITE，识别为无话权私呼或首接并转 §11.1.1.3.2。控制功能在终接程序中对相应私呼或首接 INVITE 按缺段识别，转 §11.1.1.4.2；其起始程序只是引用 §11.1.1.4.1，没有另列这种判据。",
+      "normative_strength": "按 §11.1.2 的角色和请求入口适用，不能交换参与功能的起始、终接程序。",
+      "limitations": [
+        "这不是一条要求同一个请求穿过所有角色的时序。客户端段把两类初始 INVITE 作无话权私呼请求处理，不等于全网把首接业务重新分类成单一被叫。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.2.2, received initial INVITE; 11.1.2.3.2, terminating participating function; 11.1.2.4.1–2, controlling function"
+          ],
+          "printed_pages": [
+            388
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.2.1 and 11.1.2.2, on-demand originating exceptions"
+      ],
+      "printed_pages": [
+        387
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.2.1.1, opening and items 12–13 as modified by 11.1.2.2"
+      ],
+      "printed_pages": [
+        353,
+        354
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.2.3.1, originating participating function: INVITE and REFER cases"
+      ],
+      "printed_pages": [
+        388
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.2.2, rewrites of 8(c)(i) and 9(a) for pre-established use"
+      ],
+      "printed_pages": [
+        387
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.2.2.1, opening; REFER entries 8(c)(i) and 9(a) as modified by 11.1.2.2"
+      ],
+      "printed_pages": [
+        362,
+        363,
+        364
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "14.2.6, offer for an actual call using a pre-established session; initial INVITE establishing the pre-established session"
+      ],
+      "printed_pages": [
+        238
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "12.1.2.2, offer and answer semantics of mc_no_floor_ctrl"
+      ],
+      "printed_pages": [
+        226
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.2.2, received initial INVITE; 11.1.2.3.2, terminating participating function; 11.1.2.4.1–2, controlling function"
+      ],
+      "printed_pages": [
+        388
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "14.3.1, SDP answer parameter restriction"
+      ],
+      "printed_pages": [
+        239
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "14.3.7, initial INVITE response text for mc_no_floor_ctrl; 14.4, offerer processing of answer"
+      ],
+      "printed_pages": [
+        240
+      ]
+    }
+  ],
+  "limitations": [
+    "本页只判读请求。TS 24.380 V16.9.0 §12.1.2.2 说明 answer 中的 mc_no_floor_ctrl 表示接受所提通道用法；但针对建立预建会话的初始 INVITE，§14.3.7 具体写入响应的是 mc_implicit_request，还规定含有话权控制相关 fmtp 参数时丢弃；这句话没有明确说拒绝整份 INVITE。§14.3.1 禁止 answer 添加 offer 未含的 fmtp 参数；§14.4 要求发起端丢弃 answer 中未经 offer 提出的参数。这里保留不同条文的文字，不判定实现应如何协调，不主张必须回显、已请求话权或已授予话权。"
+  ],
+  "limitation_source_references": [
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "12.1.2.2, offer and answer semantics of mc_no_floor_ctrl"
+      ],
+      "printed_pages": [
+        226
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "14.3.1, SDP answer parameter restriction"
+      ],
+      "printed_pages": [
+        239
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "14.3.7, initial INVITE response text for mc_no_floor_ctrl; 14.4, offerer processing of answer"
+      ],
+      "printed_pages": [
+        240
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcptt-preestablished-session-lifecycle",
+    "r16-calls-private-client-answer-evidence",
+    "r16-mcptt-first-to-answer-on-demand-client"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
