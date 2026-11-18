@@ -1,0 +1,296 @@
+{
+  "topic_id": "r16-mcdata-late-group-conversation-history",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCData：组成员晚加入会话，之前的短消息从哪里补？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "condition_rule": "每项声明继承通用条件，并按该项所列条件适用。",
+  "common_conditions": [
+    "3GPP TS 23.282 V16.8.0（Release 16，Stage 2）§7.4.3.5 的持续中组会话。",
+    "在所述程序中，组按无损通信配置，全体组成员均有各自的消息存储账户。甲、乙、丙同属这一组；甲、乙由服务器一服务，已注册并归属该组；丙由服务器二服务，起初尚未归属，不据此推断丙起初离线或未注册。"
+  ],
+  "claims": [
+    {
+      "id": "history-scope",
+      "title": "组会话历史包括成员加入前交换的消息；无损组补齐示例有服务器和个人账户前提",
+      "conditions": [
+        "判断服务支持什么，以及本例能否解释当前组成员如何取得加入前的消息。"
+      ],
+      "conclusion": "服务须支持向组成员呈现本组会话全部内容的机制，包括加入前的消息；本例以无损组、每人有账户、分别由两台服务器服务和不同归属状态为前提。",
+      "normative_strength": "概述要求支持机制，前提 1–5 限定所述程序。",
+      "limitations": [
+        "上级标题虽属离网短数据服务，不足以把有服务器、账户和用户在线时归属的子程序解作纯终端直连，也不能断言任何一次同步均已回齐全部历史。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3, parent section heading only"
+          ],
+          "printed_pages": [
+            74
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.5.1, whole group conversation content including earlier messages"
+          ],
+          "printed_pages": [
+            79
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.5.2, preconditions 1–5: group configuration, accounts and affiliation"
+          ],
+          "printed_pages": [
+            79
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.5.2, steps 4–7: affiliation, account synchronization, invitation and join"
+          ],
+          "printed_pages": [
+            80
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "proxy-receive-deposit",
+      "title": "无损组发起会话时，未归属的成员也受邀，由服务他的服务器代为接受、接收并存入本人账户",
+      "conditions": [
+        "所述组会话发起时，丙仍未归属。"
+      ],
+      "conclusion": "邀请面向所有成员。服务丙的服务器二替丙接受邀请，在组会话建立的媒体面上代收，再将收到的会话存入消息存储中的丙账户。",
+      "normative_strength": "步骤 1–3 分别叙述邀请及代理接受、媒体面代收和存入。",
+      "limitations": [
+        "服务器替丙接受不等于丙本人已加入；服务器收到会话不等于丙终端已收到。写入目的地不是全组共用账户。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.5.2, preconditions 1–5: group configuration, accounts and affiliation"
+          ],
+          "printed_pages": [
+            79
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.5.2, step 1: invitation and proxy acceptance"
+          ],
+          "printed_pages": [
+            79
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.5.2, steps 2–3: media-plane reception and deposit"
+          ],
+          "printed_pages": [
+            80
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "proxy-delivery-report",
+      "title": "在无损组中，代收服务器收到的会话若请求送达通知，由该服务器向消息发送者报告送达",
+      "conditions": [
+        "服务器二为尚未归属的丙接收会话，所收到的会话请求送达通知。"
+      ],
+      "conclusion": "服务器二向消息发送者报告送达。即使发送者收到这份报告，也只能据此认定服务器代收，不能确认丙的终端收到或呈现消息。",
+      "normative_strength": "步骤 3 后注 2 按所请求的通知类别分别确定报告者。",
+      "limitations": [
+        "送达报告不是存入操作的响应，也不代替已读报告。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.5.2, steps 2–3: media-plane reception and deposit"
+          ],
+          "printed_pages": [
+            80
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.5.2, note 2 after step 3: requested delivery and read notifications"
+          ],
+          "printed_pages": [
+            80
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "client-read-report",
+      "title": "无损组中代收的会话若请求已读通知，由成员客户端在向用户呈现该消息后向该消息的发送者报告",
+      "conditions": [
+        "代收的会话请求已读通知，丙的 MCData 客户端已向丙呈现该消息。"
+      ],
+      "conclusion": "报告已读的是丙的 MCData 客户端，接收报告的是该消息的发送者。这里判断的是客户端已呈现，不是对用户真正读完或理解内容的证明。",
+      "normative_strength": "步骤 3 后注 2 将已读通知系于请求和客户端已呈现；不是由代收服务器同时发出两种报告。",
+      "limitations": [
+        "仅有存入账户、同步完成或会话邀请的记录都不足以判定已呈现。收到的会话只请求送达时不能据此注断言应发已读报告；只见单条消息提出请求，不能代替确认收到的会话请求了哪种通知。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.5.2, note 2 after step 3: requested delivery and read notifications"
+          ],
+          "printed_pages": [
+            80
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "sync-invite-join",
+      "title": "无损组代收后，在线的成员归属该组，客户端同步本人账户；随后是服务器邀请客户端、成员加入",
+      "conditions": [
+        "步骤 4 中丙在线，通过自己的客户端归属该组，所述组会话仍在进行。"
+      ],
+      "conclusion": "客户端丙通过消息存储客户端与丙在消息存储中的账户同步；随后服务器二邀请丙的 MCData 客户端参加组会话，丙最终加入。前一次服务器为丙接受与这一次邀请客户端是两个事件。“在线”不是从离线到在线的状态转换要求。",
+      "normative_strength": "分列的步骤 4–7 给出本例顺序；步骤 1 给出先前接受邀请的主体。",
+      "limitations": [
+        "归属不证明已经同步；同步不证明已收到后续邀请或实际加入；收到邀请也不等于参加。这里不规定呈现消息或发送已读通知与加入的额外先后关系。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.5.2, step 1: invitation and proxy acceptance"
+          ],
+          "printed_pages": [
+            79
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.3.5.2, steps 4–7: affiliation, account synchronization, invitation and join"
+          ],
+          "printed_pages": [
+            80
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.3, parent section heading only"
+      ],
+      "printed_pages": [
+        74
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.3.5.1, whole group conversation content including earlier messages"
+      ],
+      "printed_pages": [
+        79
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.3.5.2, preconditions 1–5: group configuration, accounts and affiliation"
+      ],
+      "printed_pages": [
+        79
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.3.5.2, step 1: invitation and proxy acceptance"
+      ],
+      "printed_pages": [
+        79
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.3.5.2, steps 2–3: media-plane reception and deposit"
+      ],
+      "printed_pages": [
+        80
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.3.5.2, note 2 after step 3: requested delivery and read notifications"
+      ],
+      "printed_pages": [
+        80
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.3.5.2, steps 4–7: affiliation, account synchronization, invitation and join"
+      ],
+      "printed_pages": [
+        80
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcdata-message-store-sync",
+    "r16-mcdata-sds-message-store-deposit"
+  ],
+  "limitations": [
+    "只解释本例的组会话历史、代理职责和后续加入，不覆盖离网直连短消息、具体同步响应内容、信令编码或设备实现。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
