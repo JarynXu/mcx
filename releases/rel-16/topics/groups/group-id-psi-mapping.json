@@ -1,0 +1,296 @@
+{
+  "topic_id": "r16-groups-group-id-psi-mapping",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MC 业务组 ID 指向哪里？SIP 的公共业务标识能否兼指这个组？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "依据 3GPP TS 23.280 V16.7.0 的组标识定义及其同 SIP 信令控制面公共业务标识的架构关系。"
+  ],
+  "condition_rule": "各声明继承共同条件。区分组、成员、业务服务器这三个对象；同域许可与跨域禁令针对兼指，不是映射存在的前提。",
+  "claims": [
+    {
+      "id": "group-definition",
+      "title": "MC 业务组 ID 是业务内全局唯一的 URI，指示定义该组的系统及其业务服务器",
+      "conditions": [
+        "识别的是某一项 MC 业务的组。"
+      ],
+      "conclusion": "MC 业务组 ID 代表该业务的一组用户，指示定义该组的 MC 系统，以及该系统中定义该组的 MC 业务服务器；客户端用组 ID 寻址该组。",
+      "normative_strength": "本业务内唯一、指示对象和寻址用途是定义；URI 形式是 SHALL。",
+      "limitations": [
+        "不将该业务内的唯一性外推到所有 MC 业务，也不把寻址当成已发生的呼叫。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.1.3.1, first paragraph"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.1.3.1, second paragraph"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.1.3.1, items a and b and the following URI requirement"
+          ],
+          "printed_pages": [
+            44
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "member-systems",
+      "title": "同一 MC 业务组的成员可分属不同系统，每位成员的业务 ID 指示其所属系统",
+      "conditions": [
+        "已经知道哪些用户是该 MC 业务组的成员，现需识别成员各自所属的 MC 系统。"
+      ],
+      "conclusion": "一个组可以包含同一系统或不同系统的成员；识别某一成员的系统看该成员自己的 MC 业务 ID，不能照抄定义组的系统。",
+      "normative_strength": "成员可以同系统或不同系统，各自所属系统由本人的业务 ID 标识。",
+      "limitations": [
+        "组 ID 标识一组成员身份；只有一个组 ID 或它到 PSI 的映射，不等于已列出成员，也不能由此认定归属或参呼。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.1.3.1, first paragraph"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.1.3.1, second paragraph"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.1.3.1, items a and b and the following URI requirement"
+          ],
+          "printed_pages": [
+            44
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "server-psi-mapping",
+      "title": "每个 MC 业务组 ID 都须映射到定义该组的业务服务器的 PSI，映射由 MC 业务服务器管理",
+      "conditions": [
+        "区分应用层组标识和 SIP 信令控制面的公共业务标识。"
+      ],
+      "conclusion": "公共业务标识（PSI）用于路由 MC 系统的 SIP 信令；各组 ID 必须映射到定义该组的 MC 业务服务器的一个 PSI，此映射由 MC 业务服务器管理。",
+      "normative_strength": "每个组 ID 的映射是 SHALL；管理者和 PSI 的路由用途为架构职责。",
+      "limitations": [
+        "仅此对应关系并不是人员名单、归属或参呼的证据，也不规定两个标识取相同的字符串。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.2, final paragraph on public service identity"
+          ],
+          "printed_pages": [
+            46
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.3.2, first paragraph"
+          ],
+          "printed_pages": [
+            46
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "same-domain-dual-use",
+      "title": "MC 业务提供方与归属 PLMN 运营方同一信任域时，SIP 的 PSI 可以兼指应用层的组 ID",
+      "conditions": [
+        "同一信任域的双方是 MC 业务提供方和归属 PLMN 运营方。"
+      ],
+      "conclusion": "当 MC 业务提供方与归属 PLMN 运营方同属一个信任域时，信令侧 PSI 可以同时标识应用层的组 ID；并非必须兼用。单有一条映射，不能据此断定两个标识同值，或 PSI 已用于在应用层标识该组。",
+      "normative_strength": "双重用途是有条件的 MAY；组 ID 的映射仍是 SHALL。",
+      "limitations": [
+        "同域不是“字符串必须相等”的规则；信任域资料缺失时，映射表本身不能证明已兼用。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.3.2, first paragraph"
+          ],
+          "printed_pages": [
+            46
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.3.2, final paragraph"
+          ],
+          "printed_pages": [
+            46
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "cross-domain-limit",
+      "title": "SIP 的 PSI 不得标识另一信任域中的应用层 MC 业务组 ID；这不取消对组 ID 的映射要求",
+      "conditions": [
+        "拟把一个信任域的 PSI 用来标识另一个信任域中的 MC 业务组 ID。"
+      ],
+      "conclusion": "不同信任域之间不得让 PSI 标识对方域里的组 ID。禁令针对跨域兼指，而各组 ID 到其定义服务器 PSI 的映射仍然必须存在。",
+      "normative_strength": "跨域兼指是 SHALL NOT；映射要求是独立的 SHALL。",
+      "limitations": [
+        "不从禁止跨域兼指推出禁止所有跨系统通信、取消组映射；也不据此规定部署时的信令处理方式。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.3.2, first paragraph"
+          ],
+          "printed_pages": [
+            46
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.1.2, rules for different trust domains, second bullet"
+          ],
+          "printed_pages": [
+            18
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "8.1.3.1, first paragraph"
+      ],
+      "printed_pages": [
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "8.1.3.1, second paragraph"
+      ],
+      "printed_pages": [
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "8.1.3.1, items a and b and the following URI requirement"
+      ],
+      "printed_pages": [
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "8.2, final paragraph on public service identity"
+      ],
+      "printed_pages": [
+        46
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "8.3.2, first paragraph"
+      ],
+      "printed_pages": [
+        46
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "8.3.2, final paragraph"
+      ],
+      "printed_pages": [
+        46
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.1.2, rules for different trust domains, second bullet"
+      ],
+      "printed_pages": [
+        18
+      ]
+    }
+  ],
+  "related": [
+    "r16-identity-cross-service-user-mapping",
+    "r16-groups-normal-group-creation",
+    "r16-groups-group-list-query"
+  ],
+  "limitations": [
+    "仅说明组标识、映射和兼指，不从一条映射推断成员、归属、某次呼叫的参与或实际路由成功。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
