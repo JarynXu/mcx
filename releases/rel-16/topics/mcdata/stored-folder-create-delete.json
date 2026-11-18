@@ -1,0 +1,275 @@
+{
+  "topic_id": "r16-mcdata-stored-folder-create-delete",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCData 消息存储：新建文件夹遇到重名怎么办？删除会连同哪些内容？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 23.282 V16.8.0，Release 16，Stage 2。操作限于用户本人已有的 MCData 消息存储账户；账户按文件夹分层，消息存储客户端与 MCData 消息存储已成功完成认证和授权。"
+  ],
+  "claims": [
+    {
+      "id": "account-and-scope",
+      "title": "在本人的文件夹层级内操作",
+      "conditions": [
+        "用户要新建文件夹，或选择自己已有的文件夹删除。"
+      ],
+      "conclusion": "创建和删除均要求已有账户、账户使用文件夹层级，消息存储客户端与 MCData 消息存储已成功完成认证和授权。客户端发请求，消息存储在本人的存储区执行。",
+      "normative_strength": "两项程序的明确前提为已有账户及完成认证和授权；文件夹操作的适用结构由两项总则限定。",
+      "limitations": [
+        "仅知道另一位用户的标识，不能据此操作其文件夹。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.1, authorized MCData user access to own storage area"
+          ],
+          "printed_pages": [
+            140
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.11.1–2, folder hierarchy, account and completed authentication and authorization for folder creation"
+          ],
+          "printed_pages": [
+            156
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.12.1–2, hierarchy, deletion scope, account and completed authentication and authorization for folder deletion"
+          ],
+          "printed_pages": [
+            157
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.11.2, numbered steps 1–3 accompanying Figure 7.13.3.11.2-1, parent and name, name assignment and return of result and identifier"
+          ],
+          "printed_pages": [
+            157
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.12.2, numbered steps 1–3 accompanying Figure 7.13.3.12.2-1, identify and delete the folder, its child folders and objects, and return the result"
+          ],
+          "printed_pages": [
+            158
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "create-request-and-name",
+      "title": "新建时谁定名，父标识能否省略",
+      "conditions": [
+        "消息存储客户端发起在用户存储区新建文件夹的请求。"
+      ],
+      "conclusion": "请求表中用户 MCData ID 必填，父文件夹标识和拟用文件夹名称可选。父标识指出要建在哪里；如提供的名字不冲突，消息存储按所给名称创建。名称冲突或未给名称时，由消息存储分配新文件夹的名字。",
+      "normative_strength": "流程步骤 1 描述携带父标识和名字，不将表中的两项 O 改为 M；步骤 2 明确区分三种命名情形。",
+      "limitations": [
+        "条款未指定替代名如何组成，也未指定省略父标识时的默认父目录。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.19, Table 7.13.3.1.19-1, create folder request"
+          ],
+          "printed_pages": [
+            145
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.11.2, numbered steps 1–3 accompanying Figure 7.13.3.11.2-1, parent and name, name assignment and return of result and identifier"
+          ],
+          "printed_pages": [
+            157
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "create-result-and-id",
+      "title": "新建响应的结果与新文件夹标识",
+      "conditions": [
+        "MCData 消息存储向发起新建请求的客户端返回响应。"
+      ],
+      "conclusion": "响应中的用户 MCData ID 与本次操作的结果（成功或失败）必填，新建文件夹的标识可选。这个标识若返回，指向新建的文件夹，不是原先请求中的父文件夹。",
+      "normative_strength": "步骤 3 描述返回结果和新标识；表 7.13.3.1.20-1 仍列标识为 O。若结果成功而没有标识，能判断新建成功；若只见标识，不能判断结果。",
+      "limitations": [
+        "不能根据标识存在或缺失推断创建结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.20, Table 7.13.3.1.20-1, create folder response"
+          ],
+          "printed_pages": [
+            145
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.11.2, numbered steps 1–3 accompanying Figure 7.13.3.11.2-1, parent and name, name assignment and return of result and identifier"
+          ],
+          "printed_pages": [
+            157
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "delete-target-and-contents",
+      "title": "删除目标、子文件夹和对象，不波及并列目录",
+      "conditions": [
+        "用户已选定自己账户中一个已有文件夹；判断删除效果时须有成功结果。"
+      ],
+      "conclusion": "消息存储客户端向 MCData 消息存储发送删除请求，用户 MCData ID 与要删的文件夹标识均必填，无需逐项列出内容。删除成功时，消息存储移除所指文件夹及其中全部子文件夹和存储对象；其同级目录不在范围内。消息存储返回客户端的删除响应只列用户 MCData ID 和操作结果（成功或失败），两项均必填。",
+      "normative_strength": "删除总则和步骤 2 规定处理整个目标目录；仅见请求或未见成功结果，不能确认已删。",
+      "limitations": [
+        "没有规定回收站、恢复期限或介质的物理擦除方式；只删一个对象须用对象标识，不用文件夹标识。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.12.1–2, hierarchy, deletion scope, account and completed authentication and authorization for folder deletion"
+          ],
+          "printed_pages": [
+            157
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.21, Table 7.13.3.1.21-1, delete folder request"
+          ],
+          "printed_pages": [
+            146
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.22, Table 7.13.3.1.22-1, delete folder response"
+          ],
+          "printed_pages": [
+            146
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.12.2, numbered steps 1–3 accompanying Figure 7.13.3.12.2-1, identify and delete the folder, its child folders and objects, and return the result"
+          ],
+          "printed_pages": [
+            158
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.1.7, Table 7.13.3.1.7-1, comparison with deletion by single stored-object identifier"
+          ],
+          "printed_pages": [
+            143
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "copy-move-naming-boundary",
+      "title": "复制或移动不沿用新建的重名处理",
+      "conditions": [
+        "比较新建文件夹与在本人存储区复制或移动已有文件夹时的命名。"
+      ],
+      "conclusion": "复制或移动没有给新名称时使用源文件夹名；对应步骤没有规定在目标位置重名时由消息存储另取名字。不能把新建文件夹的冲突处理当作复制或移动的承诺。",
+      "normative_strength": "新建、复制及移动各有自己的命名分支。",
+      "limitations": [
+        "重名时不能由这些复制或移动条款预测具体生成的名字、覆盖或拒绝。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.11.2, numbered steps 1–3 accompanying Figure 7.13.3.11.2-1, parent and name, name assignment and return of result and identifier"
+          ],
+          "printed_pages": [
+            157
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.13.2, numbered step 2 accompanying Figure 7.13.3.13.2-1, source-name fallback for folder copy"
+          ],
+          "printed_pages": [
+            159
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13.3.14.2, numbered step 2 accompanying Figure 7.13.3.14.2-1, source-name fallback for folder move"
+          ],
+          "printed_pages": [
+            160
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcdata-stored-folder-copy-move",
+    "r16-mcdata-stored-object-update-delete"
+  ],
+  "limitations": [
+    "只解释本人消息存储中的文件夹创建与删除，邻近操作仅用于辨别对象范围与命名规则。不规定 Stage 3 编码、失败回滚或介质物理擦除。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
