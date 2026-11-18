@@ -1,0 +1,322 @@
+{
+  "topic_id": "r16-mcvideo-single-sender-parameter-adaptation",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "在网 MCVideo 组呼丢包后，接收端想要的分辨率就是实际使用值吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.281-v16.4.0",
+  "common_conditions": [
+    "一场在网 MCVideo 组呼正在进行，且该组通信只允许一名发送用户。若允许多个发送用户，即使观察时只有一人在发，本版也未规定这种组通信如何适配。两条流程按最先提出参数调整的客户端区分。"
+  ],
+  "condition_rule": "各声明继承共同条件，并区分触发端。示例内客户端编号不能跨两个流程复用；“随后应用”描述成功流程，不能据提交请求推断已经应用。",
+  "claims": [
+    {
+      "id": "single-transmitter",
+      "title": "在网 MCVideo 组呼适配的两个示例限单一发送用户，接收者可有多人；本版未规定允许多个发送用户的组通信如何适配",
+      "conditions": [
+        "组呼正在进行。要核对这种组通信能否有多个发送用户，不能只数某一时刻实际发送视频的人数。"
+      ],
+      "conclusion": "两个示例都只适用于一名发送用户的组通信；为简便各展示一名接收用户，广播组呼只是例子。若组通信允许多名用户发送视频，即便记录中恰好只有甲在发，也没有这里规定的多发送用户适配流程可据。",
+      "normative_strength": "两节总述均将示例限于一个发送用户；§7.17.3.1 的说明指出，本版没有规定允许多个发送用户的组通信如何适配。",
+      "limitations": [
+        "多名接收者不构成排除理由；没有规定多发送者的适配办法，不等于禁止这种组通信。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.17.3.1, opening paragraph, NOTE and precondition"
+          ],
+          "printed_pages": [
+            164
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.17.3.2, heading, opening paragraph and precondition"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.17.3.2, numbered steps 1–2 and NOTE 1 following Figure 7.17.3.2-1"
+          ],
+          "printed_pages": [
+            166
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "sender-update-authority",
+      "title": "仅允许一名用户发送视频的在网 MCVideo 组呼由发送端提出改参时，服务器核查发送用户的更新权限，获准才将请求发给接收端",
+      "conditions": [
+        "单一发送端检测到网络状况变化，向服务器请求调整本场组呼的视频参数。"
+      ],
+      "conclusion": "丢包或时延可触发请求；发送端提出编码格式、分辨率或帧率等新参数，服务器核查发送用户能否更新参数，获准后向示例中的接收端发请求。",
+      "normative_strength": "发送端触发流程的步骤 1–3，不是以丢包作为自动授权门槛。",
+      "limitations": [
+        "一个请求或单次授权不能证明新参数已生效；不规定失败后如何重试。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.17.3.1, opening paragraph, NOTE and precondition"
+          ],
+          "printed_pages": [
+            164
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.17.3.1, numbered steps 1–3 following Figure 7.17.3.1-1"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.17.3.1, numbered steps 4–7 following Figure 7.17.3.1-1"
+          ],
+          "printed_pages": [
+            165
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "sender-update-result",
+      "title": "仅允许一名用户发送视频的在网 MCVideo 组呼由发送端提议并获准更新时，接收端接受更新请求并向服务器应答，服务器再把结果回给发送端；成功示例随后才应用新参数",
+      "conditions": [
+        "服务器已向接收端下发获准的更新请求，示例继续走接受分支。"
+      ],
+      "conclusion": "接收用户先获通知，接收端接受请求后向服务器应答；服务器把结果传回发送端。随后才写组呼应用新参数。",
+      "normative_strength": "发送端触发的成功顺序，不是对所有请求都成功的保证。",
+      "limitations": [
+        "已通知接收用户不等于接收端已接受；单独的通知或授权不能充当生效记录，也不代表须用户手动确认。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.17.3.1, opening paragraph, NOTE and precondition"
+          ],
+          "printed_pages": [
+            164
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.17.3.1, numbered steps 1–3 following Figure 7.17.3.1-1"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.17.3.1, numbered steps 4–7 following Figure 7.17.3.1-1"
+          ],
+          "printed_pages": [
+            165
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "receiver-preference",
+      "title": "仅允许一名用户发送视频的在网 MCVideo 组呼由接收端触发时，客户端报期望参数，服务器核权限并依据收到的通知作更新决定，决定办法由实现选择",
+      "conditions": [
+        "本组可有一个或多个接收用户，但只允许一名发送用户；接收端的请求触发服务器发起更新。"
+      ],
+      "conclusion": "接收端发现网络变化后提出期望值。服务器可能收到多份通知，核查权限，并依据这些通知判断是否更新。",
+      "normative_strength": "步骤 2 说明服务器的动作；注 1 把判断留给实现。",
+      "limitations": [
+        "不能把一个接收者的期望值当作指定值，也不能推出必须采用多数票、最低值等选择算法。条文没有点名此处的权限检查对象。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.17.3.1, opening paragraph, NOTE and precondition"
+          ],
+          "printed_pages": [
+            164
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.17.3.2, heading, opening paragraph and precondition"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.17.3.2, numbered steps 1–2 and NOTE 1 following Figure 7.17.3.2-1"
+          ],
+          "printed_pages": [
+            166
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "receiver-update-result",
+      "title": "仅允许一名用户发送视频的在网 MCVideo 组呼由接收端触发时，获准后服务器向发送端发请求；成功示例中收发两个客户端均接受并向服务器应答，随后组呼应用新参数",
+      "conditions": [
+        "接收端已报期望参数；服务器已作更新决定并获准下发。"
+      ],
+      "conclusion": "示例中的发送端收到服务器的更新请求；收、发客户端均接受并分别把响应发给服务器，下一步才是组通信应用新参数。",
+      "normative_strength": "接收端触发条款步骤 3、5–6 的成功过程；应用的是更新后的参数，并不保证是某个接收端提出的值。",
+      "limitations": [
+        "只有接收端的期望或发送端收件的记录，不能证明该值已应用。两个示例客户端应答，不等于标准以组内所有接收端一致接受为门槛。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.17.3.1, opening paragraph, NOTE and precondition"
+          ],
+          "printed_pages": [
+            164
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.17.3.2, heading, opening paragraph and precondition"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.17.3.2, numbered steps 1–2 and NOTE 1 following Figure 7.17.3.2-1"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.17.3.2, numbered steps 3 and 5–6 following Figure 7.17.3.2-1"
+          ],
+          "printed_pages": [
+            166
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.17.3.1, opening paragraph, NOTE and precondition"
+      ],
+      "printed_pages": [
+        164
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.17.3.1, numbered steps 1–3 following Figure 7.17.3.1-1"
+      ],
+      "printed_pages": [
+        165
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.17.3.1, numbered steps 4–7 following Figure 7.17.3.1-1"
+      ],
+      "printed_pages": [
+        165
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.17.3.2, heading, opening paragraph and precondition"
+      ],
+      "printed_pages": [
+        165
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.17.3.2, numbered steps 1–2 and NOTE 1 following Figure 7.17.3.2-1"
+      ],
+      "printed_pages": [
+        166
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.17.3.2, numbered steps 3 and 5–6 following Figure 7.17.3.2-1"
+      ],
+      "printed_pages": [
+        166
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcvideo-onnetwork-capability-sharing",
+    "r16-mcvideo-onnetwork-broadcast-group-call"
+  ],
+  "limitations": [
+    "限固定版 Stage 2 的两个组呼适配示例。未规定允许多个发送用户的组通信如何适配，也未规定丢包阈值或多接收者通知的仲裁算法。不能凭请求或应答推知实测画面。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
