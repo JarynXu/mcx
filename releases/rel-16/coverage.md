@@ -794,6 +794,16 @@ Stage 2服务能力与功能角色，以及文件存储和消息历史的职责�
 
 [读取主题](topics/mcdata/offnetwork-group-sds-receive-policy.md)
 
+## 在网 MCData 业务不经过 SIP 核心，还能申请网络资源吗？
+
+不经过 SIP 核心的在网 MCData 业务不能借本地代理控制资源，改由 MCData 服务器经 Rx 直接对接 PCRF（MCData-5）。
+
+不经过 SIP 核心的在网 MCData 业务可沿用三类资源请求：启动时申请单播、修改单播、申请共享优先级资源；不是必经顺序。
+
+尚未建立：非 SIP 在网 MCData 业务的单播资源请求，不能单独证明资源已获配、对端接受连接或 IP 包到达。TS 23.282 V16.8.0 §7.12.1 对公共资源管理程序的交叉引用是 TS 23.280 的 10.x，并未给出具体小节号。
+
+[读取主题](topics/mcdata/nonsip-resource-management.md)
+
 ## 普通按需 MCVideo 私呼：客户端请求、应答与结果证据
 
 普通MCVideo私呼客户端请求、拒绝、应答、结果和取消证据。
