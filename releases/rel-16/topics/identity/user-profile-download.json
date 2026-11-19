@@ -314,6 +314,125 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "migration-cms-exchange",
+      "title": "异系统、异安全域的两个配置管理服务器为获准在两系统间迁移的用户共享用户配置：非订阅、非通知的信令用 CSC-17 / HTTP-1、HTTP-2、HTTP-3",
+      "conditions": [
+        "用户获准在相应两个 MC 系统间迁移；这两个系统属于不同安全域。要识别的是两系统配置管理服务器之间共享该用户配置、非订阅且非通知的信令。"
+      ],
+      "conclusion": "为获准在两系统间迁移的用户共享其配置时，不同 MC 系统、不同安全域的两个配置管理服务器（CMS）之间，非订阅、非通知的信令用 CSC-17，经 HTTP-1、HTTP-2、HTTP-3 传送和路由。满足这些条件的迁移取档中，步骤 2 是伙伴 CMS 向主 CMS 索取，步骤 4 是主 CMS 向伙伴 CMS 提供。步骤 1 的终端客户端索取、步骤 9 的伙伴向客户端交档都不是这对端点。",
+      "normative_strength": "§7.5.2.17 定义端点、迁移资格、用途和传送参考点；§10.1.4.3.2 给出程序前提及业务双方。把步骤 2、4 与 CSC-17 对应是按角色、对象和信令种类进行的判读，不是程序中写出了一个逐包的接口名。",
+      "limitations": [
+        "同一系统或同一安全域不满足 CSC-17 的范围；许可未知不能确认为 CSC-17，也不等于用户遭拒。一笔未标对象的 HTTP 流量不能证明此次取到了档，参考点编号也不是实际机器数或物理跳序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.2.17, CSC-17: configuration management servers in different MC systems and different security domains sharing user configuration for users permitted to migrate between those systems; HTTP-1, HTTP-2 and HTTP-3 for non-subscription/notification related signalling"
+          ],
+          "printed_pages": [
+            41
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.3.2, three preconditions preceding Figure 10.1.4.3.2-1"
+          ],
+          "printed_pages": [
+            72
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.3.2, numbered steps 1–4 following Figure 10.1.4.3.2-1"
+          ],
+          "printed_pages": [
+            73
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.3.2, numbered step 9 and following NOTE"
+          ],
+          "printed_pages": [
+            74
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "profile-database-endpoints",
+      "title": "CSC-13 连接配置管理服务器与指定 MC 业务用户库，用于存用户档或取档以继续配置终端；迁移取档的主库读取与伙伴库存档要分别核对",
+      "conditions": [
+        "迁移取档时区分主系统按目标伙伴标识读取用户档，以及伙伴按本地配置修改后存入伙伴业务用户库。把具体读写归到 CSC-13，还须核对配置管理服务器与指定 MC 业务用户库这两个角色及对应操作。"
+      ],
+      "conclusion": "CSC-13 用于配置管理服务器（CMS）向指定 MC 业务用户库存用户档数据，或从该库取用户档以便随后配置 MC 业务终端。迁移取档步骤 3 明写主 CMS 按目标伙伴标识从主系统业务用户库读取该用户的档，符合读取用途。步骤 5 由伙伴系统把本地修改档存入伙伴系统的业务用户库；要将实际写入归到 CSC-13，须查明对应的写入方承担 CMS 角色。",
+      "normative_strength": "§7.5.2.13 定义两类用途；§10.1.4.3.2 步骤 3 明列主 CMS，步骤 5 仅列伙伴 MC 系统。程序规定伙伴侧修改和保存，不替具体系统的实际写入签收，也不逐设备指定写入方。",
+      "limitations": [
+        "伙伴库存有修改档不等于主方已验证、伙伴已向终端交付或终端已收到。验证失败时不走步骤 9，验证通过也不能单独证明实际收件。只有终端磁盘上有档不能证明本次主 CMS 读取主库；§7.5.2.13 没有指定数据库操作采用某个 HTTP 或 SIP 方法。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.2.13, CSC-13: configuration management server and specific MC service user database; storing user profile data or obtaining a user profile for further configuration in the MC service UE"
+          ],
+          "printed_pages": [
+            40
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.3.2, numbered steps 1–4 following Figure 10.1.4.3.2-1"
+          ],
+          "printed_pages": [
+            73
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.3.2, numbered step 5 following Figure 10.1.4.3.2-1"
+          ],
+          "printed_pages": [
+            73
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.3.2, numbered steps 4 and 6–8 following Figure 10.1.4.3.2-1"
+          ],
+          "printed_pages": [
+            73
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.4.3.2, numbered step 9 and following NOTE"
+          ],
+          "printed_pages": [
+            74
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "source_references": [
@@ -435,14 +554,34 @@
         76,
         77
       ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.5.2.17, CSC-17: configuration management servers in different MC systems and different security domains sharing user configuration for users permitted to migrate between those systems; HTTP-1, HTTP-2 and HTTP-3 for non-subscription/notification related signalling"
+      ],
+      "printed_pages": [
+        41
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.5.2.13, CSC-13: configuration management server and specific MC service user database; storing user profile data or obtaining a user profile for further configuration in the MC service UE"
+      ],
+      "printed_pages": [
+        40
+      ]
     }
   ],
   "related": [
     "r16-identity-user-profile-switch",
-    "r16-identity-user-profile-data-update"
+    "r16-identity-user-profile-data-update",
+    "r16-groups-partner-group-configuration"
   ],
   "limitations": [
-    "只说明取档时的对象、各方角色、验证条件和交付边界；不推导 Stage 3 消息编码、失败恢复或产品实现。"
+    "限本版主系统或迁移伙伴取档时的对象、角色、验证和交付，以及迁移用户配置交换、业务用户库读写的逻辑端点；不推导 Stage 3 消息编码、失败恢复、数据库协议或产品实现。",
+    "角色与操作不齐不能凭 HTTP 或 SIP-3 认定具体参考点、用户或结果。伙伴系统保存不指明实际由哪台 CMS 写入；取档、数据库操作、验证、终端实际收件和订阅/通知应分别举证。"
   ],
   "verification": {
     "original_clauses_checked": true,
