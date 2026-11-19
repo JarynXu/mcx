@@ -8,13 +8,14 @@
   "source_id": "3gpp-ts-23.280-v16.7.0",
   "condition_rule": "Inherit common_conditions and add claim conditions.",
   "common_conditions": [
-    "3GPP TS 23.280 V16.7.0，Release 16，Stage 2；主、伙伴 MC 系统管理配置相同 MC 业务的组成组，拟跨系统形成一个临时组，按 §10.2.4.2 讨论。两组仅为示例。"
+    "3GPP TS 23.280 V16.7.0，Release 16，Stage 2；将现有 MC 业务组重组为临时组。"
   ],
   "claims": [
     {
       "id": "separate-checks",
       "title": "授权和组成组状态由哪侧检查",
       "conditions": [
+        "3GPP TS 23.280 V16.7.0，Release 16，Stage 2；主、伙伴 MC 系统管理配置相同 MC 业务的组成组，拟跨系统形成一个临时组，按 §10.2.4.2 讨论。两组仅为示例。",
         "主侧组管理客户端已取到所有待重组组的配置，主侧和伙伴侧各管理本侧组成组。"
       ],
       "conclusion": "客户端向一个组成组的 GMS1 提交待合并组 ID、指明是否广播，可提出安全级别和优先级。GMS1 按组策略核实发起者权限，检查其组 A 是否为临时组。授权通过且 A 不是临时组时，GMS1 向 GMS2 转交 GMS2 所管的目标组成组 ID 列表，GMS2 检查自己所管的 B 是否是临时组。",
@@ -62,6 +63,7 @@
       "id": "regroup-rule-failure",
       "title": "违反规则时保留步骤 5 的否定结果与原文回指",
       "conditions": [
+        "3GPP TS 23.280 V16.7.0，Release 16，Stage 2；主、伙伴 MC 系统管理配置相同 MC 业务的组成组，拟跨系统形成一个临时组，按 §10.2.4.2 讨论。两组仅为示例。",
         "判断组成组资格时还须适用 §10.2.4.4 的系统策略和控制角色规则；步骤 5 涉及伙伴对服务器间请求作答。"
       ],
       "conclusion": "组成组不能本身是临时组，也不能已编入另一临时组；策略不准纳入紧急状态组时，组成组不得处于紧急状态。允许纳入外系统组与仅有成员分布跨系统的控制角色条件有别。若违反 §10.2.4.4，步骤 5 给否定响应并明确转步骤 15。步骤 15 的正文是 GMS1 通知自己一侧已归属成员，步骤 17 才向发起客户端回复。",
@@ -126,6 +128,7 @@
       "id": "group-ids-and-user-sharing",
       "title": "伙伴的组 ID 列表与用户信息共享",
       "conditions": [
+        "3GPP TS 23.280 V16.7.0，Release 16，Stage 2；主、伙伴 MC 系统管理配置相同 MC 业务的组成组，拟跨系统形成一个临时组，按 §10.2.4.2 讨论。两组仅为示例。",
         "GMS2 正在向主侧 GMS1 给出步骤 5 的服务器间重组响应。跨系统共享用户信息的安全事项受双方服务提供商协议约束。"
       ],
       "conclusion": "响应表的两项必选内容是伙伴接受或拒绝的结果及伙伴侧组成组 ID 列表。条款所举情形不向主侧共享伙伴所管组的用户信息；两家服务提供商存在信任关系时，步骤 5 后的注允许伙伴在此时共享用户信息。",
@@ -199,6 +202,7 @@
       "id": "subsequent-membership",
       "title": "伙伴日后更改组成组成员时的同步边界",
       "conditions": [
+        "3GPP TS 23.280 V16.7.0，Release 16，Stage 2；主、伙伴 MC 系统管理配置相同 MC 业务的组成组，拟跨系统形成一个临时组，按 §10.2.4.2 讨论。两组仅为示例。",
         "伙伴 MC 系统的某一组成组后来改变成员关系。"
       ],
       "conclusion": "就临时组与主 MC 系统同步该变更的程序不在本规范范围内，即使伙伴在步骤 5 曾共享用户信息也是如此。",
@@ -227,6 +231,7 @@
       "id": "accepted-formation-and-notification",
       "title": "成功后建组、存储与两侧通知的分工",
       "conditions": [
+        "3GPP TS 23.280 V16.7.0，Release 16，Stage 2；主、伙伴 MC 系统管理配置相同 MC 业务的组成组，拟跨系统形成一个临时组，按 §10.2.4.2 讨论。两组仅为示例。",
         "伙伴接受且其余组建条件均满足；下述为成功形成临时组时的流程。"
       ],
       "conclusion": "GMS1 创建并保存临时组 ID、组成组标识、离网信息、优先级、安全级别及广播属性；若安全级别、优先级两者都未指定，分别取组成组较低的安全级别和较高的优先级。GMS1 通知 GMS2；GMS2 确认并保存临时组 ID、组成组 ID、优先级和安全级别。两侧各自通知本侧业务服务器及本侧组成组已归属成员，成员各自向本侧 GMS 回执。GMS1 在步骤 17 回复发起客户端；已归属成员再分别请求临时组配置。",
@@ -298,6 +303,111 @@
           ],
           "printed_pages": [
             90
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "external-groups-controlling-role",
+      "title": "策略允许纳入外系统组且组成组来自多个系统时，哪台 MC 业务服务器可以控制临时组",
+      "conditions": [
+        "MC 系统策略允许临时组包含其他 MC 系统的组，待重组的组成组来自多个 MC 系统。",
+        "任何组成组都不能本身是临时组，也不能已编入另一临时组；若策略禁止纳入紧急状态组，任何组成组都不得处于紧急状态。"
+      ],
+      "conclusion": "策略允许纳入外系统组、组成组确实来自多个 MC 系统，并通过上述组成组资格检查时，候选 MC 业务服务器 S 满足下列任一项，即符合临时组 T 的控制角色条件：① S 已控制全部组成组；② S 已控制至少一个组成组；③ S 是 “an MC service server homed by at least one of the MC service groups”，并且 “the MC system of any involved MC service group” 允许将全套重组组的话权控制交给 T 的控制服务器 S。S 一个组成组都不控制时，前两项均不适用，仍可按第三项核对。满足角色条件不证明 S 已实际选定或 T 已建成。",
+      "normative_strength": "在允许外组且本次组成组实际跨系统的分支，三项至少一项成立即可，可同时成立。第三项中的 homed by 关系和整套话权控制的移交许可须同时满足；前两项不附加这两道条件，也不要求不同组成组的控制服务器同属一个 MC 系统。",
+      "limitations": [
+        "成员已归属某组、与 S 同系统、只对一个组成组的话权交接，均不能代替第三项所需的完整证据。未核实不等于已确认条件不成立；条款未规定投票或批准消息。",
+        "S 符合角色条件，不证明它已被选定。§10.2.4.2 步骤 5 的伙伴 GMS 接受结果和组成组 ID 不证明选中了 S，也不证明走完了步骤 6 的建组。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.4 (first rule for single or multiple systems)"
+          ],
+          "printed_pages": [
+            101
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.4, second main bullet: controlling role when policy allows groups from other MC systems"
+          ],
+          "printed_pages": [
+            101
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.2.13, table 10.2.2.13-1: result and constituent group identifiers in the partner response"
+          ],
+          "printed_pages": [
+            90
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.2, step 5: partner response, negative response on a rule violation and explicit reference to step 15"
+          ],
+          "printed_pages": [
+            99
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.2, steps 6–8: primary creation and storage, inter-server notification, partner acknowledgment and storage"
+          ],
+          "printed_pages": [
+            99
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "distributed-members-controlling-role",
+      "title": "禁纳外系统组但成员跨系统时，哪台 MC 业务服务器可以控制临时组",
+      "conditions": [
+        "MC 系统策略不允许临时组包含其他 MC 系统的组，现有组成组不含外系统组，但其成员分布在多个 MC 系统。",
+        "任何组成组都不能本身是临时组，也不能已编入另一临时组；若策略禁止纳入紧急状态组，任何组成组都不得处于紧急状态。"
+      ],
+      "conclusion": "策略禁纳外系统组、本次组成组均属本系统，但成员确实分布在多个系统，并通过上述组成组资格检查时：若候选 MC 业务服务器 S 已控制全部组成组，它可以承担临时组 T 的控制角色。或者，S 至少控制一个组成组，并且所有组成组的控制服务器位于同一个 MC 系统，这时 S 也可以承担该角色。既有控制服务器可以是多台；若 S 只控制部分且各控制服务器分处不同系统，则不符合本分支。符合本分支的角色条件也不证明 S 已实际选定或 T 已建成。",
+      "normative_strength": "不能引入外系统组。组属于哪个系统、成员由哪个系统服务、组成组的控制服务器都在哪个系统，是三个不同判断。S 不控制任何组成组时，两项均不满足，不能借用允许纳入外系统组时的 homed by 及话权控制移交选项。",
+      "limitations": [
+        "一个伙伴组不会因为所有成员在本系统接受服务就变成本系统组。只知一名成员在伙伴系统接受服务，不能判定成员已分布在多个系统。成员归属关系或所在地不能证明哪台服务器控制哪个组成组，也不能证明这些服务器位于同一 MC 系统。",
+        "符合控制角色条件不证明实际选定 S 或已创建 T；这一分支未把 §10.2.4.2 的步骤 5 伙伴 GMS 往返规定为本情形的选定手续。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.4 (first rule for single or multiple systems)"
+          ],
+          "printed_pages": [
+            101
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.4.4, third main bullet: controlling role when policy disallows groups from other MC systems and members span systems"
+          ],
+          "printed_pages": [
+            101
           ]
         }
       ],
