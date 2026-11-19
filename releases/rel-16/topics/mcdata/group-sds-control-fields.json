@@ -1,0 +1,682 @@
+{
+  "topic_id": "r16-mcdata-group-sds-control-fields",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "在网组独立短数据：发往组、发给某位成员和收到该成员的报告，分别看哪条记录？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "common_conditions": [
+    "3GPP TS 23.282 V16.8.0 Rel-16 Stage 2，同一 MCData 系统内在网组独立 SDS 的信令控制面信息流，按观察方向及该表 M/O 使用。所引组程序例假定载荷小于配置上限；组用户已注册且已归属。"
+  ],
+  "condition_rule": "各 claim 继承 common_conditions；报告接收、组登记和已读触发的条件不能从一段发送记录补齐。",
+  "claims": [
+    {
+      "id": "sg-sds-request-targets",
+      "title": "同系统在网组独立 SDS 信令控制面：发起端请求列发件用户和目标组，服务器转出的请求另列目标用户",
+      "conditions": [
+        "同一 MCData 系统内，在网组独立 SDS 走信令控制面。检查数据请求，不是检查处置通知；先认发送节点和目标节点。"
+      ],
+      "conclusion": "在网组独立 SDS 信令控制面的数据请求（表 7.4.2.1.7-1、7.4.2.1.8-1）均列发件用户、目标组；第二张表还列目标用户。原发件用户的别名和位置可选，不能替代目标用户。预配置组可以只选部分成员。",
+      "normative_strength": "两张表所述业务身份均为 M。别名和位置均 O。指定子集为可选，非所有组业务必须点名。",
+      "limitations": [
+        "发起端发出不证服务器已收，服务器向某人发出不证该端已收；一位目标不代表全组实收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2 opening and 7.4.2.1 heading: on-network SDS in a single MCData system"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.5.1 and 7.4.2.5.2 opening and precondition 1 (procedure context only)"
+          ],
+          "printed_pages": [
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.1.7, introduction to Table 7.4.2.1.7-1"
+          ],
+          "printed_pages": [
+            47
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.1.7, Table 7.4.2.1.7-1: originating user and target group; optional alias and originating location"
+          ],
+          "printed_pages": [
+            48
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.1.8, introduction to Table 7.4.2.1.8-1"
+          ],
+          "printed_pages": [
+            48
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.1.8, Table 7.4.2.1.8-1: originating user, target group and target user; optional alias and originating location"
+          ],
+          "printed_pages": [
+            49
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.5.2 steps 1–2 (procedure context only)"
+          ],
+          "printed_pages": [
+            62
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.5.2 steps 3–4 (procedure context only)"
+          ],
+          "printed_pages": [
+            63
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "sg-sds-request-correlation",
+      "title": "同系统在网组独立 SDS 信令控制面：两段数据请求均列对话和本笔事务；可选回复标识指本笔所回复的原事务",
+      "conditions": [
+        "同一 MCData 系统内，在网组独立 SDS 走信令控制面。对比组内同对话的多笔不同数据请求。"
+      ],
+      "conclusion": "在网组独立 SDS 信令控制面的数据请求（表 7.4.2.1.7-1、7.4.2.1.8-1）中的对话可相同，本笔事务仍不同。T2 回复 T0 不表示 T2 变成 T0，也不要求回复时间最近的 T1。",
+      "normative_strength": "两表对话和本笔事务均 M；回复标识均 O。",
+      "limitations": [
+        "仅凭组、用户或对话相同不能断定两笔为同一消息，不能把请求中的回复标识当作报告表项。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2 opening and 7.4.2.1 heading: on-network SDS in a single MCData system"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.5.1 and 7.4.2.5.2 opening and precondition 1 (procedure context only)"
+          ],
+          "printed_pages": [
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.1.7, Table 7.4.2.1.7-1: conversation, transaction, reply, disposition type, destination type, application identifier, payload and note 3"
+          ],
+          "printed_pages": [
+            48
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.1.8, Table 7.4.2.1.8-1: conversation, transaction, reply, disposition type, destination type, application identifier, payload and note 3"
+          ],
+          "printed_pages": [
+            49
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.1.9, introduction and Table 7.4.2.1.9-1: server-to-client direction and all five mandatory elements"
+          ],
+          "printed_pages": [
+            49
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "sg-sds-payload-destination",
+      "title": "同系统在网组独立 SDS 信令控制面：两段数据请求都必带载荷与载荷去向；仅应用去向可带应用标识",
+      "conditions": [
+        "同一 MCData 系统内，在网组独立 SDS 走信令控制面。读两段数据请求表 7.4.2.1.7-1、7.4.2.1.8-1 的载荷、去向及应用标识，先区分完整信息流与截取的日志。"
+      ],
+      "conclusion": "在网组独立 SDS 信令控制面的数据请求（表 7.4.2.1.7-1、7.4.2.1.8-1）都要求实际载荷和载荷去向；去向区分客户端或应用。只有去向表明交应用时才可带应用标识，交应用不要求一定带标识。",
+      "normative_strength": "两表载荷和去向均 M，应用标识 O，注 3 给出出现的必要条件。",
+      "limitations": [
+        "在这两张在网组控制面数据表中，无应用标识不能反推交给客户端。完整记录带应用标识却指向客户端，违反注 3；带标识而无去向，既缺了必选去向，也未满足注 3 所要求的应用去向。过滤日志看不到去向，须先核完整记录，不据节选直接判违规。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2 opening and 7.4.2.1 heading: on-network SDS in a single MCData system"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.5.1 and 7.4.2.5.2 opening and precondition 1 (procedure context only)"
+          ],
+          "printed_pages": [
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.1.7, Table 7.4.2.1.7-1: originating user and target group; optional alias and originating location"
+          ],
+          "printed_pages": [
+            48
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.1.8, Table 7.4.2.1.8-1: originating user, target group and target user; optional alias and originating location"
+          ],
+          "printed_pages": [
+            49
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.1.7, Table 7.4.2.1.7-1: conversation, transaction, reply, disposition type, destination type, application identifier, payload and note 3"
+          ],
+          "printed_pages": [
+            48
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.1.8, Table 7.4.2.1.8-1: conversation, transaction, reply, disposition type, destination type, application identifier, payload and note 3"
+          ],
+          "printed_pages": [
+            49
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "sg-sds-expected-reports",
+      "title": "同系统在网组独立 SDS 信令控制面：两段数据请求的处置类型表示期待哪种回报，不是已收到的结果",
+      "conditions": [
+        "同一 MCData 系统内，在网组独立 SDS 走信令控制面。观察对象为来自发起端或发往目标客户端的数据请求。"
+      ],
+      "conclusion": "在网组独立 SDS 信令控制面的数据请求（表 7.4.2.1.7-1、7.4.2.1.8-1）可表明期待交付回报、已读回报或两者；要登记某位接收者的结果，须匹配通知中的报告人、原事务和处置结果。",
+      "normative_strength": "两张请求表的处置类型标 O；实际转送的通知表其处置结果标 M。",
+      "limitations": [
+        "只见期待双回报，不证明已发回两份或已读；未看到回报也不等于失败。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2 opening and 7.4.2.1 heading: on-network SDS in a single MCData system"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.5.1 and 7.4.2.5.2 opening and precondition 1 (procedure context only)"
+          ],
+          "printed_pages": [
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.1.7, Table 7.4.2.1.7-1: conversation, transaction, reply, disposition type, destination type, application identifier, payload and note 3"
+          ],
+          "printed_pages": [
+            48
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.1.8, Table 7.4.2.1.8-1: conversation, transaction, reply, disposition type, destination type, application identifier, payload and note 3"
+          ],
+          "printed_pages": [
+            49
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.1.9, introduction and Table 7.4.2.1.9-1: server-to-client direction and all five mandatory elements"
+          ],
+          "printed_pages": [
+            49
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.5.2, Figure 7.4.2.5.2-1 arrows at steps 6, 7 and 9; steps 6–9 in accompanying prose (context only)"
+          ],
+          "printed_pages": [
+            62,
+            63
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "sg-sds-disposition-association",
+      "title": "同系统在网组独立 SDS 信令控制面：服务器转给客户端的处置通知列通知目标、报告人、对话、原事务关联和结果",
+      "conditions": [
+        "同一 MCData 系统内，在网组独立 SDS 走信令控制面。原业务确认系本组独立控制面 SDS；观察报告返回原请求方的一段或该方的收件证据。"
+      ],
+      "conclusion": "在网组独立 SDS 信令控制面情形下，服务器向客户端发送的处置通知（表 7.4.2.1.9-1）区分通知目标和报告人，服务器只是转送节点。例中甲、乙、C、关联 T1、已送达，指乙就 T1 报告送达；若需组 ID，查 T1 的原请求，不转记同一对话的 T2。",
+      "normative_strength": "通知引言限定服务器至客户端，五项均 M。结果值区分已送达、已读或两者。",
+      "limitations": [
+        "该表没有另列组 ID、通知自身事务号或 Reply Identifier。不能判为本表缺项，也不能外推为全网禁止。只有服务器发出不等于甲已收；业务报告不是已亲自阅读并理解的独立证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2 opening and 7.4.2.1 heading: on-network SDS in a single MCData system"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.5.1 and 7.4.2.5.2 opening and precondition 1 (procedure context only)"
+          ],
+          "printed_pages": [
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.1.7, Table 7.4.2.1.7-1: originating user and target group; optional alias and originating location"
+          ],
+          "printed_pages": [
+            48
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.1.8, Table 7.4.2.1.8-1: originating user, target group and target user; optional alias and originating location"
+          ],
+          "printed_pages": [
+            49
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.1.7, Table 7.4.2.1.7-1: conversation, transaction, reply, disposition type, destination type, application identifier, payload and note 3"
+          ],
+          "printed_pages": [
+            48
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.1.8, Table 7.4.2.1.8-1: conversation, transaction, reply, disposition type, destination type, application identifier, payload and note 3"
+          ],
+          "printed_pages": [
+            49
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.1.9, introduction and Table 7.4.2.1.9-1: server-to-client direction and all five mandatory elements"
+          ],
+          "printed_pages": [
+            49
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.5.2, Figure 7.4.2.5.2-1 arrows at steps 6, 7 and 9; steps 6–9 in accompanying prose (context only)"
+          ],
+          "printed_pages": [
+            62,
+            63
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "sg-sds-report-legs",
+      "title": "同系统在网组独立 SDS 信令控制面：接收端发起报告，服务器向请求者逐份或汇总转送",
+      "conditions": [
+        "同一 MCData 系统内，在网组独立 SDS 走信令控制面。用 §7.4.2.5.2 步骤 6–9 判定报告的两段。发起用户请求相应类型；已读报告须待接收用户已读。"
+      ],
+      "conclusion": "同系统在网组独立 SDS 信令控制面程序 §7.4.2.5.2 中，接收端按条件发起交付或已读报告；服务器可存、可汇总，最后向请求者发送逐份或汇总通知。表 7.4.2.1.9-1 描述服务器至客户端的最后一段，不是接收端至服务器。",
+      "normative_strength": "步骤 6–7 各有触发条件；步骤 8 的存储和汇总可选；步骤 9 明确逐份或汇总均向请求者发。",
+      "limitations": [
+        "不汇总不等于客户端直连。汇总中只能登记与相应用户和原事务匹配的结果；要说甲实际收到，还要收件或等效证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2 opening and 7.4.2.1 heading: on-network SDS in a single MCData system"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.5.1 and 7.4.2.5.2 opening and precondition 1 (procedure context only)"
+          ],
+          "printed_pages": [
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.1.9, introduction and Table 7.4.2.1.9-1: server-to-client direction and all five mandatory elements"
+          ],
+          "printed_pages": [
+            49
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.5.2, Figure 7.4.2.5.2-1 arrows at steps 6, 7 and 9; steps 6–9 in accompanying prose (context only)"
+          ],
+          "printed_pages": [
+            62,
+            63
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "sg-sds-emergency-notes",
+      "title": "同系统在网组独立 SDS 信令控制面：两段数据请求均限制紧急、迫近危险和告警指示的组合",
+      "conditions": [
+        "同一 MCData 系统内，在网组独立 SDS 走信令控制面。按表 7.4.2.1.7-1、7.4.2.1.8-1 注 1–2 判组合；涉及发起或转发时，再核 §7.4.2.5.2 步骤 2、4。"
+      ],
+      "conclusion": "在网组独立 SDS 信令控制面的数据请求（表 7.4.2.1.7-1、7.4.2.1.8-1）都规定紧急与迫近危险至多一个，告警只可随紧急出现。发起紧急通信或发起端已因先前紧急告警置紧急状态时，上行请求须带紧急指示；如已配置在该场景发紧急告警，还须设置告警指示。服务器下行按来件中的状态指示和是否请求发告警处理。",
+      "normative_strength": "两表三项均为 O。注 1、2 限制组合；程序步骤 2 的条件性设置及步骤 4 的转送条件须另读。",
+      "limitations": [
+        "某项指示出现不证告警已送达，不证进行中通信已按升级程序完成。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2 opening and 7.4.2.1 heading: on-network SDS in a single MCData system"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.5.1 and 7.4.2.5.2 opening and precondition 1 (procedure context only)"
+          ],
+          "printed_pages": [
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.1.7, Table 7.4.2.1.7-1: emergency, imminent peril, alert and notes 1 and 2"
+          ],
+          "printed_pages": [
+            48
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.1.8, Table 7.4.2.1.8-1: emergency, imminent peril, alert and notes 1 and 2"
+          ],
+          "printed_pages": [
+            49
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.5.2 steps 1–2 (procedure context only)"
+          ],
+          "printed_pages": [
+            62
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.4.2.5.2 steps 3–4 (procedure context only)"
+          ],
+          "printed_pages": [
+            63
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2 opening and 7.4.2.1 heading: on-network SDS in a single MCData system"
+      ],
+      "printed_pages": [
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.5.1 and 7.4.2.5.2 opening and precondition 1 (procedure context only)"
+      ],
+      "printed_pages": [
+        61
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.1.7, introduction to Table 7.4.2.1.7-1"
+      ],
+      "printed_pages": [
+        47
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.1.7, Table 7.4.2.1.7-1: originating user and target group; optional alias and originating location"
+      ],
+      "printed_pages": [
+        48
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.1.8, introduction to Table 7.4.2.1.8-1"
+      ],
+      "printed_pages": [
+        48
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.1.8, Table 7.4.2.1.8-1: originating user, target group and target user; optional alias and originating location"
+      ],
+      "printed_pages": [
+        49
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.1.7, Table 7.4.2.1.7-1: conversation, transaction, reply, disposition type, destination type, application identifier, payload and note 3"
+      ],
+      "printed_pages": [
+        48
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.1.8, Table 7.4.2.1.8-1: conversation, transaction, reply, disposition type, destination type, application identifier, payload and note 3"
+      ],
+      "printed_pages": [
+        49
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.1.7, Table 7.4.2.1.7-1: emergency, imminent peril, alert and notes 1 and 2"
+      ],
+      "printed_pages": [
+        48
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.1.8, Table 7.4.2.1.8-1: emergency, imminent peril, alert and notes 1 and 2"
+      ],
+      "printed_pages": [
+        49
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.1.9, introduction and Table 7.4.2.1.9-1: server-to-client direction and all five mandatory elements"
+      ],
+      "printed_pages": [
+        49
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.5.2 steps 1–2 (procedure context only)"
+      ],
+      "printed_pages": [
+        62
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.5.2 steps 3–4 (procedure context only)"
+      ],
+      "printed_pages": [
+        63
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.4.2.5.2, Figure 7.4.2.5.2-1 arrows at steps 6, 7 and 9; steps 6–9 in accompanying prose (context only)"
+      ],
+      "printed_pages": [
+        62,
+        63
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcdata-group-sds-control-client",
+    "r16-mcdata-one-to-one-standalone-sds",
+    "r16-mcdata-group-media-plane-sds-session",
+    "r16-mcdata-group-sds-emergency-upgrade"
+  ],
+  "limitations": [
+    "仅收录 TS 23.282 V16.8.0 同一系统在网组独立 SDS 控制面两段数据请求与服务器至客户端通知表；§7.4.2 和 §7.4.2.5.1–2 用于适用条件和证据解释。表 .9 的组场景用途不是宣称该通用通知表只供组使用。不覆盖 SIP 线上编码、历史 Stage 3 原始验收、完整服务器程序或设备实测。",
+    "示例中的 C、T0、T1、T2 只是区分角色和关联的标签。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
