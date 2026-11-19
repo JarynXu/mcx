@@ -1,0 +1,764 @@
+{
+  "topic_id": "r16-mcdata-media-plane-fd-infoflows",
+  "title": "在网 MCData 媒体面文件分发：谁是目标、谁回了应答，能否据此确认收齐文件？",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "common_conditions": [
+    "Rel-16 Stage 2，TS 23.282 V16.8.0 在网 MCData 媒体面文件分发的一对一或组独立信息流；按各项注明的请求/响应表和角色判断。"
+  ],
+  "condition_rule": "四张表均属在网。目标及身份角色按一对一或组、请求或响应分别读取；组请求表注仅约束该表。记录不足与通信失败分开。",
+  "claims": [
+    {
+      "id": "mp-fd-flow-directions",
+      "title": "在网 MCData 一对一与组独立媒体面 FD 的请求和响应：客户端至服务器、服务器至另一客户端是信息流的传递段；用户 ID 不标识转发节点",
+      "conditions": [
+        "按四张表的引言及所回指的程序，先确认媒体面、一对一或组独立，再解释某一段。"
+      ],
+      "conclusion": "服务器向客户端转发响应时，应答用户仍按表中的业务身份读。观察服务器发送，不等于观察到对端接收。",
+      "normative_strength": "四表引言规定各自描述的方向；不是从抓包推出固定字段编码。",
+      "limitations": [
+        "不由四表未列推出全系统禁止。HTTP 请求以目标用户或目标组区分所用信息流；两类 HTTP 表均列含 URL 的内容引用，不能只凭 URL 选一对一或组，也不能将 HTTP 字段移入媒体面必选项。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2 and 7.5.2.1, headings: on-network FD information flows"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.5 heading and 7.5.2.5.2 opening: one-to-one FD using media plane"
+          ],
+          "printed_pages": [
+            94
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.7 heading and 7.5.2.7.2 opening: group standalone FD using media plane"
+          ],
+          "printed_pages": [
+            99
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.8, introduction to Table 7.5.2.1.8-1: procedure reference and endpoints"
+          ],
+          "printed_pages": [
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.9, introduction and Table 7.5.2.1.9-1: endpoints and all information elements"
+          ],
+          "printed_pages": [
+            84
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.12, introduction to Table 7.5.2.1.12-1: procedure reference and endpoints"
+          ],
+          "printed_pages": [
+            85
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.13, introduction and Table 7.5.2.1.13-1: endpoints and all information elements"
+          ],
+          "printed_pages": [
+            85
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.5, Table 7.5.2.1.5-1: target user and mandatory content reference (routing contrast only)"
+          ],
+          "printed_pages": [
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.10, Table 7.5.2.1.10-1: group target and mandatory content reference (routing contrast only)"
+          ],
+          "printed_pages": [
+            84
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mp-fd-flow-individual",
+      "title": "在网 MCData 一对一媒体面 FD 请求必列收发用户、对话、本笔事务和 SDP offer；响应必列原请求用户、应答用户、对话和 SDP answer",
+      "conditions": [
+        "业务是将文件发给一名目标用户，而非发给一个组。"
+      ],
+      "conclusion": "请求第二个用户 ID 按收文件者解释；响应中用户 ID 的角色是发起请求者和作答者。offer 提出参数，answer 给出所选参数。",
+      "normative_strength": "请求五项、响应四项的表内状态均为 M。",
+      "limitations": [
+        "发送请求、提供参数或选定参数都不确认该用户已收到整文件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2 and 7.5.2.1, headings: on-network FD information flows"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.5 heading and 7.5.2.5.2 opening: one-to-one FD using media plane"
+          ],
+          "printed_pages": [
+            94
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.8, introduction to Table 7.5.2.1.8-1: procedure reference and endpoints"
+          ],
+          "printed_pages": [
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.8, Table 7.5.2.1.8-1: identities, alias, conversation, transaction, reply and SDP offer"
+          ],
+          "printed_pages": [
+            84
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.9, introduction and Table 7.5.2.1.9-1: endpoints and all information elements"
+          ],
+          "printed_pages": [
+            84
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mp-fd-flow-group",
+      "title": "在网 MCData 组独立媒体面 FD 请求的目标是组；组响应须同时标出目标组和发送该响应的用户",
+      "conditions": [
+        "业务是向选定组发送独立文件；核对某条请求或一条响应。"
+      ],
+      "conclusion": "请求必列发送用户、目标组、对话、本笔事务、SDP offer。响应必列原请求用户、目标组、作答用户、对话、SDP answer。组 ID 不是代全组作答的用户 ID。",
+      "normative_strength": "请求和响应所列这五项分别均为 M。",
+      "limitations": [
+        "一人作答不能替其他成员确认应答或下载。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2 and 7.5.2.1, headings: on-network FD information flows"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.7 heading and 7.5.2.7.2 opening: group standalone FD using media plane"
+          ],
+          "printed_pages": [
+            99
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.12, introduction to Table 7.5.2.1.12-1: procedure reference and endpoints"
+          ],
+          "printed_pages": [
+            85
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.12, Table 7.5.2.1.12-1: sender, alias, target group, conversation, transaction, reply and SDP offer"
+          ],
+          "printed_pages": [
+            85
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.13, introduction and Table 7.5.2.1.13-1: endpoints and all information elements"
+          ],
+          "printed_pages": [
+            85
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.7.2, steps 6–12 and note 1 after step 8: per-client response, conditional forwarding time, transfer and receiving client completion (context only)"
+          ],
+          "printed_pages": [
+            100,
+            101
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mp-fd-flow-correlation",
+      "title": "在网 MCData 媒体面 FD 两类请求均须区分对话与本笔事务，回复原事务标识可选；两张响应表都未将事务号列作必选",
+      "conditions": [
+        "按一对一或组独立媒体面 FD 的请求、响应分别核对；关联例中，同一对话有两笔业务身份与所选媒体参数都相同的候选事务。"
+      ],
+      "conclusion": "对话标识可跨两笔；事务标识标识本笔；可选回复标识指回本笔所回复的原事务，不表示最近一笔。仅凭响应表列的值，例中两笔无法区分。",
+      "normative_strength": "两种请求的对话、本笔事务标 M，回复标识标 O；两张响应表都列对话、不列本笔事务或回复标识。",
+      "limitations": [
+        "响应没列本笔事务号不构成本表缺必选项；不证明线上没有其他关联信息，也不是全协议禁止事务关联的依据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2 and 7.5.2.1, headings: on-network FD information flows"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.5 heading and 7.5.2.5.2 opening: one-to-one FD using media plane"
+          ],
+          "printed_pages": [
+            94
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.7 heading and 7.5.2.7.2 opening: group standalone FD using media plane"
+          ],
+          "printed_pages": [
+            99
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.8, Table 7.5.2.1.8-1: identities, alias, conversation, transaction, reply and SDP offer"
+          ],
+          "printed_pages": [
+            84
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.12, Table 7.5.2.1.12-1: sender, alias, target group, conversation, transaction, reply and SDP offer"
+          ],
+          "printed_pages": [
+            85
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.9, introduction and Table 7.5.2.1.9-1: endpoints and all information elements"
+          ],
+          "printed_pages": [
+            84
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.13, introduction and Table 7.5.2.1.13-1: endpoints and all information elements"
+          ],
+          "printed_pages": [
+            85
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mp-fd-flow-setup-and-receipt",
+      "title": "在网 MCData 一对一和组独立媒体面 FD 的强制下载指示要求自动接受本次媒体面建立，期望完成报告的指示不确认收件",
+      "conditions": [
+        "先确认见到的是哪种记录：请求的下载/处置指示、响应的选定参数，还是与文件及接收方相符的完成证据。"
+      ],
+      "conclusion": "两种请求各有两个独立可选项：Download indication 表达强制下载，即自动接受此次媒体面建立请求；Disposition indication 表达是否期望完成报告。请求所提要求不等于已执行，响应也不是整文件收据。",
+      "normative_strength": "两项均为 O；自动接受是强制下载的条件语义，不等于每笔媒体面 FD 一律强制。",
+      "limitations": [
+        "不从请求或参数响应推断有人下载完成、报告送达或用户作过选择；未见报告不能断言失败。甲收到一份能对应丁和原文件事务的完成报告，可确认丁的客户端报告已下完、甲已收到报告；不能据此确认丁本人读过文件。",
+        "若问自动应答、发件端何时开传，须先知道目标是用户还是组，分别按对应媒体面程序判断。组程序不规定等齐所有应答，也不凭第一份应答确认已开传。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2 and 7.5.2.1, headings: on-network FD information flows"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.5 heading and 7.5.2.5.2 opening: one-to-one FD using media plane"
+          ],
+          "printed_pages": [
+            94
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.7 heading and 7.5.2.7.2 opening: group standalone FD using media plane"
+          ],
+          "printed_pages": [
+            99
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.8, Table 7.5.2.1.8-1: disposition, download, priority and emergency rows"
+          ],
+          "printed_pages": [
+            84
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.12, Table 7.5.2.1.12-1: disposition, download and requested priority"
+          ],
+          "printed_pages": [
+            85
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.9, introduction and Table 7.5.2.1.9-1: endpoints and all information elements"
+          ],
+          "printed_pages": [
+            84
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.13, introduction and Table 7.5.2.1.13-1: endpoints and all information elements"
+          ],
+          "printed_pages": [
+            85
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.5.2, steps 6–12: acceptance, forwarding, transfer and separately requested report (context only)"
+          ],
+          "printed_pages": [
+            95,
+            96
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.7.2, steps 6–12 and note 1 after step 8: per-client response, conditional forwarding time, transfer and receiving client completion (context only)"
+          ],
+          "printed_pages": [
+            100,
+            101
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.7, Table 7.5.2.1.7-1: reporting user, original transaction reference and disposition confirmation (contrast only)"
+          ],
+          "printed_pages": [
+            83
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mp-fd-flow-optional-identity-priority",
+      "title": "在网 MCData 两类媒体面 FD 请求可附发件用户功能别名和所请求的优先级，不能凭别名替代用户 ID 或凭请求断言等级已获准",
+      "conditions": [
+        "仅解释一对一或组独立媒体面 FD 请求中的身份和应用优先级。"
+      ],
+      "conclusion": "别名附属于发文件的用户；所请求优先级是本次通信请求的应用等级。原始发送用户 ID 在两种请求都仍为必选。",
+      "normative_strength": "别名和所请求优先级标 O，发送用户 ID 标 M。",
+      "limitations": [
+        "这些行不说明最终获准等级或鉴权结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2 and 7.5.2.1, headings: on-network FD information flows"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.5 heading and 7.5.2.5.2 opening: one-to-one FD using media plane"
+          ],
+          "printed_pages": [
+            94
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.7 heading and 7.5.2.7.2 opening: group standalone FD using media plane"
+          ],
+          "printed_pages": [
+            99
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.8, Table 7.5.2.1.8-1: identities, alias, conversation, transaction, reply and SDP offer"
+          ],
+          "printed_pages": [
+            84
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.8, Table 7.5.2.1.8-1: disposition, download, priority and emergency rows"
+          ],
+          "printed_pages": [
+            84
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.12, Table 7.5.2.1.12-1: sender, alias, target group, conversation, transaction, reply and SDP offer"
+          ],
+          "printed_pages": [
+            85
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.12, Table 7.5.2.1.12-1: disposition, download and requested priority"
+          ],
+          "printed_pages": [
+            85
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mp-fd-flow-group-conditions",
+      "title": "在网 MCData 组独立媒体面 FD 请求中，紧急与迫近危险指示至多一个；告警指示只可随紧急指示出现",
+      "conditions": [
+        "仅对表 7.5.2.1.12-1 判定信息项是否出现，非事后判定告警已发送。"
+      ],
+      "conclusion": "两项状态指示均可省略。用了紧急仍可不带告警；仅告警、仅迫近危险却带告警、或紧急和迫近危险并列均不符合相应表注。告警指示的值表达是否要发送紧急告警。",
+      "normative_strength": "组表三项均标 O；注 1 限互斥，注 2 给出告警出现的必要而非充分条件。",
+      "limitations": [
+        "一对一表只列可选紧急指示；不在其上援引组表两注，也不把表中未列推成全系统禁止。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2 and 7.5.2.1, headings: on-network FD information flows"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.7 heading and 7.5.2.7.2 opening: group standalone FD using media plane"
+          ],
+          "printed_pages": [
+            99
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.12, Table 7.5.2.1.12-1: emergency, alert, imminent peril and notes 1 and 2"
+          ],
+          "printed_pages": [
+            85
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.5 heading and 7.5.2.5.2 opening: one-to-one FD using media plane"
+          ],
+          "printed_pages": [
+            94
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.8, Table 7.5.2.1.8-1: disposition, download, priority and emergency rows"
+          ],
+          "printed_pages": [
+            84
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2 and 7.5.2.1, headings: on-network FD information flows"
+      ],
+      "printed_pages": [
+        81
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.5 heading and 7.5.2.5.2 opening: one-to-one FD using media plane"
+      ],
+      "printed_pages": [
+        94
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.7 heading and 7.5.2.7.2 opening: group standalone FD using media plane"
+      ],
+      "printed_pages": [
+        99
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.1.8, introduction to Table 7.5.2.1.8-1: procedure reference and endpoints"
+      ],
+      "printed_pages": [
+        83
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.1.8, Table 7.5.2.1.8-1: identities, alias, conversation, transaction, reply and SDP offer"
+      ],
+      "printed_pages": [
+        84
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.1.8, Table 7.5.2.1.8-1: disposition, download, priority and emergency rows"
+      ],
+      "printed_pages": [
+        84
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.1.9, introduction and Table 7.5.2.1.9-1: endpoints and all information elements"
+      ],
+      "printed_pages": [
+        84
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.1.12, introduction to Table 7.5.2.1.12-1: procedure reference and endpoints"
+      ],
+      "printed_pages": [
+        85
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.1.12, Table 7.5.2.1.12-1: sender, alias, target group, conversation, transaction, reply and SDP offer"
+      ],
+      "printed_pages": [
+        85
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.1.12, Table 7.5.2.1.12-1: disposition, download and requested priority"
+      ],
+      "printed_pages": [
+        85
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.1.12, Table 7.5.2.1.12-1: emergency, alert, imminent peril and notes 1 and 2"
+      ],
+      "printed_pages": [
+        85
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.1.13, introduction and Table 7.5.2.1.13-1: endpoints and all information elements"
+      ],
+      "printed_pages": [
+        85
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.5.2, steps 6–12: acceptance, forwarding, transfer and separately requested report (context only)"
+      ],
+      "printed_pages": [
+        95,
+        96
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.7.2, steps 6–12 and note 1 after step 8: per-client response, conditional forwarding time, transfer and receiving client completion (context only)"
+      ],
+      "printed_pages": [
+        100,
+        101
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.1.7, Table 7.5.2.1.7-1: reporting user, original transaction reference and disposition confirmation (contrast only)"
+      ],
+      "printed_pages": [
+        83
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.1.5, Table 7.5.2.1.5-1: target user and mandatory content reference (routing contrast only)"
+      ],
+      "printed_pages": [
+        83
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.1.10, Table 7.5.2.1.10-1: group target and mandatory content reference (routing contrast only)"
+      ],
+      "printed_pages": [
+        84
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcdata-one-to-one-media-plane-fd",
+    "r16-mcdata-group-media-plane-fd-reports",
+    "r16-mcdata-http-fd-download-report"
+  ],
+  "limitations": [
+    "新增表 7.5.2.1.8-1、.9-1、.12-1、.13-1 及引言的媒体面字段语义。上位标题、所回指程序和完成报告仅作限界；一对一 HTTP .5-1、组独立 HTTP .10-1 的目标与内容引用只作分流反例。未扩展完整 HTTP 表、线上编码、设备行为或整份规范。",
+    "示例中的 C、T1、T2 是判读标签，不是协议编码或规定的日志。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
