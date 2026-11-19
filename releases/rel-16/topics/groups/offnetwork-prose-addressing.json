@@ -1,0 +1,288 @@
+{
+  "topic_id": "r16-groups-offnetwork-prose-addressing",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "离网业务组的 ProSe 地址：有了二层组号，为什么还要查组播 IP？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0（Release 16，Stage 2）§8.1.3.2，离网操作中的 MC 业务组 ID 管理。"
+  ],
+  "condition_rule": "声明继承主题范围。核实预配的组寻址信息，不以某次通信已开始为前提。",
+  "claims": [
+    {
+      "id": "prose-pair",
+      "title": "离网业务组 ID 宜解析到本组预配的 ProSe 组播 IP 与二层组号",
+      "conditions": [
+        "核对指定 MC 业务组的离网寻址配置。"
+      ],
+      "conclusion": "两项均按该组的业务组 ID 预配。东区组与二层组号的记录只能核实这一项；模板可填写组播 IP 或西区组已有 IP，均不能核实东区组所对应的 IP。",
+      "normative_strength": "原文对解析用 should；两项预配并关联是架构描述，图给出示例。",
+      "limitations": [
+        "缺少对应记录不能推定终端漏配。本图没有规定从二层号换算 IP 的算法或映射基数。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.1.3.2, first paragraph: off-network group identity and resolution to two ProSe identifiers"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.1.3.2, second paragraph: both values pre-configured in accordance with the service group ID"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.1.3.2, figure 8.1.3.2-1: predefined associations among the three identifiers"
+          ],
+          "printed_pages": [
+            45
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "same-group-use",
+      "title": "同一业务组的成员可按组配置进行一项或多项 ProSe 直通通信，IP 版本按策略",
+      "conditions": [
+        "用户属于同一 MC 业务组，成员终端经 ProSe 直通通信。"
+      ],
+      "conclusion": "终端利用该组的组播 IP 和二层组号开展一项或多项业务通信，按组配置确定。用 IPv4 还是 IPv6 按策略，不照搬图中的 IPv4 例值。",
+      "normative_strength": "条文描述通信能力、组配置及策略条件。",
+      "limitations": [
+        "核实两项对应记录不等于核实一次通信的实际参加或文件送达。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.1.3.2, first paragraph: communications among same-group members, group configuration and IP version policy"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.1.3.2, figure 8.1.3.2-1: predefined associations among the three identifiers"
+          ],
+          "printed_pages": [
+            45
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mapping-delivery",
+      "title": "业务组 ID 到离网 ProSe 组播 IP 和二层组号的映射宜经终端 UICC、ProSe 功能提供，或由应用服务器交付",
+      "conditions": [
+        "核对指定业务组 ID 与该组离网 ProSe 组播 IP 地址、二层组号对应关系的交付途径。"
+      ],
+      "conclusion": "业务组 ID 到离网 ProSe 组播 IP 地址和二层组号的映射，宜经终端 UICC、经 ProSe 功能提供，或由应用服务器交付。这些是替代途径，无须依次经过三者。",
+      "normative_strength": "映射提供途径为 should；替代项用 or 连接。",
+      "limitations": [
+        "仅凭 UICC 的交付记录不能判定在线或离线配置。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.1.3.2, second paragraph: alternative means for supplying the mapping"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.1.3.2, second paragraph: mapping supplier for online configuration and for offline configuration"
+          ],
+          "printed_pages": [
+            44
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mapping-source",
+      "title": "业务组 ID 到离网 ProSe 组播 IP 和二层组号的映射：在线配置由 GMS 提供，离线配置由 CMS 提供",
+      "conditions": [
+        "判断指定业务组 ID 到离网 ProSe 组播 IP 和二层组号的映射由谁提供，区分在线和离线配置。"
+      ],
+      "conclusion": "业务组 ID 与离网 ProSe 组播 IP 地址、二层组号的对应，在线配置由组管理服务器（GMS）提供，离线配置由配置管理服务器（CMS）提供。这里核对的是预配数据的来源。",
+      "normative_strength": "正文分别陈述两种配置模式的供应归属。",
+      "limitations": [
+        "配置来源不等于每次直通时终端必须实时联系供应服务器。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.1.3.2, second paragraph: mapping supplier for online configuration and for offline configuration"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.1.3.2, first paragraph: communications among same-group members, group configuration and IP version policy"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.1.3.2, second paragraph: both values pre-configured in accordance with the service group ID"
+          ],
+          "printed_pages": [
+            44
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "retrieval-boundary",
+      "title": "GMS 从 ProSe 功能取回离网组的组播 IP 和二层组号：本规范不定义取回机制",
+      "conditions": [
+        "对象是 ProSe 功能到组管理服务器的离网映射信息。"
+      ],
+      "conclusion": "取回的信息是 ProSe 组播 IP 地址和 ProSe 二层组号。本规范不定义该取回机制，不能据其指定一套必行的取回流程。",
+      "normative_strength": "§8.1.3.2 的资料性注说明本规范的范围。",
+      "limitations": [
+        "不规定取回机制不等于禁止 GMS 取得信息。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.1.3.2, note: scope of retrieval from ProSe function to group management server"
+          ],
+          "printed_pages": [
+            44
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "8.1.3.2, first paragraph: off-network group identity and resolution to two ProSe identifiers"
+      ],
+      "printed_pages": [
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "8.1.3.2, second paragraph: both values pre-configured in accordance with the service group ID"
+      ],
+      "printed_pages": [
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "8.1.3.2, figure 8.1.3.2-1: predefined associations among the three identifiers"
+      ],
+      "printed_pages": [
+        45
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "8.1.3.2, first paragraph: communications among same-group members, group configuration and IP version policy"
+      ],
+      "printed_pages": [
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "8.1.3.2, second paragraph: alternative means for supplying the mapping"
+      ],
+      "printed_pages": [
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "8.1.3.2, second paragraph: mapping supplier for online configuration and for offline configuration"
+      ],
+      "printed_pages": [
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "8.1.3.2, note: scope of retrieval from ProSe function to group management server"
+      ],
+      "printed_pages": [
+        44
+      ]
+    }
+  ],
+  "related": [
+    "r16-groups-group-id-psi-mapping",
+    "r16-groups-offnetwork-configuration-roles",
+    "r16-mcvideo-offnetwork-group-join",
+    "r16-mcdata-offnetwork-group-fd"
+  ],
+  "limitations": [
+    "本条处理离网业务组寻址和映射来源，不裁定一次业务的参加或接收结果。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
