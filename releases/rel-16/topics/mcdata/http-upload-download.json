@@ -195,12 +195,13 @@
       "id": "download-response",
       "title": "MCData HTTP 下载：内容服务器的媒体存储功能可应用接收控制策略，返回含文件的下载响应并非接收端已收齐的证明",
       "conditions": [
-        "下载端的媒体存储客户端已经请求内容服务器的媒体存储功能提供文件。"
+        "在网 MCData 下载用户已注册；下载端的媒体存储客户端已请求文件。本项说明 §7.5.2.3.2 步骤 3 图示的返回文件情形。"
       ],
-      "conclusion": "内容服务器的媒体存储功能向请求方的媒体存储客户端提供包含文件的下载响应，可以应用接收控制策略。",
+      "conclusion": "在图示返回文件的情形中，内容服务器的媒体存储功能向请求方的媒体存储客户端提供包含文件的下载数据响应，可以应用接收控制策略。",
       "normative_strength": "策略不是强制步骤。含文件的下载响应是服务器侧动作，须与客户端实际收齐的结果区分。",
       "limitations": [
-        "不能仅凭缺少策略应用记录断言违反本条，或仅凭返回响应把客户端登记为完整收件。"
+        "不能仅凭缺少策略应用记录断言违反本条，或仅凭返回响应把客户端登记为完整收件。",
+        "响应报失败时，表 7.5.2.1.4-1 的成功条件不要求带内容，也不禁止带内容。不能从图示返回文件的情形推断失败响应也须含文件。"
       ],
       "source_references": [
         {
@@ -239,6 +240,24 @@
           "printed_pages": [
             90
           ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2 and 7.5.2.1, parent headings only (on-network FD information flows)"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.4, table 7.5.2.1.4-1, success note and editor’s note on full file versus repair patch"
+          ],
+          "printed_pages": [
+            82
+          ]
         }
       ],
       "verification": {
@@ -264,6 +283,149 @@
           "clauses": [
             "7.5.2.3.1",
             "7.5.2.3.2, introduction and pre-condition 1"
+          ],
+          "printed_pages": [
+            90
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.3.2, NOTE following numbered step 2"
+          ],
+          "printed_pages": [
+            90
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.3.2, numbered step 3"
+          ],
+          "printed_pages": [
+            90
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "fd-client-loss-recovery",
+      "title": "MCData 文件分发服务须支持检测和恢复丢失数据，接收 MCData 客户端宜能用补传部分重建原文件",
+      "conditions": [
+        "在本页的在网 HTTP 下载场景中解释 §5.4 的文件分发通用能力；这些能力不以某笔文件传输已经成功为前提。"
+      ],
+      "conclusion": "MCData 文件分发服务须支持检测和恢复丢失数据。接收 MCData 客户端宜能发现并报告传输未完整结束、请求重传，识别并重取缺失部分，接收重传的部分并用来重建原文件。在网通过 HTTP 下载独立文件时，若传输不完整，媒体存储客户端可发起部分下载请求。",
+      "normative_strength": "服务应支持恢复机制（shall）；对接收端，原文是宜具备这些能力（should be able to）。HTTP 流程允许补取，不要求每次中断都按某个固定顺序执行或一定成功。",
+      "limitations": [
+        "收到补传片段不证明该文件已重建；乙端对同一文件的重建成功记录可以支持这次完成判断。",
+        "自动重试机制的要求及最大重试次数仍待研究；端到端加密时的文件修复也待研究，不能据此保证或禁止加密情形下的修复。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "5.4, lost-data detection and recovery; receiving client capabilities and two editor’s notes (automatic retry and end-to-end encryption)"
+          ],
+          "printed_pages": [
+            18
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2 and 7.5.2.1, parent headings only (on-network FD information flows)"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.3.1",
+            "7.5.2.3.2, introduction and pre-condition 1"
+          ],
+          "printed_pages": [
+            90
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.3.2, NOTE following numbered step 2"
+          ],
+          "printed_pages": [
+            90
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "http-repair-request-response",
+      "title": "在网 MCData 下载数据响应：业务结果 Result 成功时必带 Content，不证明接收端收齐或已重建原文件",
+      "conditions": [
+        "在网已注册的用户从内容服务器下载独立文件。普通下载请求和响应适用同一组表；传输不完整时，客户端可请求缺失部分。"
+      ],
+      "conclusion": "在网 MCData 用户的媒体存储客户端向内容服务器请求下载独立文件时，请求中的用户 MCData ID 与文件 URL 必填，紧急指示在表中可选；收到的分发请求已置位时按程序置位。内容服务器向该用户的媒体存储客户端返回 MCData 下载数据响应，须含请求用户的 MCData ID 与结果（成功或失败）；Content 虽标可选，但该响应报成功时必须带内容。",
+      "normative_strength": "请求用户与内容引用是请求表的 M 项；请求用户与结果是响应表的 M 项；成功时携带内容是表注的要求。仅见成功和内容，能确认该次响应报告了成功，不能代替接收端的完整性证据。",
+      "limitations": [
+        "本版未定客户端如何请求修复、指明缺失数据，也未定服务器如何指明整文件或修复补丁。不能据此规定 HTTP 范围头。",
+        "经完整核实的成功响应若不带内容，不符合表注；不记正文的日志摘要不足以判为响应缺项。成功响应有内容不证明接收端收齐整件或已经重建。",
+        "这里的成功指 MCData 下载数据响应的业务结果，不是 HTTP 2xx；该表适用于普通下载，不以已进入修复为前提。",
+        "对失败结果，成功时带内容的表注不要求也不禁止带内容。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2 and 7.5.2.1, parent headings only (on-network FD information flows)"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.3, table 7.5.2.1.3-1 and editor’s note on requesting repair and indicating missing data"
+          ],
+          "printed_pages": [
+            82
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.1.4, table 7.5.2.1.4-1, success note and editor’s note on full file versus repair patch"
+          ],
+          "printed_pages": [
+            82
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.3.1",
+            "7.5.2.3.2, introduction and pre-condition 1"
+          ],
+          "printed_pages": [
+            90
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.3.2, numbered steps 1–2"
           ],
           "printed_pages": [
             90
@@ -368,6 +530,42 @@
       ],
       "printed_pages": [
         90
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "5.4, lost-data detection and recovery; receiving client capabilities and two editor’s notes (automatic retry and end-to-end encryption)"
+      ],
+      "printed_pages": [
+        18
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2 and 7.5.2.1, parent headings only (on-network FD information flows)"
+      ],
+      "printed_pages": [
+        81
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.1.3, table 7.5.2.1.3-1 and editor’s note on requesting repair and indicating missing data"
+      ],
+      "printed_pages": [
+        82
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.1.4, table 7.5.2.1.4-1, success note and editor’s note on full file versus repair patch"
+      ],
+      "printed_pages": [
+        82
       ]
     }
   ],
