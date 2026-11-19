@@ -1,0 +1,745 @@
+{
+  "topic_id": "r16-identity-shared-sip-registration",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 和 MCVideo 在同一台终端共享 SIP 注册，怎样判断哪项业务已获授权？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "common_conditions": [
+    "TS 24.379 V16.14.0，Rel-16 Stage 3，在网 MCPTT 客户端或 MCPTT 服务器。"
+  ],
+  "condition_rule": "区分同一 UE 上多项业务共享 SIP 注册与同一用户多个 MCPTT 客户端申请授权。请求方式、保护开关、并行上限、授权结果及绑定数量只约束相应分支。",
+  "claims": [
+    {
+      "id": "shared-registration",
+      "title": "MCPTT 加入同机仍运行的其他业务时再注册；仅退出 MCPTT 且其他客户端要保持注册时也再注册",
+      "conditions": [
+        "MCPTT 和其他 MC 客户端在同一 MC UE 同时运行；区分 MCPTT 加入，或退出但其他业务仍需保持注册。"
+      ],
+      "conclusion": "同一 MC UE 上同时运行的 MCPTT 和其他 MC 客户端合用一份 REGISTER。MCPTT 后加入时再注册并带上其他运行中业务的参数；退出 MCPTT 但其他客户端仍须保持注册时，再注册撤掉 g.3gpp.mcptt 与值为 MCPTT ICSI 的 g.3gpp.icsi-ref，并保留其余运行中业务的参数。",
+      "normative_strength": "§7.1 按加入、退出分别规定再注册及参数保留；共享的是 SIP 注册。",
+      "limitations": [
+        "同机但两项业务没有同时运行，不因此共享旧注册。若是最后一项业务退出且终端也要注销，不适用这里为保留其他业务所做的再注册。注册回执不等于授权回执。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.1, concurrent services and adding MCPTT by re-registration"
+          ],
+          "printed_pages": [
+            148
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.1, re-registration when other clients remain registered"
+          ],
+          "printed_pages": [
+            148
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.1, choice of authorisation method"
+          ],
+          "printed_pages": [
+            147
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "contacts-and-bodies",
+      "title": "同机同时运行的 MCPTT 与其他 MC 业务共享一个 REGISTER：多个 Contact 须同 IP 同端口；用该请求同办多项业务授权时按业务分别带正文",
+      "conditions": [
+        "同一终端共享注册；多 Contact 与同时以 REGISTER 申请多业务授权是两个分别适用的条件。"
+      ],
+      "conclusion": "同一 UE 上同时运行的 MCPTT 和其他 MC 业务客户端共享的 REGISTER 可以列多个 Contact，每个业务客户端一个，前提是 IP、端口都相同。若用这份 REGISTER 同时申请 MCPTT 和其他业务授权，即使令牌相同，各业务也须分别带 MIME 正文。",
+      "normative_strength": "§7.1 的多 Contact 为许可且有地址限制；各业务正文的要求只在该请求同时办理多项授权时适用。",
+      "limitations": [
+        "分别发送的请求即使时间相同，也不能以本条要求某一份请求替其他请求携带正文；Contact 个数不是已授权业务数。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.1, concurrent services and adding MCPTT by re-registration"
+          ],
+          "printed_pages": [
+            148
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.1, joint authorisation bodies and conditions for multiple Contact addresses"
+          ],
+          "printed_pages": [
+            148
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "register-tags",
+      "title": "注册 MCPTT 客户端时，有无同时办理业务授权都需同样的 Contact 标记；退出且要保留其他注册时撤掉",
+      "conditions": [
+        "正在注册 MCPTT 客户端，而非退出 MCPTT；比较 §7.2.1 的授权用途与 §7.2.1AA 的仅 SIP 注册用途。"
+      ],
+      "conclusion": "注册 MCPTT 客户端时，办理授权和仅做 SIP 注册的两个分支都要在 Contact 带 g.3gpp.mcptt、值为 MCPTT ICSI 的 g.3gpp.icsi-ref。反过来，只看见两标记不能判定申请或获准。若是退出 MCPTT 但其他业务仍要保持注册，则再注册时撤这两个标记。",
+      "normative_strength": "§§7.2.1、7.2.1AA 均用 SHALL；不能由共同条件反推二者之一。",
+      "limitations": [
+        "MCPTT 客户端、业务用户和 IMS 身份是不同对象。也不能据标记或普通 200 推得另一业务授权、LMS 注册或位置配置下发。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.2.1, Contact tags for registration for authorisation"
+          ],
+          "printed_pages": [
+            148
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.2.1AA, Contact tags for registration without authorisation"
+          ],
+          "printed_pages": [
+            149
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.2, steps 2a–3, configured maximum and subsequent authorisation"
+          ],
+          "printed_pages": [
+            155
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.1, re-registration when other clients remain registered"
+          ],
+          "printed_pages": [
+            148
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "client-method",
+      "title": "用户认证成功且令牌可用时，按实现选 REGISTER 或带设置的 PUBLISH 请求 MCPTT 授权",
+      "conditions": [
+        "已完成用户认证、有可用访问令牌；实现决定以 REGISTER 或设置 PUBLISH 承载本次 MCPTT 授权。"
+      ],
+      "conclusion": "两种授权请求都携认证得到的令牌及发起 MCPTT 客户端 ID。授权 PUBLISH 另带当前应答方式、所选 MCPTT 用户配置档索引。与只更新、刷新或移除设置的 PUBLISH 分开。",
+      "normative_strength": "方法由实现及令牌可用性决定；两分支按其适用的保护条件执行各自 SHALL。",
+      "limitations": [
+        "认证成功、设置正文存在或已发送授权资料都不能代替服务器本次授权结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.1, choice of authorisation method"
+          ],
+          "printed_pages": [
+            147
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.2.1, authentication, available token, method choice and two protection branches"
+          ],
+          "printed_pages": [
+            148,
+            149
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.2.2, entry, steps 1–7 and sending the authorisation-and-settings PUBLISH"
+          ],
+          "printed_pages": [
+            150,
+            151
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.2.3, settings-only PUBLISH purpose and bodies (branch comparison)"
+          ],
+          "printed_pages": [
+            151
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "client-protection",
+      "title": "MCPTT 授权请求按机密性和完整性两项配置保护正文，不见明文令牌未必没申请",
+      "conditions": [
+        "已认证、令牌可用、选择 REGISTER 或授权用设置 PUBLISH；分别判断机密性、完整性配置。"
+      ],
+      "conclusion": "在 REGISTER 或设置 PUBLISH 办理 MCPTT 授权的分支，两项保护均关闭时携原值；任一启用时该授权请求另带密钥材料。机密性启用时加密令牌及发起客户端 ID，关闭则携原值。完整性启用时保护 MCPTT 业务信息；授权 PUBLISH 也保护设置正文。",
+      "normative_strength": "§7.2.1、§7.2.2 针对各条件规定构造；不从一种保护的开关推断另一种。",
+      "limitations": [
+        "只设置或刷新已有设置的 PUBLISH 不在这两条授权请求的构造规则内；未看见明文令牌不等于未申请，受保护的授权资料也不证明服务器已经授权。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.2.1, authentication, available token, method choice and two protection branches"
+          ],
+          "printed_pages": [
+            148,
+            149
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.2.2, entry, steps 1–7 and sending the authorisation-and-settings PUBLISH"
+          ],
+          "printed_pages": [
+            150,
+            151
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.2.3, settings-only PUBLISH purpose and bodies (branch comparison)"
+          ],
+          "printed_pages": [
+            151
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "third-party-register",
+      "title": "MCPTT 服务器从第三方 REGISTER 和内层客户端请求辨认不同身份；并行上限已满即停",
+      "conditions": [
+        "服务器收到第三方 REGISTER，其 message/sip 包含客户端 REGISTER，内层 MCPTT 业务信息含令牌和客户端 ID。"
+      ],
+      "conclusion": "IMS 公共用户身份来自第三方请求；MCPTT ID 依 §7.3.1A 从内嵌请求识别。随后查该 MCPTT 用户的业务配置并行授权上限，达到即停止；未达才对该 MCPTT ID 执行授权。",
+      "normative_strength": "§7.3.2 步骤 1、2、2a、3 的条件动作均为 SHALL。",
+      "limitations": [
+        "第三方 REGISTER 的步骤 2a 不指定响应码。PUBLISH 通过保护处理后才按 §7.3.3 步骤 3a 在满额时回 SIP 486、警告文本以 164 开头；不能把它移到 REGISTER。IMS 公共用户身份也不是 SIM 的私有身份。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.1, third-party REGISTER and service-settings PUBLISH as sources"
+          ],
+          "printed_pages": [
+            153
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.2, entry, note 1 and steps 1–2"
+          ],
+          "printed_pages": [
+            155
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.2, steps 2a–3, configured maximum and subsequent authorisation"
+          ],
+          "printed_pages": [
+            155
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.3, entry and steps 1–4 including step 3a, protection before configured maximum"
+          ],
+          "printed_pages": [
+            156
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.4.2, table 4.4.2-1, ABNF for quoted MCPTT warning text"
+          ],
+          "printed_pages": [
+            33,
+            34
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "publish-limit",
+      "title": "MCPTT 授权 PUBLISH：保护处理失败先回 403、警告文本以 140 开头；通过后查出满额才回 486、文本以 164 开头",
+      "conditions": [
+        "服务器收到用于授权的 MCPTT 设置 PUBLISH，符合 §7.3.1 的 MCPTT 特征标记和 require、explicit 参数，符合 §7.3.3 的 Event=poc-settings、设置正文及含令牌和客户端 ID 的 MCPTT 业务信息。"
+      ],
+      "conclusion": "服务器收到符合授权分支入口的设置 PUBLISH，从 P-Asserted-Identity 识别 IMS 公共用户身份。§7.3.1A 处理失败就回 SIP 403、警告文本以 140 开头，并停止，不查上限。保护处理通过才查上限；达到就回 SIP 486、文本以 164 开头，并停止。未达再执行业务授权；若授权失败，回 SIP 403、文本以 101 开头，并停止。",
+      "normative_strength": "§7.3.3 步骤 1–4、6 是有序且带条件的 SHALL，403 的两个分支不能只靠响应码区分。",
+      "limitations": [
+        "140、164、101 是引号内三位 MCPTT 警告文本码，不是 Warning 的外层码。达到上限的第三方 REGISTER 分支没有指定相同的响应规则。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.1, third-party REGISTER and service-settings PUBLISH as sources"
+          ],
+          "printed_pages": [
+            153
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.3, entry and steps 1–4 including step 3a, protection before configured maximum"
+          ],
+          "printed_pages": [
+            156
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.3, step 6, service authorisation failure"
+          ],
+          "printed_pages": [
+            156
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.2, steps 2a–3, configured maximum and subsequent authorisation"
+          ],
+          "printed_pages": [
+            155
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.4.2, table 4.4.2-1, ABNF for quoted MCPTT warning text"
+          ],
+          "printed_pages": [
+            33,
+            34
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "warning-fields",
+      "title": "两个授权 PUBLISH 失败都显示 SIP 403、外层 Warning 399 时，按引号内 MCPTT 文本码分清失败原因",
+      "conditions": [
+        "已知这两份记录属于 §7.3.3 的授权 PUBLISH 失败响应，SIP 状态和 Warning 外层码相同。399 是例中的观测值。"
+      ],
+      "conclusion": "对授权 PUBLISH，两条记录即使都是 SIP 403、外层警告码都是 399，引号内文本以 140 开头表示 §7.3.1A 处理失败，以 101 开头表示在保护处理通过、未满额后业务授权失败。看外层码不能区分两者，140 和 101 也不能填到外层。",
+      "normative_strength": "§4.4.2 表 4.4.2-1 定义引号内文本的语法；§7.3.3 步骤 3、3a、6 指定各条件的响应及警告文本。",
+      "limitations": [
+        "§4.4.1 的 399 示例在 INVITE 的语境中，不据此规定所有 PUBLISH 响应都带外层码 399。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      },
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.4.1, Warning header code and INVITE context"
+          ],
+          "printed_pages": [
+            33
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.4.2, table 4.4.2-1, ABNF for quoted MCPTT warning text"
+          ],
+          "printed_pages": [
+            33,
+            34
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.3, entry and steps 1–4 including step 3a, protection before configured maximum"
+          ],
+          "printed_pages": [
+            156
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.3, step 6, service authorisation failure"
+          ],
+          "printed_pages": [
+            156
+          ]
+        }
+      ]
+    },
+    {
+      "id": "new-client-binding",
+      "title": "同一用户已在 MCPTT 客户端 A 获准，客户端 B 本次也获准：服务器保留 A 的旧绑定，为 B 新建绑定",
+      "conditions": [
+        "比较请求中的 MCPTT 客户端 ID 和已有绑定，确认同一用户先前已在另一 MCPTT 客户端获授权；且本次业务授权成功。"
+      ],
+      "conclusion": "若本次业务授权成功，而且比较客户端 ID 确认同一用户已在另一 MCPTT 客户端获准，则保留已有绑定，为本次客户端新增 MCPTT ID、MCPTT 客户端 ID、IMS 公共用户身份的绑定。REGISTER 分支用 §7.3.2 步骤 4a；注 2 说明在外部数据库还保存一个寻址 MCPTT 服务器的标识。PUBLISH 分支用 §7.3.3 步骤 5a–b。",
+      "normative_strength": "4a、5b 各有本次成功与既有另一客户端授权双重条件。§7.3.2 步骤 4 原文重复 MCPTT ID，不用它确认无条件的一般三元映射。",
+      "limitations": [
+        "同机另一业务上线，不等于出现同用户的另一个 MCPTT 客户端；仅见请求或旧设备已授权不能签认新增或删除任一绑定。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.2, steps 4, 4a and note 2, other-client binding"
+          ],
+          "printed_pages": [
+            155
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.3, step 5a–b, successful authorisation and existing other client"
+          ],
+          "printed_pages": [
+            156
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "binding-indicator",
+      "title": "一个 MCPTT ID 有多个绑定时，服务器在相应授权分支的 200 中置多设备指示",
+      "conditions": [
+        "服务器已执行到 §7.3.2 步骤 6 或 §7.3.3 步骤 9a；PUBLISH 的业务授权和后续发布处理均成功。"
+      ],
+      "conclusion": "同一 MCPTT ID 的绑定多于一个，须在相应 200 OK 的 MCPTT 业务信息中置 multiple-devices-ind 为 true。PUBLISH 先处理发布，成功才缓存设置、回 200。",
+      "normative_strength": "§7.3.2 步骤 6、§7.3.3 步骤 6–9a 指定条件、响应及指示。",
+      "limitations": [
+        "既不按走同一次注册的 MC 客户端总数，也不按 Contact 数；只看到普通 SIP 注册的成功响应无法证明这一分支发生。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.2, step 6, more than one MCPTT binding in the server response"
+          ],
+          "printed_pages": [
+            155
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.3, step 6, service authorisation failure"
+          ],
+          "printed_pages": [
+            156
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.3, steps 6–9a, successful publishing and multiple-device indication"
+          ],
+          "printed_pages": [
+            156
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.1, concurrent services and adding MCPTT by re-registration"
+          ],
+          "printed_pages": [
+            148
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.1, joint authorisation bodies and conditions for multiple Contact addresses"
+          ],
+          "printed_pages": [
+            148
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcptt-settings-publication",
+    "r16-mcptt-settings-observation",
+    "r16-identity-cross-service-user-mapping",
+    "r16-mcvideo-multiple-device-authorization"
+  ],
+  "limitations": [
+    "本条定位在网 MCPTT 共享注册与 MCPTT 业务授权；第三方初始过滤、令牌认证、密钥算法和完整的 IMS 注册实现分属引用程序。",
+    "本条不能判断 LMS 是否独立注册、位置配置何时下发，或其他业务本次是否授权成功。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "7.1, choice of authorisation method"
+      ],
+      "printed_pages": [
+        147
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "7.1, concurrent services and adding MCPTT by re-registration"
+      ],
+      "printed_pages": [
+        148
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "7.1, joint authorisation bodies and conditions for multiple Contact addresses"
+      ],
+      "printed_pages": [
+        148
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "7.1, re-registration when other clients remain registered"
+      ],
+      "printed_pages": [
+        148
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "7.2.1, Contact tags for registration for authorisation"
+      ],
+      "printed_pages": [
+        148
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "7.2.1AA, Contact tags for registration without authorisation"
+      ],
+      "printed_pages": [
+        149
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "7.2.1, authentication, available token, method choice and two protection branches"
+      ],
+      "printed_pages": [
+        148,
+        149
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "7.2.2, entry, steps 1–7 and sending the authorisation-and-settings PUBLISH"
+      ],
+      "printed_pages": [
+        150,
+        151
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "7.2.3, settings-only PUBLISH purpose and bodies (branch comparison)"
+      ],
+      "printed_pages": [
+        151
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "7.3.1, third-party REGISTER and service-settings PUBLISH as sources"
+      ],
+      "printed_pages": [
+        153
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "7.3.2, entry, note 1 and steps 1–2"
+      ],
+      "printed_pages": [
+        155
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "7.3.2, steps 2a–3, configured maximum and subsequent authorisation"
+      ],
+      "printed_pages": [
+        155
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "7.3.3, entry and steps 1–4 including step 3a, protection before configured maximum"
+      ],
+      "printed_pages": [
+        156
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "7.3.3, step 6, service authorisation failure"
+      ],
+      "printed_pages": [
+        156
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "7.3.2, steps 4, 4a and note 2, other-client binding"
+      ],
+      "printed_pages": [
+        155
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "7.3.3, step 5a–b, successful authorisation and existing other client"
+      ],
+      "printed_pages": [
+        156
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "7.3.2, step 6, more than one MCPTT binding in the server response"
+      ],
+      "printed_pages": [
+        155
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "7.3.3, steps 6–9a, successful publishing and multiple-device indication"
+      ],
+      "printed_pages": [
+        156
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "4.4.1, Warning header code and INVITE context"
+      ],
+      "printed_pages": [
+        33
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "4.4.2, table 4.4.2-1, ABNF for quoted MCPTT warning text"
+      ],
+      "printed_pages": [
+        33,
+        34
+      ]
+    }
+  ]
+}
