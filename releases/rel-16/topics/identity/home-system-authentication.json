@@ -7,14 +7,15 @@
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-23.280-v16.7.0",
   "common_conditions": [
-    "3GPP TS 23.280 V16.7.0，Rel-16 Stage 2，§10.6.1 主 MC 系统。"
+    "3GPP TS 23.280 V16.7.0，Rel-16 Stage 2。"
   ],
-  "condition_rule": "各条在主系统范围内解释；图示是单域示例，另述的独立认证条件不等于图中每次部署的特征。一次登录须区分多个记录的对象、用户名及相应业务。",
+  "condition_rule": "§10.6.1 的五项登录判断：各条在主系统范围内解释；图示是单域示例，另述的独立认证条件不等于图中每次部署的特征。一次登录须区分多个记录的对象、用户名及相应业务。 默认或临时 MC service ID 的两种用法见 §8.1.2；主系统配置下“有限服务”的范围见 §10.1.1.1 首条编辑注。",
   "claims": [
     {
       "id": "source-scope",
       "title": "主系统单域图回答的是高层问题",
       "conditions": [
+        "3GPP TS 23.280 V16.7.0，Rel-16 Stage 2，§10.6.1 主 MC 系统。",
         "要用图 10.6.1-1 解释一次主系统登录。"
       ],
       "conclusion": "图示主系统单域情形，解释身份管理、SIP 核心注册及相应业务授权的关系。",
@@ -52,6 +53,7 @@
       "id": "user-proof",
       "title": "用户提供凭据，身份管理服务器核验",
       "conditions": [
+        "3GPP TS 23.280 V16.7.0，Rel-16 Stage 2，§10.6.1 主 MC 系统。",
         "在图示身份管理客户端与身份管理服务器间的步骤 1。"
       ],
       "conclusion": "身份管理客户端开始过程，MC 用户提供凭据供身份管理服务器核验；图中用户认证并取得访问令牌。",
@@ -98,6 +100,7 @@
       "id": "sip-registration",
       "title": "建好到 SIP 核心的连接，与完成 SIP 注册是两个事件",
       "conditions": [
+        "3GPP TS 23.280 V16.7.0，Rel-16 Stage 2，§10.6.1 主 MC 系统。",
         "在图示信令用户代理和 SIP 核心间查核 SIP 层事件。"
       ],
       "conclusion": "用户代理和 SIP 核心建安全连接，供 SIP 层认证和注册；之后完成 SIP 层注册，还可向 MC 业务服务器进行第三方注册。",
@@ -153,6 +156,7 @@
       "id": "timing",
       "title": "主系统的 MC 用户身份认证必须排在 SIP 注册前吗？",
       "conditions": [
+        "3GPP TS 23.280 V16.7.0，Rel-16 Stage 2，§10.6.1 主 MC 系统。",
         "判断主 MC 系统内同一用户的 MC 身份认证相对 SIP 注册的时序；区分图下步骤说明与图前列举的其他安排。"
       ],
       "conclusion": "在主 MC 系统，图下步骤 1 的文字说明，MC 用户身份认证可在信令用户代理完成对 SIP 核心的注册（步骤 3）之前或之后。图前另说，在某些场景用户认证可独立于 SIP 注册阶段，例为 SIP 核心在 MC 业务服务器域外；也有在 SIP 注册阶段内认证用户的做法。",
@@ -226,6 +230,7 @@
       "id": "service-reuse",
       "title": "同一主系统提供多项 MC 业务时，同一用户的一次认证可供各业务办理授权",
       "conditions": [
+        "3GPP TS 23.280 V16.7.0，Rel-16 Stage 2，§10.6.1 主 MC 系统。",
         "同一主 MC 系统提供多项 MC 业务，要为该系统内的同一用户办理多项业务授权。"
       ],
       "conclusion": "在提供多项 MC 业务的同一主系统内，该用户的一次身份认证可以用于该用户在此系统的多项业务授权。MC 业务客户端利用本过程的结果为该用户办理各自对应的业务授权。",
@@ -250,6 +255,135 @@
           ],
           "printed_pages": [
             115
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "default-id-before-device-association",
+      "title": "用户尚未与设备关联时，可以使用默认或临时 MC 业务 ID",
+      "conditions": [
+        "用户尚未与设备关联；判断可否使用默认或临时 MC service ID。"
+      ],
+      "conclusion": "用户尚未与设备关联时，可以使用默认或临时 MC service ID。这句话只提业务 ID，不要求先确认用户尚未通过身份管理服务器的认证。",
+      "normative_strength": "§8.1.2 末段第一句允许使用，不要求使用，也不规定系统自动分配。",
+      "limitations": [
+        "这句话没有要求同时使用相应的 MC 业务用户配置文件，也没有禁止使用它。只有一个默认或临时业务 ID，不能反推出用户与设备的关联状态、这名用户是否通过身份认证或某项业务是否获准。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.1.2, opening paragraph: MC service ID represents the MC service user"
+          ],
+          "printed_pages": [
+            43
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.1.2, final paragraph, first sentence: a default or temporary MC service ID may be used when a user is not yet associated with a device"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.1.2, final paragraph, second sentence: a default or temporary MC service ID and a corresponding MC service user profile may be used when the user wants one or more MC services and has not been authenticated by the IdMS"
+          ],
+          "printed_pages": [
+            44
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "default-id-before-user-authentication",
+      "title": "用户想用至少一项 MC 业务、尚未通过身份管理服务器认证时，可以使用默认或临时业务 ID 及相应用户配置文件",
+      "conditions": [
+        "用户想使用一项或多项 MC 业务，且身份管理服务器（IdMS）尚未对这名用户完成认证。"
+      ],
+      "conclusion": "用户想使用至少一项 MC 业务、且尚未通过身份管理服务器（IdMS）认证时，可以使用默认或临时 MC service ID 及相应的 MC 业务用户配置文件。此项不以用户尚未与设备关联为前提。",
+      "normative_strength": "§8.1.2 末段第二句允许上述用法，不要求自动分配 ID 或配置文件，也不要求一定采用这种用法。",
+      "limitations": [
+        "配置文件与业务 ID 同时出现也不是人的身份认证结果或某项业务的授权结果。不能仅凭缺少认证记录断言用户尚未通过认证。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.1.2, opening paragraph: MC service ID represents the MC service user"
+          ],
+          "printed_pages": [
+            43
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.1.2, final paragraph, first sentence: a default or temporary MC service ID may be used when a user is not yet associated with a device"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "8.1.2, final paragraph, second sentence: a default or temporary MC service ID and a corresponding MC service user profile may be used when the user wants one or more MC services and has not been authenticated by the IdMS"
+          ],
+          "printed_pages": [
+            44
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "limited-services-extent",
+      "title": "主系统配置中，用户未认证或未获业务授权时，有限服务包括哪些业务？",
+      "conditions": [
+        "在主 MC 系统的业务配置场景，终端上的 MC 用户未经认证，或者 MC 业务用户未经授权；判断该终端可用的 MC 业务范围。"
+      ],
+      "conclusion": "在主 MC 系统的业务配置中，若终端上的 MC 用户未经认证，或 MC 业务用户未经授权，§10.1.1.1 首条编辑注把该终端可用的 MC 业务称为“有限服务”。V16.7.0 将其范围留待研究（FFS），没有给出可用业务清单。已查实的认证结果或某项业务的授权结果仍然成立。",
+      "normative_strength": "这是主系统配置章节的编辑注。待研究的是可用范围，不是已查实的用户认证结果或某项业务的授权结果。",
+      "limitations": [
+        "不能据此推定终端没有任何服务、所有业务都可用或某一指定业务必定可用。针对某人某业务已有明确的授权或拒绝结果，须与其他业务分开记录。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.1.1, heading: MC service configuration on primary MC system"
+          ],
+          "printed_pages": [
+            58
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.1.1, first editor’s note: extent of limited services for an unauthenticated MC user or unauthorized MC service user"
+          ],
+          "printed_pages": [
+            59
           ]
         }
       ],
@@ -358,6 +492,51 @@
       ],
       "printed_pages": [
         115
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "8.1.2, opening paragraph: MC service ID represents the MC service user"
+      ],
+      "printed_pages": [
+        43
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "8.1.2, final paragraph, first sentence: a default or temporary MC service ID may be used when a user is not yet associated with a device"
+      ],
+      "printed_pages": [
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "8.1.2, final paragraph, second sentence: a default or temporary MC service ID and a corresponding MC service user profile may be used when the user wants one or more MC services and has not been authenticated by the IdMS"
+      ],
+      "printed_pages": [
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.1.1, heading: MC service configuration on primary MC system"
+      ],
+      "printed_pages": [
+        58
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.1.1, first editor’s note: extent of limited services for an unauthenticated MC user or unauthorized MC service user"
+      ],
+      "printed_pages": [
+        59
       ]
     }
   ],
