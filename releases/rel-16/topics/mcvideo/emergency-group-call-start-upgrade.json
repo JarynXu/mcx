@@ -1,0 +1,581 @@
+{
+  "topic_id": "r16-mcvideo-emergency-group-call-start-upgrade",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "在网 MCVideo 紧急组呼：这是新建一通，还是升级原来的组呼？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.281-v16.4.0",
+  "common_conditions": [
+    "3GPP TS 23.281 V16.4.0，Release 16，Stage 2，在网 MCVideo。组 G 已在组管理服务器定义，所有成员属于同一 MC 系统，乙、丙的客户端 2、3 已归属 G。甲是发起人，使用客户端 1。两图用一个 MCVideo 服务器代表用户归属与组托管 MCVideo 服务器。"
+  ],
+  "condition_rule": "各项声明继承共同条件；新建例的预配和条件性隐式归属、升级例已有呼叫和告警配置、组播回执例外，仅在对应分支适用。",
+  "claims": [
+    {
+      "id": "new-call-or-upgrade",
+      "title": "同名请求如何区分新建与升级，甲尚未归属时谁处理？",
+      "conditions": [
+        "新建例中甲、乙、丙同为 G 的成员，甲端已预配指定紧急组，或预配为在选定组上使用紧急行为。升级例以获授权用户要改变一通已在进行的组呼为前提。"
+      ],
+      "conclusion": "两种流程都由甲端向 MCVideo 服务器发紧急组呼请求。新建请求带紧急指示，可带功能别名。仅在新建例中，服务器在步骤 3 将尚未归属的甲端隐式归属；步骤 4 查甲在 G 的紧急建呼权限，有别名还查是否准用、是否已为甲激活，获准后依据组管理服务器资料解析 G 的成员及归属。升级请求是把原来这通呼叫转为紧急组呼，随后继续这通呼叫；请求后是调整承载优先级，不另列隐式归属步骤。",
+      "normative_strength": "成员、已归属、获准发起是三个条件。新建例中各端可有已激活别名，服务器可订阅激活或停用更新；不是建呼必备条件。升级例要求获授权，不因它没重列新建准入步骤而取消该前提。",
+      "limitations": [
+        "相同组号、消息名或同组另有活动呼叫不足以认定新建或升级；需查本次请求的对象及原呼叫是否继续。没有升级的隐式归属步骤，不等于规定甲在所有场景如何归属。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.1, introduction and NOTE 1"
+          ],
+          "printed_pages": [
+            42
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.1, pre-conditions 1–5, NOTE 2 and figure 7.1.2.5.1.1-1"
+          ],
+          "printed_pages": [
+            43
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.1, steps 1–2 (step 2 continues on printed page 44)"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.1, steps 3–4: conditional affiliation, checks and group ID resolution"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.2, introduction, NOTE 1 and pre-conditions 1–3"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.2, pre-condition 4 and figure 7.1.2.5.1.2-1"
+          ],
+          "printed_pages": [
+            45
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.2, steps 1–3: local state, upgrade request and bearer adjustment"
+          ],
+          "printed_pages": [
+            45
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.2, NOTE 2 and closing unnumbered call continuity and override paragraph"
+          ],
+          "printed_pages": [
+            46
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "emergency-state-and-bearer-scope",
+      "title": "紧急状态在甲、G 和后续呼叫上各有什么作用？",
+      "conditions": [
+        "甲发起紧急组呼，或获授权后请求升级 G 上的现有组呼。"
+      ],
+      "conclusion": "两例均由甲端设置自己的 MCVideo 紧急状态并保持到明确取消。处于这一状态的客户端，其用户的所有任务关键应用获得较高接入权限。新建时，自紧急呼叫发起起 G 即被视为处于进行中紧急状态，服务器记录发起人身份，直至紧急状态取消；服务器为全组参与者配置底层承载优先级，G 仍在这一状态时后续呼叫也采用调整后的优先级。升级时，甲请求把 G 转为进行中紧急状态，服务器调整全组参与者的底层承载优先级，成员获知组状态改变。",
+      "normative_strength": "个人状态、组状态、承载待遇的对象不同。结束一通紧急组呼不会自动取消 G 的进行中紧急状态。",
+      "limitations": [
+        "收到组状态通知不足以认定乙本人的客户端进入紧急状态。较高接入权限和调整承载优先级都不能证明发送许可或媒体传送，不规定优先级数值。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.1, introduction and NOTE 1"
+          ],
+          "printed_pages": [
+            42
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.1, steps 1–2 (step 2 continues on printed page 44)"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.1, step 5 and NOTE 3"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.2, steps 1–3: local state, upgrade request and bearer adjustment"
+          ],
+          "printed_pages": [
+            45
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.2, steps 4–6: distribution, group state notification and acknowledgements"
+          ],
+          "printed_pages": [
+            45
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.3, introduction and NOTE 3"
+          ],
+          "printed_pages": [
+            46
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "when-alert-is-requested",
+      "title": "配置何时要求附带告警指示？发给乙的指示是独立告警回执吗？",
+      "conditions": [
+        "检查发起端的告警配置、此次完整上行请求，以及服务器发给已归属成员的对应下行请求。"
+      ],
+      "conclusion": "新建时，若配置为发起紧急组呼时发告警，上行请求也指示要发起告警。升级例的前提 4 已设定甲端配置为升级时发告警，步骤 2 仍用有此配置时带指示来表述。两例中，只要甲的请求指示告警，服务器向已归属成员发出的紧急组呼请求也带告警指示。",
+      "normative_strength": "升级图例带告警配置是本例前提，不是要求一切升级都配置告警。§7.1.2.6.1 把告警本身的发起、取消另指向公共程序。",
+      "limitations": [
+        "仅看到紧急组呼请求或成功响应，不能据此认定另发了告警；组呼下行中的告警指示不是一名组员已收到独立告警的确认。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.1, steps 1–2 (step 2 continues on printed page 44)"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.1, steps 6–8: distribution, incoming call notification and acknowledgements"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.2, pre-condition 4 and figure 7.1.2.5.1.2-1"
+          ],
+          "printed_pages": [
+            45
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.2, steps 1–3: local state, upgrade request and bearer adjustment"
+          ],
+          "printed_pages": [
+            45
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.2, steps 4–6: distribution, group state notification and acknowledgements"
+          ],
+          "printed_pages": [
+            45
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.6.1, reference to emergency alert initiation and cancel procedures"
+          ],
+          "printed_pages": [
+            53
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "member-ack-and-originator-confirmation",
+      "title": "成员回什么，服务器向甲确认什么？组播没有成员回执算不算失败？",
+      "conditions": [
+        "按目标 G、这通呼叫、消息方向和网络传送方式分辨各记录。"
+      ],
+      "conclusion": "服务器向已归属成员的客户端发请求。新建时下行指明进行中紧急状态，乙、丙获来电通知，有可用的甲的功能别名才显示；升级时乙、丙获知 G 的紧急状态。新建步骤 8、升级步骤 6 由接收端向服务器确认收到请求，组播呼叫不发这些回执。新建步骤 9、升级步骤 7 则由服务器向甲分别确认建呼成功或升级。",
+      "normative_strength": "视呼叫继续进行的条件，给甲的确认可在新建步骤 5 或升级步骤 3 之后发出，不以已收齐全组回执为必要条件。注 4 和注 2 各提到后续步号，编号正文分别止于 9 和 7，其后是无编号结果段。",
+      "limitations": [
+        "组播没有成员回执不是失败证据。只看到服务器给甲确认，不能证明每个成员收到请求、确认或接收到媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.1, step 5 and NOTE 3"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.1, steps 6–8: distribution, incoming call notification and acknowledgements"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.1, step 9 and NOTE 4"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.1, unnumbered media and override paragraph after NOTE 4"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.2, steps 1–3: local state, upgrade request and bearer adjustment"
+          ],
+          "printed_pages": [
+            45
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.2, steps 4–6: distribution, group state notification and acknowledgements"
+          ],
+          "printed_pages": [
+            45
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.2, step 7: upgrade confirmation and conditional transmit request result"
+          ],
+          "printed_pages": [
+            45
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.2, NOTE 2 and closing unnumbered call continuity and override paragraph"
+          ],
+          "printed_pages": [
+            46
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "transmit-result-and-call-continuity",
+      "title": "甲收到成功响应，何时可判已获发送权？升级后走哪一通呼叫？",
+      "conditions": [
+        "分别核对甲是否附带隐式媒体发送请求、服务器给甲的响应及其内容，并区分传输控制和实际媒体记录。"
+      ],
+      "conclusion": "两种上行都可附带隐式媒体发送请求。新建步骤 9 只说明建呼成功，未规定该响应返回隐式申请结果；末段另述三端已建立媒体面，例中甲端经媒体面获发送许可并告知甲，其他端得到带强制接收信息的媒体可用通知。升级步骤 7 的 OK 在原请求含隐式发送请求时带回该项结果；三端继续已经转为紧急组呼的原呼叫。两例中甲均可抢占这通呼叫内的其他客户端，但同处 MCVideo 紧急状态的客户端除外。",
+      "normative_strength": "确认升级与隐式发送请求的结果要分别读取；只有获准的结果或对应的发送许可才能说明甲获准。新建步骤 9 未规定回送隐式结果，不等于禁止携带。升级末段描述原呼叫继续，并未另列重建媒体面。",
+      "limitations": [
+        "建呼或升级成功不证明隐式请求获准；获准不证明甲已传流，媒体可用通知不证明乙已收到某帧，允许抢占不证明实际发生过抢占。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.1, steps 1–2 (step 2 continues on printed page 44)"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.1, step 9 and NOTE 4"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.1, unnumbered media and override paragraph after NOTE 4"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.2, steps 1–3: local state, upgrade request and bearer adjustment"
+          ],
+          "printed_pages": [
+            45
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.2, step 7: upgrade confirmation and conditional transmit request result"
+          ],
+          "printed_pages": [
+            45
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.5.1.2, NOTE 2 and closing unnumbered call continuity and override paragraph"
+          ],
+          "printed_pages": [
+            46
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.1.1, introduction and NOTE 1"
+      ],
+      "printed_pages": [
+        42
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.1.1, pre-conditions 1–5, NOTE 2 and figure 7.1.2.5.1.1-1"
+      ],
+      "printed_pages": [
+        43
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.1.1, steps 1–2 (step 2 continues on printed page 44)"
+      ],
+      "printed_pages": [
+        43,
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.1.1, steps 3–4: conditional affiliation, checks and group ID resolution"
+      ],
+      "printed_pages": [
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.1.1, step 5 and NOTE 3"
+      ],
+      "printed_pages": [
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.1.1, steps 6–8: distribution, incoming call notification and acknowledgements"
+      ],
+      "printed_pages": [
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.1.1, step 9 and NOTE 4"
+      ],
+      "printed_pages": [
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.1.1, unnumbered media and override paragraph after NOTE 4"
+      ],
+      "printed_pages": [
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.1.2, introduction, NOTE 1 and pre-conditions 1–3"
+      ],
+      "printed_pages": [
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.1.2, pre-condition 4 and figure 7.1.2.5.1.2-1"
+      ],
+      "printed_pages": [
+        45
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.1.2, steps 1–3: local state, upgrade request and bearer adjustment"
+      ],
+      "printed_pages": [
+        45
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.1.2, steps 4–6: distribution, group state notification and acknowledgements"
+      ],
+      "printed_pages": [
+        45
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.1.2, step 7: upgrade confirmation and conditional transmit request result"
+      ],
+      "printed_pages": [
+        45
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.1.2, NOTE 2 and closing unnumbered call continuity and override paragraph"
+      ],
+      "printed_pages": [
+        46
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.5.1.3, introduction and NOTE 3"
+      ],
+      "printed_pages": [
+        46
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.6.1, reference to emergency alert initiation and cancel procedures"
+      ],
+      "printed_pages": [
+        53
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcvideo-group-emergency-state-cancel",
+    "r16-calls-onnetwork-group-alert-location",
+    "r16-mcvideo-imminent-peril-group-call-commencement",
+    "r16-mcvideo-imminent-peril-upgrade-cancel"
+  ],
+  "limitations": [
+    "限在网同系统紧急组呼的新建与升级；不据此规定协议编码、具体承载优先级或媒体抢占算法，也不代替独立告警、组状态取消或迫近危险程序。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
