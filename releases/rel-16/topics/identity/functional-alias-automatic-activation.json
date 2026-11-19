@@ -1,0 +1,530 @@
+{
+  "topic_id": "r16-identity-functional-alias-automatic-activation",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "到了换班时间，服务器一定会把功能别名交给下一位吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "Release 16、在网、同一 MC 系统，3GPP TS 23.280 V16.7.0，Stage 2。"
+  ],
+  "condition_rule": "先按问题区分触发、容量分支、已完成激活的后续职责、订阅服务器名单。每条声明继承在网单系统范围，分支条件各自适用。",
+  "claims": [
+    {
+      "id": "trigger-provision",
+      "title": "在网同系统的服务器自动激活：触发、服务器已获配的别名范围，以及可能已取的签约和策略",
+      "conditions": [
+        "Release 16、在网、同一 MC 系统，3GPP TS 23.280 V16.7.0，Stage 2。",
+        "区分 MC 业务服务器自己的内部或外部触发与客户端发起的激活请求；位置条件两边都可能使用。"
+      ],
+      "conclusion": "服务器可以因位置、排班、计时器等条件自动激活。它应已获配相关客户端获准激活的别名信息；服务器可能已取用户签约资料与别名策略，例如授权对象、适用优先级及其他配置。命中服务器条件后，服务器检查与当前活动别名的冲突。",
+      "normative_strength": "可自动触发；前提 1 为可能已取，前提 2 明列已获配。触发是开始查冲突，不是完成激活。",
+      "limitations": [
+        "本次没有取签约日志不证明程序不适用；仅有客户端清单或服务器状态订阅不能证明服务器已获配。单独的位置、日期或时间不能确知发起端或结单。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.1, on-network limitation"
+          ],
+          "printed_pages": [
+            192
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.4, precondition 4 (client trigger; comparison only)"
+          ],
+          "printed_pages": [
+            197
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.4, step 1 (client activation request; comparison only)"
+          ],
+          "printed_pages": [
+            198
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.8, opening paragraphs on server activation and triggers"
+          ],
+          "printed_pages": [
+            201
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.8, precondition 1 (user subscription and functional alias policy)"
+          ],
+          "printed_pages": [
+            201
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.8, precondition 2 (server provisioned with alias information allowed for the client)"
+          ],
+          "printed_pages": [
+            201
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.8, figure 10.13.8-1 and steps 1–2 (trigger and conflicts)"
+          ],
+          "printed_pages": [
+            202
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "capacity-activate",
+      "title": "在网同系统，服务器已获配新客户端获准激活该别名的信息，并在自身的自动激活条件满足后检查冲突；若该别名允许多名业务用户同时激活且人数未达上限，服务器必须为对应用户激活，并告知共享同一别名的所有其他业务用户",
+      "conditions": [
+        "Release 16、在网、同一 MC 系统，3GPP TS 23.280 V16.7.0，Stage 2。",
+        "服务器已获配该客户端获准激活的别名信息，自动激活条件已满足，正检查活动别名冲突；本例拟为尚未使用该别名的 MC 业务用户新增激活。",
+        "该别名允许多名 MC 业务用户同时激活，且当前同时使用人数低于上限。"
+      ],
+      "conclusion": "服务器必须为该业务用户激活该别名，并告知共享同一别名的所有其他 MC 业务用户。人数统计的对象是同时使用此别名的业务用户，不能按同一用户的终端数加人；本共享分支未要求原使用者退出。",
+      "normative_strength": "步骤 2a 的 shall 适用于两项条件同时成立。",
+      "limitations": [
+        "不规定通用上限或对同一已激活用户的重复触发/去重算法。只有容量证据和共享条件还不是发生本次激活的证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.1, on-network limitation"
+          ],
+          "printed_pages": [
+            192
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.8, precondition 2 (server provisioned with alias information allowed for the client)"
+          ],
+          "printed_pages": [
+            201
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.8, figure 10.13.8-1 and steps 1–2 (trigger and conflicts)"
+          ],
+          "printed_pages": [
+            202
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.8, step 2a (shareability, simultaneous users below the limit, and reference to step 5)"
+          ],
+          "printed_pages": [
+            202
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.8, figure 10.13.8-1 and step 5 (all other users sharing the same alias)"
+          ],
+          "printed_pages": [
+            202
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "capacity-stop-reassign",
+      "title": "在网同系统，服务器已获配新客户端获准激活该别名的信息，并在自身的自动激活条件满足后检查冲突；若同时使用人数已满或该别名不允许共享，服务器可不继续激活，或把别名从当前使用者重分配给新客户端",
+      "conditions": [
+        "Release 16、在网、同一 MC 系统，3GPP TS 23.280 V16.7.0，Stage 2。",
+        "服务器已获配该客户端获准激活的别名信息，服务器触发自动激活、检查活动别名冲突。",
+        "该别名的同时使用人数已达上限，或该别名不允许共享。提到重分配时有现使用者可供转出。"
+      ],
+      "conclusion": "服务器不按共享有空位的方式继续激活；可不继续该激活程序，也可以把该别名从当前使用的业务用户重分配给新的 MC 业务客户端。",
+      "normative_strength": "步骤 2b 用“或”连接上限与共享条件，并允许重分配；不要求强制接管。",
+      "limitations": [
+        "不得依据触发或满员记录认定当前某人已退出；未规定多人中优先替下哪一人，也未要求新客户端先走另一手动接管流程。实际已重分配仍不证明有关客户端已收件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.1, on-network limitation"
+          ],
+          "printed_pages": [
+            192
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.8, precondition 2 (server provisioned with alias information allowed for the client)"
+          ],
+          "printed_pages": [
+            201
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.8, figure 10.13.8-1 and steps 1–2 (trigger and conflicts)"
+          ],
+          "printed_pages": [
+            202
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.8, step 2a (shareability, simultaneous users below the limit, and reference to step 5)"
+          ],
+          "printed_pages": [
+            202
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.8, step 2b (limit reached or non-shareable; stop or reassignment)"
+          ],
+          "printed_pages": [
+            202
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "activation-notification-record",
+      "title": "服务器自动激活成功后：通知目标客户端、保存别名状态与激活日期时间、告知同一别名的所有其他共享用户",
+      "conditions": [
+        "Release 16、在网、同一 MC 系统，3GPP TS 23.280 V16.7.0，Stage 2。",
+        "本次系 MC 业务服务器在同一系统自动激活了目标功能别名；要判断案例中的实际发送或接收，另核与本次和对应收件人相符的证据。"
+      ],
+      "conclusion": "步骤 3 由服务器告知目标业务客户端别名已激活；步骤 4 由服务器保存别名状态及激活的日期、时间；步骤 5 告知共享同一别名的所有其他业务用户。仅有资格但未共享该别名的人不因资格成为第 5 步对象。",
+      "normative_strength": "步骤 3–5 分列服务器通知、保存、通知的职责。步骤 2a 明指成功共享分支还须告知其他共享者；不把 2b 停止分支写成成功。",
+      "limitations": [
+        "单份保存记录不能证明任何出站或收件；只见某个对象的发送不证明该端已收或其他人也已发。缺一端收件不否认激活；某次发送明确失败也不表明激活失效或永久未送达。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.1, on-network limitation"
+          ],
+          "printed_pages": [
+            192
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.8, opening paragraphs on server activation and triggers"
+          ],
+          "printed_pages": [
+            201
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.8, step 2a (shareability, simultaneous users below the limit, and reference to step 5)"
+          ],
+          "printed_pages": [
+            202
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.8, step 2b (limit reached or non-shareable; stop or reassignment)"
+          ],
+          "printed_pages": [
+            202
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.8, figure 10.13.8-1 and step 3 (activation notification to the client)"
+          ],
+          "printed_pages": [
+            202
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.8, step 4 (alias status, activation date and time)"
+          ],
+          "printed_pages": [
+            202
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.8, figure 10.13.8-1 and step 5 (all other users sharing the same alias)"
+          ],
+          "printed_pages": [
+            202
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "subscriber-list-boundary",
+      "title": "另一路服务器间名单通知：业务服务器已订该别名且控制服务器的已激活用户名单因启停或接管而变时，由控制方通知、订阅方回复",
+      "conditions": [
+        "Release 16、在网、同一 MC 系统，3GPP TS 23.280 V16.7.0，Stage 2。",
+        "考察控制该功能别名的 MC 业务服务器和另一台已订阅该别名的业务服务器，而不是步骤 3 的激活客户端或步骤 5 的其他共享用户。",
+        "控制服务器所持该别名的已激活用户名单因激活、停用或接管发生变化。"
+      ],
+      "conclusion": "控制服务器在通知请求中把该别名的已激活用户名单提供给已订阅的业务服务器，后者向控制服务器回复。订阅服务器并不因此算作共享用户；这项订阅不替代自动激活所需的服务器端别名配置。",
+      "normative_strength": "§10.13.10.3 的两个前提共同适用；这是区分通知去向的相邻程序，不需先成立才能进入 §10.13.8。",
+      "limitations": [
+        "仅有订阅不能推断名单已变或通知已发；即使已知变化，也不能凭变化认定订阅服务器已收、已回复，或其他共享者收到通知。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.1, on-network limitation"
+          ],
+          "printed_pages": [
+            192
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.8, precondition 2 (server provisioned with alias information allowed for the client)"
+          ],
+          "printed_pages": [
+            201
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.8, figure 10.13.8-1 and step 3 (activation notification to the client)"
+          ],
+          "printed_pages": [
+            202
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.8, figure 10.13.8-1 and step 5 (all other users sharing the same alias)"
+          ],
+          "printed_pages": [
+            202
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.10.3, preconditions (subscribed service server; changed list at controller)"
+          ],
+          "printed_pages": [
+            204
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.10.3, figure 10.13.10.3-1 and steps 1–2 (controller’s list and subscriber’s reply)"
+          ],
+          "printed_pages": [
+            204
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.1, on-network limitation"
+      ],
+      "printed_pages": [
+        192
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.4, precondition 4 (client trigger; comparison only)"
+      ],
+      "printed_pages": [
+        197
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.4, step 1 (client activation request; comparison only)"
+      ],
+      "printed_pages": [
+        198
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.8, opening paragraphs on server activation and triggers"
+      ],
+      "printed_pages": [
+        201
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.8, precondition 1 (user subscription and functional alias policy)"
+      ],
+      "printed_pages": [
+        201
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.8, precondition 2 (server provisioned with alias information allowed for the client)"
+      ],
+      "printed_pages": [
+        201
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.8, figure 10.13.8-1 and steps 1–2 (trigger and conflicts)"
+      ],
+      "printed_pages": [
+        202
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.8, step 2a (shareability, simultaneous users below the limit, and reference to step 5)"
+      ],
+      "printed_pages": [
+        202
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.8, step 2b (limit reached or non-shareable; stop or reassignment)"
+      ],
+      "printed_pages": [
+        202
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.8, figure 10.13.8-1 and step 3 (activation notification to the client)"
+      ],
+      "printed_pages": [
+        202
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.8, step 4 (alias status, activation date and time)"
+      ],
+      "printed_pages": [
+        202
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.8, figure 10.13.8-1 and step 5 (all other users sharing the same alias)"
+      ],
+      "printed_pages": [
+        202
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.10.3, preconditions (subscribed service server; changed list at controller)"
+      ],
+      "printed_pages": [
+        204
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.10.3, figure 10.13.10.3-1 and steps 1–2 (controller’s list and subscriber’s reply)"
+      ],
+      "printed_pages": [
+        204
+      ]
+    }
+  ],
+  "related": [
+    "r16-identity-functional-alias-takeover",
+    "r16-identity-active-functional-alias-lookup",
+    "r16-location-active-alias-trigger"
+  ],
+  "limitations": [
+    "限本固定版本 Stage 2；不指定 SIP 消息、重发机制、送达验证的日志格式，不判断其他 Release。",
+    "没有共享许可、使用人数、事件对应的发送/接收状态时，分别保留未知。不得以从未收到推论未激活或用订阅成功充当授权别名配置。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
