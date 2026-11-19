@@ -1,0 +1,394 @@
+{
+  "topic_id": "r16-identity-interconnection-authorization",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "两个 MC 系统互连：客户端要连到对端的谁，用户的业务授权又归谁？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "Rel-16 Stage 2，3GPP TS 23.280 V16.7.0 的 MC 业务互连；涉及两个分属不同信任域的 MC 系统。"
+  ],
+  "condition_rule": "每条在共同条件上加自身条件。拟互连系统的连接要求不等于客户端正在使用互连；确定哪一侧办理授权，先认清哪一侧正在服务该用户。迁移是另加的条件，不是互连定义的前提。",
+  "claims": [
+    {
+      "id": "interconnection-scope",
+      "title": "哪两方通过 MC 业务互连通信？",
+      "conditions": [
+        "两个 MC 系统属于不同信任域，各自给一方 MC 用户提供业务。"
+      ],
+      "conclusion": "MC 业务互连使由第一系统提供业务的用户能与由第二系统提供业务的用户通信；描述的是各自的当前服务系统。",
+      "normative_strength": "界定本条所说的互连场景，不要求任何一方是迁移用户。",
+      "limitations": [
+        "知道两系统存在、分属不同信任域或计划互连，不证明某次通信已经过互连；实际使用互连也不能反推用户做过迁移。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.10.1, two sets of users receiving service from MC systems in different trust domains"
+          ],
+          "printed_pages": [
+            23,
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.10.3, optional interconnection from a migrated user served by a partner to users in that user’s primary MC system"
+          ],
+          "printed_pages": [
+            24
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "client-peer-idms",
+      "title": "甲服务的用户通过互连与乙服务的用户通信，客户端在乙要连谁？",
+      "conditions": [
+        "两系统分属不同信任域。用户正在接受第一系统提供的 MC 业务，其客户端使用互连参与与第二系统所服务用户的通信。"
+      ],
+      "conclusion": "甲、乙是分属不同信任域的两个 MC 系统。由甲提供业务的用户，其客户端使用互连与由乙提供业务的用户通信时，客户端在乙只需能连到乙的身份管理服务器（IdMS）。",
+      "normative_strength": "“只需”限定实际使用这种互连通信的客户端在对方服务系统中所需的连接目标；不是说它只准有这一项连接，也不是本系统服务清单。",
+      "limitations": [
+        "这不是对客户端在本系统的连接清单，也不禁止存在其他连接。可达要求不等于此刻实测可达，测通此服务器也不能证明系统间 IP 承载可用或该用户业务已获准。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.10.1, two sets of users receiving service from MC systems in different trust domains"
+          ],
+          "printed_pages": [
+            23,
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.10.2, first paragraph: client connectivity to only the other system’s identity management server"
+          ],
+          "printed_pages": [
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.10.2, second paragraph: IP connectivity and the two protocol planes between MC systems"
+          ],
+          "printed_pages": [
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.2, user authorization in the serving MC system for communication with a partner using interconnection"
+          ],
+          "printed_pages": [
+            115
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "intersystem-ip",
+      "title": "两个 MC 系统希望互连，系统之间的 IP 连接承载什么？",
+      "conditions": [
+        "两个分属不同信任域的 MC 系统希望互连，以便各自所服务的用户通信。"
+      ],
+      "conclusion": "希望互连的两个 MC 系统之间需要 IP 连通，用于承载提供 MC 业务所需的信令协议和应用平面协议。这项要求针对两系统之间，不以某个用户已经通过互连通信为前提。",
+      "normative_strength": "系统间 IP 连通是拟互连系统的必要条件，与已经使用互连通信的客户端在对端只需连到 IdMS 是两项要求。",
+      "limitations": [
+        "终端到对端 IdMS 的成功测试不验证系统间承载；系统间 IP 的要求没有指明某次通信的物理路径或网关。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.10.1, two sets of users receiving service from MC systems in different trust domains"
+          ],
+          "printed_pages": [
+            23,
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.10.2, second paragraph: IP connectivity and the two protocol planes between MC systems"
+          ],
+          "printed_pages": [
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.10.2, first paragraph: client connectivity to only the other system’s identity management server"
+          ],
+          "printed_pages": [
+            24
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ip-cautions",
+      "title": "评估两个 MC 系统的互连 IP 承载，性能和安全措施各看哪个条件？",
+      "conditions": [
+        "评估互连系统间的 IP 承载；安全措施这一条件分支专指已知该承载经过两个系统各自信任域以外的情形。"
+      ],
+      "conclusion": "两个 MC 系统的互连 IP 承载应满足 MC 业务用户的性能要求；低分组时延是例子，没有给出数值。若该 IP 承载经过双方信任域以外，需要适当安全措施；不同信任域这一事实本身不证明经过双方域外。",
+      "normative_strength": "性能说明适用于互连系统间的 IP，不限双方域外；有关安全措施的 §5.2.10.2 注 2 以系统间 IP 经双方域外承载为条件。",
+      "limitations": [
+        "两系统分属不同信任域，不证明承载经过双方域外。该条没有给出时延数值，未规定相应安全措施的具体做法；实际路径、保护措施是否已部署、性能是否达标分别要有证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.10.1, two sets of users receiving service from MC systems in different trust domains"
+          ],
+          "printed_pages": [
+            23,
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.10.2, second paragraph: IP connectivity and the two protocol planes between MC systems"
+          ],
+          "printed_pages": [
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.10.2, note 1: appropriate performance, with low packet latency as an example"
+          ],
+          "printed_pages": [
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.10.2, note 2: IP carried outside the trust domains of both MC systems"
+          ],
+          "printed_pages": [
+            24
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "serving-authorization",
+      "title": "需要与伙伴经互连通信，该用户的业务授权由哪一侧办理？",
+      "conditions": [
+        "两系统分属不同信任域，需要使用互连与伙伴 MC 系统通信，且已辨明是哪一个系统当前在为这名用户提供 MC 业务。"
+      ],
+      "conclusion": "当需要通过互连与伙伴 MC 系统通信时，用户的业务授权在给这名用户提供 MC 业务的系统办理。比如甲、乙分属不同信任域、各自给一方用户提供业务，双方用户需要通过互连通信，各在自己的当前服务系统办理授权。",
+      "normative_strength": "这是需要借助互连与伙伴通信时的用户业务授权地点，不是办理迁入伙伴的授权程序，也不是对一通私呼或组呼的准入判定。",
+      "limitations": [
+        "办理地点和连通性均不证明本次业务已授权或某通呼叫已放行。要判断已获准还是已拒绝，需要对应结果；本条没有给出可据以重建具体报文流程的步骤。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.10.1, two sets of users receiving service from MC systems in different trust domains"
+          ],
+          "printed_pages": [
+            23,
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.10.2, first paragraph: client connectivity to only the other system’s identity management server"
+          ],
+          "printed_pages": [
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.2, user authorization in the serving MC system for communication with a partner using interconnection"
+          ],
+          "printed_pages": [
+            115
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "migrated-use",
+      "title": "已迁到伙伴并由伙伴服务的用户，可以用互连同自己主系统的用户通信吗？",
+      "conditions": [
+        "某用户已迁到与其主系统分属不同信任域的伙伴系统，当前正由该伙伴提供业务；要通信的是仍由该用户主系统服务的用户。"
+      ],
+      "conclusion": "用户从主系统甲迁到伙伴乙并正由乙服务时，可以使用互连与甲所服务的用户通信。若正在使用乙、甲之间的互连参加这项通信，其客户端在甲只需能连到甲的 IdMS；需要通过互连与甲通信时，授权在当前服务该用户的乙办理。",
+      "normative_strength": "已迁移且由伙伴服务，是 §5.2.10.3 所举用法的前提；这是许可，不证明某次通信采用了互连，也不证明某种其他实现可用。",
+      "limitations": [
+        "不能从互连反推迁移，也不能把用户主系统当成每次通信的对端。若另一次实际使用的是乙与第三系统丙的互连，通信对象正由丙服务，乙、丙分属不同信任域，则此时客户端在对端只须能连到丙的 IdMS，用户仍由乙办理这次互连通信所需的业务授权。",
+        "本规则不办理所选配置档的迁移授权，且不提供任何一项实际业务或呼叫的获准结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.10.1, two sets of users receiving service from MC systems in different trust domains"
+          ],
+          "printed_pages": [
+            23,
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.10.3, optional interconnection from a migrated user served by a partner to users in that user’s primary MC system"
+          ],
+          "printed_pages": [
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.10.2, first paragraph: client connectivity to only the other system’s identity management server"
+          ],
+          "printed_pages": [
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.2, user authorization in the serving MC system for communication with a partner using interconnection"
+          ],
+          "printed_pages": [
+            115
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.10.1, two sets of users receiving service from MC systems in different trust domains"
+      ],
+      "printed_pages": [
+        23,
+        24
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.10.2, first paragraph: client connectivity to only the other system’s identity management server"
+      ],
+      "printed_pages": [
+        24
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.10.2, second paragraph: IP connectivity and the two protocol planes between MC systems"
+      ],
+      "printed_pages": [
+        24
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.10.2, note 1: appropriate performance, with low packet latency as an example"
+      ],
+      "printed_pages": [
+        24
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.10.2, note 2: IP carried outside the trust domains of both MC systems"
+      ],
+      "printed_pages": [
+        24
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.10.3, optional interconnection from a migrated user served by a partner to users in that user’s primary MC system"
+      ],
+      "printed_pages": [
+        24
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.6.2, user authorization in the serving MC system for communication with a partner using interconnection"
+      ],
+      "printed_pages": [
+        115
+      ]
+    }
+  ],
+  "related": [
+    "r16-identity-partner-migration-authorization",
+    "r16-groups-partner-group-call-admission"
+  ],
+  "limitations": [
+    "只说明互连的连接要求、授权地点与可选的迁移后用途；不由此推定路线、实际可达性、某个授权或呼叫准入结果。未展开具体安全协议、迁移授权或私呼/组呼程序。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
