@@ -1,0 +1,454 @@
+{
+  "topic_id": "r16-identity-registrar-selection",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "finder 在运营方，服务用户的 SIP 注册器该去哪个库找？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0，Rel-16，在网 MC 业务 SIP 核心，Stage 2。"
+  ],
+  "condition_rule": "选库须确认 finder 与注册器各自的域；判跨网须确认三种角色的网络摆放；查权限再看用户和具体数据的信任关系。",
+  "claims": [
+    {
+      "id": "single-registrar",
+      "title": "单注册器部署不需要 finder 或用于查找服务注册器的 SIP 库资料",
+      "conditions": [
+        "该部署确定只有一个注册器，判断是否必须另设 finder。"
+      ],
+      "conclusion": "原文以只有一个注册器为例，无需 finder 及与选择注册器有关的 SIP 库信息。办理用户注册仍是注册器的职责。",
+      "normative_strength": "注 1 的部署示例；不是禁止使用，也没有多注册器必设的逆命题。",
+      "limitations": [
+        "不据此省掉整个 SIP 数据库或用户注册。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.1.3.3, note 1"
+          ],
+          "printed_pages": [
+            35
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.1.3.4, registration, location binding and notification"
+          ],
+          "printed_pages": [
+            35
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "selection-source",
+      "title": "有 finder 的三种明列部署：二者同在业务方域、同在运营方域、运营方域 finder 配业务方域注册器，用库分别为业务方、运营方、业务方",
+      "conditions": [
+        "已确认 finder 和注册器各自所属的域，并与 §7.4.3.1.3.3 a) 的三个场景之一相符。"
+      ],
+      "conclusion": "finder 用 SIP 库信息识别服务该用户的注册器／应用服务选择实体。二者同在业务方域用业务方 SIP 库，同在运营方域用运营方 SIP 库；finder 在运营方域而注册器在业务方域用业务方 SIP 库。执行识别的 finder 还可参考 PLMN 运营方的内部资料，如网络拓扑和注册器可用性。资料的归属不改变识别者。",
+      "normative_strength": "原文明列的三条来源；finder 可用运营方内部信息辅助识别，并非必须使用。",
+      "limitations": [
+        "只知 finder 在运营方不能选择乙、丙之一；反向组合未列，不补对称规则，也不据未列判禁止。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.1.3.3 a), serving entity, optional operator information and three deployments"
+          ],
+          "printed_pages": [
+            35
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "cross-network-aaa",
+      "title": "finder 在运营方网络而注册器与 SIP 库都在业务方网络时，AAA-1 跨网",
+      "conditions": [
+        "核对 §7.5.3.8 所给三种角色的网络位置，而不是只看管理主体。"
+      ],
+      "conclusion": "AAA-1 的端点为 SIP 核心与 SIP 数据库，核心通过它从库中取得信令面数据，使用 Cx 参考点。在 finder 位于运营方网络、注册器与 SIP 库均在业务方网络时，它是跨网参考点。",
+      "normative_strength": "参考点职责及适用网络摆放。",
+      "limitations": [
+        "不是终端到库的接口；不能推断所有 AAA-1 都跨网。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.3.8, endpoints, retrieved data, Cx and inter-network case"
+          ],
+          "printed_pages": [
+            43
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "data-access",
+      "title": "注册器或 finder 查询 SIP 库须服务该用户，并就所取数据与库处在同一信任域",
+      "conditions": [
+        "判断某实体访问一个指定用户某种 SIP 库资料的权限。"
+      ],
+      "conclusion": "访问 SIP 库的核心实体必须服务该用户。注册器或 finder 须就所供数据与库同信任域；选择条件与信令面身份的信任域可以不同。跨网不自动否定对选择资料的访问，同网本身也不授权。",
+      "normative_strength": "访问限制；注说明两类资料可有不同信任域。",
+      "limitations": [
+        "有权查甲的选择资料，不能据此批准查甲的全部身份资料或乙的数据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.2.1, subscriber and trust-domain access restriction and note"
+          ],
+          "printed_pages": [
+            36
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "assignment-or-current",
+      "title": "注册器分配看对该用户的能力要求；终接查询给出当前服务该用户的注册器",
+      "conditions": [
+        "区分 SIP 库支持注册器分配与支持终接呼叫或会话两项逻辑功能。"
+      ],
+      "conclusion": "MC 业务提供方按用户提出要求；SIP 库据此向 finder 提供所需能力。终接业务取得的是当前托管用户的注册器信息。",
+      "normative_strength": "两项分列的支持职责；安全场所仅为能力条件的例子。",
+      "limitations": [
+        "能力条件不证明已分配 R2；终接返回 R2 也不能反推全部分配条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.2.2 b), registrar assignment support"
+          ],
+          "printed_pages": [
+            36,
+            37
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.2.2 c), terminating traffic lookup"
+          ],
+          "printed_pages": [
+            37
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "registration-binding",
+      "title": "找到服务注册器不是注册完成：注册器登记联系绑定并通知状态，还可选择应用服务",
+      "conditions": [
+        "区分 finder 识别实体与注册器处理用户注册、联系位置和具体 SIP 事务。"
+      ],
+      "conclusion": "注册器登记用户，维护用户身份与 SIP 联系位置之间的绑定，通知注册状态。注册器可以为 SIP 事务选应用服务，可能参考运营方或业务方 SIP 库的应用服务选择信息。",
+      "normative_strength": "注册、联系绑定、状态通知属注册器；应用服务选择是可提供的功能。",
+      "limitations": [
+        "finder 识别结果不证明注册成功、某应用服务实际已选中或用户的地理位置。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.1.3.3 a), serving entity, optional operator information and three deployments"
+          ],
+          "printed_pages": [
+            35
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.1.3.4, registration, location binding and notification"
+          ],
+          "printed_pages": [
+            35
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.1.3.4, application service selection"
+          ],
+          "printed_pages": [
+            35
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "9.2.1.3, rendezvous and service control"
+          ],
+          "printed_pages": [
+            49
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "shared-management",
+      "title": "共同管理的示例由运营方管代理和 finder、业务方管注册器；不能由图推出三台物理设备",
+      "conditions": [
+        "对照 §9.2.2.1.5 的共同管理示例与 §9.2.2.1.6 的整个核心管理场景；CSCF 名称只在 IMS 语境对应。"
+      ],
+      "conclusion": "共同管理例由运营方管理代理和 finder、业务方管理注册器。若是 §9.2.2.1.6，则运营方管理整个核心，该 MC 业务提供方所服务终端的 IMPI、IMPU 由该方 SIP 库提供。IMS 内三功能分别对应 P-CSCF、I-CSCF、S-CSCF；不采 IMS 内部架构时仍有已暴露参考点的约束。",
+      "normative_strength": "部署分工是示例，IMS 对应是功能实现，不是物理实例计数。",
+      "limitations": [
+        "不从 finder 所在域反推出身份供应方案、MCPTT 业务授权或具体物理服务器。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "9.2.2.1.5, example and figure 9.2.2.1.5-1"
+          ],
+          "printed_pages": [
+            51,
+            52
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "9.2.2.1.6, opening paragraph"
+          ],
+          "printed_pages": [
+            52
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.1.3.1, two SIP core architectures and exposed reference points"
+          ],
+          "printed_pages": [
+            34
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.1.3.2, note on IM CN subsystem"
+          ],
+          "printed_pages": [
+            35
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.1.3.3, note 2 on IM CN subsystem"
+          ],
+          "printed_pages": [
+            35
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.1.3.4, note on IM CN subsystem"
+          ],
+          "printed_pages": [
+            36
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.4.3.1.3.3 a), serving entity, optional operator information and three deployments"
+      ],
+      "printed_pages": [
+        35
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.4.3.1.3.3, note 1"
+      ],
+      "printed_pages": [
+        35
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.4.3.1.3.4, registration, location binding and notification"
+      ],
+      "printed_pages": [
+        35
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.4.3.1.3.4, application service selection"
+      ],
+      "printed_pages": [
+        35
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "9.2.1.3, rendezvous and service control"
+      ],
+      "printed_pages": [
+        49
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.4.3.2.2 b), registrar assignment support"
+      ],
+      "printed_pages": [
+        36,
+        37
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.4.3.2.2 c), terminating traffic lookup"
+      ],
+      "printed_pages": [
+        37
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.5.3.8, endpoints, retrieved data, Cx and inter-network case"
+      ],
+      "printed_pages": [
+        43
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.4.3.2.1, subscriber and trust-domain access restriction and note"
+      ],
+      "printed_pages": [
+        36
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "9.2.2.1.5, example and figure 9.2.2.1.5-1"
+      ],
+      "printed_pages": [
+        51,
+        52
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "9.2.2.1.6, opening paragraph"
+      ],
+      "printed_pages": [
+        52
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.4.3.1.3.1, two SIP core architectures and exposed reference points"
+      ],
+      "printed_pages": [
+        34
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.4.3.1.3.2, note on IM CN subsystem"
+      ],
+      "printed_pages": [
+        35
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.4.3.1.3.3, note 2 on IM CN subsystem"
+      ],
+      "printed_pages": [
+        35
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.4.3.1.3.4, note on IM CN subsystem"
+      ],
+      "printed_pages": [
+        36
+      ]
+    }
+  ],
+  "related": [
+    "r16-identity-hosting-sip-core",
+    "r16-identity-shared-sip-registration"
+  ],
+  "limitations": [
+    "不以 终端身份供应、客户注册或应用层授权回执补成注册器选择证据。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
