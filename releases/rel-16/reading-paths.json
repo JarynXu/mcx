@@ -4069,6 +4069,30 @@
         }
       ],
       "boundary": "离网同组成员经 ProSe 直通时的组寻址映射、使用条件与配置来源。"
+    },
+    {
+      "id": "r16-media-preestablished-connect-outcome",
+      "question": "在网 MCPTT 已有预建立会话，重复的 Connect/Accepted 能否按两通计？如何区分对端实答、重发和重试到限？",
+      "start": "topics/media/preestablished-connect-outcome.md",
+      "next_if": [
+        {
+          "condition": "普通在网预安排组，客户端主动重入且不请求隐式话权，确认本次实际选用已有预建立会话时查此页：客户端向 PF 发对话外 REFER。PF 收到符合重入入口的请求且检查允许，先答该 REFER 200，再由 PF 向 CF 另发 INVITE，与本题自动应答来呼的 CF→受邀侧 PF 方向相反。REFER 200 或旧 Contact 均不能证明后续 INVITE 已发、已达或被接纳。仅知重入却不知方式，先核本次所选会话、客户端发出的请求和所指身份。",
+          "read": "topics/calls/preestablished-group-rejoin.md"
+        },
+        {
+          "condition": "普通在网预安排组，客户端主动重入且不请求隐式话权，本次实际采用按需会话时，查此页的主动重入分支：客户端发 initial INVITE，以待重入的业务会话身份为目标。不要当作 CF 发起的晚入邀请或预建立重入的 REFER。方式未知时先查本次所选会话、客户端请求及所指身份；另有预建立会话或旧 Contact 不能替本次选择方式。",
+          "read": "topics/calls/rejoin-late-entry.md"
+        },
+        {
+          "condition": "普通在网、采用话权控制的客户端要判断何时获准发送，或排队获授后是否还需用户确认，查本页。MCPC Accepted 不是话权许可。该页不覆盖无话权控制私呼、双话权等特殊情形。",
+          "read": "topics/media/on-network-floor-client.md"
+        },
+        {
+          "condition": "查预建立会话本身的建立、无关联业务会话时的修改，或无业务使用时的释放，转生命周期页。本次 Connect 的 T55 到限是返回未在用；有业务仍在使用时，不能套用邻页的空闲释放程序。",
+          "read": "topics/calls/preestablished-session-lifecycle.md"
+        }
+      ],
+      "boundary": "本页限已建 MCPTT 预建立会话上的 Connect 应答；PF 的发起动作限受邀侧自动应答 CF 的 INVITE。不把本次来呼的已建会话前提借给另案重入。另案方式未知先查客户端请求及所选会话；话权许可、预建立会话本身的生命周期分别查对应旧页。"
     }
   ]
 }

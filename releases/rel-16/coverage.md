@@ -2177,6 +2177,16 @@ MCPTT、MCVideo 的伙伴复制例中，甲乙互联，A 由组主系统甲服�
 
 [读取主题](topics/media/partner-group-media-replication.md)
 
+## 预建立会话里两次看到 Connect 和 Accepted，是两通 MCPTT 呼叫吗？
+
+在客户端已经使用的那条预建立会话上，再收到要求确认的 Connect，客户端须回 Accepted，这条会话保持在用，不能据此多记一通。受邀侧 PF 收到 CF 的 INVITE，在自动应答模式下用原未在用的预建立会话承接来呼；向受邀客户端发出 Connect 后，这条会话在 PF 侧就转为在用，不等于终端已答。
+
+本次 Connect 对应的预建立会话在 PF 侧在用。收到客户端对该 Connect 的确认时，PF 停 T55；若为 Accepted，仅在尚未给 CF 的本次 INVITE 回 200 时才回，仍在用；非 Accepted 则向客户端发 Disconnect，启 T56、向 CF 发释放指示，转入正在释放。未获本次确认时，T55 到期未到限则重发原 Connect；到限则须向 CF 发释放指示，回到未在用。
+
+尚未建立：单个 MCPC 确认无 MCPTT 会话身份；只有相同 SSRC 和 Accepted 不能识别两次新来呼或收到话权。短片段未见确认不证明终端拒绝或 PF 到限；到限也不证明用户按过拒绝或整个预建立会话已拆除。
+
+[读取主题](topics/media/preestablished-connect-outcome.md)
+
 ## 同一用户跨业务、跨终端时，怎样辨认身份？
 
 区分认证用的 MC ID、应用层的业务 ID 及 SIP 路由身份；判断多项业务共用 ID 时如何指明业务，以及同一用户在不同终端上怎样区分配置档和 GRUU。

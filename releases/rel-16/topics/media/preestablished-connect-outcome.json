@@ -1,0 +1,595 @@
+{
+  "topic_id": "r16-media-preestablished-connect-outcome",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "预建立会话里两次看到 Connect 和 Accepted，是两通 MCPTT 呼叫吗？",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "source_catalog": "../../sources.json",
+  "common_conditions": [
+    "TS 24.380 V16.9.0（Release 16，Stage 3），在网 MCPTT，客户端与 PF 已有预建立会话。"
+  ],
+  "condition_rule": "状态以本次消息对应的预建立会话为单位，客户端与 PF 分开；自动应答的 CF INVITE、收到正负确认、T55 到期分别是替代入口。",
+  "claims": [
+    {
+      "id": "pc-ack-format",
+      "title": "MCPC 确认没有业务会话身份；两份 Accepted 不足以判两次新来呼",
+      "conditions": [
+        "客户端与 PF 已有预建立会话，已辨认为 RTCP APP 的 MCPC Acknowledgement。"
+      ],
+      "conclusion": "PT=204、名称 MCPC，含话权参与者 SSRC 和 Reason Code，没有 MCPTT Session Identity；0 是 Accepted，1 是 Busy，2 是 Not Accepted，其余值保留。要辨认是否同一通业务的重发，需关联客户端相应会话的前态、收到的 Connect 与应答、PF 对应通道上的 Connect 身份与 T55 重发记录。",
+      "normative_strength": "报文编码及分配值是规范定义。证据的比对方法是根据两端多个状态可有同值应答而得出的判读方法，不是新增协议步骤。",
+      "limitations": [
+        "Accepted 还可能答 Disconnect；不是 SIP ACK、Floor Ack、已获话权或用户已讲话的证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.3.3.8, table 8.3.3.8-1 and assigned values"
+          ],
+          "printed_pages": [
+            179
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.3.6, table 8.3.6-1 and SSRC/Reason Code"
+          ],
+          "printed_pages": [
+            182
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.1, established session and applicable call types"
+          ],
+          "printed_pages": [
+            193
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.2.1, simultaneous pre-established sessions"
+          ],
+          "printed_pages": [
+            193
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.2.2.1, text following figure 9.2.2.1-1"
+          ],
+          "printed_pages": [
+            194
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.2.2.4.2, in-use session receives Connect, items 1–2"
+          ],
+          "printed_pages": [
+            196
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.2.2.4.5, acknowledgement to Disconnect, item 1"
+          ],
+          "printed_pages": [
+            196
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.3.3, automatic answer to controlling function INVITE, 1, 1a, 1e and 2–5"
+          ],
+          "printed_pages": [
+            198,
+            199
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.4.8, T55 expiry, 1–4"
+          ],
+          "printed_pages": [
+            201,
+            202
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "pc-client-idle",
+      "title": "Connect 抵达客户端尚未使用的那条预建立会话：是否接受来呼决定应答及后态",
+      "conditions": [
+        "收到 Connect 的这条预建立会话在客户端侧未在用；该终端其他会话是否在用不改变这个条件。"
+      ],
+      "conclusion": "若接受来呼，必须回 Accepted、建基本话权参与者状态机并转入在用；若带 Media Streams，仅使用其中标为本次使用的流。若不接受来呼，回 Busy 或 Not Accepted，保持未在用。",
+      "normative_strength": "两个分支均为必须；Media Streams 存在只是选流限制的条件，回确认不以置要求确认位为前提。",
+      "limitations": [
+        "无此选项不等于拒绝；不从未置确认位推导可以不响应这一来呼。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.2.1, simultaneous pre-established sessions"
+          ],
+          "printed_pages": [
+            193
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.2.2.1, text following figure 9.2.2.1-1"
+          ],
+          "printed_pages": [
+            194
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.2.2.3.2, not-in-use client receives Connect, 1a–d, 2a–b"
+          ],
+          "printed_pages": [
+            195
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "pc-client-active",
+      "title": "在客户端已经使用的那条预建立会话上再收 Connect，按要求确认位回包而不另开业务",
+      "conditions": [
+        "Connect 到达时，承载它的这条预建立会话在客户端已在用。"
+      ],
+      "conclusion": "该 Connect 的 subtype 首位为 1 时须回 Accepted；未置位时本条不要求回复。两种情形下这条会话都保持在用。",
+      "normative_strength": "置位时应答以及保持状态均为必须。未要求回复不等于禁止回复。",
+      "limitations": [
+        "不能把同一客户端另一条会话的在用状态作为本次收包的前态。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.2.2.1, text following figure 9.2.2.1-1"
+          ],
+          "printed_pages": [
+            194
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.2.2.4.2, in-use session receives Connect, items 1–2"
+          ],
+          "printed_pages": [
+            196
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "pc-pf-sends",
+      "title": "自动应答：受邀侧 PF 用原未在用的会话处理 CF 的 INVITE，发出 Connect 后本地转在用",
+      "conditions": [
+        "受邀侧 PF 收到 CF 的 SIP INVITE，自动应答，本次选用的预建立会话原未在用。"
+      ],
+      "conclusion": "PF 在本次呼叫的媒体面控制通道向受邀客户端发 Connect，Connect 的 MCPTT Session Identity 字段内的身份值取自该 INVITE 的 Contact 内的 SIP URI。设置要求确认位，启 T55、令 C55=1，未预留则预留媒体通道资源；这条会话在 PF 一侧转为在用。",
+      "normative_strength": "上述动作为必须；资源预留以此前尚未预留为条件。",
+      "limitations": [
+        "不能据 PF 本地在用认定客户端已接受，不能将该 Contact 的赋值当作 SIP ACK 下一跳；不覆盖主叫侧及手动应答。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.3.3.3, MCPTT Session Identity field and table 8.3.3.3-1"
+          ],
+          "printed_pages": [
+            176
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.1, established session and applicable call types"
+          ],
+          "printed_pages": [
+            193
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.1, multiple clients and sessions"
+          ],
+          "printed_pages": [
+            196
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.1, text following figure 9.3.2.1-1"
+          ],
+          "printed_pages": [
+            197
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.3.3, automatic answer to controlling function INVITE, 1, 1a, 1e and 2–5"
+          ],
+          "printed_pages": [
+            198,
+            199
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "pc-positive",
+      "title": "预建立会话在 PF 侧在用，收到对本次 Connect 的 Accepted：仅在尚未回过本次 INVITE 的 200 时才回",
+      "conditions": [
+        "该预建立会话在 PF 侧在用；PF 收到客户端对本次 Connect 的 Accepted。"
+      ],
+      "conclusion": "停 T55，尚未向 CF 回过本次 INVITE 的 SIP 200 OK 时回 200，已回不因这份确认再发；这条会话保持在用。",
+      "normative_strength": "停 T55、条件应答、保持该状态均为必须。",
+      "limitations": [
+        "PF 必须实际收到客户端对本次 Connect 的 Accepted。只见终端发送不能证明 PF 已收到、停 T55 或回了 SIP 200；不将此条件扩展为所有 MCPC 确认的通用规程。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.1, text following figure 9.3.2.1-1"
+          ],
+          "printed_pages": [
+            197
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.4.7, in-use PF receives Acknowledge, 1, 3a–b"
+          ],
+          "printed_pages": [
+            201
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.2.2.4.5, acknowledgement to Disconnect, item 1"
+          ],
+          "printed_pages": [
+            196
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "pc-negative",
+      "title": "预建立会话在 PF 侧在用，收到对本次 Connect 的负确认：发 Disconnect 并转入正在释放",
+      "conditions": [
+        "本条预建立会话在 PF 侧在用，收到客户端对本次 Connect 的非 Accepted 确认，例如 Busy 或 Not Accepted。"
+      ],
+      "conclusion": "PF 收到客户端对本次 Connect 的非 Accepted 确认且本条预建立会话在 PF 侧在用时，停 T55，向客户端发 Disconnect。Disconnect 中整项 MCPTT Session Identity 字段须与原 Connect 的字段内容相同，包括 Session Type 和 MCPTT Session Identity 值；只有身份 URI 相同不够。Disconnect 宜置要求确认位。启 T56、令 C56=1，向 CF 发呼叫释放指示，转入正在释放。",
+      "normative_strength": "停 T55、发 Disconnect、保持整项 MCPTT Session Identity 字段内容相同、启 T56/C56=1、向 CF 发释放指示及转态为必须；Disconnect 置要求确认位为建议。",
+      "limitations": [
+        "仅见终端发 Busy 或 Not Accepted，不证明 PF 已收到或开始释放；这种协议答复也不证明人按了拒绝。即使 URI 相同，Session Type 不同也不是同一字段内容。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.3.3.3, MCPTT Session Identity field and table 8.3.3.3-1"
+          ],
+          "printed_pages": [
+            176
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.3.3.8, table 8.3.3.8-1 and assigned values"
+          ],
+          "printed_pages": [
+            179
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.4.7, in-use PF receives Acknowledge, 1 and 2a–e"
+          ],
+          "printed_pages": [
+            201
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "pc-retry",
+      "title": "这条预建立会话在 PF 侧仍在用，未获本次 Connect 确认：T55 到期且未达 C55 上限时，重发原 Connect",
+      "conditions": [
+        "这条预建立会话在 PF 侧在用，尚未获本次 Connect 的确认，T55 到期但 C55 未到上限。"
+      ],
+      "conclusion": "须在本次呼叫的媒体面控制通道上重发原 Connect，重启 T55，使 C55 加一；这条会话在 PF 侧保持在用。",
+      "normative_strength": "本分支各动作为必须。",
+      "limitations": [
+        "两份 Connect 本身不证明是这一分支；仅缺回包也不能确认 T55 已经到期。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.4.8, T55 expiry, 1–4"
+          ],
+          "printed_pages": [
+            201,
+            202
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.4.9, T55 expires up to the C55 limit, 1–3"
+          ],
+          "printed_pages": [
+            202
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "pc-limit",
+      "title": "这条预建立会话在 PF 侧仍在用，未获本次 Connect 确认：T55 到期次数达到 C55 上限时，通知 CF 释放并回到未在用",
+      "conditions": [
+        "这条预建立会话在 PF 侧在用，尚未获本次 Connect 的确认，T55 到期次数已达 C55 上限。"
+      ],
+      "conclusion": "必须向 CF 发呼叫释放指示，可以释放本次呼叫占用而预建立会话不需要的媒体资源，PF 对这条预建立会话回到未在用。",
+      "normative_strength": "释放指示和转入未在用为必须；规定条件内释放媒体资源是可以；本条未要求向客户端发 Disconnect。",
+      "limitations": [
+        "到限不等于用户拒绝，也不是整个预建立会话的拆除；不编造 T55 时长或 C55 上限。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.4.9, T55 expires up to the C55 limit, 1–3"
+          ],
+          "printed_pages": [
+            202
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.4.7, in-use PF receives Acknowledge, 1 and 2a–e"
+          ],
+          "printed_pages": [
+            201
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-preestablished-group-rejoin",
+    "r16-mcptt-rejoin-late-entry",
+    "r16-media-on-network-floor-client",
+    "r16-mcptt-preestablished-session-lifecycle"
+  ],
+  "limitations": [
+    "仅 Rel-16 指定版本，在网 MCPTT 的预建立会话已经建立；PF 发起程序限受邀侧在自动应答模式收到 CF INVITE，未覆盖用户操作、SIP 重入及 ACK 路由、完整话权及媒体安全。",
+    "规范判读，不是实机抓包或互通检验；没有用等待窗口推定 T55/C55 的实际配置。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "8.3.3.3, MCPTT Session Identity field and table 8.3.3.3-1"
+      ],
+      "printed_pages": [
+        176
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "8.3.3.8, table 8.3.3.8-1 and assigned values"
+      ],
+      "printed_pages": [
+        179
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "8.3.6, table 8.3.6-1 and SSRC/Reason Code"
+      ],
+      "printed_pages": [
+        182
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.1, established session and applicable call types"
+      ],
+      "printed_pages": [
+        193
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.2.1, simultaneous pre-established sessions"
+      ],
+      "printed_pages": [
+        193
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.2.2.1, text following figure 9.2.2.1-1"
+      ],
+      "printed_pages": [
+        194
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.3.1, multiple clients and sessions"
+      ],
+      "printed_pages": [
+        196
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.3.2.1, text following figure 9.3.2.1-1"
+      ],
+      "printed_pages": [
+        197
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.2.2.3.2, not-in-use client receives Connect, 1a–d, 2a–b"
+      ],
+      "printed_pages": [
+        195
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.2.2.4.2, in-use session receives Connect, items 1–2"
+      ],
+      "printed_pages": [
+        196
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.2.2.4.5, acknowledgement to Disconnect, item 1"
+      ],
+      "printed_pages": [
+        196
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.3.2.3.3, automatic answer to controlling function INVITE, 1, 1a, 1e and 2–5"
+      ],
+      "printed_pages": [
+        198,
+        199
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.3.2.4.7, in-use PF receives Acknowledge, 1, 3a–b"
+      ],
+      "printed_pages": [
+        201
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.3.2.4.7, in-use PF receives Acknowledge, 1 and 2a–e"
+      ],
+      "printed_pages": [
+        201
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.3.2.4.8, T55 expiry, 1–4"
+      ],
+      "printed_pages": [
+        201,
+        202
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.3.2.4.9, T55 expires up to the C55 limit, 1–3"
+      ],
+      "printed_pages": [
+        202
+      ]
+    }
+  ]
+}
