@@ -1,0 +1,416 @@
+{
+  "topic_id": "r16-bearers-relay-discovery-by-group",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "远端终端按业务组找网络中继：通告和征询分别由谁核对？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "Release 16 Stage 2；按组判断 UE 到网络中继的发现和配置。"
+  ],
+  "condition_rule": "按所问对象再区分通告/征询、视频/数据、本次发现/后续业务结果；标志和许可码仅用于其各自业务范围。",
+  "claims": [
+    {
+      "id": "capability",
+      "title": "MC 业务必须支持中继按组限制通信；使用 ProSe 服务码是一种可选方法",
+      "conditions": [
+        "判断 MC 业务对 UE 到网络中继的组通信限制能力。"
+      ],
+      "conclusion": "须能让中继按组限制转送的通信。业务宜提供手段让管理员设置允许组清单，采用适当的 ProSe 服务码是实现方案之一。",
+      "normative_strength": "能力为必须；管理配置手段为建议；ProSe 服务码不是唯一实现。",
+      "limitations": [
+        "是否实际允许某个组或为它转送流量，要看针对该组的配置或通信记录。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.5.1, capability for per-group restriction and ProSe option"
+          ],
+          "printed_pages": [
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.3, administrator configuration of allowed groups"
+          ],
+          "printed_pages": [
+            19
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "code-mapping",
+      "title": "中继每个获准组宜有独特关联码，运营方可让多个组映射到同一码",
+      "conditions": [
+        "核对业务组与中继服务码的分配、映射和供给来源。"
+      ],
+      "conclusion": "每个允许组宜分配独特关联码；一个码在运营方配置中可对应一个或多个组。中继可从业务服务器或直接预配功能 DPF 获得码，不要求同时向两方取码。",
+      "normative_strength": "独特关联码为 should，供给来源为 may；映射多重性为同节注的允许条件。",
+      "limitations": [
+        "不能依据一码反查唯一业务组或用户，也不能因缺少一方的供码回执判未配置。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.3, per-group allocation and provisioning source"
+          ],
+          "printed_pages": [
+            19
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.3, note on operator mapping"
+          ],
+          "printed_pages": [
+            19
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "3.3, DPF abbreviation"
+          ],
+          "printed_pages": [
+            16
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "announcement",
+      "title": "中继发发现通告，由远端终端对照自己所属组的预配码判能否按该组接入",
+      "conditions": [
+        "采用 ProSe 服务码，以中继发现通告判断远端用户的指定组是否能使用这个中继。"
+      ],
+      "conclusion": "中继通告其允许组所对应的码。远端比对本用户目标组的预配码；命中可把该中继作为该组接入候选，目标组的码均未出现则不能凭此通告按该组选它。",
+      "normative_strength": "在通告路径上对照双方码的对应关系，是发现层选择条件。",
+      "limitations": [
+        "缺远端组到码的对应关系则未能判定；匹配不是连接、授权、办理组归属、参呼或媒体接收的回执。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.5.1, relay announcement of allowed group codes"
+          ],
+          "printed_pages": [
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.5.1, remote UE matching of announcement"
+          ],
+          "printed_pages": [
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.3, note on operator mapping"
+          ],
+          "printed_pages": [
+            19
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "solicitation",
+      "title": "远端终端按所属组发发现征询，中继用自己的许可码表决定是否响应",
+      "conditions": [
+        "采用 ProSe 服务码，以远端的发现征询寻找允许的网络中继。"
+      ],
+      "conclusion": "远端带所属组的码发征询；中继查所带码是否在自己的许可表。命中满足按组响应条件，所带码均不在表内则不满足。通告与征询是替代方式。",
+      "normative_strength": "本条确定响应与否的检查者和条件，不确认一次实际的响应。",
+      "limitations": [
+        "征询发出不足以替中继查表；表内命中也不等于该次响应已发出，未见响应不能反推名单缺码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.5.1, group code in remote UE solicitation"
+          ],
+          "printed_pages": [
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.5.1, relay response decision for a solicitation"
+          ],
+          "printed_pages": [
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.5.1, relay announcement of allowed group codes"
+          ],
+          "printed_pages": [
+            114
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "video-list",
+      "title": "在网 MCVideo 的中继组列表可选：N 时不需要列表与子项，Y 不保证某组获准",
+      "conditions": [
+        "核对 MCVideo 业务在网 UE 的中继服务标志和许可组配置。"
+      ],
+      "conclusion": "TS 23.281 表 A.2-2 列 Y/N 和可选列表。核实具体条目应看 MCVideo 组 ID 与中继服务码；N 不需要列表及子项，Y 不能倒推出必有非空列表。",
+      "normative_strength": "optional 修饰视频组及码的列表，表注写明标志为 N 的情形。",
+      "limitations": [
+        "MCData 的同名组不能代替视频配置。即使视频条目齐全也不能代替收到征询或发出响应的现场记录。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "Table A.2-2, on-network MCVideo UE relay flag, optional list and note"
+          ],
+          "printed_pages": [
+            170
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "data-list",
+      "title": "在网 MCData 的中继组列表可选：N 时不需要列表与子项，Y 不保证某组获准",
+      "conditions": [
+        "核对 MCData 业务在网 UE 的中继服务标志和许可组配置。"
+      ],
+      "conclusion": "TS 23.282 表 A.2-2 列 Y/N 和可选列表。核实具体条目应看 MCData 组 ID 与中继服务码；N 不需要列表及子项，Y 不能倒推出必有非空列表。",
+      "normative_strength": "optional 修饰数据组及码的列表，表注写明标志为 N 的情形。",
+      "limitations": [
+        "数据条目只确认相应配置，既不能代签视频组许可，也不能证明中继有过实际响应。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "Table A.2-2, on-network MCData UE relay flag, optional list and note"
+          ],
+          "printed_pages": [
+            170
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "network-boundary",
+      "title": "发现网络中继不等于参加组呼；实际经中继访问在网业务时，远端使用在网应用信令",
+      "conditions": [
+        "核验失去蜂窝覆盖的远端经 UE 到网络中继使用 MC 业务。"
+      ],
+      "conclusion": "中继的服务是三层 IP 路由，远端用户的 MC 应用层信令与在网终端相同。发现匹配只说明按组接入条件，不能代替应用层状态或媒体记录。",
+      "normative_strength": "在请求经中继访问在网业务的条件下，§10.5.2 定义网络和应用职责。",
+      "limitations": [
+        "中继通告不是离网视频组呼的建立或加入记录，也不是原有 MCPTT 会话媒体皆已换到新路径的记录。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.5.2, IP routing via relay and remote application signalling"
+          ],
+          "printed_pages": [
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.5.1, remote UE matching of announcement"
+          ],
+          "printed_pages": [
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.5.1, relay response decision for a solicitation"
+          ],
+          "printed_pages": [
+            114
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-bearers-anchored-session-transfer",
+    "r16-mcvideo-offnetwork-group-join",
+    "r16-mcvideo-offnetwork-group-call-establishment"
+  ],
+  "limitations": [
+    "限 Rel-16 Stage 2 的按组中继发现与配置；不指定码值、协议编码、连接建立报文或设备实现。",
+    "这两种发现方式均不判业务授权、组归属、参呼或媒体收发。视频与数据规范的同号在网表分别核对。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.5.1, capability for per-group restriction and ProSe option"
+      ],
+      "printed_pages": [
+        114
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.3, administrator configuration of allowed groups"
+      ],
+      "printed_pages": [
+        19
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.3, per-group allocation and provisioning source"
+      ],
+      "printed_pages": [
+        19
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.3, note on operator mapping"
+      ],
+      "printed_pages": [
+        19
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "3.3, DPF abbreviation"
+      ],
+      "printed_pages": [
+        16
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.5.1, relay announcement of allowed group codes"
+      ],
+      "printed_pages": [
+        114
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.5.1, remote UE matching of announcement"
+      ],
+      "printed_pages": [
+        114
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.5.1, group code in remote UE solicitation"
+      ],
+      "printed_pages": [
+        114
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.5.1, relay response decision for a solicitation"
+      ],
+      "printed_pages": [
+        114
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.5.2, IP routing via relay and remote application signalling"
+      ],
+      "printed_pages": [
+        114
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "Table A.2-2, on-network MCVideo UE relay flag, optional list and note"
+      ],
+      "printed_pages": [
+        170
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "Table A.2-2, on-network MCData UE relay flag, optional list and note"
+      ],
+      "printed_pages": [
+        170
+      ]
+    }
+  ]
+}
