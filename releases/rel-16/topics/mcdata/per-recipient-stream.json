@@ -1,0 +1,260 @@
+{
+  "topic_id": "r16-mcdata-per-recipient-stream",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCData 数据流：自动接收要等乙同意吗？同一条流能只停给乙吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "common_conditions": [
+    "3GPP TS 23.282 V16.8.0（Release 16，Stage 2）§5.5，MCData 数据流（DS）能力。"
+  ],
+  "condition_rule": "各条继承主题范围，再按各自条件判断。要求服务支持某行为，不代表一次传送已经发生。",
+  "claims": [
+    {
+      "id": "ds-auto-consent",
+      "title": "MCData 数据流请求设为自动接收时，服务不得要求接收用户同意",
+      "conditions": [
+        "判断明确设为自动接收的 MCData 数据流请求，而非文件下载。"
+      ],
+      "conclusion": "对这次自动接收的数据流，服务不得把接收方 MCData 用户同意设成接收条件。不需点击的提示与等待用户批准才接收不同；自动接收设置不能证明发送人已有许可、终端已处理或数据已到达。",
+      "normative_strength": "有条件的禁止（shall not require consent）。",
+      "limitations": [
+        "没有点击记录不能反推请求已设为自动接收。本条没有为未设自动接收的请求规定界面或同意流程。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "5.5, last paragraph on printed p.18: automatic reception and consent of the receiving MCData user"
+          ],
+          "printed_pages": [
+            18
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ds-recipient-controls",
+      "title": "MCData 用户能按接收者开始、停止或取消指定的数据流",
+      "conditions": [
+        "判断控制针对哪条流、哪个接收者；实际生效要有对应结果依据。"
+      ],
+      "conclusion": "MCData 用户应能对数据流施加开始（start）、停止（stop）或取消（cancel）控制，也能按单个接收者控制。若仅选择停止给乙的 X，不能据此把给丙的 X 或给乙的 Y 一并登记为停止。",
+      "normative_strength": "必须提供该项按流、按接收者控制的能力。",
+      "limitations": [
+        "命令选中乙，不是乙已停收的结果；丙继续接收和丙停止接收都需要另证。控制粒度不指定物理交付方式。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "5.5, first paragraph on printed p.19: stream controls applied per recipient"
+          ],
+          "printed_pages": [
+            19
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ds-termination",
+      "title": "MCData 数据流：用户显式停止或取消可在所选范围内结束传送；流内容到尾也会终止",
+      "conditions": [
+        "对象是 MCData 数据流本身；区分终止原因和某个接收者收到多少内容。"
+      ],
+      "conclusion": "用户显式停止或取消，或流的内容走到末尾，均应终止流。内容确已到尾时，不需要有用户停止命令才能解释终止。",
+      "normative_strength": "两类终止条件由 shall be terminated 给出。",
+      "limitations": [
+        "只知道流已终止，不能认定是用户操作或内容到尾；源内容到尾也不能替任何接收者签认收全。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "5.5, first paragraph on printed p.19: stream controls applied per recipient"
+          ],
+          "printed_pages": [
+            19
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "5.5, final paragraph: explicit user stop/cancel or end of streamed content"
+          ],
+          "printed_pages": [
+            19
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ds-stream-and-url",
+      "title": "MCData 数据流服务允许用户向另一用户发送流或该流的 URL；网络侧流源的内容也可能由用户提供",
+      "conditions": [
+        "区分MCData数据流服务须支持的方式与单次实际传输。"
+      ],
+      "conclusion": "服务须支持一对一及组数据流，并允许用户向另一用户发流或流的 URL。流可源自 MCData 客户端或网络功能实体，后者的流仍可能由 MCData 用户提供。分发机制须支持单播和广播。",
+      "normative_strength": "通信范围、允许发送和两种交付方式是要求；来源是可选情形。",
+      "limitations": [
+        "收到 URL 不是收到流数据。支持两种交付不要求同次并用；逐收方控制也不要求每人单占物理链路。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "5.5, first and second paragraphs: one-to-one and group; stream or its URL; possible sources and delivery methods"
+          ],
+          "printed_pages": [
+            18
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "5.5, first paragraph on printed p.19: stream controls applied per recipient"
+          ],
+          "printed_pages": [
+            19
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ds-open-questions",
+      "title": "TS 23.282 V16.8.0 §5.5 编辑注：MCData 数据流应支持的最低比特率，以及一对一数据流能否暂停和恢复，仍待研究",
+      "conditions": [
+        "限 TS 23.282 V16.8.0 §5.5 的两处编辑注；暂停与恢复的注解限定一对一通信。"
+      ],
+      "conclusion": "本版 §5.5 未给出数据流应支持的最低比特率，把一对一通信是否适用暂停和恢复控制列为待研究。stop、cancel 是显式终止控制，不是须可恢复的暂停。",
+      "normative_strength": "两条均为编辑注（FFS）；终止要求另见同节末段。",
+      "limitations": [
+        "不能据本条设置具体速率或宣布无最低要求；也不能据一对一的编辑注认定组通信的暂停、恢复已规定或被禁止。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "5.5, editor’s note on minimum bitrate support on printed p.18"
+          ],
+          "printed_pages": [
+            18
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "5.5, editor’s note on applicability of pause/resume to one-to-one communication on printed p.19"
+          ],
+          "printed_pages": [
+            19
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "5.5, final paragraph: explicit user stop/cancel or end of streamed content"
+          ],
+          "printed_pages": [
+            19
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "5.5, first and second paragraphs: one-to-one and group; stream or its URL; possible sources and delivery methods"
+      ],
+      "printed_pages": [
+        18
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "5.5, last paragraph on printed p.18: automatic reception and consent of the receiving MCData user"
+      ],
+      "printed_pages": [
+        18
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "5.5, first paragraph on printed p.19: stream controls applied per recipient"
+      ],
+      "printed_pages": [
+        19
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "5.5, final paragraph: explicit user stop/cancel or end of streamed content"
+      ],
+      "printed_pages": [
+        19
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "5.5, editor’s note on minimum bitrate support on printed p.18"
+      ],
+      "printed_pages": [
+        18
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "5.5, editor’s note on applicability of pause/resume to one-to-one communication on printed p.19"
+      ],
+      "printed_pages": [
+        19
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcdata-data-stream-reference-points",
+    "r16-mcdata-mandatory-consented-file-distribution",
+    "r16-mcdata-service-capability-and-functional-roles"
+  ],
+  "limitations": [
+    "MCData 数据流请求设为自动接收时，服务不得要求接收用户同意；对指定流按接收者开始、停止或取消，以及流因用户停止、取消或内容到尾而终止。 这一节不提供具体信令或某次接收的执行记录。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
