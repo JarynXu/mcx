@@ -1,0 +1,397 @@
+{
+  "topic_id": "r16-bearers-partner-migration-network-access",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "迁到伙伴 MC 系统，手机还连着原来的移动网或 SIP 核心，算故障吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "Release 16 Stage 2，主系统与伙伴系统间 MC 业务用户迁移的网络接入准备。"
+  ],
+  "condition_rule": "先分别核对两系统的 HPLMN 和手机实际接入网；针对该伙伴的 SIP 核心选择另核。",
+  "claims": [
+    {
+      "id": "network-selection",
+      "title": "迁入伙伴系统宜通过伙伴 HPLMN 接入，主系统 HPLMN 也未排除；可迁移用户须获配迁往各系统时可用的 PLMN",
+      "conditions": [
+        "为已开通迁移的用户判断其可通过哪些移动网访问指定伙伴。"
+      ],
+      "conclusion": "两家 MC 业务提供方约定用主或伙伴 HPLMN 接入。应核对给该用户配置的、迁往该伙伴可用的 PLMN。若约定及配置均允许经主网接入，不能仅凭用户实际仍在主网而判错。",
+      "normative_strength": "推荐使用伙伴 HPLMN，允许使用主系统 HPLMN；逐目标指定可用 PLMN 的配置是必须。",
+      "limitations": [
+        "用户签约归属主网不能证明用户一直通过主网接入，不把留在主网上等同于漫游到伙伴。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.9.2, HPLMN recommendation and note 2"
+          ],
+          "printed_pages": [
+            22
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.9.2, permitted PLMNs for the destination MC systems"
+          ],
+          "printed_pages": [
+            23
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.9.2, different HPLMNs with roaming onto the partner HPLMN, first bullet"
+          ],
+          "printed_pages": [
+            23
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "roaming-eps",
+      "title": "两系统的 HPLMN 不同且用户漫游到伙伴网时：两网需 EPC 漫游；伙伴网需为§5.2.7 所述、标识伙伴 MC 系统 PDN 的 APN开本地分流；获准迁往该伙伴的用户所用主侧 EPS 签约需配置这些 APN 并开分流",
+      "conditions": [
+        "主与伙伴 MC 系统的 HPLMN 不同，获准迁往该伙伴的用户漫游到伙伴 HPLMN。"
+      ],
+      "conclusion": "主、伙伴系统的 HPLMN 不同，用户漫游到伙伴 HPLMN 时，两网之间需要 EPC 层漫游；伙伴 HPLMN 需为§5.2.7 所述、标识伙伴 MC 系统 PDN 的 APN启用本地分流；获准迁往该伙伴的用户所用主侧 EPS 签约需配置这些 APN，并为它们启用本地分流。",
+      "normative_strength": "三项是本漫游分支的必要配置，分属两网之间、伙伴 HPLMN 及主侧 EPS 签约。",
+      "limitations": [
+        "伙伴侧不是要给来访用户再建一份 EPS 签约。主侧只看到 APN，缺分流状态是待核；查明关闭才是不满足。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.9.2, different HPLMNs with roaming onto the partner HPLMN, first bullet"
+          ],
+          "printed_pages": [
+            23
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.9.2, different HPLMNs with roaming, second bullet on the partner HPLMN"
+          ],
+          "printed_pages": [
+            23
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.9.2, different HPLMNs with roaming, third bullet on primary EPS subscriptions"
+          ],
+          "printed_pages": [
+            23
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "common-eps",
+      "title": "两系统共用同一 HPLMN 时，获准迁往该伙伴的用户所用主侧 EPS 签约仍需配置§5.2.7 所述、标识伙伴 MC 系统 PDN 的 APN",
+      "conditions": [
+        "主与伙伴系统共用同一 HPLMN，用户迁移后继续通过此网接入。"
+      ],
+      "conclusion": "两系统共用同一 HPLMN、用户经此网访问伙伴时，获准迁往该伙伴的用户所用主侧 EPS 签约仍需配置§5.2.7 所述、标识伙伴 MC 系统 PDN 的 APN。此分支未要求跨网 EPC 漫游，也没有规定本地分流必须开或关。",
+      "normative_strength": "共网分支对§5.2.7 所述、标识伙伴 MC 系统 PDN 的 APN保留主侧签约配置要求，不要求网间漫游。",
+      "limitations": [
+        "仅对§5.2.7 所述、标识伙伴 MC 系统 PDN 的 APN核这一项：相应主侧签约若少配一项所需 APN，就不能以共网为由通过。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.9.2, same HPLMN branch"
+          ],
+          "printed_pages": [
+            23
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.9.2, different HPLMNs with roaming onto the partner HPLMN, first bullet"
+          ],
+          "printed_pages": [
+            23
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.9.2, different HPLMNs with roaming, second bullet on the partner HPLMN"
+          ],
+          "printed_pages": [
+            23
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.9.2, different HPLMNs with roaming, third bullet on primary EPS subscriptions"
+          ],
+          "printed_pages": [
+            23
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "apn-access-credentials",
+      "title": "迁移时共用 HPLMN 或漫游到伙伴 HPLMN：配置§5.2.7 所述、标识伙伴 MC 系统 PDN 的 APN时须包括访问相应 PDN 所需的凭据",
+      "conditions": [
+        "核对 MC 用户迁移的共网或异网漫游分支中§5.2.7 所述、标识伙伴 MC 系统 PDN 的 APN的配置。"
+      ],
+      "conclusion": "迁移时共用 HPLMN 或漫游到伙伴 HPLMN，针对§5.2.7 所述、标识伙伴 MC 系统 PDN 的 APN，若访问相应 PDN 需要凭据，配置中须包括所需凭据。无需凭据的 PDN 不因未另配凭据而缺项。",
+      "normative_strength": "注 3 将所需凭据计入两种情形的 APN 配置，不要求一律增加凭据。",
+      "limitations": [
+        "此处所核为 PDN 接入凭据；不能据此签认终端已配向另一个 SIP 核心注册所需的凭据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.9.2, note 3 applying to all the above APN provisioning"
+          ],
+          "printed_pages": [
+            23
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.9.3, additional access configuration and registration credentials for a different core"
+          ],
+          "printed_pages": [
+            23
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "core-sharing",
+      "title": "迁入伙伴 MC 系统的用户宜用伙伴 SIP 核心；连通和安全策略允许时，可按提供方约定由同一核心连接主系统及一个或多个伙伴",
+      "conditions": [
+        "为迁往伙伴 MC 系统的用户判断主与伙伴系统是否可共用 SIP 核心／IMS。"
+      ],
+      "conclusion": "迁入伙伴 MC 系统的用户宜用伙伴 SIP 核心。连通和安全策略均允许时，可按两家业务提供方的约定，用同一核心连接主系统和一个或多个伙伴。安全策略禁止共用时，仅有网络可达和共用约定并不足够。",
+      "normative_strength": "迁入伙伴 MC 系统时推荐伙伴核心，并非必须另接；共用核心是有条件的选择。",
+      "limitations": [
+        "用户当前所在 PLMN 不能替代对该伙伴的 SIP 核心选择配置。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.9.3, recommended SIP core, shared-core conditions and note 2"
+          ],
+          "printed_pages": [
+            23
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.9.3, core selection configuration for each partner MC system"
+          ],
+          "printed_pages": [
+            23
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "core-provisioning",
+      "title": "可迁移用户的终端必须逐伙伴配置选哪个 SIP 核心；选择另接伙伴核心时，还必须配置接入该核心所需的资料及向其注册所需的凭据",
+      "conditions": [
+        "核对可迁移用户终端针对一个伙伴的 SIP 核心选择。"
+      ],
+      "conclusion": "对已开通迁移的 MC 业务用户，其终端必须逐伙伴配置：迁往该伙伴时连主核心还是另一个核心。若另接伙伴核心，终端还须配置接入该核心所需的资料以及向其注册所需的凭据；选主核心时本条不要求另配另一核心的资料。",
+      "normative_strength": "可迁移用户的终端必须有逐伙伴的核心选择配置；仅在为迁往该伙伴选择另一个核心时，本条才要求给终端增加那两项配置。",
+      "limitations": [
+        "凭据和接入配置已配齐不证明已注册成功。如何连接伙伴核心在本版留待研究。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.9.3, core selection configuration for each partner MC system"
+          ],
+          "printed_pages": [
+            23
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.9.3, additional access configuration and registration credentials for a different core"
+          ],
+          "printed_pages": [
+            23
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.9.3, editor’s note on how to connect to the partner SIP core"
+          ],
+          "printed_pages": [
+            23
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-bearers-attachment-apn-roles",
+    "r16-identity-partner-migration-configuration-timeline",
+    "r16-identity-partner-migration-authorization"
+  ],
+  "limitations": [
+    "两系统 HPLMN 不同但用户仍通过主网接入时，不当作已经漫游到伙伴，也不当作双方共用同一 HPLMN。",
+    "本版未给出终端如何连接伙伴核心的具体实现方法。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.9.2, HPLMN recommendation and note 2"
+      ],
+      "printed_pages": [
+        22
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.9.2, permitted PLMNs for the destination MC systems"
+      ],
+      "printed_pages": [
+        23
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.9.2, different HPLMNs with roaming onto the partner HPLMN, first bullet"
+      ],
+      "printed_pages": [
+        23
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.9.2, different HPLMNs with roaming, second bullet on the partner HPLMN"
+      ],
+      "printed_pages": [
+        23
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.9.2, different HPLMNs with roaming, third bullet on primary EPS subscriptions"
+      ],
+      "printed_pages": [
+        23
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.9.2, same HPLMN branch"
+      ],
+      "printed_pages": [
+        23
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.9.2, note 3 applying to all the above APN provisioning"
+      ],
+      "printed_pages": [
+        23
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.9.3, recommended SIP core, shared-core conditions and note 2"
+      ],
+      "printed_pages": [
+        23
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.9.3, core selection configuration for each partner MC system"
+      ],
+      "printed_pages": [
+        23
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.9.3, additional access configuration and registration credentials for a different core"
+      ],
+      "printed_pages": [
+        23
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.9.3, editor’s note on how to connect to the partner SIP core"
+      ],
+      "printed_pages": [
+        23
+      ]
+    }
+  ]
+}
