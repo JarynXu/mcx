@@ -1,0 +1,338 @@
+{
+  "topic_id": "r16-mcvideo-message-scoped-causes",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCVideo 的原因值 5 是“只能收”还是“只能发”？原因值 7 是排队吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.581-v16.9.0",
+  "common_conditions": [
+    "3GPP TS 24.581 V16.9.0，Release 16，Stage 3。对象是已解码的 MCVideo 传输控制消息记录；同一数值按各自消息定义判读。"
+  ],
+  "condition_rule": "各条分别适用于其消息和结果；不是同一次通话必须连续发生的事件。",
+  "claims": [
+    {
+      "id": "cause-select-message",
+      "title": "MCV1 与原因值不足以选原因清单；先识别这条服务器消息",
+      "conditions": [
+        "判读一份 MCVideo 传输控制消息记录；若按子类型查，须确认是服务器到参与端的 MCV1。"
+      ],
+      "conclusion": "先取消息名。若只剩已解码的字段，服务器到参与端的 MCV1 中，x0001 为 Transmission Rejected，x0100 为 Transmission Revoked，x0111 为 Receive media response；x 区分是否要求控制应答，不改变原因。",
+      "normative_strength": "规范明定原因值随消息而异；三个名称和子类型的对应来自表 9.2.2.1-2。",
+      "limitations": [
+        "仅有 MCV1、原因 5 或 7，不能在这三者间选一条。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "9.1.2, Name field, item 2 (server to client, MCV1)"
+          ],
+          "printed_pages": [
+            144
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "9.2.2.1, Table 9.2.2.1-2 (three server-to-client rows) and explanation of x below the tables"
+          ],
+          "printed_pages": [
+            146
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "9.2.3.4, first paragraph and final reference for Reject Cause value"
+          ],
+          "printed_pages": [
+            148
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "cause-tx-rejected",
+      "title": "Transmission Rejected：5 是发送申请人只有接收权限，本版发送拒绝清单未列 7",
+      "conditions": [
+        "服务器已向请求发送的参与者发出 Transmission Rejected，核对该消息内的原因值。"
+      ],
+      "conclusion": "原因 5：申请人只能收，因此这次发送请求被拒。若原因是 7，本版这条消息的原因清单没有对应项。",
+      "normative_strength": "这是消息定义及其列举的原因值。",
+      "limitations": [
+        "清单未列不能改记为收流数满、发送排队，或断言所有版本都禁止。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "9.2.6.1, message purpose and Reject Cause reference"
+          ],
+          "printed_pages": [
+            159,
+            160
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "9.2.6.2, cause 5 and extent of the listed transmission rejection causes"
+          ],
+          "printed_pages": [
+            160,
+            161
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "cause-tx-revoked",
+      "title": "Transmission Revoked：5 因终止这路 RTP 流撤销已有发送许可，7 表示这位发送者的发送被排队",
+      "conditions": [
+        "服务器向原先获准发送的参与者发出 Transmission Revoked，核对其原因 5 或 7。"
+      ],
+      "conclusion": "原因 5 的名称是终止 RTP 流，表示服务器撤销此人的发送许可；原因 7 表示这位参与者的发送被排队。",
+      "normative_strength": "这是发送撤权原因的两项定义。",
+      "limitations": [
+        "5 不是媒体已停止到达或整场 SIP 呼叫已挂断的证据；7 不给出队位，也不是下一次发送授予。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "9.2.10.1, message purpose and reason for stopping transmission"
+          ],
+          "printed_pages": [
+            164
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "9.2.10.2, causes 5 and 7 for withdrawal of permission to send"
+          ],
+          "printed_pages": [
+            165
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "cause-rx-result",
+      "title": "Receive media response：Result=0 表示本次接收被拒，Result=1 表示获准；获准不证明画面已显示",
+      "conditions": [
+        "处理同一次 Receive media response 的 Result 及其可能被记作拒绝原因的数值。"
+      ],
+      "conclusion": "先核字段名。Result=0 时才用拒绝原因解释这次拒绝；Result=1 表示准收所请求的媒体。仅有数字 1，不能确认它是 Result。若摘录缺 Result，补查同一响应；若已核实同一响应既记 Result=1，又把 5 或 7 写作本次接收被拒的原因，照录两项并标明矛盾。",
+      "normative_strength": "0/1 按字段定义；对残缺或矛盾摘录的处理是诊断判断，不是规范规定的协议错误处置。",
+      "limitations": [
+        "缺 Result 不能确认这次被拒；有许可不能确认收到了媒体或画面已呈现。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "9.2.3.17, Result field and two defined values on printed page 155"
+          ],
+          "printed_pages": [
+            154,
+            155
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "9.2.15.1, purpose of response and distinct Result and Reject Cause fields"
+          ],
+          "printed_pages": [
+            170
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "cause-rx-rejected",
+      "title": "Receive media response 且 Result=0：5 是申请人只有发送权限，7 是同时接收流数已达上限",
+      "conditions": [
+        "消息已确认为 Receive media response，并确认本次接收的 Result=0。"
+      ],
+      "conclusion": "5：申请人只能发，所以被拒的是这次接收请求。7：同时接收流数达到上限，这次接收被拒。接收响应自己的定义直接指向它自己的原因表。",
+      "normative_strength": "这是接收响应的结果和相应拒绝原因的定义。",
+      "limitations": [
+        "不能把收到的这两个原因写成发送请求被拒或发送排队。公共字段一节末尾只回指两个发送侧条款；接收响应的清单仍由其自身定义指定。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "9.2.3.4, first paragraph and final reference for Reject Cause value"
+          ],
+          "printed_pages": [
+            148
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "9.2.3.17, Result field and two defined values on printed page 155"
+          ],
+          "printed_pages": [
+            154,
+            155
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "9.2.15.1, purpose of response and distinct Result and Reject Cause fields"
+          ],
+          "printed_pages": [
+            170
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "9.2.15.2, causes 5 and 7 for receive media request rejection"
+          ],
+          "printed_pages": [
+            171
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "9.1.2, Name field, item 2 (server to client, MCV1)"
+      ],
+      "printed_pages": [
+        144
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "9.2.2.1, Table 9.2.2.1-2 (three server-to-client rows) and explanation of x below the tables"
+      ],
+      "printed_pages": [
+        146
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "9.2.3.4, first paragraph and final reference for Reject Cause value"
+      ],
+      "printed_pages": [
+        148
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "9.2.3.17, Result field and two defined values on printed page 155"
+      ],
+      "printed_pages": [
+        154,
+        155
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "9.2.6.1, message purpose and Reject Cause reference"
+      ],
+      "printed_pages": [
+        159,
+        160
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "9.2.6.2, cause 5 and extent of the listed transmission rejection causes"
+      ],
+      "printed_pages": [
+        160,
+        161
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "9.2.10.1, message purpose and reason for stopping transmission"
+      ],
+      "printed_pages": [
+        164
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "9.2.10.2, causes 5 and 7 for withdrawal of permission to send"
+      ],
+      "printed_pages": [
+        165
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "9.2.15.1, purpose of response and distinct Result and Reject Cause fields"
+      ],
+      "printed_pages": [
+        170
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "9.2.15.2, causes 5 and 7 for receive media request rejection"
+      ],
+      "printed_pages": [
+        171
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcvideo-current-queue-position",
+    "r16-mcvideo-prearranged-group-reception-server"
+  ],
+  "limitations": [
+    "只解释三种既有 MCVideo 服务器消息中的原因 5 和 7。接收响应的拒绝原因以 Result=0 为条件；不以这些值推定队位、媒体到达或整场通话释放。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

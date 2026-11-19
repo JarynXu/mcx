@@ -1744,6 +1744,16 @@ MCVideo 音视频分用 EPS 单播承载时，各承载优先级由运营商策�
 
 [读取主题](topics/mcvideo/offnetwork-remote-push-to-third.md)
 
+## MCVideo 的原因值 5 是“只能收”还是“只能发”？原因值 7 是排队吗？
+
+MCVideo（TS 24.581 V16.9.0）的原因 5：Transmission Rejected 表示发送申请人只有接收权限；Transmission Revoked 表示因终止这路 RTP 流而撤销已有发送许可；Receive media response 在 Result=0 时表示接收申请人只有发送权限。
+
+MCVideo（TS 24.581 V16.9.0）的原因 7：Transmission Rejected 的原因清单未列 7；Transmission Revoked 表示这位参与者的发送被排队；Receive media response 在 Result=0 时表示同时接收的流数已达上限。
+
+尚未建立：只有 MCV1 和原因值不够选消息；接收响应缺 Result 不能确认被拒。只有数字 1 不能判准收，须知字段名。Result=1 才表示准许接收，并不证明媒体已到、画面已显示；与拒绝解释矛盾时两项照录并核对。
+
+[读取主题](topics/mcvideo/message-scoped-causes.md)
+
 
 ## 显式组归属：本客户端的建立、解除与状态观察
 
