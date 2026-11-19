@@ -1,0 +1,499 @@
+{
+  "topic_id": "r16-mcdata-intersystem-fd-url-content",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "跨系统分发文件：两个 MCData 业务服务器交换了 URL，文件本身走哪条路？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "common_conditions": [
+    "3GPP TS 23.282 V16.8.0，Release 16，Stage 2。主系统与伙伴系统互联的在网文件分发应用面功能模型；辨认参考点时按功能端点和业务用途，不按地址字符串、物理主机或请求数量。"
+  ],
+  "condition_rule": "各 claim 继承 common_conditions；通用接口或一对一 HTTP 程序仅在声明所列条件下用作对照。一次传输、接收或完成仍须该对象和该端的记录。",
+  "claims": [
+    {
+      "id": "ifs-url-route",
+      "title": "跨系统互通图把 -3、-9 按功能端点分段；上传、下载不是两条接口的分工",
+      "conditions": [
+        "在网互通时，核对两 MCData 业务服务器之间共享文件上传或下载 URL 的路径。"
+      ],
+      "conclusion": "主业务服务器的 FD 功能至主 MC 网关为 MCData-3，主、伙伴 MC 网关之间为 MCData-9，伙伴网关至伙伴业务服务器 FD 功能亦为 MCData-3。两参考点共同支持分享与上传、下载有关的 URL。",
+      "normative_strength": "本节给出功能与用途，不按地址用途分配参考点，也不把图中连线规定为消息次数或顺序。",
+      "limitations": [
+        "伙伴业务服务器收到地址，只证其收到该地址；不证文件已上传到主侧、伙伴侧已存有正文或某终端已下载。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.6.1a, heading and introductory sentence: on-network file distribution with interconnection; Figure 6.6.1a-1, two system boundaries and functional entities"
+          ],
+          "printed_pages": [
+            31
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.6.1a, Figure 6.6.1a-1 links from each server FD function to its MC gateway server and between the two MC gateway servers; fourth bullet after figure"
+          ],
+          "printed_pages": [
+            31
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.6.1a, Figure 6.6.1a-1 paths between media storage functions via HTTP proxies; fifth bullet after figure"
+          ],
+          "printed_pages": [
+            31
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ifs-content-proof",
+      "title": "跨系统 FD-6 连两个内容服务器，元数据收件与正文收齐是不同事实",
+      "conditions": [
+        "在网互通两端确为主、伙伴 MCData 内容服务器；按本次接收侧记录的对象和结果判读。"
+      ],
+      "conclusion": "MCData-FD-6 基于 HTTP，可共享文件正文和元数据。伙伴若仅确认收到 X 的元数据，不能断定正文在此或另次已传、未传；若确认已完整收到 X 的正文，可以登记伙伴存储端收齐，但不能替乙终端登记下载。",
+      "normative_strength": "两种对象均受支持；条款不要求每个 URL 必触发一次 HTTP 操作，也不要求两种对象经同一请求传完。",
+      "limitations": [
+        "FD-6 标签、HTTP 成功或一个 URL 都不能单独证明伙伴已收齐完整正文。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.6.1a, heading and introductory sentence: on-network file distribution with interconnection; Figure 6.6.1a-1, two system boundaries and functional entities"
+          ],
+          "printed_pages": [
+            31
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.6.1a, Figure 6.6.1a-1 links from each server FD function to its MC gateway server and between the two MC gateway servers; fourth bullet after figure"
+          ],
+          "printed_pages": [
+            31
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.6.1a, Figure 6.6.1a-1 paths between media storage functions via HTTP proxies; fifth bullet after figure"
+          ],
+          "printed_pages": [
+            31
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ifs-http-endpoints",
+      "title": "同为 HTTP，按取件端的功能和业务用途区分跨系统 FD-6、终端 FD-4 和业务 FD-5",
+      "conditions": [
+        "同一在网互通图内，辨认内容服务器间共享、终端上传/下载及业务服务器取件的参考点。"
+      ],
+      "conclusion": "主、伙伴内容服务器之间共享文件或元数据查 FD-6；终端媒体存储客户端对内容服务器媒体存储功能上传或下载是 FD-4；业务服务器 FD 功能取终端先前上传的文件供 MBMS 组播是 FD-5。图中业务服务器与终端的两个 FD 功能之间另有 FD-1、FD-2、FD-3，下行组播用 FD-3。",
+      "normative_strength": "比较的是参考点的参与功能与用途；FD-5 所述取件是该条用途之一，不排除其规定的其他操作。",
+      "limitations": [
+        "仅见 HTTP 或代理 IP 时不能选 FD-6；MCData-3 不等于 MCData-FD-3。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.6.1a, heading and introductory sentence: on-network file distribution with interconnection; Figure 6.6.1a-1, two system boundaries and functional entities"
+          ],
+          "printed_pages": [
+            31
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.6.1a, Figure 6.6.1a-1 links from each server FD function to its MC gateway server and between the two MC gateway servers; fourth bullet after figure"
+          ],
+          "printed_pages": [
+            31
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.6.1a, Figure 6.6.1a-1 paths between media storage functions via HTTP proxies; fifth bullet after figure"
+          ],
+          "printed_pages": [
+            31
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.6.1a, Figure 6.6.1a-1 links to UE FD function and first bullet after figure; 6.6.4.1.3, downlink multicast file data (neighbour only)"
+          ],
+          "printed_pages": [
+            31,
+            34
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.6.4.1.4, media storage client and media storage function using HTTP (contrast only)"
+          ],
+          "printed_pages": [
+            34
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.6.4.1.5, FD function and media storage function using HTTP (contrast only)"
+          ],
+          "printed_pages": [
+            34
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ifs-proxy-roles",
+      "title": "同一在网互通图中的 HTTP 代理与 MC 网关各有拓扑隐藏职责",
+      "conditions": [
+        "两个互联 MCData 系统；区分 FD-6 上的 HTTP 代理和 -3、-9 所连的 MC 网关。"
+      ],
+      "conclusion": "HTTP 代理属信令面，在两系统间隐藏拓扑和 IP 地址。甲为主系统、乙为另一信任域的伙伴系统时，MC 网关代理乙的一台或多台 MCData 业务服务器，使甲无须把甲的业务服务器暴露至甲的信任域外。网关转送呼叫控制、传输控制信令及媒体，可由 MCData 业务服务器兼任。",
+      "normative_strength": "功能模型描述角色及连线；不是独立主机、数量、地址或实现机制要求。",
+      "limitations": [
+        "无需把主系统的业务服务器暴露到主信任域外，不等于任何部署中主系统的真实地址绝不可能外泄。同一 IP 不足以认定同一功能，也不能据图断定必须分机、TLS 终止位置、实际鉴权或缓存节点。HTTP 代理不是 FD-6 共享文件的端点。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.6.1a, heading and introductory sentence: on-network file distribution with interconnection; Figure 6.6.1a-1, two system boundaries and functional entities"
+          ],
+          "printed_pages": [
+            31
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.6.1a, Figure 6.6.1a-1 links from each server FD function to its MC gateway server and between the two MC gateway servers; fourth bullet after figure"
+          ],
+          "printed_pages": [
+            31
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.6.1a, Figure 6.6.1a-1 paths between media storage functions via HTTP proxies; fifth bullet after figure"
+          ],
+          "printed_pages": [
+            31
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.6.1a, Figure 6.6.1a-1 HTTP proxies in FD-6 path, third and sixth bullets after figure"
+          ],
+          "printed_pages": [
+            31
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.4.3.1.5, paragraph 1 (proxy for one or more partner MCData servers, no need to expose primary MCData servers outside the primary trust domain, optional MCData-server role) and paragraph 2 (control signalling and media relay)"
+          ],
+          "printed_pages": [
+            25
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ifs-generic-axes",
+      "title": "跨系统 FD 图里的 URL 用途不排除 MCData-3 的媒体和 MCData-9 的大应用数据",
+      "conditions": [
+        "解释互通文件图中的 MCData-3/-9 时，回到各自通用定义；SIP 传送与路由要求针对建立 MCData 会话的应用信令。"
+      ],
+      "conclusion": "MCData-3 的通用端点为 MCData 服务器：建会信令须用 SIP-2；两端由不同 SIP 核心服务时还须用 SIP-3。-3 也传媒体。-9 连接两系统的 MC 网关，建会信令须用 SIP-3；大到不能在信令面传递的应用数据也由 -9 承载。",
+      "normative_strength": "区分建会信令的 shall、通用参考点的其他传送用途、文件互通图列出的 URL 共享能力。",
+      "limitations": [
+        "仅知 -9 能传大应用数据不能登记特定 X 的正文实际走了 -9；图及建会规定不能补出某次 URL 的 SIP 方法或头域。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.6.1a, heading and introductory sentence: on-network file distribution with interconnection; Figure 6.6.1a-1, two system boundaries and functional entities"
+          ],
+          "printed_pages": [
+            31
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.6.1a, Figure 6.6.1a-1 links from each server FD function to its MC gateway server and between the two MC gateway servers; fourth bullet after figure"
+          ],
+          "printed_pages": [
+            31
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.4.4.1.3, complete paragraph across the page break: transport and routing for session establishment and media"
+          ],
+          "printed_pages": [
+            25,
+            26
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.4.4.1.8, both sentences: endpoints, session-establishment signalling and oversized application data"
+          ],
+          "printed_pages": [
+            26
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ifs-terminal-check",
+      "title": "跨系统 HTTP 一对一实例：服务器间共享的架构不能代证某终端下载或发件端收报",
+      "conditions": [
+        "仅作程序对照：一对一在网 HTTP 互通例；两端获准且正分别在主、伙伴系统接受服务，有允许两内容服务器共享文件的服务协议；文件已上传至主侧，程序示例从伙伴此前未下载开始。"
+      ],
+      "conclusion": "伙伴侧本地没有时才跨系统取件，可保留可用的副本供后续请求。后续命中有效副本不要求为本次终端下载重做跨系统取件。乙终端的同一文件完成记录是乙端完成的依据；要确认发件端已收报，查发件端收到与该端及文件相符的报告。",
+      "normative_strength": "缓存为可选。终端发起下载完成报告以初始请求要求报告为条件；只论所引程序，不泛化为所有文件交换的步骤。",
+      "limitations": [
+        "只见终端取件请求不能证其收齐；未看到报告不能断言失败。地址加工、授权信息和缓存细节由现有跨系统 HTTP 程序主题维护。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.6.1a, heading and introductory sentence: on-network file distribution with interconnection; Figure 6.6.1a-1, two system boundaries and functional entities"
+          ],
+          "printed_pages": [
+            31
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.6.1a, Figure 6.6.1a-1 paths between media storage functions via HTTP proxies; fifth bullet after figure"
+          ],
+          "printed_pages": [
+            31
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.4.3, introductory paragraph and preconditions 1–3 (one-to-one HTTP example only)"
+          ],
+          "printed_pages": [
+            92
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.4.3 steps 10–13 and note 4 (one-to-one HTTP example only)"
+          ],
+          "printed_pages": [
+            94
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.5.2.4.3 steps 13–16 (one-to-one HTTP example only)"
+          ],
+          "printed_pages": [
+            94
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "6.6.1a, heading and introductory sentence: on-network file distribution with interconnection; Figure 6.6.1a-1, two system boundaries and functional entities"
+      ],
+      "printed_pages": [
+        31
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "6.6.1a, Figure 6.6.1a-1 links from each server FD function to its MC gateway server and between the two MC gateway servers; fourth bullet after figure"
+      ],
+      "printed_pages": [
+        31
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "6.6.1a, Figure 6.6.1a-1 paths between media storage functions via HTTP proxies; fifth bullet after figure"
+      ],
+      "printed_pages": [
+        31
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "6.6.1a, Figure 6.6.1a-1 links to UE FD function and first bullet after figure; 6.6.4.1.3, downlink multicast file data (neighbour only)"
+      ],
+      "printed_pages": [
+        31,
+        34
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "6.6.4.1.4, media storage client and media storage function using HTTP (contrast only)"
+      ],
+      "printed_pages": [
+        34
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "6.6.4.1.5, FD function and media storage function using HTTP (contrast only)"
+      ],
+      "printed_pages": [
+        34
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "6.6.1a, Figure 6.6.1a-1 HTTP proxies in FD-6 path, third and sixth bullets after figure"
+      ],
+      "printed_pages": [
+        31
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "6.4.3.1.5, paragraph 1 (proxy for one or more partner MCData servers, no need to expose primary MCData servers outside the primary trust domain, optional MCData-server role) and paragraph 2 (control signalling and media relay)"
+      ],
+      "printed_pages": [
+        25
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "6.4.4.1.3, complete paragraph across the page break: transport and routing for session establishment and media"
+      ],
+      "printed_pages": [
+        25,
+        26
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "6.4.4.1.8, both sentences: endpoints, session-establishment signalling and oversized application data"
+      ],
+      "printed_pages": [
+        26
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.4.3, introductory paragraph and preconditions 1–3 (one-to-one HTTP example only)"
+      ],
+      "printed_pages": [
+        92
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.4.3 steps 10–13 and note 4 (one-to-one HTTP example only)"
+      ],
+      "printed_pages": [
+        94
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.5.2.4.3 steps 13–16 (one-to-one HTTP example only)"
+      ],
+      "printed_pages": [
+        94
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcdata-cross-system-http-file-distribution",
+    "r16-mcdata-fd-reference-points",
+    "r16-mcdata-message-store-vs-file-storage"
+  ],
+  "limitations": [
+    "主条款 §6.6.1a 解释互联功能关系；通用 MCData-3/-9、MC 网关和同图的终端参考点只作范围对照。一对一 HTTP 例仅用来分清伙伴存储端与收件终端，不重述地址加工和缓存程序。不覆盖离网、产品部署、SIP 方法/头域、HTTP 事务数或终端实测。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
