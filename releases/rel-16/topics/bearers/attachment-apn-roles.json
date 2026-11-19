@@ -1,0 +1,352 @@
+{
+  "topic_id": "r16-bearers-attachment-apn-roles",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "三个 MC 用途能同用一个 APN 吗？初始附着后，认证前还要不要另建 PDN 连接？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "Release 16，TS 23.280 V16.7.0，Stage 2，MC 终端的 APN 及 EPS 公共承载。"
+  ],
+  "condition_rule": "核对每条声明涉及的 MC 用途、初始附着的实际目标或指定的所载消息；三个用途不是三个必须异名的 APN。",
+  "claims": [
+    {
+      "id": "role-values",
+      "title": "SIP-1、HTTP-1、CSC-1 各有指定的 APN 用途，三个值可相同",
+      "conditions": [
+        "核对 MC 业务终端三个参考点的配置。"
+      ],
+      "conclusion": "SIP-1 用 MC services APN，HTTP-1 用 MC common core services APN，CSC-1 用 MC identity management service APN。三个用途的 APN 值可以相同或不同。与非 MC 业务同值，须确认该业务的 QoS 和 PDN 均兼容。",
+      "normative_strength": "使用指定用途是必须；同值是许可。",
+      "limitations": [
+        "仅凭同值配置不能确认实际建立的 PDN 连接数，也不能认定三类消息都已传输。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.7.0, required APN roles for three reference points"
+          ],
+          "printed_pages": [
+            21
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.7.0, values and non-MC compatibility"
+          ],
+          "printed_pages": [
+            21
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "network-provision",
+      "title": "SIP-1、HTTP-1、CSC-1 的 APN 值须按归属网提供，按访问网另配可选；将 IMS 用作 MC services APN，须由运营方拥有 SIP 核心并与 MC 业务提供方商定 QoS",
+      "conditions": [
+        "核验这三项 MC 用途的 APN 值，或考虑将熟知的 IMS APN 用作 MC services APN。"
+      ],
+      "conclusion": "终端（预）配置或初始终端配置须按 HPLMN 为 SIP-1、HTTP-1、CSC-1 提供 APN 值，还可按 VPLMN 提供。注中允许把 IMS 用作 MC services APN 的前提是 SIP 核心属于 PLMN 运营方，并且该运营方与 MC 业务提供方已商定采用 §5.2.7.2 的 QoS 还是 GSMA IR.92、IR.88 的 QoS。",
+      "normative_strength": "三项 MC 用途按 HPLMN 供值是必须；按 VPLMN 另供是可选；将 IMS 用作 MC services APN 是注中有条件的选择。",
+      "limitations": [
+        "不能由普通 VoLTE 使用 IMS APN，推定提供 VoLTE 时也需与 MC 业务提供方达成这项约定。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.7.0, provision of the values of these MC APNs"
+          ],
+          "printed_pages": [
+            21
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.7.0, note on using the IMS APN for the MC services APN"
+          ],
+          "printed_pages": [
+            21
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "access-configuration",
+      "title": "对 SIP-1、HTTP-1、CSC-1 三项 MC 用途对应的 PDN，若需接入凭据须按 APN 提供；若连接为 IPv4v6，客户端须按配置选用 IP 版本",
+      "conditions": [
+        "查验 §5.2.7.0 这三项 MC 用途的 APN 所标识的 PDN。"
+      ],
+      "conclusion": "对于 §5.2.7.0 中 SIP-1、HTTP-1、CSC-1 的 APN 所标识的 PDN，访问需要凭据时，须经初始 MC 业务终端配置按 APN 提供。若到上述任一 APN 的连接类型为 IPv4v6，MC 业务客户端须按配置决定使用 IPv4 还是 IPv6。",
+      "normative_strength": "两项必须分别以需要接入凭据、到该 MC APN 的连接为 IPv4v6 为条件。",
+      "limitations": [
+        "本条不规定同机上无关非 MC 企业 APN 如何供应凭据或选择 IP 版本；连接支持双栈不能确认已使用 IPv6。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.7.0, credentials and IP version for PDNs of these MC APNs"
+          ],
+          "printed_pages": [
+            21
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "attach-target",
+      "title": "初始附着连到 MC services APN 以外的 APN 时，终端须在用户认证前另建到 MC services APN 的 PDN 连接",
+      "conditions": [
+        "已确认初始附着所建 PDN 连接的目标和该终端适用的 MC services APN。"
+      ],
+      "conclusion": "初始附着实际连到其他 APN，即使是另一个 MC 用途的异名 APN，终端也必须在用户认证前另建到 MC services APN 的连接。初始已连到 MC services APN 时，本句不要求重复建立。",
+      "normative_strength": "初始目标不匹配才产生这项义务。",
+      "limitations": [
+        "同名表并不证明初始实际用了哪个 APN；不要求重建也不等于禁止为其他用途建立连接。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.7.0, required APN roles for three reference points"
+          ],
+          "printed_pages": [
+            21
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.7.0, values and non-MC compatibility"
+          ],
+          "printed_pages": [
+            21
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.7.2.1, initial-attach target and authentication deadline"
+          ],
+          "printed_pages": [
+            22
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "registration-trigger",
+      "title": "一项或多项 MC 业务的 SIP 注册请求可能触发 PDN 建立，请求不等于连接或认证结果",
+      "conditions": [
+        "只有针对一项或多项 MC 业务的 SIP 注册请求记录。"
+      ],
+      "conclusion": "SIP 注册请求可能引起 PDN 建立。要验收用户认证前另建到 MC services APN 的连接，须核初始目标及实际到 MC services APN 的建立结果和时间，再与用户认证时间对照。",
+      "normative_strength": "触发是可能；不是每次注册都必须新建连接。",
+      "limitations": [
+        "不能凭 REGISTER 确认连接建立、认证已发生、两事件先后或各项业务获准。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.7.2.1, initial-attach target and authentication deadline"
+          ],
+          "printed_pages": [
+            22
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.7.2.1, SIP registration as a possible trigger"
+          ],
+          "printed_pages": [
+            22
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "sip-qci",
+      "title": "按公共 EPS 规则，传输 SIP-1 消息的 EPS 承载必须用 QCI 69",
+      "conditions": [
+        "所涉站点采用 §5.2.7.2 的公共 EPS 规则。"
+      ],
+      "conclusion": "已认出传输 SIP-1 消息的 EPS 承载时，该承载必须用 QCI 69。只记录 QCI 69，没有消息与承载的对应，不能倒推出它传的是 SIP-1。",
+      "normative_strength": "shall，限于传输 SIP-1 消息的 EPS 承载。",
+      "limitations": [
+        "MCVideo 发送和接收控制信令的推荐值属于视频条款，见关联主题。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.7.2.1, QCI on the EPS bearer for SIP-1 messages"
+          ],
+          "printed_pages": [
+            22
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "http-qci",
+      "title": "传输 HTTP-1 消息的 EPS 承载须用 QCI 8 或更好；§5.2.7.2.2 正文未给 CSC-1 指定同一数值",
+      "conditions": [
+        "按 §5.2.7.2.2 对照具体消息与 EPS 承载。"
+      ],
+      "conclusion": "§5.2.7.2.2 给传输 HTTP-1 消息的承载规定 QCI 8 或更好。条文没有把整数编号大小写成类别好坏顺序；标题列出身份管理 PDN，也不等于正文另给 CSC-1 指定该要求。",
+      "normative_strength": "shall，限于传输 HTTP-1 消息的 EPS 承载。",
+      "limitations": [
+        "本条未明确指定 CSC-1 的数值，不等于所有其他条款均无要求。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.7.2.2, operative sentence for HTTP-1 messages"
+          ],
+          "printed_pages": [
+            22
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcvideo-eps-unicast-bearer-qci",
+    "r16-identity-shared-sip-registration"
+  ],
+  "limitations": [
+    "仅以 TS 23.280 V16.7.0 的公共规则核三项 MC 用途、初始附着及 EPS 信令承载。",
+    "将 IMS 用作 MC services APN 的注允许商定其他指定 QoS 规则；本主题不比较 GSMA 规则的取值。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.7.0, required APN roles for three reference points"
+      ],
+      "printed_pages": [
+        21
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.7.0, values and non-MC compatibility"
+      ],
+      "printed_pages": [
+        21
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.7.0, provision of the values of these MC APNs"
+      ],
+      "printed_pages": [
+        21
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.7.0, note on using the IMS APN for the MC services APN"
+      ],
+      "printed_pages": [
+        21
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.7.0, credentials and IP version for PDNs of these MC APNs"
+      ],
+      "printed_pages": [
+        21
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.7.2.1, initial-attach target and authentication deadline"
+      ],
+      "printed_pages": [
+        22
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.7.2.1, SIP registration as a possible trigger"
+      ],
+      "printed_pages": [
+        22
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.7.2.1, QCI on the EPS bearer for SIP-1 messages"
+      ],
+      "printed_pages": [
+        22
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.7.2.2, operative sentence for HTTP-1 messages"
+      ],
+      "printed_pages": [
+        22
+      ]
+    }
+  ]
+}

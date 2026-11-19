@@ -2507,6 +2507,16 @@ Rel-16 资料性 B.1 示例中，甲与 MCPTT 应用服务器的原 SIP 会话�
 
 [读取主题](topics/bearers/anchored-session-transfer.md)
 
+## 三个 MC 用途能同用一个 APN 吗？初始附着后，认证前还要不要另建 PDN 连接？
+
+SIP-1、HTTP-1、CSC-1 分别使用 MC services APN、MC common core services APN、MC identity management service APN，三个值可以相同。初始附着若实际连到 MC services APN 以外的 APN，终端必须在用户认证前另建到 MC services APN 的 PDN 连接。
+
+初始附着已经连到 MC services APN 时，本条不要求重复建到它。针对一项或多项 MC 业务的 SIP 注册请求可能触发 PDN 建立，但不是连接建立的回执。
+
+尚未建立：孤立的 QCI 69 不能识别消息。按公共 EPS 规则，实际传输 SIP-1 消息的承载必须用 69，MCVideo 的发送和接收控制信令只推荐 69。HTTP-1 的 EPS 承载需用 8 或更好，本条正文没有给 CSC-1 指定同一数值。
+
+[读取主题](topics/bearers/attachment-apn-roles.md)
+
 ## 初次注册会要求 LMS 下发位置配置吗？什么条件下终端才上报？
 
 在网、单系统事件上报中，LMS 为 LMC 提供首次规则或更新；用户配置档已含相应规则时无需另发这条消息。初次注册只是 LMC 可能的上报事件，本程序没有要求 LMS 因注册就发配置。
