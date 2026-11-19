@@ -234,6 +234,172 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "request-offer-by-leg",
+      "title": "预安排组呼的两份请求都标识主叫和组，服务器给受邀端的 offer 可缩小媒体参数范围",
+      "conditions": [
+        "同系统普通在网预安排组新建呼叫。比较发起端向服务器的请求（步骤 2）与服务器向其他已归属成员的请求（步骤 4）。"
+      ],
+      "conclusion": "两张请求表均必列主叫的 MCVideo ID、MCVideo group ID 和 SDP offer。第一份 offer 提出客户端的媒体参数；第二份 offer 给出服务器向受邀端提出的媒体参数，可以与初始提议相同，也可以是其中的子集。",
+      "normative_strength": "两表这三项均为 M；步骤 4 规定服务器提议的参数取自初始请求。",
+      "limitations": [
+        "即使两份提议中的参数相同，也不证明服务器原样转发了整份请求。表列的是 Stage 2 业务信息，不指定由谁把用户 ID 写入哪个 SIP 字段。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.2.1, Table 7.1.2.2.1-1 (group call request, MCVideo client to server)"
+          ],
+          "printed_pages": [
+            21
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.2.2, Table 7.1.2.2.2-1 (group call request, MCVideo server to client)"
+          ],
+          "printed_pages": [
+            21
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.1.1.2, steps 1–3"
+          ],
+          "printed_pages": [
+            30
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.1.1.2, step 4"
+          ],
+          "printed_pages": [
+            30,
+            31
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "response-identity-answer-result",
+      "title": "预安排组呼的两份响应都带组 ID、所选参数和结果，MCVideo ID 却指不同角色",
+      "conditions": [
+        "同系统普通在网预安排组新建呼叫。分别判断受邀端回服务器的响应和服务器回发起端的响应。"
+      ],
+      "conclusion": "两张响应表都必列 MCVideo ID、MCVideo group ID、SDP answer 和 Result。受邀端回服务器时，MCVideo ID 指被邀请的目标成员；服务器回发起端时，该 ID 指主叫。SDP answer 给出选定的媒体参数，Result 给出请求成功或失败。建呼示例第 6 步报告成功。",
+      "normative_strength": "四项在两表均为 M；通用信息表允许成功、失败两种结果，示例写的是成功。第 5 步的成员确认可选。",
+      "limitations": [
+        "选定参数、请求结果、成员确认和媒体实收回答不同的问题。不能用某一方向的响应认定另一方向逐项复制了它，也不能据 answer 或成功结果认定所有成员确认或实际收到了视频。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.2.3, Table 7.1.2.2.3-1 (group call response, MCVideo server to client)"
+          ],
+          "printed_pages": [
+            21
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.2.4, Table 7.1.2.2.4-1 (group call response, MCVideo client to server)"
+          ],
+          "printed_pages": [
+            22
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.1.1.2, step 5"
+          ],
+          "printed_pages": [
+            31
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.1.1.2, step 6 and note 3"
+          ],
+          "printed_pages": [
+            31
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.1.1.2, step 8"
+          ],
+          "printed_pages": [
+            31
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "optional-request-elements",
+      "title": "预安排组呼发起端可请求优先级或媒体发送许可；请求发送不等于已经获准",
+      "conditions": [
+        "比较同系统在网预安排组呼所用的两张组呼请求信息表。普通呼叫不按广播程序解读。"
+      ],
+      "conclusion": "两张请求表都将主叫功能别名和广播指示列为可选。发起端到服务器的表还把请求优先级、隐式媒体发送请求列为可选；发起端若请求发送许可，就应带隐式请求指示。若用户选了功能别名，步骤 2 的请求带该别名。",
+      "normative_strength": "O 是表项可选，不取消步骤或表内对特定情形的要求。请求优先级是为本次呼叫申请的应用优先级。",
+      "limitations": [
+        "服务器发给受邀端的请求表没有列出请求优先级和隐式媒体发送请求。这不是对所有协议消息的禁令；隐式请求没有授予发送许可，单凭优先级请求也不能判定实际采用的优先级。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.2.1, Table 7.1.2.2.1-1 (group call request, MCVideo client to server)"
+          ],
+          "printed_pages": [
+            21
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.2.2, Table 7.1.2.2.2-1 (group call request, MCVideo server to client)"
+          ],
+          "printed_pages": [
+            21
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.1.1.2, steps 1–3"
+          ],
+          "printed_pages": [
+            30
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "source_references": [
@@ -300,12 +466,49 @@
       "printed_pages": [
         31
       ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.2.1, Table 7.1.2.2.1-1 (group call request, MCVideo client to server)"
+      ],
+      "printed_pages": [
+        21
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.2.2, Table 7.1.2.2.2-1 (group call request, MCVideo server to client)"
+      ],
+      "printed_pages": [
+        21
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.2.3, Table 7.1.2.2.3-1 (group call response, MCVideo server to client)"
+      ],
+      "printed_pages": [
+        21
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.2.4, Table 7.1.2.2.4-1 (group call response, MCVideo client to server)"
+      ],
+      "printed_pages": [
+        22
+      ]
     }
   ],
   "related": [
     "r16-mcvideo-prearranged-late-entry-rejoin",
     "r16-mcvideo-chat-group-join",
-    "r16-mcvideo-server-group-call-release"
+    "r16-mcvideo-server-group-call-release",
+    "r16-mcvideo-prearranged-group-client-establishment"
   ],
   "limitations": [
     "仅限固定版 Stage 2 的组呼建立程序；不规定具体消息编码、配置秒数或播放结果，不适用于受限聊天组、离网或跨系统场景。"

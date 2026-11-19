@@ -2388,7 +2388,7 @@
     },
     {
       "id": "r16-mcvideo-server-group-call-release",
-      "question": "MCVideo 服务器结束整场组呼时，谁会收到释放请求？聊天组呼没见某位参与者回执，能判断他还在通话吗？",
+      "question": "MCVideo 服务器结束整场组呼时，谁会收到释放请求？聊天组呼没见某位参与者回执，能判断他还在通话吗？ 预安排组呼若用了已有预建立会话，整场结束时释放的是本场资源，还是整项会话？",
       "start": "topics/mcvideo/server-group-call-release.md",
       "next_if": [
         {
@@ -2398,9 +2398,21 @@
         {
           "condition": "两端通话若是私呼而不是只有两人参加的组呼，查在网私呼释放。",
           "read": "topics/mcvideo/private-call-release.md"
+        },
+        {
+          "condition": "若要按释放指示判断 MCVideo 参与功能何时停发或处理媒体资源，查该角色的 Stage 3 程序。",
+          "read": "topics/mcvideo/participating-session-release.md"
+        },
+        {
+          "condition": "若请求针对已有预建立会话整体，而不是结束本场呼叫，查公共 MC 会话的修改与释放。",
+          "read": "topics/bearers/common-preestablished-media-change-release.md"
+        },
+        {
+          "condition": "若要判断分别申请的控制与媒体资源怎样处理，查公共资源管理程序及其适用条件。",
+          "read": "topics/bearers/separate-control-media-resources.md"
         }
       ],
-      "boundary": "限同一 MC 系统内正在进行的预安排或聊天组呼，且至少一个适用终止条件已满足。个人离开当前呼叫是另一程序。"
+      "boundary": "限同一 MC 系统内正在进行的预安排或聊天组呼，且至少一个适用终止条件已满足。个人离开当前呼叫是另一程序。 预安排组的按需资源释放与预建立会话解关联，不推及聊天组；解除关联也不保证下次复用。"
     },
     {
       "id": "r16-bearers-common-preestablished-media-change-release",
@@ -2796,7 +2808,7 @@
     },
     {
       "id": "r16-mcvideo-prearranged-group-call-setup",
-      "question": "同系统普通在网 MCVideo 预安排组用单播信令建呼，服务器已给发起人成功响应：必答成员是否都确认了？",
+      "question": "同系统普通在网 MCVideo 预安排组用单播信令建呼，服务器已给发起人成功响应：必答成员是否都确认了？ 四个方向中的 MCVideo ID 各指谁，两个 SDP offer 是否相同，SDP answer 和 Result 又分别答什么？",
       "start": "topics/mcvideo/prearranged-group-call-setup.md",
       "next_if": [
         {
@@ -2810,9 +2822,13 @@
         {
           "condition": "若服务器要结束整场而不是新建，读组呼释放。",
           "read": "topics/mcvideo/server-group-call-release.md"
+        },
+        {
+          "condition": "若查按需且带传输控制的普通预安排组呼在客户端怎样构造请求、处理应答，查 Stage 3 客户端程序。",
+          "read": "topics/mcvideo/prearranged-group-client-establishment.md"
         }
       ],
-      "boundary": "仅限同一 MC 系统内普通在网 MCVideo 预安排组的单播建呼。先分已有呼叫与新建，再分发给成员的邀请、成员返回的确认、发给发起人的成功响应和媒体面建立。"
+      "boundary": "仅限同一 MC 系统内普通在网 MCVideo 预安排组的单播建呼。先分已有呼叫与新建，再分发给成员的邀请、成员返回的确认、发给发起人的成功响应和媒体面建立。 两张请求表和两张响应表描述业务信息，不是具体 SIP 字段的填写说明。"
     },
     {
       "id": "r16-mcptt-area-alert-notification",
