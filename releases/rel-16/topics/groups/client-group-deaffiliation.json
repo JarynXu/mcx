@@ -7,14 +7,15 @@
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-23.280-v16.7.0",
   "common_conditions": [
-    "Release 16、Stage 2，单一 MC 业务；由 MC 业务客户端向业务服务器请求解除特定用户对一个或多个组的归属。"
+    "TS 23.280 V16.7.0，Release 16，Stage 2，针对单一 MC 业务中的用户与组。"
   ],
-  "condition_rule": "各条依组定义在本系统还是伙伴系统、检查结果与当前所见记录分别适用。不能把某一条成功路径或客户端收到应答当作全部分支的前提。",
+  "condition_rule": "先分清所问的是在网组的地理策略，还是客户端已经发起的解除程序。地理判定要看用户原来的归属及该组两项区域配置，不以请求已经发出为前提；程序按组定义在哪一系统、授权结果与实际观测分别判断。",
   "claims": [
     {
       "id": "client-request",
       "title": "本系统显式解除可由用户要求或事件触发；向业务服务器发起的是客户端",
       "conditions": [
+        "Release 16、Stage 2，单一 MC 业务；由 MC 业务客户端向业务服务器请求解除特定用户对一个或多个组的归属。",
         "本系统的 MC 业务客户端请求解除该用户在单项 MC 业务中对指定组的归属；用户要求或触发事件均可引起此请求。"
       ],
       "conclusion": "在本系统程序中，用户要求和终端出允许作业区域等事件都可使客户端发起；客户端可一次请求解除一个或多个组。",
@@ -70,6 +71,7 @@
       "id": "subscriptions",
       "title": "客户端请求解除组归属的程序有两项订阅前提：业务服务器向 GMS 订阅组信息，GMS 向定义该组的系统内的业务服务器订阅归属状态更新",
       "conditions": [
+        "Release 16、Stage 2，单一 MC 业务；由 MC 业务客户端向业务服务器请求解除特定用户对一个或多个组的归属。",
         "比较本系统与伙伴定义组的两个客户端请求程序。"
       ],
       "conclusion": "本系统的业务服务器已存用户已归属的组数据；在伙伴组程序中，主、伙伴两端的业务服务器都已向 GMS 订阅组信息并保存所涉组数据，GMS 向伙伴系统内的业务服务器订阅归属状态。",
@@ -107,6 +109,7 @@
       "id": "local-remove",
       "title": "本系统处理客户端解除请求时，按用户订阅和已存组策略核对原归属与解除权限，二者成立才移除该用户对请求组的归属状态",
       "conditions": [
+        "Release 16、Stage 2，单一 MC 业务；由 MC 业务客户端向业务服务器请求解除特定用户对一个或多个组的归属。",
         "组定义在本系统，业务服务器已收到客户端请求。"
       ],
       "conclusion": "检查所针对的是这名用户和请求中的组。用户已归属但无解除权限时，不能据此认定其归属已被移除。",
@@ -144,6 +147,7 @@
       "id": "local-report",
       "title": "按客户端请求解除本系统组归属后，业务服务器给客户端的应答与给 GMS 的状态更新可任意先后或并行",
       "conditions": [
+        "Release 16、Stage 2，单一 MC 业务；由 MC 业务客户端向业务服务器请求解除特定用户对一个或多个组的归属。",
         "按本系统程序，已移除该用户对请求组的归属状态。"
       ],
       "conclusion": "4a 答复客户端，4b 向 GMS 更新该用户对相应组的解除状态。客户端收到成功应答，不足以证明 GMS 已收到更新；没有 GMS 收报记录也不能断言失败。",
@@ -181,6 +185,7 @@
       "id": "split-check",
       "title": "客户端请求解除伙伴组归属时，主服务器按用户订阅查权限并查原归属，伙伴服务器另按已存组策略检查后处理",
       "conditions": [
+        "Release 16、Stage 2，单一 MC 业务；由 MC 业务客户端向业务服务器请求解除特定用户对一个或多个组的归属。",
         "客户端向主系统业务服务器请求解除伙伴系统定义的一个或多个组。"
       ],
       "conclusion": "主服务器根据请求中的组信息选相应伙伴。伙伴查组未禁用、用户已归属和有解除权限；在所述成功路径中，伙伴移除该用户对所请求组的归属状态。",
@@ -218,6 +223,7 @@
       "id": "partner-return",
       "title": "客户端请求解除伙伴组归属时，伙伴移除该用户的归属后可并行答复主服务器和更新 GMS；主服务器清理本端相应归属信息后答复客户端",
       "conditions": [
+        "Release 16、Stage 2，单一 MC 业务；由 MC 业务客户端向业务服务器请求解除特定用户对一个或多个组的归属。",
         "客户端请求解除伙伴系统定义的组，按所述成功程序处理。"
       ],
       "conclusion": "伙伴向主服务器返回解除结果（6a），并向 GMS 更新该用户对请求组的解除状态（6b）；两项可任意先后或并行。主服务器移除本端所存的该用户对所请求伙伴组的归属信息（7），再向客户端发应答（8）。",
@@ -251,6 +257,107 @@
           ],
           "printed_pages": [
             157
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "geographic-entry-exit",
+      "title": "在网组的两项地理判定：新归属看允许归属区，已归属者在强制解除边界外须解除",
+      "conditions": [
+        "核对同一项 MC 业务的在网组 G、该组的两项地理配置，以及该用户原先是否已归属 G。判断地理条件时不要求客户端已发请求。"
+      ],
+      "conclusion": "尚未归属 G 的用户位于允许归属区内，满足新归属的地理条件，不等于已经申请、获准或完成归属。对已归属 G 的用户，组配置要求其在强制解除边界外解除归属；只离开允许新归属的区域，不足以判断是否触及强制解除条件。本系统程序中越界是可以触发客户端解除请求的事件示例。",
+      "normative_strength": "表 A.4-2 分列在网组的允许归属区域和超出时强制解除的区域；§10.8.4.2 前提 2 以越界举例，不是说每次解除都由越界触发。",
+      "limitations": [
+        "地理许可不是最终业务授权。已归属者越过解除边界也不能证明客户端已经发出请求、服务器已按用户订阅和组策略核准并移除状态、客户端已收应答或 GMS 已获更新。单凭位置不能辨认谁发起程序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.4.2, pre-condition 2 and following NOTE: client trigger and geographical areas for affiliation and de-affiliation"
+          ],
+          "printed_pages": [
+            155
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "Table A.4-2, on-network geographic areas for permitted affiliation and mandatory de-affiliation; NOTE 4"
+          ],
+          "printed_pages": [
+            216
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.4.2, numbered step 1"
+          ],
+          "printed_pages": [
+            156
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.4.2, numbered steps 2–3"
+          ],
+          "printed_pages": [
+            156
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.4.2, numbered step 4 and following NOTE"
+          ],
+          "printed_pages": [
+            156
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "geographic-boundary-policy",
+      "title": "在网组的解除区域可以大于允许归属区；判定一个点时要保留不相连片区和孔洞",
+      "conditions": [
+        "同一在网组配置中，区分允许新归属的区域与已归属用户在其外必须解除的区域；用实际区域判定地理条件。"
+      ],
+      "conclusion": "解除区域可以比允许归属区域大，使已归属者在边缘来回移动时不必反复归属和解除。这不是统一的大小或形状要求。两项区域都可以由不相连或有孔的片区组成。即使地点 P 和允许归属区没变，已归属用户走到 P，若该组解除区域包含 P，此次移动不因这条地理规则必须解除；若 P 落在解除区域的孔内、没有别的组成片区覆盖 P，则必须解除。",
+      "normative_strength": "§10.8.4.2 前提 2 后的注用“可以较大”说明边缘反复的处理；表 A.4-2 注 4 同时适用于两项地理参数，允许区域为不连续或含孔片区的并集。",
+      "limitations": [
+        "示例不规定圆心、半径、两线间距或普遍的大小关系。地理上不强制解除，不排除用户主动请求解除；已触及强制条件也不等同于已有处理或送达记录。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.4.2, pre-condition 2 and following NOTE: client trigger and geographical areas for affiliation and de-affiliation"
+          ],
+          "printed_pages": [
+            155
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "Table A.4-2, on-network geographic areas for permitted affiliation and mandatory de-affiliation; NOTE 4"
+          ],
+          "printed_pages": [
+            216
           ]
         }
       ],
@@ -351,6 +458,24 @@
       "printed_pages": [
         157
       ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.8.4.2, pre-condition 2 and following NOTE: client trigger and geographical areas for affiliation and de-affiliation"
+      ],
+      "printed_pages": [
+        155
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "Table A.4-2, on-network geographic areas for permitted affiliation and mandatory de-affiliation; NOTE 4"
+      ],
+      "printed_pages": [
+        216
+      ]
     }
   ],
   "related": [
@@ -360,7 +485,8 @@
   ],
   "limitations": [
     "解除的对象是该用户在一项业务中对所请求组的归属；不据此判定成员资格、组删除、呼叫释放或其他业务的状态。",
-    "不覆盖业务服务器主动解除、远程改变他人归属、伙伴组的加入、Stage 3 消息编码和实际部署。"
+    "不覆盖业务服务器主动解除、远程改变他人归属、伙伴组的加入、Stage 3 消息编码和实际部署。",
+    "在网组的允许归属区域和强制解除边界只给地理条件，不凭坐标推断本次申请、授权、服务器记录变更或应答。"
   ],
   "verification": {
     "original_clauses_checked": true,
