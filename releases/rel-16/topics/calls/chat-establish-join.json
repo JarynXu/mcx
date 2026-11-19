@@ -539,6 +539,152 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "chat-pf-local-486-causes",
+      "title": "发起侧参与功能的 486：用户组呼并发超限，还是隐式归属失败？",
+      "conditions": [
+        "同一 MC 系统内的普通在网按需 MCPTT 聊天组，使用未重组的 MCPTT 组身份，不是临时组；本次请求和组状态均非紧急、非迫近危险。",
+        "发起侧参与功能（O-PF）实际收到客户端的初始 chat INVITE，并到达 §10.1.2.3.1.1 的相应检查。"
+      ],
+      "conclusion": "第 5 项查用户配置中支持的同时 MCPTT 组呼上限 MaxSimultaneousCallsN6；超过该上限须在客户端一侧回 SIP 486，Warning 引号内为 103 maximum simultaneous MCPTT group calls reached。第 6 项按收到请求的 mcptt-client-id 和目标组判断：用户在本次发起客户端未归属目标组时，才执行隐式归属；只有该程序已执行、且因用户已有 N2 个同时归属而失败，第 7 项才须在客户端一侧回 SIP 486，Warning 引号内为 102 too many simultaneous affiliations，并停止其余步骤。",
+      "normative_strength": "第 5、7 项各在自己的条件成立时 SHALL 回 486，并按 §4.4 给所列 Warning 文本。N2 分支显式停止；两项均先于生成发往控制功能的 INVITE。",
+      "limitations": [
+        "N6 是这个用户支持的同时组呼上限，N2 是这个用户可同时归属的组数上限；不能把两者算作同一通组呼的参会人数。第 5 项的条件是 exceeded；不从固定英文提示中的 reached 推出计数等于上限就拒绝或另定义计数办法。",
+        "只知道用户在本次发起客户端未归属目标组，或本次隐式归属因别的原因失败，不能判为第 7 项；不能用另一客户端的归属状态代替本次发起客户端的状态。N2 的组数定义见该项注 4 的外部回指；这里不推定其数值或归属算法。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.1, entry and item 5: originating PF responds with 486 and MCPTT Warning text code 103 if the user N6 limit has been exceeded"
+          ],
+          "printed_pages": [
+            276
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.1, items 6–7 and NOTE 4: implicit affiliation actually attempted and unsuccessful because the user already has N2 affiliations, then 486 with text code 102"
+          ],
+          "printed_pages": [
+            277
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.4.1; 4.4.2, Tables 4.4.2-1 and 4.4.2-2: SIP Warning code 399 and quoted MCPTT text codes 102, 103 and 122"
+          ],
+          "printed_pages": [
+            33,
+            34,
+            36
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.11 full"
+          ],
+          "printed_pages": [
+            183
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "chat-486-warning-and-hop",
+      "title": "同样的 486：从 Warning 文本和两侧 INVITE 区分拒绝从哪来",
+      "conditions": [
+        "同一 MC 系统内的普通在网按需 MCPTT 聊天组，使用未重组的 MCPTT 组身份，不是临时组；本次请求和组状态均非紧急、非迫近危险。",
+        "收到或排查发起侧参与功能（O-PF）两侧的一次按需聊天组 INVITE 失败；按各侧实际请求和应答分别判断，不预设本次曾发出发往控制功能的 INVITE。"
+      ],
+      "conclusion": "用户同时组呼超过 N6、隐式归属因用户 N2 失败、控制侧进行中的会话满员且未采用移人例外，这三种拒绝用 SIP 486；它们依 §4.4 所带的 Warning 外层 warn-code 为 399，引号内开头的三位才是 MCPTT 文本码。客户端一侧的 103 是 O-PF 的用户组呼限制；102 对应在这次发起客户端未归属目标组，并实际因用户级 N2 限制而隐式归属失败。O-PF 发往控制功能（CF）的 INVITE 若在 CF 的已进行会话达到参会容量，且未采用前述可选移人分支，CF 须在该腿回 486，Warning 引号内为 122 too many participants。O-PF 收到对它发出的 INVITE 的 4xx/5xx/6xx，须生成送客户端的响应，纳入收到的 Warning 头字段，再发给客户端。终端看到响应来自 O-PF，不等于失败原因由 O-PF 决定。",
+      "normative_strength": "按 §4.4 区分 SIP 状态、Warning 外层码与其文本码。CF 的 486/122 和 O-PF 对实收失败的响应及所收 Warning 字段分别按各自入口执行。",
+      "limitations": [
+        "不能靠状态行的 486、Busy Here、Warning 外层的 399 或抓包一侧的发送地址，将这三个原因分开。要核对产生原因的一跳，匹配同一次加入尝试下各自的 INVITE 和响应，看完整 Warning；Warning 缺失或记录不全时，不代填原因。未抓到发往 CF 的 INVITE 不能证明它没发。",
+        "122 的容量含义不等于 O-PF 的 N6 或 N2，也不报告归属是否改变。这里只核对本分支的 486 与收到的 Warning 头字段，不把两个方向的整条 SIP 包认作同一份。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.4.1; 4.4.2, Tables 4.4.2-1 and 4.4.2-2: SIP Warning code 399 and quoted MCPTT text codes 102, 103 and 122"
+          ],
+          "printed_pages": [
+            33,
+            34,
+            36
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1, controlling step 11a–b and NOTE 2"
+          ],
+          "printed_pages": [
+            288
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.1, originating participating function outgoing INVITE items 9–10 and 16: distinct request sent to the controlling function"
+          ],
+          "printed_pages": [
+            277,
+            278
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.1, final response paragraph for 4xx/5xx/6xx, items 1–3: PF generates a response, includes the received Warning fields and forwards the response to the client"
+          ],
+          "printed_pages": [
+            279
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.1, entry and item 5: originating PF responds with 486 and MCPTT Warning text code 103 if the user N6 limit has been exceeded"
+          ],
+          "printed_pages": [
+            276
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.1, items 6–7 and NOTE 4: implicit affiliation actually attempted and unsuccessful because the user already has N2 affiliations, then 486 with text code 102"
+          ],
+          "printed_pages": [
+            277
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.11 full"
+          ],
+          "printed_pages": [
+            183
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "source_references": [
@@ -775,6 +921,63 @@
       ],
       "printed_pages": [
         272
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.3.1.1, entry and item 5: originating PF responds with 486 and MCPTT Warning text code 103 if the user N6 limit has been exceeded"
+      ],
+      "printed_pages": [
+        276
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.3.1.1, items 6–7 and NOTE 4: implicit affiliation actually attempted and unsuccessful because the user already has N2 affiliations, then 486 with text code 102"
+      ],
+      "printed_pages": [
+        277
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "4.4.1; 4.4.2, Tables 4.4.2-1 and 4.4.2-2: SIP Warning code 399 and quoted MCPTT text codes 102, 103 and 122"
+      ],
+      "printed_pages": [
+        33,
+        34,
+        36
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.3.1.1, originating participating function outgoing INVITE items 9–10 and 16: distinct request sent to the controlling function"
+      ],
+      "printed_pages": [
+        277,
+        278
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.3.1.1, final response paragraph for 4xx/5xx/6xx, items 1–3: PF generates a response, includes the received Warning fields and forwards the response to the client"
+      ],
+      "printed_pages": [
+        279
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.2.2.11 full"
+      ],
+      "printed_pages": [
+        183
       ]
     }
   ],
