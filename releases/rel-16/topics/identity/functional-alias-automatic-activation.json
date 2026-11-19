@@ -9,7 +9,7 @@
   "common_conditions": [
     "Release 16、在网、同一 MC 系统，3GPP TS 23.280 V16.7.0，Stage 2。"
   ],
-  "condition_rule": "先按问题区分触发、容量分支、已完成激活的后续职责、订阅服务器名单。每条声明继承在网单系统范围，分支条件各自适用。",
+  "condition_rule": "区分服务器命中自身条件后的自动激活与客户端向服务器提出的显式激活请求，分别适用本条条件与容量分支。请求、逐别名响应、其他共享用户的状态消息和订阅服务器的名单通知不是同一事件。",
   "claims": [
     {
       "id": "trigger-provision",
@@ -383,6 +383,216 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "client-activation-trigger",
+      "title": "在网同系统，客户端获配可激活的别名并发显式请求；非控制服务器转交承担该别名控制角色的服务器",
+      "conditions": [
+        "按 §10.13.4 核同一 MC 系统中的客户端激活程序；客户端已通过静态或动态配置获得其获准激活的功能别名信息。"
+      ],
+      "conclusion": "用户要求或位置等事件均可触发客户端向业务服务器申请激活，这是客户端发起的显式请求。请求包含发起用户的 MC 业务 ID 和其拟激活的一个或多个别名。接收的业务服务器若不负责该别名控制，就把请求转给承担控制角色的服务器。",
+      "normative_strength": "§10.13.4 前提 1、4 区分已有客户端配置与显式请求的触发。前提 2、3 中服务器取过签约和别名策略、客户端表明希望接收获准别名的数据更新均为可能情况；表 10.13.2.3-1 的两项为必填。",
+      "limitations": [
+        "在该程序中发起端是客户端，进区事件不能独自证明请求已经发出。不能用客户端获配清单代替 §10.13.8 服务器自身触发所需的服务器侧配置，也不把接收更新意向当作本次业务授权。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.1, on-network limitation"
+          ],
+          "printed_pages": [
+            192
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.2.3, table 10.13.2.3-1: activation request, originator and list"
+          ],
+          "printed_pages": [
+            193
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.4, opening and preconditions 1–4 for client-triggered activation"
+          ],
+          "printed_pages": [
+            197
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.4, figure 10.13.4-1, steps 1–2 and NOTE 1: request, controller forwarding and conflicts"
+          ],
+          "printed_pages": [
+            198
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.8, precondition 2 (server provisioned with alias information allowed for the client)"
+          ],
+          "printed_pages": [
+            201
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "client-activation-capacity",
+      "title": "Rel-16 在网同系统公共 Stage 2：客户端显式申请激活他人正在使用的功能别名，可共享且未满须为获准用户激活，已满或不许共享则拒绝并告知申请方",
+      "conditions": [
+        "在网同一系统内，客户端已获配获准激活的别名并请求为尚未使用 F 的用户激活 F。F 已由其他用户使用。服务器核活动别名冲突、请求者的激活授权及 F 的共享配置。"
+      ],
+      "conclusion": "F 已有人使用，客户端又为获准激活 F 的用户提出显式申请：F 可由多名 MC 业务用户共享且同时使用人数未达上限时，服务器必须为其激活 F，告知所有其他正在共享 F 的 MC 业务用户。若已到上限，或 F 不允许共享，拒绝此次对 F 的激活请求并告知申请方。不许共享本身就满足这个拒绝条件，不必另证满员。",
+      "normative_strength": "§10.13.4 步骤 2–3 先检查冲突，用户获准激活所请求别名时保存其状态；步骤 3 分别指向共享成功后的步骤 5 和拒绝时的步骤 4。§10.13.8 的服务器自行触发分支才允许满员或不共享时停下或重分配。",
+      "limitations": [
+        "有其他使用者不等于已满或不共享。§10.13.4 另述别名已由他人使用时获授权的用户得到接管提议，不限为满员的同义词；通常的激活容量判定不凭空产生某次提议已送达、接管请求已发或原使用者已撤销的记录。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.1, on-network limitation"
+          ],
+          "printed_pages": [
+            192
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.4, opening and preconditions 1–4 for client-triggered activation"
+          ],
+          "printed_pages": [
+            197
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.4, figure 10.13.4-1, steps 1–2 and NOTE 1: request, controller forwarding and conflicts"
+          ],
+          "printed_pages": [
+            198
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.4, step 3: authorization, status, sharing capacity, rejection and takeover offer"
+          ],
+          "printed_pages": [
+            198
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.4, NOTE 2 and steps 4–5: subscriber status, activation response and other sharing users"
+          ],
+          "printed_pages": [
+            198
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.8, step 2a (shareability, simultaneous users below the limit, and reference to step 5)"
+          ],
+          "printed_pages": [
+            202
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.8, step 2b (limit reached or non-shareable; stop or reassignment)"
+          ],
+          "printed_pages": [
+            202
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "client-activation-response",
+      "title": "Rel-16 在网同系统公共 Stage 2：业务服务器向显式申请客户端发功能别名激活响应，表 10.13.2.4-1 逐别名报告已激活、已拒绝或可接管",
+      "conditions": [
+        "在网同系统的客户端显式激活请求；查看相应业务服务器发给申请客户端的激活响应，不是发给共享用户的状态消息或后续接管响应。"
+      ],
+      "conclusion": "在网同系统的公共 Stage 2 流程中，业务服务器向显式申请客户端发功能别名激活响应。表 10.13.2.4-1 要求列出发起激活请求者的 MC 业务 ID、其申请的一个或多个别名，以及每个别名的结果：已激活、已拒绝或可接管。这里的 ID 标识申请人，不指明谁在使用可接管的别名。一个别名的结果不能套给另一项；“可接管”不表示用户已经决定、接管已经获准或原使用者已被撤销，表也不要求再回一份拒绝响应。",
+      "normative_strength": "表 10.13.2.4-1 的三项为必填；§10.13.4 步骤 4 的激活响应发给申请客户端，步骤 5 的告知针对正在共享同一别名的其他业务用户。注 2 另列已订功能别名状态的其他服务器。",
+      "limitations": [
+        "完整响应缺少某别名的结果是必填项不全；截短输出不证明原消息缺项或该别名被拒。收到申请方响应不等于其他人都收到了通知；不能用激活响应代替后续接管程序的实际决定或转移。这些是公共业务信息流的必填项，不能据此判定某份 SIP 成功答复缺少结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.1, on-network limitation"
+          ],
+          "printed_pages": [
+            192
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.2.3, table 10.13.2.3-1: activation request, originator and list"
+          ],
+          "printed_pages": [
+            193
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.2.4, table 10.13.2.4-1: activation response and status per functional alias"
+          ],
+          "printed_pages": [
+            193
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.4, step 3: authorization, status, sharing capacity, rejection and takeover offer"
+          ],
+          "printed_pages": [
+            198
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.4, NOTE 2 and steps 4–5: subscriber status, activation response and other sharing users"
+          ],
+          "printed_pages": [
+            198
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "source_references": [
@@ -511,6 +721,60 @@
       "printed_pages": [
         204
       ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.2.3, table 10.13.2.3-1: activation request, originator and list"
+      ],
+      "printed_pages": [
+        193
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.2.4, table 10.13.2.4-1: activation response and status per functional alias"
+      ],
+      "printed_pages": [
+        193
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.4, opening and preconditions 1–4 for client-triggered activation"
+      ],
+      "printed_pages": [
+        197
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.4, figure 10.13.4-1, steps 1–2 and NOTE 1: request, controller forwarding and conflicts"
+      ],
+      "printed_pages": [
+        198
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.4, step 3: authorization, status, sharing capacity, rejection and takeover offer"
+      ],
+      "printed_pages": [
+        198
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.4, NOTE 2 and steps 4–5: subscriber status, activation response and other sharing users"
+      ],
+      "printed_pages": [
+        198
+      ]
     }
   ],
   "related": [
@@ -520,7 +784,8 @@
   ],
   "limitations": [
     "限本固定版本 Stage 2；不指定 SIP 消息、重发机制、送达验证的日志格式，不判断其他 Release。",
-    "没有共享许可、使用人数、事件对应的发送/接收状态时，分别保留未知。不得以从未收到推论未激活或用订阅成功充当授权别名配置。"
+    "没有共享许可、使用人数、事件对应的发送/接收状态时，分别保留未知。不得以从未收到推论未激活或用订阅成功充当授权别名配置。",
+    "客户端因事件发出显式激活请求，不等于服务器自己触发。公共 Stage 2 功能别名激活响应只标识申请人，不指明谁在使用可接管的别名，也不表示接管已获准。"
   ],
   "verification": {
     "original_clauses_checked": true,
