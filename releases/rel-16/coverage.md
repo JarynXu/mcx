@@ -1034,6 +1034,16 @@ MCData 通过 xMB 向组发 X，预建 Files 会话的创建响应给出 TMGI �
 
 [读取主题](topics/mcdata/mbms-files-session-binding.md)
 
+## 归属一个 MCData 组，短数据、文件分发和数据流要分别归属吗？
+
+MCData 一次组归属覆盖该组实际配置的每项子业务。组清单仅有 SDS、FD 时不包含 DS；组清单列有 DS 时，归属该组也覆盖 DS。
+
+区分制式配置表与特定组实配清单：表 A.4-1 在“为组启用的 MCData 子业务和功能”下有七个同级启用项，三列的 Y 说明哪些实体需要配置参数。表中无独立 DS 项，§5.6 仍举 DS 为组可配置子业务。
+
+尚未建立：只见表或组归属不能确认某组实际启用 DS，也不能证明本次发文件已获批或已下载。只解除 G，不能推断其他组、业务注销或已存历史发生变更。
+
+[读取主题](topics/mcdata/affiliation-configured-subservices.md)
+
 ## 普通按需 MCVideo 私呼：客户端请求、应答与结果证据
 
 普通MCVideo私呼客户端请求、拒绝、应答、结果和取消证据。
