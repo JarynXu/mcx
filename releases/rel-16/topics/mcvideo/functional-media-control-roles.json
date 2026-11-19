@@ -66,7 +66,7 @@
       "conditions": [
         "在网业务使用相应参考点时，分别判断会话信令、传输/接收控制或媒体交换；不把它们合成必须同时成功的共同条件。"
       ],
-      "conclusion": "MCVideo-1 用于建立服务会话的应用信令，MCVideo-4 承载单播传输控制信令，MCVideo-7 在媒体分发功能与 UE 媒体混合功能之间交换单播媒体。发送获准信息流针对请求发送者；媒体传输通知告诉接收侧另一用户的媒体可用。接收请求和接收响应又分别表达接收意图与该请求能否接收的结果。",
+      "conclusion": "MCVideo-1 用于建立服务会话的应用信令，MCVideo-4 承载单播传输控制信令，MCVideo-7 在媒体分发功能与 UE 媒体混合功能之间交换单播媒体。服务器将发送许可单播给获准发视频的参与端；媒体传输通知告诉接收侧另一用户的媒体可用。接收请求和接收响应又分别表达接收意图与该请求能否接收的结果。",
       "normative_strength": "功能定义和职责描述，不把支持能力表述成某次业务已成功。",
       "limitations": [
         "这些Stage2职责/信息流含义不能互代：会话建立不直接证明接收结果，发送者获准不证明接收者已经收到并呈现。",
@@ -89,6 +89,25 @@
             123,
             124,
             125
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.2.3, information-flow introduction (unicast to the granted participant)"
+          ],
+          "printed_pages": [
+            124
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.3.1, preconditions 1–2 and numbered steps 1–6 (own transmission)"
+          ],
+          "printed_pages": [
+            129,
+            130
           ]
         }
       ],
@@ -132,10 +151,161 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "remote-start-request-and-admission",
+      "title": "在网 MCVideo 已有会话中，远程请求另一端开传时，服务器核查谁对谁的权限？",
+      "conditions": [
+        "同一 MC 系统内在网 MCVideo 会话和传输控制均已建立，当前无正在进行的媒体传输。",
+        "§7.7.1.3.7 以甲有权远程启动乙的传输为前提；两个参与端只是图示，并非人数上限。"
+      ],
+      "conclusion": "在同一 MC 系统已建立的在网 MCVideo 会话内，甲有权请乙开传；符合该例的传输控制和无正在传输的前提时，甲端向传输控制服务器单播 Remote transmit media request。表中的两个必填 MCVideo ID 分别是远程发起者甲和被要求发送的乙；媒体标识可选，仅在媒体复用时才可能出现。服务器检查甲有无权启动乙的传输；若有权，按传输控制准则决定准许、拒绝或排队。正文举组策略为例，图还列有同时传输数上限检查。图示走准许分支。",
+      "normative_strength": "两个身份为信息流表 M 项，媒体标识为 O 项。核权和准入是该流程的服务端动作；示例的接受结果不是每笔远程请求的保证。",
+      "limitations": [
+        "不能凭两个身份、甲的资格或请求已送达就判定乙已获准。图未给排队或拒绝的完整支线，也不规定当前有人发送时如何处理。",
+        "这里不发起新的拉取或推送私呼；不据 Stage 2 信息项倒推具体线上字段编码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1 heading and 7.7.1.1 opening paragraph (on-network scope only)"
+          ],
+          "printed_pages": [
+            123
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.3 heading (one MC system scope only)"
+          ],
+          "printed_pages": [
+            129
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.3.7, introduction and preconditions 1–3 (remote start)"
+          ],
+          "printed_pages": [
+            142
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.2.17, introduction and table 7.7.1.2.17-1 (Remote transmit media request)"
+          ],
+          "printed_pages": [
+            127
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.3.7, figure 7.7.1.3.7-1 and numbered steps 1–2 (request and admission)"
+          ],
+          "printed_pages": [
+            142
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "remote-start-grant-response-and-uplink",
+      "title": "在网 MCVideo 已有会话内远程请乙开传：乙的许可、甲收到的结果和乙的上行各说明什么？",
+      "conditions": [
+        "在同系统已建立的在网 MCVideo 会话和传输控制中，原先无人传输，甲有权远程请求乙开传。",
+        "许可给乙与乙上行属于图示接受分支；步骤 4 另说明给甲的响应可报告成功或失败原因，不以已获准或已发流为失败响应的条件。"
+      ],
+      "conclusion": "在同一 MC 系统已有的在网 MCVideo 会话内，甲获授权请乙开传。服务器接受该请求时，将 Transmit media granted 单播给乙的传输控制参与端，乙可以发视频。服务器另将 Remote transmit media response 单播给请求人甲：成功表示服务器报告乙已开始发送，拒绝该请求时向甲说明失败原因，乙不因该请求获准。表 7.7.1.2.18-1 只列媒体标识，既是可选项，也只在媒体复用时才可能出现。图示成功路径的步骤 5 是乙在已有会话中开始向传输控制服务器发视频。",
+      "normative_strength": "发送许可和远程响应是两个信息流。成功或失败原因是步骤 4 对响应含义的说明；表 7.7.1.2.18-1 并未把结果或原因列成必填信息项。单独核实媒体实际发出，要看乙端对应上行证据。",
+      "limitations": [
+        "甲收到成功响应可登记服务器报告乙发送，不是给甲发送许可；缺乙的媒体记录不能判乙未发送。乙端上行记录不能证明服务器收妥、甲端接收或呈现，也不证明甲本人看过。",
+        "失败响应应说明原因，但本条不规定必填原因字段、数值代码、消息线上编码或排队后续过程。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1 heading and 7.7.1.1 opening paragraph (on-network scope only)"
+          ],
+          "printed_pages": [
+            123
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.3 heading (one MC system scope only)"
+          ],
+          "printed_pages": [
+            129
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.2.3, information-flow introduction (unicast to the granted participant)"
+          ],
+          "printed_pages": [
+            124
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.3.7, introduction and preconditions 1–3 (remote start)"
+          ],
+          "printed_pages": [
+            142
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.3.7, figure 7.7.1.3.7-1 and numbered steps 1–2 (request and admission)"
+          ],
+          "printed_pages": [
+            142
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.3.7, numbered steps 3–5 (grant, result and uplink)"
+          ],
+          "printed_pages": [
+            142
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.1.2.18, introduction and table 7.7.1.2.18-1 (Remote transmit media response)"
+          ],
+          "printed_pages": [
+            127,
+            128
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "limitations": [
-    "不扩写离网、MBMS、跨系统、紧急或远程控制流程；通用架构和安全转引仍是独立依赖。",
+    "本页只用在网会话内远程启动一路发送的例子区分角色，不推导其他远程控制、离网、MBMS、跨系统或紧急流程；通用架构和安全转引仍是独立依赖。",
     "功能定义不能证明某个Stage3程序已实现，也不能填补其模式选择、错误处理或计时器缺口。"
   ],
   "verification": {
