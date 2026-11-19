@@ -6,7 +6,7 @@
   "title": "改了预选配置，当前通话会断吗？同一人的另一台终端要不要跟着切？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-23.280-v16.7.0",
-  "condition_rule": "Inherit common_conditions and add the applicable claim conditions.",
+  "condition_rule": "Inherit common_conditions and add the applicable claim conditions. For active-choice-per-client, apply the activity-state conditions to a state check and the in-service procedure conditions to a requested switch. The state check does not require a switch transaction.",
   "common_conditions": [
     "3GPP TS 23.280 V16.7.0，Release 16，Stage 2；区分更改下一次授权的预选与单个正在使用中的 MC 业务的当前配置选择。"
   ],
@@ -71,13 +71,14 @@
       "id": "active-choice-per-client",
       "title": "正在服务时，向该业务服务器为一个客户端改索引",
       "conditions": [
-        "所涉业务正在提供服务；用户已认证，UE 可安全访问业务服务器，已有多份配置档、已完成该业务授权；业务客户端被触发选择活动配置。"
+        "核对活动状态（§10.1.4.1）：按 MC 业务客户端区分同一时刻的活动档；无须先证明发生切换请求。",
+        "核对一次在服切换及服务器为谁保存索引（§10.1.4.7）：所涉业务正在提供服务；用户已在身份管理服务器完成认证，UE 可安全访问该业务服务器，已取得多份用户配置档并已完成该业务授权；该业务客户端受触发选择一份活动配置。"
       ],
-      "conclusion": "MCPTT、MCVideo、MCData 可分别使用本程序；一次限单一业务。业务客户端把业务 ID 和配置档索引发给本业务服务器。服务器为这个客户端保存所选索引并回复结果。同一用户不同客户端可使用不同的活动配置，每客户端同时只用一份。对于同一用户通过不同 UE 同时使用两份配置的情况，业务服务器与客户端如何处理仍待研究。",
-      "normative_strength": "两项请求字段和响应结果均为 M；每客户端保存见步骤 3，不同客户端可不同见注 1。 §5.2.4 注 3 将两端的多 UE 同时使用处理留待研究，不否定 §§10.1.4.1、10.1.4.7 明确允许的不同活动配置。",
+      "conclusion": "同一用户的不同终端可以同时使用不同的活动配置；每个 MC 业务客户端同一时刻只用一份。判断这种状态不以发生切换请求为前提。在使用 MCPTT、MCVideo 或 MCData 时，一次切换只针对其中一项业务。业务客户端把业务 ID 和配置档索引发给本业务服务器；服务器为这个客户端保存所选索引并回复结果。",
+      "normative_strength": "请求中的业务 ID 和配置档索引以及响应中的结果均为 M。§10.1.4.7 步骤 3 按业务客户端保存索引，注 1 允许同一用户的不同客户端使用不同活动配置；§10.1.4.1 限定每个 MC 业务客户端同一时刻只用一份。",
       "limitations": [
         "不推出同机其他业务、同用户另一客户端跟着切换，也不等同各 UE 可分别设预选。步骤 2 的条件主体拼作 MPCTT server，不据该处扩展三个业务的缓存实现。",
-        "§5.2.4 注 3 的同时使用处理与 §10.1.4.6 编者注的逐 UE 指定预选项，是两个独立未决点；均不能由一次双机实测或按客户端存索引而补齐。"
+        "同一用户的不同终端可同时使用不同活动配置，但不能从按客户端保存索引推断终端间采用哪种同步或冲突处理办法。§10.1.4.6 编者注留待研究的是为同一用户的每台终端分别指定下次业务授权的预选档。"
       ],
       "source_references": [
         {
@@ -125,15 +126,6 @@
           "printed_pages": [
             77,
             78
-          ]
-        },
-        {
-          "source_id": "3gpp-ts-23.280-v16.7.0",
-          "clauses": [
-            "5.2.4, NOTE 3 (handling of simultaneous use of two user profiles across different UEs is FFS)"
-          ],
-          "printed_pages": [
-            19
           ]
         },
         {
