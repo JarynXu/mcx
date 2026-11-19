@@ -1,0 +1,400 @@
+{
+  "topic_id": "r16-calls-onnetwork-group-alert-location",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "在网 MCVideo、MCData 组紧急告警：发给组员的位置从哪里来？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0（Release 16，Stage 2），同一 MC 系统内，MCVideo 或 MCData 客户端发起面向业务组已归属成员的在网单播紧急告警。信息元素表另区分上下行、请求与响应。"
+  ],
+  "condition_rule": "每条先继承共同条件，再查此处的步骤、字段方向及观测点；条文要求与一次实际通信是否发生须分开。",
+  "claims": [
+    {
+      "id": "group-and-affiliation",
+      "title": "同一 MC 系统的在网 MCVideo 或 MCData 发起组单播紧急告警时，谁确定收件人？",
+      "conditions": [
+        "业务为 MCVideo 或 MCData，用户发起面向一个业务组的在网单播紧急告警。"
+      ],
+      "conclusion": "同一 MC 系统的在网 MCVideo 或 MCData 发起组单播紧急告警时，GMS 提供组成员及归属资料，由 MC 业务服务器解析组号、确定成员及其归属状态，向已归属成员逐个下发。组已在 GMS 定义，发起端已归属至少一个组，但不一定对指定紧急组办过显式归属。业务服务器先查发起用户对该组的告警许可；若用户提供别名，还查能否使用、是否已为其激活。按用户配置可用当前选定组或专用紧急组。",
+      "normative_strength": "图示前提及步骤 2–4、6；单个业务服务器是图示简化，不限定物理部署。",
+      "limitations": [
+        "成员身份或归属记录不是本次送达或起呼证据。此公共程序能否用于 MCPTT 待研究，不等于 MCPTT 禁用告警；不能径用于跨系统。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.1, on-network services list and editor’s note on MCPTT"
+          ],
+          "printed_pages": [
+            176
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.2.1, introduction, notes 1–2 and preconditions 1–4 (same-system unicast, group definition and affiliation)"
+          ],
+          "printed_pages": [
+            176
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.2.1, figure 10.10.1.2.1-1 and steps 2–4 (authorization, alias and membership/affiliation)"
+          ],
+          "printed_pages": [
+            177
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.2.1, step 6 (affiliated recipients, mandatory downlink information, profile-selected or dedicated group)"
+          ],
+          "printed_pages": [
+            177
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "request-contents",
+      "title": "同一 MC 系统内，在网 MCVideo 或 MCData 发起组单播紧急告警，上行与下行都可省略位置吗？",
+      "conditions": [
+        "区分通用请求信息流及同一系统在网 MCVideo 或 MCData 组紧急告警步骤 2、6。"
+      ],
+      "conclusion": "同一 MC 系统的在网 MCVideo 或 MCData 发起组单播紧急告警时，步骤 2 的发起端可不带自己的位置。步骤 6 的业务服务器发往各已归属成员的请求须携带发起端位置、发起人的 MC service ID、告警关联的 MC service group ID、发起人所属任务关键组织名称。两张通用请求表中的 Location 都指发起端位置，均标 O；表上可选不能覆盖本例步骤 6 的明文要求。",
+      "normative_strength": "表 10.1.2.15-1、-2 的可选标志是通用字段说明；§10.10.1.2.1 步骤 6 有特定流程的必带要求。",
+      "limitations": [
+        "表 10.1.2.15-2 下行的组织名不指收警人所属组织；不能据此推断发起端在 §10.10.1.2.1 步骤 2 必须带组织名。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.2.15, table 10.1.2.15-1 and preceding direction text (originating client to server)"
+          ],
+          "printed_pages": [
+            64,
+            65
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.2.15, table 10.1.2.15-2 and preceding direction text (server to recipient client)"
+          ],
+          "printed_pages": [
+            65
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.2.1, step 6 (affiliated recipients, mandatory downlink information, profile-selected or dedicated group)"
+          ],
+          "printed_pages": [
+            177
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.2.1, steps 2 and 6 (location supplied by originator versus acquisition from LMS)"
+          ],
+          "printed_pages": [
+            177
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "location-source",
+      "title": "同一 MC 系统内，在网 MCVideo 或 MCData 发起组单播紧急告警，能从下行判断位置来源吗？",
+      "conditions": [
+        "区分已确认本次步骤 2 实际带或未带位置，与没取得上行记录。"
+      ],
+      "conclusion": "同一 MC 系统的在网 MCVideo 或 MCData 发起组单播紧急告警时，若发起端在步骤 2 带了自己的位置，MC 业务服务器在步骤 6 就用它，不用另一次 LMS 记录替换；若上行确实未带，业务服务器从 LMS 取得发起端用户的位置。只看组员收到的下行不能判定来源。",
+      "normative_strength": "§10.10.1.2.1 步骤 6 据本次步骤 2 的实际内容指定位置来源；业务服务器是否从 LMS 取得这次所需的位置，须另核对应记录。",
+      "limitations": [
+        "仅凭 §10.10.1.2.1 步骤 6 的下行不能证明即时取位、新鲜度或注册；这段未规定 LMS 未能提供位置时的超时、重试或降级，不能据此认定允许无位置下发。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.2.15, table 10.1.2.15-1 and preceding direction text (originating client to server)"
+          ],
+          "printed_pages": [
+            64,
+            65
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.2.15, table 10.1.2.15-2 and preceding direction text (server to recipient client)"
+          ],
+          "printed_pages": [
+            65
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.2.1, figure 10.10.1.2.1-1 and steps 2–4 (authorization, alias and membership/affiliation)"
+          ],
+          "printed_pages": [
+            177
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.2.1, step 6 (affiliated recipients, mandatory downlink information, profile-selected or dedicated group)"
+          ],
+          "printed_pages": [
+            177
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.2.1, steps 2 and 6 (location supplied by originator versus acquisition from LMS)"
+          ],
+          "printed_pages": [
+            177
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "confirmations",
+      "title": "同一 MC 系统内，在网 MCVideo 或 MCData 发起组单播紧急告警，哪个响应才是收警端的回执？",
+      "conditions": [
+        "同一告警分别检查实际发送者、接收者和观察点；步骤 5、8 的响应使用同一通用响应表。"
+      ],
+      "conclusion": "同一 MC 系统的在网 MCVideo 或 MCData 发起组单播紧急告警时，步骤 5 是业务服务器向发起端确认发起请求；在步骤 6 下发、7 通知本机用户后，步骤 8 由各收警端向业务服务器确认告警。这两个方向共用表 10.1.2.16-1；MC service ID 都标识发起告警者，组号都标识告警关联组。要给某个收警端记确认，服务器须实际收到可对应本次告警及该回应端的回执。",
+      "normative_strength": "§10.10.1.2.1 的确认方向由步骤 5 或 8 决定；表 10.1.2.16-1 的两个必选字段并不证明成员已收到告警。",
+      "limitations": [
+        "§10.10.1.2.1 步骤 8 的回执已发不等于服务器收妥；一端回执不能代另一端或证明用户已读。仅有发起人 ID 和关联组号，不能识别回执来自哪一个收警端。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.2.16, table 10.1.2.16-1 and direction text (both directions; identity of alerting party)"
+          ],
+          "printed_pages": [
+            65
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.2.1, figure 10.10.1.2.1-1 and steps 2–4 (authorization, alias and membership/affiliation)"
+          ],
+          "printed_pages": [
+            177
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.2.1, step 6 (affiliated recipients, mandatory downlink information, profile-selected or dedicated group)"
+          ],
+          "printed_pages": [
+            177
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.2.1, figure 10.10.1.2.1-1 and steps 5, 6, 7 and 8 (originator confirmation and receiving clients’ acknowledgements)"
+          ],
+          "printed_pages": [
+            177
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "alert-and-call-state",
+      "title": "同一 MC 系统内，在网 MCVideo 或 MCData 发起组单播紧急告警，会把收警端置入紧急状态或建立组呼吗？",
+      "conditions": [
+        "发起端只发在网组紧急告警，未同时请求发起紧急呼叫；要评价后续组呼时区分配置与本次事件。"
+      ],
+      "conclusion": "同一 MC 系统的在网 MCVideo 或 MCData 发起组单播紧急告警时，发起端设置并保持本机紧急状态直至明确取消；发送告警本身不会让其他 UE 进入紧急状态。未同时请求发起紧急呼叫，不会因此使组进入进行中紧急状态。后续是否自动触发紧急组呼取决于配置，发起端也可以不发起组呼。",
+      "normative_strength": "发起端、其他终端及组状态分别判断；注 3–6 限定告警本身的效力及配置选择。",
+      "limitations": [
+        "不由此判断组原本的状态；配置与告警确认均不能证明组呼已经建立。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.1, on-network services list and editor’s note on MCPTT"
+          ],
+          "printed_pages": [
+            176
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.2.1, figure 10.10.1.2.1-1 and steps 5, 6, 7 and 8 (originator confirmation and receiving clients’ acknowledgements)"
+          ],
+          "printed_pages": [
+            177
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.2.1, step 1 and notes 3–6 (originator state, other UEs and optional subsequent group call)"
+          ],
+          "printed_pages": [
+            177,
+            178
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.2.15, table 10.1.2.15-1 and preceding direction text (originating client to server)"
+      ],
+      "printed_pages": [
+        64,
+        65
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.2.15, table 10.1.2.15-2 and preceding direction text (server to recipient client)"
+      ],
+      "printed_pages": [
+        65
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.2.16, table 10.1.2.16-1 and direction text (both directions; identity of alerting party)"
+      ],
+      "printed_pages": [
+        65
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.10.1.1, on-network services list and editor’s note on MCPTT"
+      ],
+      "printed_pages": [
+        176
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.10.1.2.1, introduction, notes 1–2 and preconditions 1–4 (same-system unicast, group definition and affiliation)"
+      ],
+      "printed_pages": [
+        176
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.10.1.2.1, figure 10.10.1.2.1-1 and steps 2–4 (authorization, alias and membership/affiliation)"
+      ],
+      "printed_pages": [
+        177
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.10.1.2.1, step 6 (affiliated recipients, mandatory downlink information, profile-selected or dedicated group)"
+      ],
+      "printed_pages": [
+        177
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.10.1.2.1, steps 2 and 6 (location supplied by originator versus acquisition from LMS)"
+      ],
+      "printed_pages": [
+        177
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.10.1.2.1, figure 10.10.1.2.1-1 and steps 5, 6, 7 and 8 (originator confirmation and receiving clients’ acknowledgements)"
+      ],
+      "printed_pages": [
+        177
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.10.1.2.1, step 1 and notes 3–6 (originator state, other UEs and optional subsequent group call)"
+      ],
+      "printed_pages": [
+        177,
+        178
+      ]
+    }
+  ],
+  "related": [
+    "r16-calls-emergency-alert-area-entry-exit",
+    "r16-calls-offnetwork-group-emergency-alert",
+    "r16-mcptt-standalone-group-alert-client"
+  ],
+  "limitations": [
+    "不涉及跨系统或离网告警、预设区的判定及取消、服务器取得位置的协议细节、SIP/HTTP 报文或超时策略，也不替 MCPTT 的专项协议作判断。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
