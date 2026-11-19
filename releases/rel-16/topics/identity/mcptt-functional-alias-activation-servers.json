@@ -1,0 +1,548 @@
+{
+  "topic_id": "r16-identity-mcptt-functional-alias-activation-servers",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 值班别名：两段 PUBLISH 都收到 200，甲已经启用了吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "3GPP TS 24.379 V16.14.0，Release 16，Stage 3。在网 MCPTT，甲手动为本人新启用一个值班别名。区分服务于甲的参与功能、拥有该别名的控制功能和甲的客户端。"
+  ],
+  "claims": [
+    {
+      "id": "accept-client-publish",
+      "title": "第一段 200 答复甲的发布，不登记启用",
+      "conditions": [
+        "甲的客户端手动申请启用一个别名；参与功能收到满足本程序入口条件的 PUBLISH。"
+      ],
+      "conclusion": "客户端把 PUBLISH 发给服务于甲的起始参与功能，mcptt-request-uri 是甲的 MCPTT ID。启用用 Expires=4294967295，按用户的 PIDF 给出目标客户端、别名及客户端生成的全局唯一 p-id-fa；别名条目不写 status 或 expires。参与功能从消息体识别被服务用户；起始侧从 P-Asserted-Identity 的公共用户身份识别发起人（终接侧入口则从 mcptt-calling-user-id 识别）。发起人不等于被服务用户或无权修改其别名状态，回 403 并停止。Expires 缺失或非零且小于 4294967295，回 423，Min-Expires=4294967295，并停止。通过检查后按候选有效期回 200，其后才比对 PIDF 的 presence/@entity 和被服务用户；不等就停止。",
+      "normative_strength": "这些检查与退出有先后；200 的 Expires 取候选值。",
+      "limitations": [
+        "单凭 200 不能证明之后的身份核对通过，或已向别名拥有方发出请求。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.1.2, user triggers"
+          ],
+          "printed_pages": [
+            199
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.1.2, steps 1–6 and note 3"
+          ],
+          "printed_pages": [
+            200
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.2.3, incoming PUBLISH conditions 1–5 and server steps 1–5"
+          ],
+          "printed_pages": [
+            202,
+            203
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.2.3, server steps 6–12 opening (candidate expiry, 200 and entity check)"
+          ],
+          "printed_pages": [
+            203
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.3.1.2, per-user PIDF syntax items 1–8"
+          ],
+          "printed_pages": [
+            216
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "record-pending-and-report-to-client",
+      "title": "参与功能先登记 activating；客户端看到的是按用户的通知",
+      "conditions": [
+        "客户端请求列出目标别名，entity 匹配，候选有效期非零。甲的该别名条目不存在或已到期。"
+      ],
+      "conclusion": "参与功能新建条目，状态为 activating，到期时刻为当前时刻加候选有效期，清空条目上的 activating p-id-fa。它用候选表替换原表，按该用户与别名办理第二段发布，识别第一段 PUBLISH 的 p-id-fa，并为该用户调用通知程序。按用户的 NOTIFY 只取未到期且非 deactivated 的条目；本次调用已识别第一段标识时，将它写入通知。客户端要看后续变更可按用户持续订阅；只取当前状态的订阅不承担后续通知。客户端对收到的按用户 PIDF 逐别名读状态，如有 p-id-fa，可定位触发通知的发布。",
+      "normative_strength": "在这一新启用分支，登记 activating 与登记 activated 是不同动作。",
+      "limitations": [
+        "客户端订阅与参与功能向拥有方的订阅不是同一项；规范要求发送通知不证明客户端已经收到，更不能把 activating 当成启用成功。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.2.3, server step 12(c) (new or expired entry for requested alias)"
+          ],
+          "printed_pages": [
+            204
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.2.3, server steps 14–17 (replace list, send change, identify handled p-id-fa, invoke per-user notification)"
+          ],
+          "printed_pages": [
+            205
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.2.5, per-user notification steps 1–3"
+          ],
+          "printed_pages": [
+            206
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.1.3, initial SUBSCRIBE steps 1–7 and receipt of NOTIFY"
+          ],
+          "printed_pages": [
+            200,
+            201
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "publish-to-alias-owner",
+      "title": "第二段按别名发布，以另一标识跟踪待启用条目",
+      "conditions": [
+        "参与功能为被服务用户甲向拥有方发布指定别名的启用请求。"
+      ],
+      "conclusion": "Request-URI 指向与该别名关联的控制 MCPTT 功能的公共服务身份，mcptt-request-uri 是别名 ID，mcptt-calling-user-id 是甲的 MCPTT ID，Expires=4294967295。参与功能生成新的全局唯一 p-id-fa，将它存入甲的该别名上未到期、状态为 activating 且尚无 activating p-id-fa 的条目。发布按别名的 PIDF，表明该别名下由本参与方服务、未到期且状态为 activating 或 activated 的用户，根元素下写新标识，functionalAlias 不带 expires。若第二段 PUBLISH 的 Timer F 到期或收到 3xx、4xx、5xx、6xx，参与功能移除甲表中该别名的条目。",
+      "normative_strength": "第二段的生成、匹配条目上的标识登记和失败清理均为规定动作。",
+      "limitations": [
+        "第一段的客户端标识不直接沿用到第二段。信息体列出符合条件的用户，不表示可在这一个 PUBLISH 申请多名用户的状态变更。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.2.6, NOTE 1, activation and SIP PUBLISH steps 1–2"
+          ],
+          "printed_pages": [
+            206
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.2.6, SIP PUBLISH steps 4, 7–10 and Timer F or 3xx–6xx response handling"
+          ],
+          "printed_pages": [
+            207
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "owner-admission-and-binding",
+      "title": "拥有别名的控制功能回复 200 后，还须核对记录对象",
+      "conditions": [
+        "控制功能收到针对所服务别名和被处理用户甲的按别名 PUBLISH；本例是新启用，不申请接管。"
+      ],
+      "conclusion": "Expires 缺失或非零且低于 4294967295 时，回 423，Min-Expires=4294967295。别名不存在、甲不在获准启用名单、没有授权甲此次请求的本地策略，或该别名启用数已等于 max-simultaneous-activations，分别构成 403 停止条件。通过后以所选有效期回 200；随后才核对 presence/@entity 与所服务别名，以及按接收步骤读取的 tuple/@id 与被处理用户 ID。任一不符就停止。核对通过且所选有效期非零，才在该别名的用户名单中选中甲的记录，没有就新增，并设置到期时间。随后识别本段 p-id-fa，调用按别名通知程序。",
+      "normative_strength": "按拥有方的接收程序区分准入、回 200、实体核对、用户登记与通知。",
+      "limitations": [
+        "这段 200 本身也不能证明已写入记录。入口条件 5 的正文回指写作 9A.2.3.2；发送程序与独立语法使用 9A.3.1.2，不能据此推导唯一报文。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.3, incoming PUBLISH conditions 1–5 and server steps 1–5, 7–10 (ordinary activation)"
+          ],
+          "printed_pages": [
+            211,
+            212,
+            213
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.3, server step 12 and steps 13–14 (user entry and status notification)"
+          ],
+          "printed_pages": [
+            213
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.2.6, SIP PUBLISH steps 4, 7–10 and Timer F or 3xx–6xx response handling"
+          ],
+          "printed_pages": [
+            207
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.3.1.2, per-functional-alias PIDF syntax items 1–9 (entity, tuple ID, user and expiry)"
+          ],
+          "printed_pages": [
+            217
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "subscribe-and-read-owner-notification",
+      "title": "拥有方向哪项订阅报告甲在该别名上的状态",
+      "conditions": [
+        "参与功能要查甲在目标别名上是否启用；拥有方为该目标按用户限制的状态订阅发送通知。"
+      ],
+      "conclusion": "参与功能向别名控制功能订阅 presence，mcptt-request-uri 为别名 ID，mcptt-calling-user-id 为甲的 MCPTT ID，simple-filter 按甲的 MCPTT ID 限定，接受 PIDF。初始 Expires=0 只取当前状态，4294967295 才取当前并订后续通知。拥有方按别名和被处理的甲确定相应记录，向由被处理用户 ID 标识的订阅者、就 §9A.2.2.3.4 建立的订阅发按别名的 NOTIFY，functionalAlias 带 expires。若由 §9A.2.2.3.3 调用且已识别第二段 p-id-fa，通知根元素下须带该值。",
+      "normative_strength": "这项通知的内容、收件对象及何时带第二段标识，均受对应订阅与调用条件约束。",
+      "limitations": [
+        "不是把一份结果广播给所有订阅者，也不是直接询问整个别名的使用者名单。发送记录不能替代参与功能的接收记录。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.2.7, NOTE 1 and initial SUBSCRIBE steps 1–8"
+          ],
+          "printed_pages": [
+            208
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.3, server step 12 and steps 13–14 (user entry and status notification)"
+          ],
+          "printed_pages": [
+            213
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.5, introduction and steps 1–4: identify subscriber by handled MCPTT ID, select served alias and matching user entry, construct per-alias PIDF and send for the subscription"
+          ],
+          "printed_pages": [
+            214
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "confirm-positive-user-tuple",
+      "title": "正面证据是参与功能收到对应用户及启用到期信息",
+      "conditions": [
+        "参与功能收到该别名的按别名 PIDF NOTIFY；按 §9A.2.2.2.7 接收步骤 1 识别到甲的 tuple、其 status 下的 functionalAlias 及该元素指示启用到期的 expires。甲表中对应别名仍为 activating 且未到期。"
+      ],
+      "conclusion": "参与功能将这条记录改为 activated，将下次发布时间设在当前时刻与该别名到期时刻的中点。正面步骤不以通知携带或匹配 p-id-fa 为条件，也没有另要求一个写着 activated 的状态属性。该标识可关联某次发布，不能代替用户与到期信息。",
+      "normative_strength": "全部条件成立时须更新。",
+      "limitations": [
+        "这是接收程序的判据，不保证据此就能编码互通。§9A.2.2.2.7 步骤 1 与拥有方 §9A.2.2.3.3 步骤 9 按 tuple/@id 读用户 MCPTT ID；§9A.3.1.2 按别名语法却把 tuple/@id 写作别名 ID、functionalAlias/@user 写作 MCPTT 客户端 ID。不能认定这些身份相同，也不能从发送一侧单独证明接收方按哪种读法入账。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.2.7, receipt of per-functional-alias NOTIFY, step 1 and its two actions"
+          ],
+          "printed_pages": [
+            208,
+            209
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.3.3, incoming PUBLISH conditions 1–5 and server steps 1–5, 7–10 (ordinary activation)"
+          ],
+          "printed_pages": [
+            211,
+            212,
+            213
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.3.1.2, per-functional-alias PIDF syntax items 1–9 (entity, tuple ID, user and expiry)"
+          ],
+          "printed_pages": [
+            217
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "interpret-absent-user-tuple",
+      "title": "缺少甲的条目何时才是停用证据",
+      "conditions": [
+        "参与功能收到该别名的完整、可按接收程序判读的 PIDF NOTIFY，未列出与甲匹配的 tuple 及其 status 下的 functionalAlias。甲的本地条目尚未到期。"
+      ],
+      "conclusion": "本地仍为 activating 时，仅当通知 presence 下有 p-id-fa，且等于条目保存的第二段 activating p-id-fa，才依步骤 3 改为 deactivated，并将到期时间设为当前时刻。没有标识或值不符，不能据本分支判失败。本地若已为 activated 或 deactivating，步骤 2 对同样的缺项另作处理：改为 deactivated、即刻到期，不要求匹配 p-id-fa。",
+      "normative_strength": "负面步骤依本地原状态分开；正面、负面的触发条件不对称。",
+      "limitations": [
+        "未见 NOTIFY、摘要没显示甲、或甲的 tuple 和 functionalAlias 存在但少 expires，都不等于一份可判读的通知确实未列甲。最后一种不能满足正面步骤，也不满足这里的缺项条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.2.7, receipt of per-functional-alias NOTIFY, step 1 and its two actions"
+          ],
+          "printed_pages": [
+            208,
+            209
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.2.7, receipt of per-functional-alias NOTIFY, steps 2–3 and their actions"
+          ],
+          "printed_pages": [
+            209,
+            210
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.1.2, user triggers"
+      ],
+      "printed_pages": [
+        199
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.1.2, steps 1–6 and note 3"
+      ],
+      "printed_pages": [
+        200
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.2.2.3, incoming PUBLISH conditions 1–5 and server steps 1–5"
+      ],
+      "printed_pages": [
+        202,
+        203
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.2.2.3, server steps 6–12 opening (candidate expiry, 200 and entity check)"
+      ],
+      "printed_pages": [
+        203
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.3.1.2, per-user PIDF syntax items 1–8"
+      ],
+      "printed_pages": [
+        216
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.2.2.3, server step 12(c) (new or expired entry for requested alias)"
+      ],
+      "printed_pages": [
+        204
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.2.2.3, server steps 14–17 (replace list, send change, identify handled p-id-fa, invoke per-user notification)"
+      ],
+      "printed_pages": [
+        205
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.2.2.5, per-user notification steps 1–3"
+      ],
+      "printed_pages": [
+        206
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.1.3, initial SUBSCRIBE steps 1–7 and receipt of NOTIFY"
+      ],
+      "printed_pages": [
+        200,
+        201
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.2.2.6, NOTE 1, activation and SIP PUBLISH steps 1–2"
+      ],
+      "printed_pages": [
+        206
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.2.2.6, SIP PUBLISH steps 4, 7–10 and Timer F or 3xx–6xx response handling"
+      ],
+      "printed_pages": [
+        207
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.2.3.3, incoming PUBLISH conditions 1–5 and server steps 1–5, 7–10 (ordinary activation)"
+      ],
+      "printed_pages": [
+        211,
+        212,
+        213
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.2.3.3, server step 12 and steps 13–14 (user entry and status notification)"
+      ],
+      "printed_pages": [
+        213
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.3.1.2, per-functional-alias PIDF syntax items 1–9 (entity, tuple ID, user and expiry)"
+      ],
+      "printed_pages": [
+        217
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.2.2.7, NOTE 1 and initial SUBSCRIBE steps 1–8"
+      ],
+      "printed_pages": [
+        208
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.2.3.5, introduction and steps 1–4: identify subscriber by handled MCPTT ID, select served alias and matching user entry, construct per-alias PIDF and send for the subscription"
+      ],
+      "printed_pages": [
+        214
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.2.2.7, receipt of per-functional-alias NOTIFY, step 1 and its two actions"
+      ],
+      "printed_pages": [
+        208,
+        209
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.2.2.7, receipt of per-functional-alias NOTIFY, steps 2–3 and their actions"
+      ],
+      "printed_pages": [
+        209,
+        210
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcptt-functional-alias-client",
+    "r16-identity-alias-owner-resolution-subscription"
+  ],
+  "limitations": [
+    "本例只讲一名用户手动新启用一个别名；不展开多用户、多别名、接管、自动启停、刷新及完整订退订流程。",
+    "按条款区分应发、实际收到与应更新的本地记录；没有终端接收或服务器状态记录时，不据单段抓包认定已端到端生效。",
+    "本版按别名 PIDF 的语法与接收步骤对用户标识的位置不一致，不给出唯一可互通的 XML 编码。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
