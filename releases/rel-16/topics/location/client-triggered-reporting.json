@@ -1,0 +1,723 @@
+{
+  "topic_id": "r16-location-client-triggered-reporting",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "甲想知道乙的位置：甲发的上报触发，和向乙立即索要报告，是同一条请求吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0，Rel-16 Stage 2，在网位置管理。"
+  ],
+  "condition_rule": "按端点、消息所起的作用和可辨的程序一起认定信息流，不凭“现在想要位置”、单一方向或模糊消息名选表。单系统只限定所引程序，不给信息流表增设执行前提。",
+  "claims": [
+    {
+      "id": "trigger-parties",
+      "title": "客户端触发：两行 MC service ID 分指请求用户和目标用户",
+      "conditions": [
+        "已确认为 LMC→LMS、用于启动上报的触发，按表核身份及目标。"
+      ],
+      "conclusion": "请求的已授权用户的 MC 业务 ID 为 M，目标用户 ID 与指向目标用户的功能别名分别为 O；注 3 要求目标 ID 或目标别名必须出现其一。注 1 说请求用户、目标用户的身份应属同一 MC 业务。",
+      "normative_strength": "单行 M/O 与注 3 合读。注 1 是 should。",
+      "limitations": [
+        "本表没有交代双填时如何处理，不判必合规或必不合规。不把 should 变成强制同时给两个 ID 或跨业务必拒。请求者标识不等于实际授权检查结果。",
+        "LMC→LMS 且发起人急于获取位置，不足以识别这就是触发；同端点也可发生按需位置使用请求。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9, heading (on-network)"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.4, introduction: client-to-server location reporting trigger"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.4, table 10.9.2.4-1: requesting authorized MC service user, requested user ID and functional alias"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.4, table 10.9.2.4-1, note 1: same MC service for requester and requested user identities"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.4, table 10.9.2.4-1, note 3: presence of target identity or functional alias"
+          ],
+          "printed_pages": [
+            166
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "trigger-fields",
+      "title": "客户端位置上报触发（LMC→LMS）：六项逐项可选，至少一项须实际出现",
+      "conditions": [
+        "读的是上报触发表，而非即时请求或位置上报配置。"
+      ],
+      "conclusion": "六项依次说明是否立即报告、非紧急时要报什么、紧急时要报什么、非紧急时何时报、紧急时何时报、连续报告最短间隔。所求资料的紧急/非紧急两行分别覆盖和排除紧急呼叫、紧迫危险呼叫、紧急告警。注 2 要求六行中实际出现至少一行，可同时出现多行。",
+      "normative_strength": "六行均为 O；注 2 对组合规定 shall。",
+      "limitations": [
+        "身份行不计入六行。出现立即指示与指示取肯定值不同；即使明确要求立即报告，也还没有发生 LMS 对目标的请求。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9, heading (on-network)"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.4, introduction: client-to-server location reporting trigger"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.4, table 10.9.2.4-1: immediate report indicator"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.4, table 10.9.2.4-1: requested non-emergency and emergency location information"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.4, table 10.9.2.4-1: triggering criteria in non-emergency and emergency cases"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.4, table 10.9.2.4-1: minimum time between consecutive reports"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.4, table 10.9.2.4-1, note 2: at least one marked row shall be present"
+          ],
+          "printed_pages": [
+            166
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "trigger-interval",
+      "title": "客户端位置上报触发（LMC→LMS）：显式间隔 0 和缺省 0，只有前者算注 2 的一行",
+      "conditions": [
+        "被核的是一份上报触发，字段的实际存在性已知；部分摘选不能证明缺项。"
+      ],
+      "conclusion": "最短间隔缺省为 0，在紧急呼叫、紧迫危险呼叫和紧急告警三种情况下都是 0。完整触发中注 2 六行全无，就算间隔缺省 0 也不合注 2；显式出现间隔 0 则算一行。间隔 0 本身不表示要求立即索取报告。",
+      "normative_strength": "取值规则、元素存在要求是两个判断；无元素取消另属配置程序。",
+      "limitations": [
+        "不能用只保留部分行的导出来判六行都缺。已获上报配置的 LMC 收到 LMS 的无元素同类配置才是这里对照的取消，不是空触发。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9, heading (on-network)"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.4, table 10.9.2.4-1: minimum time between consecutive reports"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.4, table 10.9.2.4-1: immediate report indicator"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.4, table 10.9.2.4-1, note 2: at least one marked row shall be present"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.4, note and pre-condition"
+          ],
+          "printed_pages": [
+            170
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.4, numbered steps 1 and 2"
+          ],
+          "printed_pages": [
+            171
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "immediate-request",
+      "title": "表 10.9.2.3-1：MC 业务服务器→LMS 或 LMS→目标 LMC 的即时位置报告请求，均须带目标用户的 MC 业务 ID 清单",
+      "conditions": [
+        "确认该条消息的作用是索要一份即时报告，且发送方向属 MC 业务服务器→LMS 或 LMS→LMC；单有方向、紧迫意图或名称不能定表。"
+      ],
+      "conclusion": "表 10.9.2.3-1 列出的两种流向均用于索取即时位置报告。两行中，目标 MC 业务用户 ID 清单为 M，所求用户的一个或多个功能别名为 O。只有别名不能替代 ID 清单。",
+      "normative_strength": "该信息流表定义的 M/O。",
+      "limitations": [
+        "已确认 单系统 §10.9.3.6.2（印 172–173）、由 LMC 向 LMS 发的按需查询，是另一用途且方向不在本表；见既有用户位置订阅页。LMS 向 LMC 也可下发普通配置，方向本身不证本次有即时索取。",
+        "不能移用触发表注 3；见到即时请求不证明此前必有另一 LMC 发过触发。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9, heading (on-network)"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.3, introduction: both directions of an immediate location information request"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.3, table 10.9.2.3-1: requested MC service ID list and functional alias(es)"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.4, introduction: client-to-server location reporting trigger"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.4, table 10.9.2.4-1, note 3: presence of target identity or functional alias"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.2, single-system note, figure 10.9.3.2-1 and numbered steps 1–2"
+          ],
+          "printed_pages": [
+            169
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "client-procedure",
+      "title": "单一 MC 系统中，LMC 2 发起位置上报触发；LMS 核其发送触发的权限，依触发内容为 LMC 1 启动按需或事件上报",
+      "conditions": [
+        "套用客户端触发高层程序时限单一 MC 系统；LMC 2 请求取得 LMC 1 的位置。"
+      ],
+      "conclusion": "LMC 2 向 LMS 发触发。LMS 查 LMC 2 是否有权发送触发，依触发内容，为 LMC 1 启动按需或事件上报。仅见触发发出或到达，不足以证明核权已通过、已选某一分支或已获得位置。",
+      "normative_strength": "§10.9.3.3 图示及编号步骤。",
+      "limitations": [
+        "未给出每种字段组合到分支的判定算法，也未画出由 LMS 向请求 LMC 2 回传坐标的步骤。单系统注不作为单纯核两张信息流表的额外条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9, heading (on-network)"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.4, introduction: client-to-server location reporting trigger"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.3, single-system note, introduction and figure 10.9.3.3-1"
+          ],
+          "printed_pages": [
+            170
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.3, numbered step 1: client 2 triggers reporting for client 1"
+          ],
+          "printed_pages": [
+            170
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.3, numbered step 2: trigger authority and choice of reporting procedure"
+          ],
+          "printed_pages": [
+            170
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ondemand-proof",
+      "title": "按需分支：发起者获准、目标同意、目标发报、服务器收到各有证据",
+      "conditions": [
+        "单系统按需上报；目标用户的选择是否已知、发送方与接收方的记录是否齐备，需分别判断。"
+      ],
+      "conclusion": "LMS 可依据配置或其他实体的请求，向目标 LMC 请求即时报告。目标用户被询问并可接受或拒绝。该 LMC 向 LMS 立即答复，提供 LMS 所求且自己能取得的资料。收到后 LMS 更新该 LMC 的位置，原无该端记录就存入。",
+      "normative_strength": "按需程序步骤；询问不等于接受，程序要求不等于已经实际执行。",
+      "limitations": [
+        "别端获准发触发不说明目标已同意；目标已同意不说明报告已发，已发不证明 LMS 已收。LMS 收件不代实际写入或发起者收到坐标。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9, heading (on-network)"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.3, numbered step 2: trigger authority and choice of reporting procedure"
+          ],
+          "printed_pages": [
+            170
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.2, single-system note, figure 10.9.3.2-1 and numbered steps 1–2"
+          ],
+          "printed_pages": [
+            169
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.2, single-system note and steps 2–3"
+          ],
+          "printed_pages": [
+            169
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.2, numbered steps 4–5: report from the target client, receipt and update or first storage"
+          ],
+          "printed_pages": [
+            170
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "event-proof",
+      "title": "事件分支：启动程序不等于目标的上报条件已经满足",
+      "conditions": [
+        "单系统；已选事件分支；判断某次发送需识别目标 LMC 生效的规则和实际事件。"
+      ],
+      "conclusion": "若规则只要求移动到设定距离才报告，未达到时不能凭发起者获准要求目标按这条规则发报。事件发生才触发客户端发报告；LMS 收到后对上报端位置作更新或首次存入。",
+      "normative_strength": "事件条件与图示程序；不把按需的许可询问变为这一分支的步骤。",
+      "limitations": [
+        "达到条件是应当上报的依据，不代替目标发送或 LMS 接收的事实。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9, heading (on-network)"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.3, numbered step 2: trigger authority and choice of reporting procedure"
+          ],
+          "printed_pages": [
+            170
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.1, note 1 and opening paragraphs"
+          ],
+          "printed_pages": [
+            168
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.1, numbered steps 2 and 3"
+          ],
+          "printed_pages": [
+            169
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.1, numbered step 4"
+          ],
+          "printed_pages": [
+            169
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9, heading (on-network)"
+      ],
+      "printed_pages": [
+        165
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.2.3, introduction: both directions of an immediate location information request"
+      ],
+      "printed_pages": [
+        166
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.2.3, table 10.9.2.3-1: requested MC service ID list and functional alias(es)"
+      ],
+      "printed_pages": [
+        166
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.2.4, introduction: client-to-server location reporting trigger"
+      ],
+      "printed_pages": [
+        166
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.2.4, table 10.9.2.4-1: requesting authorized MC service user, requested user ID and functional alias"
+      ],
+      "printed_pages": [
+        166
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.2.4, table 10.9.2.4-1, note 1: same MC service for requester and requested user identities"
+      ],
+      "printed_pages": [
+        166
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.2.4, table 10.9.2.4-1, note 3: presence of target identity or functional alias"
+      ],
+      "printed_pages": [
+        166
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.2.4, table 10.9.2.4-1: immediate report indicator"
+      ],
+      "printed_pages": [
+        166
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.2.4, table 10.9.2.4-1: requested non-emergency and emergency location information"
+      ],
+      "printed_pages": [
+        166
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.2.4, table 10.9.2.4-1: triggering criteria in non-emergency and emergency cases"
+      ],
+      "printed_pages": [
+        166
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.2.4, table 10.9.2.4-1: minimum time between consecutive reports"
+      ],
+      "printed_pages": [
+        166
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.2.4, table 10.9.2.4-1, note 2: at least one marked row shall be present"
+      ],
+      "printed_pages": [
+        166
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.3.3, single-system note, introduction and figure 10.9.3.3-1"
+      ],
+      "printed_pages": [
+        170
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.3.3, numbered step 1: client 2 triggers reporting for client 1"
+      ],
+      "printed_pages": [
+        170
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.3.3, numbered step 2: trigger authority and choice of reporting procedure"
+      ],
+      "printed_pages": [
+        170
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.3.2, single-system note, figure 10.9.3.2-1 and numbered steps 1–2"
+      ],
+      "printed_pages": [
+        169
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.3.2, single-system note and steps 2–3"
+      ],
+      "printed_pages": [
+        169
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.3.2, numbered steps 4–5: report from the target client, receipt and update or first storage"
+      ],
+      "printed_pages": [
+        170
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.3.1, note 1 and opening paragraphs"
+      ],
+      "printed_pages": [
+        168
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.3.1, numbered steps 2 and 3"
+      ],
+      "printed_pages": [
+        169
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.3.1, numbered step 4"
+      ],
+      "printed_pages": [
+        169
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.3.4, note and pre-condition"
+      ],
+      "printed_pages": [
+        170
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.3.4, numbered steps 1 and 2"
+      ],
+      "printed_pages": [
+        171
+      ]
+    }
+  ],
+  "related": [
+    "r16-location-event-reporting-configuration",
+    "r16-location-user-subscription",
+    "r16-location-active-alias-trigger"
+  ],
+  "limitations": [
+    "不提供线上编码、注册方式或跨系统、跨版本程序；被核条款不是该规范或位置服务的完整覆盖。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
