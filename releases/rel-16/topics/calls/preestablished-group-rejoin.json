@@ -1,0 +1,696 @@
+{
+  "topic_id": "r16-calls-preestablished-group-rejoin",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "预建立组呼重入：REFER 已回 200，怎么查控制侧是否接纳？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "common_conditions": [
+    "3GPP TS 24.379 V16.14.0，Release 16，Stage 3；在网普通预安排组，使用已有预建立会话，主动重入不请求隐式话权。不含广播、紧急、危急或多系统逐跳过程。"
+  ],
+  "condition_rule": "各 claim 继承共同场景。按对应角色、收到的请求或响应另判；不能把满足全部前序检查当作错误分支的共同前提。",
+  "claims": [
+    {
+      "id": "pr-client-targets",
+      "title": "预建立预安排组重入的 REFER 用预建立身份寻址，Refer-To 说明待重入业务会话",
+      "conditions": [
+        "用户要求重入进行中的普通组呼，或客户端回覆盖触发；已知待重入业务会话身份。"
+      ],
+      "conclusion": "客户端生成对话外 REFER；Request-URI 为预建立会话身份 P。重入专条写 Refer-To 含待重入业务会话身份 S，SIP URI headers 内的 Content-Type 标明 body 为 application/vnd.3gpp.mcptt-info+xml，正文 mcpttinfo/mcptt-Params/session-type 为 prearranged。P、S 是不同职责。",
+      "normative_strength": "指定触发下生成、选址、特例的内容要求是 shall。按需对照分支则须发 initial INVITE。",
+      "limitations": [
+        "不是按需 INVITE 或在原对话内发请求；不据这些文字自造唯一的完整线上 Refer-To。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.0 and headings of 10.1 and 10.1.1: on-network prearranged group calls, scope only"
+          ],
+          "printed_pages": [
+            219,
+            220
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.4.2, trigger and the two Refer-To clarifications for rejoin"
+          ],
+          "printed_pages": [
+            229
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.2.1, out-of-dialog REFER and inherited client steps; prearranged entry identity"
+          ],
+          "printed_pages": [
+            228
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.2.1, steps 1–3: REFER target, cid and group entry including body parameters (via 10.1.1.2.2.1)"
+          ],
+          "printed_pages": [
+            273,
+            274
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.4.1, on-demand comparison only"
+          ],
+          "printed_pages": [
+            229
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "pr-mapped-target",
+      "title": "参与功能向控制侧发起重入 INVITE 时，用与客户侧业务身份对应的会话 URI",
+      "conditions": [
+        "发端 S-CSCF 处理 iFC 将 REFER 路由给 PF，Request-URI 是标识该 PF 上预建立会话 P 的公共服务身份，且 Refer-To 的 SIP URI headers 的 body 含指定 MCPTT MIME 类型、session-type=prearranged。PF 前序检查允许继续。"
+      ],
+      "conclusion": "与客户侧 S 对应的控制侧业务会话身份 T 填新 INVITE 的 Request-URI，取代通用初建步骤 16 的控制功能 PSI。不是从 P 推算 T，也不是照抄 G。",
+      "normative_strength": "符合此入站事件时，按通用流程并实施步骤 16 的明确更改，为 shall。",
+      "limitations": [
+        "同样的正文若 Request-URI 指向另一服务身份，不能推出应在本重入程序里发 INVITE；填了映射目标也不证 CF 已收到或原组呼仍在。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.0 and headings of 10.1 and 10.1.1: on-network prearranged group calls, scope only"
+          ],
+          "printed_pages": [
+            219,
+            220
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.1.2, definition of initial SIP REFER request for a pre-established session (originating S-CSCF initial filter criteria, PF and Request-URI)"
+          ],
+          "printed_pages": [
+            78
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.4.2, trigger and the two Refer-To clarifications for rejoin"
+          ],
+          "printed_pages": [
+            229
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.5.2, incoming Refer-To body and prearranged session-type; clarification of step 16"
+          ],
+          "printed_pages": [
+            239
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.2, steps 13–19 and provisional responses to the outgoing INVITE"
+          ],
+          "printed_pages": [
+            234,
+            235
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.5, MCPTT session identity, Contact allocation, mapping and optional client caching"
+          ],
+          "printed_pages": [
+            38,
+            39
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "pr-local-failure",
+      "title": "普通预建立组呼重入：PF 查到主叫无有效绑定或无法识别组控制方时，对 REFER 回 404",
+      "conditions": [
+        "发端 S-CSCF 处理 iFC 将 REFER 路由给 PF，Request-URI 是标识该 PF 上预建立会话 P 的公共服务身份，且 Refer-To 的 SIP URI headers 的 body 含指定 MCPTT MIME 类型、session-type=prearranged。执行通用程序，已查到相应的失败点。"
+      ],
+      "conclusion": "主叫公共身份没有有效 MCPTT ID 绑定（含到期）时，PF 对 REFER 回 404，Warning 文本开头是 MCPTT 码 141，停止；已取到组身份而无法识别其控制功能时也回 404，Warning 文本开头是 142，停止。",
+      "normative_strength": "所列两种条件成立时拒绝及停止为 shall；没有声称凡 REFER 均成功。",
+      "limitations": [
+        "141/142 不是 SIP Warning 头的首个警告码；即使首码是 399，也要查 warn-text 内的 MCPTT 码。两种本地拒绝都不是 CF 无法找到原组呼。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.1.2, definition of initial SIP REFER request for a pre-established session (originating S-CSCF initial filter criteria, PF and Request-URI)"
+          ],
+          "printed_pages": [
+            78
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.5.2, incoming Refer-To body and prearranged session-type; clarification of step 16"
+          ],
+          "printed_pages": [
+            239
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.2, opening incoming cid, group entry, body and Content-ID conditions; steps 2–3 and 9–10"
+          ],
+          "printed_pages": [
+            233,
+            234
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.4.1–4.4.2, SIP Warning code and Table 4.4.2-1 ABNF for the Warning text (interpretation of the REFER procedure’s explicit warning texts)"
+          ],
+          "printed_pages": [
+            33,
+            34
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.5.1, targeted rejoin admission, missing group call, permission, affiliation, capacity and successful response"
+          ],
+          "printed_pages": [
+            252,
+            253
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "pr-transactions",
+      "title": "普通预建立组呼重入：PF 的前序检查允许继续时，先答 REFER 200，再发控制侧 INVITE",
+      "conditions": [
+        "发端 S-CSCF 处理 iFC 将 REFER 路由给 PF，Request-URI 是标识该 PF 上预建立会话 P 的公共服务身份，且 Refer-To 的 SIP URI headers 的 body 含指定 MCPTT MIME 类型、session-type=prearranged。PF 前序处理允许继续；临时响应规则限 PF 实际收到这条新 INVITE 的临时响应。"
+      ],
+      "conclusion": "PF 先生成、发送 REFER 最终 200 给客户端，再生成、填写、转发新的 INVITE。单凭收到 REFER 200 不足以确认 INVITE 已发、已达、已准入。若 PF 收到该 INVITE 的临时响应，可以确认这次 INVITE 得到临时应答；PF 丢弃它，不向客户端转发。",
+      "normative_strength": "通过前序处理后的逐步操作及丢弃不转发为 shall。响应发送与接收的网络时间不能据此推算。",
+      "limitations": [
+        "客户端未见临时响应不等于 INVITE 未发；要以该 INVITE 的最终响应判断控制侧结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.1.2, definition of initial SIP REFER request for a pre-established session (originating S-CSCF initial filter criteria, PF and Request-URI)"
+          ],
+          "printed_pages": [
+            78
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.5.2, incoming Refer-To body and prearranged session-type; clarification of step 16"
+          ],
+          "printed_pages": [
+            239
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.2, opening incoming cid, group entry, body and Content-ID conditions; steps 2–3 and 9–10"
+          ],
+          "printed_pages": [
+            233,
+            234
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.2, steps 13–19 and provisional responses to the outgoing INVITE"
+          ],
+          "printed_pages": [
+            234,
+            235
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.2, 200 and 4xx/5xx/6xx responses to the INVITE in step 19"
+          ],
+          "printed_pages": [
+            236
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.5.1, targeted rejoin admission, missing group call, permission, affiliation, capacity and successful response"
+          ],
+          "printed_pages": [
+            252,
+            253
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "pr-cf-outcome",
+      "title": "预建立组呼重入的控制侧 INVITE：可先因拥塞回 500，查到原呼叫不存在才须回 404",
+      "conditions": [
+        "CF 实际收到指向目标会话的重入 INVITE；区分步骤 1 的资源/拥塞条件、继续执行步骤 2 的会话检查，以及后续成功路径；不预设各项通过。"
+      ],
+      "conclusion": "CF 若因资源不足不能处理，或有拥塞风险，可以在步骤 1 对该 INVITE 回 500，可附 Retry-After。只有继续到步骤 2 且查明原组呼不存在时，才须回 404。若媒体、所需服务标记、许可、归属、容量等条件允许，CF 生成带 SDP answer 的 200，完成规定的媒体面处理后发送。PF 对此 INVITE 的 200 或 4xx/5xx/6xx 另有处理。",
+      "normative_strength": "步骤 1 的拒绝 500、附 Retry-After 为 may；步骤 2 查明原呼叫不存在时回 404 为 shall；成功路径的响应和媒体处理为 shall。",
+      "limitations": [
+        "控制侧步骤 1 的 500 不能判定原组呼在或不在；INVITE 的 500、404 或 200 不改变 PF 对之前 REFER 的最终响应。成功只证控制侧接纳，不证终端获得话权或收到语音。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.5.2, incoming Refer-To body and prearranged session-type; clarification of step 16"
+          ],
+          "printed_pages": [
+            239
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.2, steps 13–19 and provisional responses to the outgoing INVITE"
+          ],
+          "printed_pages": [
+            234,
+            235
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.2, 200 and 4xx/5xx/6xx responses to the INVITE in step 19"
+          ],
+          "printed_pages": [
+            236
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.5.1, targeted rejoin admission, missing group call, permission, affiliation, capacity and successful response"
+          ],
+          "printed_pages": [
+            252,
+            253
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "pr-encoding",
+      "title": "普通预建立组呼重入：PF 专条点名改通用出站 INVITE 步骤 16 的请求目标，客户端另有 Refer-To 特例",
+      "conditions": [
+        "比较固定版客户端通用与重入专条，以及 PF 通用与重入专条。PF 重入分类条件：发端 S-CSCF 处理 iFC 将 REFER 路由给 PF，Request-URI 是标识该 PF 上预建立会话 P 的公共服务身份，且 Refer-To 的 SIP URI headers 的 body 含指定 MCPTT MIME 类型、session-type=prearranged。不从专条关于步骤 16 的说明推得其他步骤免检。"
+      ],
+      "conclusion": "通用 Refer-To 的 cid 指向资源清单；预安排组 entry 的 uri 是组 G。PF 通用开头要求 cid 指向组 entry、该 URI 的 body 含预安排组信息、Content-ID 与 cid 对应。步骤 9–10 取 G 识别控制方，17 将 G 填 mcptt-request-uri。重入客户端专条却直接写 Refer-To 含 S 及规定 body；PF 对已分类的预建立 REFER 再看其 body 与 prearranged 类型，调用通用程序，明确把步骤 16 的 Request-URI 换为映射业务身份 T。",
+      "normative_strength": "保留所引程序与明示特例的各自措辞；不能把出站步骤 16 的修改推广到步骤 17。",
+      "limitations": [
+        "不据这组回指宣称免检组身份，不将普通 cid+组 entry 自动认定为重入，也不拼唯一可发送的封装。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.0 and headings of 10.1 and 10.1.1: on-network prearranged group calls, scope only"
+          ],
+          "printed_pages": [
+            219,
+            220
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.1.2, definition of initial SIP REFER request for a pre-established session (originating S-CSCF initial filter criteria, PF and Request-URI)"
+          ],
+          "printed_pages": [
+            78
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.4.2, trigger and the two Refer-To clarifications for rejoin"
+          ],
+          "printed_pages": [
+            229
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.2.1, out-of-dialog REFER and inherited client steps; prearranged entry identity"
+          ],
+          "printed_pages": [
+            228
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.2.1, steps 1–3: REFER target, cid and group entry including body parameters (via 10.1.1.2.2.1)"
+          ],
+          "printed_pages": [
+            273,
+            274
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.5.2, incoming Refer-To body and prearranged session-type; clarification of step 16"
+          ],
+          "printed_pages": [
+            239
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.2, opening incoming cid, group entry, body and Content-ID conditions; steps 2–3 and 9–10"
+          ],
+          "printed_pages": [
+            233,
+            234
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.2, steps 13–19 and provisional responses to the outgoing INVITE"
+          ],
+          "printed_pages": [
+            234,
+            235
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "pr-contact-boundary",
+      "title": "旧 Contact 属于预建立会话、客户端侧组呼还是控制侧组呼，取决于哪笔建会及记录方向",
+      "conditions": [
+        "收到一份或多份旧建会响应；在此直接 CF/PF 链上，要先区分容器建会和业务建会，再核对采集的功能和方向。"
+      ],
+      "conclusion": "PF 对建立预建立会话的 INVITE 发给客户端的 200，Contact 是 PF 分配的 P；业务组呼建立时，CF→PF 的最终响应 Contact 给 T，PF→客户端的业务 Contact 给 S。业务会话身份是服务器分配的 GRUU；PF 保持业务 S→T 的映射。客户端可以缓存自身收到的业务身份 S。没有消息上下文的同名字段不能在 P、S、T 中选一个。",
+      "normative_strength": "§8.2.2 规定成功预建立时的分配及 Contact，§4.5 规定业务身份和参与功能映射；客户端业务身份缓存为 can，并无缓存今天仍可用的保证。",
+      "limitations": [
+        "P 已建不证原组呼仍在或今天获准；需查此次 CF 对匹配 INVITE 的最终响应。要核现场 ACK，还需相应 INVITE、最终响应和对话/路由信息；不能从旧 Contact 或 REFER 200 还原实际 ACK、Route、代理下一跳、NAT 可达性或话权。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.0 and headings of 10.1 and 10.1.1: on-network prearranged group calls, scope only"
+          ],
+          "printed_pages": [
+            219,
+            220
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "8.2.2, participating function steps 8, 9a and 11, Contact in successful pre-established-session setup response (comparison only)"
+          ],
+          "printed_pages": [
+            163
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.5, MCPTT session identity, Contact allocation, mapping and optional client caching"
+          ],
+          "printed_pages": [
+            38,
+            39
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.1.2, definition of initial SIP REFER request for a pre-established session (originating S-CSCF initial filter criteria, PF and Request-URI)"
+          ],
+          "printed_pages": [
+            78
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.4.2, trigger and the two Refer-To clarifications for rejoin"
+          ],
+          "printed_pages": [
+            229
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.5.2, incoming Refer-To body and prearranged session-type; clarification of step 16"
+          ],
+          "printed_pages": [
+            239
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.2, steps 13–19 and provisional responses to the outgoing INVITE"
+          ],
+          "printed_pages": [
+            234,
+            235
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.5.1, targeted rejoin admission, missing group call, permission, affiliation, capacity and successful response"
+          ],
+          "printed_pages": [
+            252,
+            253
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.2.4.2, trigger and the two Refer-To clarifications for rejoin"
+      ],
+      "printed_pages": [
+        229
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.2.4.1, on-demand comparison only"
+      ],
+      "printed_pages": [
+        229
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.2.2.1, out-of-dialog REFER and inherited client steps; prearranged entry identity"
+      ],
+      "printed_pages": [
+        228
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.2.1, steps 1–3: REFER target, cid and group entry including body parameters (via 10.1.1.2.2.1)"
+      ],
+      "printed_pages": [
+        273,
+        274
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "4.5, MCPTT session identity, Contact allocation, mapping and optional client caching"
+      ],
+      "printed_pages": [
+        38,
+        39
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.3.5.2, incoming Refer-To body and prearranged session-type; clarification of step 16"
+      ],
+      "printed_pages": [
+        239
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.3.1.2, opening incoming cid, group entry, body and Content-ID conditions; steps 2–3 and 9–10"
+      ],
+      "printed_pages": [
+        233,
+        234
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.3.1.2, steps 13–19 and provisional responses to the outgoing INVITE"
+      ],
+      "printed_pages": [
+        234,
+        235
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.3.1.2, 200 and 4xx/5xx/6xx responses to the INVITE in step 19"
+      ],
+      "printed_pages": [
+        236
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.4.5.1, targeted rejoin admission, missing group call, permission, affiliation, capacity and successful response"
+      ],
+      "printed_pages": [
+        252,
+        253
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.0 and headings of 10.1 and 10.1.1: on-network prearranged group calls, scope only"
+      ],
+      "printed_pages": [
+        219,
+        220
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.1.2, definition of initial SIP REFER request for a pre-established session (originating S-CSCF initial filter criteria, PF and Request-URI)"
+      ],
+      "printed_pages": [
+        78
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "4.4.1–4.4.2, SIP Warning code and Table 4.4.2-1 ABNF for the Warning text (interpretation of the REFER procedure’s explicit warning texts)"
+      ],
+      "printed_pages": [
+        33,
+        34
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "8.2.2, participating function steps 8, 9a and 11, Contact in successful pre-established-session setup response (comparison only)"
+      ],
+      "printed_pages": [
+        163
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcptt-rejoin-late-entry",
+    "r16-mcptt-preestablished-session-lifecycle"
+  ],
+  "limitations": [
+    "未用通用 cid/entry 与重入专条拼可发送报文或宣布组身份免检。",
+    "不据此推演其他 Release、实际 ACK/Route、代理选路、缓存有效性、NAT 或终端已听到语音。",
+    "本题限两笔业务事务、明确的身份关系与准入证据，不代替全部 IMS、SIP 及话权/媒体过程。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

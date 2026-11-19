@@ -322,6 +322,16 @@ MCPTT 组呼以单播承载建立时，服务器可以经 MBMS 告知组内有�
 
 [读取主题](topics/calls/area-alert-notification.md)
 
+## 预建立组呼重入：REFER 已回 200，怎么查控制侧是否接纳？
+
+普通预建立组重入：发端 S-CSCF 经 iFC 把 REFER 路由给 PF，请求目标是标识该 PF 上预建立会话的 PSI；重入 Refer-To 描述待重入业务身份及指定类型。前序通过后 PF 先答 REFER 200，再发以对应控制侧业务身份为目标的 INVITE。
+
+普通预建立组重入：PF 查到无有效主叫绑定或不能识别组控制方时，对 REFER 回 404；Warning 文本开头的 MCPTT 码分别为 141、142，不是该头首码。CF 收到新的重入 INVITE 时可因资源不足无法处理或拥塞风险先回 500；若继续到目标会话检查，查明原组呼不存在才须回 404。
+
+尚未建立：预建立组呼重入的 REFER 200 不是控制侧接纳；裸旧 Contact 需先核建会种类及采集方向才能辨认 P、S、T。旧值不能推出今天的 ACK/Route 或话权；同一正文若未满足预建立 REFER 的路由和寻址条件，不得据此套用重入程序。
+
+[读取主题](topics/calls/preestablished-group-rejoin.md)
+
 
 
 ## 普通私聊SDS控制面：发送资格、请求与接收证据
