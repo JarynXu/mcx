@@ -7,7 +7,7 @@
 ## 按问题查
 
 - [MCPTT 呼叫与设置、MCVideo/MCData 区域紧急告警](topics-calls.json)：[普通私呼的服务器怎样检查准入](topics/calls/private-server-admission-routing.md)？紧急呼叫、重入、预建立会话与服务设置分别由谁处理？ [离开预设区域后，谁决定取消 MCVideo 或 MCData 告警](topics/calls/emergency-alert-area-entry-exit.md)？
-- [MCPTT 话权](topics-media.json)：在网由谁授予或撤销话权？[离网参与者](topics/calls/offnetwork-floor-participant.md)怎样请求、排队或交接？
+- [MCPTT 话权与跨系统组呼媒体](topics-media.json)：在网由谁授予或撤销话权？[离网参与者](topics/calls/offnetwork-floor-participant.md)怎样请求、排队或交接？ 跨系统组呼由伙伴复制媒体时，[宿主向伙伴发几条流，谁复制给组员](topics/media/partner-group-media-replication.md)？
 - [组归属与组动态数据](topics-groups.json)：[协商式归属请求送达](topics/groups/negotiated-affiliation-client.md)是否等于用户同意？怎样观察本客户端的归属或订阅组动态数据？
 - [MCData](topics-mcdata.json)：私聊 SDS 走哪条信令或媒体路径？HTTP 文件分发中，[服务器受理](topics/mcdata/http-fd-server.md)和[客户端下载](topics/mcdata/http-fd-client.md)有何区别？离网消息怎样封装？
 - [MCVideo](topics-mcvideo.json)：谁能发起视频呼叫，发送和接收许可如何区分？[组呼下行怎样选择组播或单播](topics/mcvideo/mbms-group-downlink.md)？
