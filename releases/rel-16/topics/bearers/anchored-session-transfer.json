@@ -1,0 +1,406 @@
+{
+  "topic_id": "r16-bearers-anchored-session-transfer",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCPTT 通话改经另一台终端接入网络：原会话何时算转完？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "TS 23.280 V16.7.0，Rel-16 Stage 2；远端终端经另一台 UE 接入网络使用 MC 业务。"
+  ],
+  "condition_rule": "各声明只在本条条件下成立。是否离开 MBMS 覆盖、是否采用资料性 B.1、会话是否已经锚定不是所有中继场景的共同前提。",
+  "claims": [
+    {
+      "id": "network-service",
+      "title": "远端终端失去蜂窝覆盖、借另一台终端接入 MC 网络时，中继职能转送 IP，业务用户仍是远端用户",
+      "conditions": [
+        "远端甲失去蜂窝覆盖、需通过 ProSe UE-to-network relay 使用 MC 业务。"
+      ],
+      "conclusion": "R 作为中继提供三层 IP 路由；甲仍使用与在网 UE 相同的应用层 MC 业务信令。甲至 R 的 PC5 链路不把网络中的业务改成离网直通组呼。",
+      "normative_strength": "正文 §10.5.2 说明该情形的职能；附录 B.1 画出甲经 PC5 连 R。",
+      "limitations": [
+        "不能用 IP 转发证明 R 以业务用户身份代甲参呼；这里说的是中继职能，不是对 R 整台设备的限制。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.5.2, UE-to-network relay MC service"
+          ],
+          "printed_pages": [
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "B.1, informative annex, figure B.1-1 and explanation"
+          ],
+          "printed_pages": [
+            219
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "session-identity",
+      "title": "资料性 B.1 的 MCPTT 锚定会话：新接入注册和请求转移原会话是两步，SCC AS 靠 STI 找会话",
+      "conditions": [
+        "甲直连时已与 MCPTT AS 建立 SIP 会话，会话已锚定于 SCC AS、已有 STI；旧直连将失或已失。"
+      ],
+      "conclusion": "甲先连接 R，经新接入向 SIP 核心注册，再从新路径向 SCC AS 发带会话转移标识 STI 的 INVITE。SCC AS 靠 STI 找到该会话，更新朝 MCPTT AS 的一侧；切换前后锚点不变。",
+      "normative_strength": "B.1 图示的一种连续性办法，不是所有 MC 业务中继的强制信令流程。",
+      "limitations": [
+        "单凭新接入注册成功，不能记为另起通话或原会话转移完成；看到转移请求也不能代替对后续更新的确认。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "B.1, informative annex, figure B.1-1 and explanation"
+          ],
+          "printed_pages": [
+            219
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "B.1, figure B.1-2, step 0, existing anchored session and STI"
+          ],
+          "printed_pages": [
+            220
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "B.1, figure B.1-2, steps 1–3 and note 1"
+          ],
+          "printed_pages": [
+            220
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "B.1, figure B.1-2, step 4, STI and update towards MCPTT AS"
+          ],
+          "printed_pages": [
+            220
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "B.1, figure B.1-2, step 5, all media streams and old access"
+          ],
+          "printed_pages": [
+            221
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "all-streams",
+      "title": "资料性 B.1 的 MCPTT 锚定会话：所有媒体流均转到经中继的新接入才完成，旧直连仍在时可在此后注销",
+      "conditions": [
+        "判断 B.1 示例中已锚定会话由直连转至经 R 接入的进度。"
+      ],
+      "conclusion": "完成点是原会话的所有媒体流均已转到经 R 的接入路径。若原会话有两路而只证实转了一路，还不能确认全部完成。已经全部转完、旧直连也还在，甲此时可以注销旧接入；未注销不使转移退回进行中。",
+      "normative_strength": "资料性 B.1 步骤 5 在本例中明确完成点；仍有旧直连时仅说可以注销。",
+      "limitations": [
+        "只知一路不等于另一路确定失败。先失去直连才开始连接 R 的情形可能出现可感知中断。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "B.1, informative annex, figure B.1-1 and explanation"
+          ],
+          "printed_pages": [
+            219
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "B.1, figure B.1-2, step 0, existing anchored session and STI"
+          ],
+          "printed_pages": [
+            220
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "B.1, figure B.1-2, steps 1–3 and note 1"
+          ],
+          "printed_pages": [
+            220
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "B.1, figure B.1-2, step 5, all media streams and old access"
+          ],
+          "printed_pages": [
+            221
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "edge-eligibility",
+      "title": "离开 MBMS 覆盖的中继专例：可用单播不同于正在用单播，需结合小区重选条件和 MBMS 质量判断",
+      "conditions": [
+        "甲从良好 MBMS 接收区向区外移动，没有在用单播承载，也没找到信号质量足以触发正常重选的目标小区。"
+      ],
+      "conclusion": "在仍有单播覆盖的区段就可考虑经 R 接入。客户端估计 MBMS 质量并测邻区参考信号，MBMS 质量达相应门限时才进行发现并连接 R。若已经在用单播承载，不满足这套 MBMS 程序的前提。",
+      "normative_strength": "§10.7.3.7.3 的情形、适用前提与步骤 1–2；不是所有 UE 一遇弱覆盖就必须换中继。",
+      "limitations": [
+        "单播覆盖图不能证明 UE 正在使用单播，也不能证明发现、接入或媒体转移已经发生。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.3, MBMS coverage edge and relay discovery scenario"
+          ],
+          "printed_pages": [
+            133
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.3, figure 10.7.3.7.3-1 and precondition"
+          ],
+          "printed_pages": [
+            134
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.3, figure 10.7.3.7.3-2, steps 1–3"
+          ],
+          "printed_pages": [
+            134
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "after-continuity",
+      "title": "MBMS 中继程序可以采用资料性 B.1；如采用，目标侧以单播完成转移，若目标侧分发组播内容则在完成后转组播",
+      "conditions": [
+        "图区分 MBMS 中继程序中的连续性步骤与接下来的媒体分发；目标侧的单播完成规则只讨论采用 B.1 的情形。"
+      ],
+      "conclusion": "§10.7.3.7.3 步骤 3 可以按附录 B 办理。B.1 注 3 以目标侧单播完成；若目标侧正在组播分发 MCPTT 内容，之后才改组播。正文步骤 4–5 中，客户端告知 R 接收 MBMS 媒体所需的信息，R 用 ProSe 一对多直连转发从 MBMS 收到的媒体。",
+      "normative_strength": "正文步骤 3 的 may 与资料性 B.1 注 3 在该例中的 always 适用范围不同；步骤 4–5 描述本 MBMS 专例。",
+      "limitations": [
+        "不能据此要求所有中继接入都必须部署 SCC AS/STI 或以一种承载交付；中继链路建成不确认甲收到了媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.3, figure 10.7.3.7.3-1 and precondition"
+          ],
+          "printed_pages": [
+            134
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.3, figure 10.7.3.7.3-2, steps 1–3"
+          ],
+          "printed_pages": [
+            134
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.3, steps 4–5 after service continuity"
+          ],
+          "printed_pages": [
+            135
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "B.1, informative annex, figure B.1-1 and explanation"
+          ],
+          "printed_pages": [
+            219
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "B.1, figure B.1-2, step 5, all media streams and old access"
+          ],
+          "printed_pages": [
+            221
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "B.1, note 3, target-side delivery at and after completion"
+          ],
+          "printed_pages": [
+            221
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-bearers-mbms-edge-to-unicast",
+    "r16-bearers-mbms-overlapping-mbsfn-continuity",
+    "r16-calls-preestablished-group-rejoin",
+    "r16-calls-offnetwork-group-client"
+  ],
+  "limitations": [
+    "正文 §10.5.2 的中继职能、§10.7.3.7.3 的 MBMS 覆盖边缘程序、资料性 B.1 的 MCPTT 会话转移示例各有适用条件。",
+    "B.1 不是其他接入或业务必须照用的过程，也不规定一次实际通话是否听见中断；这里不据 Stage 2 示例构造组呼重入报文。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.5.2, UE-to-network relay MC service"
+      ],
+      "printed_pages": [
+        114
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.7.3, MBMS coverage edge and relay discovery scenario"
+      ],
+      "printed_pages": [
+        133
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.7.3, figure 10.7.3.7.3-1 and precondition"
+      ],
+      "printed_pages": [
+        134
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.7.3, figure 10.7.3.7.3-2, steps 1–3"
+      ],
+      "printed_pages": [
+        134
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.7.3, steps 4–5 after service continuity"
+      ],
+      "printed_pages": [
+        135
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "B.1, informative annex, figure B.1-1 and explanation"
+      ],
+      "printed_pages": [
+        219
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "B.1, figure B.1-2, step 0, existing anchored session and STI"
+      ],
+      "printed_pages": [
+        220
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "B.1, figure B.1-2, steps 1–3 and note 1"
+      ],
+      "printed_pages": [
+        220
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "B.1, figure B.1-2, step 4, STI and update towards MCPTT AS"
+      ],
+      "printed_pages": [
+        220
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "B.1, figure B.1-2, step 5, all media streams and old access"
+      ],
+      "printed_pages": [
+        221
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "B.1, note 3, target-side delivery at and after completion"
+      ],
+      "printed_pages": [
+        221
+      ]
+    }
+  ]
+}
