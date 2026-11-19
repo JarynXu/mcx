@@ -1,0 +1,447 @@
+{
+  "topic_id": "r16-media-offnetwork-receiver-playback",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "离网 MCPTT 组呼：收到授给乙的消息，接收端何时应请求播放乙的语音？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "common_conditions": [
+    "3GPP TS 24.380 V16.9.0，Release 16 Stage 3；本端是已加入普通离网单话权 MCPTT 组呼的终接成员，未按 PTT、未排队。各事件均按该端观察。"
+  ],
+  "condition_rule": "各条继承共同情形，另按实际本地状态和已保存的 SSRC、收到的消息或到期的计时器分别判断。",
+  "claims": [
+    {
+      "id": "receiver-start",
+      "title": "普通离网 MCPTT 组呼的终接成员启动本机话权时进入 O: silence，不是取得发送许可",
+      "conditions": [
+        "本机作为终接成员启动话权，尚未请求发送。"
+      ],
+      "conclusion": "普通离网 MCPTT 组呼以终接成员身份启动话权时，本机创建话权参与实例，启动 T230，进 O: silence。此状态下本机未请求话权、未在收 RTP。后续收到的控制消息与 RTP 按本机到达顺序处理。",
+      "normative_strength": "创建实例、启动 T230 和进入静默是 shall；到达顺序是本状态机输入规则。",
+      "limitations": [
+        "组呼已加入不证明收过语音。发起端、私呼和广播终接的初始化不是本题。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.1, terminating group-call initialization and later join only"
+          ],
+          "printed_pages": [
+            120
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.2.3, steps 1–3"
+          ],
+          "printed_pages": [
+            123
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.3.1, local silent state"
+          ],
+          "printed_pages": [
+            125
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.1, input arrival order"
+          ],
+          "printed_pages": [
+            121
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "receiver-quiet-input",
+      "title": "普通离网 MCPTT 组呼接收端在 O: silence：匹配程序的 RTP 触发播放请求，给别人的 Floor Granted 或 Floor Taken 不证明收到媒体",
+      "conditions": [
+        "在 O: silence。RTP 分未保存当前及包源匹配当前；另一入口为 Granted 的 User ID 非己；再一入口为收到 Taken。"
+      ],
+      "conclusion": "普通离网 MCPTT 组呼接收端在 O: silence 收到 RTP：无已存当前时，把包源 SSRC 记为当前；已有当前且包源与之相符，则沿用当前。这两支都停 T230，启动或重启 T203，请求开始播放所收 RTP。在同一静默状态，若收到 Floor Granted 且 User ID 非本机，记被授者 SSRC 为候选；若收到 Floor Taken，取其中被授方的 SSRC 字段记为当前。这两个控制消息分支均停 T230、启动 T203，不要求播放。上述分支均进入 O: has no permission。",
+      "normative_strength": "规定的记录、计时、状态与 RTP 播放请求为 shall。在无当前收到 RTP、授给他人的 Granted、Taken 三个入口，占用提示为 may；不向已有匹配当前的 RTP 分支补提示。",
+      "limitations": [
+        "静默收到授给别人的 Granted 不以发送者先匹配已有当前为前提；T203 启动、界面提示或话权消息均不证明收到语音。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.3.1, local silent state"
+          ],
+          "printed_pages": [
+            125
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.3.3, no current and matching current RTP branches"
+          ],
+          "printed_pages": [
+            125
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.3.4, Floor Granted with nonmatching User ID, ordinary group branch"
+          ],
+          "printed_pages": [
+            125,
+            126
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.3.6, steps 1–5"
+          ],
+          "printed_pages": [
+            126
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.4.1, local sending permission"
+          ],
+          "printed_pages": [
+            126
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "receiver-grant-current",
+      "title": "普通离网 MCPTT 组呼在 O: has no permission：收到所存当前仲裁者授给别人的 Floor Granted，须请求停播，把被授者记为候选",
+      "conditions": [
+        "O: has no permission；消息 User ID 不是本机 MCPTT ID，且发送者 SSRC 等于所存当前甲。甲授给乙。"
+      ],
+      "conclusion": "普通离网 MCPTT 组呼接收端在 O: has no permission 收到 Floor Granted，发送者 SSRC 与所存当前甲匹配，User ID 指乙而非本机：话权参与者须请求客户端停播、重启 T203，把被授者乙的 SSRC 记为候选。仍记甲为当前，保持 O: has no permission。",
+      "normative_strength": "停播请求、重启 T203、写候选及保持状态是 shall；普通组呼占用提示是 may。",
+      "limitations": [
+        "只知被授者不能证实发送者匹配。单见该控制消息既不证明乙的 RTP 到达，更不证明播放或听见。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.4.5, received Floor Granted to other from stored current, ordinary group branch"
+          ],
+          "printed_pages": [
+            127,
+            128
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.4.1, local sending permission"
+          ],
+          "printed_pages": [
+            126
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "receiver-first-media",
+      "title": "普通离网 MCPTT 组呼在 O: has no permission 收到 RTP：无当前、或包源匹配当前或候选时，须请求播放所收包并清现有候选",
+      "conditions": [
+        "O: has no permission。先判断无已存当前；已有当前时先比包源和当前，再比候选。比较甲先到和乙先到的独立记录时，两份记录初始均为当前甲、候选乙。"
+      ],
+      "conclusion": "普通离网 MCPTT 组呼接收端在 O: has no permission 收到 RTP：若未存当前，取包源为当前，不要求匹配候选；否则先比当前，匹配则保留当前；否则再比候选，匹配则把包源改记为当前。三个分支都请求客户端播放该包，清除存在的候选，重启 T203，保持 O: has no permission。作对照：在 O: silence 无当前而收到 RTP 时，按静默收包程序记包源为当前；静默分支未要求清候选。",
+      "normative_strength": "列明的匹配分支中，播放请求、记录更新、计时和保持状态为 shall。",
+      "limitations": [
+        "甲包已经清乙后，在无其他事件时原授予不再给乙提供候选匹配。请求播放不证明播放器完成动作，更不证明可闻。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.1, input arrival order"
+          ],
+          "printed_pages": [
+            121
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.4.6, all three RTP receive branches"
+          ],
+          "printed_pages": [
+            128
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.4.1, local sending permission"
+          ],
+          "printed_pages": [
+            126
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.3.3, no current and matching current RTP branches"
+          ],
+          "printed_pages": [
+            125
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "receiver-release",
+      "title": "普通离网 MCPTT 组呼在 O: has no permission 收到 Floor Release，消息 SSRC 匹配所存当前或候选：须请求客户端停播并清两项记录",
+      "conditions": [
+        "O: has no permission；收到 Floor Release，消息 SSRC 匹配所存当前或候选之一。"
+      ],
+      "conclusion": "普通离网 MCPTT 组呼接收端在 O: has no permission 收到 Floor Release，其 SSRC 匹配所存当前或候选之一，话权参与者须请求客户端停播、停止 T203、启动 T230、清候选和当前 SSRC，转 O: silence。候选匹配不要求事先收过它的 RTP。",
+      "normative_strength": "所列请求、计时、清理与状态动作为 shall；空闲提示为 may。",
+      "limitations": [
+        "其他 SSRC 的 Release 不能按这条判定已转静默；请求停播不等于组呼结束。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.4.3, Release matches current or candidate"
+          ],
+          "printed_pages": [
+            127
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "receiver-timers",
+      "title": "普通离网 MCPTT 组呼：O: has no permission 中 T203 到期须转静默；O: silence 中 T230 到期须终止本地话权实例，到期日志不是终止回执",
+      "conditions": [
+        "两个独立事件分别限普通离网 MCPTT 组呼本机在 O: has no permission 的 T203 到期，以及在 O: silence 的 T230 到期。"
+      ],
+      "conclusion": "普通离网 MCPTT 组呼接收端处于 O: has no permission 时，若 T203 到期，话权参与者须请求客户端停播、启 T230、清当前并转 O: silence，本步未要求清候选。在 O: silence 中若 T230 到期，参与者须通知呼叫控制、终止本地话权参与实例并回 Start-stop。只有本次到期日志，不能认定这三项已执行。同一实例对应的终止完成记录可确认本地终止；转入 Start-stop 的记录可确认该后态，不能相互替代。即使本地因 T230 结束话权会话，呼叫会话也只是可能终止。",
+      "normative_strength": "T203 分支的停播请求、启动 T230、清当前及转入静默为 shall，空闲提示为 may。静默中 T230 到期后的通知、终止实例、进入 Start-stop 均为 shall（程序义务，不是执行记录）；由此导致呼叫会话终止仅为 may。",
+      "limitations": [
+        "未要求清候选不等于候选一定保留；T203 到期不等于实例已销毁。仅有 O: silence 中的 T230 到期记录，不证已通知、已终止或已进入 Start-stop。应以本次事件、同一实例分别核终止、后态与通知；本地处理完成也不证明整通呼叫或全组结束。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.4.4, expiry in has-no-permission state"
+          ],
+          "printed_pages": [
+            127
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.3.7, expiry while silent"
+          ],
+          "printed_pages": [
+            126
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.2, floor termination and possible call termination after T230"
+          ],
+          "printed_pages": [
+            121
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "7.2.1, terminating group-call initialization and later join only"
+      ],
+      "printed_pages": [
+        120
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "7.2.3.2.3, steps 1–3"
+      ],
+      "printed_pages": [
+        123
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "7.2.3.1, input arrival order"
+      ],
+      "printed_pages": [
+        121
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "7.2.3.3.1, local silent state"
+      ],
+      "printed_pages": [
+        125
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "7.2.3.3.3, no current and matching current RTP branches"
+      ],
+      "printed_pages": [
+        125
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "7.2.3.3.4, Floor Granted with nonmatching User ID, ordinary group branch"
+      ],
+      "printed_pages": [
+        125,
+        126
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "7.2.3.3.6, steps 1–5"
+      ],
+      "printed_pages": [
+        126
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "7.2.3.4.1, local sending permission"
+      ],
+      "printed_pages": [
+        126
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "7.2.3.4.5, received Floor Granted to other from stored current, ordinary group branch"
+      ],
+      "printed_pages": [
+        127,
+        128
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "7.2.3.4.6, all three RTP receive branches"
+      ],
+      "printed_pages": [
+        128
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "7.2.3.4.3, Release matches current or candidate"
+      ],
+      "printed_pages": [
+        127
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "7.2.3.4.4, expiry in has-no-permission state"
+      ],
+      "printed_pages": [
+        127
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "7.2.3.3.7, expiry while silent"
+      ],
+      "printed_pages": [
+        126
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "7.2.2, floor termination and possible call termination after T230"
+      ],
+      "printed_pages": [
+        121
+      ]
+    }
+  ],
+  "related": [
+    "r16-calls-offnetwork-group-client",
+    "r16-calls-offnetwork-floor-participant",
+    "r16-mcptt-onnetwork-floor-media-timeouts"
+  ],
+  "limitations": [
+    "限普通离网单话权组呼中未按 PTT、未排队的已入呼接收者；不覆盖广播、紧急、私呼、多发言人或在网服务器。",
+    "只判定本地话权程序规定的动作，不认证媒体、推定播放器已执行、用户听见或全组通话状态。",
+    "不推导 SSRC 分配、计时器实际配置、源认证或音频设备行为。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
