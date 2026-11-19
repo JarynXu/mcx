@@ -1,0 +1,529 @@
+{
+  "topic_id": "r16-identity-csc-http-proxy",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "终端做身份认证、联系密钥管理服务，都要经过 MC 的 HTTP 代理吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "Rel-16 在网 MC 系统，3GPP TS 23.280 V16.7.0（Stage 2）。在功能模型中判断公共 HTTP 代理及参考点的职责。"
+  ],
+  "condition_rule": "先分 IdM 与密钥管理端点；后者须再分一般接口描述和向客户端传送安全相关信息的要求。涉及代理 TLS、跨网与实例数量时，仅应用该分支的条件。",
+  "claims": [
+    {
+      "id": "identity-no-proxy",
+      "title": "身份管理客户端与身份管理服务器之间的 CSC-1 是直接 HTTP 接口，不使用 MC 的 HTTP 代理",
+      "conditions": [
+        "Rel-16 在网 MC 系统，3GPP TS 23.280 V16.7.0（Stage 2）。在功能模型中判断公共 HTTP 代理及参考点的职责。",
+        "两端是 UE 内 IdM 客户端和 IdM 服务器。"
+      ],
+      "conclusion": "CSC-1 供 MC 业务客户端认证公共服务核心，随后供核心代表应用面内的应用认证用户。该接口不用本节的 HTTP 代理。",
+      "normative_strength": "is not used、is a direct HTTP interface 是该功能和接口的定义。",
+      "limitations": [
+        "没有排除 IP 路由器或其他物理中间设备；没有指定链路无保护，不证明用户已通过认证。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.3.1, on-network functional model heading"
+          ],
+          "printed_pages": [
+            27
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.3.2, paragraph 3 (CSC-1 excludes this HTTP proxy)"
+          ],
+          "printed_pages": [
+            37
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.2.2, CSC-1 endpoints and authentication purpose"
+          ],
+          "printed_pages": [
+            38
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "key-interface-and-downlink",
+      "title": "CSC-8：接口描述列经代理或直接 HTTP；向密钥管理客户端传送、路由安全相关信息须用 HTTP-1 和 HTTP-2",
+      "conditions": [
+        "Rel-16 在网 MC 系统，3GPP TS 23.280 V16.7.0（Stage 2）。在功能模型中判断公共 HTTP 代理及参考点的职责。",
+        "两端是密钥管理服务器和 UE 内密钥管理客户端；区分一般接口说明与送到客户端的安全相关信息。"
+      ],
+      "conclusion": "§7.4.3.3.2 描述 CSC-8 可经 HTTP 代理或直接 HTTP；此处是本版引述 [25]。§7.5.2.8 说明服务器借此向客户端提供安全相关信息，对这类信息到客户端的传送和路由规定必须使用 HTTP-1 和 HTTP-2。问具体下行直连能否签合规时，两段都需核对，不能仅凭一般直连选项签认。",
+      "normative_strength": "印 37 用 either/or；印 39 为 shall，两个参考点是 and。",
+      "limitations": [
+        "不要求两种方式同时用或都部署，不指定默认选项。不把印 39 限成仅选代理时适用，不从印 39 删除印 37 的选择，也不另造场景替直连分配用途。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.3.1, on-network functional model heading"
+          ],
+          "printed_pages": [
+            27
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.3.2, paragraph 4 (CSC-8: proxy or direct HTTP)"
+          ],
+          "printed_pages": [
+            37
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.2.8, first paragraph (CSC-8 purpose and recipient)"
+          ],
+          "printed_pages": [
+            39
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.2.8, second paragraph and external specification reference"
+          ],
+          "printed_pages": [
+            39
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.3.5, HTTP-1 client and proxy; protection wording"
+          ],
+          "printed_pages": [
+            42
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.3.6, HTTP-2 proxy and server; protection wording"
+          ],
+          "printed_pages": [
+            43
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "figure-omits-proxy",
+      "title": "图 7.3.1-3 为简洁省略 HTTP 代理，CSC-8 旁的线不能当作本次直连记录",
+      "conditions": [
+        "Rel-16 在网 MC 系统，3GPP TS 23.280 V16.7.0（Stage 2）。在功能模型中判断公共 HTTP 代理及参考点的职责。",
+        "阅读在网图 7.3.1-3 的 CSC-8 行和注 2，不将功能图当作站点记录。"
+      ],
+      "conclusion": "在密钥管理服务器到客户端的 CSC-8 旁标了 HTTP-1、HTTP-2；注 2 说明图未画出互连 HTTP-1、HTTP-2、HTTP-3 的代理。因此，看不见方框不能证明本次直连，也不能改写两处 CSC-8 正文。",
+      "normative_strength": "图的标注及省略说明；不是用来证明传输事实的规范消息流程。",
+      "limitations": [
+        "注 2 说到 HTTP-3，并非给图中 CSC-8 行另加 HTTP-3。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.3.1, on-network functional model heading"
+          ],
+          "printed_pages": [
+            27
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.3.1, figure 7.3.1-3 (CSC-8 row) and note 2"
+          ],
+          "printed_pages": [
+            30
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.3.2, paragraph 4 (CSC-8: proxy or direct HTTP)"
+          ],
+          "printed_pages": [
+            37
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.2.8, second paragraph and external specification reference"
+          ],
+          "printed_pages": [
+            39
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "proxy-session-and-reference-points",
+      "title": "MC 终端客户端与代理的 HTTP-1 TLS 会话止在代理，可服务多个代理可达的后台",
+      "conditions": [
+        "Rel-16 在网 MC 系统，3GPP TS 23.280 V16.7.0（Stage 2）。在功能模型中判断公共 HTTP 代理及参考点的职责。",
+        "讨论的是 MC 业务终端 HTTP 客户端到 HTTP 代理的 TLS 会话；若有多个后台，须是该代理可达的 HTTP 服务器。"
+      ],
+      "conclusion": "HTTP-1 连客户端与代理，HTTP-2 连代理与服务器。代理在 HTTP-1 上终止这条 TLS 会话，允许客户端用一条会话与多个可达的 HTTP 服务器交易。两段的编号表示参考点，不是 HTTP 版本。",
+      "normative_strength": "实体说明是 terminates 与 allowing；参考点定义用 may 描述传输保护。",
+      "limitations": [
+        "不能推出终端至各后台端到端 TLS、本次已复用、所有 HTTP 一律要 TLS 或代理后必为明文。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.3.1, on-network functional model heading"
+          ],
+          "printed_pages": [
+            27
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.3.2, paragraph 1 (proxy function and TLS session on HTTP-1)"
+          ],
+          "printed_pages": [
+            37
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.3.5, HTTP-1 client and proxy; protection wording"
+          ],
+          "printed_pages": [
+            42
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.3.6, HTTP-2 proxy and server; protection wording"
+          ],
+          "printed_pages": [
+            43
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "proxy-trust-boundary",
+      "title": "在 TS 23.280 的在网 MC 架构中，HTTP-3 参考点的两端是不同网络中的 MC HTTP 代理；该 MC 代理不得向另一信任域的 HTTP 代理、服务器或客户端转交请求或响应",
+      "conditions": [
+        "Rel-16 在网 MC 系统，3GPP TS 23.280 V16.7.0（Stage 2）。在功能模型中判断公共 HTTP 代理及参考点的职责。",
+        "已识别 HTTP-3 参考点时说明其两端。判断是否触犯转交禁令另看信任域；代理还须与位于 MC 业务提供方网络内的 HTTP 客户端和服务器同域。"
+      ],
+      "conclusion": "代理终结 HTTP-3，另一端是另一网络的 HTTP 代理。共享敏感信息有约定的 MC 功能可由不同提供方管理而同属一域。代理须与位于 MC 业务提供方网络内的 HTTP 客户端及服务器同信任域；不得向另一信任域的 HTTP 代理、服务器或客户端传请求或响应。对本 MC 系统域外的 HTTP 实体隐藏拓扑是可选功能。",
+      "normative_strength": "same trust domain 是 shall；不同信任域不传请求或响应是 shall not；拓扑隐藏是 may。",
+      "limitations": [
+        "不能仅因两台代理分属不同网络，就认定两者之间有 HTTP-3。不同提供方可能同域；同域异网不触发该项禁令，也不能证明转交已发生或其他合规条件全满足。对域外实体的拓扑隐藏不提供跨域许可。§7.5.3.7 编辑注只讨论 HTTP-3 用在分属不同信任域的服务器之间时是否需要改动，未给 §5.1.2 的禁令开例外。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.3.1, on-network functional model heading"
+          ],
+          "printed_pages": [
+            27
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.1.2, definition of trust domain"
+          ],
+          "printed_pages": [
+            18
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.1.2, final bullet (HTTP proxy, requests and responses)"
+          ],
+          "printed_pages": [
+            18
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.3.2, paragraph 2 (HTTP-3 termination and optional topology hiding)"
+          ],
+          "printed_pages": [
+            37
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.3.2, paragraph 5 (same trust domain)"
+          ],
+          "printed_pages": [
+            37
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.3.7, HTTP-3 endpoints in different networks and editor’s note"
+          ],
+          "printed_pages": [
+            43
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "proxy-deployment",
+      "title": "在 TS 23.280 的在网 MC 架构中，MC HTTP 代理可有多个实例，每个信任域一个只是部署示例",
+      "conditions": [
+        "Rel-16 在网 MC 系统，3GPP TS 23.280 V16.7.0（Stage 2）。在功能模型中判断公共 HTTP 代理及参考点的职责。",
+        "在本版在网架构下评估代理实例数，不把信任域边界或示例当作数量规则。"
+      ],
+      "conclusion": "每个信任域一个代理是多个实例的例子，实例数取决于部署。",
+      "normative_strength": "can、e.g. 是允许和示例；末注说明部署特定。",
+      "limitations": [
+        "不能由域数推算现场实例数，也不能用实例数改变跨域禁令。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.3.1, on-network functional model heading"
+          ],
+          "printed_pages": [
+            27
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.3.2, paragraph 5 and note (number of instances)"
+          ],
+          "printed_pages": [
+            37
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.1.2, final bullet (HTTP proxy, requests and responses)"
+          ],
+          "printed_pages": [
+            18
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.3.1, on-network functional model heading"
+      ],
+      "printed_pages": [
+        27
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.1.2, definition of trust domain"
+      ],
+      "printed_pages": [
+        18
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.1.2, final bullet (HTTP proxy, requests and responses)"
+      ],
+      "printed_pages": [
+        18
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.3.1, figure 7.3.1-3 (CSC-8 row) and note 2"
+      ],
+      "printed_pages": [
+        30
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.4.3.3.2, paragraph 1 (proxy function and TLS session on HTTP-1)"
+      ],
+      "printed_pages": [
+        37
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.4.3.3.2, paragraph 2 (HTTP-3 termination and optional topology hiding)"
+      ],
+      "printed_pages": [
+        37
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.4.3.3.2, paragraph 3 (CSC-1 excludes this HTTP proxy)"
+      ],
+      "printed_pages": [
+        37
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.4.3.3.2, paragraph 4 (CSC-8: proxy or direct HTTP)"
+      ],
+      "printed_pages": [
+        37
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.4.3.3.2, paragraph 5 (same trust domain)"
+      ],
+      "printed_pages": [
+        37
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.4.3.3.2, paragraph 5 and note (number of instances)"
+      ],
+      "printed_pages": [
+        37
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.5.2.2, CSC-1 endpoints and authentication purpose"
+      ],
+      "printed_pages": [
+        38
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.5.2.8, first paragraph (CSC-8 purpose and recipient)"
+      ],
+      "printed_pages": [
+        39
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.5.2.8, second paragraph and external specification reference"
+      ],
+      "printed_pages": [
+        39
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.5.3.5, HTTP-1 client and proxy; protection wording"
+      ],
+      "printed_pages": [
+        42
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.5.3.6, HTTP-2 proxy and server; protection wording"
+      ],
+      "printed_pages": [
+        43
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.5.3.7, HTTP-3 endpoints in different networks and editor’s note"
+      ],
+      "printed_pages": [
+        43
+      ]
+    }
+  ],
+  "related": [
+    "r16-bearers-attachment-apn-roles",
+    "r16-identity-registrar-selection",
+    "r16-mcdata-intersystem-fd-url-content"
+  ],
+  "limitations": [
+    "本版的架构职责及允许方式不证明某次认证成功、安全相关信息已发送或送达、代理已转交或 TLS 已复用。",
+    "保留 §7.4.3.3.2 的 CSC-8 两种连接方式与 §7.5.2.8 的具体传送要求。不推定直连适用的业务、方向、部署偏好或折衷规则。TS 33.180 [25] 仅为本版原文所引依赖；这里未据它作出另一项判断。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
