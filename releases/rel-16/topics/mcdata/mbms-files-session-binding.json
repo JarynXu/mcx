@@ -1,0 +1,560 @@
+{
+  "topic_id": "r16-mcdata-mbms-files-session-binding",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCData 通过 xMB 向组发文件：何时把目标文件的位置和 URI 写入 Files 会话？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "common_conditions": [
+    "3GPP TS 23.282 V16.8.0，Release 16，Stage 2；MCData 服务器通过 MBMS 用户业务分发组文件。比较的是 xMB 分支对目标文件的指定时点，另辨用户业务通告与收件、说明 MB2 编者注的限制。"
+  ],
+  "condition_rule": "各条继承 common_conditions，并须满足自身的分支、对象和动作条件。业务通告、目标内容、承载与客户端接收结果不得互代。",
+  "claims": [
+    {
+      "id": "mbfs-pre-update",
+      "title": "预建 xMB 用户业务时，创建 Files 会话并取得 SA 不证已指定目标文件；向组发 X 时更新已有会话",
+      "conditions": [
+        "预建例：参与用户已归属，服务器在预配置区域先于组文件分发建业务；使用 xMB 并要向组投递具体文件 X。"
+      ],
+      "conclusion": "先经 xMB-C 创建用户业务，再建 Files 会话以使用 MBMS 下载投递，取得承载标识 TMGI 和描述业务的 SA。对 X，步骤 7 在已有会话中给出 X 的位置和 URI；随后步骤 8 向目标客户端发传输信令，步骤 9 才是接收 X。",
+      "normative_strength": "预建和使用都是本场景的选择。既有会话、TMGI 或 SA 各自只支持对应的建立/元数据事实，不是某份文件的指定或交付记录。",
+      "limitations": [
+        "指定 X 不证通知已发；服务器向乙发出通知能证已发送，但不证乙收到了这条通知，也不证乙收到了 X 正文。确认收到 X 应查乙端的对应文件接收记录。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.1, scope of MBMS user services for MCData file distribution and applicability to MC service groups"
+          ],
+          "printed_pages": [
+            40
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.3.1.1, first two paragraphs: preconfigured areas, time of establishment and announcement"
+          ],
+          "printed_pages": [
+            41
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.3.1.2, editor’s note followed by Figure description and precondition (already affiliated participants)"
+          ],
+          "printed_pages": [
+            41
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.3.1.2, Figure 7.3.5.3.1.2-1 steps 1–2 and numbered text 1–2 with note 1"
+          ],
+          "printed_pages": [
+            42
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.3.1.2, Figure 7.3.5.3.1.2-1 boxes 7–9; numbered steps 7–9, xMB condition and download reception"
+          ],
+          "printed_pages": [
+            42,
+            43
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mbfs-dyn-create",
+      "title": "为目标文件新建 xMB 用户业务，在创建 Files 会话时就给该文件的位置和 URI",
+      "conditions": [
+        "服务器决定采用动态用户业务为特定组分发文件 Y，使用 xMB；不是预配区域内复用既有 Files 会话。"
+      ],
+      "conclusion": "创建用户业务为步骤 1，创建 Files 会话并给 Y 的位置和 URI 为步骤 2；响应给出 TMGI、SA 和投递调度参数。业务和待接收文件的信息一起通告；步骤 7、8 分别是传输信令与客户端接收 Y。",
+      "normative_strength": "动态建业务的判断由实现决定；目标组终端位置是例子，不是固定门限。所示流程无需照搬预建步骤 7 再更新一次以指定 Y。",
+      "limitations": [
+        "没有第二次更新不证漏指定，也不是禁止未来更新。以创建请求带文件信息和相应成功结果确认指定，不以响应中的 SA 或调度参数确认收件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.1, scope of MBMS user services for MCData file distribution and applicability to MC service groups"
+          ],
+          "printed_pages": [
+            40
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.3.2, opening editor’s note, introductory paragraph and note 1"
+          ],
+          "printed_pages": [
+            43
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.3.2, Figure 7.3.5.3.2-1 and numbered steps 1–2 including continuation of step 2 on next page"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.3.2, Figure 7.3.5.3.2-1 steps 4–6 and numbered text 4–6"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.3.2, Figure 7.3.5.3.2-1 final two steps and numbered text 7–8 (xMB scope)"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mbfs-sa-fields",
+      "title": "xMB 组文件业务通告中必填的是业务 ID 和 SA，不是任务单正文",
+      "conditions": [
+        "核对§7.3.5.2.1 服务器给客户端的用户业务通告；仅在预建例讨论后续通告的步骤 4 可选。"
+      ],
+      "conclusion": "业务 ID 与 SA 必填，Monitoring state 和 Unicast status 可选。SA 是会话创建或更新响应中的业务通告文件，给出 TMGI、业务区标识列表、频率及投递参数。预建通告可以在文件分发前或随分发信令给；预建例注 2 说后续通告可省步骤 4。",
+      "normative_strength": "表的 M/O 是消息中字段的强度；后续动作可省不改变一份首次通告所需的字段。",
+      "limitations": [
+        "SA 的收件证明客户端得到该业务的通告资料；仅此不能证明目标文件已在预建会话指定、已经投递，或哪个用户收齐正文。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.1, scope of MBMS user services for MCData file distribution and applicability to MC service groups"
+          ],
+          "printed_pages": [
+            40
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.2.1, introductory sentence specifying the server-to-client information flow and Table 7.3.5.2.1-1 caption"
+          ],
+          "printed_pages": [
+            40,
+            41
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.2.1, Table 7.3.5.2.1-1, four rows, status column, SA file description and table note"
+          ],
+          "printed_pages": [
+            41
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.3.1.1, first two paragraphs: preconfigured areas, time of establishment and announcement"
+          ],
+          "printed_pages": [
+            41
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.3.1.2, Figure 7.3.5.3.1.2-1 and numbered steps 4–5 plus note 2"
+          ],
+          "printed_pages": [
+            42
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.3.1.2, Figure 7.3.5.3.1.2-1 boxes 7–9; numbered steps 7–9, xMB condition and download reception"
+          ],
+          "printed_pages": [
+            42,
+            43
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.3.2, Figure 7.3.5.3.2-1 and numbered steps 1–2 including continuation of step 2 on next page"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.3.2, Figure 7.3.5.3.2-1 final two steps and numbered text 7–8 (xMB scope)"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mbfs-listening",
+      "title": "xMB 组文件步骤 6：在相应区域的客户端明确报告能收文件，不等于服务器已选 MBMS 或客户端已收正文",
+      "conditions": [
+        "预建或动态 xMB 组文件例，客户端保存通告的业务资料并开始监听；步骤 6 指已在或进入至少一个已通告 TMGI 的服务区、向服务器表示能经 MBMS 接收文件的客户端。"
+      ],
+      "conclusion": "客户端用 TMGI 和其他业务信息启动监听。在所述区域内，它明确向服务器表示能经 MBMS 收文件；服务器可以决定采用该用户业务代替单播。仅有报告的消息名，没有内容、关联业务和区域，不能确认它表达了这种能力，也不能从消息名倒推它在区。",
+      "normative_strength": "只解释两例步骤 6 的正向条件与所报内容，不作其他报告触发规则的判断；服务器选路是可选决定。预建步骤 8/9 与动态步骤 7/8 分别描述传输信令与接收。",
+      "limitations": [
+        "即便已明确报告能收，也不能代确认选路或交付。向目标发出通知不等于每个目标均收到通知；乙收到文件只支持乙端、同一文件的结果，不能替没有记录的其他成员签收，也不证其未收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.1, scope of MBMS user services for MCData file distribution and applicability to MC service groups"
+          ],
+          "printed_pages": [
+            40
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.3.1.2, Figure 7.3.5.3.1.2-1 and numbered steps 4–5 plus note 2"
+          ],
+          "printed_pages": [
+            42
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.3.1.2, Figure 7.3.5.3.1.2-1 and numbered step 6"
+          ],
+          "printed_pages": [
+            42
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.3.1.2, Figure 7.3.5.3.1.2-1 boxes 7–9; numbered steps 7–9, xMB condition and download reception"
+          ],
+          "printed_pages": [
+            42,
+            43
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.3.2, Figure 7.3.5.3.2-1 steps 4–6 and numbered text 4–6"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.3.2, Figure 7.3.5.3.2-1 final two steps and numbered text 7–8 (xMB scope)"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mbfs-mb2-control",
+      "title": "预建和动态两处 MB2 编者注限制部署解读；预建传文件的用户业务不传应用层控制信令",
+      "conditions": [
+        "读两个 xMB 用户业务程序时，区分图中保留的 MB2 分支、预建方式的文件用户业务和可以传控制消息的一般 MBMS 承载。"
+      ],
+      "conclusion": "预建与动态程序各有编者注：按其引用的 TS 26.346，MBMS 用户业务无法由 MB2 支持，因此相应程序需要修订。图上的 MB2 操作不是可部署配方；该限制不是说 xMB 建会或更新也无效。预建文件用户业务本身不传应用层控制信令，按通用程序可用 MBMS 承载传这类控制消息。",
+      "normative_strength": "MB2 是两处编者注的对象；另用通用 MBMS 承载传预建场景的应用层控制是允许项，不是唯一路径。",
+      "limitations": [
+        "没有核验外规实现；看到信令本身不能确定该消息实际走哪种承载，不能要求部署另一独立 MBMS 承载。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.1, scope of MBMS user services for MCData file distribution and applicability to MC service groups"
+          ],
+          "printed_pages": [
+            40
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.3.1.2, editor’s note followed by Figure description and precondition (already affiliated participants)"
+          ],
+          "printed_pages": [
+            41
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.3.2, opening editor’s note, introductory paragraph and note 1"
+          ],
+          "printed_pages": [
+            43
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.3.1.2, Figure 7.3.5.3.1.2-1 and numbered steps 3a–3b; 7.3.5.3.2, Figure 7.3.5.3.2-1 and numbered steps 3a–3b"
+          ],
+          "printed_pages": [
+            42,
+            43,
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.3.1.1, last paragraph on application-level control signalling and possible use of an MBMS bearer"
+          ],
+          "printed_pages": [
+            41
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.3.1.2, Figure 7.3.5.3.1.2-1 steps 1–2 and numbered text 1–2 with note 1"
+          ],
+          "printed_pages": [
+            42
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.3.5.3.2, Figure 7.3.5.3.2-1 and numbered steps 1–2 including continuation of step 2 on next page"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.3.5.1, scope of MBMS user services for MCData file distribution and applicability to MC service groups"
+      ],
+      "printed_pages": [
+        40
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.3.5.2.1, introductory sentence specifying the server-to-client information flow and Table 7.3.5.2.1-1 caption"
+      ],
+      "printed_pages": [
+        40,
+        41
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.3.5.2.1, Table 7.3.5.2.1-1, four rows, status column, SA file description and table note"
+      ],
+      "printed_pages": [
+        41
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.3.5.3.1.1, first two paragraphs: preconfigured areas, time of establishment and announcement"
+      ],
+      "printed_pages": [
+        41
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.3.5.3.1.1, last paragraph on application-level control signalling and possible use of an MBMS bearer"
+      ],
+      "printed_pages": [
+        41
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.3.5.3.1.2, editor’s note followed by Figure description and precondition (already affiliated participants)"
+      ],
+      "printed_pages": [
+        41
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.3.5.3.1.2, Figure 7.3.5.3.1.2-1 steps 1–2 and numbered text 1–2 with note 1"
+      ],
+      "printed_pages": [
+        42
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.3.5.3.1.2, Figure 7.3.5.3.1.2-1 and numbered steps 4–5 plus note 2"
+      ],
+      "printed_pages": [
+        42
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.3.5.3.1.2, Figure 7.3.5.3.1.2-1 and numbered step 6"
+      ],
+      "printed_pages": [
+        42
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.3.5.3.1.2, Figure 7.3.5.3.1.2-1 boxes 7–9; numbered steps 7–9, xMB condition and download reception"
+      ],
+      "printed_pages": [
+        42,
+        43
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.3.5.3.2, opening editor’s note, introductory paragraph and note 1"
+      ],
+      "printed_pages": [
+        43
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.3.5.3.2, Figure 7.3.5.3.2-1 and numbered steps 1–2 including continuation of step 2 on next page"
+      ],
+      "printed_pages": [
+        43,
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.3.5.3.2, Figure 7.3.5.3.2-1 steps 4–6 and numbered text 4–6"
+      ],
+      "printed_pages": [
+        43,
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.3.5.3.2, Figure 7.3.5.3.2-1 final two steps and numbered text 7–8 (xMB scope)"
+      ],
+      "printed_pages": [
+        43,
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.3.5.3.1.2, Figure 7.3.5.3.1.2-1 and numbered steps 3a–3b; 7.3.5.3.2, Figure 7.3.5.3.2-1 and numbered steps 3a–3b"
+      ],
+      "printed_pages": [
+        42,
+        43,
+        44
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcdata-mbms-group-file-delivery",
+    "r16-bearers-mbms-dynamic-group-downlink",
+    "r16-bearers-mbms-bearer-announcement"
+  ],
+  "limitations": [
+    "§7.3.5 MCData 组文件经 xMB 使用预建或动态 MBMS 用户业务：Files 会话指定目标文件的时点、业务通告、监听与明确报告能收、传输信令与客户端收件。MB2 分支仅用于解释两处编者注对图文的限制。未核验外引规范的接口实现、其他报告触发条件或部署；不提供 MB2 实施方法。缺片和完成报告、普通组下行承载及通用控制消息由既有专题维护。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
