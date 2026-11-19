@@ -8,24 +8,45 @@
   "source_id": "3gpp-ts-23.282-v16.8.0",
   "condition_rule": "Inherit common_conditions and add claim conditions.",
   "common_conditions": [
-    "TS 23.282 V16.8.0，Release 16，Stage 2：消息存储客户端向 MCData 消息存储查询该用户的已存对象。"
+    "TS 23.282 V16.8.0，Release 16，Stage 2：讨论 MCData 消息存储的用户区权限；按对象 ID 取回及按条件搜索的流程限于客户端查询该用户本人的存储区。"
   ],
   "claims": [
     {
       "id": "scope-of-user-access",
-      "title": "谁能查哪些对象",
+      "title": "本人查询与获准访问他人存储区的条件",
       "conditions": [
-        "判断消息存储客户端读取用户通信历史的资格与范围。"
+        "判断 MCData 消息存储的访问范围。须区别存储区是否向非持有人授权，与客户端是否已按本人流程取回对象。"
       ],
-      "conclusion": "消息或文件连同元数据作为对象保存。访问以客户端与消息存储之间认证和授权成功为前提；用户仅可访问自己的存储区。用户 MCData ID 在两种操作的请求和响应中均必填，用于标识用户。",
-      "normative_strength": "§7.13.1 说明用户存储区及客户端对本人对象的管理；§7.13.2 的 shall 限定认证并获准后的访问仅及该用户的存储区。直接取回和搜索分别在 §7.13.3.2.2、§7.13.3.3.2 将客户端与消息存储之间认证和授权成功列为前提。四张信息表均将用户 MCData ID 列为 M。",
-      "limitations": [],
+      "conclusion": "在 MCData 消息存储中，存储区由账户用户的 MCData ID 标识。§5.10 要求获授权的非持有人（如调度员）能访问该持有人的区；没有针对目标区的授权，职称、本人登录或知道对象 ID 都不能取得该权限。§7.13.1 规定用户不能访问为其他用户存储的对象；§7.13.2 要求消息存储先鉴别服务器或获准用户的凭据，认证和授权成功后的访问限于该用户的区。本人查询的对象是消息或文件及其元数据；取回和搜索都须先完成客户端与消息存储间的认证、授权。两种请求和响应都须带用户的 MCData ID，不能用对象 ID 代替。",
+      "normative_strength": "§5.10 的 shall 同时限定只能访问获准的区，并要求非持有人如获授权应能访问持有人的区。§6.4.3.3 描述本人及获授权用户可访问配置区。§7.13.1 的 shall not 和 §7.13.2 的 shall 是操作章对用户区范围及鉴别的规定。§§7.13.3.2.2、7.13.3.3.2 把客户端与消息存储之间认证及授权成功列为前提；四张信息表将用户 MCData ID 列为 M。",
+      "limitations": [
+        "若有效授权明确覆盖乙和甲的存储区，只能判定满足架构要求中的非本人授权条件；不能据此判定某个对象已取回，或获得所有读取、删除、更新、同步权限。",
+        "取回与搜索的四张信息表没有分别标识操作者与另一位账户持有人的委托字段；不能据此规定代查接口或字段填法。§6.4.3.3 注、§7.13.2 注将访问及管理的安全细节留给 SA3。"
+      ],
       "source_references": [
         {
           "source_id": "3gpp-ts-23.282-v16.8.0",
           "clauses": [
-            "7.13, opening (stored object and dedicated user storage area)",
-            "7.13.1, user storage areas and client management of the user’s stored objects"
+            "5.10, authorized storage area identified by the account user’s MCData ID; authorized non-account holder"
+          ],
+          "printed_pages": [
+            20
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "6.4.3.3, configured user and authorized users; NOTE on access and management security"
+          ],
+          "printed_pages": [
+            25
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.13, opening: stored object and dedicated user storage area",
+            "7.13.1, Figure 7.13.1 and restriction on objects stored for other users"
           ],
           "printed_pages": [
             140
@@ -34,7 +55,7 @@
         {
           "source_id": "3gpp-ts-23.282-v16.8.0",
           "clauses": [
-            "7.13.2, access limited to the designated MCData user’s storage area"
+            "7.13.2, authenticate credentials before authorizing access; designated user area only; NOTE on scope"
           ],
           "printed_pages": [
             141
