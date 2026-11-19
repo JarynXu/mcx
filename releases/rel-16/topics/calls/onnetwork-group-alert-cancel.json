@@ -1,0 +1,347 @@
+{
+  "topic_id": "r16-calls-onnetwork-group-alert-cancel",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "在网 MCVideo、MCData 组紧急告警：谁取消谁的告警，谁回了执？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0（Release 16，Stage 2），在网 MCVideo 或 MCData 组紧急告警取消。§10.10.1.2.2 的图示为原发起人本人取消；同节注 2 和请求信息流表另述获授权用户与取消他人告警。"
+  ],
+  "condition_rule": "逐条叠加下述方向、对象、步骤、模式和配置。图示状态变化不能反推一次实测事件或代撤的额外时序。",
+  "claims": [
+    {
+      "id": "cancel-context",
+      "title": "在网 MCVideo 或 MCData 的组告警由本人取消时，图示有哪些前提？",
+      "conditions": [
+        "考察图 10.10.1.2.2-1 中原发起人本人取消自己的组紧急告警。"
+      ],
+      "conclusion": "在网 MCVideo 或 MCData 组紧急告警的本人取消场景中，图中的客户端 1 此前成功发起过告警，仍处于紧急状态，也已归属指定紧急组；客户端 1、2、3 的用户属于 GMS 定义的同一业务组。图中一个业务服务器代表用户归属业务服务器与组托管业务服务器，不限制部署。",
+      "normative_strength": "图示前提 1–3；本版注明公共程序对 MCPTT 的适用性待研究。",
+      "limitations": [
+        "曾发送发起请求不等于发起成功，列为成员不等于已归属。不得把本人图当作代撤的完整时序，也不据此承诺跨系统互通或否定 MCPTT 自身业务。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.1, on-network services list and editor’s note on MCPTT"
+          ],
+          "printed_pages": [
+            176
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.2.2, introduction, note 1 and preconditions 1–3"
+          ],
+          "printed_pages": [
+            178
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.2.2, introductory paragraph and note 2 (separate decisions and authorized user options)"
+          ],
+          "printed_pages": [
+            178,
+            179
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "request-identities",
+      "title": "在网 MCVideo 或 MCData 组告警的取消请求中，两行用户 ID 各指谁？",
+      "conditions": [
+        "查看完整的客户端至服务器或服务器至客户端的取消请求；需区分可选标记与表注的条件。"
+      ],
+      "conclusion": "在网 MCVideo 或 MCData 的组紧急告警取消请求中，客户端至服务器、服务器至客户端两个方向共用一张表。表 10.1.2.17-1 的第一行 MC service ID 必填，指取消人；第二行指告警被取消的用户，虽标 O，请求取消另一用户告警时必须带，没有这行则指取消人自己的告警。另一必填项是与告警关联的组 ID。这两行用户 ID 都不是为收件人设置的。",
+      "normative_strength": "通用信息流表：M 为必填，第二行 O 受表注的条件性必填与缺省解释约束。",
+      "limitations": [
+        "工单叙述或截断的记录不能证明原始请求缺哪项。请求指名用户不是代撤授权、服务器批准、端上复位或组状态解除的证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.2.17, table 10.1.2.17-1, direction text, both MC service ID rows, group rows and table note"
+          ],
+          "printed_pages": [
+            65,
+            66
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.2.2, introductory paragraph and note 2 (separate decisions and authorized user options)"
+          ],
+          "printed_pages": [
+            178,
+            179
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "separate-decisions",
+      "title": "在网 MCVideo 或 MCData 组告警取消时，个人告警和组的紧急状态须一起解除吗？",
+      "conditions": [
+        "区分个人告警与告警关联组的进行中紧急状态；若是代撤，另核取消人的授权。"
+      ],
+      "conclusion": "在网 MCVideo 或 MCData 的组紧急告警取消程序中，本人取消告警时可以额外请求取消组的进行中紧急状态；业务服务器对这两项分别接受或拒绝。获授权的另一用户可以只取消发起人告警、只取消组的进行中紧急状态，或取消两者。",
+      "normative_strength": "请求表中的组状态取消指示为 O；程序注 2 明定分别裁决及授权用户的选择。",
+      "limitations": [
+        "告警取消确认不等于组状态已解除；即使两项都请求也不能从一项结果推出另一项。两种身份并不能给出代撤权限的取得方式或代撤完整时序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.2.17, table 10.1.2.17-1, direction text, both MC service ID rows, group rows and table note"
+          ],
+          "printed_pages": [
+            65,
+            66
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.2.18, table 10.1.2.18-1, direction text and both mandatory rows"
+          ],
+          "printed_pages": [
+            66
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.2.2, introductory paragraph and note 2 (separate decisions and authorized user options)"
+          ],
+          "printed_pages": [
+            178,
+            179
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "originator-and-delivery",
+      "title": "在网 MCVideo 或 MCData 本人取消组告警时，谁复位、谁通知组员？",
+      "conditions": [
+        "图示客户端 1 本人撤回先前发给指定组的告警；区分服务器发出、接收端收到及终端本机状态。"
+      ],
+      "conclusion": "在网 MCVideo 或 MCData 用户本人取消组紧急告警时，步骤 1、2 由客户端 1 发起、请求服务器通知原组。步骤 3 业务服务器按 GMS 的信息解析组号并确定成员及归属；步骤 4 由服务器向客户端 1 确认请求，客户端 1 复位自己的紧急状态。步骤 5 向已归属成员的客户端发取消，步骤 6 各收件端通知本机用户。",
+      "normative_strength": "图示本人场景的步骤；确认请求和向各成员发取消是分开的动作。",
+      "limitations": [
+        "服务器发出步骤 4 不证明观察到客户端复位，不能套给获授权的代撤人或断言原端实际复位。查到归属不是送达记录，发给某成员不证明其已收到或用户已阅读。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.2.2, introduction, note 1 and preconditions 1–3"
+          ],
+          "printed_pages": [
+            178
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.2.2, introductory paragraph and note 2 (separate decisions and authorized user options)"
+          ],
+          "printed_pages": [
+            178,
+            179
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.2.2, figure 10.10.1.2.2-1 and steps 1–4 (original group, affiliated members and initiating client reset)"
+          ],
+          "printed_pages": [
+            178,
+            179
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.2.2, figure 10.10.1.2.2-1 and steps 5–6 (forwarding and client notification)"
+          ],
+          "printed_pages": [
+            178,
+            179
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "recipient-acknowledgements",
+      "title": "在网 MCVideo 或 MCData 组告警取消时，组员何时回执，响应的用户 ID 又指谁？",
+      "conditions": [
+        "发给收警端的取消请求是单播还是组播；组播时，再查该收警端是否配置发回执。区分谁发响应、谁实际收到了这份响应。"
+      ],
+      "conclusion": "在网 MCVideo 或 MCData 组紧急告警取消时，收到单播取消请求的客户端向服务器确认；收到组播取消请求的客户端若未配置发回执便不发，有相应配置才回应。图示本人流程的步骤 4（服务器至发起端）和步骤 7（接收端至服务器）共用表 10.1.2.18-1。必填的 MC service ID 总指取消人，必填的组 ID 指告警关联组。若乙代甲撤警而丙回执，该响应的两项仍是乙和组号，不能把乙认作原告警人或丙端。",
+      "normative_strength": "步骤 7 的发送规则取决于投递模式与组播配置；响应字段语义依双向信息流表。",
+      "limitations": [
+        "在表 10.1.2.18-1 的取消响应中，仅凭两个必填项不足以认出被代撤者或回执端，也不报告两项裁决结果。缺回执不能证明漏收；在丙看到发出，不证明服务器已收到；服务器实收且能对应丙端和本次取消，才可记丙已确认，不能代其他组员签收或证明人已读。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.2.18, table 10.1.2.18-1, direction text and both mandatory rows"
+          ],
+          "printed_pages": [
+            66
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.2.2, figure 10.10.1.2.2-1 and steps 5–6 (forwarding and client notification)"
+          ],
+          "printed_pages": [
+            178,
+            179
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.10.1.2.2, figure 10.10.1.2.2-1 and steps 4 and 7 (direction; unicast and configured multicast acknowledgement)"
+          ],
+          "printed_pages": [
+            178,
+            179
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.2.17, table 10.1.2.17-1, direction text, both MC service ID rows, group rows and table note"
+      ],
+      "printed_pages": [
+        65,
+        66
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.1.2.18, table 10.1.2.18-1, direction text and both mandatory rows"
+      ],
+      "printed_pages": [
+        66
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.10.1.1, on-network services list and editor’s note on MCPTT"
+      ],
+      "printed_pages": [
+        176
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.10.1.2.2, introduction, note 1 and preconditions 1–3"
+      ],
+      "printed_pages": [
+        178
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.10.1.2.2, introductory paragraph and note 2 (separate decisions and authorized user options)"
+      ],
+      "printed_pages": [
+        178,
+        179
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.10.1.2.2, figure 10.10.1.2.2-1 and steps 1–4 (original group, affiliated members and initiating client reset)"
+      ],
+      "printed_pages": [
+        178,
+        179
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.10.1.2.2, figure 10.10.1.2.2-1 and steps 5–6 (forwarding and client notification)"
+      ],
+      "printed_pages": [
+        178,
+        179
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.10.1.2.2, figure 10.10.1.2.2-1 and steps 4 and 7 (direction; unicast and configured multicast acknowledgement)"
+      ],
+      "printed_pages": [
+        178,
+        179
+      ]
+    }
+  ],
+  "related": [
+    "r16-calls-onnetwork-group-alert-location",
+    "r16-calls-emergency-alert-area-entry-exit",
+    "r16-calls-offnetwork-group-emergency-alert"
+  ],
+  "limitations": [
+    "本页不给出代撤授权的取得方式、客户端复位的代撤时序、跨系统互通保证、MCPTT 协议报文或终端界面。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
