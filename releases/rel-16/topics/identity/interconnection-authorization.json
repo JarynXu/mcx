@@ -3,7 +3,7 @@
   "release": 16,
   "standard_stage": 2,
   "state": "draft",
-  "title": "两个 MC 系统互连：客户端要连到对端的谁，用户的业务授权又归谁？",
+  "title": "两个 MC 系统互连：客户端要连到对端的谁，谁办用户授权，谁控制这通呼叫？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-23.280-v16.7.0",
   "common_conditions": [
@@ -311,6 +311,82 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "private-call-serving-control",
+      "title": "两个 MC 系统各为一方用户服务且本次私呼使用互连：由当前为主叫提供 MC 业务的系统提供这通私呼的控制功能",
+      "conditions": [
+        "主叫和被叫分别由不同的 MC 系统提供 MC 业务，并实际通过这两个系统的互连进行这通私呼。"
+      ],
+      "conclusion": "两个 MC 业务用户分别由不同 MC 系统服务，且这通私呼实际采用互连时，由当时为主叫提供 MC 业务的系统提供该通私呼的控制功能。若改由另一方另起一通满足相同互连条件的私呼，双方服务系统未变，控制功能改由新主叫的服务系统提供。",
+      "normative_strength": "§5.2.10.4 在双方各受不同系统服务且私呼使用互连时，指定主叫的服务系统提供该通私呼的控制功能，不是两系统可任选其一。",
+      "limitations": [
+        "只知道已有互连，不能证明本次私呼用了互连；只知道主叫的主系统，也不能确定当前服务系统。这里确定的是提供控制功能的 MC 系统，不是物理服务器、网关、话权分配或媒体收件结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.10.1, two sets of users receiving service from MC systems in different trust domains"
+          ],
+          "printed_pages": [
+            23,
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.10.4, private calls using interconnection between users receiving MC service in different MC systems: the system serving the calling user provides the controlling function for the private call"
+          ],
+          "printed_pages": [
+            24
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "group-call-home-control",
+      "title": "当组主系统的伙伴系统中有用户实际参加该组的一通组呼，由该组的主系统提供这通组呼的控制功能",
+      "conditions": [
+        "已识别目标 MC 业务组、该组的主系统及其伙伴系统；该伙伴系统中的 MC 业务用户实际参加这次该组的组呼。"
+      ],
+      "conclusion": "在目标组的组主系统的伙伴系统中，有 MC 业务用户实际参加该组的组呼时，由该组的主系统提供这通组呼的控制功能。下一通若仍是同一组且仍有组伙伴系统中的用户参加，改换发起者不会改变这一归属。",
+      "normative_strength": "§5.2.10.5 指定在组伙伴系统中的用户参加该组组呼时由组主系统提供控制功能，不以本通组呼由哪一侧发起为选择条件。",
+      "limitations": [
+        "用户自己的主系统或迁入的伙伴，不一定是该组的主系统或其伙伴。只见成员资格、保存的组配置或互连链路，不能据此认定该伙伴用户确实参加了这通组呼；若组主身份不明，不能凭起呼者的服务系统点名。该条不证明逐通放行、路径建立或成员收到媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.10.1, two sets of users receiving service from MC systems in different trust domains"
+          ],
+          "printed_pages": [
+            23,
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.10.5, where MC service users in a partner MC system of the group home MC system take part in a group call in that group: the group home MC system provides the controlling function for the group call"
+          ],
+          "printed_pages": [
+            24
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "source_references": [
@@ -377,6 +453,24 @@
       "printed_pages": [
         115
       ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.10.4, private calls using interconnection between users receiving MC service in different MC systems: the system serving the calling user provides the controlling function for the private call"
+      ],
+      "printed_pages": [
+        24
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.10.5, where MC service users in a partner MC system of the group home MC system take part in a group call in that group: the group home MC system provides the controlling function for the group call"
+      ],
+      "printed_pages": [
+        24
+      ]
     }
   ],
   "related": [
@@ -384,7 +478,7 @@
     "r16-groups-partner-group-call-admission"
   ],
   "limitations": [
-    "只说明互连的连接要求、授权地点与可选的迁移后用途；不由此推定路线、实际可达性、某个授权或呼叫准入结果。未展开具体安全协议、迁移授权或私呼/组呼程序。"
+    "本页说明互连的连接要求、用户业务授权地点、可选的迁移后用途，以及 §§5.2.10.4–5 指定的私呼或组呼控制功能由哪个系统提供；不凭这些规则推定路线、实际可达性、个案授权、逐通准入或媒体实收。未展开安全协议、迁移授权流程或各业务的私呼、组呼程序。"
   ],
   "verification": {
     "original_clauses_checked": true,
