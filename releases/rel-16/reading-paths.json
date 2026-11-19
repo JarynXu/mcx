@@ -2148,19 +2148,19 @@
     },
     {
       "id": "r16-bearers-mbms-overlapping-mbsfn-continuity",
-      "question": "在未另设跨区应用信令承载的第一种部署中，进入两个 MBSFN 区的重叠小区时，哪些报告需要单播？下行媒体必须先转走吗？进入只剩第二区的小区后又如何？",
+      "question": "终端从一个 MBSFN 区进入另一个区，何时须经单播上报位置和监听状态，何时不需为此起单播？如果新区只收到某场 MCPTT 组呼的话权消息，能确认其语音也到了吗？",
       "start": "topics/bearers/mbms-overlapping-mbsfn-continuity.md",
       "next_if": [
         {
-          "condition": "若要判断门限和质量级别各在何时触发报告，查接收质量检测。",
+          "condition": "若公共 MBMS 承载已激活且已向客户端通告，客户端在广播区内，要查估计该承载的接收质量和按门限报告，读质量检测；仅有质量报告不能判定已经切到单播。",
           "read": "topics/bearers/mbms-reception-quality.md"
         },
         {
-          "condition": "若业务服务器已决定把 MCVideo 组呼从组播转到单播，查该业务的转换与释放。",
+          "condition": "若在网 MCVideo 组呼的参与侧服务器已决定把正在经 MBMS 传送的会话改为单播，要查应用层寻呼或传输实例释放，读 MCVideo 组播转单播；MCPTT 客户端为某场呼叫申请单播不满足这个条件。",
           "read": "topics/mcvideo/mbms-to-unicast.md"
         }
       ],
-      "boundary": "限两个局部重叠的 MBSFN 区，各有活动 MBMS 承载，且都传送客户端感兴趣的同一媒体流。本条只讲第一种部署。"
+      "boundary": "限 TS 23.280 V16.7.0 的两种重叠 MBSFN 区部署：第一种为同一目标媒体双播；改进部署另有覆盖两区全域的应用层信令承载，当前区可以没有终端想收的目标媒体。不会只凭通告或收到控制消息认定收到媒体。"
     },
     {
       "id": "r16-mcvideo-onnetwork-automatic-private-call",
@@ -3984,7 +3984,7 @@
           "read": "topics/bearers/mbms-edge-to-unicast.md"
         },
         {
-          "condition": "两个部分重叠的 MBSFN 区各有一条活动 MBMS 承载，两条承载播同一条媒体流，未另设跨区应用信令承载；要查这一部署怎样换承载、怎样报告，才读本页。另设跨区应用信令承载的部署不在该页范围。",
+          "condition": "若要查终端在两个部分重叠的 MBSFN 区怎样接续接收，分两种部署：未另设跨区信令承载且两条媒体承载同播目标流，查上行单播报告；若另有在两区全域激活的应用层信令承载，查区域变化是否须报，以及当前媒体承载不传目标媒体时能怎样请求单播。经 UE 中继的会话转移不是这两种部署的前提。",
           "read": "topics/bearers/mbms-overlapping-mbsfn-continuity.md"
         },
         {

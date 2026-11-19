@@ -7,14 +7,15 @@
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-23.280-v16.7.0",
   "common_conditions": [
-    "3GPP TS 23.280 V16.7.0，Release 16，Stage 2，§10.7.3.7.2 第一种部署：两个部分重叠的 MBSFN 区各激活一条不同的 MBMS 承载（TMGI 1、TMGI 2），客户端感兴趣的同一媒体流在这两条承载上广播。"
+    "3GPP TS 23.280 V16.7.0，Release 16，Stage 2，§10.7.3.7.2；两个 MBSFN 区部分重叠，分别有活动 MBMS 承载 TMGI 1、TMGI 2。具体承载用途、目标媒体分布和报告条件以所述部署为准。"
   ],
-  "condition_rule": "每条声明继承共同前提，再叠加本条条件；出发小区、重叠小区和目的小区的活动承载不同。",
+  "condition_rule": "各声明继承共同前提。第一种部署的同一目标媒体双播与单播上报，不能套给另设全域应用层信令承载的部署；须核对每条声明所指的承载、客户端取得的信息与目标媒体。",
   "claims": [
     {
       "id": "origin-success-not-quality",
       "title": "在区 1 的出发小区，客户端上报经 TMGI 1 成功接收；该承载的质量级别可选",
       "conditions": [
+        "3GPP TS 23.280 V16.7.0，Release 16，Stage 2，§10.7.3.7.2 第一种部署：两个部分重叠的 MBSFN 区各激活一条不同的 MBMS 承载（TMGI 1、TMGI 2），客户端感兴趣的同一媒体流在这两条承载上广播。",
         "终端可监听 TMGI 1，当前小区没有其他已激活且客户端感兴趣的 MBMS 承载。"
       ],
       "conclusion": "客户端告知 MC 业务服务器已通过 TMGI 1 成功接收媒体，可以附这条承载的接收质量级别。服务器可据级别决定改用另一 MBMS 承载或单播，或仅准备切换。",
@@ -61,6 +62,7 @@
       "id": "location-and-conditional-announcement",
       "title": "第一种部署未另设覆盖两区的应用信令承载：进入双承载同播的重叠小区时，客户端报告位置；若此前未向该客户端通告 TMGI 2，服务器才发送这项承载通告",
       "conditions": [
+        "3GPP TS 23.280 V16.7.0，Release 16，Stage 2，§10.7.3.7.2 第一种部署：两个部分重叠的 MBSFN 区各激活一条不同的 MBMS 承载（TMGI 1、TMGI 2），客户端感兴趣的同一媒体流在这两条承载上广播。",
         "终端已进入属于两个 MBSFN 区的新小区，两条承载均处于活动状态且播送同一业务。"
       ],
       "conclusion": "客户端向 MC 业务服务器报告位置，依据是终端从小区广播的系统信息块（SIB）取得的服务区标识（SAI）信息。若此前未通告 TMGI 2，服务器向客户端发承载通告，使其知道第二条承载也传送目标媒体。",
@@ -107,6 +109,7 @@
       "id": "two-bearers-and-duplicates",
       "title": "在同播小区，客户端报告成功接收两条承载；逐承载质量级别、同时接收媒体、内容比对和用重复包纠错均为可选",
       "conditions": [
+        "3GPP TS 23.280 V16.7.0，Release 16，Stage 2，§10.7.3.7.2 第一种部署：两个部分重叠的 MBSFN 区各激活一条不同的 MBMS 承载（TMGI 1、TMGI 2），客户端感兴趣的同一媒体流在这两条承载上广播。",
         "客户端已在重叠小区，知道 TMGI 2 也传目标媒体。"
       ],
       "conclusion": "客户端向服务器报告 TMGI 1 和 TMGI 2 均已成功接收，可逐个 TMGI 附接收质量级别。客户端可以同时从两条承载接收媒体，也可以核对内容是否相同、利用重复包纠错。",
@@ -153,6 +156,7 @@
       "id": "destination-only-second",
       "title": "终端进入只有 TMGI 2 活动的区 2 小区后，客户端报告经 TMGI 2 成功接收，媒体只从这条承载接收",
       "conditions": [
+        "3GPP TS 23.280 V16.7.0，Release 16，Stage 2，§10.7.3.7.2 第一种部署：两个部分重叠的 MBSFN 区各激活一条不同的 MBMS 承载（TMGI 1、TMGI 2），客户端感兴趣的同一媒体流在这两条承载上广播。",
         "终端已离开双播小区，到达区 2 中只有 TMGI 2 活动的新小区。"
       ],
       "conclusion": "客户端通知服务器已通过 TMGI 2 成功接收目标媒体，接收质量级别可附可不附；此后只经 TMGI 2 接收媒体。",
@@ -190,6 +194,7 @@
       "id": "uplink-unicast-not-downlink",
       "title": "第一种重叠 MBSFN 部署中，位置和监听报告须走单播；下行同一媒体无需先转单播再回组播",
       "conditions": [
+        "3GPP TS 23.280 V16.7.0，Release 16，Stage 2，§10.7.3.7.2 第一种部署：两个部分重叠的 MBSFN 区各激活一条不同的 MBMS 承载（TMGI 1、TMGI 2），客户端感兴趣的同一媒体流在这两条承载上广播。",
         "两个 MBMS 承载均传送目标媒体；采用本节的第一种部署，未引入改进部署的跨区应用信令承载。"
       ],
       "conclusion": "客户端用单播向 MC 业务服务器发送位置和 MBMS 监听状态报告。通过重叠区继续用 MBMS 接收媒体，可降低先转单播再切回组播所带来的丢包风险。服务器若不知道终端已进入新区，可能仍把所需媒体发到终端已听不到的旧区承载。",
@@ -250,6 +255,123 @@
           ],
           "printed_pages": [
             132
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "improved-signalling-bearer",
+      "title": "重叠 MBSFN 两区另设全域应用信令承载：哪些承载传媒体，听到一条话权消息能证明什么？",
+      "conditions": [
+        "核对图 10.7.3.7.2-3 的改进部署：两个区各自的一条媒体承载已激活，另有一条在这两个区的整个覆盖范围已激活的应用层信令承载。"
+      ],
+      "conclusion": "图例的 TMGI 1、2 只传媒体；TMGI 9 传送这两条媒体承载所需的控制消息，含两区所有进行中呼叫的话权控制消息及其他应用层信令。通告了 9、终端在一个小区开始监听 9、客户端在该小区实际经 9 收到某场的话权消息，分别是不同的证据；从任何一项都不能单独确认 9 已覆盖两区全域，或该场媒体已到客户端。",
+      "normative_strength": "图文给出承载分工及全域激活条件。TMGI 9 是图中的标识示例，不是所有网络的固定取值。",
+      "limitations": [
+        "两区在地图上部分重叠或当地可听 9，不等于满足全域激活。某场的话权消息既不证明该场媒体已收，也不证明它必定不在当前区广播。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.2, improved deployment, two paragraphs before figure 10.7.3.7.2-3 and the figure"
+          ],
+          "printed_pages": [
+            132,
+            133
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.2, final paragraph on page 132 and paragraph following figure 10.7.3.7.2-3 (area change and full-area condition)"
+          ],
+          "printed_pages": [
+            132,
+            133
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "movement-report-decision",
+      "title": "重叠 MBSFN 区切换：全域信令下何时不需为区域变化起单播，缺相应信息时何时须立即报告？",
+      "conditions": [
+        "分别判断全域应用信令承载已激活并可依其信息接续的改进部署，或客户端未获该信息且已离开服务器所假定广播区的情况。"
+      ],
+      "conclusion": "若如图 10.7.3.7.2-3 另设在两个媒体区全域激活的应用层信令承载，终端可跨区移动而不报本次区域变化，不需专为位置或 MBMS 监听状态报告发起单播承载。若客户端没有获得经该承载传来的相应信息，且已离开服务器认为它所在的广播区，则须立即向服务器报告已离开。",
+      "normative_strength": "图前段写缺信息、离开假定广播区时须立即报告；图后段说明全域信令条件下不需因区域变化发起单播上报。",
+      "limitations": [
+        "未要求上报不等于禁止上报。缺少一条收件日志不证实客户端未获信息；不知道服务器假定的位置，也不能断言客户端已离开假定广播区。不能由客户端未发上报反推全域条件成立。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.2, improved deployment, two paragraphs before figure 10.7.3.7.2-3 and the figure"
+          ],
+          "printed_pages": [
+            132,
+            133
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.2, final paragraph on page 132 and paragraph following figure 10.7.3.7.2-3 (area change and full-area condition)"
+          ],
+          "printed_pages": [
+            132,
+            133
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "specific-call-unicast",
+      "title": "在全域应用信令承载上收到某场 MCPTT 组呼的话权消息，什么时候能请求用单播接收这场呼叫？",
+      "conditions": [
+        "图示改进部署。印 132 的 MCPTT 例：区 2 的客户端要收只在 TMGI 1 播的一场组呼，客户端已通过全域信令承载 TMGI 9 收到相关信息。印 133 的一般情况：终端所在的一条媒体承载不传所需媒体。"
+      ],
+      "conclusion": "在 MCPTT 例中，客户端可根据经 TMGI 9 实际收到的信息发起单播承载，请求用单播收这场呼叫。一般情况下，终端可以向 MC 业务服务器报告无法经当前这条 MBMS 承载接收目标媒体；这份报告触发服务器为该媒体使用单播。仅收到话权消息不能证明这条承载不传目标媒体。",
+      "normative_strength": "印 132：客户端可为这场 MCPTT 呼叫发起承载并请求单播。印 133：终端可以报告无法经当前这条 MBMS 承载接收目标媒体；向服务器报告该事实，就触发服务器为这项媒体使用单播。",
+      "limitations": [
+        "在重叠区，2 不传目标媒体，终端仍可能经 1 收到它。报告不能经 2 接收，不是报告任何 MBMS 承载都收不到。不把两段写成必须另发两条有固定名称的消息。单播承载已开或只知请求已发，不证明服务器已在该路发送目标媒体、终端已收到，或所有呼叫都已转单播。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.2, improved deployment, two paragraphs before figure 10.7.3.7.2-3 and the figure"
+          ],
+          "printed_pages": [
+            132,
+            133
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.7.2, MCPTT call example before figure 10.7.3.7.2-3 and final sentences after the figure (media unavailable in current MBMS coverage)"
+          ],
+          "printed_pages": [
+            132,
+            133
           ]
         }
       ],
@@ -341,6 +463,36 @@
       "printed_pages": [
         132
       ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.7.2, improved deployment, two paragraphs before figure 10.7.3.7.2-3 and the figure"
+      ],
+      "printed_pages": [
+        132,
+        133
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.7.2, final paragraph on page 132 and paragraph following figure 10.7.3.7.2-3 (area change and full-area condition)"
+      ],
+      "printed_pages": [
+        132,
+        133
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.7.2, MCPTT call example before figure 10.7.3.7.2-3 and final sentences after the figure (media unavailable in current MBMS coverage)"
+      ],
+      "printed_pages": [
+        132,
+        133
+      ]
     }
   ],
   "related": [
@@ -348,7 +500,7 @@
     "r16-mcvideo-mbms-to-unicast"
   ],
   "limitations": [
-    "不涵盖同节另设跨区应用信令承载的改进部署，也不规定实际切换的 MCVideo 协议、质量估计方法或无线设备表现。"
+    "本页区分两种跨区部署；不规定无线设备实测表现、具体质量指标或 MCVideo 专项协议。跨区控制信令不证明终端收到了某场呼叫的媒体。"
   ],
   "verification": {
     "original_clauses_checked": true,
