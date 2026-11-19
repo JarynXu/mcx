@@ -1,0 +1,495 @@
+{
+  "topic_id": "r16-location-event-reporting-configuration",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "初次注册会要求 LMS 下发位置配置吗？什么条件下终端才上报？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "Rel-16 在网、单一 MC 系统的事件触发位置上报和取消上报，Stage 2。"
+  ],
+  "condition_rule": "§10.9 标题限定在网，§10.9.1 说明上报按配置触发。事件上报与取消的单系统条件分别来自 §10.9.3.1 注 1 和 §10.9.3.4 注。先区分 LMS 给 LMC 提供规则、LMC 按适用事件报告及 LMS 取消该 LMC 先前获配的位置上报；接收和已存位置须对应同一个上报 LMC。",
+  "claims": [
+    {
+      "id": "provision-or-update",
+      "title": "首次提供或更新上报规则时 LMS 向 LMC 提供配置；用户配置档已含规则时无需另发配置消息",
+      "conditions": [
+        "Rel-16 在网、单一 MC 系统的事件触发位置上报和取消上报，Stage 2。考察初始配置或后续更新。"
+      ],
+      "conclusion": "LMS 在配置步骤提供首次规则或更新；用户配置档可以携带位置上报配置，此时不需要再单发这条配置消息。条款没有把该步骤绑定为每个用户注册成功后的必做动作。",
+      "normative_strength": "步骤 1 说明配置消息的用途；注 2 明列可以不发该条消息的条件。",
+      "limitations": [
+        "没看到配置消息也不能反推用户配置档一定有规则，须查该用户实际使用的档。该程序未给出注册后的固定发送时限。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9, heading; 10.9.1, first paragraph (on-network scope and configuration-based triggers)"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.1, note 1 and opening paragraphs"
+          ],
+          "printed_pages": [
+            168
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.1, numbered step 1"
+          ],
+          "printed_pages": [
+            169
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.1, notes 2 and 3 to step 1"
+          ],
+          "printed_pages": [
+            169
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "configuration-recipient",
+      "title": "普通配置以用户或组为目标：可单播给特定 LMC，或用 MBMS 组消息同时更新多个 LMC",
+      "conditions": [
+        "Rel-16 在网、单一 MC 系统的事件触发位置上报和取消上报，Stage 2。考察首次配置或后续更新的配置信息流，不是取消上报。"
+      ],
+      "conclusion": "普通位置上报配置的目标用户或组标识为必备项。所请求的位置信息、触发条件及报告最短间隔为可选参数；描述报告的资料和条件，不是上报的位置。指定客户端可单播，经 MBMS 可向多个客户端同时发组更新，不要求不同客户端使用同样条件。",
+      "normative_strength": "普通表 M 表示必备目标项，程序所举两种传送是可选路径；并非所有接收者必须同配。",
+      "limitations": [
+        "没有甲的单播不能排除组更新或配置档已有规则；即使发送了组更新，仍不能代某个 LMC 确认收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9, heading; 10.9.1, first paragraph (on-network scope and configuration-based triggers)"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.1, note 1 and opening paragraphs"
+          ],
+          "printed_pages": [
+            168
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.1, opening paragraph and table 10.9.2.1-1, target identity and configuration rows"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.1, numbered step 1"
+          ],
+          "printed_pages": [
+            169
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.1, notes 2 and 3 to step 1"
+          ],
+          "printed_pages": [
+            169
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "registration-can-trigger-client-report",
+      "title": "在网单系统事件上报程序将初次注册列作 LMC 上报的可能触发，未规定 LMS 须因注册另发配置",
+      "conditions": [
+        "Rel-16 在网、单一 MC 系统的事件触发位置上报和取消上报，Stage 2。按有效规则辨认一次客户端位置上报。"
+      ],
+      "conclusion": "初次注册符合该 LMC 的上报规则时，可触发 LMC 向 LMS 发送位置报告。若只配置按移动距离上报，注册本身不触发报告；本在网单系统事件程序也未要求 LMS 因注册另发配置。",
+      "normative_strength": "引言举例，不是要求对所有客户端启用全部事件。步骤 2–3 规定在配置对应事件发生后的报告方向。",
+      "limitations": [
+        "此处未指定注册协议或注册后发配置的时限，也未排除其他程序或实现另有策略。仅凭相邻时间不能把明确标为距离触发的报告改判为注册触发。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9, heading; 10.9.1, first paragraph (on-network scope and configuration-based triggers)"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.1, note 1 and opening paragraphs"
+          ],
+          "printed_pages": [
+            168
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.1, numbered step 1"
+          ],
+          "printed_pages": [
+            169
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.1, notes 2 and 3 to step 1"
+          ],
+          "printed_pages": [
+            169
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.1, numbered steps 2 and 3"
+          ],
+          "printed_pages": [
+            169
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.2, introduction and table 10.9.2.2-1 including note"
+          ],
+          "printed_pages": [
+            165
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "report-content-and-direction",
+      "title": "LMC 发给 LMS 的位置报告标明上报用户的业务标识集合、触发事件和位置；功能别名可选",
+      "conditions": [
+        "Rel-16 在网、单一 MC 系统的事件触发位置上报和取消上报，Stage 2。事件已触发，讨论客户端发出的报告，不是 LMS 发出的配置。"
+      ],
+      "conclusion": "报告携带上报用户的 MC 业务标识集合、触发事件和位置资料，三者为 M；功能别名标 O。位置信息限于 LMS 要求且 LMC 能取得的内容。识别这次触发应看报告中的事件。",
+      "normative_strength": "表中 M/O 分别指必备和可选；步骤 3 明列内容的两个条件。",
+      "limitations": [
+        "位置资料不必一律是地理坐标；收到的是所报的数据，不能据此证明对终端实地位置做过独立测量。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9, heading; 10.9.1, first paragraph (on-network scope and configuration-based triggers)"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.2, introduction and table 10.9.2.2-1 including note"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.1, note 1 and opening paragraphs"
+          ],
+          "printed_pages": [
+            168
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.1, numbered steps 2 and 3"
+          ],
+          "printed_pages": [
+            169
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "receive-before-storing",
+      "title": "LMS 收到位置报告后查本次上报 LMC 的旧位置：有则更新，无则首次存入该 LMC 的位置",
+      "conditions": [
+        "Rel-16 在网、单一 MC 系统的事件触发位置上报和取消上报，Stage 2。区分 LMC 出站和 LMS 收到，按同一上报 LMC 判断有无旧位置。"
+      ],
+      "conclusion": "LMC 发出报告不证明 LMS 收到。LMS 收到后只按本次上报的 LMC 判断；同一用户名下别的 LMC 有旧位置，不能代本次上报 LMC 走更新分支。",
+      "normative_strength": "步骤 4 以接收为前提并区分有无既有位置；发送、接收和实际存储的证据各不相同。",
+      "limitations": [
+        "标准程序不构成现场入库记录、坐标正确性证明或持久化实现规范。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9, heading; 10.9.1, first paragraph (on-network scope and configuration-based triggers)"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.1, note 1 and opening paragraphs"
+          ],
+          "printed_pages": [
+            168
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.1, numbered steps 2 and 3"
+          ],
+          "printed_pages": [
+            169
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.1, numbered step 4"
+          ],
+          "printed_pages": [
+            169
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "empty-configuration-cancels-reporting",
+      "title": "LMC 已获位置上报配置时，LMS 给它发无任何信息元素的同类位置上报配置，取消该 LMC 向 LMS 上报",
+      "conditions": [
+        "在网单系统取消上报程序；本次被要求停止上报的 LMC 先前已获得的就是位置上报配置。"
+      ],
+      "conclusion": "已获位置上报配置的 LMC 收到 LMS 发给它的不含任何信息元素的同类位置上报配置后，停止向该 LMS 发位置报告。普通配置表将目标行列为 M，而表注与取消步骤说明全无元素时的语义；缺少一个可选项不构成取消。",
+      "normative_strength": "普通配置表与其表注、取消程序的前提和两个步骤各按其情境解释。",
+      "limitations": [
+        "这是 Stage 2 信息流语义，不给出 HTTP 或 SIP 消息的构造方法。不能由此确认关闭设备定位、删除 LMS 旧位置或其他业务订阅失效。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9, heading; 10.9.1, first paragraph (on-network scope and configuration-based triggers)"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.1, opening paragraph and table 10.9.2.1-1, target identity and configuration rows"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.1, table 10.9.2.1-1, note"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.4, note and pre-condition"
+          ],
+          "printed_pages": [
+            170
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.4, numbered steps 1 and 2"
+          ],
+          "printed_pages": [
+            171
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-identity-user-profile-download",
+    "r16-calls-emergency-alert-area-entry-exit"
+  ],
+  "limitations": [
+    "不根据这些 Stage 2 段落给初次注册绑定 SIP、HTTP 或 MC 授权，也不据此给出 PSI、报文字段编码、统一时限或设备实测结论。",
+    "取消上报只涉及 LMC 到 LMS 的报告，不处理其他主体的订阅、定位开关及历史数据。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9, heading; 10.9.1, first paragraph (on-network scope and configuration-based triggers)"
+      ],
+      "printed_pages": [
+        165
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.2.1, opening paragraph and table 10.9.2.1-1, target identity and configuration rows"
+      ],
+      "printed_pages": [
+        165
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.2.1, table 10.9.2.1-1, note"
+      ],
+      "printed_pages": [
+        165
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.2.2, introduction and table 10.9.2.2-1 including note"
+      ],
+      "printed_pages": [
+        165
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.3.1, note 1 and opening paragraphs"
+      ],
+      "printed_pages": [
+        168
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.3.1, numbered step 1"
+      ],
+      "printed_pages": [
+        169
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.3.1, notes 2 and 3 to step 1"
+      ],
+      "printed_pages": [
+        169
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.3.1, numbered steps 2 and 3"
+      ],
+      "printed_pages": [
+        169
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.3.1, numbered step 4"
+      ],
+      "printed_pages": [
+        169
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.3.4, note and pre-condition"
+      ],
+      "printed_pages": [
+        170
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.3.4, numbered steps 1 and 2"
+      ],
+      "printed_pages": [
+        171
+      ]
+    }
+  ]
+}

@@ -13,6 +13,7 @@
 - [MCVideo](topics-mcvideo.json)：谁能发起视频呼叫，发送和接收许可如何区分？[组呼下行怎样选择组播或单播](topics/mcvideo/mbms-group-downlink.md)？
 - [用户身份](topics-identity.json)：[同一用户跨业务或跨终端时，用哪些标识对应](topics/identity/cross-service-user-mapping.md)？
 - [公共承载](topics-bearers.json)：[MBMS 承载暂停时，没被要求上报的客户端还要检测吗](topics/bearers/mbms-suspension-reporting.md)？
+- [位置服务](topics-location.json)：[初次注册何时可能触发终端上报位置？LMS 是否因此须另发配置？](topics/location/event-reporting-configuration.md)
 
 知道主题名可直接查[全部主题](topics.json)；想对照另一角色或相邻程序，查[相关问题](reading-paths.json)。判断某次通信是否进入某个分支时，再核对该分支的角色、状态与消息。
 
