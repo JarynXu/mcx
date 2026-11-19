@@ -9,7 +9,7 @@
   "common_conditions": [
     "Release 16 Stage 2，主系统与伙伴系统间 MC 业务用户迁移的网络接入准备。"
   ],
-  "condition_rule": "先分别核对两系统的 HPLMN 和手机实际接入网；针对该伙伴的 SIP 核心选择另核。",
+  "condition_rule": "判断手机实际从哪个网访问伙伴，或要区分共用 HPLMN、已漫游到伙伴 HPLMN 等接入情形时，核对两系统的 HPLMN 和手机的实际接入网。核 EPC 层漫游的终端优选安排和已开通迁移用户的逐目标可用网配置，不需要实际接入记录；针对该伙伴的 SIP 核心选择另核。",
   "claims": [
     {
       "id": "network-selection",
@@ -277,6 +277,52 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "epc-roaming-plmn-priority",
+      "title": "EPC 层漫游选网：MC 业务终端可把能用于迁往一个或多个伙伴 MC 系统的 PLMN 配入用户优选列表；已开通迁移的用户仍须获配逐目标可用的 PLMN",
+      "conditions": [
+        "§5.2.2 的选网优先安排用于 EPC 层漫游，目的是优先考虑可用于迁往一个或多个伙伴 MC 系统的 PLMN。与之比较的 §5.2.9.2 配置要求适用于已开通迁移的 MC 业务用户。"
+      ],
+      "conclusion": "在 EPC 层漫游时，可以在 MC 业务终端的 User Preferred PLMN Selector list 中配置能用于迁往一个或多个伙伴 MC 系统的 PLMN，以便选网时优先考虑它们。这张优选表不必专为迁移配置。对已开通迁移的用户，则必须提供配置，指明迁往不同 MC 系统各可用哪些 PLMN。移动网 P 能用于伙伴 C，不能据此断言 P 也能用于伙伴 B；B 应按该用户迁往 B 的可用网配置判断。",
+      "normative_strength": "§5.2.2 先概括 EPC 层或 IMS 层漫游，第二段只针对 EPC 层选网给出可选的终端优选列表配置；§5.2.9.2 明列已开通迁移的用户须获配逐目标可用 PLMN。按目的区分两项要求，不是规定必须有两个文件。",
+      "limitations": [
+        "未配迁移优选表不等于遗漏用户必配的逐目标配置。只有不标目标的优选表，不能认定逐目标配置已提供或未提供；已证实未提供时才可判这项要求不满足。不能从配置断定当前接入网、所用 SIP 核心或业务授权成功，也不能把 EPC 段的可选安排变成 IMS 层漫游的必配条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.2, roaming support and optional provisioning of the MC service UE User Preferred PLMN Selector list for EPC-level roaming to prioritise PLMNs usable for migration to one or more partner MC systems"
+          ],
+          "printed_pages": [
+            18
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.9.2, permitted PLMNs for the destination MC systems"
+          ],
+          "printed_pages": [
+            23
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.9.3, core selection configuration for each partner MC system"
+          ],
+          "printed_pages": [
+            23
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "related": [
@@ -286,7 +332,8 @@
   ],
   "limitations": [
     "两系统 HPLMN 不同但用户仍通过主网接入时，不当作已经漫游到伙伴，也不当作双方共用同一 HPLMN。",
-    "本版未给出终端如何连接伙伴核心的具体实现方法。"
+    "本版未给出终端如何连接伙伴核心的具体实现方法。",
+    "未说明某 PLMN 对应哪个迁移目标的终端优选表，不足以证明已开通迁移的用户获配了逐目标可用网。选网优先、实际接入、针对伙伴的 SIP 核心配置和业务授权分别举证；不规定两种 PLMN 配置的文件布局或具体选网算法。"
   ],
   "verification": {
     "original_clauses_checked": true,
@@ -391,6 +438,15 @@
       ],
       "printed_pages": [
         23
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.2, roaming support and optional provisioning of the MC service UE User Preferred PLMN Selector list for EPC-level roaming to prioritise PLMNs usable for migration to one or more partner MC systems"
+      ],
+      "printed_pages": [
+        18
       ]
     }
   ]
