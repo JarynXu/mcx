@@ -3,13 +3,13 @@
   "release": 16,
   "standard_stage": 2,
   "state": "draft",
-  "title": "在网 MCVideo 受限聊天组：成功加入时，媒体面就通了吗？",
+  "title": "同一 MC 系统内的在网 MCVideo 受限聊天组：加入或恢复覆盖后，怎样判断媒体面是否已接通？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-23.281-v16.4.0",
   "common_conditions": [
     "同一 MC 系统内的 Rel-16 在网 MCVideo 受限聊天组呼，讨论组成员参与组通信与媒体面的关系。"
   ],
-  "condition_rule": "各项继承共同条件。示例的“乙丙已加入、眼下无组呼”只约束建呼示例，不能套给已经有媒体传输的通用分支。",
+  "condition_rule": "各项继承共同条件。示例的“乙丙已加入、眼下无组呼”只约束建呼示例，不能套给已经有媒体传输的通用分支。 正在进行的呼叫须另分原来不在场的组员迟入，以及失去覆盖前已参呼、恢复时同一场呼叫还在的原参与端。迟入示例中的注册、认证等列明前提不移作掉线返回步骤的明文前提。",
   "claims": [
     {
       "id": "member-join-and-affiliation",
@@ -249,6 +249,110 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "late-join-ongoing-chat",
+      "title": "同一 MC 系统内的在网 MCVideo 受限聊天组呼：首次参加正在进行的本场，接受加入后，建立的是新参与端与服务器之间的媒体面",
+      "conditions": [
+        "同一 MC 系统内的在网 MCVideo 受限聊天组呼正在进行，乙、丙已加入组，三端已注册，三位用户均已认证并获准使用 MCVideo。已有组成员资格的甲表示要参加这场呼叫。"
+      ],
+      "conclusion": "在同一 MC 系统内，组员甲首次参加正在进行的在网 MCVideo 受限聊天组呼。甲端向服务器发组加入请求，给出目标组 ID、甲的 MCVideo ID 及甲端媒体参数；有发送请求时带隐式发送请求指示。服务器核实甲的归属授权；尚未归属时生成隐式归属。请求可带别名；带了才检查是否允许使用、是否为甲激活。服务器回复接受后，甲端与服务器再用媒体面控制信令建立两者之间的媒体面。",
+      "normative_strength": "§.5 的进行中呼叫迟入示例，加入接受和建立媒体面是分列的步骤 3、4。别名激活及订阅更新不是全部用户的参呼前提。",
+      "limitations": [
+        "不能从“新参与这场呼叫”推出甲刚取得组成员资格，也不能从成功响应或乙丙已通话签认甲端已建链、已获发送许可或已显示视频。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.1.2.5, late entry of a group member newly joining the ongoing on-network restricted MCVideo chat group call within one MC system: opening, pre-conditions 1–4 and steps 1–3"
+          ],
+          "printed_pages": [
+            38
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.1.2.5, new participant in the ongoing on-network restricted MCVideo chat group call within one MC system: step 4 establishes the client-to-server media plane using media plane control signalling"
+          ],
+          "printed_pages": [
+            38
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "restore-returning-chat-media",
+      "title": "同一 MC 系统内的在网 MCVideo 受限聊天组：原参与端返回同一场，媒体面重建可视失覆盖时长包含客户端重入信令",
+      "conditions": [
+        "在同一 MC 系统内，甲与乙、丙已参加一场在网 MCVideo 受限聊天组呼；甲在这场呼叫中失去无线覆盖，回来时同一场仍在进行。"
+      ],
+      "conclusion": "在同一 MC 系统内的在网 MCVideo 受限聊天组，甲在原场通话时失去无线覆盖，回来时原场仍在进行。甲端或 MCVideo 服务器发现甲回来了，甲端与服务器用媒体面控制信令重建两者之间的媒体面。重建步骤可以因甲在覆盖外的时长而包含甲发起的重新入组信令。",
+      "normative_strength": "§.6 的恢复对象是甲端与服务器的媒体面；如何发现恢复覆盖不在本规范范围。注 2 未列具体时长界限。",
+      "limitations": [
+        "只见在线或恢复覆盖，不能确认媒体面已重建。日志未显示重新入组信令不等于确定没有发送；即使实证未发送也不能单凭这一点判失败。不能断言何种时长必走重入或永不需要重入。",
+        "同一组名不能证明同一场呼叫延续。本次掉线前已退出且没有重新参加，或原场已经结束，不能按此例判。早先退过但后来已重新参呼者，仍按本次失覆盖时是否在场、回来时是否同一通判断。无线中断本身不足以认定退组或解除归属。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.1.2.6, original participant returns to the same ongoing on-network restricted MCVideo chat group call within one MC system after radio coverage loss: pre-conditions 1–4, steps 1–2 and notes 1–2; re-establishment may include client rejoin signalling depending on time outside coverage"
+          ],
+          "printed_pages": [
+            39
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "late-entry-control-evidence",
+      "title": "同一 MC 系统内的在网 MCVideo 受限聊天组迟入后的通知：当前发送者、发送许可、拒绝和排队各说明什么？",
+      "conditions": [
+        "同一 MC 系统内，甲新加入正在进行的在网 MCVideo 受限聊天组呼，或本已在场、失去无线覆盖后返回同一场呼叫；按所选流程已建立或重建甲端与服务器的媒体面。"
+      ],
+      "conclusion": "同一 MC 系统内，在网 MCVideo 受限聊天组呼的组员甲新参加本场，或原参与端甲失去无线覆盖后回到仍在进行的原场。服务器可以通知甲当前发送者是谁，也可以给甲发送许可、拒绝或队列位置信息。乙、丙可能获知甲加入或返回，甲的功能别名可能显示。各参与端继续使用传输控制。",
+      "normative_strength": "§.5 步骤 5–7 及 §.6 步骤 3–5 的通知和替代控制消息为可选；不能从一项通知推导另一项消息已发送。",
+      "limitations": [
+        "其他人的界面没有提示不否定甲加入或返回；知道当前发送者、知道队列位置都不是甲获得发送许可的证据。这些控制消息和媒体面已建立也不能替代甲端收到并呈现实际视频的记录。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.1.2.5, late entry of a newly joining group member in the ongoing on-network restricted MCVideo chat group call within one MC system: steps 5–7, optional notifications to other participants, control alternatives for the new participant and continuing transmission control"
+          ],
+          "printed_pages": [
+            38,
+            39
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.3.1.2.6, original participant returning to the same ongoing on-network restricted MCVideo chat group call within one MC system: steps 3–5, possible control indications to the returning participant, optional notification to others, continuing transmission control"
+          ],
+          "printed_pages": [
+            40
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "source_references": [
@@ -350,6 +454,52 @@
       "printed_pages": [
         36
       ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.3.1.2.5, late entry of a group member newly joining the ongoing on-network restricted MCVideo chat group call within one MC system: opening, pre-conditions 1–4 and steps 1–3"
+      ],
+      "printed_pages": [
+        38
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.3.1.2.5, new participant in the ongoing on-network restricted MCVideo chat group call within one MC system: step 4 establishes the client-to-server media plane using media plane control signalling"
+      ],
+      "printed_pages": [
+        38
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.3.1.2.5, late entry of a newly joining group member in the ongoing on-network restricted MCVideo chat group call within one MC system: steps 5–7, optional notifications to other participants, control alternatives for the new participant and continuing transmission control"
+      ],
+      "printed_pages": [
+        38,
+        39
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.3.1.2.6, original participant returns to the same ongoing on-network restricted MCVideo chat group call within one MC system after radio coverage loss: pre-conditions 1–4, steps 1–2 and notes 1–2; re-establishment may include client rejoin signalling depending on time outside coverage"
+      ],
+      "printed_pages": [
+        39
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.3.1.2.6, original participant returning to the same ongoing on-network restricted MCVideo chat group call within one MC system: steps 3–5, possible control indications to the returning participant, optional notification to others, continuing transmission control"
+      ],
+      "printed_pages": [
+        40
+      ]
     }
   ],
   "related": [
@@ -357,7 +507,8 @@
     "r16-mcptt-chat-establish-join"
   ],
   "limitations": [
-    "本文不处理退出与释放规程、预安排组呼迟入、MCPTT 语音流程、SIP 编码、具体超时数值或一次实际视频传递。"
+    "本文不处理退出与释放规程、预安排组呼迟入、MCPTT 语音流程、SIP 编码、具体超时数值或一次实际视频传递。",
+    "同系统在网 MCVideo 受限聊天组的掉线返回不含对恢复覆盖检测算法、离开多长必须重新入组或实际画面呈现的判定。"
   ],
   "verification": {
     "original_clauses_checked": true,
