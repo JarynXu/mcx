@@ -1,0 +1,423 @@
+{
+  "topic_id": "r16-groups-user-regroup-response",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "按用户名单创建 MCPTT 预配置组重组：发起方收到 200，是所有人都收到了吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "common_conditions": [
+    "3GPP TS 24.379 V16.14.0，Release 16，Stage 3；MCPTT 按用户名单、使用预配置组创建临时重组。"
+  ],
+  "condition_rule": "每条声明继承主题范围，再看该次 MESSAGE 的发送者和接收者；不得将服务端应答当成用户的通知回执。",
+  "claims": [
+    {
+      "id": "request-identities",
+      "title": "预配置组按人重组：创建请求送发端参与功能，临时组标识与用户清单置于正文",
+      "conditions": [
+        "发起人要求用预配置组 P 为列出的用户创建临时重组 T。"
+      ],
+      "conclusion": "发起客户端的 SIP MESSAGE 以服务发起人的参与功能的 PSI 为目的地址；重组体另列 T 的唯一 URI、P 的组 ID、create 和拟纳入用户的 MCPTT ID 列表。",
+      "normative_strength": "目的地址和四项正文内容为必须；T 的唯一 URI 如何形成由实现决定。",
+      "limitations": [
+        "清单列的是用户，不是组成组或已接到通知的人。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.3.1.1, request destination, item 3; regroup body, item 7 and note"
+          ],
+          "printed_pages": [
+            507
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "any-terminating-response",
+      "title": "MCPTT 使用预配置组按用户名单创建临时重组：控制功能收到任一被请求的终接参与功能对本次创建的 200，就须向发端参与功能回 200",
+      "conditions": [
+        "控制功能已按本次创建请求将用户分给各自的终接参与功能，向相应功能发送 MESSAGE。"
+      ],
+      "conclusion": "控制功能给每个终接参与功能发该功能所服务的用户名单。收到其中任何一个功能的 200，控制功能必须向发端参与功能回 200，并保存本次 T、P 和请求中的成员名单，不以回执对应的部分用户名单取代全名单。发端参与功能收到控制方的 2xx，向发起客户端回 200；发起客户端宜将创建成功告知用户。",
+      "normative_strength": "以控制功能收到任一被请求的终接参与功能对本次 MESSAGE 的 200 为条件，不要求收齐；发起客户端宜提示创建成功。",
+      "limitations": [
+        "仅有发起方创建成功的结果，不能据此确定任一具体用户已收、已读或已入呼，也不能反判未送达。 只见某终接参与功能发出 200，未核控制功能收件，不能断定控制功能已满足成功条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.3.3.1, per-function member lists and sending, printed items 4–5"
+          ],
+          "printed_pages": [
+            511
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.3.3.1, any terminating 200 or no terminating 200, printed items 6–7"
+          ],
+          "printed_pages": [
+            511
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.3.2.2, 2xx, non-480 4xx, 5xx and 6xx handling"
+          ],
+          "printed_pages": [
+            509
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.3.1.1, client 2xx handling and differently named failure paragraph"
+          ],
+          "printed_pages": [
+            507
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.3.2.4, items 1–3: resource branch, 200, previously unnotified clients"
+          ],
+          "printed_pages": [
+            509
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "terminal-scope",
+      "title": "预配置组按人重组：终接参与功能的 200 早于逐人通知，不是客户端应答",
+      "conditions": [
+        "终接参与功能收到本次创建通知请求，未以资源不足或拥塞风险拒绝，准备正常处理。"
+      ],
+      "conclusion": "终接参与功能先向控制功能回 200，再按其保存的信息向清单中已知此前未通知过的客户端发送通知；发给客户端的重组体不复制 users-for-regroup。它将相应用户视为已归属 T，并保存 T、P 和成员名单直到重组移除。",
+      "normative_strength": "先对来请求应答，再按逐人条件处理；通知中人员名单不得复制。",
+      "limitations": [
+        "终接功能的归属认定不等于用户已经接到或看过通知，也不等于已经参加呼叫。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.3.2.4, items 1–3: resource branch, 200, previously unnotified clients"
+          ],
+          "printed_pages": [
+            509
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.3.2.4, items 3c–h and 4a–c"
+          ],
+          "printed_pages": [
+            510
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "two-forbidden-reasons",
+      "title": "预配置组按人重组：403 的 Warning 160 查发起人权限，165 查所提临时组 ID",
+      "conditions": [
+        "发端参与功能收到创建请求并进行授权，或控制功能收到通过发端授权的请求并检查所提 ID。"
+      ],
+      "conclusion": "发端参与功能根据 P-Asserted-Identity 的公共用户身份确定 MCPTT ID；若对应配置档没有置为 true 的 allow-regroup，它拒绝、回 403/Warning 160 并停止。若控制功能判定所提 T 的组 ID 已被占用，它拒绝、回 403/Warning 165 并停止。发端参与功能将后者按非 480 的 4xx 回复，携带收到的 Warning。",
+      "normative_strength": "两个规定条件均须拒绝，决定者和所检查的对象不同。",
+      "limitations": [
+        "只有裸 403 不能在二者中归因；165 并不表示应按 480 重选控制功能。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.3.2.2, items 1–4 and note on controller selection"
+          ],
+          "printed_pages": [
+            508
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.3.3.1, items 1–3: congestion or lack of resources, inability to handle, ID in use"
+          ],
+          "printed_pages": [
+            510
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.3.2.2, 2xx, non-480 4xx, 5xx and 6xx handling"
+          ],
+          "printed_pages": [
+            509
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "two-480-origins",
+      "title": "MCPTT 使用预配置组按用户名单创建临时重组：控制功能不能承办，或分发后未收到任何被请求的终接参与功能的 200，都要向发端参与功能回 480",
+      "conditions": [
+        "控制功能处理预配置组按人创建的 MESSAGE；分清分发前的能力判断和分发后的响应结果。"
+      ],
+      "conclusion": "控制功能不能承办时，须回 480 并停止。控制功能已经分发、但未收到任何被请求的终接参与功能对本次 MESSAGE 的 200 时，控制功能也须回 480。发端参与功能收到控制方的 480，必须换另一控制功能，将创建 MESSAGE 发往新选功能的 PSI。",
+      "normative_strength": "两个条件各自要求回 480；收到 480 的发端参与功能负责重选。选择办法是部署决定。",
+      "limitations": [
+        "单看控制方的 480 不能区分两个原因，更不能判定 T 冲突；观察窗口暂时没有 200 也不证明已到失败分支。该条未给具体等待时间。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.3.3.1, items 1–3: congestion or lack of resources, inability to handle, ID in use"
+          ],
+          "printed_pages": [
+            510
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.3.3.1, any terminating 200 or no terminating 200, printed items 6–7"
+          ],
+          "printed_pages": [
+            511
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.3.2.2, 480 from controller: select different controller and use its PSI"
+          ],
+          "printed_pages": [
+            509
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.3.2.2, items 1–4 and note on controller selection"
+          ],
+          "printed_pages": [
+            508
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "other-errors",
+      "title": "预配置组按人创建：500 不是发端参与功能重选控制功能的指令",
+      "conditions": [
+        "相应的参与功能或控制功能因资源不足不能处理，或存在拥塞风险；另区分发端参与功能收到的控制方响应。"
+      ],
+      "conclusion": "发端参与功能、控制功能和终接参与功能各自都可按资源或拥塞分支拒绝并回 500。发端参与功能从控制方收到非 480 的 4xx 或 5xx、6xx，应生成响应、携带收到的 Warning 并转给发起客户端。",
+      "normative_strength": "本地资源分支为可拒绝；控制方给发端的这些错误不是 480 重选分支。",
+      "limitations": [
+        "§16.3.1.1 的客户端成功句明说 MESSAGE，失败提示句却写 INVITE；不把服务器的错误处理改写成发起客户端必须显示某种 MESSAGE 错误。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.3.2.2, items 1–4 and note on controller selection"
+          ],
+          "printed_pages": [
+            508
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.3.2.4, items 1–3: resource branch, 200, previously unnotified clients"
+          ],
+          "printed_pages": [
+            509
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.3.3.1, items 1–3: congestion or lack of resources, inability to handle, ID in use"
+          ],
+          "printed_pages": [
+            510
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.3.2.2, 2xx, non-480 4xx, 5xx and 6xx handling"
+          ],
+          "printed_pages": [
+            509
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.3.1.1, client 2xx handling and differently named failure paragraph"
+          ],
+          "printed_pages": [
+            507
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.3.2.2, 480 from controller: select different controller and use its PSI"
+          ],
+          "printed_pages": [
+            509
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-groups-preconfigured-regroup-notification",
+    "r16-groups-single-system-temporary-regroup"
+  ],
+  "limitations": [
+    "印 511 的动作与文内回指不一致：第 4 项拆名单、第 5 项发送；第 5 项及 5e 回指 3，第 6、7 项把发送写作 4，第 5 项有两个 d。",
+    "发起端创建成功不能代替接收客户端自己的履历；这里只判断创建，不覆盖移除、呼叫建立或等待时限。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "16.3.1.1, request destination, item 3; regroup body, item 7 and note"
+      ],
+      "printed_pages": [
+        507
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "16.3.1.1, client 2xx handling and differently named failure paragraph"
+      ],
+      "printed_pages": [
+        507
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "16.3.2.2, items 1–4 and note on controller selection"
+      ],
+      "printed_pages": [
+        508
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "16.3.2.2, 480 from controller: select different controller and use its PSI"
+      ],
+      "printed_pages": [
+        509
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "16.3.2.2, 2xx, non-480 4xx, 5xx and 6xx handling"
+      ],
+      "printed_pages": [
+        509
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "16.3.2.4, items 1–3: resource branch, 200, previously unnotified clients"
+      ],
+      "printed_pages": [
+        509
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "16.3.2.4, items 3c–h and 4a–c"
+      ],
+      "printed_pages": [
+        510
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "16.3.3.1, items 1–3: congestion or lack of resources, inability to handle, ID in use"
+      ],
+      "printed_pages": [
+        510
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "16.3.3.1, per-function member lists and sending, printed items 4–5"
+      ],
+      "printed_pages": [
+        511
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "16.3.3.1, any terminating 200 or no terminating 200, printed items 6–7"
+      ],
+      "printed_pages": [
+        511
+      ]
+    }
+  ]
+}
