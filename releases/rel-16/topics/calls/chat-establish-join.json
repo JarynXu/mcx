@@ -453,6 +453,92 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "chat-user-join-after-coverage-return",
+      "title": "回到覆盖后主动加入：同一个组不等于同一场会话",
+      "conditions": [
+        "同一 MC 系统内的普通在网按需 MCPTT 聊天组，以未重组的组 ID 标识；客户端回到覆盖范围，用户明确请求按组身份加入。不以失覆盖前一定参会、原会话仍在或已获准入为前提。"
+      ],
+      "conclusion": "客户端收到用户要求加入的指示后，向服务该用户的参与功能公共服务身份发初始 SIP INVITE，正文 session-type 写 chat，mcptt-request-uri 写组 ID；不用旧会话身份作该请求的目标。控制功能通过前序检查到步骤 10 时，只在该组当前无聊天会话身份的条件下新建并分配会话身份；如已有进行中的会话且接纳本次加入，则加入当前的会话。判断是不是原场，先把这次成功响应配到各自那侧的 INVITE，再比较控制侧实际使用的会话身份。客户端侧的会话身份须经参与功能的映射与控制侧对应，不能把两腿的 Contact 当成同一个裸值比较。只有客户端这次收到 2xx，不能区分加入原场、加入另一个已开始的同组会话，还是这次请求新建。",
+      "normative_strength": "初始请求、请求目标与正文、步骤 10 的条件建会及成功响应所带会话身份按各条规定。比较同一控制侧的会话身份是用于区分原场与另一场的判读方法，不是新增的协议步骤。",
+      "limitations": [
+        "回到覆盖不等于客户端收到用户加入请求；不据回覆盖推定自动重发、恢复或控制功能发出邀请。§10.1.2.2.1.6 的入向 INVITE 入口限已归属但未加入的紧急和迫近危险呼叫，不是普通聊天组的回覆盖程序。",
+        "不假定失覆盖期间原场一定继续或结束；旧记录或仅有客户端这次成功应答，不能单独证明原场已恢复，也不能证明话权授予、RTP 接通或有人听见媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.1, opening; client steps 9, 13a–c, NOTE 2, 14–16"
+          ],
+          "printed_pages": [
+            265,
+            266
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1, controlling steps 9–10, 12"
+          ],
+          "printed_pages": [
+            288
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1, controlling steps 15, 19, 23–25"
+          ],
+          "printed_pages": [
+            290
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.1, receipt of 2xx to outgoing INVITE, steps 2–3, 8 (generating a separate 200 with SDP answer toward the client)"
+          ],
+          "printed_pages": [
+            278,
+            279
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.1, receipt of 2xx to outgoing INVITE, step 6 (PF-facing-to-client session identity mapping)"
+          ],
+          "printed_pages": [
+            279
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.5, MCPTT session identity, Contact allocation, mapping and optional client caching"
+          ],
+          "printed_pages": [
+            38,
+            39
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.6, opening: incoming INVITE procedure for emergency and imminent peril calls, affiliated but not joined (scope comparison only)"
+          ],
+          "printed_pages": [
+            272
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "source_references": [
@@ -661,6 +747,34 @@
       ],
       "printed_pages": [
         84
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.3.1.1, receipt of 2xx to outgoing INVITE, step 6 (PF-facing-to-client session identity mapping)"
+      ],
+      "printed_pages": [
+        279
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "4.5, MCPTT session identity, Contact allocation, mapping and optional client caching"
+      ],
+      "printed_pages": [
+        38,
+        39
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.6, opening: incoming INVITE procedure for emergency and imminent peril calls, affiliated but not joined (scope comparison only)"
+      ],
+      "printed_pages": [
+        272
       ]
     }
   ],
