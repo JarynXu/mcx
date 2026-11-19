@@ -84,4 +84,6 @@ SIP 486 和 MCPTT 文本码 122 说明这次请求因人数上限未获准，不
 
 普通在网按需预安排组呼的客户端如何发起、如何应答，见[预安排组呼的按需建立](prearranged-client-establishment.md)。已知普通在网预安排组呼的目标会话身份，客户端本次按需主动重入、不使用预建立会话，也不请求隐式话权，可按[重入与晚入](rejoin-late-entry.md)核对重入流程。若这份重入 INVITE 还请求隐式话权，该页仍可核对客户端的 Request-URI 是否指向已知会话身份，但不能用来验证话权请求的处理或授予。实际使用预建立会话时走 REFER，不走这里的按需重入。新会话建立时，怎样识别隐式话权请求、主叫何时可获提前发送 RTP 的许可，见[隐式话权请求与早期媒体](../media/implicit-floor-early-media.md)。
 
+若已经加入使用未重组的 MCPTT 组身份的普通按需聊天会话，且不是临时组，要查客户端主动退出或控制功能发 BYE 时参与功能的两侧处理，见[聊天组 BYE 与单人或整场释放](chat-participant-or-session-release.md)。
+
 来源：[3GPP TS 24.379 V16.14.0 / ETSI TS 124 379 V16.14.0，Release 16](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf)。

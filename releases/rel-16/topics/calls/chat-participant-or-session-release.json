@@ -8,9 +8,9 @@
   "source_id": "3gpp-ts-24.379-v16.14.0",
   "common_conditions": [
     "Release 16，Stage 3；本文选取普通在网、按需建立的 MCPTT 聊天组呼。",
-    "从该组会话的控制 MCPTT 功能看参与者一侧的退出、控制功能主动移出一人和整场释放。"
+    "各条按观察角色和本条的消息条件使用。原有控制功能条目仍从该组会话的控制 MCPTT 功能看参与者一侧的退出、控制功能主动移出一人和整场释放；客户端与参与功能条目不继承控制功能的动作。"
   ],
-  "condition_rule": "先分别识别来向 BYE、主动移出、须整场释放；通知还受该分支的条件与会议订阅范围限制。",
+  "condition_rule": "先分别识别来向 BYE、主动移出、须整场释放；通知还受该分支的条件与会议订阅范围限制。 客户端与参与功能条目分别按客户端主动退出或控制功能发起 BYE 的方向，核对各自收到的请求及应答。",
   "claims": [
     {
       "id": "chat-incoming-bye-leg",
@@ -241,6 +241,177 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "chat-client-originated-bye-legs",
+      "title": "客户端主动离开：PF 往控制功能另发 BYE",
+      "conditions": [
+        "同一 MC 系统内、普通在网 MCPTT 聊天组，使用未重组的 MCPTT 组身份，不是临时组，已使用按需信令建立该业务会话。",
+        "用户要求客户端退出已按需建立的聊天会话；客户端与参与功能（PF）、PF 与控制功能（CF）分别看实际收到的请求或应答。"
+      ],
+      "conclusion": "客户端先与媒体面交互，再向服务侧发送 BYE，Request-URI 为要离开的 MCPTT 会话身份；实际收到对自己这条 BYE 的 200 时再与媒体面交互。PF 收到客户端 BYE 时先与媒体面交互，再另生成 BYE 发往 CF。该出向 Request-URI 使用来向 BYE 所含的 MCPTT 会话身份；复制 P-Asserted-Identity，若有 MCPTT 信息 MIME 正文则复制。收到发往 CF 的 BYE 的 200 时，§6.3.2.1.6 末段称执行者为 terminating MCPTT function，要求向客户端转发一个 200 并与媒体面交互以释放关联 CF 侧 SIP 会话的媒体资源。",
+      "normative_strength": "各角色按所收请求或应答执行 SHALL；§6.3.2.1.6 末段列两个必做动作，未规定两者的先后。",
+      "limitations": [
+        "本段不把建呼用的会话身份映射拿来替代 §6.3.2.1.6 对来向 BYE 所含会话身份的规定。该条开头称 participating MCPTT function、末段称 terminating MCPTT function；称谓差异本身不确定实体是否相同，不另设节点或第二个客户端侧 200。",
+        "客户端和参与功能按各自收到的媒体侧事件处理。TS 24.380 §6.2.2 允许用户面发起步骤 1；在 §6.2.4.7.1–2 的非 Start-stop、非 Releasing 状态，应用与信令面的步骤 1 请求使话权参与者停止发送话权控制消息、要求客户端停发 RTP，并进入 Releasing。步骤 2 始终由应用与信令面发起；§6.2.4.8.2 处理该请求时才释放此会话资源及运行中的计时器。§6.4.4 另区分 PF 收到应用与信令面的启动释放指示后停止向两侧发送，与收到已释放指示后回收按需会话相关媒体资源。单个 SIP 200 不能证明这些动作都已执行、另一侧已收到或其他参与者已退出。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.3.1, on-demand chat client-initiated leave calls 6.2.4.1"
+          ],
+          "printed_pages": [
+            275
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.4.1, items 1–4 and response paragraph: initiating client interacts with media before the BYE and upon receipt of its 200"
+          ],
+          "printed_pages": [
+            60
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.3.1, participating function receives outgoing-client BYE for the on-demand chat session"
+          ],
+          "printed_pages": [
+            286
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.6, items 1–6 and concluding response paragraph: participating function sends the business BYE towards the controlling function; the paragraph on its 200 names the terminating MCPTT function for client response and media interaction"
+          ],
+          "printed_pages": [
+            87,
+            88
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.2"
+          ],
+          "printed_pages": [
+            35
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.7.1–2 and 6.2.4.8.2: client-side state guard and release indications, Releasing state, resource and timer cleanup"
+          ],
+          "printed_pages": [
+            47,
+            48
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.4.4, indicated release initiation stops PF transmission in both directions; on-demand media resources released on the released indication"
+          ],
+          "printed_pages": [
+            103
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "chat-cf-originated-bye-legs",
+      "title": "控制功能发起释放：PF 要等客户端的 200，才答复控制功能",
+      "conditions": [
+        "同一 MC 系统内、普通在网 MCPTT 聊天组，使用未重组的 MCPTT 组身份，不是临时组，已使用按需信令建立该业务会话。",
+        "PF 实际收到 CF 发来、用于释放这个客户端一侧按需聊天会话的 BYE；此路径既可用于移出该客户端，也可用于整场释放中的一方。"
+      ],
+      "conclusion": "PF 先为关联 CF 侧 SIP 会话的媒体资源与媒体面交互，再另生成 BYE，复制 P-Asserted-Identity；若来向有 MCPTT 信息 MIME 正文，也复制该正文，然后发给客户端。客户端收到 BYE，先与媒体面交互，再回该请求的 200。PF 实际收到这条客户端侧 BYE 的 200 后，§6.3.2.2.8.1 的应答段第 1 项要求 PF 对收到的 CF 来向 BYE 回 200，第 2 项要求为释放关联客户端侧 SIP 会话的媒体资源而与媒体面交互。",
+      "normative_strength": "§6.3.2.2.8.1 的入向请求步骤 1–5 和入向响应步骤 1–2 按各自事件执行；§6.2.6 要求客户端媒体交互先于响应。",
+      "limitations": [
+        "§6.3.2.2.8.1 没给出此处出向 BYE 的 Request-URI 具体取值，不把反方向 §6.3.2.1.6 的明确字段要求套到这里。收到某一侧 200 不足以判断 CF 是主动移出这个人，还是在向全体参与者发 BYE。",
+        "客户端和参与功能按各自收到的媒体侧事件处理。TS 24.380 §6.2.2 允许用户面发起步骤 1；在 §6.2.4.7.1–2 的非 Start-stop、非 Releasing 状态，应用与信令面的步骤 1 请求使话权参与者停止发送话权控制消息、要求客户端停发 RTP，并进入 Releasing。步骤 2 始终由应用与信令面发起；§6.2.4.8.2 处理该请求时才释放此会话资源及运行中的计时器。§6.4.4 另区分 PF 收到应用与信令面的启动释放指示后停止向两侧发送，与收到已释放指示后回收按需会话相关媒体资源。单个 SIP 200 不能证明这些动作都已执行、另一侧已收到或其他参与者已退出。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.4.1, participating function receives CF-originated BYE for the on-demand chat session"
+          ],
+          "printed_pages": [
+            286
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.8.1, request steps 1–5 and response steps 1–2"
+          ],
+          "printed_pages": [
+            102
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.3.3, client receives BYE to release the chat session and follows 6.2.6"
+          ],
+          "printed_pages": [
+            276
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.6, steps 1–2"
+          ],
+          "printed_pages": [
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.2"
+          ],
+          "printed_pages": [
+            35
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.7.1–2 and 6.2.4.8.2: client-side state guard and release indications, Releasing state, resource and timer cleanup"
+          ],
+          "printed_pages": [
+            47,
+            48
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.4.4, indicated release initiation stops PF transmission in both directions; on-demand media resources released on the released indication"
+          ],
+          "printed_pages": [
+            103
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "source_references": [
@@ -342,6 +513,107 @@
       "printed_pages": [
         136
       ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.3.1, on-demand chat client-initiated leave calls 6.2.4.1"
+      ],
+      "printed_pages": [
+        275
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.2.4.1, items 1–4 and response paragraph: initiating client interacts with media before the BYE and upon receipt of its 200"
+      ],
+      "printed_pages": [
+        60
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.3.3.1, participating function receives outgoing-client BYE for the on-demand chat session"
+      ],
+      "printed_pages": [
+        286
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.1.6, items 1–6 and concluding response paragraph: participating function sends the business BYE towards the controlling function; the paragraph on its 200 names the terminating MCPTT function for client response and media interaction"
+      ],
+      "printed_pages": [
+        87,
+        88
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.3.4.1, participating function receives CF-originated BYE for the on-demand chat session"
+      ],
+      "printed_pages": [
+        286
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.2.8.1, request steps 1–5 and response steps 1–2"
+      ],
+      "printed_pages": [
+        102
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.3.3, client receives BYE to release the chat session and follows 6.2.6"
+      ],
+      "printed_pages": [
+        276
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.2.6, steps 1–2"
+      ],
+      "printed_pages": [
+        61
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.2.2"
+      ],
+      "printed_pages": [
+        35
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.2.4.7.1–2 and 6.2.4.8.2: client-side state guard and release indications, Releasing state, resource and timer cleanup"
+      ],
+      "printed_pages": [
+        47,
+        48
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.4.4, indicated release initiation stops PF transmission in both directions; on-demand media resources released on the released indication"
+      ],
+      "printed_pages": [
+        103
+      ]
     }
   ],
   "related": [
@@ -349,8 +621,8 @@
     "r16-calls-conference-participant-status"
   ],
   "limitations": [
-    "不展开客户端与参与功能之间的协议细节、预建立会话、临时重组及跨系统切换。",
-    "不以控制功能发送的通知或 BYE 推断客户端已经收到或用户看过；不讨论其他来源规定的媒体实现。"
+    "原有控制功能条目不展开客户端与参与功能之间的协议细节；本主题不展开预建立会话、临时重组及跨系统切换。",
+    "不以控制功能发送的通知或 BYE 推断客户端已经收到或用户看过；媒体部分只核对 TS 24.380 规定的本地释放指示和对应动作，不展开其他媒体实现。"
   ],
   "verification": {
     "original_clauses_checked": true,
