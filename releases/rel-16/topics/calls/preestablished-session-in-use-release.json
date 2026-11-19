@@ -1,0 +1,388 @@
+{
+  "topic_id": "r16-calls-preestablished-session-in-use-release",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "拆除正在使用的 MCPTT 预建立会话：已发 CANCEL，为什么还要发 BYE？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "common_conditions": [
+    "3GPP TS 24.379 V16.14.0，Release 16，Stage 3。在网 MCPTT；预建立会话位于客户端与参与 MCPTT 功能（PF）之间。是否有业务会话使用它及业务处于什么状态，按各条条件判断。"
+  ],
+  "condition_rule": "继承主题范围，按释放的发起方、业务当前状态和收到应答的请求分别进入各条。",
+  "claims": [
+    {
+      "id": "identify-release-request",
+      "title": "先看客户端要拆预建立会话，还是只退出一通呼叫",
+      "conditions": [
+        "客户端要释放按 §8.2.1 建立的整项预建立会话；对照情形是客户端只退出其中的预安排组呼。"
+      ],
+      "conclusion": "拆整项时，客户端在预建立 SIP 对话内向参与 MCPTT 功能（PF）发 BYE，Request-URI 是预建立会话的 URI。若只退出其中的预安排组呼，客户端按 §6.2.4.2 在对话外发初始 REFER，Refer-To 指向要退出的业务会话，方法参数为 BYE。",
+      "normative_strength": "各自程序规定的请求和对象不可互换。",
+      "limitations": [
+        "REFER 中写有 BYE，不表示客户端在预建立对话内发了 BYE；也不能据业务会话结束判定预建立会话已拆。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "8.4.1.1, items 1–4: client-originated BYE within the pre-established dialog and media interaction on receipt of its 200 response"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.3.2, client leaving the prearranged group call within a pre-established session by reference to 6.2.4.2"
+          ],
+          "printed_pages": [
+            229
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.4.2, items 2–3 and 6–9: out-of-dialog REFER to leave an MCPTT session within a pre-established session"
+          ],
+          "printed_pages": [
+            60
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "handle-established-or-idle",
+      "title": "PF 对已建立的呼叫和空闲的预建立会话怎样处理",
+      "conditions": [
+        "PF 收到客户端在预建立对话内发来的 BYE，并检查是否有业务会话使用它。"
+      ],
+      "conclusion": "若业务呼叫已建立，PF 须按 §6.3.2.1.6 将该客户端移出业务会话；该程序要求与媒体面交互，生成业务 BYE 并向控制 MCPTT 功能发送。若没有业务会话使用它，PF 则与媒体面交互，断开面向客户端的资源，向客户端原来的预建立 BYE 回 200。",
+      "normative_strength": "按 PF 检查到的使用情况选择规定动作。",
+      "limitations": [
+        "已建立分支要求移出这个客户端，不等于结束组内所有人的通话。§6.3.2.1.6 的业务会话标识与客户端原 BYE 的预建立会话 URI 不能直接等同；被引用的条款未给出二者的通用换算规则。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "8.4.2.1, item 1(a): check current use and remove the client from an established MCPTT session under 6.3.2.1.6"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "8.4.2.1, item 1(c): no MCPTT session using the pre-established session, disconnect client-side media and respond to the incoming BYE"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.6, items 1–6 and concluding response paragraph: participating function sends the business BYE towards the controlling function; the paragraph on its 200 names the terminating MCPTT function for client response and media interaction"
+          ],
+          "printed_pages": [
+            87,
+            88
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "8.4.1.1, items 1–4: client-originated BYE within the pre-established dialog and media interaction on receipt of its 200 response"
+          ],
+          "printed_pages": [
+            165
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "cancel-pending-and-release-on-invite-ok",
+      "title": "PF 取消建立后，仍要处理远端对原 INVITE 的 200",
+      "conditions": [
+        "PF 收到客户端的预建立 BYE 时，使用它的一通 MCPTT 呼叫还在建立。"
+      ],
+      "conclusion": "PF 须发 CANCEL 取消正在建立的业务会话。若 PF 随后收到远端对原业务 INVITE 的 200 (OK)，就须按 §6.3.2.1.6 释放这项业务会话，向控制功能发业务 BYE。这个 200 回答原 INVITE，不是对 CANCEL 或客户端原 BYE 的应答。",
+      "normative_strength": "发送 CANCEL 是建立中分支的要求；追加业务释放的条件是实际收到远端对该 INVITE 的 200。",
+      "limitations": [
+        "发出 CANCEL 不保证对端没有接受原 INVITE，也不证明已完成清理。只见 CANCEL 的日志不能判定最终响应；这里不补写其他结果下的 SIP 超时、确认或恢复程序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "8.4.2.1, item 1(b)(i)–(ii): CANCEL pending establishment; release via 6.3.2.1.6 if a remote 200 to the INVITE is received"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.6, items 1–6 and concluding response paragraph: participating function sends the business BYE towards the controlling function; the paragraph on its 200 names the terminating MCPTT function for client response and media interaction"
+          ],
+          "printed_pages": [
+            87,
+            88
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "correlate-remote-bye-ok-and-client-response",
+      "title": "远端先答业务 BYE，PF 再答客户端原来的预建立 BYE",
+      "conditions": [
+        "在客户端发起的释放中，PF 收到远端对业务 BYE 的 200。"
+      ],
+      "conclusion": "PF 须先与媒体面交互，释放面向远端的资源；再与媒体面交互，释放面向客户端的资源；随后向客户端原来的预建立 BYE 回 200。客户端实际收到自己那条 BYE 的 200 后，还须按 TS 24.380 与媒体面交互。",
+      "normative_strength": "PF 的三项动作依 §8.4.2.1 收尾段；客户端自己的动作以收到对其 BYE 的 200 为条件。",
+      "limitations": [
+        "远端答复业务 BYE、PF 向客户端发出 200、客户端收到该 200 及其后续媒体动作分别核对。一个 200 不证明两端都已完成资源清理。",
+        "§6.3.2.1.6 末段用 terminating MCPTT function，§8.4.2.1 的专用收尾段用 participating MCPTT function。这里据后者判定两侧资源处理及对原预建立 BYE 的答复，不因两个称谓判定实体的同一性，也不把两段叠成再给客户端回一次 200。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "8.4.2.1, closing items 1–3: on receipt of remote BYE 200 release resources towards remote side and client, then answer client BYE"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "8.4.1.1, items 1–4: client-originated BYE within the pre-established dialog and media interaction on receipt of its 200 response"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.6, items 1–6 and concluding response paragraph: participating function sends the business BYE towards the controlling function; the paragraph on its 200 names the terminating MCPTT function for client response and media interaction"
+          ],
+          "printed_pages": [
+            87,
+            88
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "release-from-participating-function",
+      "title": "PF 主动拆除时，有业务的一侧和预建立对话的一侧分别发 BYE",
+      "conditions": [
+        "PF 主动释放按 §8.2.2 建立的预建立会话。"
+      ],
+      "conclusion": "PF 须先释放使用该预建立会话的所有呼叫中的相关参与者。对相应业务，PF 与媒体面交互，以业务会话标识为 Request-URI 向控制功能发 BYE；第 1(f) 项写的是收到业务 BYE 的 200 时，终接 MCPTT 功能（terminating MCPTT function）须与媒体面交互。PF 另以预建立会话 URI 为 Request-URI，在预建立对话内向客户端发 BYE，收到这个 BYE 的 200 后与媒体面交互。",
+      "normative_strength": "先处理使用者，再拆预建立会话。两类 BYE 面向不同对象，可以有多条业务 BYE；空闲时没有相关参与者要先释放。",
+      "limitations": [
+        "处理本预建立会话所承载的参与关系，不等于结束远端所有人的组呼。两个方向的 200 不能互相代替，也不从客户端发起的分支套用 CANCEL。",
+        "发起拆除的 PF 是第 1(a)–(e) 项发送业务 BYE 的主体。第 1(f) 项改用 terminating，不能凭称谓把收到业务 BYE 的 200 时的处理归给发起 PF 或另设一个节点；第 5 项则规定 PF 收到客户端对预建立 BYE 的 200 后与媒体面交互。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "8.4.2.2, item 1(a)–(f): initiating participating function first releases participants of calls using the pre-established session and sends business BYE towards the controlling function; item 1(f) names the terminating MCPTT function for media interaction upon its 200"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "8.4.2.2, items 2–5: BYE towards client in pre-established dialog using its URI, media interaction on its 200"
+          ],
+          "printed_pages": [
+            167
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "handle-incoming-preestablished-bye-at-client",
+      "title": "客户端收到 PF 的预建立 BYE，也检查是否还有呼叫在用",
+      "conditions": [
+        "客户端在预建立会话内收到 PF 发来的 BYE。"
+      ],
+      "conclusion": "客户端须检查是否有 MCPTT 会话在使用它。若有已建立的业务会话，客户端须按 TS 24.380 逐会话退出；若没有业务会话使用它，客户端须与媒体面交互，断开面向 PF 的媒体资源，并向该 BYE 回 200。",
+      "normative_strength": "§8.4.1.2 对这两种条件分别规定动作。",
+      "limitations": [
+        "本段未为仍在建立的呼叫规定与 §8.4.2.1 相同的客户端 CANCEL 分支，也不把无业务使用时的应答条件改成无论状态如何都立即应答。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "8.4.1.2, items 1 and 2(a)–(b): client checks for use, releases its participation in established sessions and, when unused, disconnects PF-side media and answers the BYE"
+          ],
+          "printed_pages": [
+            165,
+            166
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "8.4.1.1, items 1–4: client-originated BYE within the pre-established dialog and media interaction on receipt of its 200 response"
+      ],
+      "printed_pages": [
+        165
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.2.3.2, client leaving the prearranged group call within a pre-established session by reference to 6.2.4.2"
+      ],
+      "printed_pages": [
+        229
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.2.4.2, items 2–3 and 6–9: out-of-dialog REFER to leave an MCPTT session within a pre-established session"
+      ],
+      "printed_pages": [
+        60
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "8.4.2.1, item 1(a): check current use and remove the client from an established MCPTT session under 6.3.2.1.6"
+      ],
+      "printed_pages": [
+        166
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "8.4.2.1, item 1(c): no MCPTT session using the pre-established session, disconnect client-side media and respond to the incoming BYE"
+      ],
+      "printed_pages": [
+        166
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.1.6, items 1–6 and concluding response paragraph: participating function sends the business BYE towards the controlling function; the paragraph on its 200 names the terminating MCPTT function for client response and media interaction"
+      ],
+      "printed_pages": [
+        87,
+        88
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "8.4.2.1, item 1(b)(i)–(ii): CANCEL pending establishment; release via 6.3.2.1.6 if a remote 200 to the INVITE is received"
+      ],
+      "printed_pages": [
+        166
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "8.4.2.1, closing items 1–3: on receipt of remote BYE 200 release resources towards remote side and client, then answer client BYE"
+      ],
+      "printed_pages": [
+        166
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "8.4.2.2, item 1(a)–(f): initiating participating function first releases participants of calls using the pre-established session and sends business BYE towards the controlling function; item 1(f) names the terminating MCPTT function for media interaction upon its 200"
+      ],
+      "printed_pages": [
+        166
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "8.4.2.2, items 2–5: BYE towards client in pre-established dialog using its URI, media interaction on its 200"
+      ],
+      "printed_pages": [
+        167
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "8.4.1.2, items 1 and 2(a)–(b): client checks for use, releases its participation in established sessions and, when unused, disconnects PF-side media and answers the BYE"
+      ],
+      "printed_pages": [
+        165,
+        166
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcptt-preestablished-session-lifecycle",
+    "r16-calls-private-client-release",
+    "r16-bearers-common-preestablished-media-change-release"
+  ],
+  "limitations": [
+    "只讨论释放整项 MCPTT 预建立会话时的角色和状态分支；无业务使用是对照，不重述建立和空闲修改。",
+    "§6.3.2.1.6 用于业务释放，TS 24.229 和 TS 24.380 分别承接 SIP 和媒体程序。不构造缺失的 URI 换算、事务计时、重传或媒体状态机。",
+    "不从单个请求或 200 推定整个组呼结束、对端已收件或双方已完成媒体清理。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

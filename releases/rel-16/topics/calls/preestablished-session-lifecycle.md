@@ -75,3 +75,5 @@ PSI未分配时按§6.3.7.1回404；识别并按本地政策核验MCPTT ID及授
 ## 条件化关联
 
 [服务设置发布](settings-publication.md)：仅在实际settings-only PUBLISH事件中读取；其200不能代替预建立INVITE、资源共享或媒体准入。
+
+若拆除时已有呼叫在用或仍在建立，见[正在使用的预建立会话怎样释放](preestablished-session-in-use-release.md)：按发起方区分业务 BYE 和预建立 BYE，核对各自的 200 与媒体资源。

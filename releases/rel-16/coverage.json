@@ -240,6 +240,22 @@
         },
         {
           "domain": "calls",
+          "title": "拆除正在使用的 MCPTT 预建立会话：已发 CANCEL，为什么还要发 BYE？",
+          "can_answer": "客户端拆除预建立会话时，PF 须检查有无业务使用它：已建立则移出该客户端，建立中先发 CANCEL，若实际收到远端对原 INVITE 的 200 仍须释放业务会话；无人使用时直接断开面向客户端的资源并回 200。",
+          "conditional_or_interface_only": "远端对业务 BYE 的 200 触发 PF 处理远端和客户端两侧媒体资源，再答客户端原来的预建立 BYE。PF 主动拆除时先处理各业务参与者，再在预建立对话内向客户端发 BYE。每个响应只对应自己的请求。",
+          "not_established": "不把业务参与者退出解释为整组结束，也不从一条 200 判定两端完成清理。业务会话标识与预建立会话 URI 不互换；不补写 SIP 超时恢复、地址换算或媒体状态机。",
+          "read": [
+            {
+              "title": "拆除正在使用的 MCPTT 预建立会话：已发 CANCEL，为什么还要发 BYE？",
+              "path": "topics/calls/preestablished-session-in-use-release.md",
+              "source_ids": [
+                "3gpp-ts-24.379-v16.14.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "calls",
           "title": "MCPTT 按需首接呼叫：邀请谁，忙线、取消和释放如何区分？",
           "can_answer": "客户端怎样核对首接发起许可、表示候选接收者，某一被叫怎样区分忙线与无人应答，以及怎样处理未决邀请上的 CANCEL 和既有对话中的 BYE。",
           "conditional_or_interface_only": "发起时要看用户配置中的许可；被叫侧的响应只解释本客户端及其事务。不能由某一条 SIP 200 判定哪位候选最终接听。",
