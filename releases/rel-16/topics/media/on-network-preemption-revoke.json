@@ -10,7 +10,8 @@
   "common_conditions": [
     "固定TS24.380 V16.9.0；已建立在网按需会话的单话权控制，以显式Floor Request及本地策略选择撤销为主。广播、ambient、system、临时组、audio-cut-in、dual和multi-talker不作为主流程；紧急/迫近危险指示仅按实际请求准入条件处理，implicit升级只作比较。",
     "从已有G Taken、请求者U not permitted and Floor Taken及原持有者U permitted的相应事件开始；后续pending状态只适用于已进入该状态的角色。不提供初始化、完整授权政策、排队推进或完整通话释放算法。",
-    "各角色与消息/超时事件分别适用。请求失败、无queueing、尚未撤销及未收到Release均可落入对应条款，不以成功条件排除拒绝或超时。会话协商和适用媒体保护仍是独立依赖。"
+    "各角色与消息/超时事件分别适用。请求失败、无queueing、尚未撤销及未收到Release均可落入对应条款，不以成功条件排除拒绝或超时。会话协商和适用媒体保护仍是独立依赖。",
+    "普通非持有者撤回排队及队位查询，按关联参与者的 U 状态和各自接收事件进入；不以策略选择撤销、原持有者进入 pending 或队列查找命中为前提。"
   ],
   "claims": [
     {
@@ -224,6 +225,151 @@
             162,
             173,
             174
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "nonholder-release-queue-lookup",
+      "title": "非持有者发 Release：确认收到与移出队列是不同动作",
+      "conditions": [
+        "在网普通单话权。控制服务器面向关联参与者的 U 处于 not permitted and Floor Taken，即有另一个客户端获准发媒体。",
+        "该 U 收到关联参与者的 Floor Release。这里只取已协商支持排队、未在 mc_priority 中包含话权优先级的情形。是否在活动请求队列里，以本次查找为准。"
+      ],
+      "conclusion": "若来向 Release 的 subtype 首位为 1，服务器须先发 Floor Ack（Message Type=4，Source=2，即控制 MCPTT 功能）。随后检查活动队列：来向 Release 有 Track Info 时，使用其中最上层的 Participant Reference 加该消息的 SSRC；无 Track Info 时，只用该消息的 SSRC。查到该关联客户端在活动队列中才移出。无论是否查到该客户端，均须向关联参与者发 Floor Taken，写入获准者的 MCPTT ID，消息序号递增 1；来向 Release 有 Track Info 时回带该字段。未请求隐私时可附获准者功能别名，普通非广播场景可附 Permission to Request the Floor=1。可令该 Taken 的 subtype 首位为 1 以请求确认。U 仍处于 not permitted and Floor Taken。",
+      "normative_strength": "确认仅在来向 subtype 首位为 1 时为 SHALL；查找、命中才移出、发送 Taken 及其相应字段和状态保持为 SHALL。非广播请求许可字段、无隐私条件下的功能别名与请求 Taken 确认为 MAY；是否及如何处理对 Taken 的确认是实现选项。",
+      "limitations": [
+        "§6.3.5.4.5 第一段入口写的是“未协商排队或 mc_priority 中包含话权优先级”，第二段入口是“已协商排队”。若既已协商排队又含该优先级，这两个入口有交叠；不据本页改成互斥分支或规定额外执行顺序。",
+        "同一 SSRC 配不同最上层 Participant Reference 时，不以 SSRC 相同判为命中。Ack 在查队列之前，Taken 在命中和未命中时都发送；Taken 回带 Track Info 也不报告本次是否移出。Granted Party’s Identity 标识获准发媒体的人，不标识被移除的人。",
+        "若经过非控制功能，§6.5.5.3.10 的参与者接口处于 P: has no permission 时可在本侧确认，不从终端的 Ack 推定控制服务器已收到这条 Release。§6.5.4.3 要求非控制侧的服务器接口在转交 Release 时追加参与者引用或补入 Track Info；若该参与者的 Floor Request 在本侧被动队列，须移出该项。终端腿不带 Track Info 不代表控制腿没带，被动队列移出不证明控制侧活动队列移出。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.4.1, opening: the associated participant does not hold permission and another MCPTT client does"
+          ],
+          "printed_pages": [
+            77
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.7, opening: Floor Release can also cancel a queued floor request"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.4.5, first and second entry paragraphs: no negotiated queueing or floor priority in mc_priority; negotiated queueing"
+          ],
+          "printed_pages": [
+            81,
+            82
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.4.5, negotiated-queueing paragraph, items 1–3: mandatory Ack when requested, lookup keys and conditional removal"
+          ],
+          "printed_pages": [
+            82
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.4.5, negotiated-queueing paragraph, items 4–6 and NOTE 2: Floor Taken fields, optional Ack request and unchanged U state"
+          ],
+          "printed_pages": [
+            82,
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.3.10, opening and items 1–3: Floor Release handled by the non-controlling function floor participant interface in P: has no permission"
+          ],
+          "printed_pages": [
+            115,
+            116
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.3, items 1–2: non-controlling function adds to or supplies Track Info on the forwarded Release and conditionally removes its own passive-queue entry"
+          ],
+          "printed_pages": [
+            106
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "observe-queue-after-withdrawal",
+      "title": "另一次队位答复只报告这次看到的队列状态",
+      "conditions": [
+        "在网普通单话权。控制服务器面向关联参与者的 U 处于 not permitted and Floor Taken，即有另一个客户端获准发媒体。",
+        "该服务器接口实际收到关联参与者的 Floor Queue Position Request。这是独立入口，不要求事先撤回或已收到 Floor Ack/Taken。"
+      ],
+      "conclusion": "服务器须发 Floor Queue Position Info，Queue Info 给出队位和话权优先级，仍留原 U 状态；可将该 Info 的 subtype 首位置 1 要求确认。先核对这是控制侧同一通话、同一关联参与者及相应查询的答复，再按本页“请求者 U 先处理准入与队列”一节的 254、255 编码判读该次报告。终端侧的孤立消息缺这层关联时，不据它确认控制侧查询结果。254 报告未排队，255 不表示已退队。",
+      "normative_strength": "回送位置/优先级及保持状态为 SHALL，请求确认为 MAY。§6.3.5.4.7 的 Track Info 条件以该 Info 消息含字段表述，不能改写成查询带 Track Info 时必回带。",
+      "limitations": [
+        "处理 Floor Request 也可能发出 Queue Position Info；看到消息名或它在日志里排在 Release 之后，不足以把它配到某次查询或某条 Release。即使已配对且报告 254，也不能仅据此断言某条 Release 删除了请求。看不到答复或只看到终端停等，不判服务端仍排队或已移出。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.4.1, opening: the associated participant does not hold permission and another MCPTT client does"
+          ],
+          "printed_pages": [
+            77
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.4.7, items 1 and 3 and note: queue position response and unchanged U state"
+          ],
+          "printed_pages": [
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.3.5, Table 8.2.3.5-1 and value definitions: Queue Info and queue positions 254 and 255"
+          ],
+          "printed_pages": [
+            150,
+            151
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.4.4, item 8(b): queue position notified on handling an ordinary Floor Request as well"
+          ],
+          "printed_pages": [
+            81
           ]
         }
       ],

@@ -2179,11 +2179,11 @@ G 的主系统甲向伙伴乙提供了组配置，乙采用本地配置，两系
 
 ## 在网单话权：显式抢占请求与撤销事件责任
 
-在网单话权显式抢占请求的U准入、G条件撤销、持有者客户端停止与U/G宽限期收尾。
+在网单话权显式抢占请求的U准入、G条件撤销、持有者客户端停止与U/G宽限期收尾。 还可查普通非持有者撤回排队时，控制服务器怎样确认、匹配并移出活动队列，及怎样另查队位。
 
-策略选撤销才进入后续；RTP、Release、T3/T1/T8及Idle/Taken分别按角色事件判断，队首和撤销不是新用户Granted。
+策略选撤销才进入后续；RTP、Release、T3/T1/T8及Idle/Taken分别按角色事件判断，队首和撤销不是新用户Granted。 已协商排队且未在 mc_priority 中包含话权优先级时，Release 命中现有请求才移出；是否回 Ack 看来向 subtype，命中与否都发 Floor Taken。
 
-尚未建立：不覆盖完整初始化、授权政策、排队推进、dual/multi-talker或完整释放；紧急SIP、Revoke、队首和Idle/Taken均不证明新请求者已获准，原文逻辑与接口差异保留。
+尚未建立：不覆盖完整初始化、授权政策、排队推进、dual/multi-talker或完整释放；紧急SIP、Revoke、队首和Idle/Taken均不证明新请求者已获准，原文逻辑与接口差异保留。 终端 Ack 不保证控制服务器收到 Release；Taken 或回带 Track Info 不确认移出。相应队位答复报告当时的状态，不证明由哪次撤回造成；不从沉默推定结果。
 
 [读取主题](topics/media/on-network-preemption-revoke.md)
 
