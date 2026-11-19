@@ -3,18 +3,19 @@
   "release": 16,
   "standard_stage": 3,
   "state": "draft",
-  "title": "按需 MCPTT chat 组呼：按组身份发起请求，何时新建会话、何时加入已有会话？",
+  "title": "按需 MCPTT 聊天组：怎样新建或加入会话？控制功能为什么有时先发 UPDATE，再接受 INVITE？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
-  "condition_rule": "Each claim inherits common_conditions. Client, controlling function and notification actions have different event preconditions.",
+  "condition_rule": "Each claim inherits common_conditions and its own conditions. The ordinary call path and the priority-correction branches have different preconditions.",
   "common_conditions": [
-    "本页限于 Release 16、Stage 3 的普通在网按需 MCPTT chat 语音组呼。客户端用未重组的 MCPTT 组 ID 直接请求发起或加入；不处理已重组的组、临时组身份（TGI）、预建立会话，以及紧急或迫近危险请求和相应既有状态。"
+    "Release 16、Stage 3，在网按需 MCPTT 聊天组语音呼叫。客户端以未重组的 MCPTT 组 ID 请求发起或加入，不使用临时组身份（TGI）或预建立会话。"
   ],
   "claims": [
     {
       "id": "group-addressed-invite",
       "title": "初始 INVITE 发给谁，要加入哪个组又写在哪里？",
       "conditions": [
+        "普通组呼：本次请求不是紧急或迫近危险请求，组也不处于这两种状态。",
         "用户要求以标识 chat 组的组身份发起或加入会话。"
       ],
       "conclusion": "两种操作都由客户端发出初始 SIP INVITE：Request-URI 填服务该用户的参与 MCPTT 功能的公共服务身份；消息体的 session-type 填 chat，mcptt-request-uri 填目标组身份，mcptt-client-id 填发起客户端 ID。主叫用户的 MCPTT ID 不由客户端填入该消息体，由发起侧参与功能补入。这条加入程序不要求客户端先取得既有会话 ID。",
@@ -44,6 +45,7 @@
       "id": "create-or-use-session",
       "title": "谁判断要不要建会？",
       "conditions": [
+        "普通组呼：本次请求不是紧急或迫近危险请求，组也不处于这两种状态。",
         "控制功能收到以未重组的 MCPTT 组 ID 标识 chat 组的请求。组文档、资格和媒体检查各有相应入口；建会判断仅适用于通过前序处理并到达步骤 10 的请求。"
       ],
       "conclusion": "控制功能先取组文档并进行初检。对这里的未重组组 ID，若发起用户尚未归属该组，步骤 5 要求检查其隐式归属资格；不具资格就拒绝（SIP 403，Warning 引号内的 MCPTT 文本码为 120）并停止。媒体参数不可接受或未提供 MCPTT 语音编解码也须拒绝（488）。通过前序处理，到达步骤 10 时，若该组的 chat 会话身份尚不存在，控制功能须建会并为它分配一个 MCPTT 会话身份。会话已在进行时，获准的用户加入原会话，不因自己的初始 INVITE 再分配一个组会话身份。",
@@ -114,12 +116,13 @@
       "id": "ongoing-at-capacity",
       "title": "正在进行的组已满，较高优先级是否保证入会？",
       "conditions": [
+        "普通组呼：本次请求不是紧急或迫近危险请求，组也不处于这两种状态。",
         "控制功能处理加入请求，chat 会话已在进行，且已达组的在网参与人数上限（on-network-max-participant-count）。"
       ],
       "conclusion": "若本地策略判断新用户的优先级高于至少一名既有参与者，控制功能可以按所引的参与者移出规程移出一人，跳过容量拒绝这一步，再继续后续处理。是否移出并非强制，也没有规定必须挑优先级最低的人。不采用该例外时，该满员分支须向发起网络返回 486（Busy Here），Warning 引号内的 MCPTT 文本码 122 表示人数过多。尚未达到上限则不触发这一容量拒绝；仍须满足其余入会条件。",
       "normative_strength": "满足本地策略条件后移出参与者为 may；不走移出例外的满员拒绝为 shall。",
       "limitations": [
-        "步骤 11 的注 2 只举出可能的策略输入，如用户优先级、参与者类型及其他组文档信息；未规定统一的排序、候补或抢占算法。移出一人并非拆除整个组会话。",
+        "步骤 11 的注 2 只举出可能的策略输入，如用户优先级、参与者类型及其他组文档信息；未规定统一的排序、候补或抢占算法。移出结束的是该客户端参与这场会话。解除组归属和给高优先级用户腾位置都可能导致移出；只看到移出，不能判定用户已解除组归属，也不能判定组成员名单有变。",
         "SIP 486 和 MCPTT 文本码 122 说明这次请求因人数上限未获准，不报告用户此前是否已归属，也不能单凭该响应断定是否曾执行过隐式归属。",
         "人数已满时，486 是 SIP 状态码；Warning 头的外层 warn-code 为 399，引号内 warn-text 开头的 MCPTT 文本码为 122。"
       ],
@@ -143,6 +146,15 @@
             34,
             36
           ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.4.3, opening paragraph (scope and two example reasons for removing a client from the session)"
+          ],
+          "printed_pages": [
+            251
+          ]
         }
       ],
       "verification": {
@@ -153,14 +165,15 @@
     },
     {
       "id": "success-and-subscribers",
-      "title": "200 与会议通知分别能证明什么？",
+      "title": "普通组呼的 200(INVITE) 与会议通知分别能证明什么？",
       "conditions": [
-        "控制功能已走到接受请求的分支；通知还需本次请求之前会话就已在进行且至少一名参与者订阅会议事件。客户端动作则以收到该 INVITE 的 2xx 为入口。"
+        "普通组呼：本次请求不是紧急或迫近危险请求，组也不处于这两种状态。",
+        "控制功能已走到接受其入向 INVITE 的分支；通知还要求已有会话且至少一名参与者订阅。客户端动作以收到对其客户端侧 INVITE 的 2xx 为条件。"
       ],
-      "conclusion": "控制功能在成功响应 200 的 Contact 中给出 MCPTT 会话身份（并含 isfocus 等标记），与媒体面交互，发送该响应。客户端收到 2xx 后须与用户面交互，但是否订阅会议事件由客户端选择。若是加入已有会话且已有参与者订阅会议事件，控制功能须向所有已订阅的参与者发送 NOTIFY；不要求向未订阅者群发。",
+      "conclusion": "控制功能在对其入向 INVITE 的 200 中用 Contact 给出 MCPTT 会话身份和 isfocus 等标记，与媒体面交互后发送该响应。发起侧参与功能收到 2xx 后，另生成 200 发给客户端。客户端收到自己这侧的 2xx 后须与用户面交互，但可自行决定是否订阅会议事件。若加入的是已有会话且已有参与者订阅，控制功能须向所有已订阅的参与者发送 NOTIFY。",
       "normative_strength": "成功分支的 200、Contact 会话身份、媒体面交互和条件满足时的 NOTIFY 为 shall；客户端订阅为 may。",
       "limitations": [
-        "首次创建不满足这一 NOTIFY 步骤的“原已进行”条件；无人订阅也不满足。判断限于本条这一次通知，不排除其他事件触发的通知。仅见 200 不能分辨该会话是否刚创建，也不能证明其他成员已经加入、收到语音或主叫已获话权。"
+        "首次建会或无人订阅时，本次入会均不触发这项通知。给新人腾出席位与对其初始 INVITE 回 200，只说明容量与入会信令的处理；都不是话权授予。这个 200 也不能分辨会话是不是刚建的、其他成员是否已加入或听到语音。"
       ],
       "source_references": [
         {
@@ -178,6 +191,259 @@
             "10.1.2.2.1.1, receipt of 2xx steps 1 and 3"
           ],
           "printed_pages": [
+            266
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.1, receipt of 2xx to outgoing INVITE, steps 2–3, 8 (generating a separate 200 with SDP answer toward the client)"
+          ],
+          "printed_pages": [
+            278,
+            279
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "resource-priority-check",
+      "title": "初始 INVITE 缺少 Resource-Priority，控制功能就要发 UPDATE 吗？",
+      "conditions": [
+        "控制功能（CF）已通过前序检查，处理发起侧参与功能（O-PF）为同一按需聊天组请求生成的入向 INVITE。"
+      ],
+      "conclusion": "紧急指示 emergency-ind 为 true，或组已处于紧急状态时，控制功能核对自己收到的 INVITE 是否带紧急档。若组不处于紧急状态，而迫近危险指示 imminentperil-ind 为 true 或组已处于迫近危险状态，则核对迫近危险档。两处分支分别是 13a 和 14a。只有头缺失或与应有档不符，这两个分支才调用同一个纠错程序（§6.3.3.1.8）生成 UPDATE。调用它的分支负责把 UPDATE 发向这份入向 INVITE 的发起方，并在收到该 UPDATE 的 200 后继续。头值正确就不走这项纠错。",
+      "normative_strength": "步骤 13a、14a 的核对与不匹配时的纠错均为有条件的 shall。",
+      "limitations": [
+        "普通请求遇到普通组，缺头本身不会触发纠错。已带高档头的 INVITE 还可能在更早的检查被拒绝：带紧急档、无紧急指示且组紧急状态为 false，按 8a 回 403 并停止；带迫近危险档、无迫近危险指示且组迫近危险状态为 false，按 8b 也回 403 并停止。这两种请求都不会收到用来降档的 UPDATE。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1, controlling steps 3, 6–8 (earlier checks; step 8a–b rejects without continuing)"
+          ],
+          "printed_pages": [
+            287,
+            288
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1, controlling step 13 opening, 13a(i–iii), NOTE 3"
+          ],
+          "printed_pages": [
+            288
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1, controlling step 14 opening, 14a(i–iii), NOTE 4"
+          ],
+          "printed_pages": [
+            289
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.8, initial steps 1–4 and on receipt of PRACK steps 1–3"
+          ],
+          "printed_pages": [
+            109
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.1, outgoing INVITE steps 9–10, 12 (originating participating function)"
+          ],
+          "printed_pages": [
+            277
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "resource-priority-update-values",
+      "title": "UPDATE 里的优先级跟随请求的指示，还是跟随组状态？",
+      "conditions": [
+        "控制功能在其入向 INVITE 上通过步骤 13a 或 14a 调用 §6.3.3.1.8，正为向该 INVITE 发起方发送的 UPDATE 填写 Resource-Priority。"
+      ],
+      "conclusion": "控制功能看填写 UPDATE 时组的进行中状态：紧急为 true 取紧急档；紧急为 false、迫近危险为 true 取迫近危险档；两者都为 false 取普通档。按 §6.3.3.1.19，从 MCPTT 服务配置的 OnNetwork 下对应的 emergency-resource-priority、imminent-peril-resource-priority 或 normal-resource-priority 同时读取 resource-priority-namespace 和 resource-priority-priority。",
+      "normative_strength": "按组状态选档并取该档的命名空间和优先级值为 shall。",
+      "limitations": [
+        "13a/14a 核对来包所需的档，与辅助程序按组当前状态填 UPDATE，是两个判断。新声明紧急并不自动使 UPDATE 取紧急档：若填头时两个状态均为 false，辅助程序写普通档。主流程把原为 false 的组状态置为 true 的动作分别在后面的 13c(i)、14c(i)。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1, controlling step 13 opening, 13a(i–iii), NOTE 3"
+          ],
+          "printed_pages": [
+            288
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1, controlling step 14 opening, 14a(i–iii), NOTE 4"
+          ],
+          "printed_pages": [
+            289
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.8, on receipt of PRACK steps 4–5 and NOTES 1–2"
+          ],
+          "printed_pages": [
+            109
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.19, emergency, imminent peril and normal configuration paragraphs, steps 1–2 each"
+          ],
+          "printed_pages": [
+            118,
+            119
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1, controlling steps 13c(i), 14c(i) (subsequent state changes)"
+          ],
+          "printed_pages": [
+            289,
+            290
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "priority-correction-transactions",
+      "title": "控制功能侧的 183、UPDATE 与三个 200，怎样和两侧的 INVITE 配对？",
+      "conditions": [
+        "观察在网按需聊天组中 O-PF 与控制功能 CF 的信令：CF 所收 INVITE 在 13a 或 14a 命中纠错，最终 200(INVITE) 还要求该入向请求走到接受步骤。讨论终端侧 200 时，另以 O-PF 收到其发往 CF 的 INVITE 的 2xx 为条件。"
+      ],
+      "conclusion": "客户端发给 O-PF 的 INVITE 带 offer A。O-PF 另生成一份 INVITE 发往 CF，其中的 offer B 以 A 为基础，须替换媒体流地址时，O-PF 写入自己的 IP 地址和端口。CF 纠错时先向客户端方向发可靠 183（Require: 100rel），里面的 SDP answer 回答 B。收到针对该 183 的 PRACK 后，CF 回 200(PRACK)，再向其入向 INVITE 的发起方发带 Resource-Priority 的 UPDATE；UPDATE 携带新 offer C，编制依据仍是 B，不是 183 中的 answer。即使 A 和 B 中的字段碰巧相同，也要按 CF 收到的那份 INVITE 配对。",
+      "normative_strength": "CF 在纠错中发送可靠 183、回应 PRACK、发送 UPDATE，收到 200(UPDATE) 才继续，到接受步骤回应本侧 INVITE；其步骤 16 的 SDP 要求对已执行纠错作例外。O-PF 收到 2xx 后另生成含 answer 的终端侧 200 并发送，为 shall。",
+      "limitations": [
+        "在 CF 一侧，200(PRACK) 只回应 PRACK。CF 必须收到对自己所发 UPDATE 的 200 才继续处理；最终发出的 200(INVITE) 才接受 O-PF 发来的 INVITE，其 Contact 含会话身份和 isfocus。未走纠错时，步骤 16 要求 CF 的 200(INVITE) 带 SDP answer；走了纠错，183 已回答 B，步骤 16 不再要求这个 200 重给 answer，也不禁止其中出现任何 SDP。",
+        "在客户端一侧，不能套用 CF 的步骤 16。O-PF 收到其发往 CF 的 INVITE 的 2xx 后，要另生成一个 200，按参与功能的规程加入 SDP answer，再发给客户端。CF 发出的 200 没有重复 answer，并不表示客户端收到的 200 也可省略它。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.8, initial steps 1–4 and on receipt of PRACK steps 1–3"
+          ],
+          "printed_pages": [
+            109
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.8, on receipt of PRACK steps 4–5 and NOTES 1–2"
+          ],
+          "printed_pages": [
+            109
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1, controlling step 13 opening, 13a(i–iii), NOTE 3"
+          ],
+          "printed_pages": [
+            288
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1, controlling step 14 opening, 14a(i–iii), NOTE 4"
+          ],
+          "printed_pages": [
+            289
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1, controlling steps 15–16, 19, 23–24 (original INVITE)"
+          ],
+          "printed_pages": [
+            290
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.1, outgoing INVITE steps 9–10, 12 (originating participating function)"
+          ],
+          "printed_pages": [
+            277
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.1.1, initial generation and offer composition step 1 (media stream address and port when required)"
+          ],
+          "printed_pages": [
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.1, receipt of 2xx to outgoing INVITE, steps 2–3, 8 (generating a separate 200 with SDP answer toward the client)"
+          ],
+          "printed_pages": [
+            278,
+            279
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.2.1, composing an SDP answer for an on-demand session (originating participating function boundary)"
+          ],
+          "printed_pages": [
+            84
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.1, opening; client steps 9, 13a–c, NOTE 2, 14–16"
+          ],
+          "printed_pages": [
+            265,
             266
           ]
         }
@@ -275,10 +541,131 @@
       "printed_pages": [
         266
       ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.4.1.1, controlling steps 3, 6–8 (earlier checks; step 8a–b rejects without continuing)"
+      ],
+      "printed_pages": [
+        287,
+        288
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.4.1.1, controlling step 13 opening, 13a(i–iii), NOTE 3"
+      ],
+      "printed_pages": [
+        288
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.4.1.1, controlling step 14 opening, 14a(i–iii), NOTE 4"
+      ],
+      "printed_pages": [
+        289
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.4.1.1, controlling steps 13c(i), 14c(i) (subsequent state changes)"
+      ],
+      "printed_pages": [
+        289,
+        290
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.3.1.8, initial steps 1–4 and on receipt of PRACK steps 1–3"
+      ],
+      "printed_pages": [
+        109
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.3.1.8, on receipt of PRACK steps 4–5 and NOTES 1–2"
+      ],
+      "printed_pages": [
+        109
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.3.1.19, emergency, imminent peril and normal configuration paragraphs, steps 1–2 each"
+      ],
+      "printed_pages": [
+        118,
+        119
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.4.1.1, controlling steps 15–16, 19, 23–24 (original INVITE)"
+      ],
+      "printed_pages": [
+        290
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.4.4.3, opening paragraph (scope and two example reasons for removing a client from the session)"
+      ],
+      "printed_pages": [
+        251
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.3.1.1, outgoing INVITE steps 9–10, 12 (originating participating function)"
+      ],
+      "printed_pages": [
+        277
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.1.1.1, initial generation and offer composition step 1 (media stream address and port when required)"
+      ],
+      "printed_pages": [
+        83
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.3.1.1, receipt of 2xx to outgoing INVITE, steps 2–3, 8 (generating a separate 200 with SDP answer toward the client)"
+      ],
+      "printed_pages": [
+        278,
+        279
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.1.2.1, composing an SDP answer for an on-demand session (originating participating function boundary)"
+      ],
+      "printed_pages": [
+        84
+      ]
     }
   ],
   "limitations": [
-    "不覆盖预安排组重入、优先呼叫状态、全套服务器拒绝门槛、参与侧转发的完整程序或独立的话权授予机制。"
+    "不覆盖预安排组重入、紧急或迫近危险组呼的完整升级与分发、全套服务器拒绝门槛、参与侧转发的完整程序或独立的话权授予机制。"
   ],
   "related": [
     "r16-calls-prearranged-client-establishment",
