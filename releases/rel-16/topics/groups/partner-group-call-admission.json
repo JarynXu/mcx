@@ -7,15 +7,15 @@
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-23.280-v16.7.0",
   "common_conditions": [
-    "TS 23.280 V16.7.0，Rel-16 Stage 2，跨系统 MC 业务组呼。",
-    "组主系统提供组配置、伙伴采用本地配置，两系统互联，客户端在组伙伴系统接受业务且已归属该组。以甲为组主系统、乙为组伙伴系统、C 为乙服务的客户端。"
+    "TS 23.280 V16.7.0，Rel-16 Stage 2，跨系统 MC 业务组呼。"
   ],
-  "condition_rule": "每项声明继承两系统、组及客户关系；按主叫或接收端区分发起方向。要求经授权才转发不是已经授权的证据，本地检查只管所述一侧。",
+  "condition_rule": "分别按本条条件读：§10.14.3 两种发起方向要核组伙伴对组主提供的配置采用了本地设置；§10.14.2 的组呼例要核双方隐藏拓扑、主叫已归属组且当前由组主以外的互联系统服务。路由和逐呼准许不是同一个决定。",
   "claims": [
     {
       "id": "partner-role",
       "title": "跨系统组呼中，服务组员的业务服务器执行伙伴的本地组配置；保存配置不是本次准许",
       "conditions": [
+        "组主系统提供组配置、伙伴采用本地配置，两系统互联，客户端在组伙伴系统接受业务且已归属该组。以甲为组主系统、乙为组伙伴系统、C 为乙服务的客户端。",
         "以 G 的主系统甲和伙伴系统乙说明：甲向乙提供 G 的组配置，乙采用本地配置；C 在乙接受业务、已归属 G，两系统互联。"
       ],
       "conclusion": "乙是相对于组 G 的伙伴。C 可以在自己的主系统乙接受业务，也可以成功迁入乙；无论哪种，乙的执行者是服务 C 的 MC 业务服务器，它是 G 的参与服务器。乙呼出时在转宿主前检查，宿主来话时在转 C 前检查。",
@@ -91,6 +91,7 @@
       "id": "out-local-pass",
       "title": "伙伴成员呼出：乙业务服务器按本地组配置核准本次请求后才转给甲组宿主",
       "conditions": [
+        "组主系统提供组配置、伙伴采用本地配置，两系统互联，客户端在组伙伴系统接受业务且已归属该组。以甲为组主系统、乙为组伙伴系统、C 为乙服务的客户端。",
         "C 在乙向 G 发起本次组呼请求。"
       ],
       "conclusion": "乙业务服务器按本地组配置核准该请求；通过才向甲宿主转送。若记录截至乙已核准并转出，本次乙侧授权有据，不能代甲登记来话授权。",
@@ -146,6 +147,7 @@
       "id": "out-host-origin",
       "title": "伙伴成员呼出：甲组宿主要同时核主叫当前服务系统及该主叫用户是否为目标组允许的来话来源",
       "conditions": [
+        "组主系统提供组配置、伙伴采用本地配置，两系统互联，客户端在组伙伴系统接受业务且已归属该组。以甲为组主系统、乙为组伙伴系统、C 为乙服务的客户端。",
         "C 从乙起呼，乙业务服务器已放行并把本次请求转给甲宿主。"
       ],
       "conclusion": "甲宿主对目标组 G 判断来话能否来自主叫当前接受服务的乙系统，以及能否来自该主叫用户。只确认系统许可不能替用户许可；乙侧核准也不能替甲签认。甲的检查通过才向乙业务服务器发图中步骤 5 的组呼响应。",
@@ -201,6 +203,7 @@
       "id": "out-return",
       "title": "伙伴成员呼出：甲宿主核准来话来源才回乙业务服务器；随后乙回发起端，控制与媒体另建",
       "conditions": [
+        "组主系统提供组配置、伙伴采用本地配置，两系统互联，客户端在组伙伴系统接受业务且已归属该组。以甲为组主系统、乙为组伙伴系统、C 为乙服务的客户端。",
         "C 从乙起呼，乙已按本地组配置通过并转甲；甲宿主核准了该主叫服务系统和用户对 G 的来话来源。"
       ],
       "conclusion": "甲宿主向乙业务服务器发组呼响应，乙向发起端 C 回响应；随后建立话权控制或传输控制以及媒体路径。",
@@ -247,6 +250,7 @@
       "id": "in-local-pass",
       "title": "甲组宿主来话：乙业务服务器先按本地组配置核准这次请求，才向成员 C 转送",
       "conditions": [
+        "组主系统提供组配置、伙伴采用本地配置，两系统互联，客户端在组伙伴系统接受业务且已归属该组。以甲为组主系统、乙为组伙伴系统、C 为乙服务的客户端。",
         "在乙接受业务且已归属 G 的 C 为这次来话所联系的成员；乙服务器收到甲宿主发来的组呼请求。"
       ],
       "conclusion": "乙业务服务器按乙的本地组配置授权本次组呼请求，通过才向 C 发请求。仅有甲到乙的来话不能判乙已通过或拒绝；若已知未通过，不继续成功路径中的步骤 3。",
@@ -294,6 +298,7 @@
       "id": "in-return",
       "title": "甲组宿主来话：乙按本地组配置通过并把请求送向 C 后，C 先回乙，乙再回甲，媒体另建",
       "conditions": [
+        "组主系统提供组配置、伙伴采用本地配置，两系统互联，客户端在组伙伴系统接受业务且已归属该组。以甲为组主系统、乙为组伙伴系统、C 为乙服务的客户端。",
         "甲宿主向乙来话；乙对本次来话的本地检查成功，已向成员 C 发组呼请求。"
       ],
       "conclusion": "C 对组呼请求发响应给乙业务服务器；乙再向甲组宿主回组呼响应。最后建立话权控制或传输控制及媒体路径。",
@@ -345,6 +350,275 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "group-serving-gateway",
+      "title": "两侧隐藏拓扑的组呼：服务主叫的服务器选本侧网关，网关识别目标组的主系统",
+      "conditions": [
+        "双方使用 MC 网关隐藏拓扑，系统互联，已归属 G 的 C 当前接受服务的系统不同于 G 的主系统。以下具体两网关路径取 C 在自己的主系统乙接受业务、G 的主系统为甲。",
+        "C 向目标组 G 发起本次组呼。"
+      ],
+      "conclusion": "以两侧均隐藏拓扑、C 在自己的主系统乙接受业务、目标组 G 的主系统为甲为例：乙业务服务器发现目标在别的系统，确定乙网关为下一跳，向它转送组呼请求。乙网关找到 G 的主系统甲；利用本侧通往甲网关的信令面配置，把请求转给甲网关。乙网关不负责选择甲内哪台服务器主持 G。",
+      "normative_strength": "§10.14.2.2 前提 1、2 和注 2：起呼端也可成功迁入伙伴系统，无须先迁移。步骤 2–5 和注 3 描述服务侧选择及实际转送。",
+      "limitations": [
+        "找到对端系统不等于对端网关已选定 G 的主业务服务器。主叫迁入后，其当前服务系统与主系统不同时，图及步骤 2–4 与步骤 5、12–13 的称呼不同，不能据此断言每一跳必经或必绕其主系统。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.2.1, role of MC gateways for calls requiring topology hiding"
+          ],
+          "printed_pages": [
+            205
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.2.2, introduction, preconditions 1–3 and notes 1–2"
+          ],
+          "printed_pages": [
+            205
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.2.2, figure 10.14.2.2-1 and steps 1–3"
+          ],
+          "printed_pages": [
+            206
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.2.2, figure 10.14.2.2-1, steps 4–5 and note 3"
+          ],
+          "printed_pages": [
+            206
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.2.2, steps 11–14: intersystem response and delivery to originator"
+          ],
+          "printed_pages": [
+            207
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "group-host-by-group-id",
+      "title": "两侧隐藏拓扑的组呼：目标侧网关用组 ID 选主业务服务器；查到宿主不等于本次已转发",
+      "conditions": [
+        "双方使用 MC 网关隐藏拓扑，系统互联，已归属 G 的 C 当前接受服务的系统不同于 G 的主系统。以下具体两网关路径取 C 在自己的主系统乙接受业务、G 的主系统为甲。",
+        "甲网关收到来自乙网关、目标为组 G 的呼叫请求。"
+      ],
+      "conclusion": "甲网关用本侧配置和目标 G 的 MC 业务组 ID 选出 G 在甲的主业务服务器（6）；然后把本次呼叫请求转给所选服务器（7）。同一伙伴系统内，另一个组 H 可以映射到另一台主业务服务器。",
+      "normative_strength": "§10.14.2.2 步骤 6、注 4 确定组主服务器；步骤 7 单列请求转送。",
+      "limitations": [
+        "这里用目标组的组 ID，不用主叫或组成员的业务用户 ID。配置有映射不证明该呼叫执行了选择；选定不证明已发，网关出站也不证明主服务器已收或已准许。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.2.1, role of MC gateways for calls requiring topology hiding"
+          ],
+          "printed_pages": [
+            205
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.2.2, introduction, preconditions 1–3 and notes 1–2"
+          ],
+          "printed_pages": [
+            205
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.2.2, figure 10.14.2.2-1, steps 4–5 and note 3"
+          ],
+          "printed_pages": [
+            206
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.2.2, figure 10.14.2.2-1, steps 6–7 and note 4"
+          ],
+          "printed_pages": [
+            206
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "group-host-origin-check",
+      "title": "两侧均隐藏拓扑的跨系统组呼：请求已转到组主侧，本次仍须检查哪两项来源？",
+      "conditions": [
+        "双方使用 MC 网关隐藏拓扑，系统互联，已归属 G 的 C 当前接受服务的系统不同于 G 的主系统。以下具体两网关路径取 C 在自己的主系统乙接受业务、G 的主系统为甲。",
+        "组 G 的主业务服务器处理这次经网关转来的组呼请求。"
+      ],
+      "conclusion": "G 的主业务服务器逐呼检查：主叫用户当前接受服务的系统是否可向 G 起呼、这名主叫用户是否可向 G 起呼；两项都要通过，才向图中客户端 2 发请求。已知检查失败时，步骤 9（目标请求）和 10（目标回应）均不发生。",
+      "normative_strength": "§10.14.2.2 步骤 8 指定两项来源；步骤 9 以授权成功为条件，注 5 指明失败时跳过 9 和 10。",
+      "limitations": [
+        "只见选主或请求已转送不能代签授权。只知系统被允许，没有用户结果，不能判整次授权通过或失败；客户端已归属也不能取代本次检查。不从失败推断具体 SIP 拒绝码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.2.2, introduction, preconditions 1–3 and notes 1–2"
+          ],
+          "printed_pages": [
+            205
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.2.2, figure 10.14.2.2-1, steps 6–7 and note 4"
+          ],
+          "printed_pages": [
+            206
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.2.2, step 8: permissible origin for this target"
+          ],
+          "printed_pages": [
+            207
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.2.2, steps 9–10 and note 5: target request, response and failure branch"
+          ],
+          "printed_pages": [
+            207
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.2.2, note 5 relative to steps 8–15"
+          ],
+          "printed_pages": [
+            207
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "group-response-path",
+      "title": "两侧均隐藏拓扑的跨系统组呼：目标端的回应和返回起呼端的响应走向不同，建路另有成功条件",
+      "conditions": [
+        "双方使用 MC 网关隐藏拓扑，系统互联，已归属 G 的 C 当前接受服务的系统不同于 G 的主系统。以下具体两网关路径取 C 在自己的主系统乙接受业务、G 的主系统为甲。",
+        "步骤 8 对发起用户和其当前服务系统向此组起呼的检查通过；步骤 15 还以呼叫响应成功为条件。"
+      ],
+      "conclusion": "图中主服务器向客户端 2 发请求（9），客户端 2 回主服务器（10）。两步都在 8 之后、15 之前，9 先于 10；10 不必早于 11。以两侧均隐藏拓扑、C 在自己的主系统乙接受业务、目标组 G 的主系统为甲为例：另一条响应从甲组主业务服务器经甲网关、乙网关、服务 C 的乙业务服务器返回 C（11–14）。呼叫响应成功后建立控制和媒体路径（15）。",
+      "normative_strength": "§10.14.2.2 注 5 明定目标端请求和回应的顺序与窗口；步骤 11–14 写另一条回程。步骤 15 正文为话权控制与媒体路径，图亦标话权／传输控制。",
+      "limitations": [
+        "只见服务器向网关发响应，不证明 C 已收到响应；某一目标端回应、路径建立均不等于全员获准、已回应或已收到媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.2.2, introduction, preconditions 1–3 and notes 1–2"
+          ],
+          "printed_pages": [
+            205
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.2.2, step 8: permissible origin for this target"
+          ],
+          "printed_pages": [
+            207
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.2.2, steps 9–10 and note 5: target request, response and failure branch"
+          ],
+          "printed_pages": [
+            207
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.2.2, steps 11–14: intersystem response and delivery to originator"
+          ],
+          "printed_pages": [
+            207
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.2.2, note 5 relative to steps 8–15"
+          ],
+          "printed_pages": [
+            207
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.2.2, figure 10.14.2.2-1, step 15 caption"
+          ],
+          "printed_pages": [
+            206
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.2.2, step 15 conditional on successful call response"
+          ],
+          "printed_pages": [
+            207
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "related": [
@@ -356,8 +630,8 @@
     "r16-mcvideo-prearranged-group-call-setup"
   ],
   "limitations": [
-    "本条是相互连接的 MC 系统对组呼执行本地组配置的 Stage 2 程序。两幅图省略拓扑隐藏；不能反推现场有或没有网关。",
-    "未规定本地配置的具体规则、拒绝码、SIP 路由、超时或实际收听证据。不把它扩大到私呼、文件分发或其他 Release。"
+    "§10.14.3 只画伙伴执行本地组配置，不表示现场有或没有网关。§10.14.2 明示两侧网关，但本页只解组呼分支；不把组 ID 的选路套给私呼目标用户。",
+    "本页给的是 Stage 2 业务角色，不给 SIP 路由字段、地址、失败码、超时或成员端的收听实测值。成功迁入本身不足以重建主叫主系统与当前服务系统不同时的每一跳。"
   ],
   "verification": {
     "original_clauses_checked": true,
@@ -445,6 +719,105 @@
       ],
       "printed_pages": [
         209
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.14.2.1, role of MC gateways for calls requiring topology hiding"
+      ],
+      "printed_pages": [
+        205
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.14.2.2, introduction, preconditions 1–3 and notes 1–2"
+      ],
+      "printed_pages": [
+        205
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.14.2.2, figure 10.14.2.2-1 and steps 1–3"
+      ],
+      "printed_pages": [
+        206
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.14.2.2, figure 10.14.2.2-1, steps 4–5 and note 3"
+      ],
+      "printed_pages": [
+        206
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.14.2.2, figure 10.14.2.2-1, steps 6–7 and note 4"
+      ],
+      "printed_pages": [
+        206
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.14.2.2, step 8: permissible origin for this target"
+      ],
+      "printed_pages": [
+        207
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.14.2.2, steps 9–10 and note 5: target request, response and failure branch"
+      ],
+      "printed_pages": [
+        207
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.14.2.2, steps 11–14: intersystem response and delivery to originator"
+      ],
+      "printed_pages": [
+        207
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.14.2.2, note 5 relative to steps 8–15"
+      ],
+      "printed_pages": [
+        207
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.14.2.2, figure 10.14.2.2-1, step 15 caption"
+      ],
+      "printed_pages": [
+        206
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.14.2.2, step 15 conditional on successful call response"
+      ],
+      "printed_pages": [
+        207
       ]
     }
   ]
