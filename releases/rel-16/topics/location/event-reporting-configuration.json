@@ -7,9 +7,9 @@
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-23.280-v16.7.0",
   "common_conditions": [
-    "Rel-16 在网、单一 MC 系统的事件触发位置上报和取消上报，Stage 2。"
+    "3GPP TS 23.280 V16.7.0，Release 16，Stage 2，在网位置管理。"
   ],
-  "condition_rule": "§10.9 标题限定在网，§10.9.1 说明上报按配置触发。事件上报与取消的单系统条件分别来自 §10.9.3.1 注 1 和 §10.9.3.4 注。先区分 LMS 给 LMC 提供规则、LMC 按适用事件报告及 LMS 取消该 LMC 先前获配的位置上报；接收和已存位置须对应同一个上报 LMC。",
+  "condition_rule": "表 10.9.2.1-1 定义 LMS 发给 LMC 的在网配置。普通配置的字段和取值见该表；其表注另述无元素的取消语义。§10.9.3.1 注 1、§10.9.3.4 注分别限定事件上报和取消程序为单一 MC 系统，各程序前提随对应声明使用。区分 LMS 供给规则、LMC 的触发与发送、LMS 收报后按同一 LMC 处理位置，以及 LMS 给订阅方发通知。",
   "claims": [
     {
       "id": "provision-or-update",
@@ -376,11 +376,195 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "configuration-information-and-criteria",
+      "title": "普通位置上报配置以用户或组为必备目标，所求资料和发送条件各分非紧急、紧急两行，另有连续报告的最短间隔",
+      "conditions": [
+        "判断表 10.9.2.1-1 的 LMS→LMC 普通配置，即供给或更新规则，不是全无信息元素的取消。表中的“非紧急”不是“普通配置”的同义词。"
+      ],
+      "conclusion": "目标 MC 业务用户标识或组标识为 M。五行 O 分别表示：非紧急时所求位置资料，紧急时所求位置资料，非紧急时的上报触发条件，连续报告之间的最短间隔，紧急时的上报触发条件。两行所求资料分别排除和覆盖紧急呼叫、紧迫危险呼叫、紧急告警；两行触发条件分别说明 LMC 在非紧急、紧急时何时发送位置报告。",
+      "normative_strength": "按同表 M 与五个 O 行的状态及各自说明判断；触发条件与时间下限不是所求位置资料。",
+      "limitations": [
+        "配置写明希望 LMC 报什么，不是一次位置测量的结果。从表中读字段不要求先有一次实际事件，也不据此界定多系统程序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9, heading; 10.9.1, first paragraph (on-network scope and configuration-based triggers)"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.1, opening paragraph and table 10.9.2.1-1, target identity and configuration rows"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.1, table 10.9.2.1-1: target, requested non-emergency and emergency location information, and triggering criteria in non-emergency and emergency cases"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.1, table 10.9.2.1-1: minimum time between consecutive reports, default if absent and value for the three listed emergency cases"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.1, table 10.9.2.1-1, note"
+          ],
+          "printed_pages": [
+            165
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "terminal-minimum-interval",
+      "title": "LMC 连续上报的最短间隔：普通配置缺项时为 0；紧急呼叫、紧迫危险呼叫、紧急告警时也为 0",
+      "conditions": [
+        "判断表 10.9.2.1-1 所规定的 LMC→LMS 连续上报下限。适用缺省值须能确认普通配置确实没有该 O 项；对三种紧急情形，按该行明列的值判断。"
+      ],
+      "conclusion": "完整的普通配置未带最短间隔时，该值缺省为 0；紧急呼叫、紧迫危险呼叫、紧急告警三种情况下均为 0，不沿用非紧急时的非零下限。0 只解除这个最短等待限制，不是触发事件。",
+      "normative_strength": "表行直接给缺省值和三种情形的值，不列单位。若问单系统事件程序何时发报告，仍依 §10.9.3.1 的配置事件及步骤 2–3。",
+      "limitations": [
+        "只见片段不能判该字段缺省；普通配置只缺此 O 而仍有其他元素不是全空取消。没有适用事件，不能仅凭 0 或注册要求 LMC 立即发包，或证明 LMS 已推配置。",
+        "这个 O 项不是订阅请求表中的必备间隔。单系统用户位置订阅中的零值通知从 LMS 收到清单内某个用户的报告算，发向订阅方而不是发给 LMS；见 r16-location-user-subscription 的 zero-interval。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9, heading; 10.9.1, first paragraph (on-network scope and configuration-based triggers)"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.1, table 10.9.2.1-1: minimum time between consecutive reports, default if absent and value for the three listed emergency cases"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.1, table 10.9.2.1-1, note"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.1, note 1 and opening paragraphs"
+          ],
+          "printed_pages": [
+            168
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.1, numbered step 1"
+          ],
+          "printed_pages": [
+            169
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.1, notes 2 and 3 to step 1"
+          ],
+          "printed_pages": [
+            169
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.1, numbered steps 2 and 3"
+          ],
+          "printed_pages": [
+            169
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.2.5, table 10.9.2.5-1 and note"
+          ],
+          "printed_pages": [
+            167
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.5, single-system note, introduction, figure 10.9.3.5-1 and steps 1–3"
+          ],
+          "printed_pages": [
+            171
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.6.1, single-system note 1"
+          ],
+          "printed_pages": [
+            171
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.9.3.6.1, introduction, figure 10.9.3.6.1-1, steps 1–2 and note 2"
+          ],
+          "printed_pages": [
+            172
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "related": [
     "r16-identity-user-profile-download",
-    "r16-calls-emergency-alert-area-entry-exit"
+    "r16-calls-emergency-alert-area-entry-exit",
+    "r16-location-user-subscription"
   ],
   "limitations": [
     "不根据这些 Stage 2 段落给初次注册绑定 SIP、HTTP 或 MC 授权，也不据此给出 PSI、报文字段编码、统一时限或设备实测结论。",
@@ -489,6 +673,60 @@
       ],
       "printed_pages": [
         171
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.2.1, table 10.9.2.1-1: target, requested non-emergency and emergency location information, and triggering criteria in non-emergency and emergency cases"
+      ],
+      "printed_pages": [
+        165
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.2.1, table 10.9.2.1-1: minimum time between consecutive reports, default if absent and value for the three listed emergency cases"
+      ],
+      "printed_pages": [
+        165
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.2.5, table 10.9.2.5-1 and note"
+      ],
+      "printed_pages": [
+        167
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.3.5, single-system note, introduction, figure 10.9.3.5-1 and steps 1–3"
+      ],
+      "printed_pages": [
+        171
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.3.6.1, single-system note 1"
+      ],
+      "printed_pages": [
+        171
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.9.3.6.1, introduction, figure 10.9.3.6.1-1, steps 1–2 and note 2"
+      ],
+      "printed_pages": [
+        172
       ]
     }
   ]
