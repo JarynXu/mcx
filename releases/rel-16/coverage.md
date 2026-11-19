@@ -302,6 +302,16 @@ MCPTT 组呼以单播承载建立时，服务器可以经 MBMS 告知组内有�
 
 [读取主题](topics/calls/mcptt-mbms-group-status.md)
 
+## MCPTT 组动态通知：参与功能回了 200，甲从 MBMS 收到了什么？
+
+终接参与功能依据监听状态报告按用户选择 MBMS 或继续用单播。收到控制功能就组动态数据订阅发往监听用户的 SIP NOTIFY 时，它应答上游、映射通知内容，再经 MBMS 发 Group Dynamic Data Notify。该 200 不确认客户端已收到。
+
+在目标客户端看到通知后，用组 SIP URI 对组。Status 的 0、1 表示 emergency、in-peril；Group call ongoing 的 0、1 表示无、有组呼。两字段独立；更改者身份标识改变组状态的用户。
+
+尚未建立：不将缺项或保留值解释为正常、没有组呼、已清空或继续沿用旧值。不据上游 200、下游发送或另一端的收件推定目标客户端已收到、已更新缓存、已入会或已切换媒体承载。
+
+[读取主题](topics/calls/mbms-group-dynamic-notify.md)
+
 ## 在网 MCPTT 聊天组：这一通 BYE 是一人离开，还是整场组呼结束？
 
 普通在网按需 MCPTT 聊天组的控制功能收到一名参与者一侧的 BYE 后，处理与该 SIP 会话关联的媒体资源、回 200，再判断是否须释放整场。不需要释放整场时，它须向仍在场且订阅会议事件的全部客户端发 NOTIFY。

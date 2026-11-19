@@ -7,3 +7,5 @@
 **把组 ID 和状态一起读。** 这条信息从服务器发给客户端。表 10.7.2.12-1 把两项都列为必填：MCPTT 组 ID 标明说的是哪个组，组状态说明该组有无正在进行的组呼。所以收到“H 组无进行中的组呼”，只说明服务器对 H 组作了否定报告；若 G 组没有记录，G 组的状态仍不能从这条消息判断。[§10.7.2.12，表 10.7.2.12-1，印刷页 121](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/16.07.00_60/ts_123280v160700p.pdf#page=122)。
 
 如果问题是“客户端该监听哪条承载”，查[MBMS 承载通告与撤告](../bearers/mbms-bearer-announcement.md)。如果要核对普通在网按需预安排组重入时的准入处理，查[预安排组重入与晚入](rejoin-late-entry.md)；该页不是聊天组晚入的流程。这里的组状态通知条款点名 MCPTT，不能据此推定 MCVideo 或 MCData 也有相同规则。[结构化条件与声明](mcptt-mbms-group-status.json)。
+
+若要核对某项组动态数据订阅的 SIP NOTIFY 到了哪一侧、其 200 由谁回复，以及客户端实际从 MBMS 收到了哪些字段，见[MCPTT 组动态通知的传递与判读（Stage 3）](mbms-group-dynamic-notify.md)。

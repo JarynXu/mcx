@@ -1,0 +1,487 @@
+{
+  "topic_id": "r16-calls-mbms-group-dynamic-notify",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 组动态通知：参与功能回了 200，甲从 MBMS 收到了什么？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "common_conditions": [
+    "3GPP TS 24.380 V16.9.0，Release 16，Stage 3；在网 MCPTT 客户端订阅组动态数据。区分控制功能、终接参与功能和被通知的客户端。"
+  ],
+  "condition_rule": "声明继承主题范围，再叠加本条条件。区分参与功能应做的事与特定客户端实际收到的内容。",
+  "claims": [
+    {
+      "id": "select-delivery-per-user",
+      "title": "先区分哪些用户走 MBMS、哪些仍走单播",
+      "conditions": [
+        "MCPTT 客户端订阅组动态数据；参与功能准备使用 MBMS 承载传送通知。"
+      ],
+      "conclusion": "参与功能须在使用 MBMS 承载前激活并通告该承载。通知走哪条路径则按用户决定：参与功能依据监听状态报告选择向哪些用户经 MBMS 发通知、向哪些用户继续用单播。§10A.1 的 MBMS 分支要求终接参与功能收到来自控制 MCPTT 功能的 SIP NOTIFY，该请求关联组动态数据订阅，发往正在监听 MBMS 子信道的用户。",
+      "normative_strength": "这是按用户选路；满足上述接收条件后，才进入该分支的三个规定动作。",
+      "limitations": [
+        "不能用同组甲的监听报告推定乙的路径，也不能把任意 SIP NOTIFY 或“组呼以单播建立”当成该分支的充分条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10A.1, first paragraph: bearer activation and announcement; delivery choice per user using listening status reports"
+          ],
+          "printed_pages": [
+            211
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10A.1, second paragraph: terminating participating function receives a subscription-related SIP NOTIFY from the controlling function towards a user listening to the MBMS subchannel"
+          ],
+          "printed_pages": [
+            211
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "respond-map-and-send",
+      "title": "200 答复的是上游 NOTIFY，终接参与功能另发下游通知",
+      "conditions": [
+        "终接参与功能收到满足 §10A.1 条件的控制功能来向的 SIP NOTIFY。"
+      ],
+      "conclusion": "终接参与功能先对来向的 SIP NOTIFY 回 200 (OK)，再把其中的信息映射到 §8.5.3 的信息元素，通过 MBMS 承载发送 Group Dynamic Data Notify。上游是就某一订阅发来的 SIP 请求；下游发送的是另一种消息。",
+      "normative_strength": "§10A.1 步骤 1–3 是参与功能的必做动作。步骤 1 在 respond to 之后把 SIP 200 (OK) 称为 request；这里依其动作说明应答关系，不另设一个请求事务。",
+      "limitations": [
+        "200 不是订阅请求 SUBSCRIBE 的答复，也不是客户端对下游消息的收据。仅凭这个 200 不能证明后两步已执行；§10A.1 未给出逐项的 SIP 到 MBMS 转换表。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10A.1, second paragraph: terminating participating function receives a subscription-related SIP NOTIFY from the controlling function towards a user listening to the MBMS subchannel"
+          ],
+          "printed_pages": [
+            211
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10A.1, steps 1–2: respond to the SIP NOTIFY and map its information to the elements of 8.5.3"
+          ],
+          "printed_pages": [
+            211
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10A.1, step 3: send Group Dynamic Data Notify over the MBMS bearer"
+          ],
+          "printed_pages": [
+            212
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.5.1 and 8.5.2, Table 8.5.2-1 including note: protocol name, message subtype and server-to-client roles"
+          ],
+          "printed_pages": [
+            188
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "identify-notification-and-group",
+      "title": "从客户端观察点识别消息，再用组 SIP URI 对组",
+      "conditions": [
+        "甲实际收到一条 MBMS 消息，要核实其中的动态数据是否属于目标组。"
+      ],
+      "conclusion": "MBMS 通知协议名为 MCNC；Group Dynamic Data Notify 的子类型为 00000，方向是参与功能到 MCPTT 客户端。MCPTT Group ID 字段给出动态数据所指组的 SIP URI。SSRC 标识参与功能，不能拿它替代组身份。",
+      "normative_strength": "按 §8.5.2 的消息方向与 §8.5.4 的组标识定义判读。",
+      "limitations": [
+        "乙端或参与功能发送侧观察到这组数据都不能代替甲端实际接收；H 组的通知也不能回答 G 组的状态。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.5.1 and 8.5.2, Table 8.5.2-1 including note: protocol name, message subtype and server-to-client roles"
+          ],
+          "printed_pages": [
+            188
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.5.4, Table 8.5.4-1 and descriptions of SSRC, MCPTT Group ID, Status, Status changing MCPTT User Identity and Group call ongoing"
+          ],
+          "printed_pages": [
+            192
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "read-status-and-changing-user",
+      "title": "Status 说明组的紧急状态；更改者身份不识别收件人",
+      "conditions": [
+        "已确认消息属于目标组，能够识别 Status 或 Status changing MCPTT User Identity 字段。"
+      ],
+      "conclusion": "Status 的字段 ID 是 0，其值 0 表示 emergency、1 表示 in-peril，其余值保留。状态更改者是上次改变该组状态的 MCPTT 用户；Status changing MCPTT User Identity 的字段 ID 是 1，标识该用户的 MCPTT ID（URI）。",
+      "normative_strength": "字段 ID 用于区分元素；解释 0、1 之前先确定读到哪个字段。",
+      "limitations": [
+        "Status=0 不表示正常，缺少可读的 Status 不说明正常、解除或仍处于前一状态。更改者不因此就是收件人、发起呼叫的人或当前讲话人；没有取得该身份就不能指认具体用户。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.5.3.1, introduction and Table 8.5.3.1-1: field names and assigned field IDs"
+          ],
+          "printed_pages": [
+            188,
+            189
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.5.3.2, Status field and Table 8.5.3.2-1: group status, last changer, status values and reservation"
+          ],
+          "printed_pages": [
+            189
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.5.3.3, Tables 8.5.3.3-1 and 8.5.3.3-2 and field description: identity of status-changing MCPTT user"
+          ],
+          "printed_pages": [
+            189,
+            190
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.5.4, Table 8.5.4-1 and descriptions of SSRC, MCPTT Group ID, Status, Status changing MCPTT User Identity and Group call ongoing"
+          ],
+          "printed_pages": [
+            192
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "read-group-call-ongoing",
+      "title": "Group call ongoing 的 0 才表示该组无进行中的组呼",
+      "conditions": [
+        "客户端看到目标组的 Group Dynamic Data Notify，要判断通知对有无组呼作了什么报告。"
+      ],
+      "conclusion": "Group call ongoing 的字段 ID 是 2，值 0 表示该组没有进行中的组呼，1 表示有，其余保留。它与 Status 的 emergency 和 in-peril 分开判读。§8.5.4 写参与功能在会话开始时发送此消息；这句话不取消 §8.5.3.4 定义的值 0，也没规定每次结束都要发送 0。",
+      "normative_strength": "只有识别出该字段及其已定义的值，才能在本次通知中判定它报告有或没有组呼。",
+      "limitations": [
+        "未见字段、值保留、日志截断、没有这份通知和另一组的报告，都不能记为目标组的明确 0。该字段不说明某一用户已入会或通话媒体已走 MBMS。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.5.3.1, introduction and Table 8.5.3.1-1: field names and assigned field IDs"
+          ],
+          "printed_pages": [
+            188,
+            189
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.5.3.4, Table 8.5.3.4-1 and value definitions: Group call ongoing and reserved values"
+          ],
+          "printed_pages": [
+            190
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.5.4, introductory sentence on sending the message when a conversation is started"
+          ],
+          "printed_pages": [
+            191
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.5.4, Table 8.5.4-1 and descriptions of SSRC, MCPTT Group ID, Status, Status changing MCPTT User Identity and Group call ongoing"
+          ],
+          "printed_pages": [
+            192
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "bound-receiver-and-hop-evidence",
+      "title": "发送、端上收到、客户端改写状态是三个不同的判断",
+      "conditions": [
+        "需要用同一次通知的证据核对甲或乙的收件及状态。"
+      ],
+      "conclusion": "参与功能回 200 说明它在应答上游；观察到参与功能发出下游消息可确认发送；只有在指定客户端实际观察到对应组的通知和可判读的字段，才能据此说明该端收到了哪项组状态报告。对于被选为继续单播的用户，要看该用户的单播链路；甲的 MBMS 接收不能代乙确认。",
+      "normative_strength": "§10A.1 规定终接参与功能的动作，§8.5.2–8.5.4 规定下游消息的方向和内容。这些条款没有规定此消息的逐客户端收件应答，也没有规定收件后怎样维护状态缓存。",
+      "limitations": [
+        "不能仅据这条链确认应用已经写入、沿用了旧值、清除了某项、重排或恢复丢失的更新。缺少收件证据时不判已收，也不判未收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10A.1, first paragraph: bearer activation and announcement; delivery choice per user using listening status reports"
+          ],
+          "printed_pages": [
+            211
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10A.1, second paragraph: terminating participating function receives a subscription-related SIP NOTIFY from the controlling function towards a user listening to the MBMS subchannel"
+          ],
+          "printed_pages": [
+            211
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10A.1, steps 1–2: respond to the SIP NOTIFY and map its information to the elements of 8.5.3"
+          ],
+          "printed_pages": [
+            211
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10A.1, step 3: send Group Dynamic Data Notify over the MBMS bearer"
+          ],
+          "printed_pages": [
+            212
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.5.1 and 8.5.2, Table 8.5.2-1 including note: protocol name, message subtype and server-to-client roles"
+          ],
+          "printed_pages": [
+            188
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.5.3.1, introduction and Table 8.5.3.1-1: field names and assigned field IDs"
+          ],
+          "printed_pages": [
+            188,
+            189
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.5.3.2, Status field and Table 8.5.3.2-1: group status, last changer, status values and reservation"
+          ],
+          "printed_pages": [
+            189
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.5.3.3, Tables 8.5.3.3-1 and 8.5.3.3-2 and field description: identity of status-changing MCPTT user"
+          ],
+          "printed_pages": [
+            189,
+            190
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.5.3.4, Table 8.5.3.4-1 and value definitions: Group call ongoing and reserved values"
+          ],
+          "printed_pages": [
+            190
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.5.4, Table 8.5.4-1 and descriptions of SSRC, MCPTT Group ID, Status, Status changing MCPTT User Identity and Group call ongoing"
+          ],
+          "printed_pages": [
+            192
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "10A.1, first paragraph: bearer activation and announcement; delivery choice per user using listening status reports"
+      ],
+      "printed_pages": [
+        211
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "10A.1, second paragraph: terminating participating function receives a subscription-related SIP NOTIFY from the controlling function towards a user listening to the MBMS subchannel"
+      ],
+      "printed_pages": [
+        211
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "10A.1, steps 1–2: respond to the SIP NOTIFY and map its information to the elements of 8.5.3"
+      ],
+      "printed_pages": [
+        211
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "10A.1, step 3: send Group Dynamic Data Notify over the MBMS bearer"
+      ],
+      "printed_pages": [
+        212
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "8.5.1 and 8.5.2, Table 8.5.2-1 including note: protocol name, message subtype and server-to-client roles"
+      ],
+      "printed_pages": [
+        188
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "8.5.4, Table 8.5.4-1 and descriptions of SSRC, MCPTT Group ID, Status, Status changing MCPTT User Identity and Group call ongoing"
+      ],
+      "printed_pages": [
+        192
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "8.5.3.1, introduction and Table 8.5.3.1-1: field names and assigned field IDs"
+      ],
+      "printed_pages": [
+        188,
+        189
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "8.5.3.2, Status field and Table 8.5.3.2-1: group status, last changer, status values and reservation"
+      ],
+      "printed_pages": [
+        189
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "8.5.3.3, Tables 8.5.3.3-1 and 8.5.3.3-2 and field description: identity of status-changing MCPTT user"
+      ],
+      "printed_pages": [
+        189,
+        190
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "8.5.3.4, Table 8.5.3.4-1 and value definitions: Group call ongoing and reserved values"
+      ],
+      "printed_pages": [
+        190
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "8.5.4, introductory sentence on sending the message when a conversation is started"
+      ],
+      "printed_pages": [
+        191
+      ]
+    }
+  ],
+  "related": [
+    "r16-calls-mcptt-mbms-group-status",
+    "r16-mcptt-group-dynamic-data",
+    "r16-bearers-mbms-bearer-announcement",
+    "r16-bearers-mbms-application-control-signalling"
+  ],
+  "limitations": [
+    "限 MCPTT 组动态数据订阅的 MBMS 通知；不重述 SIP 订阅的准入，不把组呼以单播承载建立作为 §10A.1 的前提。",
+    "解释特定观察点已经取得的信息，不据缺项判默认值、报文合法性或缓存更新；不提供线路构造模板、逐字段 SIP 映射或丢包恢复算法。",
+    "不从组状态反推归属、个人入会、话权、媒体承载切换或其他 MC 业务的行为。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
