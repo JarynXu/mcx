@@ -1,0 +1,451 @@
+{
+  "topic_id": "r16-groups-partner-group-call-admission",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "组在甲、组员在乙：同一次跨系统组呼，谁决定请求能不能往下送？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "TS 23.280 V16.7.0，Rel-16 Stage 2，跨系统 MC 业务组呼。",
+    "组主系统提供组配置、伙伴采用本地配置，两系统互联，客户端在组伙伴系统接受业务且已归属该组。以甲为组主系统、乙为组伙伴系统、C 为乙服务的客户端。"
+  ],
+  "condition_rule": "每项声明继承两系统、组及客户关系；按主叫或接收端区分发起方向。要求经授权才转发不是已经授权的证据，本地检查只管所述一侧。",
+  "claims": [
+    {
+      "id": "partner-role",
+      "title": "跨系统组呼中，服务组员的业务服务器执行伙伴的本地组配置；保存配置不是本次准许",
+      "conditions": [
+        "以 G 的主系统甲和伙伴系统乙说明：甲向乙提供 G 的组配置，乙采用本地配置；C 在乙接受业务、已归属 G，两系统互联。"
+      ],
+      "conclusion": "乙是相对于组 G 的伙伴。C 可以在自己的主系统乙接受业务，也可以成功迁入乙；无论哪种，乙的执行者是服务 C 的 MC 业务服务器，它是 G 的参与服务器。乙呼出时在转宿主前检查，宿主来话时在转 C 前检查。",
+      "normative_strength": "§10.14.3.1 指定执行职责；两个方向各列服务、互联、归属前提；注说明两种可用的服务关系，不以成功迁移为必要条件。",
+      "limitations": [
+        "只有 GMS 的配置保存回执或 C 已归属的记录，不能断言乙业务服务器已对某通呼叫检查或放行；也不能把 GMS 当成逐通授权节点。",
+        "本条说明的是 MCPTT、MCVideo 通用互联程序中执行伙伴本地组配置的角色；具体业务应结合 TS 23.379、TS 23.281 各自的专用程序阅读，不能仅凭本条得出 SIP 信令。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.1, generic interconnection procedures and relationship to service-specific procedures"
+          ],
+          "printed_pages": [
+            205
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.3.1, scope and participating server enforcing local group configuration"
+          ],
+          "printed_pages": [
+            207
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.3.2, introduction, preconditions 1–2 and notes 1–2"
+          ],
+          "printed_pages": [
+            207
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.3.3, introduction, preconditions 1–2 and note"
+          ],
+          "printed_pages": [
+            208,
+            209
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.3.2, figure 10.14.3.2-1 and steps 1–3"
+          ],
+          "printed_pages": [
+            208
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.3.3, figure 10.14.3.3-1 and steps 1–3"
+          ],
+          "printed_pages": [
+            209
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "out-local-pass",
+      "title": "伙伴成员呼出：乙业务服务器按本地组配置核准本次请求后才转给甲组宿主",
+      "conditions": [
+        "C 在乙向 G 发起本次组呼请求。"
+      ],
+      "conclusion": "乙业务服务器按本地组配置核准该请求；通过才向甲宿主转送。若记录截至乙已核准并转出，本次乙侧授权有据，不能代甲登记来话授权。",
+      "normative_strength": "§10.14.3.2 步骤 1–3 明列本地检查和通过条件；不把两系统互联当作授权结果。",
+      "limitations": [
+        "乙未通过时不能沿步骤 3 转发；只见一份配置回执或未见呼叫日志，不能判定这次已拒绝或指定 SIP 失败码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.3.1, scope and participating server enforcing local group configuration"
+          ],
+          "printed_pages": [
+            207
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.3.2, introduction, preconditions 1–2 and notes 1–2"
+          ],
+          "printed_pages": [
+            207
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.3.2, figure 10.14.3.2-1 and steps 1–3"
+          ],
+          "printed_pages": [
+            208
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.3.2, figure 10.14.3.2-1 and steps 4–5"
+          ],
+          "printed_pages": [
+            208
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "out-host-origin",
+      "title": "伙伴成员呼出：甲组宿主要同时核主叫当前服务系统及该主叫用户是否为目标组允许的来话来源",
+      "conditions": [
+        "C 从乙起呼，乙业务服务器已放行并把本次请求转给甲宿主。"
+      ],
+      "conclusion": "甲宿主对目标组 G 判断来话能否来自主叫当前接受服务的乙系统，以及能否来自该主叫用户。只确认系统许可不能替用户许可；乙侧核准也不能替甲签认。甲的检查通过才向乙业务服务器发图中步骤 5 的组呼响应。",
+      "normative_strength": "步骤 4 明列两项来源，步骤 5 的成功条件属于甲宿主，不把乙侧的步骤 2 用来代替。",
+      "limitations": [
+        "所查是发起用户的服务系统，不一定是该用户自己的主系统；这里不规定具体 SIP 失败响应码，也不要求反向来话重演本检查。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.3.2, introduction, preconditions 1–2 and notes 1–2"
+          ],
+          "printed_pages": [
+            207
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.3.2, figure 10.14.3.2-1 and steps 1–3"
+          ],
+          "printed_pages": [
+            208
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.3.2, figure 10.14.3.2-1 and steps 4–5"
+          ],
+          "printed_pages": [
+            208
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.3.3, figure 10.14.3.3-1 and steps 1–3"
+          ],
+          "printed_pages": [
+            209
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "out-return",
+      "title": "伙伴成员呼出：甲宿主核准来话来源才回乙业务服务器；随后乙回发起端，控制与媒体另建",
+      "conditions": [
+        "C 从乙起呼，乙已按本地组配置通过并转甲；甲宿主核准了该主叫服务系统和用户对 G 的来话来源。"
+      ],
+      "conclusion": "甲宿主向乙业务服务器发组呼响应，乙向发起端 C 回响应；随后建立话权控制或传输控制以及媒体路径。",
+      "normative_strength": "§10.14.3.2 步骤 5–7 的成功流程次序。",
+      "limitations": [
+        "只看到甲发送响应，不能证明 C 收到响应或有成员收到媒体。即使路径已建，也没有从这里取得某位组员实际听见声音的证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.3.2, figure 10.14.3.2-1 and steps 1–3"
+          ],
+          "printed_pages": [
+            208
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.3.2, figure 10.14.3.2-1 and steps 4–5"
+          ],
+          "printed_pages": [
+            208
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.3.2, figure 10.14.3.2-1 and steps 5–7"
+          ],
+          "printed_pages": [
+            208
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "in-local-pass",
+      "title": "甲组宿主来话：乙业务服务器先按本地组配置核准这次请求，才向成员 C 转送",
+      "conditions": [
+        "在乙接受业务且已归属 G 的 C 为这次来话所联系的成员；乙服务器收到甲宿主发来的组呼请求。"
+      ],
+      "conclusion": "乙业务服务器按乙的本地组配置授权本次组呼请求，通过才向 C 发请求。仅有甲到乙的来话不能判乙已通过或拒绝；若已知未通过，不继续成功路径中的步骤 3。",
+      "normative_strength": "§10.14.3.3 步骤 1–3 指定本地检查及成功条件；本方向没有另列甲检查乙方主叫来源。",
+      "limitations": [
+        "来源是甲的组宿主，不据此判断原始主叫本人在哪里；未证明授权、送达、终端响铃或已响应。此节没有给出 SIP 失败码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.3.1, scope and participating server enforcing local group configuration"
+          ],
+          "printed_pages": [
+            207
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.3.3, introduction, preconditions 1–2 and note"
+          ],
+          "printed_pages": [
+            208,
+            209
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.3.3, figure 10.14.3.3-1 and steps 1–3"
+          ],
+          "printed_pages": [
+            209
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "in-return",
+      "title": "甲组宿主来话：乙按本地组配置通过并把请求送向 C 后，C 先回乙，乙再回甲，媒体另建",
+      "conditions": [
+        "甲宿主向乙来话；乙对本次来话的本地检查成功，已向成员 C 发组呼请求。"
+      ],
+      "conclusion": "C 对组呼请求发响应给乙业务服务器；乙再向甲组宿主回组呼响应。最后建立话权控制或传输控制及媒体路径。",
+      "normative_strength": "§10.14.3.3 步骤 3–6：请求、两个方向的响应、建控制和媒体路径分别列出。",
+      "limitations": [
+        "只见 C 回乙，不证明乙已回甲、甲已收响应、路径已建或有组员已听见。两种流程均不展示拓扑隐藏，不用图上没有网关证明现场没有网关。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.3.3, introduction, preconditions 1–2 and note"
+          ],
+          "printed_pages": [
+            208,
+            209
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.3.3, figure 10.14.3.3-1 and steps 1–3"
+          ],
+          "printed_pages": [
+            209
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.3.3, figure 10.14.3.3-1 and steps 4–6"
+          ],
+          "printed_pages": [
+            209
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.3.2, introduction, preconditions 1–2 and notes 1–2"
+          ],
+          "printed_pages": [
+            207
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-groups-primary-supplied-partner-group-configuration",
+    "r16-groups-partner-group-configuration",
+    "r16-groups-partner-group-affiliation",
+    "r16-groups-remote-partner-group-affiliation",
+    "r16-calls-prearranged-server-admission-routing",
+    "r16-mcvideo-prearranged-group-call-setup"
+  ],
+  "limitations": [
+    "本条是相互连接的 MC 系统对组呼执行本地组配置的 Stage 2 程序。两幅图省略拓扑隐藏；不能反推现场有或没有网关。",
+    "未规定本地配置的具体规则、拒绝码、SIP 路由、超时或实际收听证据。不把它扩大到私呼、文件分发或其他 Release。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.14.1, generic interconnection procedures and relationship to service-specific procedures"
+      ],
+      "printed_pages": [
+        205
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.14.3.1, scope and participating server enforcing local group configuration"
+      ],
+      "printed_pages": [
+        207
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.14.3.2, introduction, preconditions 1–2 and notes 1–2"
+      ],
+      "printed_pages": [
+        207
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.14.3.2, figure 10.14.3.2-1 and steps 1–3"
+      ],
+      "printed_pages": [
+        208
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.14.3.2, figure 10.14.3.2-1 and steps 4–5"
+      ],
+      "printed_pages": [
+        208
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.14.3.2, figure 10.14.3.2-1 and steps 5–7"
+      ],
+      "printed_pages": [
+        208
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.14.3.3, introduction, preconditions 1–2 and note"
+      ],
+      "printed_pages": [
+        208,
+        209
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.14.3.3, figure 10.14.3.3-1 and steps 1–3"
+      ],
+      "printed_pages": [
+        209
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.14.3.3, figure 10.14.3.3-1 and steps 4–6"
+      ],
+      "printed_pages": [
+        209
+      ]
+    }
+  ]
+}

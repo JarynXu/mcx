@@ -3777,6 +3777,38 @@
         }
       ],
       "boundary": "TS 24.379 V16.14.0 在网预安排组预建立重入，不请求隐式话权；区分通用 cid/组 entry 与重入专条，不提供实际 ACK 或路由模板。"
+    },
+    {
+      "id": "r16-groups-partner-group-call-admission",
+      "question": "组在甲，组员在乙：乙服务器核准本次呼出并转甲后还等谁检查？甲宿主的来话到了乙，乙服务器何时才向组员转送？",
+      "start": "topics/groups/partner-group-call-admission.md",
+      "next_if": [
+        {
+          "condition": "若只有主系统 GMS 主动提供组配置和伙伴 GMS 的保存回执，查配置提供，不据回执判定任一通组呼已经获准。",
+          "read": "topics/groups/primary-supplied-partner-group-configuration.md"
+        },
+        {
+          "condition": "若伙伴主动索取组配置、订阅或接收变更通知，查配置取得与更新；这是管理过程，不是伙伴业务服务器对本次呼入或呼出的授权。",
+          "read": "topics/groups/partner-group-configuration.md"
+        },
+        {
+          "condition": "若用户在自己的主系统，显式申请自己归属由伙伴系统定义的组，且无需拓扑隐藏，查本人申请伙伴组归属；获准归属不能当成本次组呼通过。",
+          "read": "topics/groups/partner-group-affiliation.md"
+        },
+        {
+          "condition": "若两名用户的客户端与主业务服务器同属一个主系统，获授权的用户要以强制模式替另一人改变伙伴系统所定义组的归属，查这项远程变更。不能仅凭目标后来在伙伴接受呼叫，就把对主系统定义组的协商变更归到这里。",
+          "read": "topics/groups/remote-partner-group-affiliation.md"
+        },
+        {
+          "condition": "若要认 MCPTT 普通按需预安排组的具体 SIP 邀请、服务器准入或身份路由，转该 Stage 3 主题；不从互联共性流程推一个失败码。",
+          "read": "topics/calls/prearranged-server-admission-routing.md"
+        },
+        {
+          "condition": "若是同一个系统内的 MCVideo 建呼成功与必答成员确认，转 MCVideo 预安排组呼；跨系统的两段组呼响应不据此变成全员确认。",
+          "read": "topics/mcvideo/prearranged-group-call-setup.md"
+        }
+      ],
+      "boundary": "Rel-16 Stage 2，组主系统提供配置，伙伴采用本地配置，互联系统中受伙伴服务的成员已归属该组。只处理逐通组呼授权，不把 GMS 回执或归属当作许可。"
     }
   ]
 }
