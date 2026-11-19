@@ -6,7 +6,7 @@
   "title": "伙伴系统怎样首次取得组配置，又怎样获知后续更新？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-23.280-v16.7.0",
-  "condition_rule": "各声明继承同一固定版和跨系统 GMS 角色；分别按初取、订阅和更新通知的前提判读，不将三次往返视为每次必发生的单一流程。",
+  "condition_rule": "旧四项分别按伙伴主动索取、订阅和变更通知的前提判读。对不同安全域的互联系统，先看配置对象、端点角色及是否属于订阅或通知，再确定逻辑参考点；初次交付、订阅与通知并非总会依次发生。",
   "common_conditions": [
     "3GPP TS 23.280 V16.7.0，Release 16，Stage 2。在互连 MC 系统间讨论目标组的组配置：主、伙伴均相对于该组；GMS 是组管理服务器，和 MC 业务服务器、成员客户端是不同角色。"
   ],
@@ -240,6 +240,153 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "initial-gms-reference-point",
+      "title": "异系统、异安全域的两 GMS 共享可参加互联组呼的组配置：主推或伙伴初取时，非订阅、非通知的信令用 CSC-16（HTTP-1、HTTP-2、HTTP-3）",
+      "conditions": [
+        "两个不同 MC 系统属于不同安全域，目标组可参加互联 MC 组呼；所查的是两系统 GMS 之间共享该组配置的非订阅、非变更通知信令。"
+      ],
+      "conclusion": "对于可参加互联 MC 组呼的组，不同 MC 系统且不同安全域的两个 GMS 之间共享其配置时，非订阅、非通知类信令用 CSC-16，由 HTTP-1、HTTP-2、HTTP-3 传送和路由。这一段既可出现在主 GMS 主动供配时，也可出现在伙伴 GMS 主动索取时；前者和后者不是同一个业务操作。伙伴的 MC 业务服务器向本地 GMS 要配置、本地 GMS 通知业务服务器、终端向 GMS 取配置，都不是这一对端点。",
+      "normative_strength": "§7.5.2.16 明列 CSC-16 的两端、不同系统及安全域、适用对象和信令类别。§10.2.7.2 步骤 1 与 §10.2.7.3 步骤 1–6 用于对照两个初始方向与本地段。",
+      "limitations": [
+        "CSC-16 的端点是逻辑角色，不意味着两 GMS 之间只有直连或三个物理节点。§10.2.7.1 允许一侧或两侧系统边缘有图中未画的代理；记录上出现 HTTP 不足以认定某组已被对端保存。只证实系统互联，未证实目标组可参加互联组呼时，不能据此确认适用 CSC-16。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.2.16, CSC-16: GMSs in different MC systems and security domains; HTTP-1, HTTP-2 and HTTP-3 for non-subscription/notification related signalling on configuration of groups that can take part in interconnected MC service group calls"
+          ],
+          "printed_pages": [
+            40
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.1, overview: optional edge proxies between the two group management servers are not shown"
+          ],
+          "printed_pages": [
+            104,
+            105
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.2, numbered step 1"
+          ],
+          "printed_pages": [
+            105
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.3, introduction, preconditions and NOTES 1–2"
+          ],
+          "printed_pages": [
+            106
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.3, Figure 10.2.7.3-1 and steps 1–6"
+          ],
+          "printed_pages": [
+            107
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "subscription-config-reference-points",
+      "title": "为互联 MC 组呼而在不同 MC 系统间共享的组配置，其订阅或通知在 GMS 与 MC 网关间用 CSC-19；为系统间迁移而共享的用户配置，其订阅或通知在配置管理服务器与 MC 网关间用 CSC-20；两类信令在异系统、异安全域的 MC 网关之间用 CSC-21",
+      "conditions": [
+        "订阅或通知的对象须明确：互联组配置的管理端为 GMS，迁移用户配置的管理端为配置管理服务器；CSC-19 和 CSC-20 的另一端均为 MC 网关服务器，不要求该管理端与网关跨安全域。CSC-21 的双方则是位于不同 MC 系统、不同安全域的 MC 网关服务器。"
+      ],
+      "conclusion": "互联组配置的订阅与变更通知在 GMS 与 MC 网关服务器之间用 CSC-19，经 SIP-2、SIP-3 传送和路由。迁移用户配置的订阅与通知在配置管理服务器与 MC 网关服务器之间用 CSC-20，也用 SIP-2、SIP-3。两种业务在不同系统、不同安全域的 MC 网关间都可用 CSC-21，经 SIP-3 传送和路由。组配置在业务上仍由伙伴 GMS 向主 GMS 订阅，主 GMS 向已订的伙伴 GMS 通知。",
+      "normative_strength": "§§7.5.2.20–22 分别给 GMS 至网关、配置管理服务器至网关和两个跨域网关的逻辑参考点。§10.2.7.4–5 另给订阅和变更通知的前提、方向与响应；参考点本身没有操作结果。",
+      "limitations": [
+        "CSC-16 的 HTTP 非订阅交换侧没有变更通知，不能据此断言某组没有订阅、主 GMS 漏发或伙伴没收到。只认出跨域网关和 SIP-3 也不能确定是哪个组、哪个用户或哪种业务，更不能证明保存或终端收妥。须将端点与同一对象、事务的请求或通知及其响应等记录相互核对。只知道一端是普通 MC 业务服务器或尚未识别角色的服务器，不能以其对端是网关为由贴 CSC-19 或 CSC-20 标签。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.2.16, CSC-16: GMSs in different MC systems and security domains; HTTP-1, HTTP-2 and HTTP-3 for non-subscription/notification related signalling on configuration of groups that can take part in interconnected MC service group calls"
+          ],
+          "printed_pages": [
+            40
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.2.20, CSC-19: group management server and MC gateway server; SIP-2 and SIP-3 for subscription/notification signalling on group configuration shared between MC systems to permit interconnection of MC service group calls"
+          ],
+          "printed_pages": [
+            41
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.2.21, CSC-20: configuration management server and MC gateway server; SIP-2 and SIP-3 for subscription/notification related signalling on user configuration for inter-system migration"
+          ],
+          "printed_pages": [
+            41
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.2.22, CSC-21: MC gateway servers in different MC systems and security domains; SIP-3 for subscription/notification signalling on group configuration for interconnected MC service group calls or user configuration for migration between MC systems"
+          ],
+          "printed_pages": [
+            41
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.4, preconditions"
+          ],
+          "printed_pages": [
+            107
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.4, Figure 10.2.7.4-1 and steps 1–2"
+          ],
+          "printed_pages": [
+            108
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.7.5, preconditions, Figure 10.2.7.5-1, steps 1–2 and final paragraph following step 2"
+          ],
+          "printed_pages": [
+            108
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "source_references": [
@@ -359,10 +506,66 @@
       "printed_pages": [
         94
       ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.5.2.16, CSC-16: GMSs in different MC systems and security domains; HTTP-1, HTTP-2 and HTTP-3 for non-subscription/notification related signalling on configuration of groups that can take part in interconnected MC service group calls"
+      ],
+      "printed_pages": [
+        40
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.5.2.20, CSC-19: group management server and MC gateway server; SIP-2 and SIP-3 for subscription/notification signalling on group configuration shared between MC systems to permit interconnection of MC service group calls"
+      ],
+      "printed_pages": [
+        41
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.5.2.21, CSC-20: configuration management server and MC gateway server; SIP-2 and SIP-3 for subscription/notification related signalling on user configuration for inter-system migration"
+      ],
+      "printed_pages": [
+        41
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.5.2.22, CSC-21: MC gateway servers in different MC systems and security domains; SIP-3 for subscription/notification signalling on group configuration for interconnected MC service group calls or user configuration for migration between MC systems"
+      ],
+      "printed_pages": [
+        41
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.7.1, overview: optional edge proxies between the two group management servers are not shown"
+      ],
+      "printed_pages": [
+        104,
+        105
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.2.7.2, numbered step 1"
+      ],
+      "printed_pages": [
+        105
+      ]
     }
   ],
   "limitations": [
-    "不规定 Stage 3 消息编码、密钥处理细节或终端逐人签收；§10.2.7.2 的主系统主动供配只用于区分初取途径。"
+    "本版公共 Stage 2 不规定 Stage 3 消息编码、密钥处理细节或终端逐人签收；主 GMS 主动提供配置在此只用于判定两 GMS 间非订阅、非通知的配置交换，不能据此代答主动供配的前提与回执。",
+    "逻辑参考点不规定实际物理设备数、抓包跳序或具体 SIP/HTTP 方法。HTTP 侧没有订阅或通知记录，不等于未订、漏发或未收；孤立的跨域网关 SIP-3 记录不能证明具体配置、操作成败、伙伴落库或终端收妥。"
   ],
   "related": [
     "r16-groups-group-membership-notification",
