@@ -1,0 +1,376 @@
+{
+  "topic_id": "r16-identity-home-system-authentication",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "主系统登录：SIP 已注册，能说明用户通过了哪项认证、获准了哪些 MC 业务？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "common_conditions": [
+    "3GPP TS 23.280 V16.7.0，Rel-16 Stage 2，§10.6.1 主 MC 系统。"
+  ],
+  "condition_rule": "各条在主系统范围内解释；图示是单域示例，另述的独立认证条件不等于图中每次部署的特征。一次登录须区分多个记录的对象、用户名及相应业务。",
+  "claims": [
+    {
+      "id": "source-scope",
+      "title": "主系统单域图回答的是高层问题",
+      "conditions": [
+        "要用图 10.6.1-1 解释一次主系统登录。"
+      ],
+      "conclusion": "图示主系统单域情形，解释身份管理、SIP 核心注册及相应业务授权的关系。",
+      "normative_strength": "高层示例，不是唯一报文序列。",
+      "limitations": [
+        "不能将单域图当作迁往伙伴系统的业务授权程序或某个 REGISTER 的报文验收依据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.1, heading and opening note: primary MC system, high-level procedure"
+          ],
+          "printed_pages": [
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.1, figure 10.6.1-1, caption and participants: single-domain primary MC system"
+          ],
+          "printed_pages": [
+            115
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "user-proof",
+      "title": "用户提供凭据，身份管理服务器核验",
+      "conditions": [
+        "在图示身份管理客户端与身份管理服务器间的步骤 1。"
+      ],
+      "conclusion": "身份管理客户端开始过程，MC 用户提供凭据供身份管理服务器核验；图中用户认证并取得访问令牌。",
+      "normative_strength": "图及步骤 1 说明此处的角色、动作与产物。",
+      "limitations": [
+        "只见提交凭据不能判核验成功；即使确认取得令牌也不等于已获得任一业务授权。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.1, figure 10.6.1-1, action 1: user authentication and access token"
+          ],
+          "printed_pages": [
+            115
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.1, step 1, procedure initiation and user credentials for verification"
+          ],
+          "printed_pages": [
+            115
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.1, note after step 3: corresponding MC service authorization by service clients"
+          ],
+          "printed_pages": [
+            115
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "sip-registration",
+      "title": "建好到 SIP 核心的连接，与完成 SIP 注册是两个事件",
+      "conditions": [
+        "在图示信令用户代理和 SIP 核心间查核 SIP 层事件。"
+      ],
+      "conclusion": "用户代理和 SIP 核心建安全连接，供 SIP 层认证和注册；之后完成 SIP 层注册，还可向 MC 业务服务器进行第三方注册。",
+      "normative_strength": "步骤 2、3 区分两件事；第三方注册可选。",
+      "limitations": [
+        "建连不能证明注册完成；缺少可选第三方注册不推翻明确的 SIP 注册。两种注册记录本身都不足以确认 MC 用户身份核验成功或对应业务获准。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.1, figure 10.6.1-1, action 1: user authentication and access token"
+          ],
+          "printed_pages": [
+            115
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.1, figure 10.6.1-1 action 2 and step 2: purpose of the secure SIP-core connection"
+          ],
+          "printed_pages": [
+            115
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.1, figure 10.6.1-1 action 3 and step 3: SIP registration and optional third-party registration"
+          ],
+          "printed_pages": [
+            115
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.1, note after step 3: corresponding MC service authorization by service clients"
+          ],
+          "printed_pages": [
+            115
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "timing",
+      "title": "主系统的 MC 用户身份认证必须排在 SIP 注册前吗？",
+      "conditions": [
+        "判断主 MC 系统内同一用户的 MC 身份认证相对 SIP 注册的时序；区分图下步骤说明与图前列举的其他安排。"
+      ],
+      "conclusion": "在主 MC 系统，图下步骤 1 的文字说明，MC 用户身份认证可在信令用户代理完成对 SIP 核心的注册（步骤 3）之前或之后。图前另说，在某些场景用户认证可独立于 SIP 注册阶段，例为 SIP 核心在 MC 业务服务器域外；也有在 SIP 注册阶段内认证用户的做法。",
+      "normative_strength": "图是单域示例。先后关系来自步骤 1 的说明；独立认证的例子与阶段内认证的替代做法分别出自图前两段。",
+      "limitations": [
+        "分域不是独立认证的必要条件；部署图不证明具体登录顺序。阶段内认证不等于每次注册都会进行 MC 用户认证，亦不足以指定具体报文。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.1, heading and opening note: primary MC system, high-level procedure"
+          ],
+          "printed_pages": [
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.1, figure 10.6.1-1, caption and participants: single-domain primary MC system"
+          ],
+          "printed_pages": [
+            115
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.1, first paragraph on independence from SIP registration; separate-domain example"
+          ],
+          "printed_pages": [
+            115
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.1, second paragraph introducing alternatives within the SIP registration phase"
+          ],
+          "printed_pages": [
+            115
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.1, step 1, relation to SIP-level registration in step 3"
+          ],
+          "printed_pages": [
+            115
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.1, figure 10.6.1-1 action 3 and step 3: SIP registration and optional third-party registration"
+          ],
+          "printed_pages": [
+            115
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "service-reuse",
+      "title": "同一主系统提供多项 MC 业务时，同一用户的一次认证可供各业务办理授权",
+      "conditions": [
+        "同一主 MC 系统提供多项 MC 业务，要为该系统内的同一用户办理多项业务授权。"
+      ],
+      "conclusion": "在提供多项 MC 业务的同一主系统内，该用户的一次身份认证可以用于该用户在此系统的多项业务授权。MC 业务客户端利用本过程的结果为该用户办理各自对应的业务授权。",
+      "normative_strength": "同一主系统为同一用户办理多项 MC 业务授权时，可以复用这名用户的一次认证；不要求必然复用，也不要求每项业务都重验。各业务仍办理对应的授权。",
+      "limitations": [
+        "一项业务获准不表示该用户的其他业务也获准；未见对应结果不能判拒绝。不能凭甲的记录确认乙的权限，也不能把主系统内的复用许可当成同一用户迁到伙伴系统后获得授权的依据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.1, step 1, one authentication for multiple authorizations of the same user"
+          ],
+          "printed_pages": [
+            115
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.1, note after step 3: corresponding MC service authorization by service clients"
+          ],
+          "printed_pages": [
+            115
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.6.1, heading and opening note: primary MC system, high-level procedure"
+      ],
+      "printed_pages": [
+        114
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.6.1, first paragraph on independence from SIP registration; separate-domain example"
+      ],
+      "printed_pages": [
+        115
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.6.1, second paragraph introducing alternatives within the SIP registration phase"
+      ],
+      "printed_pages": [
+        115
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.6.1, figure 10.6.1-1, caption and participants: single-domain primary MC system"
+      ],
+      "printed_pages": [
+        115
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.6.1, figure 10.6.1-1, action 1: user authentication and access token"
+      ],
+      "printed_pages": [
+        115
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.6.1, step 1, procedure initiation and user credentials for verification"
+      ],
+      "printed_pages": [
+        115
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.6.1, step 1, relation to SIP-level registration in step 3"
+      ],
+      "printed_pages": [
+        115
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.6.1, step 1, one authentication for multiple authorizations of the same user"
+      ],
+      "printed_pages": [
+        115
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.6.1, figure 10.6.1-1 action 2 and step 2: purpose of the secure SIP-core connection"
+      ],
+      "printed_pages": [
+        115
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.6.1, figure 10.6.1-1 action 3 and step 3: SIP registration and optional third-party registration"
+      ],
+      "printed_pages": [
+        115
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.6.1, note after step 3: corresponding MC service authorization by service clients"
+      ],
+      "printed_pages": [
+        115
+      ]
+    }
+  ],
+  "related": [
+    "r16-identity-shared-sip-registration",
+    "r16-identity-partner-migration-authorization"
+  ],
+  "limitations": [
+    "不展开具体安全协议、消息编码或跨系统迁移程序。相邻专题用于分流，不是新增技术来源。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
