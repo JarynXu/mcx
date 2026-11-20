@@ -2797,6 +2797,16 @@ SIP-1、HTTP-1、CSC-1 分别使用 MC services APN、MC common core services AP
 
 [读取主题](topics/bearers/relay-discovery-by-group.md)
 
+## 在网 MCPTT 组呼：MBMS 容量不够时，怎样把正在组播的通话改走单播？
+
+PF 实收 Floor Request 或 Floor Taken，并决定让新通话使用 MBMS 子信道，随后检查承载容量。容量不足时，它可将另一段现有 MBMS 通话迁到单播，也可让新通话的信令走 MBMS、媒体走单播。
+
+客户端支持从 MBMS 接收话权控制消息和 RTP，且承载已激活并已通告。空闲终端实际经 MBMS 子信道收到 Application Paging 后应发起服务请求，这不等于已进入 RRC Connected。PF 收到全员已监听单播的指示，与收到组呼会话已释放的指示，释放的实例相同，所列动作不同。终端实收 Unmap 时只移除存在的本组通话关联。
+
+尚未建立：只凭寻呼或 Unmap，不能确定迁移原因、新通话已占用容量、任何特定终端已收单播 RTP，或整条 MBMS 承载已停用。
+
+[读取主题](topics/bearers/mcptt-mbms-capacity-to-unicast.md)
+
 ## 初次注册会要求 LMS 下发位置配置吗？什么条件下终端才上报？
 
 在网、单系统事件上报中，LMS 为 LMC 提供首次规则或更新；用户配置档已含相应规则时无需另发这条消息。初次注册只是 LMC 可能的上报事件，本程序没有要求 LMS 因注册就发配置。 在网配置表把普通和紧急时所求的资料、触发条件分列；终端连续上报的最短间隔可选，缺省和三种明列的紧急情形均取 0。

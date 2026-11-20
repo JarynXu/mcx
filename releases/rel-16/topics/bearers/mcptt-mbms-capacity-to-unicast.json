@@ -1,0 +1,349 @@
+{
+  "topic_id": "r16-bearers-mcptt-mbms-capacity-to-unicast",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "在网 MCPTT 组呼：MBMS 容量不够时，怎样把正在组播的通话改走单播？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "各声明继承共同范围，其收件、原状态和动作须按同一对象判断；不同触发条件不是连续步骤。",
+  "common_conditions": [
+    "3GPP TS 24.380 V16.9.0，普通同系统在网 MCPTT 组呼。PF 指参与 MCPTT 功能；服务器侧讨论的是支持 MBMS 子信道控制的 PF。",
+    "区分持续存在的组会话、会话内的一段通话（conversation），以及 PF 为一段通话使用的 MBMS 子信道管理实例。"
+  ],
+  "claims": [
+    {
+      "id": "mbms-capacity-choice",
+      "title": "容量不够时，可以挪走哪一段通话？",
+      "conditions": [
+        "对拟使用 MBMS 的新通话，PF 处于 Start-stop：组会话已存在，但还没有为这段通话运行 MBMS 子信道控制实例。",
+        "PF 实收 Floor Request 或 Floor Taken，并决定让新通话使用 MBMS 子信道；检查后发现承载容量不够。"
+      ],
+      "conclusion": "PF 可把另一段正在经 MBMS 传送的通话按 §10.2.3.12 迁到单播，为新通话腾出容量。另一种选择是让新通话的信令走 MBMS，媒体走单播。",
+      "normative_strength": "在上述收件和决定之后需要判断承载容量；容量不足时的两项处置均为 MAY。",
+      "limitations": [
+        "不能把输入消息本身当作 PF 已决定选用 MBMS。条文未给出容量门限或挑选旧通话的算法，也未限定两段通话属于同组或不同组。",
+        "迁移决定不证明容量已腾出，也不证明新通话已映射到 MBMS 或已发送媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.2.1: participating function supporting the MBMS subchannel control procedure; allocation or deallocation for a conversation in a group session"
+          ],
+          "printed_pages": [
+            204
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.2.2.1: Start-stop for the proposed conversation; group session exists but no MBMS subchannel control instance"
+          ],
+          "printed_pages": [
+            205
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.2.2.2: received Floor Request or Floor Taken, decision to use MBMS and capacity check; alternatives when capacity is insufficient"
+          ],
+          "printed_pages": [
+            205
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.2.3.12 and note: decision to move an ongoing MBMS conversation; optional paging over the associated subchannel may coincide with unicast start"
+          ],
+          "printed_pages": [
+            209
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mbms-paging-unicast-start",
+      "title": "应用寻呼要早于单播吗？单看消息能判明是哪一种通话吗？",
+      "conditions": [
+        "在迁移分支，参与服务器已决定把一段仍走 MBMS 的通话改为单播。新通话直接从单播开始是判读寻呼时另需区分的用途。"
+      ],
+      "conclusion": "PF 可经旧通话关联的 MBMS 子信道发 Application Paging。概述给出先寻呼、再发 Unmap Group To Bearer、随后继续用单播的走法；具体迁移条款也允许发寻呼与开始单播同时发生。寻呼消息含 MCPTT Group ID，既可用于旧通话迁移，也可用于新通话直接走单播。",
+      "normative_strength": "迁移时发寻呼为 MAY；概述是可采用的走法，注释允许并行。§10.2.3.12 没有把 Unmap 或客户端确认列为开单播的前提。",
+      "limitations": [
+        "单见某组的寻呼不能证明 PF 是因容量不足而迁移旧通话、新通话已占用 MBMS，或任何特定终端已收单播媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.2.3.12 and note: decision to move an ongoing MBMS conversation; optional paging over the associated subchannel may coincide with unicast start"
+          ],
+          "printed_pages": [
+            209
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "4.1.3.6: overview of moving an ongoing conversation by paging, unmapping and continuing on unicast"
+          ],
+          "printed_pages": [
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.4.6 and table 8.4.6-1: Application Paging for transfer or a new unicast conversation; MCPTT Group ID"
+          ],
+          "printed_pages": [
+            187
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mbms-idle-client-paging",
+      "title": "收到寻呼的空闲终端要做什么？",
+      "conditions": [
+        "客户端支持经 MBMS 接收话权控制消息和 RTP；MBMS 承载已激活并已通告。该端处于空闲模式，实际经 MBMS 子信道收到 Application Paging。"
+      ],
+      "conclusion": "这台终端应发起服务请求，以进入 RRC Connected（无线连接态）。",
+      "normative_strength": "满足接收和空闲条件时，发起服务请求为 SHALL。",
+      "limitations": [
+        "发起请求不等于已进入连接态，也不等于收到了某个单播 RTP 包。PF 发寻呼不能代替这台终端实际收件；此条不要求已连接的终端因此再发一次请求。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.3.1: supporting client procedures assume an active and announced MBMS bearer"
+          ],
+          "printed_pages": [
+            209,
+            210
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.3.5: idle client actually receiving Application Paging over an MBMS subchannel makes a service request to enter RRC Connected"
+          ],
+          "printed_pages": [
+            210
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mbms-unmap-and-instance-release",
+      "title": "哪条指示让 PF 释放实例？终端收到 Unmap 又删什么？",
+      "conditions": [
+        "PF 正在管理旧通话的 MBMS 子信道。分别判断它实收的应用与信令面“全部已监听单播”指示，或控制与信令面“组呼会话已释放”指示。T15 到期且应用仍报告有 MBMS 监听者是另一种发 Unmap 的条件。",
+        "终端侧以支持 MBMS 话权与 RTP 接收、承载已激活且已通告为前提；该端实际经 MBMS 子信道收到 Unmap，并按其中的 MCPTT Group ID 查本地关联。"
+      ],
+      "conclusion": "所有相关客户端现已监听单播的指示到达时，PF 释放这段通话使用的 MBMS 子信道管理实例。若到达的是组呼会话已释放的指示，PF 经 MBMS 子信道发送带本组 ID 的 Unmap Group To Bearer，停止仍运行的 T15、T16、T17，并释放这段通话的实例。T15 到期且应用指示仍有客户端监听 MBMS 时，PF 也须发带组 ID 的 Unmap。实收 Unmap 的终端若存在相应关联，就把 TMGI、音频和话权控制子信道与所指组会话中该段通话的关联解除。",
+      "normative_strength": "两种 PF 指示下的相应动作、所列 T15 分支的 Unmap，以及终端在关联存在时的解除，均为 SHALL。",
+      "limitations": [
+        "“全部已监听单播”这一条只列释放本次实例；没有另列发送 Unmap 或停止定时器的步骤。不要反向断定定时器必然继续运行。组呼已释放分支不以先收到全员监听单播的指示为条件。",
+        "某端的 Unmap 不揭示 PF 的触发事件。解除该端的关联或释放 PF 的一个实例均不是停用整条 MBMS 承载的证据，也不能凭此判定 SIP 会话结束、所有终端都收到了单播 RTP。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.2.3.10: indication from the application and signalling plane that all clients now listen to unicast; release the instance used for the conversation"
+          ],
+          "printed_pages": [
+            209
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.2.3.11: control and signalling plane indicates group call session released; send group-specific Unmap, stop running T15, T16 and T17, release the conversation instance"
+          ],
+          "printed_pages": [
+            209
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.2.3.6 item 2: T15 expiry with application indication that clients still listen to the MBMS bearer; send Unmap with MCPTT Group ID"
+          ],
+          "printed_pages": [
+            208
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.3.1: supporting client procedures assume an active and announced MBMS bearer"
+          ],
+          "printed_pages": [
+            209,
+            210
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.3.4: client actually receiving Unmap removes the indicated conversation association if it exists"
+          ],
+          "printed_pages": [
+            210
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-bearers-same-group-call-broadcast",
+    "r16-bearers-mbms-edge-to-unicast",
+    "r16-calls-mcptt-mbms-group-status"
+  ],
+  "limitations": [
+    "不以一台终端离开覆盖、跨服务器发现共享承载或其他业务的状态机解释本次容量决定。",
+    "监听单播的指示不逐包证明媒体接收；本页不规定产生该指示的统计办法。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "10.2.1: participating function supporting the MBMS subchannel control procedure; allocation or deallocation for a conversation in a group session"
+      ],
+      "printed_pages": [
+        204
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "10.2.2.1: Start-stop for the proposed conversation; group session exists but no MBMS subchannel control instance"
+      ],
+      "printed_pages": [
+        205
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "10.2.2.2: received Floor Request or Floor Taken, decision to use MBMS and capacity check; alternatives when capacity is insufficient"
+      ],
+      "printed_pages": [
+        205
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "10.2.3.12 and note: decision to move an ongoing MBMS conversation; optional paging over the associated subchannel may coincide with unicast start"
+      ],
+      "printed_pages": [
+        209
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "4.1.3.6: overview of moving an ongoing conversation by paging, unmapping and continuing on unicast"
+      ],
+      "printed_pages": [
+        24
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "8.4.6 and table 8.4.6-1: Application Paging for transfer or a new unicast conversation; MCPTT Group ID"
+      ],
+      "printed_pages": [
+        187
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "10.3.1: supporting client procedures assume an active and announced MBMS bearer"
+      ],
+      "printed_pages": [
+        209,
+        210
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "10.3.5: idle client actually receiving Application Paging over an MBMS subchannel makes a service request to enter RRC Connected"
+      ],
+      "printed_pages": [
+        210
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "10.2.3.10: indication from the application and signalling plane that all clients now listen to unicast; release the instance used for the conversation"
+      ],
+      "printed_pages": [
+        209
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "10.2.3.11: control and signalling plane indicates group call session released; send group-specific Unmap, stop running T15, T16 and T17, release the conversation instance"
+      ],
+      "printed_pages": [
+        209
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "10.2.3.6 item 2: T15 expiry with application indication that clients still listen to the MBMS bearer; send Unmap with MCPTT Group ID"
+      ],
+      "printed_pages": [
+        208
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "10.3.4: client actually receiving Unmap removes the indicated conversation association if it exists"
+      ],
+      "printed_pages": [
+        210
+      ]
+    }
+  ]
+}
