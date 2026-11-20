@@ -1,0 +1,264 @@
+{
+  "topic_id": "r16-calls-offnetwork-group-emergency-upgrade",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "进行中的离网组呼如何升级为紧急组呼？公告发出后，谁真正切换了类型？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明继承共同条件并叠加本条角色和入口；一端发送不能代替另一端实收。",
+  "common_conditions": [
+    "固定 3GPP TS 24.379 V16.14.0（Release 16，Stage 3）；已参加正在进行的离网 MCPTT 普通组呼，以本端原有基本呼叫状态 S3 和类型状态 T2、已存普通类型为起点。只讨论从普通转紧急及识别同组公告的边界。",
+    "本地用户指示、对端实际收到公告、并行基本呼叫控制的比较是不同入口；不以整组已接收、新呼叫建立、用户获话权或媒体已传送为共同前提。"
+  ],
+  "claims": [
+    {
+      "id": "basic-group-emergency-upgrade-origin",
+      "title": "发起端升级既有组呼时，如何保留原呼叫身份并记录变更者？",
+      "conditions": [
+        "发起端的类型状态为 T2；收到用户将当前普通组呼升级为紧急组呼的指示，用户配置档 OffNetwork/EmergencyCallChange 为 true。"
+      ],
+      "conclusion": "终端须将已存当前类型置 EMERGENCY GROUP CALL，将已存 ProSe 每包优先级置为离网紧急组呼对应的配置值，保存当前 UTC 为上次类型变更时刻，保存自己的 MCPTT 用户 ID 为上次变更用户。按 §10.2.3.4.1.1 启 TFG13，停止运行中的 TFG11 和 TFG14，进入 T1。其后构造并发送 GROUP CALL ANNOUNCEMENT：从既有记录填写呼叫标识、原发起者 MCPTT ID、组 ID、SDP、刷新间隔及呼叫开始时刻；从类型记录填写当前类型、上次变更时刻与变更用户。升级者不必是原呼叫发起者。",
+      "normative_strength": "第 1 项的状态、优先级、记录与计时器动作在条件满足时是 SHALL；第 3、4 项另列公告构造及发送。",
+      "limitations": [
+        "配置为 false 或缺失不满足第 1 项，不从独立编号的第 3、4 项反推此时必不发公告或有特定错误；不借用初始紧急呼叫许可。",
+        "本地进入 T1 和发出公告不等于重新建立整通呼叫、取得话权或所有成员已实际收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.3.2–3: T1 in-progress emergency and T2 in-progress basic group call"
+          ],
+          "printed_pages": [
+            334
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.4.7.1, opening and item 1(a)–(h): permitted local BASIC-to-EMERGENCY upgrade from T2"
+          ],
+          "printed_pages": [
+            338
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.4.7.1, items 3(a)–(i) and 4: announcement from stored call identity and parameters plus current type and last-change fields"
+          ],
+          "printed_pages": [
+            338,
+            339
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.4.1.1, TFG13 calculation: group EmergencyCallCancel minus elapsed UTC time since last call type change"
+          ],
+          "printed_pages": [
+            334
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "same-call-emergency-announcement-receipt",
+      "title": "接收端收到紧急类型公告时，何时要求变更时刻严格更新？",
+      "conditions": [
+        "接收端原在 T2，本地已存类型为 BASIC GROUP CALL；它实收 GROUP CALL ANNOUNCEMENT，组 ID、呼叫标识均与本地进行中的呼叫相同，来件类型为 EMERGENCY GROUP CALL。"
+      ],
+      "conclusion": "比较两侧的上次变更用户。若相同，只有公告所带的变更时刻严格晚于本地记录才满足第 1 项，先保存该时刻，再按 1(b) 升级。若不同，来件是紧急而本地尚非紧急时按 2(b) 保存来件变更时刻和变更用户并升级；该分项没有“时间更新”条件。两条升级分支都把已存类型、ProSe 每包优先级改为离网紧急组呼对应值，停仍在运行的 TFG14，启 TFG13，并进入 T1。按秒计算的 TFG13 值为组配置 EmergencyCallCancel −（当前 UTC − 公告的 Last call type change time）。",
+      "normative_strength": "各匹配条件下的本地数据、状态及定时器动作是 SHALL。第 2(a) 项的时间比较针对类型相同，不是第 2(b) 项的前提。",
+      "limitations": [
+        "同一变更用户的时间相等或更早不满足第 1 项，不能据此补成全局丢弃规则。局部进入 T1 不是全体已切换或已播放媒体的证据。",
+        "计时不是一律从完整组配置值开始，也不使用呼叫开始时刻。这里不指定负值、时钟同步或其后降级的实现。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.4.7.2, entry and item 1(a), 1(b)(i)–(v): same group and call ID, same last user, strictly newer update"
+          ],
+          "printed_pages": [
+            339
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.4.7.2, item 2(a) compared with 2(b)(i)–(vii): different last user, incoming emergency and locally non-emergency"
+          ],
+          "printed_pages": [
+            340
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.4.1.1, TFG13 calculation: group EmergencyCallCancel minus elapsed UTC time since last call type change"
+          ],
+          "printed_pages": [
+            334
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "emergency-upgrade-merge-overlap-boundary",
+      "title": "同组且呼叫标识相同的公告，会不会也满足合并入口？",
+      "conditions": [
+        "本地基本呼叫控制为 S3，类型控制为 T2，本地类型普通；实际收到来自同组、类型为紧急的 GROUP CALL ANNOUNCEMENT。比较收到的原发起者、呼叫标识、上次变更用户和变更时刻与本地原记录。"
+      ],
+      "conclusion": "两套状态机并行。类型更新的入口要求组 ID、呼叫标识均相同，未列原发起者相同；随后仍须满足变更用户与时刻相应分支。基本呼叫合并入口在同组时要求原发起者不同或呼叫标识不同；本地普通而来件是紧急又满足其类型条件。原发起者和呼叫标识均未变的普通升级不满足合并入口。若同组且呼叫标识相同、原发起者不同，上述合并条件可以满足；若类型更新的条件也满足，两套程序并非必然互斥。",
+      "normative_strength": "此结论是对两套状态机入口条件的对照。各分支按自身条件执行，不能把某一条的身份检查写成另一条也必查。",
+      "limitations": [
+        "所引条款不规定这两套程序同时满足时的执行顺序或冲突仲裁，不据此推断全组收敛或实际发送媒体。",
+        "原发起者不是上次变更用户；比较对象不能混用。不同呼叫的完整取舍与基本呼叫状态更新归既有合并主题。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.1: call type control operates in parallel with basic off-network group call control"
+          ],
+          "printed_pages": [
+            332
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.4.6.1, S3 and announcement identity guard; four conditions for adopting the announced call"
+          ],
+          "printed_pages": [
+            331
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.4.7.2, entry and item 1(a), 1(b)(i)–(v): same group and call ID, same last user, strictly newer update"
+          ],
+          "printed_pages": [
+            339
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.4.7.2, item 2(a) compared with 2(b)(i)–(vii): different last user, incoming emergency and locally non-emergency"
+          ],
+          "printed_pages": [
+            340
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-offnetwork-group-client",
+    "r16-calls-offnetwork-group-call-merge"
+  ],
+  "limitations": [
+    "不覆盖初始紧急呼叫、紧急告警、迫近危险升级、降级、竞争呼叫的完整状态更新或媒体编码；不填写 ProSe 优先级数值。",
+    "一台终端改变类型或计时器不证明其他成员同步。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.2.3.1: call type control operates in parallel with basic off-network group call control"
+      ],
+      "printed_pages": [
+        332
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.2.3.3.2–3: T1 in-progress emergency and T2 in-progress basic group call"
+      ],
+      "printed_pages": [
+        334
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.2.3.4.7.1, opening and item 1(a)–(h): permitted local BASIC-to-EMERGENCY upgrade from T2"
+      ],
+      "printed_pages": [
+        338
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.2.3.4.7.1, items 3(a)–(i) and 4: announcement from stored call identity and parameters plus current type and last-change fields"
+      ],
+      "printed_pages": [
+        338,
+        339
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.2.3.4.7.2, entry and item 1(a), 1(b)(i)–(v): same group and call ID, same last user, strictly newer update"
+      ],
+      "printed_pages": [
+        339
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.2.3.4.7.2, item 2(a) compared with 2(b)(i)–(vii): different last user, incoming emergency and locally non-emergency"
+      ],
+      "printed_pages": [
+        340
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.2.3.4.1.1, TFG13 calculation: group EmergencyCallCancel minus elapsed UTC time since last call type change"
+      ],
+      "printed_pages": [
+        334
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.2.2.4.6.1, S3 and announcement identity guard; four conditions for adopting the announced call"
+      ],
+      "printed_pages": [
+        331
+      ]
+    }
+  ]
+}
