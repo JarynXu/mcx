@@ -19,3 +19,5 @@
 还要查[等待授予时的普通话权处理](on-network-floor-client.md)，或查[Disconnect 的发送端与收到确认后的状态](preestablished-release-outcome.md)，分别进入对应主题。
 
 依据：[RTCP APP 头与 Name，印刷页 145–146](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=146)；[终端预建立会话在用状态，印刷页 196](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=197)。
+
+已能认出消息族后，若实际接收记录提示 subtype 未知、字段未规定或可选字段语法错误，查[未知消息或字段的忽略范围](rtcp-app-unknown-control-fields.md)。日志少打一项，不等于接收端遇到未知项。

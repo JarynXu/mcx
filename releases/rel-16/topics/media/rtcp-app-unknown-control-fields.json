@@ -1,0 +1,112 @@
+{
+  "topic_id": "r16-media-rtcp-app-unknown-control-fields",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 媒体控制收到未知 subtype 或字段，该忽略哪一部分？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "每条声明适用主题的全部 common_conditions，并叠加该条 conditions。关联主题不是必经流程。",
+  "common_conditions": [
+    "固定 TS 24.380 V16.9.0 的 MCPTT 媒体平面控制 RTCP APP 消息接收；先分清消息边界、subtype 和消息内字段。"
+  ],
+  "claims": [
+    {
+      "id": "known-control-message-ignores-unspecified-or-invalid-optional-fields",
+      "title": "已知 RTCP APP 消息忽略未规定字段或语法错误的可选字段",
+      "conditions": [
+        "接收端已识别 subtype，并辨认出消息内一个本版未规定字段，或一个语法错误的可选字段。"
+      ],
+      "conclusion": "忽略对应字段，不把这条字段规则变成丢弃整条消息的要求。预建立会话控制的 MCPTT 客户端和参与功能遵循同样规则。",
+      "normative_strength": "§8.1.4 与 §8.3.3.9 的第 2–3 项为 SHALL。",
+      "limitations": [
+        "该语法错误分支不涵盖必需字段；不提供分段失效或必需字段异常时的通用恢复，也不证明其他字段或业务处理通过。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.1.4 steps 2–3, unspecified and syntactically incorrect optional fields"
+          ],
+          "printed_pages": [
+            147
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.3.3.9 steps 2–3, pre-established session control"
+          ],
+          "printed_pages": [
+            179,
+            180
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "unknown-subtype-ignores-app-message-not-all-ip-contents",
+      "title": "subtype 未知时忽略这条 RTCP APP；一个 IP 报文和一条 APP 不是同一单位",
+      "conditions": [
+        "收到 subtype 未知的 RTCP APP 消息；有同一 IP 内其他控制消息时，能分别辨认各条边界。"
+      ],
+      "conclusion": "忽略整条 subtype 未知的 APP 消息。每条媒体控制消息各占一个 RTCP APP 包，不装入复合 RTCP 包，但同一个 IP 报文可有多条。预建立会话控制对终端和参与功能重申整条忽略。",
+      "normative_strength": "§8.1.1 定义封装单位；§8.1.4 和 §8.3.3.9 第 1 项要求未知 subtype 的整条消息忽略。",
+      "limitations": [
+        "不从这里推定要丢掉同一个 IP 报文中的所有其他消息，也不证明其他 APP、业务应答或状态变更已经发生。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.1.1, one APP packet per media control message; multiple messages may use one IP packet"
+          ],
+          "printed_pages": [
+            145
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.1.4 item 1, unknown subtype"
+          ],
+          "printed_pages": [
+            147
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.3.3.9 item 1, pre-established session control"
+          ],
+          "printed_pages": [
+            179
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-media-rtcp-app-name-subtype",
+    "r16-media-preestablished-connect-outcome",
+    "r16-media-on-network-floor-client"
+  ],
+  "limitations": [
+    "只覆盖标准规定的接收兼容行为及观察边界，不补造分段恢复、必需字段失败、日志格式或过程状态。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
