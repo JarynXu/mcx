@@ -9,7 +9,7 @@
   "common_conditions": [
     "TS 24.380 V16.9.0（Release 16，Stage 3），在网 MCPTT，客户端与 PF 已有预建立会话。"
   ],
-  "condition_rule": "状态以本次消息对应的预建立会话为单位，客户端与 PF 分开；自动应答的 CF INVITE、收到正负确认、T55 到期分别是替代入口。",
+  "condition_rule": "状态以本次消息对应的预建立会话为单位，客户端与 PF 分开；自动应答的 CF INVITE、收到正负确认、T55 到期分别是替代入口。 发起侧还要分开 PF 实收 REFER、主叫实收 REFER 2xx 和已在用的发起 PF 实收 CF 业务 INVITE 200；不能把受邀侧的 INVITE 请求或一条腿的状态作为另一条腿的前提。",
   "claims": [
     {
       "id": "pc-ack-format",
@@ -427,6 +427,186 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "pc-orig-refer-versus-invite",
+      "title": "REFER 接受改变本地状态，不是发起 Connect 所用的业务 200",
+      "conditions": [
+        "已建但未在用的一侧处理本次发起 REFER 或其 2xx；发起 PF 后续实际收到 CF 的业务 INVITE 200 则是另一个事件。"
+      ],
+      "conclusion": "发起 PF 在其未在用状态收到客户端 REFER 后，预留尚未预留的用户面资源并转在用；原未在用的主叫客户端收到发送给 PF 的发起 REFER 的 SIP 2xx 后转为在用。已在用的发起 PF 实收 CF 针对本次业务 INVITE 的 200，才按本入口向发起呼叫的客户端在该呼叫的媒体面控制传输通道发送 Connect，以确认业务呼叫建立。Connect 在网且仅走单播。",
+      "normative_strength": "适用事件下按条文区分 SHALL、SHOULD 和接收缺省，不把实际发送或字段映射当作交付证据。",
+      "limitations": [
+        "不能从 REFER 的 2xx、PF 或客户端在用推断 CF 的 200、Connect 已发出、话权许可或 RTP；不扩充其他响应分支。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.3.2: originating PF receives SIP REFER on an established session not in use"
+          ],
+          "printed_pages": [
+            198
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.2.2.3.5: initiating client receives the SIP REFER 2xx"
+          ],
+          "printed_pages": [
+            195
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.4.10: originating PF actually receives the SIP 200 (OK) from the CF"
+          ],
+          "printed_pages": [
+            202
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.3.4: purpose and unicast scope of Connect; absent Answer State interpretation"
+          ],
+          "printed_pages": [
+            180,
+            181
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "pc-orig-connect-id-and-type",
+      "title": "主叫 Connect 的会话身份取 CF 的业务 INVITE 200；类型缺失写 0",
+      "conditions": [
+        "发起 PF 已在用，实际收到 CF 对本次业务 INVITE 的 200 并按本步骤构建 Connect。"
+      ],
+      "conclusion": "把这份 INVITE 200 的 Contact 中的 SIP URI 填入 MCPTT Session Identity 字段中的身份值。若该 200 有 application/vnd.3gpp.mcptt-info+xml 且包含 session-type，Session Type 取对应值；否则写 no session type（0），仍填身份值。",
+      "normative_strength": "适用事件下按条文区分 SHALL、SHOULD 和接收缺省，不把实际发送或字段映射当作交付证据。",
+      "limitations": [
+        "不取 REFER 的响应或受邀侧收到的 INVITE 请求的 Contact；不以已知业务种类补类型或删除整个字段，不规定 Contact 缺失时的替代处理。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.4.10: originating PF actually receives the SIP 200 (OK) from the CF"
+          ],
+          "printed_pages": [
+            202
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.3.3.3, Table 8.3.3.3-1 and Session Type coding: Session Type and identity value"
+          ],
+          "printed_pages": [
+            176,
+            177
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "pc-orig-connect-warning-answer-state",
+      "title": "399 取 warn-text，应答缺省以收到的 Connect 字段为准",
+      "conditions": [
+        "发起 PF 在构建本次主叫 Connect；另在接收实际 Connect 时判断字段是否缺失。"
+      ],
+      "conclusion": "CF 的 200 带 warn-code=399 的 Warning 时，把该 Warning 的 warn-text 写入 Warning Text。有 P-Answer-State 时写该头 answer-type 对应的 Answer State；未带这个头时，该步骤不要求写 Answer State。若实际 Connect 的 Answer State 字段未出现，接收者必须按 confirmed 解释。",
+      "normative_strength": "适用事件下按条文区分 SHALL、SHOULD 和接收缺省，不把实际发送或字段映射当作交付证据。",
+      "limitations": [
+        "不把 SIP 200 的缺头、MCPC 缺字段和 Session Type=0 合并；不能推定用户手动接听、实际媒体到达或已获话权。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.4.10: originating PF actually receives the SIP 200 (OK) from the CF"
+          ],
+          "printed_pages": [
+            202
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.3.4: purpose and unicast scope of Connect; absent Answer State interpretation"
+          ],
+          "printed_pages": [
+            180,
+            181
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.3.3.4 and 8.3.3.6: Warning Text and Answer State fields"
+          ],
+          "printed_pages": [
+            177,
+            178
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "pc-orig-connect-ack-t55-c55",
+      "title": "发起侧宜要求确认、启 T55、C55 加一；不照搬受邀初始化",
+      "conditions": [
+        "已在用的发起 PF 实收 CF 的业务 INVITE 200，向本次主叫发送 Connect；对照受邀自动应答为原未在用 PF 实收 CF INVITE 请求。"
+      ],
+      "conclusion": "发起侧 Connect 的 subtype 首位宜置 1，PF 须启动 T55、将 C55 加 1 并保持在用。不把这一步改成 C55 初始化为 1。对照受邀自动分支，原文要求确认位置 1、启动 T55、C55 初始化为 1。",
+      "normative_strength": "适用事件下按条文区分 SHALL、SHOULD 和接收缺省，不把实际发送或字段映射当作交付证据。",
+      "limitations": [
+        "只说明启动/计数动作，不猜发起侧原计数或跨角色重置。MCPC 确认不是 SIP ACK。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.4.10: originating PF actually receives the SIP 200 (OK) from the CF"
+          ],
+          "printed_pages": [
+            202
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.3.3: invited PF receives the CF INVITE in automatic-answer mode"
+          ],
+          "printed_pages": [
+            198,
+            199
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "related": [
@@ -436,7 +616,7 @@
     "r16-mcptt-preestablished-session-lifecycle"
   ],
   "limitations": [
-    "仅 Rel-16 指定版本，在网 MCPTT 的预建立会话已经建立；PF 发起程序限受邀侧在自动应答模式收到 CF INVITE，未覆盖用户操作、SIP 重入及 ACK 路由、完整话权及媒体安全。",
+    "仅 Rel-16 指定版本，在网 MCPTT 的预建立会话已经建立；PF 部分区分受邀侧自动应答 CF 的 INVITE 请求与发起侧实收 CF 对业务 INVITE 的 200，未覆盖用户操作、SIP 重入及 ACK 路由、完整话权及媒体安全。",
     "规范判读，不是实机抓包或互通检验；没有用等待窗口推定 T55/C55 的实际配置。"
   ],
   "verification": {
@@ -589,6 +769,73 @@
       ],
       "printed_pages": [
         202
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.3.2.3.2: originating PF receives SIP REFER on an established session not in use"
+      ],
+      "printed_pages": [
+        198
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.2.2.3.5: initiating client receives the SIP REFER 2xx"
+      ],
+      "printed_pages": [
+        195
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.3.2.4.10: originating PF actually receives the SIP 200 (OK) from the CF"
+      ],
+      "printed_pages": [
+        202
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "8.3.3.3, Table 8.3.3.3-1 and Session Type coding: Session Type and identity value"
+      ],
+      "printed_pages": [
+        176,
+        177
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "8.3.4: purpose and unicast scope of Connect; absent Answer State interpretation"
+      ],
+      "printed_pages": [
+        180,
+        181
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "8.3.3.4 and 8.3.3.6: Warning Text and Answer State fields"
+      ],
+      "printed_pages": [
+        177,
+        178
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.3.2.3.3: invited PF receives the CF INVITE in automatic-answer mode"
+      ],
+      "printed_pages": [
+        198,
+        199
       ]
     }
   ]

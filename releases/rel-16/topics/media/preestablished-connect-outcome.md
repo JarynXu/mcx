@@ -27,6 +27,23 @@
 
 客户端的发送记录和 PF 的接收记录是两件事。即使终端已发 Accepted，也不能据此认定 PF 已收到、停了 T55 或给 CF 回了 200；它发出的 Busy 同样不能单独证明 PF 已开始释放。PF 侧抓包没见确认，也不证明终端拒绝或 PF 已重试到限。客户端返回 Busy 或 Not Accepted 是协议结果，不等于用户亲手按了拒绝。判定到限要查本次 T55/C55 记录，不能从抓包窗口长度猜测秒数或次数。[§9.3.2.4.7，印 201](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=202)；[§§9.3.2.4.8–9，印 201–202](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=203)
 
+## 看发起侧 PF：REFER 的响应与主叫 Connect 来自两件事
+
+主叫已经有预建立会话，用 REFER 请求发起业务。对 PF 侧原未在用的会话，PF 收到 REFER 后按发起入口预留尚未预留的用户面资源，转为在用。对客户端侧原未在用的对应会话，客户端实际收到这份 REFER 的 SIP 2xx 后转为在用。这两个状态动作不能证明控制功能（CF）已接受另发的业务 INVITE。〔§9.3.2.3.2，印 198；§9.2.2.3.5，印 195〕
+
+**再看发起侧 PF 是否实际收到 CF 对本次业务 INVITE 的 200 OK。** 收到这份响应时，已经在用的 PF 须经本次呼叫的媒体面控制传输通道向**发起呼叫的主叫客户端**发送 MCPC Connect，用来确认这次业务呼叫的建立。Connect 在网使用，走单播承载。身份值取这份 INVITE **200 响应**的 Contact，不取 REFER 的 200，也不取受邀侧收到的 INVITE 请求里的 Contact。前一份 SIP 响应先到，不是用它填身份的理由。〔§8.3.4，印 180–181；§9.3.2.4.10，印 202〕
+
+| 抓到的字段 | 发起侧 Connect 怎样处理 |
+| --- | --- |
+| CF 的 INVITE 200 有含 `session-type` 的 MCPTT 信息体（`application/vnd.3gpp.mcptt-info+xml`） | 用该值对应的 Session Type。 |
+| CF 的 INVITE 200 没有含 `session-type` 的这类信息体 | Session Type 写 `no session type`（0）。仍写从这份 200 的 Contact 取到的 SIP URI。不能因为业务已知是私呼就把类型补成 `private`，也不能删掉整个 MCPTT Session Identity 字段。 |
+| CF 的 INVITE 200 有 `P-Answer-State` | 把其中 `answer-type` 对应到 Connect 的 Answer State。没有这个头时，此步骤不要求写 Answer State；若实际收到的 **Connect** 没有这个字段，则接收端按 `confirmed` 解读。这个缺省与 Session Type 取 0 无关，也不证明用户手动接听。 |
+| CF 的 INVITE 200 有 `warn-code=399` 的 Warning | 按本步骤取 `warn-text` 填入 Connect 的 Warning Text，不把 SIP Warning 整行或数字 399 当作那段文本。 |
+
+这次向主叫发的 Connect **宜**置 subtype 首位为 1（要求确认）；PF **须**启动 T55、将 C55 加 1，保持在用。条文没说把发起侧 C55 初始化为 1。上文受邀侧自动应答分支不同：那一侧收到的是 CF 的 INVITE **请求**，发送 Connect 时**须**置要求确认位，并把 C55 初始化为 1。不要因报文都叫 Connect 就把一边的规则套给另一边。
+
+上述字段和计时取自[§9.3.2.4.10，印 202](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=203)、§8.3.3.3–.4（印 176–177）、§8.3.3.6（印 178）、[§8.3.4，印 180–181](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=181)，受邀侧对照 §9.3.2.3.3（印 198–199）。Connect 的发送、MCPC 确认、SIP ACK、话权许可和 RTP 到达不是同一事件。如果要查[普通私呼如何从 REFER 另发业务 INVITE](../calls/private-preestablished-origination.md)，读发起侧信令页；本段不规定 Contact 缺失、会话失败或其他 SIP 响应的处理。
+
 ## 另案是“我要重新加入组呼”，该查哪一页？
 
 下面两个入口指**普通在网预安排组、客户端主动重入、不请求隐式话权**。先看这一次采用的会话方式，不是看终端名下有没有预建立会话。
