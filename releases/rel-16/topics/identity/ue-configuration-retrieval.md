@@ -8,6 +8,19 @@
 
 **授权后到底用哪套？** 即使另有记录证明用户已获业务授权，而且终端拿到了授权后取得的配置，也不能仅据本版规范断言初始配置必被替换，或必然一直沿用。主系统条款末尾的编者注明确把这项决定留待研究。要判断某台终端实际用了哪套，需要它实际使用配置的记录。[§10.1.1.1，末条编者注，印刷页 59](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/16.07.00_60/ts_123280v160700p.pdf#page=60)
 
+## 引导资料同时列了 LMS URI 和 MCPTT URI，为什么还没看到位置规则？
+
+先查**这台终端的初始 UE 配置**，不要把所有名为 Server URI 的行看成一个字段。主系统的引导过程提供终端接入系统所需的信息，其中包括在网应用平面服务器的标识。表 A.6-1 的同一栏下有两条独立的路径：
+
+- `Application plane server identity information → MCPTT Server → Server URI`：标识这里配置的 MCPTT 服务器。
+- `Application plane server identity information → Location management server → Server URI`：标识这里配置的 LMS（位置管理服务器）。
+
+表列的是两种角色，不要求两处 URI 的字符串必不相同，也不能单凭这两行认定它们是同一台服务器或必须分开部署。单见 LMS URI，只能核对初始资料里给出的服务标识，不能证明该 URI 可达、终端已使用它，或它就是一笔特定 SIP 请求的 PSI 或 HTTP 注册地址。[§10.1.1.1，印刷页 59](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/16.07.00_60/ts_123280v160700p.pdf#page=60)；[表 A.6-1，印刷页 218](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/16.07.00_60/ts_123280v160700p.pdf#page=219)
+
+**“用于在网”不等于“在线下载”。** 表里的配置可以经 CSC-11 在离线时配入终端，也可以用设备管理等其他方式供给。MC 业务客户端处于离网状态时，CSC-11 是配置管理客户端与配置管理服务器之间的参考点，不支持订阅或通知，也不要求使用 SIP-1/SIP-2。不同终端可用相同或不同的初始配置。因此，没抓到在线下发，或邻机的 URI 与本机不同，不能据此判本机没有 LMS 配置或配错。先查本机实际引导资料；业务授权后若另有配置，要确认终端实际采用了哪一份，不能只记授权成功就选用初始值或新值。[§A.6，印刷页 217](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/16.07.00_60/ts_123280v160700p.pdf#page=218)；[§7.5.2.11，印刷页 40](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/16.07.00_60/ts_123280v160700p.pdf#page=41)；§10.1.1.1 末条编者注（印刷页 59）。
+
+要查**何时报位置、报什么**，另看适用的用户配置档有没有上报规则，或本终端是否实际收到了 LMS 的初次或更新配置。规则在用户档中时，无须另发那条消息。LMS URI 和业务授权成功都不能证明 LMC 已注册、拿到规则或已发位置报告。这里是 Stage 2 的资料与角色：查[单系统上报规则](../location/event-reporting-configuration.md)；核对具体 MCPTT 报文的配置、请求和报告，再查[MCPTT 参与功能与终端的 Stage 3 过程](../location/mcptt-participating-location-signaling.md)。[§10.9.3.1 步骤 1、注 2，印刷页 169](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/16.07.00_60/ts_123280v160700p.pdf#page=170)
+
 如果要查的是**某个用户**应下载哪些档，见[用户配置档下载](user-profile-download.md)；若问题是迁入伙伴系统后哪份档用来接入、哪份档用来接受业务，见[伙伴系统迁移配置时间线](partner-migration-configuration-timeline.md)。
 
 来源：[3GPP TS 23.280 V16.7.0，Release 16，Stage 2（ETSI，2024-05）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/16.07.00_60/ts_123280v160700p.pdf)。
