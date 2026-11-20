@@ -89,3 +89,5 @@ CF可因资源/拥塞拒绝500并可带Retry-After；若Request-URI所指组呼�
 - [explicit-affiliation-client](../groups/explicit-affiliation-client.md)
 - [on-network-floor-client](../media/on-network-floor-client.md)
 - [on-network-idle-floor-server](../media/on-network-idle-floor-server.md)
+
+若收到重入请求的是非控制 MCPTT 功能，或由它在新归属、回覆盖后主动邀请，查 [NCF 重入时的 Contact 与晚入响应](noncontrolling-prearranged-rejoin.md)。

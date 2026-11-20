@@ -366,7 +366,12 @@
       "id": "r16-mcptt-rejoin-late-entry",
       "question": "普通预安排组重入与晚入：会话身份、准入和恢复证据",
       "start": "topics/calls/rejoin-late-entry.md",
-      "next_if": [],
+      "next_if": [
+        {
+          "condition": "若实收重入请求的是 NCF，或 NCF 主动发出晚入邀请，查本地 Contact 及受邀腿的响应。",
+          "read": "topics/calls/noncontrolling-prearranged-rejoin.md"
+        }
+      ],
       "boundary": "主动重入以initial INVITE的Request-URI携session identity，正文仍为group ID；CF晚入须实际新归属/回覆盖通知且有ongoing呼叫。PF PSI与session URI、各角色分别判断；4.5提供Contact/PF映射依据。不覆盖完整断线自动恢复、丢失会话身份发现、NCF、媒体重建或全组交付；主动重入和CF晚入为替代入口，SIP200不证明话权，媒体初始化回指差异不由普通Idle页修补。"
     },
     {
@@ -5072,6 +5077,22 @@
         }
       ],
       "boundary": "只说明同一 MC 系统的 Stage 2 停用；不把组播、单项状态通知或其他用户收到通知作为请求人多项结果。"
+    },
+    {
+      "id": "r16-calls-noncontrolling-prearranged-rejoin",
+      "question": "普通预安排组呼客户端发来重入 INVITE，NCF 返回的 200 Contact 里放哪个会话身份？ NCF 获知客户端刚归属或回覆盖后主动邀请晚入，收到哪条腿的 183 或 200 后该发 PRACK、ACK？",
+      "start": "topics/calls/noncontrolling-prearranged-rejoin.md",
+      "next_if": [
+        {
+          "condition": "若还要查控制侧重入的准入条件、请求 URI 和常规晚入，读原重入主题。",
+          "read": "topics/calls/rejoin-late-entry.md"
+        },
+        {
+          "condition": "若实际是组呼并接或拆分，查整组媒体角色切换的独立程序。",
+          "read": "topics/calls/prearranged-group-join-split.md"
+        }
+      ],
+      "boundary": "限普通按需已在进行的预安排组呼及 NCF 两个实际入口；Contact、200 或 NOTIFY 不足以判组级接管。"
     }
   ]
 }
