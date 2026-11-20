@@ -317,6 +317,98 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "mcptt-location-client-context-triggers",
+      "title": "普通和紧急时怎样匹配位置触发条件，ReportType 能证明什么？",
+      "conditions": [
+        "在网同一 MCPTT 终端已经按 §13.3.2 实收并应用有效的 Configuration；有本机证据表明事件发生时实际适用的上报状态和对应触发条件，而非仅见普通或紧急呼叫或报告标签。",
+        "此处只判断已配置的事件触发及处于运行态的 minimumReportInterval；不把另行收到的显式 Request 或独立紧急告警的报文构造当作该触发。"
+      ],
+      "conclusion": "非紧急上报条件由 TriggeringCriteria 指定，紧急上报条件由 EmergencyTriggeringCriteria 指定。各自对应的位置内容需求另看两个可选的 NonEmergencyLocationInformation 与 EmergencyLocationInformation。已配置的事件触发时，若 minimumReportInterval 正在运行则先等；到期仍有任一报告触发条件为真时按 §13.3.4.2 发送。可选 PeriodicReport 的秒数设定周期触发，位置内容配置块内的 minimumIntervalLength 是两次报告间的最短秒数，不是另一个触发条件。ReportType 的 Emergency 或 NonEmergency 表明终端发送报告时的情形。用报告的 TriggerId 对照本机生效配置和事件记录核实触发；PF 是否核准使用另查 PF 实收及收到的 MCPTT ID。",
+      "normative_strength": "F.3.3 定义上报情形、配置与报告字段；§13.3.4.1 规定触发时检查计时器，正在运行时等待；到期仍有任一触发条件为真时，原文明列 SHALL 发报告。适用 §6.2.9.1(1) 的已配置指定触发，须按 §13.3.4.2 加入报告信息并跳过该辅助过程的余下步骤。",
+      "limitations": [
+        "原文未由紧急呼叫或报告标签规定通用的报告状态判定、切换时刻或抢占顺序；未规定期间换状态如何归并或重验已触发条件。不从紧急状态或标签推出最短间隔为零或免等，不移用 Stage 2 LMS 规则，也不规定正在运行的计时器如何重算。",
+        "到期仍有触发为真是发送条件，不说明每个报告 TriggerId 在到期时都仍成立，也不补 ID 冲突或缺值处理。只见某个 ReportType 不证明具体触发、独立告警、状态切换、即时上报义务或 PF 已核准使用；没见到报告也不能证明终端停止上报。",
+        "F.3.3 要求在 anyExt 中包含必备的 EmergencyTriggeringCriteria，并称该元素未在 schema 声明；F.3.2 将它全局声明为 TriggeringCriteriaType 且 Configuration 的 anyExt 可选。此处保留差异，不定义解析器接受策略或可发送的 XML。独立告警的无配置坐标规则不推广到所有 Emergency 报告。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.3.3 Configuration items 1–4: requested location blocks, minimum interval seconds, status-specific criteria/ECGI entry and optional PeriodicReport"
+          ],
+          "printed_pages": [
+            564,
+            566,
+            568
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.3.2: requested-location minimumIntervalLength type, globally declared EmergencyTriggeringCriteria and Configuration extension slot"
+          ],
+          "printed_pages": [
+            559,
+            562,
+            563
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.3.2 and F.3.3: ReportType attribute and context at sending, with separate fired trigger references"
+          ],
+          "printed_pages": [
+            559,
+            568
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.9.1(1): include location for a specified configured trigger; earlier Configuration received under 13.3.2; follow 13.3.4.2 and skip remaining helper steps"
+          ],
+          "printed_pages": [
+            76,
+            77
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "13.3.4.1: trigger and running minimumReportInterval, still-true test on expiry, and separate explicit request entry"
+          ],
+          "printed_pages": [
+            463
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "13.3.4.2: piggyback and dedicated Report send branches, configuration PAI destination, request correlation and trigger fields"
+          ],
+          "printed_pages": [
+            463,
+            464
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "13.2.4: PF receipt of Report MIME, authorization based on received MCPTT ID, and use if authorized"
+          ],
+          "printed_pages": [
+            461
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "related": [
@@ -472,6 +564,48 @@
       ],
       "printed_pages": [
         564
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "F.3.3 Configuration items 1–4: requested location blocks, minimum interval seconds, status-specific criteria/ECGI entry and optional PeriodicReport"
+      ],
+      "printed_pages": [
+        564,
+        566,
+        568
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "F.3.2: requested-location minimumIntervalLength type, globally declared EmergencyTriggeringCriteria and Configuration extension slot"
+      ],
+      "printed_pages": [
+        559,
+        562,
+        563
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "F.3.2 and F.3.3: ReportType attribute and context at sending, with separate fired trigger references"
+      ],
+      "printed_pages": [
+        559,
+        568
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.2.9.1(1): include location for a specified configured trigger; earlier Configuration received under 13.3.2; follow 13.3.4.2 and skip remaining helper steps"
+      ],
+      "printed_pages": [
+        76,
+        77
       ]
     }
   ]
