@@ -432,6 +432,16 @@ MCPTT 或 MCVideo 跨系统私呼，双方在各自主系统接受服务，两�
 
 [读取主题](topics/calls/offnetwork-mcptt-group-emergency-alert.md)
 
+## 预安排组呼复用被叫的预建立会话：谁回 200，谁发 re-INVITE？
+
+普通预安排组呼的 T-PF 何时复用被叫空闲预建立对话；自动应答为何向 CF 回 200/Unconfirmed 而不再发 INVITE，人工应答如何用旧对话 re-INVITE。
+
+按被叫已提供的设置、本次请求和两个媒体级描述选分支。人工时分别沿 UE 的 re-INVITE 响应及 CF INVITE 的响应判断；保留隐含 Manual 与客户端显式头条件的边界。
+
+尚未建立：不从 UE 漏抓 INVITE、单个 183/200 或 PF 媒体面交互推定用户接听、UE 实收 Connect、话权或 RTP；不展开按需、Replaces、跨系统或重入。
+
+[读取主题](topics/calls/prearranged-preestablished-termination.md)
+
 
 
 ## 普通私聊SDS控制面：发送资格、请求与接收证据
