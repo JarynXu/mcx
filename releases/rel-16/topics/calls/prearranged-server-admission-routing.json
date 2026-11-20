@@ -523,6 +523,64 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "prearranged-tng1-not-running-invite-failure",
+      "title": "预安排组呼受邀侧最终失败：TNG1 未运行时，按原发起侧 200 发送前后处理",
+      "conditions": [
+        "同一 MC 系统内的普通在网按需 MCPTT 预安排组呼；使用 GMS 管理的未重组直接组身份，不是临时组或 TGI；该发起 INVITE 请求新建而非加入既有会话，请求和组状态均非紧急、非迫近危险。",
+        "控制功能（CF）实际收到对应本次受邀腿 INVITE 的最终 4xx、5xx 或 6xx；此时 TNG1 未运行，实际收到的受邀 INVITE 200 本地计数恰好等于组文档的 on-network-minimum-number-to-start。以下两项按策略及各自条件适用。"
+      ],
+      "conclusion": "原发起 INVITE 的 200 尚未发出，且 CF 已实际收到其余每位受邀客户端的 SIP 最终响应时，CF 向原发起侧发送 SIP 最终响应。这项未把其余响应限定为失败，也未指定固定 SIP 状态、Warning 或状态码映射。原发起 INVITE 的 200 已发出，且实际收到所有受邀客户端（包括触发此次处理的客户端）非 2xx、非 3xx 的 SIP 最终响应时，CF 依 §6.3.3.1.5 移除该受邀客户端：为该参与者移除与媒体面交互，生成并发送针对该参与者的 BYE；若实际收到该 BYE 对应的 200，再执行该响应触发的相关 SIP 会话媒体资源释放交互。仅在组成员数超过 on-network-max-participant-count，且全组尚未都被邀请时，CF 才可按邀请程序补邀一位此前未被邀请的组成员。补邀不是重试已邀失败者，也不要求一定补发。",
+      "limitations": [
+        "TNG1 未运行不证明它从未启动或本次刚到期。未发 200 不能改写成“从未发任何最终响应”。此分支不借用 TNG1 运行中失败、到期或相邻非运行 183/200 成功段的条件或状态码，也不据此推定已发的 200 被撤销。",
+        "要把等值计数和“所有受邀”条件一并保留。在同一受邀集合、同一时点每人仅有一个最终结果的记录中，若收到的 INVITE 200 计数为正，就会与“所有人都是非 2xx、非 3xx 最终响应”产生张力。条文未给消解算法，不能缩小“所有”范围、假设计数清零或断言此分支在任何情况下都不可能。没有满足条件的记录时，不替条文决定混合结果。",
+        "对照同一 CF、同一组会话的原发起 INVITE 发送记录、各受邀 INVITE 的实际最终响应、当时的 TNG1、组配置和计数。CF 侧已发 200 不等于终端收到；缺包不证明未收发或计时器状态。收到失败不证明订户本人拒接，也不能据此假定这条失败 INVITE 有可用对话。单独发送 BYE、收到匹配 BYE 200、发补邀或收到一条 INVITE 200，都不能证明整组释放完成、全部成员已加入或媒体已通。"
+      ],
+      "normative_strength": "三项入口守卫同时成立后，CF 按策略及各项自身条件执行指定动作。移除调用所列 BYE 与媒体交互；实际收到匹配 BYE 200 后的媒体交互另行适用。补邀只有两项组条件同时成立才是 MAY。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.2, nonrunning TNG1 received final failure: opening conditions and policy actions 1–2 including optional previously uninvited member"
+          ],
+          "printed_pages": [
+            251
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.1.1, individual invitee response paragraphs: 183 with Require 100rel and Unconfirmed triggers PRACK; INVITE 200 increments local counter"
+          ],
+          "printed_pages": [
+            241
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.5, opening and items 1–3"
+          ],
+          "printed_pages": [
+            106
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.5, group-session-release and response paragraphs"
+          ],
+          "printed_pages": [
+            107
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "verification": {
