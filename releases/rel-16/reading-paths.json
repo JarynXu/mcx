@@ -90,7 +90,12 @@
       "id": "r16-groups-explicit-affiliation-client",
       "question": "显式组归属：本客户端的建立、解除与状态观察",
       "start": "topics/groups/explicit-affiliation-client.md",
-      "next_if": [],
+      "next_if": [
+        {
+          "condition": "若被查的不是本用户，而是另一参与功能服务的用户，读他人组归属订阅。",
+          "read": "topics/groups/other-user-affiliation-status.md"
+        }
+      ],
       "boundary": "不覆盖修改他人、协商式或隐式归属、完整规则引擎及媒体会话生命周期。"
     },
     {
@@ -5122,6 +5127,26 @@
         }
       ],
       "boundary": "仅限离网组呼的当前讲者。发 Floor Granted 不等于已经收到新讲者的 RTP。"
+    },
+    {
+      "id": "r16-groups-other-user-affiliation-status",
+      "question": "查询他人的归属状态：甲发出的 SUBSCRIBE 先找谁，乙的参与功能凭什么可以拒绝查阅？ SUBSCRIBE 收到 200 后，乙的两个客户端各归属哪些组？怎样读 per-user PIDF，缺组或 p-id 能说明什么？",
+      "start": "topics/groups/other-user-affiliation-status.md",
+      "next_if": [
+        {
+          "condition": "若查本人一台客户端或要改变自己的归属，读本客户端显式归属。",
+          "read": "topics/groups/explicit-affiliation-client.md"
+        },
+        {
+          "condition": "若已知组 ID，要查该组的成员或已归属成员，读按组查名单。",
+          "read": "topics/groups/group-list-query.md"
+        },
+        {
+          "condition": "若要查乙是否在正在进行的一场组呼中，读会议参与者状态。",
+          "read": "topics/calls/conference-participant-status.md"
+        }
+      ],
+      "boundary": "限同一 MC 系统内不同 PF 服务的用户；确认某台客户端的组归属须看实际收到的 per-user PIDF。"
     }
   ]
 }

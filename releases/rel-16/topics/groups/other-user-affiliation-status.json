@@ -1,0 +1,185 @@
+{
+  "topic_id": "r16-groups-other-user-affiliation-status",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "查询另一位 MCPTT 用户的组归属：订阅送给谁，结果按哪台客户端读",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "订阅、转发、终接检查及收到 NOTIFY 都按对应角色和实际事件看；收到 200 不替代收到正文。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0，Rel-16 Stage 3。在网、同一 MC 系统，发起 MCPTT 用户与被查询 MCPTT 用户不同，分别由不同参与功能服务。",
+    "本页是按目标用户查询组归属，不覆盖改变他人归属、跨系统转接、按组查名单、会议状态或通用保护的实现。"
+  ],
+  "claims": [
+    {
+      "id": "other-user-subscribe-from-client",
+      "title": "客户端先订阅自己的 PF，正文识别被查询用户",
+      "conditions": [
+        "发起客户端准备初次订阅他人的组归属状态。"
+      ],
+      "conclusion": "SIP SUBSCRIBE 的 Request-URI 写服务发起用户的起始 PF PSI；<mcptt-request-uri> 写被查用户 MCPTT ID，P-Preferred-Service 标识 MCPTT，Accept 为 application/pidf+xml。只取当前状态用 Expires 0；还请求后续通知用 4294967295。",
+      "normative_strength": "各自条款入口满足时，所列构造、身份识别、授权判定和转发处理为 SHALL；PIDF 中注明为可选的字段不提升为必填。",
+      "limitations": [
+        "按自己客户端 ID 过滤是本端查询分支的条件要求，不抄成查他人的必填项；期限不是永久订阅承诺。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.1.3"
+          ],
+          "printed_pages": [
+            169,
+            170
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "originating-to-terminating-participating-function",
+      "title": "起始 PF 向终接 PF 转发时，服务身份与两个用户 ID 分开写",
+      "conditions": [
+        "起始 PF 实收寻址到自己、正文指向自己不服务的用户、含 MCPTT P-Asserted-Service 且 Event 为 presence 的 SUBSCRIBE，并实际进入 §9.2.2.2.10 转发分支；该条入站 MIME 另见限制。"
+      ],
+      "conclusion": "从入站 P-Asserted-Identity 的公共用户身份识别发起人 MCPTT ID，从正文识别目标。生成的请求以终接 PF PSI 为 Request-URI、起始 PF PSI 为 P-Asserted-Identity；<mcptt-request-uri> 写目标 MCPTT ID，<mcptt-calling-user-id> 写发起 MCPTT ID。按条款发送并转发收到的订阅响应、NOTIFY 及 NOTIFY 的响应。",
+      "normative_strength": "各自条款入口满足时，所列构造、身份识别、授权判定和转发处理为 SHALL；PIDF 中注明为可选的字段不提升为必填。",
+      "limitations": [
+        "§9.2.2.2.10 的入站及目标识别写 application/vnd.3gpp.mcptt-info，出站则与 §9.2.1.3 和 §9.2.2.2.4 一样写 application/vnd.3gpp.mcptt-info+xml；不静默统一或从客户端构造推定转发分支成立。不补终接 PF PSI 的发现算法；第 9 章仍适用 §6.6，不信任任意自报身份。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.6.1.1"
+          ],
+          "printed_pages": [
+            138
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.10"
+          ],
+          "printed_pages": [
+            182,
+            183
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "terminating-policy-for-other-user-read",
+      "title": "终接 PF 用修改归属的权限检查这次查阅",
+      "conditions": [
+        "终接 PF 实际收到寻址到自己、正文指向其所服务用户、含 MCPTT P-Asserted-Service 及 presence Event 的 SUBSCRIBE。"
+      ],
+      "conclusion": "从 <mcptt-request-uri> 识别目标，从 <mcptt-calling-user-id> 识别发起人。发起人不同于目标且没有修改其归属的权限时，返 403 并停止；通过该检查才按此分支生成 SUBSCRIBE 的 200。",
+      "normative_strength": "各自条款入口满足时，所列构造、身份识别、授权判定和转发处理为 SHALL；PIDF 中注明为可选的字段不提升为必填。",
+      "limitations": [
+        "这是查阅的授权门槛，不改变被查用户的归属。不得从订阅成功推断某个客户端已归属。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.4"
+          ],
+          "printed_pages": [
+            176
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.10"
+          ],
+          "printed_pages": [
+            182,
+            183
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "read-per-user-affiliation-in-notify",
+      "title": "从实际 NOTIFY 按用户、客户端和组读取；缺项或 p-id 有限",
+      "conditions": [
+        "分别看服务端生成此订阅的通知，和发起客户端实收携有效 per-user PIDF 的 NOTIFY。"
+      ],
+      "conclusion": "生成端不列已到期或 deaffiliated 的组条目，订阅存在适用的客户端过滤时遵循该限制。读端按 presence entity（目标 MCPTT ID）、tuple id（客户端 ID）、affiliation group（组 ID）和该项状态判断。当 §9.2.2.2.3 的变更处理调用通知生成程序且已识别 handled p-id，生成端须写入该值。读端若读到 p-id，便可识别触发通知的 PUBLISH。",
+      "normative_strength": "各自条款入口满足时，所列构造、身份识别、授权判定和转发处理为 SHALL；PIDF 中注明为可选的字段不提升为必填。",
+      "limitations": [
+        "200 没有提供客户端归属结论；不能把缺组、缺可选 status 或缺 p-id 解释成历史解除事件、已归属或同某次 PUBLISH 建立关联。归属不证明加入组呼。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.1.3"
+          ],
+          "printed_pages": [
+            169,
+            170
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.5"
+          ],
+          "printed_pages": [
+            176,
+            177
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.3.1.2 per-user PIDF",
+            "Table 9.3.1.2-1"
+          ],
+          "printed_pages": [
+            194,
+            195,
+            196
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-groups-explicit-affiliation-client",
+    "r16-groups-group-list-query",
+    "r16-calls-conference-participant-status"
+  ],
+  "limitations": [
+    "不提供跨系统 PSI 发现、完整 SIP/RFC 生命周期、安全算法或状态缺失的缓存合并规则。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
