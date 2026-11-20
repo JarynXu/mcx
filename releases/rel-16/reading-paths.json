@@ -4632,6 +4632,30 @@
         }
       ],
       "boundary": "限离网 MCPTT 紧急组呼的初始建立或加入。探测和告警都不是本机 S3/T1 的证明，也不从本机状态推定其他终端参加。"
+    },
+    {
+      "id": "r16-calls-offnetwork-mcptt-group-emergency-alert",
+      "question": "离网组紧急告警从发起、收警到取消要看哪台终端？TFE1 到期清记录和实收取消有什么区别？",
+      "start": "topics/calls/offnetwork-mcptt-group-emergency-alert.md",
+      "next_if": [
+        {
+          "condition": "若走在网 MCPTT 的独立组告警，看在网客户端发起、取消及反馈；不把在网消息当作此处的离网 ACK。",
+          "read": "topics/calls/standalone-group-alert-client.md"
+        },
+        {
+          "condition": "若业务是离网 MCVideo 或 MCData，看这两项服务的 Stage 2 流程，不用它替代 MCPTT Stage 3 字段。",
+          "read": "topics/calls/offnetwork-group-emergency-alert.md"
+        },
+        {
+          "condition": "若用户还要建立或接入离网紧急组呼，读基本呼叫和类型状态；按发起探测时的本地状态另判，不只看历史告警。",
+          "read": "topics/calls/offnetwork-group-emergency-establishment.md"
+        },
+        {
+          "condition": "若已经参加组呼且要把呼叫恢复普通类型，读降级及 GROUP CALL EMERGENCY END，不把它当作撤销本端告警。",
+          "read": "topics/calls/offnetwork-group-emergency-downgrade.md"
+        }
+      ],
+      "boundary": "限离网 MCPTT 组告警 Stage 3；区分本机按组 E1/E2、接收端按原发警者存条目、以及本地实际到期。单个相关回包不能证明其他端状态。"
     }
   ]
 }

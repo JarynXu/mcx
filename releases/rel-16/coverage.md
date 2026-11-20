@@ -422,6 +422,16 @@ MCPTT 或 MCVideo 跨系统私呼，双方在各自主系统接受服务，两�
 
 [读取主题](topics/calls/offnetwork-group-emergency-establishment.md)
 
+## 离网 MCPTT 组紧急告警：谁确认，谁取消，TFE1 到期清什么？
+
+离网 MCPTT 组告警发起条件、TFE2 重传、收警端第一次按原发警者记入及回 ACK、主动取消、实收取消及 TFE1 到期清理。
+
+区分按组的 E1/E2 与收警列表及每个原发警者的 TFE1；实收取消且CANCEL 的 Originating MCPTT user ID 在本机名单才进入收端取消分支。取消确认的原发者字段保留正文所写消息出处差异。
+
+尚未建立：单条 ACK 或本地超时不能证明发端实收、用户已阅读、所有成员都收到、原发警者主动取消或已有组呼降级；不补唯一报文匹配或取消确认字段的实现规则。
+
+[读取主题](topics/calls/offnetwork-mcptt-group-emergency-alert.md)
+
 
 
 ## 普通私聊SDS控制面：发送资格、请求与接收证据
