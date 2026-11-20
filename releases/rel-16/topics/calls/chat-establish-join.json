@@ -756,6 +756,96 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "chat-cf-group-document-admission",
+      "title": "聊天组的 CF 收到 INVITE 后：区分组文档取不到、禁用、不在名单和未归属",
+      "conditions": [
+        "同一 MC 系统内的普通在网按需 MCPTT 聊天组；使用未重组的 MCPTT 组身份，不是临时组；请求和组状态均非紧急、非迫近危险。",
+        "控制功能（CF）实际收到发起侧参与功能（O-PF）发来的、指明聊天组的这一次 INVITE，处理到 §10.1.2.4.1.1 第 4 项。分别按实际订阅结果、目标组文档是否已取得、组文档初检结果判断，不预设已经有可用文档。"
+      ],
+      "conclusion": "组身份取自这条 INVITE 正文的 mcptt-request-uri，主叫 MCPTT ID 取自 mcptt-calling-user-id。CF 若尚未订阅该组文档，须订阅 xcap-diff。对这项订阅收到匹配的 404，须对本次来向 INVITE 回 404，Warning 文本码 113；对这项订阅收到其他实际的 4xx/5xx/6xx，须对来向 INVITE 发最终响应，Warning 文本码 114，并停止其余步骤。收到 GMS 携目标组文档的通知，或已有该组文档缓存，才从文档做检查：在未重组、非临时组分支，先查文档是否含 on-network-disabled，含此元素须回 403/115 并停止；继续检查时，list-service 下的 list 若没有匹配主叫 MCPTT ID 的条目须回 403/116 并停止。文档初检成功后，CF 用 §6.3.6 核目标组记录、主叫用户记录、该记录中本次发起客户端的 mcptt-client-id 及用户记录是否到期。找不到其中一项对应记录或用户记录已到期，判该用户在本次发起客户端上未归属；均匹配且有效时判已归属。对未归属且按 §9.2.2.3.6 无隐式归属资格的用户，才按聊天组第 5(b) 项拒绝 403/120，并停止其余步骤；组成员未归属但具备隐式归属资格，不触发这一条拒绝，也不等于获准加入。",
+      "normative_strength": "各守卫按本条对应事件执行：条件订阅、响应和文本码、组文档与归属检查为 SHALL；114、115、116 的条文及聊天组第 5(b) 项的 403/120 明确不再执行其余步骤。113 的第 2 项规定收到匹配订阅 404 时回 404，随后写“否则继续”；不把第 3 项的明示停止句套给它。CF 的聊天组第 4 项只在组文档初检成功后继续本次建会或加入。",
+      "limitations": [
+        "没有缓存、发出订阅或只见沉默，都不等于订阅返回 404 或其他失败。114 的条文未统一指定 INVITE 的 SIP 状态，不能由该 Warning 断定文档实际或永久存在；把组身份、订阅请求和匹配的响应对在本次事务上，不据此推定其他组或之后时刻的文档状态。禁用条件依程序正文的 on-network-disabled 元素存在；Warning 表的解释写的是 disabled 为 true，不能替代正文条件。",
+        "403/116 的组文档名单不是 §6.3.6 的归属记录；不把另一客户端的归属拿来代替发起客户端。仅处理普通聊天组的上述分支，不展开 GMS 缓存同步、组类型不符、重组或隐式归属的全部状态处理。",
+        "113、114、115、116、120 是 Warning 引号内的 MCPTT 文本码，不是 SIP 状态或外层 399。收到对 O-PF 发给 CF 的匹配 4xx/5xx/6xx 时，O-PF 须生成客户端侧响应、带上实际收到的 Warning 再送客户端；不以终端所见发送地址推定拒绝起自 O-PF，也不凭单腿记录或缺失的日志确定其他腿的处理。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1, opening terminology 1–2; controlling steps 4–5"
+          ],
+          "printed_pages": [
+            286,
+            287
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.5.2, steps 1–3: xcap-diff subscription if not already subscribed, matching 404 and other final failure responses"
+          ],
+          "printed_pages": [
+            131
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.5.2, steps 4 and 5(a)–(b): matching notified or cached document, CF classification and unregrouped group disablement and membership checks"
+          ],
+          "printed_pages": [
+            131,
+            132
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.6, steps 1–5 and note: CF group, user, originating client and affiliation expiry checks"
+          ],
+          "printed_pages": [
+            135,
+            136
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.3.6, steps 1–2: implicit affiliation eligibility is determined through the referenced procedure"
+          ],
+          "printed_pages": [
+            191
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.4.1; 4.4.2, Tables 4.4.2-1 and 4.4.2-2: outer Warning code 399 and quoted text codes 113–116 and 120"
+          ],
+          "printed_pages": [
+            33,
+            34,
+            36
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.1, final response paragraph for 4xx/5xx/6xx, items 1–3: PF generates a response, includes the received Warning fields and forwards the response to the client"
+          ],
+          "printed_pages": [
+            279
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "source_references": [
@@ -1070,6 +1160,55 @@
         34,
         36,
         37
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.5.2, steps 1–3: xcap-diff subscription if not already subscribed, matching 404 and other final failure responses"
+      ],
+      "printed_pages": [
+        131
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.5.2, steps 4 and 5(a)–(b): matching notified or cached document, CF classification and unregrouped group disablement and membership checks"
+      ],
+      "printed_pages": [
+        131,
+        132
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.6, steps 1–5 and note: CF group, user, originating client and affiliation expiry checks"
+      ],
+      "printed_pages": [
+        135,
+        136
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.2.3.6, steps 1–2: implicit affiliation eligibility is determined through the referenced procedure"
+      ],
+      "printed_pages": [
+        191
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "4.4.1; 4.4.2, Tables 4.4.2-1 and 4.4.2-2: outer Warning code 399 and quoted text codes 113–116 and 120"
+      ],
+      "printed_pages": [
+        33,
+        34,
+        36
       ]
     }
   ],
