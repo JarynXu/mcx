@@ -3117,6 +3117,16 @@ APN、服务器 URI、组播地址和二层组 ID 不是目标 IP 版本指示�
 
 [读取主题](topics/bearers/ip-version-by-service-and-group.md)
 
+## MBMS 参与功能：重复话权消息、Floor Ack 与 RTP 判重
+
+Floor Idle/Taken 按会话序号下发；入向请求确认时由参与功能处理 Floor Ack；RTP 查该包已否在该子信道发过。
+
+限 MBMS M 活动态与监听目的端；确认不取决于是否再次下发。
+
+尚未建立：不把 Ack、T15 重启或发送指示当成终端收到；不规定 RTP 判重算法。
+
+[读取主题](topics/media/mbms-floor-ack-and-rtp-duplicates.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。
