@@ -1,0 +1,297 @@
+{
+  "topic_id": "r16-calls-private-preestablished-origination",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "预建立私呼：主叫的 REFER 收到 200，怎样查这通私呼的结果？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明继承共同范围，再按主叫或 O-PF 实际到达的步骤、请求方法、方向和实收响应判断。不同事务不得互作证明。",
+  "common_conditions": [
+    "TS 24.379 V16.14.0（Release 16，Stage 3）。同一 MC 系统归属网内，主叫直接指定另一用户的 MCPTT ID，以已有预建立会话发起有话权控制的普通在网一对一私呼。",
+    "只处理主叫客户端和发起侧参与功能（O-PF）；不含首个应答者呼叫、紧急、功能别名、无话权控制、转接、Replaces、跨系统或终接侧程序。"
+  ],
+  "claims": [
+    {
+      "id": "private-refer-dialog-and-user",
+      "title": "对话外 REFER 怎么同时指向旧会话和一个被叫？",
+      "conditions": [
+        "主叫用户要求在已有预建立会话内发起一对一私呼。主叫客户端所发请求及 O-PF 收到请求时的处理分别取证。"
+      ],
+      "conclusion": "客户端向服务自己的 MCPTT 服务器发对话外 REFER：Request-URI 是在 O-PF 上标识预建立会话的 PSI，Target-Dialog 标出既有对话。Refer-To 中的 cid 指向 Content-ID 对应的 application/resource-lists MIME 体；仅一个 entry，uri 是被叫的 MCPTT ID。该 URI 的 hname “body” 参数内含 MCPTT 信息体，session-type 为 private。请求须带 Require: multiple-refer，并带 Refer-Sub: false、Supported: norefersub；O-PF 收到后两者且到达项 13 时，不建立隐式订阅。",
+      "normative_strength": "请求构造、发送及两头齐备时不建隐式订阅均为 SHALL。",
+      "limitations": [
+        "multiple-refer 不证明有多个被叫；单条 entry 的被叫身份不等于预建立会话的 PSI。本页不由一个 SIP 头推断实际是否已收到完整 REFER。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.1, private versus first-to-answer target population"
+          ],
+          "printed_pages": [
+            352
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.1.2, definition of initial SIP REFER request for a pre-established session (originating S-CSCF initial filter criteria, PF and Request-URI)"
+          ],
+          "printed_pages": [
+            78
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.2.1 opening and items 1–4, 7–8, 12, send paragraph: out-of-dialog REFER, session PSI and Target-Dialog, referenced resource list and single private target"
+          ],
+          "printed_pages": [
+            362,
+            363,
+            364
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.1.2 item 13 and note 3: Refer-Sub false and Supported norefersub handling without an implicit subscription"
+          ],
+          "printed_pages": [
+            373
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "private-refer-admission-and-service-invite",
+      "title": "O-PF 为什么向主叫的私呼 CF 发 INVITE，何时会在 REFER 处停止？",
+      "conditions": [
+        "O-PF 收到 §11.1.1.3.1.2 入口所述预建立会话 REFER，按到达的检查项判断；入口描述与随后明列的拒绝条件分别保留，不假定任意畸形请求都会进入本程序。",
+        "只有检查允许继续且已到达项 14–20 时，才适用发送 REFER 最终响应、另造并发送业务 INVITE 的正向步骤。"
+      ],
+      "conclusion": "O-PF 从 REFER 的 P-Asserted-Identity 所含公共用户身份确定主叫 MCPTT ID。项 3：无绑定或绑定已过期，拒绝 REFER，404/Warning 141。项 4、6(a)：没有 Refer-To 的 cid 所引用的资源列表正文，或引用的列表仅一个 entry、其 MCPTT 信息体的 session-type 不为 private，拒绝 REFER，403/145。单条 private 标识私呼。项 7–8：按主叫 MCPTT ID 确定为其承载私呼服务的 CF 的 PSI；无法识别该 CF，拒绝 REFER，404/142。三类明列拒绝均停止后续步骤。允许继续时，O-PF 先生成并向客户端发送 REFER 的最终 200，再依 §6.3.2.1.4 生成独立的初始 INVITE，Request-URI 设置为上述私呼 CF 的 PSI，并于项 20 向外发送业务 INVITE。",
+      "normative_strength": "识别身份、列出的明确拒绝和停止、允许继续后应答 REFER 并另发 INVITE 为 SHALL。项 1 因资源不足或有拥塞风险拒绝是 MAY。",
+      "limitations": [
+        "该 CF 的 PSI 按主叫而非被叫选择；不是照抄 REFER 的 Request-URI。注 2 不规定发现该 PSI 的办法。这里只列与身份、目标、CF 相关的明文停止条件，不是所有失败的解析规则或等待策略。",
+        "项 1 在 REFER 程序中写明，因资源不足无法处理请求，或有拥塞风险时，可用 500 拒绝 INVITE；500 响应可带 Retry-After，同一项还明写不得继续后续步骤。项 9 在 allow-private-call 缺失或为 false 时说拒绝 REFER，又称 403/107 是对 INVITE 的响应，未明写停止。项 10(c)、(d) 在各自强制自动应答权限、被叫名单限制条件下，把 403/143、403/144 的拒绝对象写作 INVITE，且均明写停止；不代原文改写线上事务归属。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.1.2 entry, items 1–8 and note 2: qualifying REFER, caller binding, cited list, private service CF identity, and explicit 141, 145 and 142 stops"
+          ],
+          "printed_pages": [
+            370,
+            371
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.1.2 items 1, 9 and 10(c)–(d): printed INVITE/REFER method wording for 500 and 403 with 107, 143 or 144; express stops distinguished"
+          ],
+          "printed_pages": [
+            370,
+            371,
+            372
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.1.2 items 14–17, 20: send final REFER 200, then generate and send service INVITE addressed to the calling user’s private-service CF PSI"
+          ],
+          "printed_pages": [
+            373,
+            374
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.4 opening and items 1–14: initial INVITE generated by the participating function on receiving REFER (request classification only)"
+          ],
+          "printed_pages": [
+            85,
+            86
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "private-invite-response-at-originating-pf",
+      "title": "REFER 和业务 INVITE 的响应分别证明什么？",
+      "conditions": [
+        "主叫客户端实际收到自己发出的 REFER 的最终 2xx，或 O-PF 实际收到对项 20 所发私呼 INVITE 的对应响应；两者是不同角色的独立收件。"
+      ],
+      "conclusion": "主叫客户端收到 REFER 最终 2xx，须按 TS 24.380 与媒体面交互；不能凭这份响应断定 O-PF 的下一条 INVITE 已经发出。O-PF 收到业务 INVITE 的临时响应须丢弃，不转发。收到的若为该普通私呼 INVITE 的 200 OK，O-PF 按 TS 24.380 与媒体面交互；若实收该 INVITE 的 4xx、5xx 或 6xx，O-PF 也须按 TS 24.380 与媒体面交互。后者是业务 INVITE 的失败，不是已经获 200 的 REFER 失败；未规定把该错误作为新的 REFER 响应回给主叫。",
+      "normative_strength": "此处 UE 和 O-PF 在各自实收条件下与媒体面交互、O-PF 丢弃所收临时响应均为 SHALL。成功响应分支的入口是 INVITE 的 200 OK；不按项内 2xx 字样扩到所有 2xx。",
+      "limitations": [
+        "一个 SIP 响应不能证明被叫用户已接听、具体 MCPC 收发、用户提示、话权或实际媒体；没有看到最终响应也不能认定成功或失败。普通私呼在此入口没有必发新 re-INVITE 的要求。",
+        "不据这段程序断言两个请求的 Call-ID 相同，不裁决 INVITE 3xx、超时、媒体控制映射或后续恢复。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.2.1 final SIP 2xx response to REFER: receiving originating client interacts with the media plane"
+          ],
+          "printed_pages": [
+            364
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.1.2 items 14–17, 20: send final REFER 200, then generate and send service INVITE addressed to the calling user’s private-service CF PSI"
+          ],
+          "printed_pages": [
+            373,
+            374
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.1.2 response paragraphs after item 20: discard provisional responses; received SIP 200 (OK) for a private call and separately received SIP 4xx, 5xx or 6xx to the service INVITE"
+          ],
+          "printed_pages": [
+            374,
+            375
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.1, private versus first-to-answer target population"
+      ],
+      "printed_pages": [
+        352
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.1.2, definition of initial SIP REFER request for a pre-established session (originating S-CSCF initial filter criteria, PF and Request-URI)"
+      ],
+      "printed_pages": [
+        78
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.2.2.1 opening and items 1–4, 7–8, 12, send paragraph: out-of-dialog REFER, session PSI and Target-Dialog, referenced resource list and single private target"
+      ],
+      "printed_pages": [
+        362,
+        363,
+        364
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.3.1.2 item 13 and note 3: Refer-Sub false and Supported norefersub handling without an implicit subscription"
+      ],
+      "printed_pages": [
+        373
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.3.1.2 entry, items 1–8 and note 2: qualifying REFER, caller binding, cited list, private service CF identity, and explicit 141, 145 and 142 stops"
+      ],
+      "printed_pages": [
+        370,
+        371
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.3.1.2 items 1, 9 and 10(c)–(d): printed INVITE/REFER method wording for 500 and 403 with 107, 143 or 144; express stops distinguished"
+      ],
+      "printed_pages": [
+        370,
+        371,
+        372
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.3.1.2 items 14–17, 20: send final REFER 200, then generate and send service INVITE addressed to the calling user’s private-service CF PSI"
+      ],
+      "printed_pages": [
+        373,
+        374
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.1.4 opening and items 1–14: initial INVITE generated by the participating function on receiving REFER (request classification only)"
+      ],
+      "printed_pages": [
+        85,
+        86
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.2.2.1 final SIP 2xx response to REFER: receiving originating client interacts with the media plane"
+      ],
+      "printed_pages": [
+        364
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.3.1.2 response paragraphs after item 20: discard provisional responses; received SIP 200 (OK) for a private call and separately received SIP 4xx, 5xx or 6xx to the service INVITE"
+      ],
+      "printed_pages": [
+        374,
+        375
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcptt-preestablished-session-lifecycle",
+    "r16-media-preestablished-connect-outcome"
+  ],
+  "limitations": [
+    "不将 REFER 的成功应答视为 CF 接纳或被叫接听，也不以业务 INVITE 的失败反推 REFER 失败。",
+    "不展开终接处理、预建立会话本身的协商、完整媒体面、话权或 SIP 恢复。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

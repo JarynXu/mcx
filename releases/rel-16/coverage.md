@@ -442,6 +442,16 @@ MCPTT 或 MCVideo 跨系统私呼，双方在各自主系统接受服务，两�
 
 [读取主题](topics/calls/prearranged-preestablished-termination.md)
 
+## 预建立私呼：主叫的 REFER 收到 200，怎样查这通私呼的结果？
+
+普通私呼复用主叫的预建立会话时，如何从对话外 REFER 分开旧会话与被叫身份；O-PF 在哪些明文条件下拒绝 REFER，何时先回 200 再另发业务 INVITE，后一份请求寻址谁。
+
+按主叫和 O-PF 实际收件分别判断：O-PF 丢弃业务 INVITE 的临时响应；实际收到对同一份业务 INVITE 的普通私呼 200 或 4xx、5xx、6xx，各自进入媒体面接口。保留 500 以及 403/107、143、144 的原文请求名差异。
+
+尚未建立：不从 REFER 的 200 推定业务 INVITE 已发、被叫接听、某条 MCPC 已送达、话权或媒体。仅限普通有话权控制的同系统发起侧，不补 CF 发现算法、终接过程或超时结果。
+
+[读取主题](topics/calls/private-preestablished-origination.md)
+
 
 
 ## 普通私聊SDS控制面：发送资格、请求与接收证据
