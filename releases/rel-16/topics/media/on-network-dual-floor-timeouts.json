@@ -1,0 +1,160 @@
+{
+  "topic_id": "r16-media-on-network-dual-floor-timeouts",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "双话权覆盖发言：T11 断流和 T12 到时，服务器各发什么？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "先认定实际到期的是覆盖实例 T11 或 T12，再检查一般话权 G 的当前状态及接收者条件。",
+  "common_conditions": [
+    "TS 24.380 V16.9.0 Rel-16 Stage 3；在网服务器的双话权覆盖实例 D: Floor Taken。除非另标，动作由话权仲裁逻辑承担。"
+  ],
+  "claims": [
+    {
+      "id": "t11-and-t12-timer-boundary",
+      "title": "Duration 指明时限；进入时启动 T11，收到覆盖 RTP 才按条件启动 T12",
+      "conditions": [
+        "进入 D: Floor Taken，或媒体分发器已报告收到获准覆盖终端的 RTP。"
+      ],
+      "conclusion": "入态 Floor Granted 带 T12 值并启动 T11。收到媒体报告时若 T12 未运行则启动 T12，并重启 T11；每包不会重启运行中的 T12。",
+      "normative_strength": "所列字段、条件启动和重启均为 SHALL。",
+      "limitations": [
+        "只看到授权消息或 Duration 不能证明计时器 T12 已启动。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.6.3.2 steps 1 and 4–5"
+          ],
+          "printed_pages": [
+            96,
+            97
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.6.3.5 steps 1–4"
+          ],
+          "printed_pages": [
+            98,
+            99
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "t11-dual-rtp-end",
+      "title": "T11 到期告知覆盖流停止；本步骤不要求 Revoke",
+      "conditions": [
+        "D: Floor Taken 的 T11 到期。"
+      ],
+      "conclusion": "停止运行中的 T12，请求停止分发覆盖客户端 RTP，释放覆盖话权资源。向非控制 MCPTT 功能和控制侧接收覆盖 RTP 的参与者发送 G 位为 1 的 Floor Idle。",
+      "normative_strength": "所列要求为 SHALL；本到期分支未要求 Revoke，不是跨事务发送禁令。",
+      "limitations": [
+        "该 G 位 Idle 不代表一般话权空闲或客户端已收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.6.3.3 steps 1–4"
+          ],
+          "printed_pages": [
+            97
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "t12-dual-talk-deadline",
+      "title": "T12 到期向获准覆盖者发 G 位为 1、原因 #2 的 Revoke",
+      "conditions": [
+        "D: Floor Taken 的 T12 到期。"
+      ],
+      "conclusion": "停止 T11，请求媒体分发器停止向其他 MCPTT 客户端分发 RTP（步骤未指明这些包的来源）；向获准的覆盖参与者发 Floor Revoke，原因 #2，G 位为 1。有该双话权的已存 Track Info 则带上，随后移除记录。",
+      "normative_strength": "所列动作和字段为 SHALL，Track Info 受存有该项条件限制。",
+      "limitations": [
+        "不把普通话权撤销状态、T11 的特定 Idle 或客户端收件补进本分支。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.6.3.4 steps 1–4"
+          ],
+          "printed_pages": [
+            98
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "general-floor-state-after-dual-timeout",
+      "title": "两条超时均收束 D；一般话权通知由 G Taken 或 G Idle 决定",
+      "conditions": [
+        "已经确认 T11 或 T12 到期，并知道独立的一般话权 G 状态。"
+      ],
+      "conclusion": "G Taken：T11 向非控制功能和控制侧只收覆盖流者发送 Floor Taken；T12 向只收覆盖流者发送，仅在有非控制功能的临时组会话另要求发给这些非控制功能。G Idle：两个分支均向全体参与者发 Floor Idle。均释放双话权资源、使 D 转入 Start-stop。",
+      "normative_strength": "所列通知与收束为 SHALL。区分分支、收件对象及一般话权前提。",
+      "limitations": [
+        "不从 D 资源释放或消息 G 位推断 G 变成 Idle、对端实际收听或会话结束。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.6.3.3 steps 3–7"
+          ],
+          "printed_pages": [
+            97,
+            98
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.6.3.4 steps 5–8"
+          ],
+          "printed_pages": [
+            98
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcptt-onnetwork-dual-floor-entry",
+    "r16-mcptt-onnetwork-floor-media-timeouts"
+  ],
+  "limitations": [
+    "不涵盖一般话权 G 的计时器事件、客户端确认、用户主动释放、报文到达或 SIP 呼叫结束。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

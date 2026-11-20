@@ -41,3 +41,5 @@
 只讲在网组呼中保留原发言人的服务器入口及进入 D: Floor Taken 时的动作；不展开后续媒体分发、超时、释放、重新申请或 D/G 状态交接。选择撤销原发言人时，见[单话权撤销分支](on-network-preemption-revoke.md)；普通客户端如何申请和释放，见[客户端话权](on-network-floor-client.md)。
 
 固定原文：[3GPP TS 24.380 V16.9.0 / ETSI TS 124 380 V16.9.0（2022-10）](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf)。
+
+若覆盖发言已建立，要区分 RTP 断流、发言时限和一般话权的后续通知，查[双话权 T11/T12 超时](on-network-dual-floor-timeouts.md)。
