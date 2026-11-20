@@ -1,0 +1,382 @@
+{
+  "topic_id": "r16-media-on-network-noncontrolling-floor-rtp",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "在网 MCPTT：非控制功能怎样处理无许可终端收发的 RTP？原因 #3 后的 Release 给谁？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "声明继承共同范围；P、非控制功能的服务器接口、控制方 U、终端均按各自当时的状态和实际收到的消息或指示判断。",
+  "common_conditions": [
+    "固定 3GPP TS 24.380 V16.9.0，普通在网 MCPTT 单话权组呼，未启用双话权或同时多人发言。P 是组的非控制 MCPTT 功能内的参与者接口，每个会话中的每个客户端有独立实例。",
+    "主体是无发送许可的 P；另列同一非控制功能的服务器接口、直接关联终端的控制方 U 和终端自身的明确对照条件。P 的状态不作为这些接口已有事件或终端实际状态的证据。"
+  ],
+  "claims": [
+    {
+      "id": "noncontrolling-rtp-direction",
+      "title": "无许可的 P 如何区分来自分发器和来自关联终端的 RTP？",
+      "conditions": [
+        "取同一会话、同一终端的 P: has no permission。P 实际收到网络媒体接口的收包指示，其中的来源为媒体分发器或本关联终端，分别适用。服务器接口的两项另以它收到媒体分发方的指示为条件，不要求与 P 同时收到。"
+      ],
+      "conclusion": "来源是分发器：P 指示网络媒体接口把收到的 RTP 发往本关联终端。来源是该终端：P 给该端的话权参与者发 Floor Revoke，Reject Cause=#3，记录期待它发 Floor Release。两种情况 P 都仍无许可。下行若服务器接口收到分发器关于来自 CF 的 RTP 的指示，且未存双话权获准者的 SSRC，则要求分发器把包转给本会话中由本非控制功能管理、且 SSRC 与来包不同的各终端。上行若服务器接口收到媒体分发功能的指示，得知它已从某个网络媒体接口收到 RTP，则要求分发器把所收包转向 CF。该条的注将对无许可终端发 Revoke 的责任留在 P，不经服务器接口。",
+      "normative_strength": "各自收件条件下，P 的指令、Revoke 及原因值、期待记录和保持状态，以及服务器接口的转发请求均为 SHALL；本地 Revoke 不涉及服务器接口见 §6.5.4.13 的注。",
+      "limitations": [
+        "P 的无许可限制本端发送，不禁止接收；下行指令不能证明送达或播放。§6.5.5.3.9 的上行分支未把先前收到 Release 或“with payload”另列为条件，也未列丢弃、转发这批 RTP 或停转的指令。不能援用没有处理程序时才适用的默认丢弃。",
+        "同一 P 在此状态又收到来自本端 RTP 的指示，就再次适用该入口；不规定一个包一次 Revoke 或定时重发。P 发 Revoke 不说明违规包到没到分发器或 CF。两端间须分开查本地收包指示、分发功能向服务器接口的收包指示、朝 CF 发包和 CF 收包；单点缺包不证明别处未收发。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.1: floor control server interface and floor participant interface of the non-controlling MCPTT function"
+          ],
+          "printed_pages": [
+            103
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.1 and figure 6.5.5.1-1: one P instance per client in a session and fallback only for unspecified events"
+          ],
+          "printed_pages": [
+            113
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.3.1: no permission to send media for the associated participant"
+          ],
+          "printed_pages": [
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.3.9: P receives a network media interface indication; distributor versus associated client origin, cause 3 and expected Release"
+          ],
+          "printed_pages": [
+            115
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.12 item 1 and note: distributor indication from CF with no stored dual-floor granted SSRC and different recipient SSRC"
+          ],
+          "printed_pages": [
+            111
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.13 and note: actual media distribution function indication, forwarding request towards CF and local Revoke without server interface"
+          ],
+          "printed_pages": [
+            112
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "noncontrolling-expected-release",
+      "title": "同一终端的 Floor Release 什么时候本地处理，什么时候上送？",
+      "conditions": [
+        "P 在无许可状态实际收到与它关联的终端的 Floor Release。按是否存有期待该参与者发 Release 的记录分支；确认要求以这条 Release 的 subtype 首位为准。"
+      ],
+      "conclusion": "有期待记录时，首位为 1 则 P 给本端回 Floor Ack；无论首位为 1 或 0，都清除期待记录。该分支没有转给服务器接口的步骤。没有期待记录时，P 把 Release 转给本地服务器接口。首位为 0 不触发确认选择；若为 1，按本地策略，或由 P 回 Ack 并将外发 Release 首位改为 0，或等待话权控制服务器的 Ack。两个选择都要转交 Release，不以先收到 Ack 作为转交条件。两条分支处理后 P 均留在无许可状态。服务器接口实际收到转来的 Release 才向 CF 转发：已有 Track Info 时追加临时标识，没有则补字段；其本地被动队列若有此端请求则移除。",
+      "normative_strength": "是否本地确认取决于期待记录、确认位和相应分支的本地策略。期待分支的条件确认与清记录、非期待分支的转发、保持状态、服务器接口实收后向 CF 转发及条件移队均为 SHALL。",
+      "limitations": [
+        "该本地 Ack 即使可对应到这份 Release，也不能单独区分两支，不能证明 CF 收件或其活动队列有变化。非期待不等于此端必已排队。",
+        "没有观察到 Release，不能推定它已发、P 已清记录或某个超时已发生。§6.5.5.3.9–10 没有为这个期待记录指定计时器、重发上限或自动断开。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.3.9: P receives a network media interface indication; distributor versus associated client origin, cause 3 and expected Release"
+          ],
+          "printed_pages": [
+            115
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.3.10, opening and items 1–3: Floor Release handled by the non-controlling function floor participant interface in P: has no permission"
+          ],
+          "printed_pages": [
+            115,
+            116
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.3, items 1–2: non-controlling function adds to or supplies Track Info on the forwarded Release and conditionally removes its own passive-queue entry"
+          ],
+          "printed_pages": [
+            106
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "noncontrolling-p-versus-direct-u",
+      "title": "同样发原因 #3 的 Revoke，哪些角色才涉及 T8 或 T100？",
+      "conditions": [
+        "对照项限控制方的 U 直接关联一个终端，网络媒体接口报告收到该终端带载荷的 RTP。Idle、Taken 是不同的 U 入口；终端自身收 Revoke 是另一事件。"
+      ],
+      "conclusion": "U 在 not permitted and Floor Idle 时，还须在上一个 permitted 状态收到过本端 Floor Release；U 在 not permitted and Floor Taken 时，条款没有这个前置 Release 条件。各自条件满足，U 要求网络媒体接口不把收到的包交给分发器，向该端发原因 #3 的 Floor Revoke，进入 not permitted but sends media 并启 T8；在该状态不得要求把这个终端的 RTP 转给分发器。若直接关联的不是终端而是非控制功能的服务器接口，两处注都说明无许可 RTP 由非控制功能处理。非控制侧 P 发 #3 后留在无许可，不进入 U 的状态。另一处 T100 是终端自己在 has permission 实收 Revoke 后启动的计时器，不是 P 等待 Release 的计时器。",
+      "normative_strength": "U 的不转发请求、Revoke、转态和启动 T8 为 SHALL；在新状态不得要求转发是 SHALL NOT。终端实际在许可状态收 Revoke 后启 T100 为 SHALL。P 的动作按 §6.5.5.3.9。",
+      "limitations": [
+        "不能从原因值推定 P、控制方 U 和终端处于同一状态，或推定 UE 已收 Revoke、已回复 Release。U 的显式不转发指令和 T8 均不在 P 的此项程序内。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.3.8 and note: directly associated client payload after prior Release in U permitted, distributor instruction and cause 3"
+          ],
+          "printed_pages": [
+            77
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.4.6 and note: payload from the directly associated client while U is not permitted and Floor Taken; no prior Release test"
+          ],
+          "printed_pages": [
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.7.2: enter U not permitted but sends media; start T8 and do not request forwarding"
+          ],
+          "printed_pages": [
+            89
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.3.9: P receives a network media interface indication; distributor versus associated client origin, cause 3 and expected Release"
+          ],
+          "printed_pages": [
+            115
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.5.4: actual Floor Revoke receipt by a permitted client and its own T100"
+          ],
+          "printed_pages": [
+            43
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "noncontrolling-release-step-one",
+      "title": "要停止本端双向 RTP 或停止会话侧分发，看谁收到了呼叫释放请求？",
+      "conditions": [
+        "P 或服务器接口实际收到应用与信令面的 MCPTT call release step 1 请求，分别适用；P 入口排除 Start-stop 与 Releasing，本例 P 原处于无许可。此请求不等于 Floor Release。"
+      ],
+      "conclusion": "P 停止向本端发话权控制消息，忽略来自本端的话权控制消息，要求网络媒体接口停止向该端发 RTP，并要求该接口停止把该端的 RTP 转给分发器。P 通知服务器接口该端已开始断开，进入 P: Releasing。若是服务器接口收到呼叫释放第 1 步请求，它忽略来自话权控制服务器及各参与者接口的话权控制消息，并要求分发器停止向客户端的网络媒体接口分发 RTP。",
+      "normative_strength": "收到各自的呼叫释放请求后，所列控制消息处理、停止媒体的请求、P 的通知和转态均为 SHALL。",
+      "limitations": [
+        "单个终端离开会话也可能触发 P 的第 1 步。P 发 #3、等 Release、收 Release 或回 Ack，不等同于应用与信令面的释放请求。单端停转指令或服务器接口的停分发请求均不证明特定终端实际停收或全组通话已结束。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.5.1 and 6.5.5.5.3: applicable P states; call release step 1, both RTP directions, disconnect indication and P Releasing"
+          ],
+          "printed_pages": [
+            118
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.14: server interface receives call release step 1, ignores floor control and requests distribution to client interfaces stop"
+          ],
+          "printed_pages": [
+            112
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcptt-onnetwork-holder-release",
+    "r16-media-on-network-floor-client",
+    "r16-mcptt-onnetwork-preemption-revoke"
+  ],
+  "limitations": [
+    "不重建双话权、多人同时发言、抢占、完整队列仲裁或 SIP 释放过程。",
+    "按接口规定的指令、消息和状态回答，不规定实现如何关联包、记录期待或抓包。不从本地 Revoke、确认、某处无包推定媒体交付或全组停止。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.1: floor control server interface and floor participant interface of the non-controlling MCPTT function"
+      ],
+      "printed_pages": [
+        103
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.5.1 and figure 6.5.5.1-1: one P instance per client in a session and fallback only for unspecified events"
+      ],
+      "printed_pages": [
+        113
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.5.3.1: no permission to send media for the associated participant"
+      ],
+      "printed_pages": [
+        114
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.5.3.9: P receives a network media interface indication; distributor versus associated client origin, cause 3 and expected Release"
+      ],
+      "printed_pages": [
+        115
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.4.12 item 1 and note: distributor indication from CF with no stored dual-floor granted SSRC and different recipient SSRC"
+      ],
+      "printed_pages": [
+        111
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.4.13 and note: actual media distribution function indication, forwarding request towards CF and local Revoke without server interface"
+      ],
+      "printed_pages": [
+        112
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.5.3.10, opening and items 1–3: Floor Release handled by the non-controlling function floor participant interface in P: has no permission"
+      ],
+      "printed_pages": [
+        115,
+        116
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.4.3, items 1–2: non-controlling function adds to or supplies Track Info on the forwarded Release and conditionally removes its own passive-queue entry"
+      ],
+      "printed_pages": [
+        106
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.5.3.8 and note: directly associated client payload after prior Release in U permitted, distributor instruction and cause 3"
+      ],
+      "printed_pages": [
+        77
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.5.4.6 and note: payload from the directly associated client while U is not permitted and Floor Taken; no prior Release test"
+      ],
+      "printed_pages": [
+        83
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.5.7.2: enter U not permitted but sends media; start T8 and do not request forwarding"
+      ],
+      "printed_pages": [
+        89
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.2.4.5.4: actual Floor Revoke receipt by a permitted client and its own T100"
+      ],
+      "printed_pages": [
+        43
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.5.5.1 and 6.5.5.5.3: applicable P states; call release step 1, both RTP directions, disconnect indication and P Releasing"
+      ],
+      "printed_pages": [
+        118
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.4.14: server interface receives call release step 1, ignores floor control and requests distribution to client interfaces stop"
+      ],
+      "printed_pages": [
+        112
+      ]
+    }
+  ]
+}
