@@ -1,0 +1,213 @@
+{
+  "topic_id": "r16-calls-offnetwork-private-emergency-upgrade",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "离网私呼紧急升级：同一通话何时升为紧急，拒绝和无响应各回到什么状态？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "各声明继承共同范围，并按本端实际当前 P/Q 状态和触发事件分别判断；发起、收端答复和发起端实际收到回复不互为证明。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0，Release 16，Stage 3，已在进行中的普通离网 MCPTT 一对一私呼的紧急升级；后续处理限同一 Call identifier 和所指升级请求。",
+    "基本呼叫控制 P 与呼叫类型控制 Q 在本端并行运作，不把其同名计时或状态当成对端证据；不套在网 SIP、普通初建、组呼或新建紧急私呼。"
+  ],
+  "claims": [
+    {
+      "id": "offnetwork-private-upgrade-originating-same-call",
+      "title": "在进行中的普通私呼，发起升级和重发怎样仍指向同一呼叫？",
+      "conditions": [
+        "本机呼叫类型状态为 Q1，MCPTT 用户请求升级，用户配置 PrivateCall/EmergencyCall/Authorised 为 true。",
+        "重发分支另判：发起端已在 Q2，TFP1 到期且 CFP1 小于上限。"
+      ],
+      "conclusion": "初次升级生成并保存紧急 SDP offer，更新 caller ID 为自己、callee ID 为对端、保存当前用户位置，把呼叫类型置为 EMERGENCY PRIVATE CALL。PRIVATE CALL SETUP REQUEST 写已存 Call identifier、两个 ID、AUTOMATIC COMMENCEMENT MODE、紧急类型和紧急 offer，可以带用户位置。选择紧急私呼对应的 ProSe 包优先级，向对端发出；CFP1=1，启动 TFP1，若 TFP6 正在运行则停止，进入 Q2。重发时 CFP1 加一，沿用已存标识、双方 ID、呼叫类型和紧急 offer，Commencement mode 每次仍须明确填 AUTOMATIC COMMENCEMENT MODE，可以更新并可携带用户位置；发送请求、重启 TFP1、保持 Q2。",
+      "normative_strength": "§11.2.3.4.5.1–2 满足各自入口时，身份、SDP、类型、发送、计数、计时器与状态动作是 SHALL；位置字段和重发更新位置为 MAY。",
+      "limitations": [
+        "本机 Q2 与初次或重发请求均不证明对端实际收到、同意或已切换，也不证明底层使用某个优先级、媒体已通。只看到消息名不能判为升级或新呼叫，需结合本机已有 Call identifier 和当前分支。",
+        "不解释 SDP 或安全参数生成的细节、优先级数值或新建紧急私呼。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.3.1 and 11.2.3.3.1–3: parallel basic call and call type state machines and local Q states"
+          ],
+          "printed_pages": [
+            436,
+            437
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.3.4.5.1–2: triggered authorised upgrade in Q1, existing call identifier, Q2 and bounded retransmission"
+          ],
+          "printed_pages": [
+            438,
+            439
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "offnetwork-private-upgrade-peer-same-call-response",
+      "title": "对端真正收到匹配的紧急请求，在 Q1 或 Q2 怎样答？",
+      "conditions": [
+        "本机处于 Q1 或 Q2，实际收到 PRIVATE CALL SETUP REQUEST，Call identifier 与已存的呼叫标识相同且 Call type 为 EMERGENCY PRIVATE CALL。",
+        "依据来件 SDP 所描述的媒体会话能否建立分流；不是看到任一升级发包就执行。"
+      ],
+      "conclusion": "若能建立，生成并保存紧急 SDP answer，存来件 caller ID 及本机 callee ID，生成带已存呼叫标识、双方 ID 和 answer 的 PRIVATE CALL ACCEPT。在 Q1 时先改紧急包优先级、停正在运行的 TFP6、启动 TFP8；然后发 ACCEPT，原为 Q1 时更新类型并进入 Q2，原为 Q2 时保留 Q2。若不能建立，生成 PRIVATE CALL REJECT，沿用来件呼叫及两端身份；请求限制失败通知且 PrivateCall/FailRestrict=true 时 Reason=FAILED，否则 MEDIA FAILURE；发拒绝后留在原 Q1 或 Q2。",
+      "normative_strength": "§11.2.3.4.5.6 在符合接收、状态和 SDP 条件的分支内为 SHALL。只有原 Q1 执行紧急优先级、计时器和进入 Q2 的对应条件步骤。",
+      "limitations": [
+        "在 Q2 保持不等于要求刷新 TFP8。该接收程序并未以实际收到 ACK 或 RTP 作为更新本地状态的前提，也没有明列接收端实际完成媒体建立的动作。",
+        "FAILED 不代表用户拒接；对端发 ACCEPT/REJECT 不能证明发起端收到、处理或媒体可用。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.3.1 and 11.2.3.3.1–3: parallel basic call and call type state machines and local Q states"
+          ],
+          "printed_pages": [
+            436,
+            437
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.3.4.5.6: existing-call peer checks same call identifier and emergency type, response and local Q/TFP8 effects"
+          ],
+          "printed_pages": [
+            440,
+            441
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "offnetwork-private-upgrade-originating-outcome",
+      "title": "匹配 ACCEPT、REJECT、重传耗尽：发起端 Q 与 P 分别怎样处理？",
+      "conditions": [
+        "Q 层：发起端处于 Q2；实际收到本次请求对应的同 Call identifier 的 ACCEPT 或 REJECT，或 TFP1 到期且 CFP1 等于上限。",
+        "P 层达限：本端基本呼叫控制在 P4 且发生同样的 TFP1 到期、CFP1 等于上限事件，单独查 §11.2.2.4.5.8。"
+      ],
+      "conclusion": "匹配 ACCEPT：保存紧急 answer，生成并发送带已存通话标识和双方 ID 的 PRIVATE CALL ACCEPT ACK，停止运行中的 TFP1，TFP8 未运行才启动，若尚未按该 answer 建立媒体会话则建立，保留 Q2；注释说明每次收到适用的 ACCEPT 按条文发送 ACK。匹配 REJECT：停止运行中的 TFP1，回普通包优先级及 PRIVATE CALL 类型，进入 Q1。无响应达限：Q2 条款释放已存类型和包优先级，进入 Q0。另在确处 P4 时，基本呼叫条款启动 TFP7、停止 TFP5、释放呼叫类型状态机并进入 P1（忽略同一标识）。",
+      "normative_strength": "§11.2.3.4.5.3–5 与 §11.2.2.4.5.8 在各自事件和状态满足时的动作是 SHALL；重复 ACCEPT 的 ACK 说明保留为注释。",
+      "limitations": [
+        "无响应不等于显式 REJECT，不示对端收到、同意或拒绝。Q0 不等于 Q1 或全呼释放；P1 不证明 RELEASE 收发、对端切换或媒体已停。P/Q 处理先后未规定。§11.2.2.4.5.8 未规定发 RELEASE 或终止媒体；.5.6 的 TFP5 到期是另外一种事件并明列终止。",
+        "REJECT 并未列旧 SDP 修复、处置 TFP8 或发 RELEASE。发送 ACK 不证明对端已收到，SDP/本机建立媒体操作不证明实际语音。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.3.1 and 11.2.3.3.1–3: parallel basic call and call type state machines and local Q states"
+          ],
+          "printed_pages": [
+            436,
+            437
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.3.4.5.3–5: matching actual ACCEPT or REJECT in Q2 and TFP1 expiry at CFP1 cap"
+          ],
+          "printed_pages": [
+            439,
+            440
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.2.4.5.6 and .5.8: P4 maximum duration and distinct emergency-upgrade no-response limit handling"
+          ],
+          "printed_pages": [
+            435
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.2.3.1 and 11.2.3.3.1–3: parallel basic call and call type state machines and local Q states"
+      ],
+      "printed_pages": [
+        436,
+        437
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.2.3.4.5.1–2: triggered authorised upgrade in Q1, existing call identifier, Q2 and bounded retransmission"
+      ],
+      "printed_pages": [
+        438,
+        439
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.2.3.4.5.3–5: matching actual ACCEPT or REJECT in Q2 and TFP1 expiry at CFP1 cap"
+      ],
+      "printed_pages": [
+        439,
+        440
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.2.3.4.5.6: existing-call peer checks same call identifier and emergency type, response and local Q/TFP8 effects"
+      ],
+      "printed_pages": [
+        440,
+        441
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.2.2.4.5.6 and .5.8: P4 maximum duration and distinct emergency-upgrade no-response limit handling"
+      ],
+      "printed_pages": [
+        435
+      ]
+    }
+  ],
+  "related": [
+    "r16-calls-offnetwork-private-auto-client",
+    "r16-calls-offnetwork-private-manual-client",
+    "r16-calls-offnetwork-group-emergency-upgrade"
+  ],
+  "limitations": [
+    "本次只解释升级发起、同一呼叫接收和发起方答复/达限，不展开显式取消、隐式降级实际处理、呼叫结束全流程或并发升级的协调。",
+    "不从消息与本地状态断定对端已实收、真实媒体或话权，不补优先级数值、SDP/安全字段和部署策略。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
