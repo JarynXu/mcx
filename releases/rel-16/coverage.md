@@ -412,6 +412,16 @@ MCPTT 或 MCVideo 跨系统私呼，双方在各自主系统接受服务，两�
 
 [读取主题](topics/calls/offnetwork-group-emergency-downgrade.md)
 
+## 发起离网紧急组呼：什么时候新建，什么时候接入已有呼叫？
+
+离网发起紧急组呼的配置、探测后本机新建或采用已有呼叫的条件，以及空闲终端收到紧急公告何时加入、何时发 ACCEPT。
+
+基本呼叫控制和类型控制分别判断 S1/S2/S3 与 T0/T1；区分 TFG1 实际到期并发送、实收作为探测应答的紧急公告、闲置端的用户确认配置和公告的 Confirm IE。
+
+尚未建立：不把组告警、PROBE、只记录紧急类型或未见 ACCEPT 当作加入结论；不由本机状态推出全组收件、获话权或语音送达。
+
+[读取主题](topics/calls/offnetwork-group-emergency-establishment.md)
+
 
 
 ## 普通私聊SDS控制面：发送资格、请求与接收证据

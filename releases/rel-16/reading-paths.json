@@ -4612,6 +4612,26 @@
         }
       ],
       "boundary": "限既有离网紧急 MCPTT 组呼转为普通，不是在网取消、告警撤销或整通呼叫释放；单独一条 END 或一个 T2 不能证明所有成员都切换。"
+    },
+    {
+      "id": "r16-calls-offnetwork-group-emergency-establishment",
+      "question": "离网发起紧急组呼，是本机新建还是接上原呼叫？探测、独立告警、用户接受和本机加入分别查什么？",
+      "start": "topics/calls/offnetwork-group-emergency-establishment.md",
+      "next_if": [
+        {
+          "condition": "若需对照基本呼叫状态，查普通离网组呼的客户端状态；不把普通类型流套到紧急分支，不把类型记录当成加入。",
+          "read": "topics/calls/offnetwork-group-client.md"
+        },
+        {
+          "condition": "若本机已经参加普通组呼，此次只是升为紧急，改查既有呼叫升级，不沿用初始建呼许可。",
+          "read": "topics/calls/offnetwork-group-emergency-upgrade.md"
+        },
+        {
+          "condition": "若本机已参加紧急组呼，此次是解除紧急或恢复普通，查降级与 END，不重复建立呼叫。",
+          "read": "topics/calls/offnetwork-group-emergency-downgrade.md"
+        }
+      ],
+      "boundary": "限离网 MCPTT 紧急组呼的初始建立或加入。探测和告警都不是本机 S3/T1 的证明，也不从本机状态推定其他终端参加。"
     }
   ]
 }

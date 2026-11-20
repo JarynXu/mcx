@@ -1,0 +1,527 @@
+{
+  "topic_id": "r16-calls-offnetwork-group-emergency-establishment",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "发起离网紧急组呼：什么时候新建，什么时候接入已有呼叫？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明继承共同条件；基本呼叫状态和类型状态并行，每个事件按自身状态、收发和条件判断。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0（Release 16，Stage 3）。只讨论离网 MCPTT 紧急组呼的初始建立与参加；在探测应答一条中允许另一端已参加同组呼叫。",
+    "区分本机基本呼叫控制、并行类型控制和告警状态。发送、实收、用户接受与本地定时器实际到期分别成立。"
+  ],
+  "claims": [
+    {
+      "id": "emergency-group-probe-selection",
+      "title": "发起离网紧急组呼时，探测和选类型各需要什么？",
+      "conditions": [
+        "基本呼叫控制在 S1，实际收到发起指定 MCPTT 组呼的用户指示；类型控制在 T0 受到用户发起组呼探测的指示。"
+      ],
+      "conclusion": "基本控制保存组 ID、创建类型控制、发送只有消息类型和组 ID 的 GROUP CALL PROBE，启 TFG3、TFG1，进 S2。T0 若该组已存紧急告警状态为 true 且组 AllowedEmergencyCall 为 true，应设 EMERGENCY GROUP CALL 和对应 ProSe 每包优先级；第 1 项不再列显式发起紧急或用户 EmergencyCall/Enabled。若该组状态为 false，则须用户本次发起紧急呼叫，且用户配置档 EmergencyCall/Enabled 与组 AllowedEmergencyCall 都为 true，才命中第 2(a) 项。类型程序另记录当前 UTC 和本机 MCPTT 用户 ID 为上次变更时刻和用户，仍在 T0。",
+      "normative_strength": "探测步骤、命中条件下的本地类型和优先级动作、以及 T0 中记录值是 SHALL。",
+      "limitations": [
+        "PROBE 不带 Call type，不是公告或已经参加的证据。别从未满足紧急选择条件反推拒绝、自动回落普通或不发 PROBE。",
+        "GROUP EMERGENCY ALERT 和本组的已存紧急状态有独立程序。发起探测时本机保存的该组状态可供选型，曾发告警不是该值当时仍为 true 的证据。单独发告警不建立组呼，告警许可不替代呼叫权限。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.4.2.1: basic S1 call probe initiation, TFG3 and TFG1, then S2"
+          ],
+          "printed_pages": [
+            323
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "15.1.2.1, Table 15.1.2.1-1: GROUP CALL PROBE message identity and group ID, no Call type IE"
+          ],
+          "printed_pages": [
+            478
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.4.2, items 1, 2(a), 3–5: emergency call type selection when the user initiates a probe in T0"
+          ],
+          "printed_pages": [
+            334,
+            335
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "12.2.2.2: off-network emergency alert state machine per MCPTT group"
+          ],
+          "printed_pages": [
+            457
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "12.2.3.1: originating off-network emergency alert and stored emergency state, separate from call setup"
+          ],
+          "printed_pages": [
+            458
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "15.1.16.1 and Table 15.1.16.1-1: GROUP EMERGENCY ALERT message definition and content"
+          ],
+          "printed_pages": [
+            484,
+            485
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "emergency-group-new-originator",
+      "title": "怎么证明自己走了 TFG1 到期的新建分支？",
+      "conditions": [
+        "本端基本呼叫控制仍为 S2，TFG1 实际到期；并行类型控制仍为 T0，已存类型为 EMERGENCY GROUP CALL，并实际因这次到期发出公告。"
+      ],
+      "conclusion": "停止仍在运行的 TFG3；生成并保存新呼叫标识及 SDP、选择刷新间隔，保存自己为原发起者及当前 UTC 为呼叫开始时刻。发出的 GROUP CALL ANNOUNCEMENT 携带这些值、组 ID、已存类型及已存上次类型变更时刻和变更用户。发后基本控制在本地建立媒体会话、启动发起侧话权控制及 TFG6、TFG2，进 S3；符合 T0 对发送事件和已存紧急类型的条件时，类型控制启 TFG13、进 T1。",
+      "normative_strength": "S2 本地到期分支和 T0 的紧急实际发送分支分别是 SHALL，不能把两个事件合成只有定时器到期。",
+      "limitations": [
+        "呼叫开始时刻与上次类型变更时刻是两个字段，所引条款未要求两个值不同；TFG13 不按呼叫开始计算，也不以发起端收另一份公告为前提。",
+        "本机的到期、发送和状态是本机证据；不是全组无旧呼叫、他端已收到、实际授予话权或有 RTP 送达的证据。已有呼叫的后续公告也沿用原发起者；只凭公告里的原发起者是自己，不能证明此次走了新建分支。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.4.3.1: TFG1 expiry in S2, new group announcement, basic S3 and originating floor role"
+          ],
+          "printed_pages": [
+            324
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.4.6, conditions (a)–(b), emergency action (1): actual user acceptance or sending on TFG1 expiry in T0"
+          ],
+          "printed_pages": [
+            337
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.4.1.1: TFG13 elapsed time calculation, with time IE of ANNOUNCEMENT or EMERGENCY END"
+          ],
+          "printed_pages": [
+            334
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.4.4.1, items 1(e), 1(j), 2–5: S3 TFG2 expiry sends stored call identity and handles probe response flag"
+          ],
+          "printed_pages": [
+            327,
+            328
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "emergency-group-probe-join",
+      "title": "发出探测之后，怎样识别接入现有紧急组呼而非自己新建？",
+      "conditions": [
+        "应答端已在 S3，实收同组探测且已存应答标志为 false，后续单独考虑在 S3 的 TFG2 实际到期。",
+        "探测端基本控制在 S2、实收同组公告；类型控制在 T0，按实收作为探测应答的紧急类型公告时的规则另判。"
+      ],
+      "conclusion": "应答端把 TFG2 换成探测后短等待并置应答标志 true；S3 的 TFG2 实际到期时据已有记录生成公告，标志仍为 true 就填写 Probe response IE，发送后清标志并恢复周期 TFG2。探测端的 S2 基本入口只列同组实收，不要求 Probe response IE；停止 TFG3/TFG1，采用公告的呼叫标识、原发起者、开始时刻、刷新和 SDP，按所存 SDP 建立本地媒体会话，再以终接话权参与者角色启动话权控制，启 TFG6/TFG2，进入 S3，不生成新呼叫。类型侧的 T0 紧急探测应答分支设置紧急类型和对应优先级，采纳公告的上次变更时刻和用户，启 TFG13，进 T1；这一接收分支未另外列发起端的两项许可条件。",
+      "normative_strength": "应答端及探测端按各自命中的入口执行 SHALL，不把同组公告一概当成可证明因果对应的探测应答。",
+      "limitations": [
+        "S3 应答端不必是原发起者。Probe response IE 表达应答性质，不定位唯一探测端、唯一探测或证明对方实收。",
+        "若来件普通而本地预选紧急，不满足 .4.3 第 3 项的来件普通且本地也普通；不从类型条件改写 S2 的同组入口，也不推定不同类型公告间的统一取舍或并行调度。",
+        "本地话权控制启动不是实际授权或 RTP 已接收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.4.1.1.2: TFG2 call announcement timer calculation after CALL PROBE"
+          ],
+          "printed_pages": [
+            322
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.4.2.3: S3 receives matching-group PROBE, conditional short TFG2 and probe response flag"
+          ],
+          "printed_pages": [
+            323
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.4.4.1, items 1(e), 1(j), 2–5: S3 TFG2 expiry sends stored call identity and handles probe response flag"
+          ],
+          "printed_pages": [
+            327,
+            328
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "15.2.16: Probe response information element indicates an announcement response to a probe"
+          ],
+          "printed_pages": [
+            494
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.4.3.2: basic S2 matching-group announcement, adopts announced call identity and terminating floor role"
+          ],
+          "printed_pages": [
+            324,
+            325
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.4.3, items 1 and 3: actual probe response in T0, emergency branch and separate BASIC type guard"
+          ],
+          "printed_pages": [
+            335,
+            336
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.4.1.1: TFG13 elapsed time calculation, with time IE of ANNOUNCEMENT or EMERGENCY END"
+          ],
+          "printed_pages": [
+            334
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "emergency-group-idle-receive",
+      "title": "没发过探测，实收紧急公告一定要用户确认或发 ACCEPT 吗？",
+      "conditions": [
+        "本端未参加，基本呼叫控制在 S1，实收紧急公告且没有其他状态机已存同组 ID；新建本端的类型控制从 T0 开始。"
+      ],
+      "conclusion": "终端采用来件的组和呼叫资料。基本控制若需用户确认，先启 TFG4，按公告是否含 Confirm mode indication 进入 S5 或 S4；用户实际接受后，按所存 SDP 建立媒体会话，以终接话权参与者角色启动话权控制，S5 发送 GROUP CALL ACCEPT，S4 没有发送步骤，随后停 TFG4，启 TFG6、TFG2，进入 S3。若不需用户确认，实收公告后按所存 SDP 建立媒体会话，以终接话权参与者角色启动话权控制，只在含 Confirm IE 时发送 ACCEPT，随后启 TFG6、TFG2，进入 S3。并行的类型控制在需用户确认时先保存紧急类型、优先级及来件变更时刻和用户，仍在 T0；待用户实际接受且已存紧急类型时，启 TFG13、进 T1。不需用户确认时，实收后保存来件变更字段、设紧急类型与优先级，启 TFG13、进 T1。",
+      "normative_strength": "用户确认由终端配置决定；分支内的 ACCEPT 由收到的 Confirm IE 决定。实际加入和类型动作分别是 SHALL。",
+      "limitations": [
+        "实收公告或保存紧急类型不等于已经接受并进入 S3/T1；没有观察到 ACCEPT 不能推出未加入。发出 ACCEPT 也不能证明对端已收到、话权许可或实际语音送达。",
+        "两状态机并行，不由所列分支推出正文未规定的执行先后。这里是本端 S1 收呼，不是本端 S2 等自己的探测应答或 S3 已有呼叫升级；.4.3.3 未要求来件带或不带 Probe response，不由该信息元素判断是谁发起探测。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.4.3.3: S1 idle announcement, group not in another state machine, separate user and Confirm IE gates"
+          ],
+          "printed_pages": [
+            325,
+            326
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.4.3.4: actual acceptance in S5 with confirm indication, send GROUP CALL ACCEPT"
+          ],
+          "printed_pages": [
+            326
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.4.3.5: actual acceptance in S4 without confirm indication"
+          ],
+          "printed_pages": [
+            326,
+            327
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.4.4, items 1, 4–6: idle emergency announcement requiring user acknowledgement leaves type state T0"
+          ],
+          "printed_pages": [
+            336
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.4.5, items 1–3: idle emergency announcement without user acknowledgement starts TFG13 and enters T1"
+          ],
+          "printed_pages": [
+            336,
+            337
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.3.4.6, conditions (a)–(b), emergency action (1): actual user acceptance or sending on TFG1 expiry in T0"
+          ],
+          "printed_pages": [
+            337
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-offnetwork-group-client",
+    "r16-calls-offnetwork-group-emergency-upgrade",
+    "r16-calls-offnetwork-group-emergency-downgrade"
+  ],
+  "limitations": [
+    "不覆盖在网、紧急告警完整生命周期、普通呼叫升级、紧急降级、迫近危险流程、同组竞争呼叫合并或完整话权和媒体传输；不填 ProSe 每包优先级数值。",
+    "本端发送或本端进 S3/T1 不推出所有其他成员参加、获话权或听到媒体。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.2.3.1: call type control operates in parallel with basic off-network group call control"
+      ],
+      "printed_pages": [
+        332
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.2.2.4.2.1: basic S1 call probe initiation, TFG3 and TFG1, then S2"
+      ],
+      "printed_pages": [
+        323
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "15.1.2.1, Table 15.1.2.1-1: GROUP CALL PROBE message identity and group ID, no Call type IE"
+      ],
+      "printed_pages": [
+        478
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.2.3.4.2, items 1, 2(a), 3–5: emergency call type selection when the user initiates a probe in T0"
+      ],
+      "printed_pages": [
+        334,
+        335
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "12.2.2.2: off-network emergency alert state machine per MCPTT group"
+      ],
+      "printed_pages": [
+        457
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "12.2.3.1: originating off-network emergency alert and stored emergency state, separate from call setup"
+      ],
+      "printed_pages": [
+        458
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "15.1.16.1 and Table 15.1.16.1-1: GROUP EMERGENCY ALERT message definition and content"
+      ],
+      "printed_pages": [
+        484,
+        485
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.2.2.4.3.1: TFG1 expiry in S2, new group announcement, basic S3 and originating floor role"
+      ],
+      "printed_pages": [
+        324
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.2.3.4.6, conditions (a)–(b), emergency action (1): actual user acceptance or sending on TFG1 expiry in T0"
+      ],
+      "printed_pages": [
+        337
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.2.3.4.1.1: TFG13 elapsed time calculation, with time IE of ANNOUNCEMENT or EMERGENCY END"
+      ],
+      "printed_pages": [
+        334
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.2.2.4.1.1.2: TFG2 call announcement timer calculation after CALL PROBE"
+      ],
+      "printed_pages": [
+        322
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.2.2.4.2.3: S3 receives matching-group PROBE, conditional short TFG2 and probe response flag"
+      ],
+      "printed_pages": [
+        323
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.2.2.4.4.1, items 1(e), 1(j), 2–5: S3 TFG2 expiry sends stored call identity and handles probe response flag"
+      ],
+      "printed_pages": [
+        327,
+        328
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "15.2.16: Probe response information element indicates an announcement response to a probe"
+      ],
+      "printed_pages": [
+        494
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.2.2.4.3.2: basic S2 matching-group announcement, adopts announced call identity and terminating floor role"
+      ],
+      "printed_pages": [
+        324,
+        325
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.2.3.4.3, items 1 and 3: actual probe response in T0, emergency branch and separate BASIC type guard"
+      ],
+      "printed_pages": [
+        335,
+        336
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.2.2.4.3.3: S1 idle announcement, group not in another state machine, separate user and Confirm IE gates"
+      ],
+      "printed_pages": [
+        325,
+        326
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.2.2.4.3.4: actual acceptance in S5 with confirm indication, send GROUP CALL ACCEPT"
+      ],
+      "printed_pages": [
+        326
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.2.2.4.3.5: actual acceptance in S4 without confirm indication"
+      ],
+      "printed_pages": [
+        326,
+        327
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.2.3.4.4, items 1, 4–6: idle emergency announcement requiring user acknowledgement leaves type state T0"
+      ],
+      "printed_pages": [
+        336
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.2.3.4.5, items 1–3: idle emergency announcement without user acknowledgement starts TFG13 and enters T1"
+      ],
+      "printed_pages": [
+        336,
+        337
+      ]
+    }
+  ]
+}
