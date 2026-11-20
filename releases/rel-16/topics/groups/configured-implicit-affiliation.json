@@ -1,0 +1,347 @@
+{
+  "topic_id": "r16-groups-configured-implicit-affiliation",
+  "title": "按配置档隐式归属：MCPTT 已授权，为什么没看到向组发归属请求？",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "common_conditions": [
+    "Release 16 同系统普通在网 MCPTT；问题是已成功业务授权的用户及对应客户端按该用户配置档隐式归属到配置组。各角色的调用、收发、状态变化及读取依各自程序的实际条件分别判断。"
+  ],
+  "condition_rule": "某一角色发出消息不作为另一角色已收到或某个后续程序已经执行的条件；可以单独判定无合格条目、没有新增或其他条件分支。",
+  "claims": [
+    {
+      "id": "profile-candidates-and-silent-stop",
+      "title": "配置档列有组：什么情况下不发归属请求，什么情况下仍要为旧项发布？",
+      "conditions": [
+        "服务本用户的 PF 已成功办理业务授权；按实际命中的 §7.3.3 或 §7.3.4 检查是否走到第 13 项，再按 §9.2.2.2.15 的条件区分停止、生成候选和发布。"
+      ],
+      "conclusion": "两种设置程序都是在用户配置档 OnNetwork/ImplicitAffiliations 至少有一个含组 ID 的 entry 时调用该程序。PF 从办理业务授权的 SIP 请求及其 MCPTT 信息正文中的 mcptt-client-id 定位用户及本客户端；用户配置档未存才下载，容器缺失或无合格条目则跳过余步。只复制本端组列表，本端缺项或该组项已过期才新增，初态 affiliating、到期时刻为当前时刻加候选有效期。一项未增就丢候选、停在替换和发布之前。确有新增才把本端候选表和同用户其他端列表中未过期的 affiliating/affiliated 组按不同组 ID 计数；超过该用户的 N2，依服务商策略缩到 N2。只以候选表替换本端组列表。再依第 11 项逐个配置组检查：候选表有该组的 affiliating 项，就调用 §9.2.2.2.6。",
+      "normative_strength": "满足各分支条件时按条款停止、构造或调用。恰好达到 N2 不触发缩减；注 1 不指定固定淘汰顺序。",
+      "limitations": [
+        "仅设置发布不是一次新的业务授权；普通注册、设置 PUBLISH 的 200 或没抓到组请求，都不能单独证明这里的某项分支已执行。",
+        "其他端有同组不阻止本端新增。第 11 项未以本次新增、项未过期或尚无归属 p-id 为条件；若本次另有新增、候选仍保有原先的配置组 affiliating 项，已有 p-id 不排除调用。不推定重试、并发、过期记录合并算法或一次即可实际归属。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.3, step 13, configured group IDs and entry into implicit affiliation for the served MCPTT ID"
+          ],
+          "printed_pages": [
+            157
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.4, step 13, configured group IDs after service-settings-only processing"
+          ],
+          "printed_pages": [
+            158
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.15, opening and steps 1–4: successful prior authorization, served IDs, profile and skip"
+          ],
+          "printed_pages": [
+            185,
+            186
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.15, steps 5–8c: served client list, candidate creation and no-addition stop"
+          ],
+          "printed_pages": [
+            186
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.15, steps 9–11 and note 1: N2 across clients, local list replacement and per-group invocation"
+          ],
+          "printed_pages": [
+            186,
+            187
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "group-publish-and-owner-response",
+      "title": "PF 发送组归属 PUBLISH：p-id 写给谁，Timer F、403、423 和 200 分别意味着什么？",
+      "conditions": [
+        "§9.2.2.2.15 第 11 项确有配置组符合发布条件；PF 实际发布、Timer F 到期或收到相关失败响应、组所有者实收满足 §9.2.2.3.3 入口的 PUBLISH，分别按本端事件判读。"
+      ],
+      "conclusion": "PF 发往组 CF PSI 时，业务正文标明组与本用户，P-Asserted-Identity 为发送服务器 PSI，归属 Expires 为 4294967295。PF 生成全局唯一的 current p-id，第 9 项将它写入该用户各端中同组、未过期、affiliating 且尚无归属 p-id 的项。第 10 项的每组 PIDF 正文带 current p-id；其中的客户端须属于本用户且 ID 等于受服务客户端 ID，目标组项未过期且为 affiliating 或 affiliated。若该 PUBLISH 的 Timer F 到期或 PF 收到对它的 3xx–6xx，移除该用户各端下该组的匹配项。组所有者实收须匹配本组 CF PSI、两个业务标识、MCPTT P-Asserted-Service、presence Event 及每组 PIDF。Expires 缺失或为低于 4294967295 的非零值，回 423 并带同值 4294967295 的 Min-Expires；组在 GMS 不存在或用户不是成员，回 403；各分支均停止。通过后先发带所选期限的 200，再核对 presence@entity 与组、tuple@id 与用户，不符则停止。相符且所选期限非零，才查找或建立组下用户项，按正文登记客户端名单及所选期限，然后识别 handled p-id，调用 §9.2.2.3.5。",
+      "normative_strength": "发送、条件清理及满足相应组侧分支时的响应、停止或更新是条款义务。发送与接收、响应与后续写表不是同一观测。",
+      "limitations": [
+        "第 9 项在本地写 p-id 的范围不等于第 10 项的报文名单；不能把第 9 项的守卫搬到 §9.2.2.2.15 第 11 项。",
+        "失败清理不只撤本轮本端新增项；抓包缺口不等于 Timer F 已到。403 本身不能区分组不存在与用户不是成员。200 不证明 PIDF 一致、后续状态写入、对端实收或终端已知道。所选期限的取值算法与零期限删除不在本条结论内。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.15, steps 9–11 and note 1: N2 across clients, local list replacement and per-group invocation"
+          ],
+          "printed_pages": [
+            186,
+            187
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.6, affiliation PUBLISH steps 1–4, 6–10, send and Timer F or 3xx–6xx removal"
+          ],
+          "printed_pages": [
+            177,
+            178
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.3.3, reception conditions, steps 1–9, 11–13: group and membership checks, nonzero selected expiration"
+          ],
+          "printed_pages": [
+            188,
+            189,
+            190
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "group-and-client-status-evidence",
+      "title": "组侧已发通知、本地已归属、手持台已知道：各需要哪一份证据？",
+      "conditions": [
+        "分别核对组所有者通知所对应的既有订阅、PF 实收有效每组 PIDF 的条件，或查询自身本端组状态的客户端及服务 PF 实际处理的另一份订阅与每用户通知；不假定订阅已自动建立。"
+      ],
+      "conclusion": "组所有者按 §9.2.2.3.5 为按 §9.2.2.3.4 建立的订阅发送每组 PIDF NOTIFY，归属项带 expires；由 §9.2.2.3.3 调用且识别出 handled p-id 时携该值。要从组所有者得知状态，PF 另行按 §9.2.2.2.7 查询或订阅；实收有效每组通知、正文用户与客户端匹配并有 expires，且本地该用户、客户端和组项未过期且为 affiliating，须改为 affiliated。收到有效通知却无匹配时，原为未过期 affiliated 或 deaffiliating 的项置为 deaffiliated 并到期；原为未过期 affiliating 的项还须通知带 p-id 并与该项记录的归属 p-id 相符才这样处理。客户端另可向自己的服务 PF 查询或订阅本用户在本端的组，按客户端 ID 限定结果；仅取当前状态用 Expires=0，持续观察用 4294967295。PF 按这份订阅生成每用户 PIDF，不列已过期或 deaffiliated 项。只有客户端实收相应有效每用户 NOTIFY 并核对正文中该用户、该客户端及组的报告状态，才能用这份通知证明它得知了相应状态。",
+      "normative_strength": "§9.2.2.2.15 注 2 说明客户端可订阅；查询或订阅的构造、各端在满足收件和状态条件后的处理分别见所引条款。",
+      "limitations": [
+        "§9.2.2.2.15 没有规定随发布自动启动组侧订阅；§9.2.2.2.7 没有规定收到每组通知就立即执行 §9.2.2.2.5。缺少一次收件的证据不同于收到通知但正文缺匹配项。",
+        "组侧发送不证明 PF 实收和本地写表；PF 写表、组侧或服务 PF 发通知、PUBLISH 或 SUBSCRIBE 的 200 均不证明终端实收。不要将组侧 p-id 视为终端通知必带的关联号，也不据此判已入组呼。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.15, note 2: client may subscribe to learn which affiliations succeeded"
+          ],
+          "printed_pages": [
+            187
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.3.3, reception conditions, steps 1–9, 11–13: group and membership checks, nonzero selected expiration"
+          ],
+          "printed_pages": [
+            188,
+            189,
+            190
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.3.5, steps 1–4: notification for subscription created in 9.2.2.3.4"
+          ],
+          "printed_pages": [
+            191
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.7, initial subscription and received per-group NOTIFY, steps 1–3"
+          ],
+          "printed_pages": [
+            179,
+            180,
+            181
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.1.3, initial client SUBSCRIBE steps 1–7 and receiving per-user NOTIFY"
+          ],
+          "printed_pages": [
+            169,
+            170
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.4, subscription duration; 9.2.2.2.5, steps 1–4: per-user filtering and notification"
+          ],
+          "printed_pages": [
+            176,
+            177
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcptt-implicit-affiliation-n2",
+    "r16-groups-explicit-affiliation-client",
+    "r16-identity-shared-sip-registration",
+    "r16-mcptt-settings-publication"
+  ],
+  "limitations": [
+    "不把原 SIP 请求触发、客户端显式发布或改变他人归属的流程拼接到配置档调用；不讨论跨系统、零期限删除、重试策略或组呼准入。",
+    "功能角色不要求分置不同设备；没有某一采集点的报文，不能据此确定本次未发、未收或失败。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "7.3.3, step 13, configured group IDs and entry into implicit affiliation for the served MCPTT ID"
+      ],
+      "printed_pages": [
+        157
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "7.3.4, step 13, configured group IDs after service-settings-only processing"
+      ],
+      "printed_pages": [
+        158
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.2.2.15, opening and steps 1–4: successful prior authorization, served IDs, profile and skip"
+      ],
+      "printed_pages": [
+        185,
+        186
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.2.2.15, steps 5–8c: served client list, candidate creation and no-addition stop"
+      ],
+      "printed_pages": [
+        186
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.2.2.15, steps 9–11 and note 1: N2 across clients, local list replacement and per-group invocation"
+      ],
+      "printed_pages": [
+        186,
+        187
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.2.2.6, affiliation PUBLISH steps 1–4, 6–10, send and Timer F or 3xx–6xx removal"
+      ],
+      "printed_pages": [
+        177,
+        178
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.2.3.3, reception conditions, steps 1–9, 11–13: group and membership checks, nonzero selected expiration"
+      ],
+      "printed_pages": [
+        188,
+        189,
+        190
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.2.3.5, steps 1–4: notification for subscription created in 9.2.2.3.4"
+      ],
+      "printed_pages": [
+        191
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.2.2.7, initial subscription and received per-group NOTIFY, steps 1–3"
+      ],
+      "printed_pages": [
+        179,
+        180,
+        181
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.2.2.15, note 2: client may subscribe to learn which affiliations succeeded"
+      ],
+      "printed_pages": [
+        187
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.1.3, initial client SUBSCRIBE steps 1–7 and receiving per-user NOTIFY"
+      ],
+      "printed_pages": [
+        169,
+        170
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.2.2.4, subscription duration; 9.2.2.2.5, steps 1–4: per-user filtering and notification"
+      ],
+      "printed_pages": [
+        176,
+        177
+      ]
+    }
+  ]
+}
