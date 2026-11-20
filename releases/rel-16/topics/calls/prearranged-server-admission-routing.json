@@ -581,6 +581,116 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "prearranged-last-required-invitee-200",
+      "title": "预安排新组呼正常收齐必需成员 200：匹配用户身份、停表与发起侧应答",
+      "conditions": [
+        "同一 MC 系统内新建普通在网按需 MCPTT 预安排组呼，不是加入既有会话；使用 GMS 管理的未重组直接组身份，不是临时组或 TGI；非优先，请求和组状态均非紧急、非迫近危险。",
+        "控制功能（CF）实际收到其向已归属且标记 on-network-required 的成员发出的一次受邀 INVITE 对应的 200；该响应的 MCPTT ID 与该 INVITE 正文 mcptt-request-uri 中的被叫 MCPTT ID 一致，并且已没有发给已归属必需成员的 INVITE 200 待收。第 249 页还列有跨系统 NCF 邀请的无待收条件，此处没有该邀请腿。"
+      ],
+      "conclusion": "出向 INVITE 的 SIP Request-URI 是终接参与功能（T-PF）的 PSI，不是须比对的被叫 MCPTT ID。第 249 页要求匹配响应 ID，但没有指定响应里从哪个字段提取，不能指定为 P-Asserted-Identity、Contact 或其他字段。该段要求 CF 按 §6.3.3.3 停 TNG1，按 §6.3.3.2.3.2 为原发起 INVITE 生成 200。仅当组成员数超过 on-network-max-participant-count，且该上限导致没有邀全，才按本段第 3 项添加 Warning 引号文本 122 too many participants（外层码 399）。CF 针对自己收到的原 INVITE SDP offer 提供 answer；按条文交互触发的媒体处理完成后，CF 才向发起侧发送此 200，随后才生成并发送告知发起用户已加入的 conference NOTIFY 给事件包订阅者。发起侧参与功能（O-PF）实际收到对自己发出 INVITE 的匹配 2xx，另生成发往客户端的 200 和 SDP answer，并将实际收到的 200 的 Warning 字段纳入它发送的 200。",
+      "limitations": [
+        "§6.3.3.3 的正常总则把收齐已归属且标记必需的 INVITE 200 作为停表条件；受邀侧 INVITE 200 总计数大于或等于 on-network-minimum-number-to-start 约束随后向发起侧发 200，不是停表的附加条件。第 249–250 页的具体段未重述此计数门槛，也未明列 TNG1 须在运行、支持缓冲或原最终响应尚未发的条件。不得套用相邻非运行分支的等值条件或到期政策，也不由这些段落推定执行优先次序、可低于总则门槛发 200，或可重复发一个新的最终响应。",
+        "Warning 文本 122 不等于 SIP 状态 122。这里是正常新建 200 的条件性提示，不是既有会话满员时拒绝的 486/122，也不是实际 TNG1 到期选择继续的 200/111。",
+        "§10.1.1.4.1.1 另规定收到受邀腿 INVITE 200 时交互媒体、通知订阅者并增加本地计数；这类通知可以早于原发起侧的 200，不能替代本段发起用户已加入的通知。观察时把原发起腿、对应受邀 INVITE 与实际响应、被叫 ID、归属与必需标记、计数及邀请上限与未邀全的原因关联到同一 CF 和组会话。单见一个 200、Warning 或 NOTIFY 不能反推本分支；CF 或 O-PF 发应答不证明客户端已收到，这些信令也不证明全组已加入、授予话权或 RTP 已可用。"
+      ],
+      "normative_strength": "正常匹配条件满足时按条文停 TNG1、构造应答、按条件带 Warning、待相应媒体处理完成后发送，再发该分支的会议事件通知。O-PF 的生成、纳入实际收到的 Warning 与发送按各自条件执行；局部动作不证明端到端结果。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.2, required-member wire-matched INVITE 200 trigger and conditions 1–3; response actions 1–8 and Note 11"
+          ],
+          "printed_pages": [
+            249,
+            250
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.1.1, individual INVITE items 2 and 4(a); 10.1.1.4.2, terminology items 1–4: outgoing called-user MCPTT ID and required-members indication"
+          ],
+          "printed_pages": [
+            240,
+            243
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.1.1, individual INVITE 200 response items 1–3 and Notes 4–5: conference notification and local counter"
+          ],
+          "printed_pages": [
+            241
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.3, introductory paragraphs: timer start, all-required normal stop and 200-count threshold, and wait for count to reach minimum after expiry"
+          ],
+          "printed_pages": [
+            121,
+            122
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.2.1–2;6.3.3.2.3.2"
+          ],
+          "printed_pages": [
+            119,
+            120
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.4.1, general: 399 is the outer SIP Warning code when the server includes warning text in an INVITE response"
+          ],
+          "printed_pages": [
+            33
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.2 steps9,14(a–b),15(a–d)"
+          ],
+          "printed_pages": [
+            244,
+            245,
+            246,
+            247
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.3, expiry items 1(a)(i)–(v) and 2(a)–(c), Note 2: proceed with 200/111, or abandon with 480/112 and dialog-specific cleanup"
+          ],
+          "printed_pages": [
+            122
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.1, originating PF received 2xx items 2–4 and 8: separate client-facing 200, SDP answer, and actual incoming-200 Warning fields"
+          ],
+          "printed_pages": [
+            232
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "verification": {
