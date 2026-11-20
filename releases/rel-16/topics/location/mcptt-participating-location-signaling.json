@@ -238,6 +238,85 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "mcptt-location-client-configuration-scope",
+      "title": "终端收到第二份位置 Configuration 时，哪些旧项保留，什么时候能删？",
+      "conditions": [
+        "同一个 MCPTT 终端已有位置上报配置；该终端实际收到另一条符合 §13.3.2 的 SIP MESSAGE：Accept-Contact 的 g.3gpp.icsi-ref 等于 urn:urn-7:3gpp-service.ims.icsi.mcptt，Content-Type 为 application/vnd.3gpp.mcptt-location-info+xml，该位置体的 <location-info> 内含有效的 <Configuration>。",
+        "仅比较这份 Configuration 自身的 ConfigScope 明确为 Full 或 Update 的情况。不要把 Request、Report、目标 MCPTT ID 或触发条件的 TriggerId 当作配置范围。"
+      ],
+      "conclusion": "Full 用这一份完整的位置上报配置替换该终端原有的位置上报配置；新 Full 未带的旧可选配置项不再沿用。Update 在既有配置上追加，未出现在 Update 里的旧项不因缺席而删除。要移除旧配置元素，需符合规定的 Full。按 §13.3.2，终端须保存 Configuration 内容、按配置设置触发条件，并启动 minimumReportInterval。",
+      "normative_strength": "§13.3.2 的保存、设置触发条件和启动计时器是符合接收入口时的 SHALL。Full、Update 的配置范围和删除所需条件来自附录 F.3.3。",
+      "limitations": [
+        "只涉及该终端的 MCPTT 位置上报配置，不清除其他业务设置，也不把任意空 Configuration 当作有效全量包。若之前没有配置，不能从 Update 追加语义得出缺失字段的初始值或启动许可。",
+        "ConfigScope 是 Configuration 的 XML 属性。F.3.2 的声明未设 use=required 或 default；F.3.3 没有给缺省行为。不得据此选默认 Full/Update，也不得规定缺失、未知值或无效体的拒绝码、保留或回滚。没有按目标 MCPTT ID、来源身份或 TriggerId 分套存储、覆盖同 ID 或合并冲突项的规则。",
+        "只见 PF 发出，不证明终端收到；匹配的终端实收包可确定适用分支，不能单凭该包或 SIP 成功响应认定终端已完成保存、替换或删除。核实变化查该终端变更前后的有效配置和触发设置。",
+        "§13.3.2 写启动 minimumReportInterval，没有规定已有计时器如何重算、此前已触发的事件怎样处理或一定立即上报。配置实收可作为已配置的可选 LocationConfigurationReceived 触发；报告仍按适用的报告触发流程判断。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "13.3.2: actual configuration SIP MESSAGE receive conditions and configuration, triggers, timer storage actions"
+          ],
+          "printed_pages": [
+            462
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.3.2: Configuration ConfigScope enumeration with no required use or default declared"
+          ],
+          "printed_pages": [
+            559
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.3.3: Full replaces the previous location configuration, Update adds to it, and removal needs Full"
+          ],
+          "printed_pages": [
+            564
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "13.2.2: optional PF location configuration procedure and its SIP MESSAGE and MIME fields"
+          ],
+          "printed_pages": [
+            460,
+            461
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "13.3.4.1: trigger and running minimumReportInterval, still-true test on expiry, and separate explicit request entry"
+          ],
+          "printed_pages": [
+            463
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.3.3: optional LocationConfigurationReceived signaling-event trigger"
+          ],
+          "printed_pages": [
+            566,
+            568
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "related": [
@@ -247,7 +326,7 @@
   ],
   "limitations": [
     "不描述通用 Stage 2 LMS/LMC 订阅或其他 Release，也不论证 LMS 的 SIP PSI、SIP SUBSCRIBE、每次 IMS 注册后的配置或完整地理区域处理。",
-    "不补 XML 安全、Full/Update 语义、字段别名或缺配置时的回送策略。"
+    "不补 XML 安全、字段别名或缺配置时的回送策略。Full/Update 只说明有效位置配置的替换与追加，不补缺省值、冲突合并或异常处理。"
   ],
   "verification": {
     "original_clauses_checked": true,
@@ -375,6 +454,24 @@
       "printed_pages": [
         461,
         462
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "F.3.2: Configuration ConfigScope enumeration with no required use or default declared"
+      ],
+      "printed_pages": [
+        559
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "F.3.3: Full replaces the previous location configuration, Update adds to it, and removal needs Full"
+      ],
+      "printed_pages": [
+        564
       ]
     }
   ]

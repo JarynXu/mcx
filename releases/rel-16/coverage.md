@@ -2869,11 +2869,11 @@ LMC 请 LMS 启动目标用户的上报时，触发须有请求者的业务 ID�
 
 ## MCPTT 位置配置、位置请求和报告：参与功能与终端各做什么？
 
-参与 MCPTT 功能在何种授权和需要下配置终端，如何显式请求位置；终端在事件和请求分支何时送报告，怎样回填请求关联值。转发请求时，PF 何时须从出向 SIP 请求删除整个位置 MIME 体；怎样对照入向与出向请求核实该动作。
+参与 MCPTT 功能在何种授权和需要下配置终端，如何显式请求位置；终端在事件和请求分支何时送报告，怎样回填请求关联值。转发请求时，PF 何时须从出向 SIP 请求删除整个位置 MIME 体；怎样对照入向与出向请求核实该动作。同一终端实收符合条件的第二份位置配置时，按明确的 ConfigScope 区分整份替换、旧项删除与在原配置上追加。
 
-仅 §13 的 Stage 3 PF 与终端。Configuration、Request 与 Report 按实收的 MIME 和字段判断。独立报告 MESSAGE 取收到的配置 PAI，PF 按实际收到的 MCPTT ID 核准报告。在 PF 实收的 SIP 请求中，PAI 标识的公共用户身份不关联本 PF 服务的任何 MCPTT 用户，或 Content-Type 为 application/vnd.3gpp.mcptt-info+xml 的 MIME 体内 mcptt-request-URI 的 MCPTT ID 标识本 PF 服务的用户。两者至少满足一项，还须同时具备 Accept-Contact 的 g.3gpp.mcptt、值为 urn:urn-7:3gpp-service.ims.icsi.mcptt 的 Accept-Contact 特征 g.3gpp.icsi-ref，以及含 Request 或 Configuration 的 application/vnd.3gpp.mcptt-location-info+xml MIME 体，才命中 §13.2.5 的删除规则。
+仅 §13 的 Stage 3 PF 与终端。Configuration、Request 与 Report 按实收的 MIME 和字段判断。独立报告 MESSAGE 取收到的配置 PAI，PF 按实际收到的 MCPTT ID 核准报告。在 PF 实收的 SIP 请求中，PAI 标识的公共用户身份不关联本 PF 服务的任何 MCPTT 用户，或 Content-Type 为 application/vnd.3gpp.mcptt-info+xml 的 MIME 体内 mcptt-request-URI 的 MCPTT ID 标识本 PF 服务的用户。两者至少满足一项，还须同时具备 Accept-Contact 的 g.3gpp.mcptt、值为 urn:urn-7:3gpp-service.ims.icsi.mcptt 的 Accept-Contact 特征 g.3gpp.icsi-ref，以及含 Request 或 Configuration 的 application/vnd.3gpp.mcptt-location-info+xml MIME 体，才命中 §13.2.5 的删除规则。Full 与 Update 适用于 Configuration 的 XML 属性，且须另核对终端实收的 SIP MESSAGE 和位置 MIME；终端保存后按配置设置触发条件并启动 minimumReportInterval。
 
-尚未建立：不从每次 IMS REGISTER 推定下发、不把显式请求当作 LMS 订阅、不从 SIP 2xx 推定报告已核准使用；不补缺配置回送或未写明的等待分支。PAI 缺失不证明第一条身份条件成立；只有 Report 不满足位置体内容条件。本条不要求整单拒绝、不指定响应码，未命中也不要求保留；单侧未抓到位置体不能证明删除或终端实收。
+尚未建立：不从每次 IMS REGISTER 推定下发、不把显式请求当作 LMS 订阅、不从 SIP 2xx 推定报告已核准使用；不补缺配置回送或未写明的等待分支。PAI 缺失不证明第一条身份条件成立；只有 Report 不满足位置体内容条件。本条不要求整单拒绝、不指定响应码，未命中也不要求保留；单侧未抓到位置体不能证明删除或终端实收。不推定缺少 ConfigScope 的默认值、ID 冲突合并或异常处理；收到合格报文或有 SIP 2xx 不证明终端实际更改了本地配置。
 
 [读取主题](topics/location/mcptt-participating-location-signaling.md)
 
