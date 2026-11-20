@@ -1,0 +1,194 @@
+{
+  "topic_id": "r16-calls-offnetwork-private-release-evidence",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "进行中的离网私呼收到 RELEASE：Q 清理、P 等待和媒体终止怎样区分？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明继承共同范围，按本端真实当前 P/Q 状态、用户指示、实收消息或计时器事件分别判断，不从一端发包推另一端处理。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0（Release 16，Stage 3），已经建立的离网 MCPTT 一对一私呼，普通或紧急。本主题只处理同一既有呼叫的本机用户释放或入站 RELEASE，以及相应的 P 层处理。",
+    "本机基本控制 P 和类型控制 Q 并行；不把普通初建取消、紧急优先级取消、升级无响应、其他业务或在网 SIP 当作这一条。"
+  ],
+  "claims": [
+    {
+      "id": "offnetwork-private-release-local-type-cleanup",
+      "title": "本机真正释放时，Q1/Q2 清什么、停哪些计时器？",
+      "conditions": [
+        "本机处于 Q1（进行中的普通私呼）或 Q2（进行中的紧急私呼），实际收到本机用户的释放本次呼叫指示，或实际收到本次呼叫的 PRIVATE CALL RELEASE。"
+      ],
+      "conclusion": "两种状态均清除保存的当前呼叫类型和 ProSe 包优先级、进入 Q0。原为 Q1 则停止仍在运行的 TFP6；原为 Q2 则停止仍在运行的 TFP1，并停止 TFP8。原文没有为停止 TFP8 另列正在运行的前提。Q 本条不以 RELEASE ACK 为入口；对端独立判断其当前状态和实际收到的释放信令。",
+      "normative_strength": "§11.2.3.4.7 在各自条件匹配时的清理、计时器停止和进入 Q0 是 SHALL。",
+      "limitations": [
+        "本地清理不证明对端收到了 RELEASE，不证明整通呼叫、话权或媒体实际结束。基本呼叫控制 P 和类型 Q 并行，原文不指定同一事件的实现调度顺序；以本端处理证据核实。",
+        "本条只适用于实际用户释放或入站 RELEASE，不替代紧急优先级取消，也不把升级或降级请求无响应套成本分支。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.3.1 and 11.2.3.3.1–3: parallel private call type and basic machines with local Q states"
+          ],
+          "printed_pages": [
+            436,
+            437
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.3.4.7: user release or received PRIVATE CALL RELEASE in Q1/Q2, distinct timers, type and stored priority cleanup, Q0"
+          ],
+          "printed_pages": [
+            443
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "offnetwork-private-release-basic-and-media-evidence",
+      "title": "P4 发起或收件、P3 实收确认或达限，何时要求终止本地媒体？",
+      "conditions": [
+        "同一通话，本机实际在 P4 收到用户释放指示或实收 RELEASE；或者在 P3 实收对应 RELEASE ACK，或 TFP3 到期且 CFP3 等于上限。按其中与本机事件实际相符的一支判断。"
+      ],
+      "conclusion": "用户在 P4 释放：用已存 Call identifier 与双方 ID 发 RELEASE，停 TFP5，置 CFP3=1、启动 TFP3并进入 P3，未列立即终止媒体。P4 实收 RELEASE：用已存标识和身份送 RELEASE ACK，再终止本地媒体、停 TFP5、启动 TFP7、释放类型控制状态机、进入 P1。P3 实收对应 ACK：停止仍在运行的 TFP3，终止本地媒体、启动 TFP7、释放类型状态机、进 P1。P3 TFP3 到期且 CFP3 等于上限：终止本地媒体、启动 TFP7、释放类型状态机、进 P1；本分支无需实收对应 ACK。P1 上 TFP7 到期清除已存标识并进入 P0。",
+      "normative_strength": "§11.2.2.4.5.1、.5.3–5、.5.7 对实际各自状态和事件规定 SHALL。§15.1.10.1 定义 RELEASE ACK 的终止指示，区别于 §15.1.11.1 的 ACCEPT 收件确认。",
+      "limitations": [
+        "Q0 与本机 P3 等待可相容，不以 Q 的清理替代 P 媒体终止。本机收到对应 RELEASE ACK 才能据其内容作为该次释放的对端协议指示；P4 的条款先发 ACK 再做本地媒体动作，故抓到 ACK 不是实际媒体已停的时刻或双端一致证明。",
+        "无 ACK 达限不是对端已收、已终止或已拒绝；本页不补 P1 重复消息、TFP3 重传守卫重叠的调度规则或额外确认报文。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.3.1 and 11.2.3.3.1–3: parallel private call type and basic machines with local Q states"
+          ],
+          "printed_pages": [
+            436,
+            437
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.2.4.5.1: user release in P4, stored request identities, stop TFP5, initialize CFP3/start TFP3 and enter P3"
+          ],
+          "printed_pages": [
+            433
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.2.4.5.3–5: P3 release retry exhaustion or actual ACK, versus P4 actual RELEASE and ACK before local media termination"
+          ],
+          "printed_pages": [
+            434,
+            435
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.2.4.5.7: P1 timer TFP7 expiry clears stored call identifier and enters P0"
+          ],
+          "printed_pages": [
+            435
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "15.1.10.1 and 15.1.11.1: RELEASE ACK indication of termination and different ACCEPT ACK receipt semantics"
+          ],
+          "printed_pages": [
+            482
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.2.3.1 and 11.2.3.3.1–3: parallel private call type and basic machines with local Q states"
+      ],
+      "printed_pages": [
+        436,
+        437
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.2.3.4.7: user release or received PRIVATE CALL RELEASE in Q1/Q2, distinct timers, type and stored priority cleanup, Q0"
+      ],
+      "printed_pages": [
+        443
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.2.2.4.5.1: user release in P4, stored request identities, stop TFP5, initialize CFP3/start TFP3 and enter P3"
+      ],
+      "printed_pages": [
+        433
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.2.2.4.5.3–5: P3 release retry exhaustion or actual ACK, versus P4 actual RELEASE and ACK before local media termination"
+      ],
+      "printed_pages": [
+        434,
+        435
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.2.2.4.5.7: P1 timer TFP7 expiry clears stored call identifier and enters P0"
+      ],
+      "printed_pages": [
+        435
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "15.1.10.1 and 15.1.11.1: RELEASE ACK indication of termination and different ACCEPT ACK receipt semantics"
+      ],
+      "printed_pages": [
+        482
+      ]
+    }
+  ],
+  "related": [
+    "r16-calls-offnetwork-private-manual-client",
+    "r16-calls-offnetwork-private-auto-client",
+    "r16-calls-offnetwork-private-emergency-upgrade"
+  ],
+  "limitations": [
+    "只解释实际释放的类型清理及基本呼叫/媒体证据边界，不重复手动初建、重传调度或并发清理流程。",
+    "不补未列的 ACK、部署规则或 P/Q 调度顺序；本机信令动作不证明另一端状态一致或媒体实际结果。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

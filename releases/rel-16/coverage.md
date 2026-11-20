@@ -472,6 +472,16 @@ MCPTT 或 MCVideo 跨系统私呼，双方在各自主系统接受服务，两�
 
 [读取主题](topics/calls/offnetwork-private-emergency-upgrade.md)
 
+## 进行中的离网私呼收到 RELEASE：Q 清理、P 等待和媒体终止怎样区分？
+
+已建立的普通或紧急离网 MCPTT 私呼，实收本机用户释放指示或入站 RELEASE 后，在 Q1/Q2 清除本地类型和包优先级，并按原 Q 状态分别停止对应计时器、进入 Q0；不需等待 RELEASE ACK 才查 Q 处理。
+
+本机 P4 用户请求发 RELEASE 后进入等回应的 P3；P4 实收 RELEASE 先送 ACK 再终止本地媒体。P3 实收相应 ACK 或 TFP3 到期且 CFP3 等于上限，分别按本机条件启动 P1 清理，包括终止本地媒体。
+
+尚未建立：不推定 P/Q 调度先后或实际动作已经完成，不从一个端的 RELEASE ACK 或达限判断对端处理、双端一致、话权或媒体结果；不把此前紧急升级/取消无响应当作实际释放。
+
+[读取主题](topics/calls/offnetwork-private-release-evidence.md)
+
 
 
 ## 普通私聊SDS控制面：发送资格、请求与接收证据
