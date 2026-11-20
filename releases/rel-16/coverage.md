@@ -2417,6 +2417,16 @@ G 在 Floor Taken 实收当前持有者开始断开指示且不支持多人同�
 
 [读取主题](topics/media/on-network-holder-departure.md)
 
+## 在网 MCPTT 只收：SDP 应答少了 mc_priority，能解释后来的 Floor Deny #5 吗？
+
+普通在网 MCPTT 组呼，控制媒体通道 offer 含 mc_priority 时，CF 按对应用户只收元素省略或回三值最低；实际由 UE 或非控制功能应答时回所给值。
+
+实际直接 Taken U 在符合相应入口与本地策略下按有效优先级处理；确认 receive only 才对应此 #5 分支，非独一来源。是否收到及本地处理在终端另查。
+
+尚未建立：不从 SDP 缺项倒推配置、实际 #5 分支、获准或 RTP；不从同码反推应答规则或从发报推端实收、解码或播放。不重写一般排队、抢占、Idle 等其他情况。
+
+[读取主题](topics/media/on-network-receive-only-priority.md)
+
 ## 同一用户跨业务、跨终端时，怎样辨认身份？
 
 区分认证用的 MC ID、应用层的业务 ID 及 SIP 路由身份；判断多项业务共用 ID 时如何指明业务，以及同一用户在不同终端上怎样区分配置档和 GRUU。

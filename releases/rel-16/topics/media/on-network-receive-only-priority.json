@@ -1,0 +1,210 @@
+{
+  "topic_id": "r16-media-on-network-receive-only-priority",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "在网 MCPTT 只收：SDP 应答少了 mc_priority，能解释后来的 Floor Deny #5 吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "对应 SDP offer/answer 的实际应答角色、直接 U 的实收请求/有效优先级和终端本地收件分别核实，不互作证据。",
+  "common_conditions": [
+    "固定 TS 24.380 V16.9.0（Release 16，Stage 3）。同一系统内普通在网单话权 MCPTT 组呼，讨论媒体面控制通道的优先级。",
+    "SDP 按实际 CF、UE 或非控制功能应答者判，拒绝示例只限控制侧关联该终端的直接 U。"
+  ],
+  "claims": [
+    {
+      "id": "onnetwork-receive-only-sdp-role-answer",
+      "title": "控制 SDP 应答为何不带 mc_priority，换应答者还这样吗？",
+      "conditions": [
+        "同一媒体面控制通道上，核对完整的对应 SDP offer、answer 与本腿实际应答者。§14.3.3 的角色分支只在对应 offer 确含 mc_priority 时适用。",
+        "若实际由控制 MCPTT 功能（CF）答，还要核对本次组文档中对应 MCPTT 用户的 entry，而不是某个别的用户或 SIP 节点的组记录。"
+      ],
+      "conclusion": "Offer 的 mc_priority 表示 offer 发出方为自己的 Floor Request 请求的上限（1–255），answer 表示允许的上限，不高于所给上限。MCPTT 客户端要非默认优先级时须带该 offer 参数。已有优先级参数时，CF 若在对应用户 entry 看到 on-network-recvonly 元素，须在 answer 省略；否则须回 offer、组文档 user-priority、业务配置 num-levels-priority-hierarchy 三值之最小。实际由 MCPTT 客户端或非控制功能回答时，须回 offer 的值。Answer 不加入原 offer 未带的 fmtp 参数。",
+      "normative_strength": "§14.2.3 的客户端发送及 §14.3.1/.3 的适用角色和对应条件动作均为 SHALL；§12.1.2.2 注 1 写缺项时假定默认优先级。",
+      "limitations": [
+        "缺项不能证明实际角色、标记的存在或数值、协商了 receive-only 上限、已经获准发言或媒体收效。不等于 mc_priority=0、SIP 失败或 a=recvonly。",
+        "不描述外部实际配置取得、表定义或 SDP 方向属性的行为。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "12.1.2.2 and NOTE 1: floor request priority caps conveyed by offer and answer and default-priority assumption when mc_priority is absent"
+          ],
+          "printed_pages": [
+            225
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "14.2.3: MCPTT client includes mc_priority in the offer when seeking a non-default floor priority"
+          ],
+          "printed_pages": [
+            238
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "14.3.1 and 14.3.3: corresponding offer, receive-only group entry and controlling answerer versus value echo by the client or non-controlling answerer"
+          ],
+          "printed_pages": [
+            239
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "onnetwork-receive-only-floor-deny-evidence",
+      "title": "实际收到 Floor Deny #5，哪些证据能定位本腿与原因？",
+      "conditions": [
+        "只把普通单话权、无 audio cut-in、非广播且非环境监听的控制侧直连 U 作为例子；U 在 not permitted and Floor Taken 实收所关联终端的 Floor Request。核本地策略及条款入口（协商排队、按第 14 章在 mc_priority 中带话权优先级，或两者），示例中独立核实同时具备两项，不用前述 SDP 省略证明。",
+        "要归到例中的本地拒绝支路，还要能定位此次请求的有效优先级为 receive only 及相应的 U 发送记录。对所引用的终端流程另核 UE 处于 U: pending Request 并实收 Floor Deny，不涵盖 U: queued。"
+      ],
+      "conclusion": "该有效优先级分支要求 U 向请求者发送 Floor Deny，Reject Cause #5，原 Floor Request 带 Track Info 时回带，解释词可选，U 保持原状态。#5 表示该请求者仅有接收权限，不唯一指向此分支；广播或环境监听和 Idle G 都可能产生同码。终端处于 U: pending Request 并实际收到 Floor Deny 时，按本端的拒绝程序分别处理，Floor Ack 仅当 Deny subtype 请求时出现。",
+      "normative_strength": "§6.3.5.4.4 的所选有效优先级分支规定 SHALL；解释文字可选。§6.2.4.4.4 的仅在 U: pending Request 实收 Deny 时执行；本端确认另按收到的 subtype 条件适用。",
+      "limitations": [
+        "旧 Taken 抢占页是算法 owner，本文不另造优先级计算或消解只满足一项时与 #1 条件的重叠；旧 Idle 分支的 one of / and 张力也不改。",
+        "从 SDP 缺项或单独看到 #5，不能推出特定一次有效优先级处理、用户组标记或收到媒体；本腿发出也不证明终端实收或执行。",
+        "不扩到非控制转发、音频抢入、多人或双话权、实际 RTP 送达和解码播放。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.4.1 and 6.3.5.4.4: direct Taken U actual Floor Request, local-policy effective-priority eligibility and cause 5 versus independent causes"
+          ],
+          "printed_pages": [
+            77,
+            78,
+            79,
+            80
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.6.2: cause 5 signifies that this requesting participant has receive privilege only"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.3.3: separate G Idle denial origin for comparison only, without resolving listed guard punctuation"
+          ],
+          "printed_pages": [
+            57
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.4.1 and 6.2.4.4.4: UE waiting for Floor Request response and actual Deny actions, including requested-only Floor Ack"
+          ],
+          "printed_pages": [
+            39,
+            40
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "12.1.2.2 and NOTE 1: floor request priority caps conveyed by offer and answer and default-priority assumption when mc_priority is absent"
+      ],
+      "printed_pages": [
+        225
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "14.2.3: MCPTT client includes mc_priority in the offer when seeking a non-default floor priority"
+      ],
+      "printed_pages": [
+        238
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "14.3.1 and 14.3.3: corresponding offer, receive-only group entry and controlling answerer versus value echo by the client or non-controlling answerer"
+      ],
+      "printed_pages": [
+        239
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.5.4.1 and 6.3.5.4.4: direct Taken U actual Floor Request, local-policy effective-priority eligibility and cause 5 versus independent causes"
+      ],
+      "printed_pages": [
+        77,
+        78,
+        79,
+        80
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "8.2.6.2: cause 5 signifies that this requesting participant has receive privilege only"
+      ],
+      "printed_pages": [
+        165
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.4.3.3: separate G Idle denial origin for comparison only, without resolving listed guard punctuation"
+      ],
+      "printed_pages": [
+        57
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.2.4.4.1 and 6.2.4.4.4: UE waiting for Floor Request response and actual Deny actions, including requested-only Floor Ack"
+      ],
+      "printed_pages": [
+        39,
+        40
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcptt-onnetwork-preemption-revoke",
+    "r16-mcptt-onnetwork-idle-floor-server",
+    "r16-media-on-network-floor-client",
+    "r16-media-on-network-noncontrolling-floor-grant"
+  ],
+  "limitations": [
+    "只收标记是该组文档用户 entry 的元素，不等同 SDP a=recvonly；字段省略不替代实际收发、优先级处理、配置或播放记录。",
+    "不另立 Idle/G 或 Taken/U 的算法，不以默认解除限制，不给条款交叠制定顺序，不补未核外部配置规范。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
