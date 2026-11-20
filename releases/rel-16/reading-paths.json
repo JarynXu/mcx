@@ -267,7 +267,12 @@
       "id": "r16-calls-offnetwork-floor-participant",
       "question": "离网话权：请求、排队确认、发送与交接",
       "start": "topics/calls/offnetwork-floor-participant.md",
-      "next_if": [],
+      "next_if": [
+        {
+          "condition": "若当前讲者收到需要判断能否抢占的 Floor Request，查离网话权抢占。",
+          "read": "topics/calls/offnetwork-floor-preemption.md"
+        }
+      ],
       "boundary": "不覆盖抢占、特殊优先级、多发言者或完整媒体实现；本地许可不证明全网独占，首次队列通知身份生产/消费差异未闭合。"
     },
     {
@@ -5105,6 +5110,18 @@
         }
       ],
       "boundary": "限普通按需已在进行的预安排组呼及 NCF 两个实际入口；Contact、200 或 NOTIFY 不足以判组级接管。"
+    },
+    {
+      "id": "r16-calls-offnetwork-floor-preemption",
+      "question": "离网 MCPTT 组呼中，正在发言的终端收到抢占请求，Floor Priority 数字更大就能换人吗？ 请求和当前呼叫同为紧急时能否抢占？何时比较优先级或使用 UserPriority 和 NumLevelHierarchy？",
+      "start": "topics/calls/offnetwork-floor-preemption.md",
+      "next_if": [
+        {
+          "condition": "若已判定不抢占，或已授予且要查 T205/T233 等待及重传，读普通离网话权的对应状态。",
+          "read": "topics/calls/offnetwork-floor-participant.md"
+        }
+      ],
+      "boundary": "仅限离网组呼的当前讲者。发 Floor Granted 不等于已经收到新讲者的 RTP。"
     }
   ]
 }

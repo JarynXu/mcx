@@ -110,3 +110,4 @@ T230默认600s且可配置，SHOULD大于T203；组/私呼分别取自己的Hang
 
 - [离网组呼](offnetwork-group-client.md)：呼叫控制和初始化调用。
 - [离网手动私呼](offnetwork-private-manual-client.md)：私呼建立证据与初始化角色。
+- [离网话权抢占](offnetwork-floor-preemption.md)：当前讲者收到 Floor Request 时怎样判定优先级，以及何时停止发送和交接。

@@ -1,0 +1,201 @@
+{
+  "topic_id": "r16-calls-offnetwork-floor-preemption",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "离网话权抢占：正在发言的终端怎样判定并交出话权",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "按同一次实收请求判定抢占并执行授予；旧终端收到匹配 RTP 是后续独立事件，不是判定或发授予的前提。",
+  "common_conditions": [
+    "固定 TS 24.380 V16.9.0；已建立话权会话的离网 MCPTT 组呼，从当前讲者作为临时仲裁者并处于 O: has permission 的请求事件开始。",
+    "指示与当前类型可判为普通、迫近危险或紧急；不展开升级、广播、系统呼叫、在网服务器撤销、多发言者或待申请者之间的竞争。"
+  ],
+  "claims": [
+    {
+      "id": "offnetwork-request-priority",
+      "title": "离网请求的三值取小与缺省",
+      "conditions": [
+        "临时仲裁者收到本次 Floor Request，处理该请求的数值优先级。"
+      ],
+      "conclusion": "Floor Priority 在场则取字段值、请求者在当前组的 UserPriority、服务配置的 NumLevelHierarchy 三者最小值；缺字段取允许的最小值 0。",
+      "normative_strength": "所列决定和状态机动作依据相应条件为 SHALL；不把本地操作写成对端收到或媒体已经播放。",
+      "limitations": [
+        "这里缺省的是 Floor Priority，不给 Floor Indicator 的呼叫类型补缺省。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.1",
+            "7.2.3.5.1"
+          ],
+          "printed_pages": [
+            119,
+            128
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "4.1.1.5",
+            "7.2.1.2"
+          ],
+          "printed_pages": [
+            21,
+            22,
+            120,
+            121
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.3.2"
+          ],
+          "printed_pages": [
+            149
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "offnetwork-call-type-policy",
+      "title": "先按呼叫类型分流，仅两种同类型组合比数值",
+      "conditions": [
+        "请求的 Floor Indicator 指示普通、迫近危险或紧急；当前呼叫类型在这三种之内。"
+      ],
+      "conclusion": "普通对普通、迫近危险对迫近危险才比较。用该请求算出的数值与现任讲者获准时确定的有效优先级比较，严格大于才抢占。迫近危险请求可抢占普通；紧急请求可抢占普通或迫近危险；这些组合不比数值。其余不抢占，包括紧急对紧急；不抢占按 QueueUsage 分流。",
+      "normative_strength": "所列决定和状态机动作依据相应条件为 SHALL；不把本地操作写成对端收到或媒体已经播放。",
+      "limitations": [
+        "实际排队或拒绝另受 §7.2.3.5.4 的 Floor Indicator/F-bit、队列容量等守卫。待申请者之间比 SSRC 的规则不用于当前讲者。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "4.1.1.5",
+            "7.2.1.2"
+          ],
+          "printed_pages": [
+            21,
+            22,
+            120,
+            121
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.5.4"
+          ],
+          "printed_pages": [
+            129
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "preemptive-request-handoff",
+      "title": "实际收到抢占请求后旧讲者请求停止 RTP 并授予",
+      "conditions": [
+        "持有者仍在 O: has permission，实际收到且按 §4.1.1.5 判为抢占的 Floor Request。"
+      ],
+      "conclusion": "停止仍运行的 T206/T207，请求本机客户端停止向其他客户端发送 RTP；向其他话权参与者发 Floor Granted，User ID 为请求者的 MCPTT ID，QueueUsage 为 true 时带现有排队者的 ID、SSRC、队列位置和优先级。启动 T205、C205 初始化为 1，把本地保存的当前仲裁者 SSRC 改为获准者，进入 O: pending granted。",
+      "normative_strength": "所列决定和状态机动作依据相应条件为 SHALL；不把本地操作写成对端收到或媒体已经播放。",
+      "limitations": [
+        "不要求先收到在网 Floor Revoke。§7.2.3.5.7 第 4b 项把请求者 SSRC 指到 SSRC of floor control server 字段，§8.2.5 则以离网仲裁者为 RTCP 头部 SSRC 并另列获准者 SSRC；不据两处写法裁决完整报文编码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.1",
+            "7.2.3.5.1"
+          ],
+          "printed_pages": [
+            119,
+            128
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.5.7"
+          ],
+          "printed_pages": [
+            131
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.5",
+            "Table 8.2.5-1"
+          ],
+          "printed_pages": [
+            162,
+            163
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "matching-rtp-after-grant",
+      "title": "新仲裁者开始发送媒体，旧终端另需观察匹配的 RTP",
+      "conditions": [
+        "已发出授予；旧终端的本地处理以它已处于 O: pending granted 并实际收到与已保存当前仲裁者 SSRC 匹配的 RTP 为前提。"
+      ],
+      "conclusion": "获准客户端实际开始发送媒体才成为新仲裁者。旧终端收到匹配 RTP 时，请求播放，停止仍运行的 T205/T233，启动 T203 并进入 O: has no permission。",
+      "normative_strength": "所列决定和状态机动作依据相应条件为 SHALL；不把本地操作写成对端收到或媒体已经播放。",
+      "limitations": [
+        "发 Granted 或保存 SSRC 不等于对方已经发送或本机已收到 RTP；本机观察不证明其他听众收到或完成播放。其他等待、重发和期满分支见关联主题。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.1",
+            "7.2.3.7.1",
+            "7.2.3.7.2"
+          ],
+          "printed_pages": [
+            119,
+            138
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-offnetwork-floor-participant"
+  ],
+  "limitations": [
+    "不推定缺失或冲突 Floor Indicator 的类型、完整 Floor Granted 编码、对端已接收授予或全组已收听。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
