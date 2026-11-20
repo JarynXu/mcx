@@ -1,0 +1,188 @@
+{
+  "topic_id": "r16-identity-migration-registration-reference-points",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "迁移注册时看到 Cx：这是 AAA-1 查库，还是 AAA-2？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "对每笔实际记录看端点和用途；功能存在、注册、授权及客户端取得结果分别核实。",
+  "common_conditions": [
+    "固定 TS 23.280 V16.7.0 Rel-16 Stage 2；限 SIP 信令控制面逻辑参考点的辨认、迁移注册和伙伴授权的证据边界。"
+  ],
+  "claims": [
+    {
+      "id": "aaa1-sip-database-signalling",
+      "title": "核心从 SIP 库获取信令面资料是 AAA-1；跨网不改变用途",
+      "conditions": [
+        "已核实这笔信令面资料获取在 SIP 核心与 SIP 数据库之间。"
+      ],
+      "conclusion": "该参考点是 AAA-1，使用 Cx。运营方网的查找功能与业务方网的注册器和 SIP 库是一个跨网例子。库访问仍按服务该用户和所提供数据的同一信任域核对。",
+      "normative_strength": "AAA-1 的端点与用途按定义；跨网是部分部署的示例，不是必要条件。数据库访问是有条件的。",
+      "limitations": [
+        "不把网络边界当信任域边界或访问授权；不把终端与数据库当成这组功能端点。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.3.8, definition and inter-network example"
+          ],
+          "printed_pages": [
+            43
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.2.1, access restriction and note"
+          ],
+          "printed_pages": [
+            36
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "aaa2-sip-registration-during-migration",
+      "title": "用于迁移注册的核心与 Diameter 代理之间是 AAA-2",
+      "conditions": [
+        "已核实端点为 SIP 核心或 IMS 与 Diameter 代理，交互用于迁移期间 SIP 注册。"
+      ],
+      "conclusion": "AAA-2 须用 Cx，为迁移提供面向业务层的认证和安全用途。信令用户代理与核心之间的注册使用另一参考点 SIP-1。只知道 Cx 无法在 AAA-1 与 AAA-2 之间选择。",
+      "normative_strength": "AAA-2 用 Cx 是 SHALL；SIP-1 是不同的逻辑功能对；判别以两端和用途为准。",
+      "limitations": [
+        "不由协议名推断报文的命令、AVP、收件或认证成功，不把同名认证用途当作同一接口。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.3.8, definition and inter-network example"
+          ],
+          "printed_pages": [
+            43
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.3.9, definition and authentication/security purpose"
+          ],
+          "printed_pages": [
+            43
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.3.2, endpoints and SIP-registration bullet"
+          ],
+          "printed_pages": [
+            42
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "diameter-proxy-deployment-choice",
+      "title": "AAA-2 的 Diameter 代理可以在核心内，未见外部连接不等于没有",
+      "conditions": [
+        "讨论用于 AAA-2 的 Diameter 代理功能的位置与实例数量，或只掌握一个外部观察点的记录。"
+      ],
+      "conclusion": "Diameter 代理是处理 Diameter 消息的代理功能。用于 AAA-2 时可在 SIP 核心或 IMS 内；实例数因部署而异。没有外置设备的独立记录不能单独证明没有代理、未注册或注册失败。",
+      "normative_strength": "位于核心内是可选部署；条文不规定实际观测点是否会看见该交互。",
+      "limitations": [
+        "不规定必须购买外置设备，不推断合设必然无外部信令，不据单点负证据认定实际机制或结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.3.9, definition and authentication/security purpose"
+          ],
+          "printed_pages": [
+            43
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.1.4, functional entity, co-location and note"
+          ],
+          "printed_pages": [
+            36
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "registration-is-not-migrated-service-authorization",
+      "title": "迁移注册不能替代所选档的伙伴业务授权结果",
+      "conditions": [
+        "区分迁移 SIP 注册和对应 MC 业务迁移授权；客户端验收的是本次所选档的请求。"
+      ],
+      "conclusion": "即使另有注册成功及取得授权所需凭据的证据，伙伴业务服务器仍要作迁入初审，主系统业务服务器须核实该用户按所选档迁往该伙伴的许可。客户端验收查实际收到的对应迁移业务授权响应和结果；主系统登记或伙伴发送不等于客户端收到成功。",
+      "normative_strength": "依据 Stage 2 的前提、两侧检查及结果表，不能用 Cx 功能定义代替该次结果。",
+      "limitations": [
+        "不推定 Cx 出现即认证成功，不规定授权传输及失败后的补救，不把接口支持当部署或结果证明。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.3.9, definition and authentication/security purpose"
+          ],
+          "printed_pages": [
+            43
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "Table 10.6.3.2.2-1",
+            "10.6.3.3 preconditions and steps 1–2,6–8,11"
+          ],
+          "printed_pages": [
+            116,
+            117,
+            118
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-identity-registrar-selection",
+    "r16-identity-partner-migration-authorization",
+    "r16-bearers-partner-migration-network-access"
+  ],
+  "limitations": [
+    "不展开 Cx 或 Diameter 的线协议、代理部署实现、TS 33.180 具体凭据或完整迁移程序。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

@@ -3067,6 +3067,16 @@ LMC 请 LMS 启动目标用户的上报时，触发须有请求者的业务 ID�
 
 [读取主题](topics/location/mcptt-participating-location-signaling.md)
 
+## 同是 Cx：查库与迁移注册怎样区分？
+
+用端点与用途区分 AAA-1、AAA-2，核对 Diameter 代理可以部署在哪里以及单处观测的边界。
+
+迁移业务授权另查该用户所选档及对应响应，不用注册结果代替。
+
+尚未建立：不从协议名、外部没有记录或响应发出推定功能缺失、用户实际接收或授权成功；不规定线协议。
+
+[读取主题](topics/identity/migration-registration-reference-points.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

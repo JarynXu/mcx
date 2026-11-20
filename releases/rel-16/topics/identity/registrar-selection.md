@@ -31,3 +31,5 @@
 若要核对终端的 IMPI、IMPU 来自谁，查[终端身份供应与 SIP 核心部署](identity-hosting-sip-core.md)。§9.2.2.1.6 是另一种部署：由运营方管理**整个** SIP 核心，对 MC 业务提供方所服务的终端，核心使用的这两种身份都由**该业务提供方的 SIP 数据库**提供，不是凭 finder 在哪一方得出的结论。[§9.2.2.1.6 首段，印刷页 52](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/16.07.00_60/ts_123280v160700p.pdf#page=53)
 
 若要判断同一台终端同时运行的业务怎样共享 SIP 注册，或 MCPTT 是否已获准，查[共享 SIP 注册与 MCPTT 授权](shared-sip-registration.md)。这里对 finder 和注册器的分工不能替代具体业务的授权结果。
+
+若同一工程还要认定迁移注册时核心到 Diameter 代理的参考点，见[两种 Cx 的端点和授权边界](migration-registration-reference-points.md)。
