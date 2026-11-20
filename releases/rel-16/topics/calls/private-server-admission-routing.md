@@ -72,6 +72,37 @@ T-PF 检查 Contact 的 isfocus，缺失则返回 403+Warning104 并停止；从
 
 依据：TS24.379 V16.14.0 §6.3.1.1 T-PF classification；§11.1.1.3.2 steps2–8；§11.1.1.3.1.1 step11(c) (outgoing comparison)；§6.3.2.2.5.1 full;6.3.2.2.6.1 full (on-demand selection dependency)，印刷页 77, 78, 95, 96, 98, 367, 368, 376, 377。
 
+## 可靠 183 的 PRACK 和被叫最终响应：哪个 200 要等？
+
+先认事务：**PRACK 的 200** 是 T-PF 对可靠临时响应确认请求的答复；**INVITE 的 200** 是建立呼叫的最终响应。再认方向：被叫终端向 T-PF 回的 INVITE 200、T-PF 向 CF 发的 INVITE 200、CF 向主叫方向发的 INVITE 200，各应答本段的请求。本节限同系统、双方都按需建立、直接按 MCPTT ID 呼叫且有话权控制的普通一对一私呼。
+
+**T-PF 何时生成 183？** 入向检查通过并选中自动模式后，若被叫有空闲预建立会话、语音媒体段匹配、话权控制媒体段匹配三项不同时成立，T-PF 执行按需程序。以下任一条件成立，T-PF 须为入向 INVITE 生成 P-Answer-State 为 Unconfirmed 的 183：
+
+- 收到 Priv-Answer-Mode: Auto。
+- 两种模式头都未收到，且 T-PF 此前从被叫终端收到的应答设置为 auto-answer。
+- 收到 Answer-Mode: Auto，且该被叫设置为 auto-answer。
+
+这份 183 不带 SDP，可靠或不可靠发送都一样。若入向 INVITE 含 Supported: 100rel，临时响应条款允许 T-PF 按本地策略加 Require: 100rel，并非必须加。规范还规定 T-PF 生成并发送给被叫终端的 INVITE。**生成 183** 不等于**已经发送**或 **CF 已收到**；这些步骤没有写明必须先发出 183 才能向终端发 INVITE。[§11.1.1.3.2，印刷页 376–377](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=377)；[§6.3.2.2.4.1(3)、§6.3.2.2.5.1，印刷页 95–96](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=96)；[§6.3.2.2.5.2(1)及注、(3)、(11)，印刷页 96–97](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=97)。
+
+**T-PF 已收到被叫终端对本次 INVITE 的 200，何时向 CF 发 INVITE 200？** 要看 T-PF 先前实际发送的 183。
+
+| T-PF 此时的记录 | T-PF 的动作 |
+| --- | --- |
+| 183 已不可靠发送 | 立即发送 INVITE 200。 |
+| 183 已可靠发送；对应的 PRACK 已收到，且 PRACK 的 200 已发出 | 立即发送 INVITE 200。 |
+| 183 已可靠发送；对应的 PRACK 尚未收到 | 等到该 PRACK 实际到达，先生成并发送 **PRACK 200**，再发送 **INVITE 200**。 |
+
+可靠 183 的 PRACK 一到，T-PF 就有单独的应答义务，不以先收到终端的 INVITE 200 为条件。若没有实际发送过 183，或 PRACK 已收到但还没发出它的 200，上表没有为这两种情况另定发送时刻。
+
+发给 CF 的 INVITE 200 由 T-PF 重新生成：依据终端所回答的 SDP 生成本段 SDP 应答，复制入向 200 的 P-Asserted-Identity；先前**实际发送**了带 Unconfirmed 的 183 时，须在本段最终响应设置 P-Answer-State: Confirmed。随后与媒体面交互并发送。该条件不是对其余情形一律禁止带头的规定。手动按需模式另按被叫实际返回的 180 或 INVITE 200 重建相应响应，不把自动模式的等待表套到手动模式，也不据此断言手动模式禁用 PRACK。[§6.3.2.2.5.2，印刷页 97](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=98)；[§6.3.2.2.6.2，印刷页 99–100](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=100)。
+
+**CF 在什么条件下向主叫方向发首个最终响应？** 这与它是否要向 T-PF 发 PRACK 是两个判断。CF 实际收到对其出向 INVITE 的 183，且同时有 Require: 100rel 和 P-Answer-State: Unconfirmed，须向终接网络发 PRACK。此条件不要求 CF 支持媒体缓冲。[§11.1.1.4.1，印刷页 379](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=380)。
+
+- **由 183 触发：**CF 实收对应的 183/Unconfirmed、会话类型是 private、CF 支持媒体缓冲，且尚未向主叫方向发最终响应。它须生成 INVITE 200，加入对入向 offer 的 SDP 应答和 Unconfirmed，与媒体面交互并发向主叫方向。这个 200 是**最终响应**，不是另一份临时响应。该分支不要求 Require: 100rel、PRACK 的 200 或被叫终端的 INVITE 200；不能据此反推被叫终端当时一定还没回包。[§11.1.1.4.2，印刷页 381–382](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=382)。
+- **由被叫方向的 INVITE 200 触发：**CF 实收与出向 INVITE 匹配的 200，对话由 session-type=private 的初始 INVITE 建立，并且 CF 尚未向主叫方向发最终响应。CF 生成对入向 INVITE 的首个 200，加入 SDP 应答；注 2 明说本次媒体面处理完成后才发响应。本分支的 SDP 回指写作 §6.3.3.2.2（该节是接收初始 INVITE 时缓存受支持的 Contact 特性），SDP 应答专节则是 §6.3.3.2.1；保留两处差异。若此前已发过 Unconfirmed 最终响应，不能用本分支再发第二个最终响应。CF 按 §11.1.1.4.1 实收出向 INVITE 的 200，仍须缓存收到的 Contact 并与媒体面交互。[§11.1.1.4.2，印刷页 382](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=383)；[§6.3.3.2.1–2，印刷页 119–120](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=120)；[§11.1.1.4.1，印刷页 379](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=380)。
+
+T-PF 设置 Confirmed，不等于 CF 的普通最终响应条款要求把它原样复制。O-PF 是在自己的入向 200 **确实带** P-Answer-State 时才须按第 5A 项带回该值。主叫一侧没见到 Confirmed，不能据此判定被叫没回 200 或某个服务器漏传。要辨别是哪一支，分别核对 INVITE 和 PRACK 的对应响应、T-PF 的收发及 CF 此前是否已发最终响应；即使已见某一侧发出 200，也不能单凭它确认另一侧实收、用户人工接听、获得话权或已有 RTP 收发。[§11.1.1.3.1.1 最终响应第 5A 项，印刷页 370](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=371)。
+
 ## O-PF 重建响应并映射会话身份，不是一律透传
 
 适用：替代事件：O-PF 收到该 INVITE 的 180；收到 200；或收到其他不含 SDP 的响应。不要求三类响应都出现，也不以被叫人工接受为共同前提。
