@@ -4596,6 +4596,22 @@
         }
       ],
       "boundary": "限正在进行的离网普通 MCPTT 组呼转为紧急；各端本地收发分别成立。合并与类型更新可能同时满足入口，不据此规定执行次序或全组切换。"
+    },
+    {
+      "id": "r16-calls-offnetwork-group-emergency-downgrade",
+      "question": "进行中的离网紧急组呼怎样解除紧急、恢复普通？收到 GROUP CALL EMERGENCY END、TFG11 重传和 TFG13 到期各看哪台终端的记录？",
+      "start": "topics/calls/offnetwork-group-emergency-downgrade.md",
+      "next_if": [
+        {
+          "condition": "若需判断这通呼叫原来怎样升级为紧急、收到紧急公告后如何启动 TFG13，读升级分支；不要把它的公告比较规则当作收到 END 的检查。",
+          "read": "topics/calls/offnetwork-group-emergency-upgrade.md"
+        },
+        {
+          "condition": "若要判断终端是否真的离开这通组呼或已经停止媒体及话权处理，查基本呼叫控制中的释放；回 T2 本身不是离开 S3。",
+          "read": "topics/calls/offnetwork-group-client.md"
+        }
+      ],
+      "boundary": "限既有离网紧急 MCPTT 组呼转为普通，不是在网取消、告警撤销或整通呼叫释放；单独一条 END 或一个 T2 不能证明所有成员都切换。"
     }
   ]
 }

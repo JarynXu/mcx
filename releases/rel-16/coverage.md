@@ -402,6 +402,16 @@ MCPTT 或 MCVideo 跨系统私呼，双方在各自主系统接受服务，两�
 
 [读取主题](topics/calls/offnetwork-group-emergency-upgrade.md)
 
+## 进行中的离网紧急组呼怎样降级、恢复普通？
+
+进行中的离网紧急组呼里，谁能发出 GROUP CALL EMERGENCY END，接收端怎样保存变更记录，发端如何用 TFG11 和 CFG11 重传，以及 TFG13 到期或普通公告怎样使本机恢复普通。
+
+分别看本端的用户指示、实际收到同一通呼叫的 END、TFG13 到期或实收同组同呼叫标识的普通类型公告；两类公告条件按上次变更用户是否相同区分。
+
+尚未建立：一端发出 END 或转为 T2 不证明其他终端已降级，也不证明释放整通呼叫或话权和语音状态改变；不补状态图与正文未写出的接收检查或事件顺序。
+
+[读取主题](topics/calls/offnetwork-group-emergency-downgrade.md)
+
 
 
 ## 普通私聊SDS控制面：发送资格、请求与接收证据
