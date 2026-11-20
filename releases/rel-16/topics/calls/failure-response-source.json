@@ -1,0 +1,191 @@
+{
+  "topic_id": "r16-calls-failure-response-source",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 拒绝请求时，Response-Source 能指出哪种功能？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "生成失败响应的角色、实际收到的头、以及普通按需私呼的两个接收分支分别判断，不将业务原因替代角色。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0 Rel-16 Stage 3；MCPTT 服务器生成 SIP 失败响应的角色辨认。",
+    "普通按需私呼的 403/145 仅是对照示例；其他请求按实际角色和本章条件，不把示例检查推广为通用接收流程。"
+  ],
+  "claims": [
+    {
+      "id": "generated-failure-role-tag",
+      "title": "MCPTT 服务器可在自己发起的失败响应中注明当前角色",
+      "conditions": [
+        "MCPTT 服务器为实际收到的请求发起失败响应；是否加头依运营策略。"
+      ],
+      "conclusion": "可加 SIP Response-Source；fe 参数使用 urn:3gpp:fe 命名空间和 fe-id as；role 根据当前角色写 pf-mcptt-server（参与）、cf-mcptt-server（控制）或 ncf-mcptt-server（非控制）。",
+      "normative_strength": "插入该头为 MAY，不是每条失败响应必填。",
+      "limitations": [
+        "记录的是生成此响应时声明的角色，不按最后转发者定角色。本条不展开被引用的 TS 24.229 的完整头语法、转发或验证策略。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "5.3.3"
+          ],
+          "printed_pages": [
+            54
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "role-not-host-and-absence-not-attribution",
+      "title": "PF 标签不分两侧；缺头不构成排除证据",
+      "conditions": [
+        "比较固定版的生成规则和抓包看到的 role 或缺失的 Response-Source。"
+      ],
+      "conclusion": "参与功能可服务主叫或被叫，一个服务器也可兼任多种角色。pf-mcptt-server 本身不能识别哪一侧或哪台机器。因头可选，看不见它不能排除 MCPTT 服务器的任一角色，也不能判定只由代理拒绝。",
+      "normative_strength": "角色与服务器关系按 §§5.3.1–.2；不由可选头的缺失增加任何排除结论。",
+      "limitations": [
+        "没有规范保证某一观察点必能收到原头；追溯本次请求需要各段实际生成/转送的记录，不凭缺失猜原因。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "5.3.1",
+            "5.3.2 opening NOTE"
+          ],
+          "printed_pages": [
+            51,
+            52
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "5.3.3"
+          ],
+          "printed_pages": [
+            54
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "invite-status-warning-text-distinction",
+      "title": "INVITE 的 SIP 状态、399 警告码及业务文本号是不同值",
+      "conditions": [
+        "MCPTT 服务器对收到的 INVITE 响应附上该类文本。"
+      ],
+      "conclusion": "Warning 警告码为 399，主机名用 MCPTT 服务器的主机名；引号内的文本以三位业务文本号开始。例中的 SIP 403、Warning 399 与文本号 145 不是同一字段，也不直接给出生成角色。",
+      "normative_strength": "适用于服务器附上 INVITE 响应文本的条件式构造，不要求所有响应附加该头。",
+      "limitations": [
+        "不把 399 或 145 当作 SIP 状态码，不以 Warning 主机名代替当前功能角色。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.4.1",
+            "4.4.2",
+            "Table 4.4.2-1"
+          ],
+          "printed_pages": [
+            33,
+            34
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "Table 4.4.2-2, text code 145"
+          ],
+          "printed_pages": [
+            37
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "5.3.3"
+          ],
+          "printed_pages": [
+            54
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "private-145-multiple-generator-roles",
+      "title": "普通私呼的两个角色都可生成 403 与文本 145",
+      "conditions": [
+        "普通按需私呼的 O-PF 或 CF 按各自收到的 INVITE 进入资源列表检查。"
+      ],
+      "conclusion": "缺 application/resource-lists 正文时，这两种角色各规定返回 403、Warning 文本号 145 并停止。在各条 private 分支中列表有多个 entry 时，返回和停止动作相同；并非一次请求必发两份拒绝。",
+      "normative_strength": "在各自入站守卫满足时，本条拒绝并停止是 SHALL。",
+      "limitations": [
+        "145 表的说明提到参与功能，CF 程序也使用该文本；CF 第 4 项字面写 O-PF 请求名称，不改变所在程序的执行角色。两条不规定零 entry 必走同一分支。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "Table 4.4.2-2, text code 145"
+          ],
+          "printed_pages": [
+            37
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.1.1(8–9)"
+          ],
+          "printed_pages": [
+            366,
+            367
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.2(3–4)"
+          ],
+          "printed_pages": [
+            379,
+            380
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-private-server-admission-routing"
+  ],
+  "limitations": [
+    "不重建 TS 24.229 头语法、完整代理处理、信任模型或部署拓扑。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

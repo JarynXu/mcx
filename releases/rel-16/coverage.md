@@ -542,6 +542,16 @@ MCPTT 或 MCVideo 跨系统私呼，双方在各自主系统接受服务，两�
 
 [读取主题](topics/calls/private-caller-alias-forwarding.md)
 
+## MCPTT 拒绝请求时，Response-Source 能指出哪种功能？
+
+根据应答中可选的标签区分 PF、CF 与 NCF；SIP 状态码、警告码和业务文本号分别解释。
+
+生成这类 SIP 应答的 MCPTT 服务器可依运营策略标当前角色。普通按需私呼的 O-PF 和 CF 可能报告同一资源列表错误；各自以收到的请求为准。
+
+尚未建立：缺角色头不能断定是代理拒绝；参与角色值不说明主被叫方向或物理服务器，也不规定完整头语法、保留或网元发现。
+
+[读取主题](topics/calls/failure-response-source.md)
+
 
 
 ## 普通私聊SDS控制面：发送资格、请求与接收证据

@@ -34,6 +34,10 @@
         {
           "condition": "要区分普通按需私呼的客户端拒绝、应答、取消和建立证据。",
           "read": "topics/calls/private-client-answer-evidence.md"
+        },
+        {
+          "condition": "若要确认哪种功能生成了失败响应，查角色标签与业务文本号的区别。",
+          "read": "topics/calls/failure-response-source.md"
         }
       ],
       "boundary": "不覆盖 first-to-answer、别名、紧急、预建立承载、完整 CF 响应与媒体恢复；来源接口引用差异保留。 只查普通按需私呼的自动临时响应、终接侧应答时序和 CF 首次最终响应；PRACK 200 与 INVITE 200 分开核对。 失败响应只按各段实收和不含 SDP 的其他响应规则追溯；不能把首接呼叫的未应答规则套给普通私呼。"
@@ -5147,6 +5151,18 @@
         }
       ],
       "boundary": "限同一 MC 系统内不同 PF 服务的用户；确认某台客户端的组归属须看实际收到的 per-user PIDF。"
+    },
+    {
+      "id": "r16-calls-failure-response-source",
+      "question": "普通 MCPTT 私呼 INVITE 回 403、Warning 399 和文本 145，能仅据此断定是哪一侧拒绝的吗？ MCPTT 失败响应的 Response-Source 有哪些 role？没有响应来源头能排除 MCPTT 服务器吗？",
+      "start": "topics/calls/failure-response-source.md",
+      "next_if": [
+        {
+          "condition": "若已知发生在普通按需私呼，查资源列表、名单、媒体和逐段响应守卫。",
+          "read": "topics/calls/private-server-admission-routing.md"
+        }
+      ],
+      "boundary": "缺少可选角色头不能排除 MCPTT 服务器；参与功能的角色值不是方向或物理主机身份。"
     }
   ]
 }
