@@ -1,0 +1,148 @@
+{
+  "topic_id": "r16-calls-remotely-initiated-private-call",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 远程发起私呼：甲请乙呼叫丙，谁收请求，谁收结果？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "按收到的请求字段确认请求人、实际发起者与被叫；到发起流程完成后，对照身份相等和成功两个条件。",
+  "common_conditions": [
+    "TS 24.379 V16.14.0 Rel-16 Stage 3；在网远程发起私呼，乙侧本地策略选用按需会话。区分指令、发起私呼的过程和另发的业务结果。"
+  ],
+  "claims": [
+    {
+      "id": "remote-origination-three-roles",
+      "title": "远程指令交给乙，私呼打给指定被叫",
+      "conditions": [
+        "甲客户端发出远程发起私呼的请求，乙侧按需处理收到的指令。"
+      ],
+      "conclusion": "甲客户端用服务自己的 PF PSI 作 Request-URI，resource-lists 放乙的 MCPTT ID，mcptt-called-party-id 放被叫 ID。甲侧 PF 在出向请求写入按 P-Asserted-Identity 查询到的甲的 MCPTT ID 作为 mcptt-calling-user-id；乙从其收到的指令的 mcptt-called-party-id 取被叫并发起按需私呼。",
+      "normative_strength": "角色按条款定义，所列字段及按策略发起步骤是 SHALL。",
+      "limitations": [
+        "不把外层 URI 或接令用户当作被叫，也不把指令当作私呼 INVITE。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.7.1"
+          ],
+          "printed_pages": [
+            415
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.7.2.1 request step 2d–f"
+          ],
+          "printed_pages": [
+            415,
+            416
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.7.2.2 incoming request steps 2–3"
+          ],
+          "printed_pages": [
+            416
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.7.3.1 steps 2 and 6–9"
+          ],
+          "printed_pages": [
+            418
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "skip-separate-outcome-only-if-same-and-success",
+      "title": "被叫就是请求人且成功发起时跳过单独结果",
+      "conditions": [
+        "乙已完成发起流程。比较被叫的 MCPTT ID 和乙实收请求正文 mcptt-calling-user-id，并查发起结果。"
+      ],
+      "conclusion": "仅在两项成立时跳过后续步骤：ID 相同，且成功发起对该被叫的私呼。因此同一人但失败，或被叫与请求人不同，仍发送业务结果。",
+      "normative_strength": "跳过其余步骤为 SHALL，注释解释该条件用意，不替代条件。",
+      "limitations": [
+        "没见结果不证明条件均成立、未发送、已接通或有媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.7.2.2 after completion, step 1 and NOTE"
+          ],
+          "printed_pages": [
+            417
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "separate-outcome-message",
+      "title": "需要回结果时另发 MESSAGE，以 outcome 字段判发起结果",
+      "conditions": [
+        "乙完成发起流程，且不满足跳过结果的两项条件。"
+      ],
+      "conclusion": "乙生成新的 SIP MESSAGE，Request-URI 为服务乙的 PF PSI。resource-lists 采用原来实收请求的 mcptt-calling-user-id，mcptt-called-party-id 保留指定被叫。response-type 为 remotely-initiated-private-call-response；remotely-initiated-call-outcome 为 success 或 fail。甲从实收到业务结果的该字段判断。",
+      "normative_strength": "所列发消息、字段及从实收结果判断为 SHALL。",
+      "limitations": [
+        "请求的 SIP 事务响应不是业务结果；success 不证明双方实收 RTP 或有通话。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.7.2.2 after completion, steps 2–4"
+          ],
+          "printed_pages": [
+            417
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.7.2.1 result MESSAGE step 1"
+          ],
+          "printed_pages": [
+            416
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-private-callback",
+    "r16-calls-private-client-answer-evidence"
+  ],
+  "limitations": [
+    "不涵盖预建立会话分支、PF/控制功能的完整路由与许可、重试、被叫媒体或通话质量。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
