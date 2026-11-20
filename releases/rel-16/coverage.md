@@ -492,6 +492,16 @@ MCPTT 或 MCVideo 跨系统私呼，双方在各自主系统接受服务，两�
 
 [读取主题](topics/calls/first-to-answer-originating-admission.md)
 
+## 原组已重组：302 里的宿主 PSI 和临时组 TGI 分别用在哪？
+
+原组 INVITE 进已重组分支，不托管 TGI 的 CF 为本笔回 302；区分宿主 PSI 与正文 TGI，发起侧参与功能收到匹配 302 后另发 INVITE。
+
+若收原组 INVITE 的 CF 就是宿主，按该 TGI 已有呼叫和无正在呼叫区分本地关联、媒体交互和文档订阅/实收；不把绕到 TGI 的新请求套回原组分支。
+
+尚未建立：302 或主叫关联不证明新腿被接收、全场建成、用户入会或媒体通；不统一解释其他产生 302 的入口、预安排 403/148 或跨系统路由。
+
+[读取主题](topics/calls/regrouped-group-invite-redirect.md)
+
 
 
 ## 普通私聊SDS控制面：发送资格、请求与接收证据

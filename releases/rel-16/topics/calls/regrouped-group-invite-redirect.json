@@ -1,0 +1,229 @@
+{
+  "topic_id": "r16-calls-regrouped-group-invite-redirect",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "原组已重组：302 里的宿主 PSI 和临时组 TGI 分别用在哪？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "按 SIP 事务看原组 INVITE、实际 302 和可能发出的重新定向 INVITE；按同一 TGI 与本机宿主身份看已有/无进行中呼叫。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0（Rel-16，Stage 3），同系统在网例，原组 MCPTT 身份所指业务组已经重组。",
+    "区分控制功能与发起侧参与功能。原组 INVITE 要已进目标组文档 helper，并以文档映射到 TGI；参与功能重送与宿主收到的请求另核。"
+  ],
+  "claims": [
+    {
+      "id": "regrouped-original-group-nonhost-302",
+      "title": "哪些条件下不托管临时组的控制功能回 302？",
+      "conditions": [
+        "本服务器实际收到按 §6.3.1.1 分类为给组控制功能的 INVITE，经过 PSI 路由、SIP Request-URI 是服务该组的 PSI、请求 Contact 不带 isfocus。",
+        "该 INVITE 正文 mcptt-request-uri 所指原组的文档实际可用且关联一个已重组的 MCPTT 组 ID，本机不托管由原组文档查得的 TGI。"
+      ],
+      "conclusion": "§6.3.5.2(6a) 取 regrouped 元素的 temporary-MCPTT-group-ID 属性；(6b) 停止处理该 INVITE 并回 302，其 SIP Contact 写宿主服务器 PSI，MCPTT-info 的 mcptt-request-uri 写 TGI。",
+      "normative_strength": "§6.3.5.2(6) 的条件分支规定 SHALL；分类与同笔事务仍各受原条文守卫。",
+      "limitations": [
+        "(4)(b)(iii) 分类用 on-network-regrouped、(6)(a) 取值行用 regrouped，不把两者改为同一 XML 元素。",
+        "不同的 OPTIONS 授权 302 另按其入口；预安排终止侧另规定 403/148 及已发 3xx–6xx 不再继续，不据本条裁决优先级或同一事务发两个最终响应。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.1.1 group CF INVITE by group service PSI and Contact without isfocus"
+          ],
+          "printed_pages": [
+            78
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.5.2(4)(b)(iii), (6)(a)–(b): regrouped original group document, non-hosting CF stops and returns 302"
+          ],
+          "printed_pages": [
+            131,
+            132
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.13.7 OPTIONS authorisation redirect and 10.1.1.4.2(5)(b)–(c) prearranged terminating checks: distinct 302 or 403 boundaries"
+          ],
+          "printed_pages": [
+            115,
+            243,
+            244
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "actual-302-participating-new-invite",
+      "title": "发起侧参与功能把 302 两种标识各复制到哪？",
+      "conditions": [
+        "这里只举客户端实际发 INVITE 的普通按需聊天组。发起侧 PF 实收该初始客户端 INVITE，并已向 CF 发自己的 INVITE。",
+        "发起侧 PF 实收该事务的 CF 302，且该响应 Contact 含 SIP URI，MCPTT-info XML 含 mcptt-request-uri。"
+      ],
+      "conclusion": "PF 另生成 INVITE：SIP Request-URI 取 302 Contact 内容、正文 mcptt-request-uri 取 302 正文对应值、主叫 ID 仍用原请求确定的 MCPTT ID；仅实际收到 session-type 时从 302 设该字段。按需聊天组根据原客户端 SDP offer 形成新 offer 后转送。",
+      "normative_strength": "§6.3.2.1.10 与 §10.1.2.3.1.1 对适用参与功能分别规定请求构造及转送。",
+      "limitations": [
+        "不把 302 的发出当作 PF 实收、PF 另请求已发送、宿主实收、该腿 2xx 或已经建呼。",
+        "不规定每种 302 或缺字段时的重试策略、不改写响应 MIME 线格式、未展开预建立会话与其他呼叫类型的 SDP。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.5.2(4)(b)(iii), (6)(a)–(b): regrouped original group document, non-hosting CF stops and returns 302"
+          ],
+          "printed_pages": [
+            131,
+            132
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.10 and 10.1.2.3.1.1: actually received 302 to the originating chat INVITE; host PSI and TGI copied into separate targets"
+          ],
+          "printed_pages": [
+            92,
+            93,
+            278
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.13.7 OPTIONS authorisation redirect and 10.1.1.4.2(5)(b)–(c) prearranged terminating checks: distinct 302 or 403 boundaries"
+          ],
+          "printed_pages": [
+            115,
+            243,
+            244
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "original-invite-tgi-host-local-branches",
+      "title": "临时组宿主已有呼叫和没有呼叫时各做什么？",
+      "conditions": [
+        "仍为第 (6) 项原组标识且匹配文档已证明原组关联 TGI，该 MCPTT 服务器实际托管此 TGI，按此 TGI 的本地呼叫状态分别处理。",
+        "仅当 (6h) 的 associated-group-id 实际存在、列入该 TGI 文档组成组且不归本机托管，才适用该授权移交守卫。"
+      ],
+      "conclusion": "已有临时组呼叫：关联主叫 MCPTT ID、进行所引用媒体面交互并退出本组文档程序。无正在进行的呼叫：尚未订阅时订阅 TGI 文档的 xcap-diff，实际收到该 TGI 文档或已有相应缓存后查 constituent-MCPTT-group-ID。满足 (6h) 时退出本程序，由 NCF 处进行用户授权。",
+      "normative_strength": "§6.3.5.2(6)(c)–(h) 按已运行状态和真实文档等条件分别规定动作。",
+      "limitations": [
+        "(6)(e/f) 字面限定 TGI 关联的 MCPTT 组 ID 文档的订阅失败，不自动套给所有 TGI 订阅。",
+        "已直接请求 TGI 且取得 TGI 文档，另核 (8) 的适用条件，不把原组分支与新 TGI INVITE 当作同一事务。",
+        "订阅或可用文档、主叫关联、本地退出 helper 均不能证明新建通话、用户已获准或已入会，以及 RTP 实际收发。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.5.2(4)(b)(iii), (6)(a)–(b): regrouped original group document, non-hosting CF stops and returns 302"
+          ],
+          "printed_pages": [
+            131,
+            132
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.5.2(6)(c)–(h), (8): hosting TGI, existing call association versus TGI document acquisition and constituent groups"
+          ],
+          "printed_pages": [
+            132,
+            133
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.1.1 group CF INVITE by group service PSI and Contact without isfocus"
+      ],
+      "printed_pages": [
+        78
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.5.2(4)(b)(iii), (6)(a)–(b): regrouped original group document, non-hosting CF stops and returns 302"
+      ],
+      "printed_pages": [
+        131,
+        132
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.1.10 and 10.1.2.3.1.1: actually received 302 to the originating chat INVITE; host PSI and TGI copied into separate targets"
+      ],
+      "printed_pages": [
+        92,
+        93,
+        278
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.3.1.13.7 OPTIONS authorisation redirect and 10.1.1.4.2(5)(b)–(c) prearranged terminating checks: distinct 302 or 403 boundaries"
+      ],
+      "printed_pages": [
+        115,
+        243,
+        244
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.5.2(6)(c)–(h), (8): hosting TGI, existing call association versus TGI document acquisition and constituent groups"
+      ],
+      "printed_pages": [
+        132,
+        133
+      ]
+    }
+  ],
+  "related": [
+    "r16-groups-mcptt-server-group-document-cache",
+    "r16-groups-single-system-temporary-regroup",
+    "r16-groups-preconfigured-regroup-notification"
+  ],
+  "limitations": [
+    "不把每条 302 或本机宿主有/无呼叫当作统一响应，更不推其后续实际媒体或组范围结果。",
+    "不展开重组创建、跨系统路由、外部 XML 编码、所有临时组后续授权或预建立发起。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
