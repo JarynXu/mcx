@@ -2807,6 +2807,16 @@ LMC 请 LMS 启动目标用户的上报时，触发须有请求者的业务 ID�
 
 [读取主题](topics/location/client-triggered-reporting.md)
 
+## MCPTT 位置配置、位置请求和报告：参与功能与终端各做什么？
+
+参与 MCPTT 功能在何种授权和需要下配置终端，如何显式请求位置；终端在事件和请求分支何时送报告，怎样回填请求关联值。
+
+仅 §13 的 Stage 3 PF 与终端。Configuration、Request 与 Report 按实收的 MIME 和字段判断。独立报告 MESSAGE 取收到的配置 PAI，PF 按实际收到的 MCPTT ID 核准报告。
+
+尚未建立：不从每次 IMS REGISTER 推定下发、不把显式请求当作 LMS 订阅、不从 SIP 2xx 推定报告已核准使用；不补缺配置回送或未写明的等待分支。
+
+[读取主题](topics/location/mcptt-participating-location-signaling.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

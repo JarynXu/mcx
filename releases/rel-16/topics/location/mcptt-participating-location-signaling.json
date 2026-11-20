@@ -1,0 +1,338 @@
+{
+  "topic_id": "r16-location-mcptt-participating-location-signaling",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 位置配置、位置请求和报告：参与功能与终端各做什么？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明继承共同条件；按发送、实收、定时器事件和核准分别判断，不从一端的动作推断另一端的状态。",
+  "common_conditions": [
+    "固定 3GPP TS 24.379 V16.14.0（Release 16，Stage 3），仅讨论参与 MCPTT 功能与 MCPTT 终端之间的 §13 位置配置、位置请求和报告。",
+    "按局部入口保留各自条件：需要位置与业务授权、触发条件、接收的消息与 MIME、报告许可不能互相取代。"
+  ],
+  "claims": [
+    {
+      "id": "mcptt-location-configuration-and-request",
+      "title": "参与 MCPTT 功能何时发位置配置，怎样区别显式位置请求？",
+      "conditions": [
+        "配置：参与 MCPTT 功能（PF）需要位置，且终端的 MCPTT 业务授权已成功。显式请求：PF 需要终端报告位置，按 §13.2.3 判断。"
+      ],
+      "conclusion": "PF 可按 §13.2.2 发位置配置；确实需要终端报告时，须按 §13.2.3 发送位置请求。两种 SIP MESSAGE 的 Request-URI 都对应 MCPTT 客户端身份；Accept-Contact 的 g.3gpp.icsi-ref 和 P-Asserted-Service 都使用 urn:urn-7:3gpp-service.ims.icsi.mcptt，前者带 require/explicit。application/vnd.3gpp.mcptt-info+xml 的 <mcptt-request-uri> 含目标 MCPTT ID；另一个 application/vnd.3gpp.mcptt-location-info+xml MIME body 的 <location-info> 内分别含 <Configuration> 或 <Request>。配置对有定义的触发子元素填 TriggerId，并将 PF 的 PSI 写在 P-Asserted-Identity。",
+      "normative_strength": "配置是 MAY；选择配置后的字段、发送步骤是 SHALL。显式请求在实际需要该报告时是 SHALL。",
+      "limitations": [
+        "配置条件不是每次 IMS REGISTER 成功；不规定每次授权都下发或固定下发时限。",
+        "Request 所引条款未列配置中的 P-Asserted-Identity 要求；不从此推出 Request 必带或必不带 PAI。PF 的 PSI 不是 LMS 订阅或 LMS PSI 的证明。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "13.1: participating MCPTT location configuration upon successful service authorization when location is needed"
+          ],
+          "printed_pages": [
+            460
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "13.2.2: optional PF location configuration procedure and its SIP MESSAGE and MIME fields"
+          ],
+          "printed_pages": [
+            460,
+            461
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "13.2.3: explicit PF location request procedure and its SIP MESSAGE and MIME fields"
+          ],
+          "printed_pages": [
+            461
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mcptt-location-client-trigger-or-request",
+      "title": "终端收到配置或显式请求后，什么时候等 minimumReportInterval？",
+      "conditions": [
+        "接收入口：终端实际收到 SIP MESSAGE，Accept-Contact 中 g.3gpp.icsi-ref 为 MCPTT ICSI，Content-Type 为 application/vnd.3gpp.mcptt-location-info+xml，匹配 MIME body 的 <location-info> 内含该分支对应的 <Configuration> 或 <Request>。",
+        "事件入口：配置的报告触发条件实际触发，在本端判断计时器状态；不是仅凭另一端发过配置或时间相近。"
+      ],
+      "conclusion": "命中 Configuration 接收入口时，终端保存配置、设置触发条件，启动 minimumReportInterval；LocationConfigurationReceived 是附录的可选触发条件，不意味着每次收配置都立即上报。事件触发且 minimumReportInterval 正在运行时等其到期；到期时仍有触发条件为真才按报告发送程序发报告。命中显式 Request 时按报告发送程序发报告并重置 minimumReportInterval；此入口没列先等待正在运行的计时器到期。",
+      "normative_strength": "匹配接收入口和实际事件时的本地程序按文中 SHALL；附录中的配置到达触发为可选，附带其字段要求。",
+      "limitations": [
+        "不把发端字段列表全部套入接收检查。没有列出计时器未运行时的事件分支，不推定立即发、等待或丢弃；不补显式请求与事件同时发生时的顺序。",
+        "没有等待门槛不表示立刻能送达、不表示固定耗时，也不表示 PF 已核准报告。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "13.3.1: client event or explicit request reports, with existing SIP request or dedicated SIP MESSAGE"
+          ],
+          "printed_pages": [
+            462
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "13.3.2: actual configuration SIP MESSAGE receive conditions and configuration, triggers, timer storage actions"
+          ],
+          "printed_pages": [
+            462
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "13.3.3: actual location Request SIP MESSAGE receive conditions, send report and reset minimum interval timer"
+          ],
+          "printed_pages": [
+            462,
+            463
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "13.3.4.1: trigger and running minimumReportInterval, still-true test on expiry, and separate explicit request entry"
+          ],
+          "printed_pages": [
+            463
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.3.3: optional LocationConfigurationReceived signaling-event trigger"
+          ],
+          "printed_pages": [
+            566,
+            568
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mcptt-location-report-correlation-and-receipt",
+      "title": "报告放在哪个 SIP 请求，怎样关联原请求并判断 PF 已处理？",
+      "conditions": [
+        "终端已走到 §13.3.4.2 报告发送入口；分别判断是否因其他理由已需要发送一个 SIP 请求、是否由显式位置请求触发，以及哪些配置条件实际触发。",
+        "PF 接收入口另判：实际收到一个 SIP 请求，其 Content-Type 是 application/vnd.3gpp.mcptt-location-info+xml，且匹配的 MIME body 在 <location-info> 内含 <Report>。"
+      ],
+      "conclusion": "若终端因其他理由已需发送 SIP 请求，就在该请求加入位置 MIME 和 <Report>；否则生成独立 SIP MESSAGE，Request-URI 取自实际收到的位置 Configuration MESSAGE 的 PAI SIP URI，Content-Type 是位置 MIME，Accept-Contact 列 g.3gpp.mcptt 并带 require/explicit。两发送分支都设置并启动 minimumReportInterval、重置触发条件；独立分支在这些动作后发送，不把该顺序套到 §13.3.3 另列的重置。显式请求触发时回填请求关联值：正文写 RequestID→ReportID，F.3.2 XSD 写必需 RequestId 和可选 ReportID，F.3.3 描述写 RequestId→ReportId。对实际触发的条件，正文报告 TriggerId 子元素取正文称作 Trigger-Id 的属性值，附录把属性写作 TriggerId；填入对应的位置内容。PF 按实际收到的 MCPTT ID 核准报告，获准后按需使用。",
+      "normative_strength": "匹配入口的封装、报告目的地、请求回填及接收核准为 SHALL；XSD 的 ReportID 可选不取消该请求分支回填要求。",
+      "limitations": [
+        "独立 MESSAGE 依赖来件配置中的回送 URI；没有从 Request 的地址或缺配置时的后备地址。MBMS 监听报告仅是复用已有 SIP 请求的例子。",
+        "保留字段拼写差异，不接受凭此创造别名、解析容错或可执行 XML，也不从 TriggerId 单独判断它响应某次 Request。",
+        "此段未规定 PF 从哪个单一 SIP 字段取得收到的 MCPTT ID，也没有专用 SIP 结果码；终端发出、能关联或观察到 2xx 都不是 PF 已核准、位置已使用或收到坐标的充分证据。区域相关后续分支不在此范围。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "13.2.4: PF receipt of Report MIME, authorization based on received MCPTT ID, and use if authorized"
+          ],
+          "printed_pages": [
+            461
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "13.3.1: client event or explicit request reports, with existing SIP request or dedicated SIP MESSAGE"
+          ],
+          "printed_pages": [
+            462
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "13.3.3: actual location Request SIP MESSAGE receive conditions, send report and reset minimum interval timer"
+          ],
+          "printed_pages": [
+            462,
+            463
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "13.3.4.2: piggyback and dedicated Report send branches, configuration PAI destination, request correlation and trigger fields"
+          ],
+          "printed_pages": [
+            463,
+            464
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.3.2: location XML schema, mandatory RequestId and optional ReportID attributes"
+          ],
+          "printed_pages": [
+            559
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.3.3: prose RequestId-to-ReportId and TriggerId element and attribute spellings"
+          ],
+          "printed_pages": [
+            568
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-location-event-reporting-configuration",
+    "r16-location-user-subscription",
+    "r16-identity-shared-sip-registration"
+  ],
+  "limitations": [
+    "不描述通用 Stage 2 LMS/LMC 订阅或其他 Release，也不论证 LMS 的 SIP PSI、SIP SUBSCRIBE、每次 IMS 注册后的配置或完整地理区域处理。",
+    "不补 §13.2.5 异常路径、XML 安全、Full/Update 语义、字段别名或缺配置时的回送策略。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "13.1: participating MCPTT location configuration upon successful service authorization when location is needed"
+      ],
+      "printed_pages": [
+        460
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "13.2.2: optional PF location configuration procedure and its SIP MESSAGE and MIME fields"
+      ],
+      "printed_pages": [
+        460,
+        461
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "13.2.3: explicit PF location request procedure and its SIP MESSAGE and MIME fields"
+      ],
+      "printed_pages": [
+        461
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "13.2.4: PF receipt of Report MIME, authorization based on received MCPTT ID, and use if authorized"
+      ],
+      "printed_pages": [
+        461
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "13.3.1: client event or explicit request reports, with existing SIP request or dedicated SIP MESSAGE"
+      ],
+      "printed_pages": [
+        462
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "13.3.2: actual configuration SIP MESSAGE receive conditions and configuration, triggers, timer storage actions"
+      ],
+      "printed_pages": [
+        462
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "13.3.3: actual location Request SIP MESSAGE receive conditions, send report and reset minimum interval timer"
+      ],
+      "printed_pages": [
+        462,
+        463
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "13.3.4.1: trigger and running minimumReportInterval, still-true test on expiry, and separate explicit request entry"
+      ],
+      "printed_pages": [
+        463
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "13.3.4.2: piggyback and dedicated Report send branches, configuration PAI destination, request correlation and trigger fields"
+      ],
+      "printed_pages": [
+        463,
+        464
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "F.3.2: location XML schema, mandatory RequestId and optional ReportID attributes"
+      ],
+      "printed_pages": [
+        559
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "F.3.3: optional LocationConfigurationReceived signaling-event trigger"
+      ],
+      "printed_pages": [
+        566,
+        568
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "F.3.3: prose RequestId-to-ReportId and TriggerId element and attribute spellings"
+      ],
+      "printed_pages": [
+        568
+      ]
+    }
+  ]
+}
