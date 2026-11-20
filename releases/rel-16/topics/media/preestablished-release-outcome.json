@@ -1,0 +1,200 @@
+{
+  "topic_id": "r16-media-preestablished-release-outcome",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "预建立会话里的 Disconnect：结束一通私呼，怎么判断确认到了哪一端？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "先核对实际释放对象和指示来源、同一预建立会话、客户端/PF 各自状态，再判实际收件或定时事件。",
+  "common_conditions": [
+    "固定 TS 24.380 V16.9.0 Rel-16 Stage 3；在网普通 MCPTT 私呼已使用客户端与 PF 间的对应预建立会话；只讨论本次呼叫的媒体面控制及客户端实际停止该预建立会话的对照入口。"
+  ],
+  "claims": [
+    {
+      "id": "cf-release-starts-disconnect",
+      "title": "PF 实收 CF 呼叫释放指示后发送 Disconnect，并启动 T56",
+      "conditions": [
+        "PF 的这条预建立会话为 G: Pre-established session in use，PF 实际收到 CF 的本次呼叫释放指示。"
+      ],
+      "conclusion": "停正在运行的 T55，向客户端发 Disconnect；其 MCPTT Session Identity 字段完整内容与建立本通话的 Connect 相同，包括身份值和 Session Type。PF 宜置 subtype 第一位为 1；须启动 T56、初始化 C56=1、转 G: Call releasing。",
+      "normative_strength": "置确认位是 SHOULD；其余是此入口下的 SHALL，启动 T56 不以确认位置 1 为前提。",
+      "limitations": [
+        "不把同一身份 URI 而不同 Session Type 当作同字段。发包不证明客户端收包或确认，不能用旧 Connect 或其他会话动作代填。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.1 general applicability",
+            "9.3.2.1 state instances"
+          ],
+          "printed_pages": [
+            193,
+            197
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.3.3.3 and Table 8.3.3.3-1"
+          ],
+          "printed_pages": [
+            176
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.4.5"
+          ],
+          "printed_pages": [
+            200,
+            201
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "client-disconnect-confirm-idle",
+      "title": "使用中和已未在用的客户端收到要求确认的 Disconnect 都回 Accepted",
+      "conditions": [
+        "客户端实际在对应的预建立会话收到 Disconnect；对照在用和未在用两个明确状态。"
+      ],
+      "conclusion": "若 subtype 第一位为 1，客户端须发 MCPC Acknowledge/Accepted。客户端在用时转 U: Pre-established session not in use 并按 §6.2.4 处理；原已未在用则保持。第一位为 0 时这两条不要求确认，状态规则不变。Acknowledge 不带 MCPTT Session Identity。",
+      "normative_strength": "相应实际收件和确认位条件下为 SHALL；不需要第二通呼叫发生才能多次发送 Accepted。",
+      "limitations": [
+        "不能由确认数量判定呼叫数量或重发。Accepted 本身不区分在确认 Connect 还是 Disconnect，也不是 SIP ACK 或 Floor Ack；客户端发送与 PF 收件分别观察。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.2.2.3.4",
+            "9.2.2.4.5"
+          ],
+          "printed_pages": [
+            195,
+            196
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.3.2 and Table 8.3.2-1",
+            "8.3.5 and Table 8.3.5-1",
+            "8.3.6 and Table 8.3.6-1"
+          ],
+          "printed_pages": [
+            175,
+            181,
+            182
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "call-releasing-ack-versus-t56",
+      "title": "确认与 T56 到限都回未在用，但到限不能证明确认已到",
+      "conditions": [
+        "PF 已在对应预建立会话的 G: Call releasing，按本次对应的实际确认或 T56 到期事件分流。"
+      ],
+      "conclusion": "实收本次 Acknowledge：停仍运行的 T55 和 T56，可释放本次呼叫所用而会话不需要的媒体资源，回 G: Pre-established session not in use；该分支未另列 Reason Code 条件。T56 到期未达 C56 上限：在本次媒体面控制传输通道重发同一 Disconnect，启动 T56、C56 加 1 并保留释放中。对应到期次数达到上限：不再重发，可释放该呼叫独用的媒体资源，回 G: Pre-established session not in use。",
+      "normative_strength": "各事件按该状态明确条款；两种可释放的资源均为 MAY，限本次呼叫所用但预建立会话不需要者。T56、C56 都可配。",
+      "limitations": [
+        "不补写同时到期与收到确认的先后、到限清理其他定时器、固定重发次数或从时长猜测事务。相同本地状态不证明收到确认，也不证明整项预建立会话释放。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.5.1–.4"
+          ],
+          "printed_pages": [
+            203
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "Table 11.1.4-1, T56 row",
+            "Table 11.2.4-1, C56 row"
+          ],
+          "printed_pages": [
+            221,
+            224
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "client-release-call-or-container",
+      "title": "客户端发起时，保留会话和拆掉整条会话是不同事件",
+      "conditions": [
+        "PF 原在用并实际收到客户端引发的释放指示；辨认该指示只释放其呼叫并保活，还是释放整条会话。另查仍在用的客户端实际收到本次保活 REFER 的 2xx。"
+      ],
+      "conclusion": "仅释放呼叫且保活：PF 给 CF 呼叫释放指示，按需可释放呼叫专用资源，停 T55，回未在用；该分支不列 Disconnect 或 T56。客户端自己的对应 REFER 2xx 令其回未在用、终止基本话权参与者实例。实际收到整条预建立会话的停止指示则由 PF 停止客户端与 CF 间的 RTP 及话权控制转送，释放此预建立会话的媒体面资源和计时器，入 Start-stop。",
+      "normative_strength": "各条实际事件下的条件式动作；呼叫专用资源释放为 MAY。",
+      "limitations": [
+        "不给其他释放方向推断统一 SIP 流程，不把 SIP REFER 2xx 当作 PF 实收媒体面确认，也不从单腿结果证明两端媒体停止。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.4.4",
+            "9.3.2.4.6"
+          ],
+          "printed_pages": [
+            200,
+            201
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.2.2.4.6",
+            "9.3.2.3.1"
+          ],
+          "printed_pages": [
+            196,
+            198
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-media-preestablished-connect-outcome",
+    "r16-calls-private-client-release",
+    "r16-calls-preestablished-session-in-use-release"
+  ],
+  "limitations": [
+    "不重建 SIP 释放信令、完整资源回收、并发处理、建立失败及非私呼分支。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

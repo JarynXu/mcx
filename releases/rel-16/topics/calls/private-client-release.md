@@ -40,3 +40,5 @@ REFER 还必须带 `Refer-Sub: false` 和 `Supported: norefersub`。客户端实
 **终接侧 PF 收到 CF 的 SIP BYE：**如果业务会话 ID 指向的用户与该 PF 有预建立会话，PF 先通过媒体面断开面向 CF 的媒体资源，向 CF 回 200 (OK)，再通过媒体面把面向客户端的资源与面向 CF 的资源断开。PF **必须保留面向该客户端的预建立会话**。这里的 200 是 PF 发给 CF 的，并非客户端对 BYE 的应答；本分支也没有要求 PF 把这个 BYE 转发给客户端。[§11.1.3.2.2.2，印刷页 389](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=390)。
 
 这些条款区分信令和媒体面的交接点，不给出所有资源释放完毕的确认，也不保证预建立会话今后不会因其他原因被释放。
+
+若要追到媒体面，见[Disconnect 的确认、重试到限与本地状态](../media/preestablished-release-outcome.md)。
