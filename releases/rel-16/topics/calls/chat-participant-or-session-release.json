@@ -412,6 +412,92 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "chat-tng3-lifecycle-and-evidence",
+      "title": "普通聊天组的 TNG3：启动、停止、到期都按控制侧的本场会话判读",
+      "conditions": [
+        "同一 MC 系统内的普通在网按需 MCPTT 聊天组，使用未重组的 MCPTT 组身份，不是临时组；请求和组状态均非紧急、非迫近危险。",
+        "从控制 MCPTT 功能（CF）观察。按实际发生的条件建会或定时器处理、最后一个客户端离开或被移除、定时器到期分别判断；不以前一步成功作为所有分支的共同前提。"
+      ],
+      "conclusion": "§10.1.2.4.1.1 第 10 项在该组当前无聊天会话身份时要求建会并分配身份，同时写 CF 可以按 §6.3.3.5 处理 TNG3。进入 §6.3.3.5.1 的普通启动分支时，CF 收到发起组会话的 INVITE，在已分配会话身份后，组文档若含 on-network-maximum-duration，须按该值启动；缺失则不得启动。这个配置项对聊天组可选。附录 B 的规范性表把启动原因简写为建呼 INVITE 与取得组文档；仍按正文核对身份分配和配置条件。每个 TNG3 实例关联一场组呼，不按某一条 SIP 腿判定实例。最后一名客户端实际离开时 CF 须停本场的 TNG3；发送 BYE 的规程另规定最后一名确已被移除、且本场的计时器尚未到期时须停该实例。实际到期时须释放这场组会话，走已有全场 BYE 规程。",
+      "normative_strength": "§10.1.2.4.1.1 第 10 项的定时器处理是 MAY。被调用规程的条件启动、不启动、符合条件的停止及到期释放分别为 SHALL，不能用表格概述覆盖正文前提。",
+      "limitations": [
+        "不补组文档缺失时的默认值。获准加入已有会话、向同一组发新 INVITE、或收到 486，不证明 TNG3 重启或刷新；Session-Expires 属于 SIP 会话监控，不是 TNG3。",
+        "要确认本次涉及原场还是新场，先在同一 CF 腿把这条 INVITE 与 CF 对它的 200 (OK) 或匹配的失败 486 配对，不借用 PRACK、UPDATE 或另一客户端腿的应答。再核对原来与当前的会话身份以及本次是否实际新分配；不能只凭 486 判定没有分配身份或判断定时器状态。仍要看本场 CF 定时记录才可断言起、停或到期；缺少此类证据时，不能以停止义务反推它先前在运行。发出 BYE 不代表最后一名已经离开或被移除；只剩一名已是既有释放策略的另一条件，但不是最后一名已离开。看到单条 BYE 或其 200 不证明这是 TNG3 到期、更不证明全组应答或资源已回收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1, controlling step 10: conditional chat creation and optional handling of TNG3 by reference to 6.3.3.5"
+          ],
+          "printed_pages": [
+            288
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.5.1, opening paragraphs and NOTE 1: start after session identity allocation on group initiation, use on-network-maximum-duration when present, no TNG3 start if absent and element optional for chat"
+          ],
+          "printed_pages": [
+            124,
+            125
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "B.2.1, normative Table B.2.1-1: TNG3 row and NOTE 1, abbreviated start/stop and expiry description and each instance is associated with a specific group call"
+          ],
+          "printed_pages": [
+            533
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.5.1, final two paragraphs: stop when the last client leaves and release the session on TNG3 expiry"
+          ],
+          "printed_pages": [
+            125
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.5, opening and concluding paragraphs: stop unexpired TNG3 when the last client is removed, and BYE procedure for group-session release"
+          ],
+          "printed_pages": [
+            106,
+            107
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.8.1, items 1–6 and concluding requirement"
+          ],
+          "printed_pages": [
+            136
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1, controlling steps 15, 17, 19, 23–24: INVITE success, separate SIP session supervision and the Contact session identity"
+          ],
+          "printed_pages": [
+            290
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "source_references": [
@@ -613,6 +699,62 @@
       ],
       "printed_pages": [
         103
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.4.1.1, controlling step 10: conditional chat creation and optional handling of TNG3 by reference to 6.3.3.5"
+      ],
+      "printed_pages": [
+        288
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.3.5.1, opening paragraphs and NOTE 1: start after session identity allocation on group initiation, use on-network-maximum-duration when present, no TNG3 start if absent and element optional for chat"
+      ],
+      "printed_pages": [
+        124,
+        125
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "B.2.1, normative Table B.2.1-1: TNG3 row and NOTE 1, abbreviated start/stop and expiry description and each instance is associated with a specific group call"
+      ],
+      "printed_pages": [
+        533
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.3.5.1, final two paragraphs: stop when the last client leaves and release the session on TNG3 expiry"
+      ],
+      "printed_pages": [
+        125
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.3.1.5, opening and concluding paragraphs: stop unexpired TNG3 when the last client is removed, and BYE procedure for group-session release"
+      ],
+      "printed_pages": [
+        106,
+        107
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.4.1.1, controlling steps 15, 17, 19, 23–24: INVITE success, separate SIP session supervision and the Contact session identity"
+      ],
+      "printed_pages": [
+        290
       ]
     }
   ],
