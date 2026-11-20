@@ -685,6 +685,77 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "chat-originating-pf-binding-and-policy",
+      "title": "普通聊天组的 404/141 与 403/108：发起侧参与功能先查主叫身份，再查发起权限",
+      "conditions": [
+        "同一 MC 系统内的普通在网按需 MCPTT 聊天组，使用未重组的 MCPTT 组身份，不是临时组；请求和组状态均非紧急、非迫近危险。",
+        "发起侧参与功能（O-PF）收到客户端面向它发出的初始 chat INVITE，并已到达 §10.1.2.3.1.1 中相应的检查。第 2、2a 项和第 3 项按各自条件适用；第 2a 项拒绝后不再继续其余步骤。"
+      ],
+      "conclusion": "O-PF 按第 2 项，用来向 INVITE 的 P-Asserted-Identity 中的公共用户身份确定主叫 MCPTT ID。找不到这个公共身份与 MCPTT ID 的绑定，或者找到的绑定有效期已过，须在该来向 INVITE 上回 SIP 404，Warning 文本码 141，并且不继续其余步骤。对已确定主叫 MCPTT ID 的用户，若 O-PF 本地策略判定该用户无权发起聊天组呼，须对同一侧的入向请求回 SIP 403，Warning 文本码 108。141 和 108 是 Warning 引号开头的 MCPTT 文本码，不替代外层 warn-code 399。两项都是 O-PF 的早期拒绝；CF 先收到 O-PF 另发的 INVITE 才有本侧的处理，CF 的 403/120 是组文档初检之后，对尚未归属且不具隐式归属资格的拒绝，不同于这里的本地授权拒绝。",
+      "normative_strength": "身份确定及各分支的拒绝和对应 Warning 为 SHALL；第 2a 项另明确不得继续其余步骤。第 3 项写明必须拒绝，没有同样的显式停止语句。",
+      "limitations": [
+        "这里用公共用户身份查主叫的 MCPTT 业务用户身份，不拿组 ID 或客户端 ID 查这条绑定。404/141 不区分缺绑定和已过期，不说明账号、系统或组不存在。本段没有规定已确认缺少 P-Asserted-Identity 时的固定应答；若只有 404 状态，既无对应 Warning，也无可核对的本侧处理记录，不能判为 141。403/108 是发起聊天组呼的本地授权，不报告目标组归属、组会话存在性或 CF 的准入结果。",
+        "按各侧实际 INVITE 配对应答。若 O-PF 收到对它发往 CF 的 INVITE 的 4xx、5xx 或 6xx 响应，须生成客户端侧响应、纳入实际收到的 Warning 并发给客户端；看到终端响应的发送者是 O-PF 并不足以定位任意失败的决定点。缺少 Warning 或相应处理记录不代填原因；未抓到出向 INVITE 不证明它没发。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.1, incoming on-demand chat INVITE and items 2, 2a and 3: caller PAI identity mapping and local permission to make chat group calls"
+          ],
+          "printed_pages": [
+            276
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.4.1; 4.4.2, Tables 4.4.2-1 and 4.4.2-2: Warning code 399 and quoted MCPTT text codes 108 and 141"
+          ],
+          "printed_pages": [
+            33,
+            34,
+            36,
+            37
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1, opening terminology 1–2; controlling steps 4–5"
+          ],
+          "printed_pages": [
+            286,
+            287
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.1, originating participating function outgoing INVITE items 9–10 and 16: distinct request sent to the controlling function"
+          ],
+          "printed_pages": [
+            277,
+            278
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.1, final response paragraph for 4xx/5xx/6xx, items 1–3: PF generates a response, includes the received Warning fields and forwards the response to the client"
+          ],
+          "printed_pages": [
+            279
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "source_references": [
@@ -978,6 +1049,27 @@
       ],
       "printed_pages": [
         183
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.3.1.1, incoming on-demand chat INVITE and items 2, 2a and 3: caller PAI identity mapping and local permission to make chat group calls"
+      ],
+      "printed_pages": [
+        276
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "4.4.1; 4.4.2, Tables 4.4.2-1 and 4.4.2-2: Warning code 399 and quoted MCPTT text codes 108 and 141"
+      ],
+      "printed_pages": [
+        33,
+        34,
+        36,
+        37
       ]
     }
   ],
