@@ -27,3 +27,5 @@ GMS 发出通知时须满足两个前提：客户端已订阅组配置信息；G
 这里的双方是**终端客户端和 GMS**。若两端都是 GMS，查[伙伴系统取得组配置并订阅更新](partner-group-configuration.md)；若问题是新成员为什么发起配置请求，查[组成员名单变动](group-membership-notification.md)；若要看组状态或哪些用户已归属，查[组动态数据订阅](group-dynamic-data.md)。这些是不同的问题，不是终端每次下载的后续步骤。
 
 来源：[3GPP TS 23.280 V16.7.0，Release 16，Stage 2（ETSI，2024-05）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/16.07.00_60/ts_123280v160700p.pdf)。[功能实体与同组 GMS 规则，印刷页 31–32](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/16.07.00_60/ts_123280v160700p.pdf#page=32)；[六张信息流表，印刷页 62–63](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/16.07.00_60/ts_123280v160700p.pdf#page=63)；[获取、订阅与通知流程，印刷页 78–80](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/16.07.00_60/ts_123280v160700p.pdf#page=79)。
+
+若要核对[组本身是否为每项已启用的业务提供专用配置](group-enabled-service-configuration.md)，不能用一次获取请求的业务范围代替完整组配置。
