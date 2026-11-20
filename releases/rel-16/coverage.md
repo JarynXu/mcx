@@ -452,6 +452,16 @@ MCPTT 或 MCVideo 跨系统私呼，双方在各自主系统接受服务，两�
 
 [读取主题](topics/calls/private-preestablished-origination.md)
 
+## 普通私呼终接：被叫已有预建立会话，自动应答和人工应答分别由谁回 200？
+
+同系统归属网内有话权控制的一对一私呼，T-PF 如何从来话和被叫设置选择应答模式；如何用未关联业务、语音和话权控制两个媒体描述判定能否复用，区分未匹配的按需邀请与命中后须带 Replaces 的替换。
+
+符合普通预建立条件且未触发替换时，自动分支由 T-PF 先发 200/Unconfirmed 给 CF 再进入媒体面接口；人工分支向 UE 发对话内 re-INVITE，按实收 UE 180 或 200 分别生成 CF 腿响应，媒体面交互后才发 CF 腿 200。
+
+尚未建立：不规定候选排序或冲突模式的优先级，不展开按需或替换全流程；不能以 CF 腿响应、发送 Connect 或终端条款代替真实收件、人工操作、话权许可或 RTP 证据。
+
+[读取主题](topics/calls/private-preestablished-termination.md)
+
 
 
 ## 普通私聊SDS控制面：发送资格、请求与接收证据

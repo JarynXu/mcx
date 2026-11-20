@@ -1,0 +1,359 @@
+{
+  "topic_id": "r16-calls-private-preestablished-termination",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "普通私呼终接：被叫已有预建立会话，自动应答和人工应答分别由谁回 200？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "各声明继承共同范围，再按模式、是否命中原会话、是否触发替换及两条信令腿的实际请求和响应判断。",
+  "common_conditions": [
+    "TS 24.379 V16.14.0，Release 16，Stage 3。同一 MC 系统归属网内、有话权控制、以本次被叫 MCPTT ID 指定一人的在网私呼；研究 CF 的新初始 INVITE 到达终接侧参与功能 T-PF 后的处理。",
+    "普通自动和人工示例为正常优先级；特殊标志和 Priv-Answer-Mode 仅用于说明替换分流，不含紧急业务的完整过程、首个应答者、无话权控制或跨系统。"
+  ],
+  "claims": [
+    {
+      "id": "private-terminating-mode-and-session-selection",
+      "title": "T-PF 凭什么选择自动或人工、按需或预建立，以及是否替换？",
+      "conditions": [
+        "T-PF 实收 CF 发给它的新初始 INVITE。依 §11.1.1.3.2 已到达对应检查项。对 session-type=private，项 3 在尚未从本次被叫的 application/poc-settings+xml 收到 Answer-Mode Indication 时，要求以 480/Warning 146 拒绝并停止；此时不到项 7–8。",
+        "对于通过前序检查的来话，区分模式选择、空闲与媒体匹配、进入预建立分支后的替换检查。紧急或迫近危险仅用于标出分流条件，不描述该类呼叫完整流程。"
+      ],
+      "conclusion": "项 7：入站 Answer-Mode 为 Auto，或入站没有 Answer-Mode 且已收被叫设置为 auto-answer，或入站 Priv-Answer-Mode 为 Auto，进入自动启动程序。项 8 独立地列出 Answer-Mode 为 Manual，或无 Answer-Mode 且已收设置为 manual-answer，或 Priv-Answer-Mode 为 Manual，进入人工启动程序。两种模式选预建立分支都要求被叫有尚未关联 MCPTT 业务会话的预建立会话；本次 offer 与既有会话中 MCPTT 语音流的媒体级描述相同，且话权控制实体的媒体级描述也相同。三项不齐，自动走 §6.3.2.2.5.2、人工走 §6.3.2.2.6.2，向被叫另发按需 INVITE。三项齐备，分别进入 §6.3.2.2.5.3 或 §6.3.2.2.6.3；此时若入站 mcptt-info 的 mcptt-Params 下 emergency-ind 或 imminentperil-ind 为 true，或入站含任何 Priv-Answer-Mode 头，须改走本模式的按需程序；出站 INVITE 的 Replaces 须带目标预建立会话的 Call-ID、to-tag、from-tag，SDP offer 包含目标会话当前使用的媒体参数，跳过预建立分支余步。未触发替换才继续本模式的普通预建立步骤。",
+      "normative_strength": "私呼项 3 的条件拒绝和停止、项 7/8 各自的条件分派、两种模式的选择及符合条件的替换均为 SHALL。",
+      "limitations": [
+        "已存在 SIP 对话或编解码器相同并不等于满足三项条件；两个选择程序没有规定多候选排序。不要把无 Answer-Mode 当成默认自动或默认人工，也不要给重叠的模式条件臆定优先级。",
+        "未匹配而进入按需与匹配后须替换是两条不同的路径。正常优先级仍可能含 Priv-Answer-Mode；不能从按需 INVITE 的存在推出它必须带 Replaces。本条只解释分流，不是完整按需或替换请求字段清单。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.2, terminating PF incoming INVITE and item 3: missing invited-client Answer-Mode Indication, 480 with Warning text 146 and stop"
+          ],
+          "printed_pages": [
+            376,
+            377
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.2 items 7–8: private terminating PF automatic and manual alternatives, received Answer-Mode, received invited-client settings when Answer-Mode is absent, or corresponding Priv-Answer-Mode"
+          ],
+          "printed_pages": [
+            377
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.5.1, items 1–2: three pre-established-session conditions versus on-demand automatic commencement"
+          ],
+          "printed_pages": [
+            95,
+            96
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.6.1 items 1–2: idle pre-established session and both offered media sections versus on-demand manual commencement"
+          ],
+          "printed_pages": [
+            98,
+            99
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.5.2 items 3–11: automatic on-demand terminating request generated and sent toward the invited client"
+          ],
+          "printed_pages": [
+            96,
+            97
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.6.2 items 1–10: manual on-demand terminating request generated and sent toward the invited client"
+          ],
+          "printed_pages": [
+            99
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.5.3 item 1: automatic on-demand replacement using target call-id and tags, current media parameters, and skip of remaining steps"
+          ],
+          "printed_pages": [
+            97,
+            98
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.6.3 item 1: manual on-demand replacement using target call-id and tags, current media parameters, and skip of remaining steps"
+          ],
+          "printed_pages": [
+            100,
+            101
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "private-terminating-automatic-pf-response",
+      "title": "自动应答时 CF 腿的 200 是谁生成的？",
+      "conditions": [
+        "本次私呼已进入自动预建立分支，有合格旧会话；入站没有 Priv-Answer-Mode，且 emergency-ind、imminentperil-ind 均未置 true。"
+      ],
+      "conclusion": "T-PF 为 CF 的初始 INVITE 生成 SIP 200 OK。SDP answer 以建预建立会话时协商好的 SDP 和 CF 本次 INVITE 的 SDP offer 为依据；P-Answer-State 置 Unconfirmed，P-Asserted-Identity 取自被叫客户端为建立那条预建立会话而发送的 INVITE。T-PF 向 CF 发送自己的 200，随后按 TS 24.380 §9 与媒体面交互。",
+      "normative_strength": "§6.3.2.2.5.3(2–7) 中生成、填充、发送 200 及后续媒体面交互均为 SHALL。",
+      "limitations": [
+        "本分支没有列出向 UE 发本次 SIP 请求或等待 UE 的 SIP 回答。CF 侧 200 不是 UE 的 200，不能证明 UE 收到或确认了某条 MCPC 消息、用户接听、话权或 RTP。",
+        "§11.1.1.2.2.2 对正常优先级被叫终端写 re-INVITE 而非 INVITE，不能用这句话为自动分支补造 UE 腿请求或取消替换例外。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.5.3 items 2–7 and note 2: terminating PF 200/Unconfirmed, prior client PAI, SDP, media interaction and absent ordinary client MIME data"
+          ],
+          "printed_pages": [
+            98
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.2.2 opening and item 2: private client terminating cross-reference and normal-priority re-INVITE rather than INVITE"
+          ],
+          "printed_pages": [
+            366
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.5.3 item 1: automatic on-demand replacement using target call-id and tags, current media parameters, and skip of remaining steps"
+          ],
+          "printed_pages": [
+            97,
+            98
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "private-terminating-manual-two-leg-responses",
+      "title": "人工应答时如何区分 UE 腿与 CF 腿的 180、200？",
+      "conditions": [
+        "本次私呼已进入人工预建立分支，有合格旧会话；入站没有 Priv-Answer-Mode，且 emergency-ind、imminentperil-ind 均未置 true。响应处理分别以 T-PF 实收针对该 re-INVITE 的 180 或 200 为前提。"
+      ],
+      "conclusion": "T-PF 在与被叫 UE 的既有预建立 SIP 对话内生成并发送 re-INVITE；复制 CF 本次 INVITE 的 application/vnd.3gpp.mcptt-info+xml 正文内容，并以其 SDP offer 为依据构造出站 SDP offer。注 1 说明 re-INVITE 不能带 Answer-Mode，在这个对话内隐含人工应答。T-PF 实收 UE 对此 re-INVITE 的 180 时，为 CF 的初始 INVITE 另造 180，沿用所收 180 的 P-Asserted-Identity 发给 CF。T-PF 实收 UE 对此 re-INVITE 的 200 时，若所收 SDP answer 改变编解码器或媒体格式，须先以新协商的编解码器及媒体参数更新媒体面；T-PF 再生成自己的 200，复制所收 200 的 P-Asserted-Identity，以所收 SDP answer 为依据构造自己的 SDP answer，与媒体面交互，随后为原 INVITE 向 CF 发送 200。注 4 将此处发送 MCPC Connect 的目的说明为给被叫 UE 提供 MCPTT 会话身份。",
+      "normative_strength": "T-PF 请求构造与发送、收到相应响应后的处理均为 SHALL；编解码器或媒体格式改变是最终响应段项 1 更新媒体面的前提，不能把满足前提后的更新降为可选。有关隐含 Manual、响应适用场景与 Connect 目的保留为注释。",
+      "limitations": [
+        "注 2 把 180 对应到私呼；注 3 说组呼可能收到 183，不把 183 当成本私呼的默认响应，也不要求在处理 UE 200 前必须已经收到 UE 180。",
+        "被叫侧 §11.1.1.2.2.2 写新的正常优先级私呼收到 re-INVITE 而非 INVITE，并引用 §11.1.1.2.1.2。后者项 10 以 Answer-Mode: Manual 加本地设置或允许条件，或 Priv-Answer-Mode: Manual 为入口；这与本程序注 1 的隐含 Manual 一并保留，不导出缺头的终端解析算法。",
+        "仅有 CF 侧响应不能证明 UE 腿实际收发或用户操作；媒体面接口和注释不证明某个 Connect 已被乙接收、话权许可或 RTP 已通。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.6.3 items 2–5 and note 1: re-INVITE within existing dialog, implied manual answer, copied incoming body and SDP offer"
+          ],
+          "printed_pages": [
+            101
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.6.3 response paragraphs and notes 2–4: actual 180, 183 or 200 to re-INVITE; separate PF response, SDP and media steps"
+          ],
+          "printed_pages": [
+            101
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.2.2 opening and item 2: private client terminating cross-reference and normal-priority re-INVITE rather than INVITE"
+          ],
+          "printed_pages": [
+            366
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.2, item 10: manual commencement dispatch, distinct from items 8(c)–(d) for first-to-answer"
+          ],
+          "printed_pages": [
+            358
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.3.2, terminating PF incoming INVITE and item 3: missing invited-client Answer-Mode Indication, 480 with Warning text 146 and stop"
+      ],
+      "printed_pages": [
+        376,
+        377
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.3.2 items 7–8: private terminating PF automatic and manual alternatives, received Answer-Mode, received invited-client settings when Answer-Mode is absent, or corresponding Priv-Answer-Mode"
+      ],
+      "printed_pages": [
+        377
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.2.5.1, items 1–2: three pre-established-session conditions versus on-demand automatic commencement"
+      ],
+      "printed_pages": [
+        95,
+        96
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.2.6.1 items 1–2: idle pre-established session and both offered media sections versus on-demand manual commencement"
+      ],
+      "printed_pages": [
+        98,
+        99
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.2.5.2 items 3–11: automatic on-demand terminating request generated and sent toward the invited client"
+      ],
+      "printed_pages": [
+        96,
+        97
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.2.6.2 items 1–10: manual on-demand terminating request generated and sent toward the invited client"
+      ],
+      "printed_pages": [
+        99
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.2.5.3 item 1: automatic on-demand replacement using target call-id and tags, current media parameters, and skip of remaining steps"
+      ],
+      "printed_pages": [
+        97,
+        98
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.2.6.3 item 1: manual on-demand replacement using target call-id and tags, current media parameters, and skip of remaining steps"
+      ],
+      "printed_pages": [
+        100,
+        101
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.2.5.3 items 2–7 and note 2: terminating PF 200/Unconfirmed, prior client PAI, SDP, media interaction and absent ordinary client MIME data"
+      ],
+      "printed_pages": [
+        98
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.2.6.3 items 2–5 and note 1: re-INVITE within existing dialog, implied manual answer, copied incoming body and SDP offer"
+      ],
+      "printed_pages": [
+        101
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.2.6.3 response paragraphs and notes 2–4: actual 180, 183 or 200 to re-INVITE; separate PF response, SDP and media steps"
+      ],
+      "printed_pages": [
+        101
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.2.2.2 opening and item 2: private client terminating cross-reference and normal-priority re-INVITE rather than INVITE"
+      ],
+      "printed_pages": [
+        366
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.2.1.2, item 10: manual commencement dispatch, distinct from items 8(c)–(d) for first-to-answer"
+      ],
+      "printed_pages": [
+        358
+      ]
+    }
+  ],
+  "related": [
+    "r16-calls-private-preestablished-origination",
+    "r16-calls-private-server-admission-routing",
+    "r16-media-preestablished-connect-outcome"
+  ],
+  "limitations": [
+    "不从 SIP 响应推断终端 UI、MCPC 实际收件、已获话权或真实媒体。",
+    "不为相冲突的模式输入、多个合格旧会话或终端对无 Answer-Mode 的处理指定算法；不展开按需、替换或其他呼叫类型的全流程。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
