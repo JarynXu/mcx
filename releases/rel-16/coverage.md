@@ -3127,6 +3127,16 @@ Floor Idle/Taken 按会话序号下发；入向请求确认时由参与功能处
 
 [读取主题](topics/media/mbms-floor-ack-and-rtp-duplicates.md)
 
+## RTCP APP subtype 10001：先查 MCPT 还是 MCPC
+
+按四字节 Name 选话权或预建立会话控制消息表；区分 Floor Granted 和 Disconnect。
+
+限普通私呼在用且等待话权的示例；两消息确认和状态不同。
+
+尚未建立：不从消息发送、日志漏项或状态改变推断媒体、对端实收或释放预建立会话。
+
+[读取主题](topics/media/rtcp-app-name-subtype.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

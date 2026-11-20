@@ -35,3 +35,5 @@ Disconnect 表列的是 PF 的 SSRC 和 MCPTT Session Identity；Acknowledge 表
 - **客户端要求释放整条预建立会话。** 在用的 PF 实际收到客户端的预建立会话释放指示后，停止在客户端与 CF 之间传送 RTP 和话权控制消息，释放与这条预建立会话有关的媒体面资源和计时器，进入 `Start-stop`。这和「会话建着、当前没承接呼叫」是不同结果。[§9.3.2.4.6，印刷页 201](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=202)；[§9.3.2.3.1，印刷页 198](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=199)。
 
 要确认上层信令所指的是业务还是预建立对话，查[普通私呼的释放信令](../calls/private-client-release.md)和[拆除在用预建立会话](../calls/preestablished-session-in-use-release.md)。要查建立阶段的 [Connect、Accepted 和 T55](preestablished-connect-outcome.md)，另看建立入口。这里不规定并发收件和到期的调度顺序，也不从一侧的确认推断对端已处理、双方媒体都停了或所有资源都已回收。
+
+若尚不能确认线上的消息是 Disconnect，先查[RTCP APP 的 Name 和 subtype 怎样区分消息](rtcp-app-name-subtype.md)。
