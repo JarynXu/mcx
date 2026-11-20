@@ -502,6 +502,16 @@ MCPTT 或 MCVideo 跨系统私呼，双方在各自主系统接受服务，两�
 
 [读取主题](topics/calls/regrouped-group-invite-redirect.md)
 
+## INVITE 正文直接写 TGI，谁查组成组文档、谁做授权？
+
+实际 CF INVITE 正文已是 TGI 且对应文档可用时，按 associated-group-id 是否给出选组成组文档；本机文档全取得后再按主叫成员判断是否需要 NCF 授权。
+
+预安排 CF 在明确承接条件成立时按组成组发独立 OPTIONS；第一份匹配 200/147 的 PAI 与正文分别给原 INVITE 的 302。缺字段时标准条文不给默认值。
+
+尚未建立：不把提示、订阅成功、本机部分文档、退出或 302 当成呼叫已经成功。未裁定提示分支与文档齐备的组合条件、零本机组、失败时序、不同调用者或部署机制。
+
+[读取主题](topics/calls/direct-tgi-constituent-authorization.md)
+
 
 
 ## 普通私聊SDS控制面：发送资格、请求与接收证据

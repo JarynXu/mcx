@@ -1,0 +1,203 @@
+{
+  "topic_id": "r16-calls-direct-tgi-constituent-authorization",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "INVITE 正文直接写 TGI，谁查组成组文档、谁做授权？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "原始正文组身份已是 TGI 且对应临时组文档可用；按提示选择组成组范围，文档齐备后核授权去向。独立预安排 CF 承接和 OPTIONS 逐腿取证。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0（Rel-16，Stage 3），在网 MCPTT 直接 TGI 的分类 CF INVITE，不是原组重定向入口。",
+    "本机负责的组成组与另一个非控制功能、文档阶段和独立信令腿分别核对。不概括其他调用者、系统或实现。"
+  ],
+  "claims": [
+    {
+      "id": "direct-tgi-constituent-document-selection",
+      "title": "直接 TGI 时，有无 associated-group-id 各订哪份文档？",
+      "conditions": [
+        "实际收到给组控制功能的 INVITE，正文 mcptt-request-uri 是 TGI，已取得这个 TGI 对应的文档。",
+        "有 associated-group-id 时核该字段指定组成组归属；无此字段时逐项核 TGI 文档里的 constituent-MCPTT-group-ID。"
+      ],
+      "conclusion": "有提示时只看指定组成组是否归本机，若是且尚未订阅则订其 xcap-diff。无提示时逐项区分 CF/NCF 归属，给各未订阅的 CF 本机组成组订文档；注6此分支在订阅有错误时停止进一步订阅。实际收到匹配订阅 404→原 INVITE 404/Warning 文本113 并停止；其他 4xx/5xx/6xx→带文本114 的最终响应并停止。",
+      "normative_strength": "§6.3.5.2(8)(a)–(b) 规定相应 SHALL；注6不规定组成组订阅顺序。",
+      "limitations": [
+        "有提示而所指组成组不归本机，不从 (8a) 推自动用无提示处理或立即发 OPTIONS；(6h) 是原组入口。",
+        "未见文档、发出订阅或订阅 2xx 都不是收到错误或实际取得组文档。114 是 Warning 文本码，不指定另一个 SIP 最终状态码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.5.2(4), (8)(a)–(b) and Note 6: a TGI document must be available; associated-group-id selects the constituent document scope"
+          ],
+          "printed_pages": [
+            131,
+            133,
+            134
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "local-constituent-document-completeness-and-membership",
+      "title": "什么时候能判断还要由 NCF 授权？",
+      "conditions": [
+        "同一直接 TGI INVITE，已实际取到本 MCPTT 服务器负责的所有组成组文档；用原请求中 mcptt-calling-user-id 查逐组成员。"
+      ],
+      "conclusion": "只要在任一已取到的本机组成组文档是成员则退出当前组文档程序；全不匹配则判定需要 NCF 授权，然后退出当前组文档程序。",
+      "normative_strength": "§6.3.5.2(8)(c) 对达到文档全部已取到后的两条结果分别规定 SHALL。",
+      "limitations": [
+        "该守卫不是只取得提示所选的一份，也不是收到 SUBSCRIBE 200 或仅知顶层 TGI 文档。源文未裁定在有提示却未齐备、零本机组成组或纯缓存记录时怎样补齐本机检索条件。",
+        "退出和确定另一角色需要授权，都不证明已授权或拒绝、呼叫腿成功或终端加入、媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.5.2(4), (8)(a)–(b) and Note 6: a TGI document must be available; associated-group-id selects the constituent document scope"
+          ],
+          "printed_pages": [
+            131,
+            133,
+            134
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.5.2(8)(c): all locally homed constituent documents retrieved before judging membership or further NCF authorisation"
+          ],
+          "printed_pages": [
+            134
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "prearranged-ncf-options-and-qualified-302",
+      "title": "实际走 NCF 授权时怎样用 OPTIONS 应答，不套原组非宿主 302？",
+      "conditions": [
+        "实际进入预安排组呼 CF 终止程序，组文档程序返回需 NCF 授权，该原 INVITE 同时停在这条后续之前；随后只核对应 OPTIONS 事务。",
+        "生成 302 的这个分支须 CF 实收首份带 Warning 文本 147 的匹配 OPTIONS 200；复制内容以实际应答字段为证据。"
+      ],
+      "conclusion": "若原 INVITE 含组成组提示，OPTIONS 发往该组关联 NCF PSI；否则逐个发给非 CF 归属的组成组所关联的 NCF。OPTIONS 正文目标是本腿组成组 ID，沿用主叫 MCPTT ID。NCF 实收后核对发 OPTIONS 的服务器 PAI 已获准，按组成组取到或已缓存其文档，再按聊天组加入/预安排组发起规则判断主叫。通过时回 OPTIONS 200/147、session-type、NCF PAI。CF 对原 INVITE 生成 302，Contact 取实收 200 PAI，正文两个业务字段取实收 200 的 mcptt-request-uri / session-type；若发过多笔 OPTIONS 则清理缓存应答并忽略其他应答。",
+      "normative_strength": "§10.1.1.4.2(5)(c)(i) 有条件调用 §6.3.3.1.13.7；正常 OPTIONS 收件与应答字段见 §10.1.1.5.4。",
+      "limitations": [
+        "NCF 200 构造条文未列 CF 要复制的 mcptt-request-uri；缺该字段不补 TGI 或组成组 ID，不规定继续方式或部署地址发现。",
+        "不是 §6.3.5.2(6b) 从原组查宿主得到的 302；不把多个 OPTIONS 的带条件负响应规则套进单笔，也不能用授权应答或已发 302 证明新腿成功。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.2(5)(c)(i): actual prearranged terminating procedure invokes the OPTIONS helper on NCF authorisation needed"
+          ],
+          "printed_pages": [
+            244
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.13.7: CF sends OPTIONS by named or remote constituent, and returns a distinct 302 on actual qualifying 200/147"
+          ],
+          "printed_pages": [
+            114,
+            115,
+            116
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.4: NCF checks the OPTIONS sender and caller; positive 200 lists Warning 147, session-type and NCF P-Asserted-Identity but not mcptt-request-uri"
+          ],
+          "printed_pages": [
+            263
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.5.2(4), (8)(a)–(b) and Note 6: a TGI document must be available; associated-group-id selects the constituent document scope"
+      ],
+      "printed_pages": [
+        131,
+        133,
+        134
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.5.2(8)(c): all locally homed constituent documents retrieved before judging membership or further NCF authorisation"
+      ],
+      "printed_pages": [
+        134
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.4.2(5)(c)(i): actual prearranged terminating procedure invokes the OPTIONS helper on NCF authorisation needed"
+      ],
+      "printed_pages": [
+        244
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.3.1.13.7: CF sends OPTIONS by named or remote constituent, and returns a distinct 302 on actual qualifying 200/147"
+      ],
+      "printed_pages": [
+        114,
+        115,
+        116
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.5.4: NCF checks the OPTIONS sender and caller; positive 200 lists Warning 147, session-type and NCF P-Asserted-Identity but not mcptt-request-uri"
+      ],
+      "printed_pages": [
+        263
+      ]
+    }
+  ],
+  "related": [
+    "r16-calls-regrouped-group-invite-redirect",
+    "r16-groups-mcptt-server-group-document-cache",
+    "r16-calls-prearranged-server-admission-routing"
+  ],
+  "limitations": [
+    "不因为有提示、本机单份文档、缓存/订阅或已经退出某个 helper 就得出授权结果。",
+    "不补原文未定的提示处理顺序、零本机组、缺字段、单目标故障、地址发现或生产部署。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

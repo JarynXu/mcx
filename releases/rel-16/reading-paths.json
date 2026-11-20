@@ -4981,9 +4981,33 @@
         {
           "condition": "如果收到的是预配置组重组创建或移除通知，区分终端状态及其目标。",
           "read": "topics/groups/preconfigured-regroup-notification.md"
+        },
+        {
+          "condition": "若下一笔 INVITE 正文已经直接写 TGI 且该临时组文档已取得，按直接 TGI 查组成组与授权，不沿用原组分流。",
+          "read": "topics/calls/direct-tgi-constituent-authorization.md"
         }
       ],
       "boundary": "固定 Stage 3 原组实际 CF INVITE；另成一笔的直接 TGI INVITE、原组重组本身及最终参与/媒体均不可自动推出。"
+    },
+    {
+      "id": "r16-calls-direct-tgi-constituent-authorization",
+      "question": "直接 TGI 的组成组文档和授权：提示如何限范围、何时需要 NCF，OPTIONS 及 302 怎样各自取证？",
+      "start": "topics/calls/direct-tgi-constituent-authorization.md",
+      "next_if": [
+        {
+          "condition": "实际 INVITE 正文还是原组 ID、组文档显示已重组时，查原组重定向与本机宿主两入口。",
+          "read": "topics/calls/regrouped-group-invite-redirect.md"
+        },
+        {
+          "condition": "若需要核对订阅与实际取得相符文档的证据，查组文档缓存。",
+          "read": "topics/groups/mcptt-server-group-document-cache.md"
+        },
+        {
+          "condition": "若实际是普通、未重组预安排组呼，按独立的普通准入与邀请范围。",
+          "read": "topics/calls/prearranged-server-admission-routing.md"
+        }
+      ],
+      "boundary": "直接 TGI §6.3.5.2(8) 及预安排 CF 明确调用授权的正常证据，不裁定储存、计时、缺字段故障、其他场景或实际全程接通。"
     }
   ]
 }
