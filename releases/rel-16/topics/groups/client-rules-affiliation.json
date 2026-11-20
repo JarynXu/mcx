@@ -1,0 +1,188 @@
+{
+  "topic_id": "r16-groups-client-rules-affiliation",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "在网 MCPTT：进了区域或别名变了，何时才发组归属请求？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "本客户端按位置触发别名、按实收通知检测别名变更，再按同一配置规则所需条件检查。组兴趣的实际发布和实收归属结果另核。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0（Release 16，Stage 3），同系统普通在网，本用户在本客户端的显式组兴趣及别名状态。",
+    "只说明两类条件都配置的单条规则；不含其他用户、协商式命令、跨系统、外部配置载荷或服务端隐式变更。"
+  ],
+  "claims": [
+    {
+      "id": "location-alias-status-invokes-group-rule-check",
+      "title": "进区后别名发布与终端检测别名变更，哪一步调用归属规则？",
+      "conditions": [
+        "先区分两个实际入口：功能别名启用或停用的位置条件满足时，由本客户端触发别名变更；本客户端实际收到合格按用户别名 PIDF NOTIFY 并检测到本用户的别名启停时，才应用本页的别名检测入口。"
+      ],
+      "conclusion": "位置命中启动别名状态变更并发别名 PUBLISH；启用用 Expires=4294967295，停用用 0，同一笔不能兼做，使用独立 p-id-fa。收到合格的按用户别名 NOTIFY 后读各别名状态；若通知含 p-id-fa，用来关联触发通知的别名 PUBLISH，不是状态字段。实测本用户别名启用或停用后，客户端调用 §9.2.1.7，尚未证明规则满足或已经归属。若希望获知别名变更成败，先启动别名状态确定程序。",
+      "normative_strength": "§9A.2.1.2/.3/.4 在相应条件下规定 SHALL；§9A.2.1.1 规定为了解变更结果须先启动状态确定。",
+      "limitations": [
+        "地理记录和别名 PUBLISH 200 不能代替收到通知及实际状态检测；没有 p-id-fa 不否定正文状态，也不补关联算法。",
+        "不按每次进/出固定映射启/停，不把同类位置条件触发的所有组归属一律设为先变更别名。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.1.1 and 9A.2.1.2: own-user alias-state observation before a change when outcome sought; location-triggered activation/deactivation uses alias PUBLISH and p-id-fa"
+          ],
+          "printed_pages": [
+            199,
+            200
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.1.3 receipt and 9A.2.1.4: per-user alias NOTIFY status, optional p-id-fa and actual activation/deactivation detection invoke group-rule procedure; location criterion starts the alias procedure"
+          ],
+          "printed_pages": [
+            201
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "both-configured-criteria-trigger-distinct-group-interest",
+      "title": "位置与别名条件怎样匹配，什么时候有另一笔组 PUBLISH？",
+      "conditions": [
+        "只谈 MCPTT 用户配置档的 RulesForAffiliation / RulesForDeAffiliation 中一个明确配置了位置与功能别名两类条件的规则。分别在同一条规则内比较两类。在本用户的这一终端上处理。",
+        "另查实际发出的客户端组 PUBLISH 和终端实收其自身归属状态 NOTIFY，不与别名结果相换。"
+      ],
+      "conclusion": "同一规则至少一项位置条件及至少一项别名条件都满足，才算该条满足；不能将一条的位置与另一条的别名合并。任一规则满足后客户端启动归属状态变更，向服务本用户的 O-PF 发另一份 SIP PUBLISH，按用户归属 PIDF 写目标客户端 ID、该客户端尚感兴趣的全部组和组发布 p-id。还有组用 Expires=4294967295，无任何组用 0。若需获知成败，先发起组状态确定，实际收按用户归属 PIDF NOTIFY 后按客户端和组核状态，若有 p-id 则关联组发布。",
+      "normative_strength": "§9.2.1.7 满足任一规则后规定 SHALL；§9.2.1.1–.3 的构造及证据按各自实际条件适用。",
+      "limitations": [
+        "§9.2.1.7 前句写可由两类中的任一类组成，后句写同一规则两类各须有命中；本文不补单类、空条件默认或归属/解除同时命中时的优先顺序。",
+        "这次自动触发是终端发显式组兴趣，不是 PF 在业务授权后按配置办理隐式归属。组 PUBLISH 200、收到别名通知或关联 p-id 均不证明本客户端的组归属成功、组成员登记或参加组呼。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.1.7: apply an individual configured group rule, requiring any location criterion and any alias criterion when both classes are present"
+          ],
+          "printed_pages": [
+            171
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.1.1 and 9.2.1.2: separate originating client group-interest PUBLISH with whole interest list and p-id, initial status observation if outcome sought"
+          ],
+          "printed_pages": [
+            168,
+            169
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.1.3: per-user affiliation NOTIFY determines status per group at each client; optional p-id associates its triggering group publication"
+          ],
+          "printed_pages": [
+            169,
+            170
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.15 introductory applicability: compare the server-side configured implicit affiliation after service authorisation, not the client rule trigger"
+          ],
+          "printed_pages": [
+            185
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.1.1 and 9A.2.1.2: own-user alias-state observation before a change when outcome sought; location-triggered activation/deactivation uses alias PUBLISH and p-id-fa"
+      ],
+      "printed_pages": [
+        199,
+        200
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.1.3 receipt and 9A.2.1.4: per-user alias NOTIFY status, optional p-id-fa and actual activation/deactivation detection invoke group-rule procedure; location criterion starts the alias procedure"
+      ],
+      "printed_pages": [
+        201
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.1.7: apply an individual configured group rule, requiring any location criterion and any alias criterion when both classes are present"
+      ],
+      "printed_pages": [
+        171
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.1.1 and 9.2.1.2: separate originating client group-interest PUBLISH with whole interest list and p-id, initial status observation if outcome sought"
+      ],
+      "printed_pages": [
+        168,
+        169
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.1.3: per-user affiliation NOTIFY determines status per group at each client; optional p-id associates its triggering group publication"
+      ],
+      "printed_pages": [
+        169,
+        170
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.2.2.15 introductory applicability: compare the server-side configured implicit affiliation after service authorisation, not the client rule trigger"
+      ],
+      "printed_pages": [
+        185
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcptt-functional-alias-client",
+    "r16-identity-mcptt-functional-alias-activation-servers",
+    "r16-groups-explicit-affiliation-client",
+    "r16-groups-configured-implicit-affiliation"
+  ],
+  "limitations": [
+    "不把进入或退出位置条件固定等同某种状态，不把所有位置触发都塞进别名链。",
+    "不定义只配一类时的默认、两类规则冲突或上述入口之外的重算时机；别名/兴趣发布、通知关联、归属结果、组成员和参加呼叫彼此不同。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
