@@ -48,6 +48,17 @@
 
 排查时先把 200 与**这笔授权用 PUBLISH** 对上。服务端发出响应，不等于请求端已经收到；即使请求端收到了，也不能凭这份响应判定应答方式或配置档在那一刻是否已生效。查本客户端状态要看服务端实际采用的应答方式和活动档，查某个组要看归属程序的结果。另一客户端是否收到了 [NOTIFY](../calls/settings-observation.md)，要看另一笔通信。
 
+## 资源共享：服务器怎样认出办理注册的是哪台设备？
+
+参与 MCPTT 功能（PF）收到第三方 REGISTER，要分两层读。外层的 `message/sip` 正文里是一整份客户端 REGISTER。**内层请求头**里的 `Resource-Share: supported` 回答“SIP 核心网支持资源共享吗？”；**同一份外层请求的 Contact 头参数** `+g.3gpp.registration-token` 携带办理注册的 MCPTT 终端（UE）身份，回答“是哪台设备？” 不能从内层 Contact 取这个 UE 身份，也不能把业务正文里的访问令牌当作设备标识。[§7.3.1(a)，印刷页 153](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=154)；[§8.1A，印刷页 161](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=162)。
+
+| MCPTT 服务器用哪条请求办授权？ | 用哪份注册记录，绑定哪些身份？ |
+|---|---|
+| **REGISTER**：服务器实际收到第三方 REGISTER；内嵌客户端 REGISTER 的 MCPTT 业务信息正文含 `mcptt-access-token` 和 `mcptt-client-id`。普通 IMS 注册本身不够。 | 查**眼前这份**第三方 REGISTER。第 2a 项查出并行授权已满就停止，不到第 5 项。走到第 5 项，内层头为 `Resource-Share: supported` 时，须把 **MCPTT ID 和 MCPTT 客户端 ID** 绑定到外层 Contact 参数所标识的 UE。第 4、4a 项写有“授权成功”，第 5 项没有另列这个条件；也不能据此认定授权失败后已经绑定。[§7.3.2，入口及第 1–5 项，印刷页 155](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=156)。 |
+| **授权兼设置的 PUBLISH**：服务器实际收到 `Event: poc-settings`、设置正文和含上述两个授权字段的 MCPTT 业务信息正文，且本次业务授权成功。 | 从**这次 PUBLISH 的 P-Asserted-Identity** 取得 IMS 公共用户身份，找出**含该 IMS 公共用户身份的第三方 REGISTER**。第 5c 项查这份 REGISTER 内层的 `Resource-Share: supported`，用它外层 Contact 的 `+g.3gpp.registration-token` 取 UE 身份；条件满足，须把 **MCPTT ID** 绑定到该 UE。第 5a 项另把 MCPTT ID 和客户端 ID 绑定到 IMS 公共用户身份；第 5c 项没有把客户端 ID 列为与 UE 绑定的对象。不能拿 PUBLISH 自身的头或正文代替这份 REGISTER。[§7.3.3，入口及第 1–6 项，印刷页 156](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=157)。 |
+
+同一用户在另一台设备也获授权，不能把这份 UE 绑定移作那台设备的许可。要确认服务器实际建立了哪一条绑定，需核对上述请求和相应的服务端绑定记录；单凭 `supported`、授权三元组或 200，不能认定已经共用承载。有了绑定也不等于预建立会话已经成功：若后来 PF 实际收到[建立预建立会话的 INVITE](../calls/preestablished-session-lifecycle.md)，且 SIP 核心网支持资源共享，还要把该 INVITE 的 `Feature-Caps` 参数所标识的 UE 与用户绑定的 UE 对上。[§8.2.2，第 4–5 项，印刷页 163](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=164)。这些条款没有规定多份同一 IMS 公共身份的注册记录如何择一，也没有给出令牌生成、异常值处理、绑定有效期或撤销规则。
+
 ## CSK 密钥更新：为什么服务器另发 MESSAGE，客户端何时替换？
 
 **先看参与功能实际收到了什么。** 参与 MCPTT 功能（PF）在办理业务授权的 REGISTER 或 PUBLISH 中收到客户端与服务器密钥（CSK），而且机密性保护已启用，才由 PF 决定是否更新。服务配置的 `confidentiality-protection` 为 `true` 或缺失时启用，为 `false` 时关闭；只有完整性保护不满足这一条件。这不是每次请求都要轮换，也不把“已获业务授权”或 REGISTER/PUBLISH 的 200 当成本段的触发条件。[TS 24.379 V16.14.0，§6.6.2.3.1，印刷页 140](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=141)；[§7.3.7，下载入口，印刷页 159](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=160)。

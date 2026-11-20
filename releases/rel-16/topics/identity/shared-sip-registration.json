@@ -702,6 +702,72 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "resource-sharing-ue-identity-binding",
+      "title": "资源共享：用哪份第三方 REGISTER 识别 UE，REGISTER 与授权 PUBLISH 各绑定哪些身份？",
+      "conditions": [
+        "服务器用 REGISTER 办 MCPTT 授权时，实际收到的第三方 REGISTER 的 message/sip 内嵌客户端 REGISTER，其 application/vnd.3gpp.mcptt-info+xml 含 mcptt-access-token 和 mcptt-client-id。第 2a 项并行授权已满即停止；第 5 项只在程序走到这里时适用。",
+        "服务器用 PUBLISH 办 MCPTT 授权和设置时，实收 Event 为 poc-settings、有 application/poc-settings+xml 和含上述两个授权字段的 application/vnd.3gpp.mcptt-info+xml 的请求。先按本次 P-Asserted-Identity 识别 IMS 公共用户身份，执行保护和额度检查。第 5c 项属本次业务授权成功的第 5 项。两条路径的收件和守卫分别适用。"
+      ],
+      "conclusion": "REGISTER 路径查本次收到的第三方 REGISTER。内嵌的客户端 REGISTER 头中 Resource-Share 值为 supported 时，服务器须把 MCPTT ID 和 MCPTT 客户端 ID 绑定到该外层第三方 REGISTER 的 Contact 头参数 +g.3gpp.registration-token 所标识的 MCPTT UE。PUBLISH 路径按本次 P-Asserted-Identity 取得的 IMS 公共用户身份，定位含该身份的第三方 REGISTER；第 5c 项在这份请求的内层检查同一头和值，从同一外层 Contact 的该参数取 UE 身份，须把 MCPTT ID 绑定到这个 UE。第 5a 项把 MCPTT ID 和客户端 ID 绑定到 IMS 公共用户身份；这个三元组不代替第 5c 项，后者没有列客户端 ID。内层 supported 让 PF 可判定 SIP 核心网支持资源共享，外层参数标识办理注册的设备。",
+      "normative_strength": "§7.3.2(5) 和 §7.3.3(5c) 在各自条件下规定必须绑定。§7.3.2(5) 自成一项，没有像 (4)、(4a) 那样另列授权成功；不能把它改写成成功才执行，也不能因这一省略断言失败后必然执行或已写入。§7.3.3(5c) 则明确受上一级授权成功条件约束。",
+      "limitations": [
+        "两处字段属于同一份相关第三方 REGISTER，不用内层 Contact、PUBLISH 自身的头或正文代替。不能拿同名用户在其他终端的注册记录顶替。本条不规定当同一 IMS 公共身份有多份注册记录时怎样挑选，也不补写令牌的生成、缺失或异常值处置、绑定有效期与撤销规则。",
+        "单一能力指示、业务授权三元组或 200 不能证明 UE 绑定实际写入；须核对相应收件和服务器绑定记录。绑定也不证明已经共用承载、另一台 UE 获准或预建立会话成功。PF 若实际收到建立预建立会话的 INVITE 且 SIP 核心网支持资源共享，另按 §8.2.2 比对该 INVITE 的 Feature-Caps 中 +g.3gpp.registration-token 所示 UE 身份与用户绑定的 UE；不以它反推授权时的收件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.1(a), third-party REGISTER body carries the REGISTER sent by the MCPTT client"
+          ],
+          "printed_pages": [
+            153
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.2, entry and steps 1–5 including 2a and 4a: nested Resource-Share header, outer Contact parameter and user/client association to the registering UE"
+          ],
+          "printed_pages": [
+            155
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.3, entry and steps 1–6 including 5a and 5c: successful authorization, P-Asserted-Identity correlation and MCPTT ID association to the UE"
+          ],
+          "printed_pages": [
+            156
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "8.1A, received third-party REGISTER indication of SIP core support and identification of the registering UE"
+          ],
+          "printed_pages": [
+            161
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "8.2.2, steps 4–5, subsequent pre-established-session INVITE Feature-Caps UE identity check (comparison only)"
+          ],
+          "printed_pages": [
+            163
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "related": [
