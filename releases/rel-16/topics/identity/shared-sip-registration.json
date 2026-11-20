@@ -540,6 +540,94 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "service-authorization-csk-update",
+      "title": "MCPTT 授权请求携带 CSK 时：何时另发密钥更新，终端何时替换？",
+      "conditions": [
+        "发起密钥更新时，参与 MCPTT 功能（PF）实际在办理业务授权的 REGISTER 或 PUBLISH 中收到 CSK，且 §6.6.2.3.1 所述机密性保护已启用。接收侧另以客户端实际收到下载 MESSAGE 且符合 §7.2.5 的识别条件为入口。"
+      ],
+      "conclusion": "Service Configuration 的 confidentiality-protection 为 true 或缺失时启用机密性保护，为 false 时关闭。已启用且 PF 实际在授权请求收到 CSK 时，PF 可以决定更新；若决定更新，须另发 SIP MESSAGE，Request-URI 取第三方 REGISTER 的 To 中收到的 URI，不是授权 PUBLISH 所指的 PF PSI，也不是任取 Contact。Accept-Contact 携 g.3gpp.icsi-ref 的 MCPTT ICSI 与 require、explicit，P-Asserted-Service 也携同一 ICSI；application/mikey 正文包含 CSK-ID 及在 MIKEY 消息中加密的 CSK。客户端实际收到含 MCPTT ICSI 的 P-Asserted-Service 和 application/mikey 的 MESSAGE，且 MIKEY 的 CSB-ID 中密钥标识最高 4 位的值为 2，才进入该 CSK 下载处理。IDRi 为 URI 时与当前服务 PF 的 PSI 比较，匹配后转为 UID；IDRi 为 UID 时，把当前服务 PF 的 PSI 转成 UID 后与收到的 UID 比较。用相应 UID 核验签名；上述发起者身份不匹配或 I_MESSAGE 认证失败时，须回 SIP 488，Warning 文本为 136 authentication of the MIKEY-SAKKE I_MESSAGE failed，并停止。只有成功提取 CSK 和 CSK-ID 后，才替换客户端中与该 PF 关联的原 CSK 和 CSK-ID。",
+      "limitations": [
+        "§7.3.7 不把已经授权成功或 REGISTER/PUBLISH 的 200 列成此更新的触发条件，发出 MESSAGE 也不证明终端已收到或完成替换。只有完整性保护不足以满足此更新的机密性保护前提；不把接收端例外码泛用到缺 ICSI、错误的密钥标识或其他不符合入口的情况。",
+        "136 是 Warning 文本内的业务码。§4.4.1 的 399 规则处于 INVITE 语境，不据此给 MESSAGE 指定外层码；不从 §7.2.5、§7.3.7 推出成功时必回 200、确认、重试、服务端切换时序、跨终端更新或授权撤销。",
+        "仅发布设置的受保护 PUBLISH 用该通信双方已可用的适用 CSK/CSK-ID 来处理 XML。使用这把密钥不等于这笔 PUBLISH 下载新密钥、重新申请授权或证明已有更新安装完成。这里只说明已核的 SIP 角色和替换条件，不展开引用标准的加密、密钥恢复或配置流程。"
+      ],
+      "normative_strength": "两项发送前提同时成立后，PF 是否决定更新为 MAY；决定后下载程序为 SHALL。客户端在规定身份不匹配或认证失败时须拒绝并停止；成功提取后须替换该 PF 关联的本地 CSK 和 CSK-ID。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.7, sending CSK key download: entry and items 1–6, optional update decision and separate MESSAGE"
+          ],
+          "printed_pages": [
+            159
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.6.2.3.1, confidentiality enabled for true or absent element, disabled for false (CSK update gate)"
+          ],
+          "printed_pages": [
+            140
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.2.5, receiving CSK key download: MCPTT MESSAGE discriminator, IDRi and authentication checks, and successful replacement"
+          ],
+          "printed_pages": [
+            152,
+            153
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.4.1 and 4.4.2 Table 4.4.2-2 entry 136: INVITE context of outer 399 and exact CSK MESSAGE warning text"
+          ],
+          "printed_pages": [
+            33,
+            37
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.6.2.2, client/server confidentiality and availability of the applicable key and identifier"
+          ],
+          "printed_pages": [
+            139
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.2.3, settings-only PUBLISH purpose and bodies (branch comparison)"
+          ],
+          "printed_pages": [
+            151
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.1A general and settings-only branch"
+          ],
+          "printed_pages": [
+            153,
+            154,
+            155
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "related": [
