@@ -7,7 +7,7 @@
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-23.280-v16.7.0",
   "common_conditions": [
-    "Release 16，3GPP TS 23.280 V16.7.0，Stage 2；MC 业务组会话的媒体下行。各项分别限定于动态或预建承载示例。"
+    "Release 16，3GPP TS 23.280 V16.7.0，Stage 2；MC 业务组会话的媒体下行。前五项各自限定于动态或预建承载示例。新增一般承载条件按各自实际事件适用，不改前五项的示例前提。"
   ],
   "condition_rule": "声明继承主题范围，再叠加各自条件。预建示例的用户归属和后续通告报告可选，不用来改写动态示例的编号步骤。",
   "claims": [
@@ -213,6 +213,99 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "group-qos-necessary-for-mbms-mapping",
+      "title": "达不到该组所需 QoS 的 MBMS 承载不得承载该组会话",
+      "conditions": [
+        "在支持 MBMS 的系统，MC 业务服务器考虑把一场 MC 业务组会话映射到某条 MBMS 承载。"
+      ],
+      "conclusion": "如果这条承载不能提供该组要求的服务质量，服务器不得映射此组会话。达到要求只排除该条禁止条件；动态示例中服务器何时新建承载仍由实现决定。",
+      "normative_strength": "QoS 不达标时不得映射为 SHALL NOT。满足此项必要条件不增加必须使用 MBMS 的义务。",
+      "limitations": [
+        "网络承载可用通知、终端监听到 TMGI 或单份监听状态不是对该组所需 QoS 的判定。此处不规定数值、测量方式或不达标的统一替代路径。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.7.1, MBMS bearer management"
+          ],
+          "printed_pages": [
+            21
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.2, opening paragraph and note 1"
+          ],
+          "printed_pages": [
+            124
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ongoing-group-session-entering-mbms-media-area",
+      "title": "已参加组会话的终端进区应能经 MBMS 立即开始接收",
+      "conditions": [
+        "在支持 MBMS 的系统中，终端已参加一场进行中的 MC 业务组会话，刚进入可经 MBMS 传送媒体的区域。"
+      ],
+      "conclusion": "MC 业务须使这台终端能立即开始经 MBMS 接收该组会话的媒体。接收经 MBMS 交付的流量不以有可用的单播无线承载为前提。",
+      "normative_strength": "使终端能够开始接收是 SHALL；终端有没有可用的单播无线承载不改变这里的 MBMS 接收能力。",
+      "limitations": [
+        "仅进区不证明某个媒体包已收到。不免除组 QoS 要求，不凭本条推断 SIP、会话建立或控制面也不需要其他路径。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.7.1, MBMS bearer management"
+          ],
+          "printed_pages": [
+            21
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "preserve-reception-context-across-downlink-bearers",
+      "title": "下行承载真的切换时，保留接收上下文",
+      "conditions": [
+        "MC 业务终端实际在不同下行承载之间切换。"
+      ],
+      "conclusion": "终端保留接收上下文，以消除或尽量减少业务中断。",
+      "normative_strength": "保留接收上下文是 SHALL，目的不是对每次切换作零中断或零丢包保证。",
+      "limitations": [
+        "本条不列上下文的完整字段或底层切换算法。进区、收到通告、实际下行切换与收到新路径的媒体，是不同观察。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.7.1, MBMS bearer management"
+          ],
+          "printed_pages": [
+            21
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "source_references": [
@@ -277,6 +370,15 @@
       ],
       "printed_pages": [
         124
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.7.1, MBMS bearer management"
+      ],
+      "printed_pages": [
+        21
       ]
     }
   ],
