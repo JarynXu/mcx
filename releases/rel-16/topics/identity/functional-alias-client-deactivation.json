@@ -1,0 +1,168 @@
+{
+  "topic_id": "r16-identity-functional-alias-client-deactivation",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MC 业务客户端申请停用多个功能别名：怎样确认每个别名的结果？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "继承同一系统的明确停用流程前提，并按每项声明分别识别实际请求、响应或通知。",
+  "common_conditions": [
+    "TS 23.280 V16.7.0，Release 16，Stage 2，在同一 MC 系统的功能别名停用。",
+    "MC 业务服务器已经向功能别名管理服务器订阅别名信息，并存有用户已启用的别名数据。MC 业务客户端触发明确停用请求。"
+  ],
+  "claims": [
+    {
+      "id": "explicit-request-trigger-role",
+      "title": "人工和出区触发都走明确请求，不由转发侧代作控制判定",
+      "conditions": [
+        "在同一 MC 系统，业务服务器已订阅并保存用户已启用的别名数据；客户端发起停用。"
+      ],
+      "conclusion": "用户要求停用或客户端根据触发事件（如终端离开许可区）发出明确停用请求。请求必带发起者的 MC 业务 ID 和一个或多个待停用别名。接收服务器若不承担相关别名控制职责，转给承担该角色的业务服务器。",
+      "normative_strength": "Stage 2 过程及信息项；明示的 M 为必填，路由、状态更新和通知按各自条件。",
+      "limitations": [
+        "只看到终端出区不能证明已发请求或已停用；不涵盖所有者无客户端请求的自动解除。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.5, preconditions, step 1 and NOTE 1: explicit request and forwarding to the controlling role"
+          ],
+          "printed_pages": [
+            198,
+            199
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.2.5, Table 10.13.2.5-1: request fields"
+          ],
+          "printed_pages": [
+            194
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "authorization-and-current-user",
+      "title": "控制侧分别查本人的停用权限和既有启用，获授权才更新此人的状态",
+      "conditions": [
+        "收到直接或转发的明确停用请求。"
+      ],
+      "conclusion": "基于该用户业务签约和已存别名策略检查此人是否获准停用所请求别名，并查此人是否已经启用它们。条文在获授权时要求更新此人的启用状态。",
+      "normative_strength": "Stage 2 过程及信息项；明示的 M 为必填，路由、状态更新和通知按各自条件。",
+      "limitations": [
+        "不把其他使用者的启用状态当请求者已启用；不扩成删除别名、解除其他用户，或为未启用定义失败码、结果枚举。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.5, steps 2–3: authority, prior activation and user status update"
+          ],
+          "printed_pages": [
+            199
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "individual-result-per-alias",
+      "title": "给发起客户端的停用响应，每个别名都有结果",
+      "conditions": [
+        "已识别流程步骤 4 的停用响应，而非共享使用者的状态通知。"
+      ],
+      "conclusion": "业务服务器向请求客户端提供单独寻址的停用响应，可经单播或组播。响应必带发起者 MC 业务 ID、待停用列表及相应每一个别名的结果。",
+      "normative_strength": "Stage 2 过程及信息项；明示的 M 为必填，路由、状态更新和通知按各自条件。",
+      "limitations": [
+        "组播不等于按组寻址；不能用 F 的通知、个别结果或响应发送记录确认 G 的结果或客户端已收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.5, steps 4–5 and NOTE 2: requester response, shared users and subscribed servers"
+          ],
+          "printed_pages": [
+            199
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.2.6, Table 10.13.2.6-1: individually addressed response with a result per requested alias"
+          ],
+          "printed_pages": [
+            194
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "notification-not-request-response",
+      "title": "共享用户的状态通知不是请求者的逐项结果；订阅服务器另有通知",
+      "conditions": [
+        "有其他用户共享相同功能别名，或同系统有已订阅状态的其他服务器。"
+      ],
+      "conclusion": "步骤 5 通知共享别名的其他使用者；通知可单独或按组寻址，可经单播或组播。通知必带触发操作的 MC 业务 ID、列出的别名及按别名的操作状态。注 2 另列同系统的其他已订阅服务器获通知。",
+      "normative_strength": "Stage 2 过程及信息项；明示的 M 为必填，路由、状态更新和通知按各自条件。",
+      "limitations": [
+        "不能用只列 F 的通知判定 G 的结果，也不把客户端状态通知及其信息项直接套给注 2 的服务器通知。无 SIP 及缓存写入细节。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.5, steps 4–5 and NOTE 2: requester response, shared users and subscribed servers"
+          ],
+          "printed_pages": [
+            199
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.2.7, Table 10.13.2.7-1: notification addressing, transport and listed alias operation status"
+          ],
+          "printed_pages": [
+            194
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcptt-functional-alias-client",
+    "r16-identity-owner-alias-auto-deactivation"
+  ],
+  "limitations": [
+    "不规定 MCPTT 的 SIP PUBLISH/NOTIFY 映射，不推断 HTTP 或其他业务的线编码。通知的操作状态与本次响应结果分开。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
