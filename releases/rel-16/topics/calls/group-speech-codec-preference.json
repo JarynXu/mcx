@@ -1,0 +1,123 @@
+{
+  "topic_id": "r16-calls-group-speech-codec-preference",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 组呼怎样把首选语音编码写进 SDP？为什么离网加入时不改公告？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明适用主题的全部 common_conditions，并叠加该条 conditions。关联主题不是必经流程。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0 的 MCPTT 组呼。按具体场景区分在网终端的初始 offer、离网终端新建组呼的 SDP，以及离网等待同组公告时加入已有呼叫。"
+  ],
+  "claims": [
+    {
+      "id": "on-network-rtpmap-prefers-supported-group-encoding",
+      "title": "在网客户端初始组呼 offer 以组文档中的 encoding name 条件性填写语音 rtpmap",
+      "conditions": [
+        "客户端向组身份发起呼叫；组管理客户端取得的组文档含 preferred-voice-encodings 下的 encoding name；MCPTT 客户端支持该名。"
+      ],
+      "conclusion": "将该 name 属性值写入 MCPTT 语音 SDP 的 a=rtpmap encoding name。",
+      "normative_strength": "§6.2.1 第 2b 项的条件化 SHALL。",
+      "limitations": [
+        "未配置或不支持首选不是没有 MCPTT 语音编码的证据；本项未指定必用替代项、编码协商结果或拒绝码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.1 step 2b, MCPTT group SDP offer speech codec"
+          ],
+          "printed_pages": [
+            57
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "off-network-new-description-uses-preferred-codec-leaf",
+      "title": "离网新建组呼的 SDP 读取 PreferredVoiceCodec 叶节点",
+      "conditions": [
+        "离网客户端为新组呼生成 SDP；配置给组管理客户端的组文档中，该叶节点含 RTP 载荷格式名，客户端支持首选编码名。"
+      ],
+      "conclusion": "写入 a=rtpmap encoding name 的是 /<x>/<x>/Common/PreferredVoiceCodec 的值。",
+      "normative_strength": "§10.2.1.1.2 第 2c 项是条件化 SHALL；实际取值步骤明确写叶节点。",
+      "limitations": [
+        "支持条件的原文仍说 name 属性；不据此要求同时存在在网 XML 元素。无首选或不支持时，本款不指定替代编码或结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.1.1.2 step 2c, group SDP and PreferredVoiceCodec"
+          ],
+          "printed_pages": [
+            319,
+            320
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "off-network-join-uses-matching-announcement-sdp",
+      "title": "离网新建用本地生成的 SDP；S2 接到同组公告后的加入用公告中的 SDP",
+      "conditions": [
+        "离网客户端处于 S2：TFG1 到期，或收到组 ID 与本地保存值匹配的 GROUP CALL ANNOUNCEMENT。两者是不同事件。"
+      ],
+      "conclusion": "TFG1 到期的新建分支生成并保存会话 SDP，将其写入自己发送的公告的 SDP IE，并据其建媒体；收到匹配公告的加入分支保存该公告的 SDP IE 并据此建媒体，不用本地首选重新生成 SDP。这版离网组呼全程 SDP 不变。",
+      "normative_strength": "§10.2.2.4.3.1 第 2、7d、8–9 项及 §10.2.2.4.3.2 第 3、8 项均为 SHALL；§10.2.2.1 明示本版全程不修改。",
+      "limitations": [
+        "收到公告、保存 SDP 和实际收到语音是不同证据；不规定不支持公告中编码时的报错，也不把同组并发呼叫合并套入本入口。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.4.3.1 steps 2, 7d, 8–9; 10.2.2.4.3.2 steps 3 and 8"
+          ],
+          "printed_pages": [
+            324,
+            325
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.2.2.1, unchanged off-network SDP and media streams"
+          ],
+          "printed_pages": [
+            320
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-prearranged-client-establishment",
+    "r16-calls-offnetwork-group-client",
+    "r16-calls-prearranged-server-admission-routing"
+  ],
+  "limitations": [
+    "只比较语音首选和两个离网入口。不从本次 SDP 的 a=rtpmap 证明 offer/answer 最终选择、成员实收、服务器原因或采用的载荷。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

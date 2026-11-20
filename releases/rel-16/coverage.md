@@ -3147,6 +3147,16 @@ Floor Idle/Taken 按会话序号下发；入向请求确认时由参与功能处
 
 [读取主题](topics/groups/gms-same-domain-signalling.md)
 
+## 在网与离网组呼从哪里读首选语音编码？收到组呼公告后能用自己的首选吗？
+
+在网新建组呼邀请中，组文档的 preferred-voice-encodings/encoding name 在客户端支持时进入语音 rtpmap；离网新建的语音 SDP 则看组文档里的 PreferredVoiceCodec 叶节点。两种缺失或不支持首选的情况都不能证明没有可用编码。
+
+离网 TFG1 等公告超时后本地生成 SDP 并公告；同在 S2，若收到匹配组公告则保存公告 SDP、按它建立媒体会话。离网组呼全程同一 SDP，加入者不因偏好不同而重写。
+
+尚未建立：仅有配置、a=rtpmap、公告或缺少偏好，不证明收到语音、确定了最终编码或查明 488 的原因。
+
+[读取主题](topics/calls/group-speech-codec-preference.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。
