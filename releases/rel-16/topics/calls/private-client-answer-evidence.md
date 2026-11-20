@@ -85,3 +85,5 @@ Answer-Mode=Auto 且本地自动，或本地手动但愿意自动应答，进入
 - 仅本固定 Release16 版本为技术依据；Stage1/Stage2 身份盘点不替代 Stage3 条文。TS24.229、TS24.380、TS33.180 等完整依赖未在本页展开。
 
 来源：[ETSI TS124379 V16.14.0](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf)。
+
+如果是带可选告警的在网紧急一对一呼叫，查[紧急呼叫与告警结果怎样分开判断](emergency-private-call-alert.md)。
