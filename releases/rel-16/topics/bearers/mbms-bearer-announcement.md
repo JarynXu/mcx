@@ -11,3 +11,5 @@
 **撤告按标识停听。** 服务器撤告时，消息中带有被撤告承载的标识。若标识指向 B，客户端停止监听 B；这个动作没有要求它也停听 A。这几步描述的是服务器撤告和客户端停听，仅凭撤告不能判断网络已停用 B。[§10.7.3.5.2 步骤 7–9，印刷页 128](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/16.07.00_60/ts_123280v160700p.pdf#page=129)。
 
 怎样判断媒体收得好不好，见[MBMS 接收质量与监听状态报告](mbms-reception-quality.md)；终端在两个重叠区之间移动时怎样接续媒体，见[重叠 MBSFN 区的接续接收](mbms-overlapping-mbsfn-continuity.md)；要判断网络侧发生了什么，见[网络侧 MBMS 承载事件](mbms-network-bearer-events.md)。[结构化条件与声明](mbms-bearer-announcement.json)。
+
+若客户端收到的是在网 MCPTT 的 SIP MESSAGE，要判断同一 TMGI 怎样更新、撤告后何时删除共用 SDP，查 [MCPTT 承载通告的 SDP 关联](mcptt-mbms-announcement-sdp.md)。

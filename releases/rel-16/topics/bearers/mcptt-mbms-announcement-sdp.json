@@ -1,0 +1,188 @@
+{
+  "topic_id": "r16-bearers-mcptt-mbms-announcement-sdp",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 客户端收到 MBMS 承载撤告：什么时候才能删除共用的 SDP？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每项声明继承共同条件，并叠加各自 announcement 或事件条件。",
+  "common_conditions": [
+    "Rel-16，TS 24.379 V16.14.0，普通在网 MCPTT 客户端实际收到 SIP MESSAGE；P-Asserted-Service 包含 MCPTT ICSI urn:urn-7:3gpp-service.ims.icsi.mcptt。",
+    "消息有 application/vnd.3gpp.mcptt-mbms-usage-info+xml，且其中至少一项 announcement；按该项有没有 mbms-service-areas 分支。"
+  ],
+  "claims": [
+    {
+      "id": "announcement-store-by-tmgi",
+      "title": "带服务区的通告：同 TMGI 替换，否则新建",
+      "conditions": [
+        "本项 announcement 含 mbms-service-areas。"
+      ],
+      "conclusion": "用 TMGI 查已有通告；有同值时替换旧项，没有同值时存新项。把收到的通告与 SDP、GPMS 和从 P-Asserted-Identity 取得的参与功能 MBMS 公共业务标识关联。",
+      "normative_strength": "逐项处理；所列新建、替换、关联、停听及删除适用各自条件。注区分省略与明确撤告。",
+      "limitations": [
+        "不按 SIP 对话、区域或消息中的位置匹配通告。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.3.2, opening and steps 1(a)–(e): receiver identification and associations"
+          ],
+          "printed_pages": [
+            470,
+            471
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "update-does-not-remove-omitted",
+      "title": "更新甲而未列乙，不会隐式撤告乙",
+      "conditions": [
+        "收到只列部分既有通告的新消息；如是 §14.2.2.3 的发送端更新，按该程序。"
+      ],
+      "conclusion": "同消息可含不同种类的通告。不因一项旧通告未列出而删除它。参与功能按更新程序沿用原 TMGI、GPMS 和初始 SDP；服务区列表可保留或更新。一般条款的 SDP 替换与未列通告的存续分开。",
+      "normative_strength": "逐项处理；所列新建、替换、关联、停听及删除适用各自条件。注区分省略与明确撤告。",
+      "limitations": [
+        "不推断 SDP 替换时内部引用重建算法；撤告以确有命中的通告项为前提。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.2.2.1 and NOTE: mixed announcements, omission and replacement SDP"
+          ],
+          "printed_pages": [
+            464
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.2.2.3, steps 1–7 and NOTE 1: updating a previously sent announcement"
+          ],
+          "printed_pages": [
+            467
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.3.2, opening and steps 1(a)–(e): receiver identification and associations"
+          ],
+          "printed_pages": [
+            470,
+            471
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "withdraw-only-matching-tmgi",
+      "title": "撤告按 TMGI；无其他通告关联才删除已存 SDP",
+      "conditions": [
+        "本项 announcement 包含被撤告的 TMGI，但不带 mbms-service-areas；实际存在以该值标识的已存通告。"
+      ],
+      "conclusion": "丢弃该条通告、去掉它与已存 SDP 的关联，并停止监听相应通用 MBMS 子信道。只有没有其他已存通告关联这份 SDP 时才删它；撤告后检查报告条件。发送方在 usage-info XML 体里的所有通告项都是撤告时，须省略 GPMS 和整个 SDP 体。",
+      "normative_strength": "逐项处理；所列新建、替换、关联、停听及删除适用各自条件。注区分省略与明确撤告。",
+      "limitations": [
+        "不因报文未带 SDP 就清空本地 SDP；也不由撤告甲或保留 SDP 推定乙的监听状态，尤其不能保证同一通用子信道继续监听；不推定网络承载已停用或报告已送达。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.2.2.1 and NOTE: mixed announcements, omission and replacement SDP"
+          ],
+          "printed_pages": [
+            464
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.2.2.4, steps 1–4: cancelling an MBMS bearer announcement"
+          ],
+          "printed_pages": [
+            467,
+            468
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.3.2, steps 2(a)–(d): withdrawal and last SDP association"
+          ],
+          "printed_pages": [
+            471
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "listening-area-and-report-check",
+      "title": "监听条件和报告检查不等于已收到媒体",
+      "conditions": [
+        "本项包含服务区。若触发 §14.3.2(1)(f)，须先按该安全分支，只有未进入拒绝并停止的路径才继续。"
+      ],
+      "conclusion": "处理有效项就检查 §14.3.3 的监听状态报告条件，不以进入服务区为前提。进入该承载可用的服务区时，监听 SDP 中 m=application 指定的通用 MBMS 子信道。撤告分支也须检查报告条件。",
+      "normative_strength": "逐项处理；所列新建、替换、关联、停听及删除适用各自条件。注区分省略与明确撤告。",
+      "limitations": [
+        "本页不实现密钥校验、失败前改动回滚、状态报告发送或网络承载控制；不由监听义务推出收到或解码了媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.3.2, steps 1(f)–(h): security branch, receiving-area and report check"
+          ],
+          "printed_pages": [
+            471
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.3.2, steps 2(a)–(d): withdrawal and last SDP association"
+          ],
+          "printed_pages": [
+            471
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-bearers-mbms-bearer-announcement",
+    "r16-bearers-mbms-suspension-reporting"
+  ],
+  "limitations": [
+    "区分同存储对象的关联与两个 SDP 文本看起来相同。只记录条款的存续判据，不规定本地数据结构或其他服务的动作。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
