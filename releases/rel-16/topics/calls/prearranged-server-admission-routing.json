@@ -691,11 +691,144 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "ack-gates-optional-unanswered-invitees-info",
+      "title": "早期继续的 200/111：CF 实收其 ACK 且发起方配置允许，才可送 INFO",
+      "conditions": [
+        "同系统普通在网按需预安排组呼的提前继续分支。TNG1 到期前收到已归属必需成员的受邀最终失败，受邀 INVITE 200 计数至少达到门槛，策略继续且其他受邀客户端均回 200；CF 发出了原 INVITE 的 200（携文本 111）。"
+      ],
+      "conclusion": "CF 实际收到对上述 200 的 ACK，且发起方用户配置档 allow-to-receive-non-acknowledged-users-information 存在且为 true 时，可向发起客户端在原请求创建的对话内发 SIP INFO，Info-Package 为 g.3gpp.mcptt-info，正文 MIME 为 application/vnd.3gpp.mcptt-info+xml。",
+      "normative_strength": "满足该入口后发送 INFO 为 MAY，不新增必发义务。",
+      "limitations": [
+        "不从发起端发 ACK 推定 CF 实收，不从发出 INFO 推定发起端接收。以紧接着的提前继续分支解释 above SIP 200，不据一般观察裁定所有 200/111 的适用范围。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.3, early proceed and subsequent ACK to the above 200"
+          ],
+          "printed_pages": [
+            123
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "non-acknowledged-user-selector-not-absence",
+      "title": "INFO 条目按受邀而未发该 INVITE 200 的成员列 MCPTT ID",
+      "conditions": [
+        "CF 实际选择发送上述 INFO，或对端查实收该 INFO 的有效 MCPTT 信息正文。"
+      ],
+      "conclusion": "按 non-acknowledged-user 条目列本场受邀且未发送相应 SIP 200 的成员的 MCPTT ID，不限定于必需成员。未受邀者不在集合内；受邀者若发了非 200 的最终失败且没有发 200，仍满足该筛选。",
+      "normative_strength": "选发 INFO 时按该程序填写，F.1.3 允许相应元素采用加密内容。",
+      "limitations": [
+        "这不是所有缺席者、全体组员、实际进出/收听名单；原发起者的 ACK 不是某受邀成员的 INVITE 200。未规定探针没见 200、并发或多设备的去重算法。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.3, early proceed and subsequent ACK to the above 200"
+          ],
+          "printed_pages": [
+            123
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.1.3, MCPTT XML element protection and item n)"
+          ],
+          "printed_pages": [
+            547,
+            551
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "separate-expiry-message-and-conference-notify",
+      "title": "到期继续的 MESSAGE 提示和订阅 NOTIFY 不代替按成员 INFO",
+      "conditions": [
+        "§6.3.3.3 的到期继续段，CF 实际收到后续受邀 INVITE 的 200 或受邀客户端 BYE；会议通知按本段适用。"
+      ],
+      "conclusion": "对该受邀 200 或 BYE，CF 可另发对话内 SIP MESSAGE 向发起客户端提示未齐必需成员时仍继续；BYE 处理另按 §6.3.3.2.4。到期继续段另规定生成会议通知并发给会议事件订阅者。",
+      "normative_strength": "MESSAGE 为 MAY；到期继续分支规定的会议通知和 BYE 处理为 SHALL。",
+      "limitations": [
+        "两类消息不能当作上述 ACK 的按成员 INFO，也不证明终端收到名单或已经接收媒体。不从相邻分支导出任意 200/111 的统一通知顺序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.3, expiry proceed branch items b–d"
+          ],
+          "printed_pages": [
+            122
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.3, early proceed and subsequent ACK to the above 200"
+          ],
+          "printed_pages": [
+            123
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "verification": {
     "original_clauses_checked": true,
     "independent_source_review": true,
     "independent_usage_acceptance": true
-  }
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.3.3, early proceed and subsequent ACK to the above 200"
+      ],
+      "printed_pages": [
+        123
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "F.1.3, MCPTT XML element protection and item n)"
+      ],
+      "printed_pages": [
+        547,
+        551
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.3.3, expiry proceed branch items b–d"
+      ],
+      "printed_pages": [
+        122
+      ]
+    }
+  ]
 }
