@@ -846,6 +846,82 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "chat-dual-leg-media-488",
+      "title": "普通聊天组收到 488：分别核对 O-PF 和 CF 各自收到的 SDP offer",
+      "conditions": [
+        "同一 MC 系统内的普通在网按需 MCPTT 聊天组；使用未重组的 MCPTT 组身份，不是临时组；请求和组状态均非紧急、非迫近危险。",
+        "发起侧参与功能（O-PF）实际收到客户端的初始 chat INVITE 并到达第 4 项，或控制功能（CF）实际收到发往它的 INVITE 并到达第 9 项。查失败回送时，另以 O-PF 收到对它已发 INVITE 的匹配 4xx/5xx/6xx 为条件。"
+      ],
+      "conclusion": "O-PF 的第 4 项和 CF 的第 9 项，各自检查本侧实际收到的 SDP offer：媒体参数须可接受，且该 offer 须提供 MCPTT 语音编解码；任一项不满足即对本侧 INVITE 回 SIP 488。O-PF 第 4 项写通过才继续；CF 第 9 项明确拒绝时跳过其余步骤。若 O-PF 走到出向步骤，它另生成并发往 CF 的 INVITE 带基于客户端 offer A 的 offer B；CF 检查 B。媒体流需要替换地址及端口时才替换，有媒体面控制通道时须换写该通道的地址和端口，受注 2 的省略条件约束。同一实际 MCPTT 服务器上且参与功能对此流或通道没有专用 IP 地址或专用端口时，注 2 规定省略相应替换。O-PF 收到与它已发 INVITE 相对应的 4xx/5xx/6xx 时，须生成客户端侧响应，把实际收到的 Warning 字段纳入响应并发给客户端。",
+      "normative_strength": "两条件检查、对应 488 拒绝、按实际到达的出向步骤构造与发送，以及收到匹配失败后纳入所收 Warning 分别为 SHALL。不得把 CF 的明确跳过措辞搬到 O-PF 第 4 项，或用一个角色的接受代替另一侧的检查。",
+      "limitations": [
+        "这两个媒体拒绝段未各自规定 Warning 头或专用文本，也不禁止出现 Warning。终端单见 488 或 Warning 外层 399，不足以区分哪个功能、哪个检查项或具体什么编解码出了问题；匹配第二腿的 488 能确定该腿有拒绝，要认定就是 CF 第 9 项，还需核对该次实际处理。缺少抓包不证明 CF 没收或 O-PF 没发，不从 Warning 纳入规则推定 SIP 状态数字原样延续。",
+        "同一 MC 系统不等于同一台 MCPTT 服务器；不能由两份 SDP 的值相同推定是一次事务，也不能由值不同或返回 488 就推定哪项媒体参数导致拒绝。不规定具体 codec、媒体可接受性算法或其他业务的媒体准入。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.1, item 4: originating PF checks the media parameters and MCPTT speech codec in the received offer; 488 on failure, otherwise continue"
+          ],
+          "printed_pages": [
+            276
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.1, outgoing INVITE items 9–10, 12 and 16: create and send a distinct request to CF with an offer based on the received offer"
+          ],
+          "printed_pages": [
+            277,
+            278
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.1.1, on-demand SDP offer composition items 1–2 and NOTE 2: conditional stream address and port replacement, control channel if present, and same-server exception"
+          ],
+          "printed_pages": [
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1, controlling item 9: CF checks the media parameters and MCPTT speech codec in its received offer, rejecting with 488 and skipping remaining items on failure"
+          ],
+          "printed_pages": [
+            288
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.1, final response paragraph for 4xx/5xx/6xx, items 1–3: PF generates a response, includes the received Warning fields and forwards the response to the client"
+          ],
+          "printed_pages": [
+            279
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.4.1, general: 399 is the outer SIP Warning code when the server includes warning text in an INVITE response"
+          ],
+          "printed_pages": [
+            33
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "source_references": [
@@ -1209,6 +1285,52 @@
         33,
         34,
         36
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.3.1.1, item 4: originating PF checks the media parameters and MCPTT speech codec in the received offer; 488 on failure, otherwise continue"
+      ],
+      "printed_pages": [
+        276
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.3.1.1, outgoing INVITE items 9–10, 12 and 16: create and send a distinct request to CF with an offer based on the received offer"
+      ],
+      "printed_pages": [
+        277,
+        278
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.1.1.1, on-demand SDP offer composition items 1–2 and NOTE 2: conditional stream address and port replacement, control channel if present, and same-server exception"
+      ],
+      "printed_pages": [
+        83
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.4.1.1, controlling item 9: CF checks the media parameters and MCPTT speech codec in its received offer, rejecting with 488 and skipping remaining items on failure"
+      ],
+      "printed_pages": [
+        288
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "4.4.1, general: 399 is the outer SIP Warning code when the server includes warning text in an INVITE response"
+      ],
+      "printed_pages": [
+        33
       ]
     }
   ],
