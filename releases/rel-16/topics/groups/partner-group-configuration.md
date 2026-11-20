@@ -31,3 +31,5 @@ G 在甲定义，至少一名 G 组成员在乙定义，且乙的 GMS 已经从�
 若问题是同一系统内有人被加入或移出名册，见[组成员变动通知](group-membership-notification.md)；若是 MCPTT 客户端要看组的动态状态，见[组动态数据订阅](group-dynamic-data.md)。这两件事都不是上述 GMS 订阅的后续步骤。
 
 来源：[3GPP TS 23.280 V16.7.0，Release 16，Stage 2（ETSI，2024-05）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/16.07.00_60/ts_123280v160700p.pdf)。[六张信息流表，印刷页 93–94](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/16.07.00_60/ts_123280v160700p.pdf#page=94)；[初取、订阅和通知程序，印刷页 106–108](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/16.07.00_60/ts_123280v160700p.pdf#page=107)；[跨系统参考点，印刷页 40–41](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/16.07.00_60/ts_123280v160700p.pdf#page=41)。
+
+若两端都是 GMS 且处于同一安全域，非订阅、非通知交换和订阅、通知要查另一参考点，见[同域 GMS 的信令选路](gms-same-domain-signalling.md)。不要只凭 HTTP 或两个系统名称分类。

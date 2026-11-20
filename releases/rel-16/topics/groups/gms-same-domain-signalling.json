@@ -1,0 +1,101 @@
+{
+  "topic_id": "r16-groups-gms-same-domain-signalling",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "同一安全域的两台 GMS：组配置用 HTTP，订阅通知用 SIP，怎么区分？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "每条声明适用主题的全部 common_conditions，并叠加该条 conditions。关联主题不是必经流程。",
+  "common_conditions": [
+    "3GPP Release 16 的 MC 业务应用平面参考点；区分组管理服务器之间的组管理信令，以及互联组配置的相关网关段。"
+  ],
+  "claims": [
+    {
+      "id": "same-security-domain-operation-selects-transport",
+      "title": "同一安全域的 GMS 之间用 CSC-7；非订阅、非通知类与订阅、通知类走不同参考点",
+      "conditions": [
+        "两端都是同一安全域内的 GMS，处理组管理相关信令。"
+      ],
+      "conclusion": "这对 GMS 使用 CSC-7。非订阅、非通知类信令用 HTTP-1、HTTP-2、HTTP-3 传送和路由；订阅、通知类用 SIP-2、SIP-3。两者都属于同一 CSC-7。",
+      "normative_strength": "§7.5.2.7 分别规定两类信令的传送和路由参考点。",
+      "limitations": [
+        "该节没有另列同一 MC 系统的限制。不同的系统名称不能用来判安全域；仅在 HTTP 段找不到订阅或通知，不足以判没订阅或漏发。不是 GMS 对 GMS 时，不能套用。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.2.7, CSC-7 group management servers in the same security domain; split by subscription/notification signalling"
+          ],
+          "printed_pages": [
+            39
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "same-transport-does-not-select-gms-reference-point",
+      "title": "相同 HTTP 参考点不能区分同域 GMS 的 CSC-7 与互联组配置的 CSC-16",
+      "conditions": [
+        "需要分类两台 GMS 之间的非订阅、非通知类交换，或定位跨系统共享的互联组配置订阅与通知。"
+      ],
+      "conclusion": "两个 GMS 若分别处于不同 MC 系统、不同安全域，并共享可参加互联 MC 组呼的组的配置，非订阅、非通知类信令是 CSC-16，用 HTTP-1、HTTP-2、HTTP-3。互联组配置订阅、通知，GMS 与 MC 网关间是 CSC-19／SIP-2、SIP-3；不同 MC 系统、不同安全域的两网关间是 CSC-21／SIP-3。与 CSC-7 对照时，应先核对端点角色和安全域，再核对组与操作。",
+      "normative_strength": "§§7.5.2.7、7.5.2.16、7.5.2.20、7.5.2.22 界定逻辑角色、适用业务和参考点。",
+      "limitations": [
+        "只知互联或看见 HTTP，不足以确认 CSC-16；这些参考点不规定物理跳数、HTTP 或 SIP 方法，也不证明配置已保存或终端已采用。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.2.7, CSC-7 (comparison)"
+          ],
+          "printed_pages": [
+            39
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.2.16, CSC-16 interconnection-capable group and different MC systems/security domains"
+          ],
+          "printed_pages": [
+            40
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.2.20 and 7.5.2.22, CSC-19 and CSC-21 (group-configuration subscription/notification)"
+          ],
+          "printed_pages": [
+            41
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-groups-partner-group-configuration",
+    "r16-groups-csc-group-ue-configuration"
+  ],
+  "limitations": [
+    "只回答 Stage 2 的参考点及分类，不推定 Stage 3 报文、路由拓扑或某次交换结果。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
