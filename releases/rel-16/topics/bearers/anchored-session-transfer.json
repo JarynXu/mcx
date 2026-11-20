@@ -376,6 +376,106 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "relay-target-mbms-listening-status",
+      "title": "Stage 3：转移后如何区分会话与通用子信道的监听状态，PF 怎样转发实际 RTP",
+      "standard_stage": 3,
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "conditions": [
+        "同一系统内，普通按需 MCPTT 组呼正在进行，并按 §14A 在直连与经 UE-to-network relay 接入之间成功转移，目标侧正以 MBMS 承载分发 MCPTT 内容。只查一种监听状态的报告，不处理暂停报告、混合状态 XML、预建立会话或其他 MC 业务。",
+        "区分客户端发报告、PF 实际收报告并核验身份、媒体面实际收下行 RTP。媒体转发以它关联的会话内通话和该客户端的有效状态为条件，不把目标侧用 MBMS 等同于对此客户端的每条通话都使用 MBMS。"
+      ],
+      "conclusion": "客户端发 SIP MESSAGE，Request-URI 为从公告 P-Asserted-Identity 取得的参与功能（PF）MBMS PSI。application/vnd.3gpp.mcptt-mbms-usage-info+xml 正文 version=1 并携带监听信息，另一个 application/vnd.3gpp.mcptt-info+xml 正文的 mcptt-request-uri 携报告者 MCPTT ID。PF 对实际收到同时含监听状态与自己服务之用户 MCPTT ID 的两个正文核验该消息 P-Asserted-Identity 的公共用户身份是否绑定该 MCPTT ID。没有 general-purpose 时，F.2.3 要求 session-id；general-purpose=true 表示正在监听所列 TMGI 的通用子信道，且尚未为任何自己参与的会话收到 Map Group To Bearer，不单凭它登记某一会话在听。身份校验通过后，listening 带 session-id 时 PF 指示该客户端已监听对应会话的子信道，带 general-purpose=true 时另指示它已监听通用子信道；这两项按各自字段触发。not-listening 带 session-id 指示对应会话不再监听；带 general-purpose=false 指示该客户端不再监听通用子信道，注 1 同时涵盖该客户端此前上报 listening 的正在进行通话，不能扩大给其他客户端或未曾这样报告的通话。not-listening 段还要求媒体面交互。PF 实际收到控制功能（CF）的下行 RTP 时，关联通话未使用 MBMS 子信道，或虽使用但该客户端对此未报 listening、或最新收到的相关状态为 not-listening，均立即单播转发给该客户端。关联通话使用 MBMS 且该客户端对此最新收到的是 listening，则依 TS24.380 §10.2；在 §10.2.3.5 的该活动通话中，若此 RTP 已通过该 MBMS 子信道发送就丢弃这份副本，否则指示媒体分发功能从该子信道发送。",
+      "limitations": [
+        "§14.3.3.2 的印刷文字为 TGMI；F.2.2 的 XSD 与 F.2.3 的语义为 TMGI。保持两处原样，不提供 XML 模板。F.2.3 对按需 session-id 写的是建会时 CF Contact 中的 URI，§4.5 另描述 PF 分配并映射给客户端的会话身份；现场按这条腿的实际 Contact 与 PF 映射核对，不规定所有路径必须填同一个字符串。session-id 本处不是 STI、目标组 ID、用户 ID 或 MBMS PSI。",
+        "公告 P-Asserted-Identity 给的是 PF 的 MBMS PSI，收到的报告 P-Asserted-Identity 用于校验公共用户身份；不把这两个身份混用，不从能发消息推定有资格，也不为不匹配补写 SIP 错误状态。§14A 注 5 的入口是 PF 实际收到表示监听 MBMS 子信道的报告；发送、校验、媒体指示和实际发包不是一件事。",
+        "不要从抓包里没找到报告推定客户端没报，或把其他会话的状态套过来。某个 report、通用子信道状态、§10.2 分发指令或丢弃重复副本均不证明 UE 收到媒体；也不说明所有会话改用同一种承载。"
+      ],
+      "normative_strength": "报告的路由与正文、PF 身份核验和满足各字段条件时的媒体指示属于指定过程；不再监听时仍须与媒体面交互。收到关联下行 RTP 后的立即单播或进入 §10.2 按各自守卫适用，不从一份报告保证实际送达。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14A.2.1 items 6–7 and Note 5, applied in reverse by 14A.3.1 item 2: successful transfer, conditional MBMS report and optional old-leg IMS Contact deregistration"
+          ],
+          "printed_pages": [
+            477
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.3.3.2, listening-status report items 1(a), 1(e)–1(h), 2 and Note 2: PF MBMS PSI, MIME bodies, and the procedure spelling TGMI"
+          ],
+          "printed_pages": [
+            473
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.2.3, listening-status receipt opening and item 1(a)–(b), Note 1: served MCPTT ID and PAI binding; session and general-purpose scope"
+          ],
+          "printed_pages": [
+            468,
+            469
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.2.2 listening-status schema; F.2.3 item 1(a)–(d), Table F.2.3-1: session-id, general-purpose and TMGI"
+          ],
+          "printed_pages": [
+            553,
+            555
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.5, MCPTT session identity, Contact allocation, mapping and optional client caching"
+          ],
+          "printed_pages": [
+            38,
+            39
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "4.2.3.3.1, PF receipt from CF and per-client unicast versus MBMS delivery"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.4.3, items 2 and 3(a)–(b): actual downlink RTP, conversation MBMS use and last UE listening status"
+          ],
+          "printed_pages": [
+            102,
+            103
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.2.3.5, active-conversation RTP reception, items 1–3 and Note: discard already-sent copy or instruct MBMS distribution"
+          ],
+          "printed_pages": [
+            208
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "related": [
