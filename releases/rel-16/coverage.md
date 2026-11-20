@@ -3157,6 +3157,16 @@ Floor Idle/Taken 按会话序号下发；入向请求确认时由参与功能处
 
 [读取主题](topics/calls/group-speech-codec-preference.md)
 
+## MCPTT SIP 单正文、多正文以及 SDP 首段怎样核对？
+
+单段 Content-Type 为正文类型。多段用 multipart/mixed 和 boundary；每段有分隔符与该段类型，结尾有结束分隔符。含 offer 或 answer 时 application/sdp 放首段。
+
+多个 MCPTT 应用段的顺序无关。§6.5 注中的不支持多正文的底层 SIP 功能只处理首段，交换两个后续段不能增加其可处理的段。
+
+尚未建立：一段解析日志不能证明发送端漏写、某跳删段、应用失败或具体状态码。
+
+[读取主题](topics/calls/sip-mime-body-order.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

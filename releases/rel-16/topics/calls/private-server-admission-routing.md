@@ -146,3 +146,5 @@ T-PF 设置 Confirmed，不等于 CF 的普通最终响应条款要求把它原�
 - 不是完整 SIP/SDP、媒体、安全、配置管理或恢复实现。被调用 TS24.229、TS24.380、TS24.484 与相关 RFC 的全部实现不在此展开；未以其他 Release 补本版条件或引用差异。
 
 若要辨认实际生成失败响应的功能，以及 403 和文本 145 为什么还不能区分 O-PF 与 CF，见 [MCPTT 的 Response-Source 与 Warning](failure-response-source.md)。
+
+若问题是抓包里有 SDP 却看不到业务正文，先区分发送消息实际带了哪些段和接收方记录了哪些段，见[MCPTT SIP 多正文封装与 SDP 顺序](sip-mime-body-order.md)。

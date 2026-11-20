@@ -1,0 +1,112 @@
+{
+  "topic_id": "r16-calls-sip-mime-body-order",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 的 SIP 消息有多个正文时，为什么 SDP 要放第一？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明适用主题的全部 common_conditions，并叠加该条 conditions。关联主题不是必经流程。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0 的 MCPTT SIP 请求或响应，观察 MCPTT 客户端或服务器发出的 MIME 封装，以及底层 SIP 核心对多正文的处理。"
+  ],
+  "claims": [
+    {
+      "id": "outgoing-single-versus-multipart-content-type",
+      "title": "MCPTT 发一个正文时直接用该 MIME 类型；多正文时使用 multipart/mixed 和边界",
+      "conditions": [
+        "MCPTT 客户端或服务器发出 SIP 请求或响应，实际携带一个或多个 MIME 正文。"
+      ],
+      "conclusion": "一个正文：外层 Content-Type 写该 MIME 类型并附该正文。多个正文：外层为一个 Content-Type: multipart/mixed 带选定 boundary，每段写分隔符、其自身 Content-Type 与内容，末尾写结束分隔符。",
+      "normative_strength": "§6.5 要求双方支持请求和响应中的多个 MIME 正文，并给出单正文与多正文的分别封装要求。",
+      "limitations": [
+        "不从外层类型或不完整的日志推定分段齐备；不把本节当作无正文情形或其他 SIP 服务的通用规则。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.5, multiple-body support, multi-body framing and single-body case"
+          ],
+          "printed_pages": [
+            137,
+            138
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "offer-or-answer-first-application-order-irrelevant",
+      "title": "多个 MIME 正文带 SDP offer 或 answer 时，application/sdp 必排第一",
+      "conditions": [
+        "消息有多个 MIME 正文，其中一段是 SDP offer 或 SDP answer；对于 MCPTT 应用段顺序的判断，不要求一定含 SDP。"
+      ],
+      "conclusion": "带 offer 或 answer 时把 application/sdp 作首段；多个 MCPTT 应用段之间的顺序无关。消息未带 SDP 时，本条不要求为排序插入 SDP。",
+      "normative_strength": "§6.5 多正文发送第 4 项为 SHALL；应用正文顺序无关见注。",
+      "limitations": [
+        "本条不提供业务正文必须有哪些或具体引用指向，也不构造 SIP 失败码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.5 multi-body sending item 4 and NOTE"
+          ],
+          "printed_pages": [
+            138
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "first-part-legacy-core-observation-is-not-delivery",
+      "title": "旧 SIP 核心只能理解首段的情形，不靠调换后续应用段解决",
+      "conditions": [
+        "观察点是底层 SIP 核心中无法理解多 MIME 正文的功能实体，或现场还需确定该条件是否适用。"
+      ],
+      "conclusion": "§6.5 注中的该实体忽略首段之外的所有正文。这解释了 SDP 为首段，不因后续两段互换而改变。诊断时核对同一消息的发送、完整接收内容、应用解析及业务响应，不能以只显示 SDP 证明发送端缺写或业务失败。",
+      "normative_strength": "注阐释兼容行为；分段核对是排障方法，不是线上操作或标准结果。",
+      "limitations": [
+        "不能据注判定任一具体节点在网络上删段、对端已经收到或服务器执行了某个拒绝。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.5 NOTE, underlying SIP-core entity not understanding multiple MIME bodies"
+          ],
+          "printed_pages": [
+            138
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-private-server-admission-routing",
+    "r16-calls-private-preestablished-origination"
+  ],
+  "limitations": [
+    "只处理 TS 24.379 §6.5 的发送封装与首段兼容；不提供通用解析器、路由保留或按业务响应的归因。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
