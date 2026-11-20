@@ -1,0 +1,157 @@
+{
+  "topic_id": "r16-identity-service-policy-configuration",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "业务服务器怎样取得非组策略？与取组资料、配终端有何区别？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "按实际端点、资料用途和操作类型判定参考点；配置、传输、实际接收、保存和应用分开判断。",
+  "common_conditions": [
+    "固定 TS 23.280 V16.7.0 Rel-16 Stage 2；只讨论公共 MC 业务配置的应用面职责与所列传输和路由要求。"
+  ],
+  "claims": [
+    {
+      "id": "server-group-vs-non-group-configuration",
+      "title": "业务服务器取组资料用 CSC-3，取非组业务策略用 CSC-5",
+      "conditions": [
+        "实际端点之一是 MC 业务服务器；区分另一端为处理该业务所对应组资料的 GMS，还是提供非组业务资料的 CMS。"
+      ],
+      "conclusion": "CSC-3 是 MC 业务服务器与 GMS 的组资料参考点；CSC-5 是 MC 业务服务器与 CMS 的非组资料参考点，策略是例子。两者均要求非订阅、非通知信令用 HTTP-1 和 HTTP-2，订阅或通知相关信令用 SIP-2。",
+      "normative_strength": "适用的传输和路由要求均为 SHALL；配置资料用途和端点按相应参考点定义。",
+      "limitations": [
+        "不能用 HTTP 或 SIP-2 单独判 CSC-3 或 CSC-5，也不从这些参考点定义推出具体 HTTP 方法、SIP 报文名或本次相应信令已发生。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.2.4, opening and transport sentences"
+          ],
+          "printed_pages": [
+            38
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.2.6, opening and transport sentences"
+          ],
+          "printed_pages": [
+            39
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "device-endpoint-not-server-policy",
+      "title": "在网终端的 CSC-4 也用 SIP-2；它不是业务服务器的 CSC-5",
+      "conditions": [
+        "比较终端在网的配置管理客户端与 CMS，或已经识别为业务服务器与 CMS/GMS 的信令。"
+      ],
+      "conclusion": "CSC-4 可供业务配置终端，也可供终端以非组资料配置本机应用。其非订阅、非通知信令用 HTTP-1 和 HTTP-2；订阅或通知相关信令用 SIP-1 和 SIP-2。CSC-3、CSC-5 的相应要求只列 SIP-2。离网终端对应的 CSC-11 不支持订阅或通知，该例外不套到业务服务器的参考点。",
+      "normative_strength": "在网传输和路由要求为 SHALL；离网能力边界来自 CSC-11 的明文例外。",
+      "limitations": [
+        "只看到一点上的 SIP-2，不能判没有终端参与、对端身份、实际收到或应用。SIP-1 未列在 CSC-3/5 的要求中，不是对系统其他 SIP 的一般禁止。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.2.4, opening and transport sentences"
+          ],
+          "printed_pages": [
+            38
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.2.5, opening, both configuration bullets and transport paragraph"
+          ],
+          "printed_pages": [
+            38,
+            39
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.2.6, opening and transport sentences"
+          ],
+          "printed_pages": [
+            39
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.2.11, opening and exception"
+          ],
+          "printed_pages": [
+            40
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "service-policy-storage-not-login-push",
+      "title": "业务配置存于业务服务器，执行范围不规定登录后推送时刻",
+      "conditions": [
+        "讨论主 MC 系统的一般业务配置及终端使用业务的阶段；不假定某笔更新已经发生。"
+      ],
+      "conclusion": "附录 A.5 写明业务配置数据存于 MC 业务服务器，CMS 经 CSC-5 配置业务服务器、经 CSC-4 配置终端，并支持经 CSC-11 离线配置。主系统的 §10.1.1.1 说明业务在终端使用该业务的整个阶段执行业务配置，图 10.1.1.1-1 未画该配置。",
+      "normative_strength": "按 A.5 的存放及配置关系与 §10.1.1.1 图后的执行范围；均不指定一次登录后的配置推送时刻。",
+      "limitations": [
+        "图中未列此配置不是已推送、未推送或未生效的证据；要核对本次实际接收、保存、采用的版本或值。各业务配置字段与具体协议流程不在本主题。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "Annex A.5, first two paragraphs"
+          ],
+          "printed_pages": [
+            217
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.1.1, paragraph following Figure 10.1.1.1-1 on service configuration and enforcement"
+          ],
+          "printed_pages": [
+            59
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-groups-csc-group-ue-configuration",
+    "r16-identity-ue-configuration-retrieval"
+  ],
+  "limitations": [
+    "不是逐包协议、具体策略字段表、授权后推送的时序或完整 Release 覆盖。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

@@ -12,3 +12,5 @@
 **怎样读一次实际记录？** 假设在网的甲组管理客户端向组管理服务器发出一笔更新组 G 数据的请求。可以归到 CSC-2 的「客户端配置服务器」方向，记下甲发过请求；不能据此断定甲获准改动、服务器已保存，或乙端已取得新数据。反过来，若证据只到「设备已离网」，CSC-11、CSC-12 的定义也不会替这台设备产生一次下载记录。「不要求用 SIP-1 和 SIP-2」不是禁止离网终端使用任何 SIP，更不是取消配置能力。[§7.5.2.3 的两项支持能力，印刷页 38](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/16.07.00_60/ts_123280v160700p.pdf#page=39)；[§7.5.2.11、§7.5.2.12 各自的例外，印刷页 40](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/16.07.00_60/ts_123280v160700p.pdf#page=41)。
 
 若已有具体请求或响应，要判[组管理服务器是否保存](store-group-configuration.md)、[终端是否取得并保存组配置](client-group-configuration.md)，或[拿到的是设备配置还是用户配置档](../identity/ue-configuration-retrieval.md)，再查相应流程。
+
+若配置对象换成 **MC 业务服务器**，要区分它向 GMS 取组资料和向 CMS 取非组资料，见[业务服务器取得配置](../identity/service-policy-configuration.md)。
