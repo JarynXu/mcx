@@ -205,6 +205,39 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "mcptt-location-removal-from-forwarded-request",
+      "title": "PF 转发 SIP 请求时，何时必须删除整个位置体？",
+      "conditions": [
+        "PF 实际收到一个 SIP 请求。以下身份条件满足其一即可：① P-Asserted-Identity 标识一个公共用户身份，该身份不与本 PF 服务的任何 MCPTT 用户关联；② 请求有 Content-Type 为 application/vnd.3gpp.mcptt-info+xml 的 MIME 体，其中 <mcptt-request-URI> 所含的 MCPTT ID 标识本 PF 服务的用户。",
+        "同一入向请求还须同时具备三项：Accept-Contact 含 g.3gpp.mcptt；Accept-Contact 含 g.3gpp.icsi-ref 且值为 urn:urn-7:3gpp-service.ims.icsi.mcptt；application/vnd.3gpp.mcptt-location-info+xml MIME 体中含 <Request> 或 <Configuration>。"
+      ],
+      "conclusion": "身份条件至少一项成立，且三项报文条件齐全时，PF 须从出向 SIP 请求中删除整个 application/vnd.3gpp.mcptt-location-info+xml MIME 体。即使 PAI 关联本 PF 服务的用户，第二项身份条件也可独立成立；若第一项成立，无须再用第二项证明身份。核对实际删除动作时，用同一 PF 的入向请求与对应出向请求比较这个 MIME 体。另起的配置或位置请求 MESSAGE 属于源发程序；终端是否收到及如何处理，另按终端实收报文判断。",
+      "normative_strength": "满足上述条件时删除指定出向 MIME 体是 SHALL。",
+      "limitations": [
+        "PAI 缺失不等于它标识了不关联本 PF 所服务用户的公共用户身份。第二项中的 <mcptt-request-URI> 是 §13.2.5 本段拼写，不据此把另一处的大小写当作 XML 别名。",
+        "本条适用于收到的 SIP 请求，不限于 MESSAGE。两个 Accept-Contact 特征不要求按两行计数；本条没有另列 require、explicit 或 P-Asserted-Service。",
+        "只有 Report 的位置体不满足 Request 或 Configuration 条件。已知缺少任一必需特征时，本条不能推出删除，也不能反推必须保留。抓包不全只表示证据不足。",
+        "删除该 MIME 体不是拒绝整个 SIP 请求。本条不指定 SIP 响应码，不保证其余内容原样送达，也不能据此判定终端已收到或处理。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "13.2.5: received SIP request identity alternatives, both Accept-Contact feature tags and Request or Configuration; remove the location MIME body from the outgoing SIP request"
+          ],
+          "printed_pages": [
+            461,
+            462
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "related": [
@@ -214,7 +247,7 @@
   ],
   "limitations": [
     "不描述通用 Stage 2 LMS/LMC 订阅或其他 Release，也不论证 LMS 的 SIP PSI、SIP SUBSCRIBE、每次 IMS 注册后的配置或完整地理区域处理。",
-    "不补 §13.2.5 异常路径、XML 安全、Full/Update 语义、字段别名或缺配置时的回送策略。"
+    "不补 XML 安全、Full/Update 语义、字段别名或缺配置时的回送策略。"
   ],
   "verification": {
     "original_clauses_checked": true,
@@ -332,6 +365,16 @@
       ],
       "printed_pages": [
         568
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "13.2.5: received SIP request identity alternatives, both Accept-Contact feature tags and Request or Configuration; remove the location MIME body from the outgoing SIP request"
+      ],
+      "printed_pages": [
+        461,
+        462
       ]
     }
   ]

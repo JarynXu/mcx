@@ -10,6 +10,25 @@ PF 需要终端位置时，§13.1 把配置放在**MCPTT 业务授权成功**之
 - `application/vnd.3gpp.mcptt-info+xml` 的 `<mcptt-request-uri>` 元素写目标用户的 MCPTT ID。另一个 MIME body 是 `application/vnd.3gpp.mcptt-location-info+xml`，在 `<location-info>` 根元素中分别放 `<Configuration>` 或 `<Request>`。
 - **配置**在规定了 `TriggerId` 的触发条件子元素填写该属性，并把 PF 自己的公共服务标识（PSI）写进 `P-Asserted-Identity`（PAI）。位置请求条款没有列这项 PAI 要求，不能反过来解读为请求必须不带 PAI，也不从配置条款给它加上必带条件。
 
+## PF 转发 SIP 请求时，何时必须删除整个位置体？
+
+先分清包的来路。PF 按 §13.2.2 或 §13.2.3 下发配置或索要报告时，自己生成一条 SIP MESSAGE。§13.2.5 处理的是 **PF 收到的 SIP 请求**，不限于 MESSAGE。先查入向请求，再找同一 PF 对应的出向请求；只看出向包，分不出源发、转发和入向本来就没有位置体这几种情况。
+
+**先核对身份，两条满足一条即可。**
+
+- **看 P-Asserted-Identity（PAI）：**它标识了一个公共用户身份，该身份不与本 PF 服务的任何 MCPTT 用户关联。缺少 PAI 不能当作满足这一条。
+- **看请求里的 MCPTT ID：**找到 Content-Type 为 `application/vnd.3gpp.mcptt-info+xml` 的 MIME 体，其中 `<mcptt-request-URI>` 所含的 MCPTT ID 标识本 PF 服务的用户。这里保留 §13.2.5 的拼写，不把它当作源发条款中小写元素名的别名。即使 PAI 关联的是本 PF 服务的用户，这一条也可成立；反过来，第一条成立便不要求第二条也成立。
+
+**再查同一个入向请求，以下三项缺一不可：**
+
+1. `Accept-Contact` 含 `g.3gpp.mcptt`。
+2. `Accept-Contact` 含 `g.3gpp.icsi-ref`，值为 `urn:urn-7:3gpp-service.ims.icsi.mcptt`。核对这两个特征，不按物理头行数判定；本条也没有另列 `require`、`explicit` 或 `P-Asserted-Service`。
+3. `application/vnd.3gpp.mcptt-location-info+xml` MIME 体含 `<Request>` 或 `<Configuration>`。
+
+身份和报文条件都满足时，**PF 必须从出向 SIP 请求中删除整个位置 MIME 体**，不是只删其中的 XML 元素，也不是拒绝整个请求。条款没有给出 SIP 响应码，没保证其余内容原样送到终端。要判断终端是否保存配置或响应请求，须查终端实际收到的 MESSAGE。[TS 24.379 V16.14.0 §13.2.5，印刷页 461–462](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=462)。
+
+例如，PAI 对应本 PF 服务的用户，但上述 MCPTT info 体内的 ID 也指向本 PF 服务的用户。两项特征齐全，位置体含 `Configuration`，便要在转发时删掉该体。其余不变，若位置体只有 `Report`，就不满足本条；若完整入向包确实缺少其中一个特征，也不能用本条要求删除。条件不满足不等于必须保留。抓包不全或只见终端没收到配置，更不能证明 PF 执行过删除或拒绝。
+
 ## 终端什么时候等 minimumReportInterval，什么时候直接走请求分支？
 
 终端的两条接收程序先看**本机实际收到的 SIP MESSAGE**：`Accept-Contact` 是否含 MCPTT 的 `g.3gpp.icsi-ref` 值，`Content-Type` 是否为 `application/vnd.3gpp.mcptt-location-info+xml`，位置体的 `<location-info>` 内是否有对应元素。发端的字段要求不自动变成接收分支未列的检查项。[§13.3.2–3，印刷页 462–463](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=463)。
