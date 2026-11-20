@@ -512,6 +512,16 @@ MCPTT 或 MCVideo 跨系统私呼，双方在各自主系统接受服务，两�
 
 [读取主题](topics/calls/direct-tgi-constituent-authorization.md)
 
+## 普通私呼下游没有主叫别名：O-PF 何时保留，何时省略？
+
+普通按需私呼按被叫 MCPTT ID 寻址：查原 INVITE 是否带主叫 functional-alias-URI，O-PF 针对这名主叫的别名为 activated 才把原值写进下一 INVITE。
+
+主叫 PAI 绑定、被叫资源列表与私呼 CF PSI 各有用途。若身份绑定找不到或过期，404/141 走早期拒绝，不是别名省略。
+
+尚未建立：不从两个 PUBLISH 200、只有出向缺字段或已发送 INVITE 推出本机已激活、实际过滤、呼叫结果、被叫显示或媒体；不涵盖首接按别名寻被叫。
+
+[读取主题](topics/calls/private-caller-alias-forwarding.md)
+
 
 
 ## 普通私聊SDS控制面：发送资格、请求与接收证据

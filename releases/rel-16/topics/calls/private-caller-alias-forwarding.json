@@ -1,0 +1,180 @@
+{
+  "topic_id": "r16-calls-private-caller-alias-forwarding",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "普通私呼下游没有主叫别名：O-PF 何时保留，何时省略？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "主叫按被叫 MCPTT ID 发起初始私呼，与主叫选择展示自己的功能别名分开。只有实际入站有别名，(19a) 按本 O-PF 的该主叫及该别名状态决定复制或省略。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0（Rel-16，Stage 3），主系统普通在网按需一对一带话权私呼，直接拨被叫 MCPTT ID。",
+    "只核主叫初始 INVITE 的 O-PF 入站/出站及所需身份、别名状态；不含以别名寻被叫、首接、应急、预建立或终端显示。"
+  ],
+  "claims": [
+    {
+      "id": "ordinary-private-caller-alias-identities",
+      "title": "被叫 ID、主叫 ID 和功能别名各出现在哪一腿？",
+      "conditions": [
+        "客户端向 O-PF 发在网按需普通 private 的初始 INVITE，直接按被叫 MCPTT ID 寻址。主叫在需要时使用自己的已启用别名。"
+      ],
+      "conclusion": "被叫写在资源列表，业务正文 session-type=private；客户端需要携带已启用的主叫功能别名时，须在该 MCPTT-info 正文把 functional-alias-URI 设为实际使用的别名 URI。O-PF 从实收请求 P-Asserted-Identity 的公共用户身份查主叫业务绑定。无法找到该绑定或其有效期已过时，对客户端的这次 INVITE 回 404/Warning 文本141并停止；若实际继续构造下一 INVITE，用主叫关联私呼 CF 的 PSI 填 SIP Request-URI，用确定的主叫 MCPTT ID 填 mcptt-calling-user-id。",
+      "normative_strength": "§11.1.1.2.1.1 与 §11.1.1.3.1.1 规定按各条件构造及早拒；附录 F.1.3(k) 说明主叫别名字段的关联。",
+      "limitations": [
+        "功能别名不替代主叫授权绑定、被叫业务身份或 SIP 目标 PSI。404/141 是身份绑定早拒，不是别名省略。",
+        "此场景不使用别名搜索被叫，不涵盖首接、预建立或应急。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.1(9), (14)(c): callee MCPTT ID in resource-lists and optional active functional-alias-URI of the caller"
+          ],
+          "printed_pages": [
+            353,
+            354
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.1.1(3)–(4), (6)(a), (15)–(17): O-PF resolves the caller from the existing service-authorisation binding, separate 404/141, and new CF INVITE identities"
+          ],
+          "printed_pages": [
+            366,
+            368
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.1.3(k): functional-alias-URI used with mcptt-calling-user-id"
+          ],
+          "printed_pages": [
+            551
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "originating-pf-alias-carriage-gated-by-local-activation",
+      "title": "实际收到主叫别名后，O-PF 何时带原值？",
+      "conditions": [
+        "实际收到关联主叫的初始 INVITE，且流程已经走到另生成 CF INVITE；仅当入站 MCPTT-info 含 functional-alias-URI 时应用 (19a) 的状态守卫。"
+      ],
+      "conclusion": "查 O-PF 针对这名已确定的主叫 MCPTT ID 和该别名记录的状态。若为 activated，出向同名字段写实际收到的原值；若不是 activated（包括仍 activating），便不带此元素。通用复制正文不覆盖该条件。两次 PUBLISH 200 不是本机状态；在手动新启用对照中，用本机实际匹配的按别名 NOTIFY 及该用户该别名记录核对状态。",
+      "normative_strength": "§11.1.1.3.1.1(19a) 对实际来包的携带/省略规定 SHALL；注 4 指向既有状态获取程序。",
+      "limitations": [
+        "入站未带不满足 (19a) 的检查入口；不规定根据一个出向缺字段反推是否过滤、同步补发 SUBSCRIBE 或缺字段时另回错误。",
+        "不据触发省略判定整个私呼被拒或成功；不从发送推断 CF 收到、终端显示或媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.1.1(3)–(4), (6)(a), (15)–(17): O-PF resolves the caller from the existing service-authorisation binding, separate 404/141, and new CF INVITE identities"
+          ],
+          "printed_pages": [
+            366,
+            368
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.3(7)–(8) and 11.1.1.3.1.1(19a) and Note 4: copy general bodies but preserve incoming alias only if activated for this MCPTT ID"
+          ],
+          "printed_pages": [
+            85,
+            369
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.2.7: participating function learns the alias state from its own matched per-alias notification"
+          ],
+          "printed_pages": [
+            208,
+            209
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.2.1.1(9), (14)(c): callee MCPTT ID in resource-lists and optional active functional-alias-URI of the caller"
+      ],
+      "printed_pages": [
+        353,
+        354
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.3.1.1(3)–(4), (6)(a), (15)–(17): O-PF resolves the caller from the existing service-authorisation binding, separate 404/141, and new CF INVITE identities"
+      ],
+      "printed_pages": [
+        366,
+        368
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "F.1.3(k): functional-alias-URI used with mcptt-calling-user-id"
+      ],
+      "printed_pages": [
+        551
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.1.3(7)–(8) and 11.1.1.3.1.1(19a) and Note 4: copy general bodies but preserve incoming alias only if activated for this MCPTT ID"
+      ],
+      "printed_pages": [
+        85,
+        369
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.2.2.7: participating function learns the alias state from its own matched per-alias notification"
+      ],
+      "printed_pages": [
+        208,
+        209
+      ]
+    }
+  ],
+  "related": [
+    "r16-identity-mcptt-functional-alias-activation-servers",
+    "r16-calls-private-server-admission-routing",
+    "r16-calls-first-to-answer-originating-admission"
+  ],
+  "limitations": [
+    "不可由两笔别名发布 200 或单份出向 INVITE 判定本机 activated、实际过滤、CF 实收、私呼状态或媒体。",
+    "不重写既有别名启用、身份验证、普通呼叫准入或其他流程的全套规则。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
