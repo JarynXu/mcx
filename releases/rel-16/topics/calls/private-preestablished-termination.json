@@ -9,7 +9,7 @@
   "condition_rule": "各声明继承共同范围，再按模式、是否命中原会话、是否触发替换及两条信令腿的实际请求和响应判断。",
   "common_conditions": [
     "TS 24.379 V16.14.0，Release 16，Stage 3。同一 MC 系统归属网内、有话权控制、以本次被叫 MCPTT ID 指定一人的在网私呼；研究 CF 的新初始 INVITE 到达终接侧参与功能 T-PF 后的处理。",
-    "普通自动和人工示例为正常优先级；特殊标志和 Priv-Answer-Mode 仅用于说明替换分流，不含紧急业务的完整过程、首个应答者、无话权控制或跨系统。"
+    "普通自动和人工示例为正常优先级。在模式选择和这两条普通复用程序中，特殊标志和 Priv-Answer-Mode 只用于说明替换分流。被叫处理替换邀请仅限正常优先级、紧急和迫近危险标志均未置 true、T-PF 因 Priv-Answer-Mode 转入替换，且被叫实收标识目标旧会话的初始 INVITE 并进入相应的应答程序。不含紧急业务的完整过程、首个应答者、无话权控制或跨系统。"
   ],
   "claims": [
     {
@@ -215,6 +215,55 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "private-terminating-replacement-client-outcome",
+      "title": "被叫怎样应答替换邀请，怎样核实指定的旧会话是否已释放？",
+      "conditions": [
+        "T-PF 已按上述条件选中可用的旧预建立会话，因入站 Priv-Answer-Mode 转入本模式的按需替换。被叫 UE 实收的是带 Replaces 的新初始 INVITE，Replaces 标识这条旧会话；UE 已进入适用的私呼自动或人工应答程序。不能单凭 T-PF 收到 Priv-Answer-Mode 或发出请求，认定 UE 已收件或已选定应答模式。"
+      ],
+      "conclusion": "在自动应答程序中，UE 对新 INVITE 生成 200 OK，其 SDP answer 须包含 Replaces 所标识的旧预建立会话使用的参数。UE 向 MCPTT 服务器发送这个 200，再释放该头标识的那条旧预建立会话，随后按 TS 24.380 §6.2 与媒体面交互。人工程序在发送最终 200 时沿用上述步骤。若用户明确拒绝邀请，UE 须向服务器发送 480，Warning 文本中的 MCPTT 码为 110，并停止本次人工程序，不走这条成功应答路径。另行核实旧对话时，若适用 §8.4.1.1 的 UE 主动释放程序，UE 以旧预建立会话 URI 为 Request-URI，在旧 SIP 对话内向参与功能发送 BYE；UE 实收针对该 BYE 的 200 时，与媒体面交互。",
+      "normative_strength": "§6.2.3.1.1(6)、(8–10) 为适用条件下的 SHALL；§6.2.3.2.1 的用户拒绝及发送最终 200 两种处理各有前提，均为 SHALL。§8.4.1.1(1–4) 的 SHALL 限于 UE 主动释放按 §8.2.1 建立的预建立会话。",
+      "limitations": [
+        "Replaces 和 offer 标明要替换谁、提出哪些参数，不证明 UE 已收件或替换成功。须在 UE 腿配对新 INVITE 与 UE 的最终响应；CF 腿的 200 不能代替。新 INVITE 的 200 不证明旧对话已结束；旧 BYE 的 200 不证明旧媒体已停或新 RTP 已通。判断媒体需另查对应会话、流向的媒体记录。",
+        "匹配到 UE 对新 INVITE 的 480 和 Warning 文本码 110，可确认 UE 以用户拒绝为由答复了该请求，不证明旧会话一定保留或另行释放。缺少最终响应不是已证实的替换失败；缺少旧对话的释放记录也不是旧会话仍存的证据。",
+        "§6.2.3.1.1(9) 要求释放指定旧会话，但没有直接引用 §8.4.1.1。不能据此规定旧 BYE 与新 INVITE 的 ACK 谁先谁后，也不给出目标匹配算法、任意失败码或回滚规则。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.3.1.1 items 6 and 8–10: invited private client answers using parameters of the identified pre-established session, sends 200 toward server, releases that session and interacts with the media plane"
+          ],
+          "printed_pages": [
+            58,
+            59
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.3.2.1: explicit private user decline, 480 with Warning text 110 and stop; when sending final 200 the client follows 6.2.3.1.1"
+          ],
+          "printed_pages": [
+            59
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "8.4.1.1, items 1–4: client-originated BYE within the pre-established dialog and media interaction on receipt of its 200 response"
+          ],
+          "printed_pages": [
+            165
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "source_references": [
@@ -339,6 +388,34 @@
       ],
       "printed_pages": [
         358
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.2.3.1.1 items 6 and 8–10: invited private client answers using parameters of the identified pre-established session, sends 200 toward server, releases that session and interacts with the media plane"
+      ],
+      "printed_pages": [
+        58,
+        59
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.2.3.2.1: explicit private user decline, 480 with Warning text 110 and stop; when sending final 200 the client follows 6.2.3.1.1"
+      ],
+      "printed_pages": [
+        59
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "8.4.1.1, items 1–4: client-originated BYE within the pre-established dialog and media interaction on receipt of its 200 response"
+      ],
+      "printed_pages": [
+        165
       ]
     }
   ],
