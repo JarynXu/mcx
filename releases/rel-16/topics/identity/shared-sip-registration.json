@@ -628,6 +628,80 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "authorization-publish-settings-state",
+      "title": "授权与设置共用一次 PUBLISH：绑定、缓存、200 和本客户端状态的先后",
+      "conditions": [
+        "服务 MCPTT 服务器实际收到 §7.3.3 的授权及设置 PUBLISH：Event 为 poc-settings，有 application/poc-settings+xml，且 application/vnd.3gpp.mcptt-info+xml 含 mcptt-access-token、mcptt-client-id。服务器从 P-Asserted-Identity 识别 IMS 公共用户身份。以下始于先前的保护与额度检查通过、对该 MCPTT ID 的业务授权成功。"
+      ],
+      "conclusion": "第 5a 项先把 MCPTT ID 和客户端 ID 绑定到 IMS 公共用户身份；若比较客户端 ID 确认同一用户已在另一客户端获准，第 5b 项要求保留旧绑定并增加新绑定。第 7 项才按所引 RFC 3903 处理 PUBLISH，失败即停止，不执行第 8 项的本次缓存或第 9 项的成功响应；本项未指定错误码。成功则缓存本次收到的设置至设置定时器到期，再发送 200 OK；若该 MCPTT ID 有多条绑定，在响应的 MCPTT 业务信息正文置 multiple-devices-ind=true。第 10 项用 am-settings 中的 Answer-Mode Indication 作这个客户端当前的应答方式。第 11 项在服务器尚未存有所需用户配置档时才从 MCPTT 用户数据库下载；若有 selected-user-profile-index，用索引确定此客户端活动档，若需下载只需取所选档（注 2）。无索引且已存或下载了多档，按第 12 项选含 Pre-selected-indication 的档；仅一档时，注 3 说明它默认为预选档。对所服务的 MCPTT ID，若用户配置档 OnNetwork/ImplicitAffiliations 含至少一个带 MCPTT 组 ID 的 entry，第 13 项要求调用 §9.2.2.2.15。",
+      "limitations": [
+        "第 7 项失败不等于此前业务授权失败；它不规定数据库事务、绑定回滚或持久保留，也不说明旧缓存已清除。要确认故障后的状态或具体失败响应，需查同一事务的实发响应及对应绑定、缓存记录。不套用仅设置发布 §7.3.4 的有效绑定或 404 检查，不展开第 5c 项单独的 Resource-Share 条件。",
+        "第 10–13 项在第 9 项发出 200 之后列出。服务器发送不证明客户端收到了响应；即使对应客户端收到该 200，也不能据此判定哪一刻应答方式和配置档生效、某组归属成功，或另一客户端收到 NOTIFY。服务器处理缺索引不等于授权请求的发送方可自行省略索引；不为找不到所选档或预选标记等情况补写错误处理。"
+      ],
+      "normative_strength": "授权和发布分步处理；第 7 项失败须停止，成功才进入缓存及成功响应。成功分支的应答方式、配置档处理和有配置组条目时的隐式归属调用为服务器义务；仅一档时的默认选择见注 3。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.3, entry and steps 1–4 including step 3a, protection before configured maximum"
+          ],
+          "printed_pages": [
+            156
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.3, step 5a–b, successful authorisation and existing other client"
+          ],
+          "printed_pages": [
+            156
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.3, step 7, stop after unsuccessful PUBLISH processing"
+          ],
+          "printed_pages": [
+            156
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.3, steps 6–9a, successful publishing and multiple-device indication"
+          ],
+          "printed_pages": [
+            156
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.3, steps 10–12 and notes 2–3, current client Answer-Mode and active profile selection after sending 200"
+          ],
+          "printed_pages": [
+            157
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.3, step 13, configured group IDs and entry into implicit affiliation for the served MCPTT ID"
+          ],
+          "printed_pages": [
+            157
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "related": [
