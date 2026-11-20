@@ -1,0 +1,141 @@
+{
+  "topic_id": "r16-calls-trusted-regroup-refused-uri-list",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "重组组呼收到 403，CF 何时按伙伴名单发邀请？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明适用主题的全部 common_conditions，并叠加该条 conditions。关联主题不是必经流程。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0 的预安排组呼，区分 CF 发往伙伴组 NCF 的组 INVITE 接收分支与 NCF 无正在进行组呼时的响应生成分支。"
+  ],
+  "claims": [
+    {
+      "id": "cf-requires-policy-and-full-403-evidence-before-user-invites",
+      "title": "CF 按伙伴名单直接邀请须有本地策略、403、业务文本 128、名单头和资源列表正文",
+      "conditions": [
+        "CF 实际收到对它发往伙伴组 NCF 的组 INVITE 的 403，且本地策略允许该分支。"
+      ],
+      "conclusion": "同一 403 须同时有 Warning 中的 MCPTT 业务编号 128、P-Refused-URI-List 头以及 application/resource-lists+xml 正文。正文提供要邀请的伙伴用户 MCPTT ID；通过才按本条的名单发邀请。",
+      "normative_strength": "§10.1.1.4.1.2 的 403 接收段及注 1。",
+      "limitations": [
+        "只见 403、只见 128，或日志没显示正文，都不能证明该分支或用户入会。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.1.2 received 403 conditions and NOTE 1"
+          ],
+          "printed_pages": [
+            241,
+            242
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.4.2 Table 4.4.2-2 item 128"
+          ],
+          "printed_pages": [
+            37
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "cf-cap-and-policy-limit-partner-user-selection",
+      "title": "CF 检查组文档人数上限，超限从名单选人，不把名单当作入会记录",
+      "conditions": [
+        "已通过这条 403 的接收条件，CF 使用响应的资源列表邀请本次组呼的伙伴成员。"
+      ],
+      "conclusion": "检查组成员数是否超过组文档的 on-network-max-participant-count。超限时，只从响应正文中邀请上限所列人数；谁被选中由运营方策略决定。按该节使用名单中的 MCPTT ID 发邀请。",
+      "normative_strength": "§10.1.1.4.1.2 的后续步骤 1–2，注 2。",
+      "limitations": [
+        "不补去重、跨名单计数或人员排序算法；发送不等于接收、接受或参会。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.1.2 received 403 resulting steps 1–2 and NOTE 2"
+          ],
+          "printed_pages": [
+            242
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ncf-list-success-is-not-the-cf-receive-guard",
+      "title": "NCF 查成员成功的名单与失败的 128 分开，不能倒推 CF 条件",
+      "conditions": [
+        "收到发给本组 NCF 的 INVITE，本组无正在进行的预安排组呼，且流程到达关系或成员查询分支。"
+      ],
+      "conclusion": "无互助关系时返回 403 与 128 并停止。受信任互助且支持所引用查询程序时，生成 403 并查组成员，成功则用已归属成员填名单头，失败则写 128；发回 CF 后不再执行剩余步骤。NCF 成功项未明写 128；CF 直接邀请要求 128、名单头和正文齐备。",
+      "normative_strength": "§10.1.1.5.2.2 第 4–5 项；§4.8 对 Trusted Mode 响应正文的说明；CF 条件见 §10.1.1.4.1.2。",
+      "limitations": [
+        "不强行对齐两侧文字，不说 NCF 成功必带或禁带 128；响应缺少任一 CF 条件就不能凭本条直接邀请。已在通话的组另查并接程序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.2.1 and 10.1.1.5.2.2 steps 4–5"
+          ],
+          "printed_pages": [
+            259,
+            260
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.8, trusted-mode participants returned in body with P-Refused-URI-List"
+          ],
+          "printed_pages": [
+            46
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.1.2, CF received 403 conditions"
+          ],
+          "printed_pages": [
+            242
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-prearranged-group-join-split",
+    "r16-calls-direct-tgi-constituent-authorization",
+    "r16-calls-prearranged-server-admission-routing"
+  ],
+  "limitations": [
+    "仅这条 CF/NCF 组 INVITE 和响应的分支；不以本页指定跨系统互助政策、名单协议编码、实际成员身份、收件或呼叫结果。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
