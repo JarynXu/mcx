@@ -1,0 +1,481 @@
+{
+  "topic_id": "r16-media-on-network-noncontrolling-floor-grant",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "在网 MCPTT：非控制侧怎样把 Floor Granted 送回申请话权的终端？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "声明继承共同范围；逐个区分实际收件的 P、服务器接口和终端，以及各自的原状态。可选导读不是连续执行步骤。",
+  "common_conditions": [
+    "3GPP TS 24.380 V16.9.0；普通在网 MCPTT 单话权组呼，不含广播、环境监听或 audio cut-in，当前不涉及合组、角色切换、抢占、双话权或同时多人发言。",
+    "P 是非控制功能中每个会话内逐终端的话权参与者接口；服务器接口在同一功能内面向 CF。终端、P 和 CF 不共享一个许可状态。"
+  ],
+  "claims": [
+    {
+      "id": "noncontrolling-request-track",
+      "title": "上送 Floor Request 时，谁留下回程引用，什么时候记入被动队列？",
+      "conditions": [
+        "新 SIP 会话建立组会话，服务器接口收到应用与信令面的组会话启动指示；关联与能力按本功能管理且参加此会话的每个客户端保存。",
+        "已有本地关联，P 在 has no permission 实际收到关联终端的 Floor Request；向 CF 转发另以服务器接口实际收到 P 的请求为条件。"
+      ],
+      "conclusion": "服务器接口为本端生成随机临时标识，与该端的 P 关联，保存协商能力。Floor Participant Reference 是 32 位本地引用。P 把所收请求送给本地服务器接口，仍无许可。服务器接口保留请求中原有字段，向 CF 转发：已有 Track Info，就把本端标识追加到引用尾部；没有，就以协商的 mc_queueing、可得的 participant-type（否则为 unknown）和作为首个引用的本端标识构造 Track Info。在外发消息的 Queueing Capability 为 1 时，把该外发请求存入本地被动队列。",
+      "normative_strength": "会话初始化时建立关联、P 转交并保持状态、服务器接口按字段条件转发及按能力值存队均为 SHALL。",
+      "limitations": [
+        "原消息已有 Track Info 时用其保留下来的 Queueing Capability 判定，不以本地协商值重算。控制消息转交不以媒体分发器报告 RTP 为触发。",
+        "本地引用标识本端参与者接口，不是 RTP SSRC、MCPTT 用户 ID、队位或某次 Request 的唯一事务号。这些条款未规定引用碰撞或未知引用的恢复办法。入被动队列不证明本地实际发包、CF 实收、加入活动队列、取得队位或随后获准。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.1: floor control server interface and floor participant interface of the non-controlling MCPTT function"
+          ],
+          "printed_pages": [
+            103
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.1 and figure 6.5.5.1-1: one P instance per client in a session and fallback only for unspecified events"
+          ],
+          "printed_pages": [
+            113
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.2 opening and item 2: per-client temporary identifier, participant-interface association and negotiated capabilities at group-session initiation"
+          ],
+          "printed_pages": [
+            103,
+            104
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.3.13, table 8.2.3.13-1 and note 2: queueing capability and 32-bit reference meaningful to the local floor control server interface"
+          ],
+          "printed_pages": [
+            154,
+            155
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.3.4: Floor Request from the associated floor participant while P has no permission"
+          ],
+          "printed_pages": [
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.2 items 1–2: preserve Request fields, append or create Track Info, store outgoing Request on Queueing Capability 1"
+          ],
+          "printed_pages": [
+            106
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "noncontrolling-return-route",
+      "title": "授予、拒绝和队位通知如何回到甲，而不是乙？",
+      "conditions": [
+        "服务器接口实际从 CF 收到 Granted、Deny 或 Floor Queue Position Info；本例返回的 Track Info 有可按本地关联识别的末尾引用。单引用与多引用分开判断。"
+      ],
+      "conclusion": "服务器接口按末尾引用定位本端 P。对 Granted，只有一个引用时从外发 Granted 删除整个 Track Info；多个时只去掉最后一个引用，保留较早引用。向对应 P 发 Granted；若未存双话权获准者的 SSRC，还向其余 P 发 Taken。对 Deny 和队位通知，分别转发 Deny 和 Floor Queue Position Info；多引用时只去尾。它们的单引用项却都把删 Track Info 的外发消息写成 Floor Granted。对 Granted 或 Deny，若本地被动队列确有来自该参与者的请求则移除；队位通知条款没有移队步骤。",
+      "normative_strength": "按尾引用选择 P、转发各消息、Granted 的引用处理、条件 Taken 及条件移队皆为 SHALL。Deny 与队位通知的单引用项和后续转发项按各自原文表述。",
+      "limitations": [
+        "不把两处单引用措辞静默改为外发 Deny 或队位通知，不补缺失或无法对应的引用的处置。",
+        "返回引用定位参与者，不单独证明答复对应其哪次重发；Taken 不是给旁人的授予。删一项不是清队列、改变 CF 的活动队列或刷新终端界面。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.3.13, table 8.2.3.13-1 and note 2: queueing capability and 32-bit reference meaningful to the local floor control server interface"
+          ],
+          "printed_pages": [
+            154,
+            155
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.6 items 1, 2a and 3: last-reference routing and one-versus-many handling for Granted, separate Taken to other interfaces and conditional passive removal"
+          ],
+          "printed_pages": [
+            107,
+            108
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.7 items 1–4: return Deny by tail reference, single-reference wording names outgoing Granted, conditional passive removal"
+          ],
+          "printed_pages": [
+            108
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.11 items 1–3: return Queue Position Info by tail reference, single-reference wording names outgoing Granted; no passive removal step"
+          ],
+          "printed_pages": [
+            111
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "noncontrolling-grant-and-ack",
+      "title": "本地 P 要等终端 Ack 才有许可吗？排队终端又何时能发？",
+      "conditions": [
+        "原无许可的 P 收到本地服务器接口转来的 Granted、Deny 或队位通知。期待确认取决于该消息的 subtype 首位。",
+        "P 实际收到关联终端的 Ack，按 Message Type 是否已有相应期待处理。该规则不含 Start-stop 或 Releasing。服务器接口的上送 Ack 程序以它从 P 实收 Ack 为条件。",
+        "终端侧仅作对照：普通终端在 pending Request 或 queued 的实际收件、用户输入与计时器条件分别判断。"
+      ],
+      "conclusion": "P 把三种消息分别送给该端；首位为 1 就记下期待对所收类型的 Ack。Granted 使 P 进入 has permission，不等 Ack；Deny 和队位通知使 P 留在无许可。终端的 Ack 到达时，若其 Message Type 有期待记录，P 上交 Ack 并清除对应期待，保持现态。服务器接口实收 Ack 后保留参与者带来的字段，已有 Track Info 时追加本端临时标识；没有则补字段，以该标识为首个引用，再发往 CF。终端在 pending Request 实收 Granted 进入有许可，实收队位通知则进入 queued；若先已 queued，实收 Granted 会启动 T132，但仍 queued。T132 运行时收到用户要发言的指示，终端才沿该入口转入有许可。",
+      "normative_strength": "P 的发送、条件记录和转态、匹配 Ack 的转发与清记录、服务器接口实收后的上送、所列终端收件和用户接受后的状态动作，均按各自条件为 SHALL；期待但没有收到 Ack 时的动作是 implementation option。",
+      "limitations": [
+        "发往终端或 CF 不等于目标已收到。Ack 对哪种消息的确认要查 Message Type；队位通知的 Ack 不能确认 Granted，任一 Ack 都不能单独证明用户接受了排队授予或 RTP 已送达。",
+        "P 没有因缺少 Ack 而按此条启动某个固定计时器；不把终端自己的 T132 或其他状态机的定时动作移给 P。此处说的是状态条件，不规定实现的日志或线程调度时序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.3.5–6.5.5.3.7: send Granted, Deny or Queue Position Info to the associated participant, per-type expected Ack and separate P outcomes"
+          ],
+          "printed_pages": [
+            114,
+            115
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.5.1–6.5.5.5.2 and note: applicable P states, actual participant Ack matched to expected Message Type, action on missing Ack left to implementation"
+          ],
+          "printed_pages": [
+            118
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.5 item 1: forward received Ack towards CF, retain fields and append or create Track Info with the local reference"
+          ],
+          "printed_pages": [
+            107
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.4.2: actual Granted received in client pending Request; distinct from its non-controlling participant interface"
+          ],
+          "printed_pages": [
+            39,
+            40
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.4.9: actual Queue Position Info received in client pending Request; entry to queued"
+          ],
+          "printed_pages": [
+            41
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.9.4: actual Granted received in client queued; start T132 and remain queued"
+          ],
+          "printed_pages": [
+            48,
+            49
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.9.12: user wants to send while T132 is running in client queued"
+          ],
+          "printed_pages": [
+            51
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "noncontrolling-permitted-uplink",
+      "title": "获准后看到甲的 RTP，怎样区分本地转发指令与控制方实收？",
+      "conditions": [
+        "P 处于 has permission，实际收到网络媒体接口的指示，得知 RTP 来自它关联的客户端。",
+        "服务器接口收到媒体分发功能的指示，得知它已从一个网络媒体接口收到 RTP；与 P 的收件是分别适用的事件。"
+      ],
+      "conclusion": "P 指示媒体接口把所收 RTP 转向媒体分发器，保持有许可。服务器接口在收到自己的分发功能指示后，请求网络媒体分发器将所收 RTP 朝 CF 转发。要判断 P 当时的状态，另查期间到达的事件：有许可的 P 收到本端 Floor Release，转交服务器接口后仍有许可；收到服务器接口的 Floor Idle 或本页非多人发言的 Floor Taken，发往本端后进入无许可。",
+      "normative_strength": "两处各自收件后的转发指令、P 的保持或按消息改变状态均为 SHALL。",
+      "limitations": [
+        "P 的转发指令不证明分发器已收包。服务器接口的转发请求不证明出口实际发送；认定 CF 收包需要 CF 的相应收件记录。不得用任一上游事件代替终端收包或用户听到语音的证据。",
+        "若 P 当时无许可，不能套用有许可的 RTP 处理程序；该情形另有主题。本页不以先前一条 Granted 或 Release 代替当时状态。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.4.2: in P has permission, indication of RTP from the associated client, instruction to the media interface towards the distributor"
+          ],
+          "printed_pages": [
+            116
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.13 and note: actual media distribution function indication, forwarding request towards CF and local Revoke without server interface"
+          ],
+          "printed_pages": [
+            112
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.4.3, 6.5.5.4.5 and 6.5.5.4.6: in permitted P, client Release versus server-interface Idle or non-multi-talker Taken"
+          ],
+          "printed_pages": [
+            117
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-media-on-network-noncontrolling-floor-rtp",
+    "r16-media-on-network-floor-client",
+    "r16-mcptt-onnetwork-idle-floor-server",
+    "r16-mcptt-onnetwork-preemption-revoke"
+  ],
+  "limitations": [
+    "解释非控制侧对普通请求、答复和许可后上行的责任，不重建 CF 仲裁、缺失引用恢复、完整报文编码或端到端语音交付。",
+    "本地规则写明谁应采取什么动作。要认定某次发生，须区分各自收件、指令、实际发出、对端接收。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.1: floor control server interface and floor participant interface of the non-controlling MCPTT function"
+      ],
+      "printed_pages": [
+        103
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.5.1 and figure 6.5.5.1-1: one P instance per client in a session and fallback only for unspecified events"
+      ],
+      "printed_pages": [
+        113
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.2.2 opening and item 2: per-client temporary identifier, participant-interface association and negotiated capabilities at group-session initiation"
+      ],
+      "printed_pages": [
+        103,
+        104
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "8.2.3.13, table 8.2.3.13-1 and note 2: queueing capability and 32-bit reference meaningful to the local floor control server interface"
+      ],
+      "printed_pages": [
+        154,
+        155
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.5.3.4: Floor Request from the associated floor participant while P has no permission"
+      ],
+      "printed_pages": [
+        114
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.4.2 items 1–2: preserve Request fields, append or create Track Info, store outgoing Request on Queueing Capability 1"
+      ],
+      "printed_pages": [
+        106
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.4.6 items 1, 2a and 3: last-reference routing and one-versus-many handling for Granted, separate Taken to other interfaces and conditional passive removal"
+      ],
+      "printed_pages": [
+        107,
+        108
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.4.7 items 1–4: return Deny by tail reference, single-reference wording names outgoing Granted, conditional passive removal"
+      ],
+      "printed_pages": [
+        108
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.4.11 items 1–3: return Queue Position Info by tail reference, single-reference wording names outgoing Granted; no passive removal step"
+      ],
+      "printed_pages": [
+        111
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.5.3.5–6.5.5.3.7: send Granted, Deny or Queue Position Info to the associated participant, per-type expected Ack and separate P outcomes"
+      ],
+      "printed_pages": [
+        114,
+        115
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.5.5.1–6.5.5.5.2 and note: applicable P states, actual participant Ack matched to expected Message Type, action on missing Ack left to implementation"
+      ],
+      "printed_pages": [
+        118
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.4.5 item 1: forward received Ack towards CF, retain fields and append or create Track Info with the local reference"
+      ],
+      "printed_pages": [
+        107
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.2.4.4.2: actual Granted received in client pending Request; distinct from its non-controlling participant interface"
+      ],
+      "printed_pages": [
+        39,
+        40
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.2.4.4.9: actual Queue Position Info received in client pending Request; entry to queued"
+      ],
+      "printed_pages": [
+        41
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.2.4.9.4: actual Granted received in client queued; start T132 and remain queued"
+      ],
+      "printed_pages": [
+        48,
+        49
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.2.4.9.12: user wants to send while T132 is running in client queued"
+      ],
+      "printed_pages": [
+        51
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.5.4.2: in P has permission, indication of RTP from the associated client, instruction to the media interface towards the distributor"
+      ],
+      "printed_pages": [
+        116
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.4.13 and note: actual media distribution function indication, forwarding request towards CF and local Revoke without server interface"
+      ],
+      "printed_pages": [
+        112
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.5.4.3, 6.5.5.4.5 and 6.5.5.4.6: in permitted P, client Release versus server-interface Idle or non-multi-talker Taken"
+      ],
+      "printed_pages": [
+        117
+      ]
+    }
+  ]
+}

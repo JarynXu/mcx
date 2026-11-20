@@ -2347,6 +2347,16 @@ P 的期待记录属于同一会话和本端。按 Release 的确认位与本地
 
 [读取主题](topics/media/on-network-noncontrolling-floor-rtp.md)
 
+## 在网 MCPTT：非控制侧怎样把 Floor Granted 送回申请话权的终端？
+
+非控制侧如何在外发 Floor Request 增补 Track Info，按队列能力记入被动队列，再用回程末尾引用把授予、拒绝或队位通知送到相应终端的 P。
+
+区分 P 与终端各自的授予、按消息类型期待的 Ack，以及许可后向分发器和向 CF 转发 RTP 所需的两个独立收包指示。Deny 和队位通知的单引用项保留原文消息名称。
+
+尚未建立：本地入队不是 CF 排队或授予；P 获准不是用户接受，P 的转发指令也不是 CF 收包。不规定引用冲突或未知末尾的处理。
+
+[读取主题](topics/media/on-network-noncontrolling-floor-grant.md)
+
 ## 同一用户跨业务、跨终端时，怎样辨认身份？
 
 区分认证用的 MC ID、应用层的业务 ID 及 SIP 路由身份；判断多项业务共用 ID 时如何指明业务，以及同一用户在不同终端上怎样区分配置档和 GRUU。
