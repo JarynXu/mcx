@@ -133,6 +133,75 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "multiple-options-404-113-cache-or-answer",
+      "title": "多笔 OPTIONS 实收 404/113：还有其他预期应答时缓存，否则回原 INVITE",
+      "conditions": [
+        "原 INVITE 所在的预安排终止程序确已调用 §6.3.3.1.13.7，且 CF 为该 INVITE 发过多笔组成组授权 OPTIONS。",
+        "CF 实际收到本腿 OPTIONS 404，且 Warning 的 mcptt-warn-code 为 113。"
+      ],
+      "conclusion": "CF 还预期其他 OPTIONS 应答时，缓存收到的这笔 404。若此时不再预期其他应答，则给原 INVITE 回 404，并附本笔 OPTIONS 404 实收的 Warning。",
+      "normative_strength": "两条分支由同一响应类型及互斥的预期应答条件触发，原文为 SHALL。",
+      "limitations": [
+        "不把任意 404、组文档 SUBSCRIBE 失败或未收到应答视为这条缓存规则。",
+        "不从抓包最后一条出现的顺序判断 CF 不再预期应答，也不裁定多个缓存候选的选择。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.13.7: actual OPTIONS 404/113 and cached negative response handling in multiple requests"
+          ],
+          "printed_pages": [
+            116
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "multiple-options-negative-invite-final-selection",
+      "title": "最后实际收到拒绝时，以缓存和本腿 Warning 条件选择原 INVITE 应答",
+      "conditions": [
+        "实际程序为 §6.3.3.1.13.7，CF 已发多笔组成组 OPTIONS，并对该原 INVITE 不再预期其他 OPTIONS 应答。",
+        "CF 实收本腿系 403/106、403/109，或不属于前述 200/147 与 404/113 等已指定分支的其他应答。"
+      ],
+      "conclusion": "两类均先看有无缓存 404。有缓存时给原 INVITE 回 404，附缓存那笔 404 的 Warning。无缓存时回 403；对实收 403/106 或 403/109 复制实收的 403 Warning，其他实收应答分支未要求复制其 Warning。§10.1.1.5.4 的 403/119 是后者的例子。",
+      "normative_strength": "基于 p116 实收应答、请求数及预期应答条件；前一 200/147 成功分支另按首份成功及多腿清缓存处理。",
+      "limitations": [
+        "不把“其他应答”解释为超时或没有实收响应，不推出只发了一笔 OPTIONS 的落点。",
+        "不把缓存或一条 404/113 当成所有组成组已核完或真实业务资格的证据，也不自行规定 WARN 传播或地址发现。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.13.7: actual OPTIONS 404/113 and cached negative response handling in multiple requests"
+          ],
+          "printed_pages": [
+            116
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.4: the NCF gives 403/119 when group join or origination rules are not met"
+          ],
+          "printed_pages": [
+            263
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "source_references": [
@@ -183,6 +252,15 @@
       ],
       "printed_pages": [
         263
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.3.1.13.7: actual OPTIONS 404/113 and cached negative response handling in multiple requests"
+      ],
+      "printed_pages": [
+        116
       ]
     }
   ],
