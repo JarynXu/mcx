@@ -129,6 +129,10 @@
         {
           "condition": "要比较在网单话权抢占时，客户端收到 Revoke 与服务器撤销各意味着什么。 要判断普通非持有者撤回排队后服务器是否真正移出请求，或怎样核对 Floor Ack、Floor Taken 与队位答复，也从该页进入。",
           "read": "topics/media/on-network-preemption-revoke.md"
+        },
+        {
+          "condition": "若终端原已获准，主动发 Floor Release，而要判断服务器是否停转或旁听终端是否收到空闲通知，查持有者主动放权。",
+          "read": "topics/media/on-network-holder-release.md"
         }
       ],
       "boundary": "不覆盖完整服务器仲裁、特殊业务、媒体安全或全部话权状态实现。"
@@ -274,6 +278,10 @@
         {
           "condition": "要比较在网单话权空闲时的条件授予与 Taken 状态下的抢占、撤销。",
           "read": "topics/media/on-network-preemption-revoke.md"
+        },
+        {
+          "condition": "若 G 已从 Idle 转为 Taken，现收到获准者主动放权，查服务器如何停止分发及各端怎样处理 Idle。",
+          "read": "topics/media/on-network-holder-release.md"
         }
       ],
       "boundary": "不覆盖完整初始化、授权政策、队列调度、重传/释放或媒体安全实现；不由未拒绝推定必授予，保留原文回指和逻辑差异。 仅从已有Idle U/G及实际角色事件进入；客户端流程不必经过本页。"
@@ -320,7 +328,12 @@
       "id": "r16-mcptt-onnetwork-preemption-revoke",
       "question": "在网单话权：显式抢占请求与撤销事件责任",
       "start": "topics/media/on-network-preemption-revoke.md",
-      "next_if": [],
+      "next_if": [
+        {
+          "condition": "若此前没有撤销，且发 Release 的是唯一获准者，不是排队人，查普通主动放权。",
+          "read": "topics/media/on-network-holder-release.md"
+        }
+      ],
       "boundary": "不覆盖完整初始化、授权政策、排队推进、dual/multi-talker或完整释放；紧急SIP、Revoke、队首和Idle/Taken均不证明新请求者已获准，原文逻辑与接口差异保留。 按实际G Taken、请求者U Taken、原持有者U permitted及后续pending事件分别进入；不得由SIP成功推定这些状态。"
     },
     {
@@ -4543,6 +4556,30 @@
         }
       ],
       "boundary": "普通同系统在网 MCPTT。按配置档、服务 PF 本地候选、向组发布、组所有者实收以及两类状态通知分别判断；不要求所有步骤都发生，不用 200 或缺包证明归属或入呼。"
+    },
+    {
+      "id": "r16-mcptt-onnetwork-holder-release",
+      "question": "原持有者松开 PTT 后发 Floor Release，服务器回的 Floor Ack 能证明仲裁已经停止转发 RTP 吗？ 原持有者和旁听者怎样判断空闲？若又发现此前讲话者的 RTP 呢？",
+      "start": "topics/media/on-network-holder-release.md",
+      "next_if": [
+        {
+          "condition": "若要查终端如何重发 Release、如何处理迟到的 Granted 或其他等待结果，转客户端状态。",
+          "read": "topics/media/on-network-floor-client.md"
+        },
+        {
+          "condition": "若起点是空闲服务器收到新请求，查如何处理申请与授予；不把空闲通知当成下一次授予。",
+          "read": "topics/media/on-network-idle-floor-server.md"
+        },
+        {
+          "condition": "若 G 因无包或发言时间已到而动作，查服务器 T1/T2 超时。",
+          "read": "topics/media/on-network-floor-media-timeouts.md"
+        },
+        {
+          "condition": "若服务器此前已决定抢占，或 Release 来源是未获准的排队者，查对应的撤销或退队状态。",
+          "read": "topics/media/on-network-preemption-revoke.md"
+        }
+      ],
+      "boundary": "普通单话权的持有者主动释放；只对实际空队列且无人协商排队、无双话权实例的分支判断全员 Idle。放权后仍见 RTP，要单独查同一接口此前收件与当前状态。"
     }
   ]
 }

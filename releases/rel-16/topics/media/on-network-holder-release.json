@@ -1,0 +1,352 @@
+{
+  "topic_id": "r16-mcptt-onnetwork-holder-release",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "在网 MCPTT：持有者松开 PTT 后，谁确认放权，谁停止转发 RTP？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "每条声明继承共同条件，另按相应角色当时的状态、实收消息或入口指示判定；发送动作不代替收件条件。",
+  "common_conditions": [
+    "固定 3GPP TS 24.380 V16.9.0；同系统已建立的按需普通在网 MCPTT 组呼，显式申请获准的单一持有者主动释放话权，服务器接口直接关联 MCPTT 终端。不是撤回尚未获准的排队请求，也没有先发生抢占撤销。",
+    "不含广播、临时组、系统呼叫、紧急或迫近危险组呼、环境监听、音频切入、双话权，也不支持多人同时发言。U 指控制服务器面向一名参与者的接口，G 指一般话权仲裁；二者与终端话权状态分开。"
+  ],
+  "claims": [
+    {
+      "id": "holder-release-u-to-g",
+      "title": "持有者发 Release、服务器 U 回 Ack、G 请求停止转发是三个事件",
+      "conditions": [
+        "终端在 has permission 收到用户主动放权指示。对 U 的动作，须是原持有者的 U 在 permitted 实收本关联终端的 Release，未存 overriding / overridden without revoke 标记。对 G 的动作，须是 G 在 Floor Taken 实收此 Release。"
+      ],
+      "conclusion": "即使尚未发出语音，终端也可主动放权。终端发送 Floor Release，可在 subtype 首位置 1 要求确认；启动 T100、置 C100=1，进 pending Release。U 收到的 Release 若要求确认，须回 Floor Ack（Message Type=4、Source=2，控制功能）。U 将转给一般仲裁 G 的 Release 的 subtype 首位置 0（如已为 0 则不变），转交后仍在 permitted。G 收到它才按本事件要求媒体分发器停止转发来自该发送者的 RTP，停止该端尚在运行的 T2、T20；不支持多人同时发言时，执行 §6.3.4.3.2 的 Idle 进入程序。",
+      "normative_strength": "终端要求 Release Ack 是 MAY，收到或未收到 Ack 后的处理由实现选择。U 的条件确认、普通转交和保持状态，G 的停转请求、条件停表及进入程序是 SHALL。",
+      "limitations": [
+        "Release Ack 只确认这条 Release 的收件，不证明 G 收到或处理、终端退出等待、下游已停包或通话释放。U 留在 permitted 不证明正在发包。",
+        "表 11.1.3-1 把话权释放列为 T1 的正常停止条件；§6.3.4.4.6 未逐项列出 T1 或指定其相对顺序，不能说 T1 继续运行，也不套用待撤销的 T1/T3 处理。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.5.1 and 6.2.4.5.3: voluntary release by a permitted client, optional acknowledgment and T100/C100"
+          ],
+          "printed_pages": [
+            42,
+            43
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.5.3, steps 1 and 4: Release received in U permitted without override indications"
+          ],
+          "printed_pages": [
+            85
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.4.6, steps 1–4: ordinary Release received in G Floor Taken; RTP distributor, T2, T20 and non-multi-talker exit"
+          ],
+          "printed_pages": [
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "Table 11.1.3-1, T1 row: normal stop on floor release"
+          ],
+          "printed_pages": [
+            218
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "empty-queue-idle-delivery",
+      "title": "空队列时 G 发 Idle，原持有者、旁听者的服务器接口与终端分别如何处理？",
+      "conditions": [
+        "G 从 Taken（非 Start-stop）进入 §6.3.4.3.2 首种入口：无客户端协商排队、§6.3.6 状态机不存在且活动请求队列为空。各接收方的动作分别以在所列状态实际收到 Idle 为条件，不要求所有收件都已发生。",
+        "原持有者 U 未存 overriding / overridden without revoke 标记；旁听者 U 未存双话权标记。终端的无许可结论限普通非广播组呼。"
+      ],
+      "conclusion": "G 如存一般仲裁 Track Info 则删除，给全体参与者发序号加 1 的 Floor Idle，启 T7 并置 C7=1，启 T4，置 G Floor Idle。原持有者的 U 在 permitted 收到 G 的 Idle，进入 not permitted and Floor Idle，删除此接口已存 Track Info（如有）；该项未明写向原端转发同一份通知。旁听者的 U 在 not permitted and Floor Taken 收到 G 的 Idle 则须转给本端，可请求 Ack，进入 not permitted and Floor Idle。若 U 已在 not permitted and Floor Idle 时实收 G 的 Idle，须转给关联端，可请求 Ack，保持本状态。原终端在 pending Release 实收 Idle，须在要求确认时回 Floor Ack（Message Type=5、Source=0），可提示空闲，须停 T100 并转 has no permission。旁听终端在 has no permission 实收 Idle，须在要求确认时回同样字段的 Ack；若此前未提示可提示空闲，须停止正在运行的可选 T103，仍无许可。",
+      "normative_strength": "G 的空队列通知、字段与定时器、U 在指明分支的转发和状态以及终端的条件确认和状态是 SHALL；U 对转发 Idle 请求确认、终端提供相应空闲提示是 MAY。",
+      "limitations": [
+        "原持有者 U 的 §6.3.5.5.4(2) 未明写同一份 Idle 转发，不是禁止转发，也不是保证将有下一份通知。G 的发送、U 的收件/转发和某一终端的收件不能相互替代。",
+        "原终端的 T100 到期次数达到 C100 上限也会使本端进入无许可，不能证明服务器收到 Release 或 Idle 到达。一个终端的 Idle Ack 不能证明其他人收到、实际停播、新人获准或通话结束。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.3.2, first entrance, steps 1 and 2: no queueing negotiation, no dual state machine and an empty active queue"
+          ],
+          "printed_pages": [
+            56
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.5.4, step 2: G Floor Idle received in U permitted with no stored indication"
+          ],
+          "printed_pages": [
+            85
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.3.2: entering U not permitted and Floor Idle; stored Track Info"
+          ],
+          "printed_pages": [
+            75
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.4.3, steps 1, 2 and 4: forwarding G Floor Idle in U not permitted and Floor Taken without a dual indication"
+          ],
+          "printed_pages": [
+            78
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.3.10: forwarding a received G Floor Idle while already U not permitted and Floor Idle"
+          ],
+          "printed_pages": [
+            77
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.6.4: ordinary Floor Idle received by client pending Release, optional notification, conditional acknowledgment and T100"
+          ],
+          "printed_pages": [
+            45,
+            46
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.3.2: Floor Idle received by a client already without permission; conditional acknowledgment and T103"
+          ],
+          "printed_pages": [
+            37,
+            38
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.6.3: client T100 expires at the C100 upper limit"
+          ],
+          "printed_pages": [
+            45
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "former-holder-late-payload",
+      "title": "原持有者放权以后，在服务器入口又看到带载荷 RTP，是否要转给分发器？",
+      "conditions": [
+        "控制服务器此 U 直接关联该 MCPTT 客户端，且先前在 permitted 收到过它的 Floor Release。现在此 U 已是 not permitted and Floor Idle，网络媒体接口实际报告收到了同一参与者带载荷的 RTP。"
+      ],
+      "conclusion": "U 要求网络媒体接口不要把收到的这些包转给服务器内的媒体分发器；向该关联终端发 Floor Revoke，Reject Cause=#3（无发送媒体突发的许可），进入 not permitted but sends media。进入该状态时须启动 T8。在此状态，U 不得要求网络媒体接口把该端的 RTP 转给分发器。",
+      "normative_strength": "对这一入口的停转请求、给关联终端发 Revoke、进入新状态及启动 T8 是 SHALL；该状态下不得请求将该端媒体转给分发器是 SHALL NOT。",
+      "limitations": [
+        "只在一个观测点看到 RTP，不证明它已被转发、送达或播放，也不证明仍有话权。不用 #3 倒推此前有抢占。",
+        "§6.3.5.3.8 注：关联方若是非控制功能的服务器接口，未授权媒体在非控制功能处理。无载荷、未确认此前实收 Release、另一参与者或另一 U 状态均不能凭本条判定。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.3.8 and note: directly associated client payload after prior Release in U permitted, distributor instruction and cause 3"
+          ],
+          "printed_pages": [
+            77
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.7.2: enter U not permitted but sends media; start T8 and do not request forwarding"
+          ],
+          "printed_pages": [
+            89
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-media-on-network-floor-client",
+    "r16-mcptt-onnetwork-idle-floor-server",
+    "r16-mcptt-onnetwork-floor-media-timeouts",
+    "r16-mcptt-onnetwork-preemption-revoke"
+  ],
+  "limitations": [
+    "各角色的收发、定时器及转发请求只在所列入口有该含义。未给某一采集点的包，不等于已证实未发送或未收到。",
+    "不重建非空队列推进、双话权、跨系统、预先撤销、通话信令释放或 RTP 下行实际交付。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.2.4.5.1 and 6.2.4.5.3: voluntary release by a permitted client, optional acknowledgment and T100/C100"
+      ],
+      "printed_pages": [
+        42,
+        43
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.5.5.3, steps 1 and 4: Release received in U permitted without override indications"
+      ],
+      "printed_pages": [
+        85
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.4.4.6, steps 1–4: ordinary Release received in G Floor Taken; RTP distributor, T2, T20 and non-multi-talker exit"
+      ],
+      "printed_pages": [
+        61
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "Table 11.1.3-1, T1 row: normal stop on floor release"
+      ],
+      "printed_pages": [
+        218
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.4.3.2, first entrance, steps 1 and 2: no queueing negotiation, no dual state machine and an empty active queue"
+      ],
+      "printed_pages": [
+        56
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.5.5.4, step 2: G Floor Idle received in U permitted with no stored indication"
+      ],
+      "printed_pages": [
+        85
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.5.3.2: entering U not permitted and Floor Idle; stored Track Info"
+      ],
+      "printed_pages": [
+        75
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.5.4.3, steps 1, 2 and 4: forwarding G Floor Idle in U not permitted and Floor Taken without a dual indication"
+      ],
+      "printed_pages": [
+        78
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.5.3.10: forwarding a received G Floor Idle while already U not permitted and Floor Idle"
+      ],
+      "printed_pages": [
+        77
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.2.4.6.4: ordinary Floor Idle received by client pending Release, optional notification, conditional acknowledgment and T100"
+      ],
+      "printed_pages": [
+        45,
+        46
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.2.4.6.3: client T100 expires at the C100 upper limit"
+      ],
+      "printed_pages": [
+        45
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.2.4.3.2: Floor Idle received by a client already without permission; conditional acknowledgment and T103"
+      ],
+      "printed_pages": [
+        37,
+        38
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.5.3.8 and note: directly associated client payload after prior Release in U permitted, distributor instruction and cause 3"
+      ],
+      "printed_pages": [
+        77
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.5.7.2: enter U not permitted but sends media; start T8 and do not request forwarding"
+      ],
+      "printed_pages": [
+        89
+      ]
+    }
+  ]
+}

@@ -2277,6 +2277,16 @@ MCPTT、MCVideo 的伙伴复制例中，甲乙互联，A 由组主系统甲服�
 
 [读取主题](topics/media/preestablished-connect-outcome.md)
 
+## 在网 MCPTT：持有者松开 PTT 后，谁确认放权，谁停止转发 RTP？
+
+终端松开 PTT 后，哪一方确认 Floor Release、何时要求媒体分发器停止转发，以及空队列时原持有者和旁听者各自如何处理 Floor Idle。
+
+G 发全员 Idle 有排队协商、双话权实例和队列守卫；服务器面向原终端的 U 已转为空闲，不证明原终端实收。若原端迟到的带载荷 RTP 到达无许可的 U，还须确认 U 此前在 permitted 时实收同一端的 Release。
+
+尚未建立：控制方的确认或停转请求、一次 Idle 通知或单点观察到的 RTP，均不足以证明全组已停收、语音已播放或通话已经释放。
+
+[读取主题](topics/media/on-network-holder-release.md)
+
 ## 同一用户跨业务、跨终端时，怎样辨认身份？
 
 区分认证用的 MC ID、应用层的业务 ID 及 SIP 路由身份；判断多项业务共用 ID 时如何指明业务，以及同一用户在不同终端上怎样区分配置档和 GRUU。
