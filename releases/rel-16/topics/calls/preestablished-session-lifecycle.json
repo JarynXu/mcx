@@ -164,6 +164,62 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "preestablished-resource-share-response",
+      "title": "预建立 INVITE 的 200：Resource-Share 何时必带，如何与 SDP 逐流对应？",
+      "conditions": [
+        "PF 实际收到建立预建立会话的 INVITE，按 §8.2.2 通过准入检查并为本请求构造 200 OK。第 9d 项以 SIP 核心网支持资源共享为条件。"
+      ],
+      "conclusion": "条件满足时，PF 必须在这份 200 中加入 Resource-Share 应答头：值为 media-sharing，origin 参数取 session-initiator，另带 timestamp 和 rules 参数。rules 为每个媒体流列一条规则，顺序与本响应 SDP 应答中对应的 m-line 顺序相同。每条规则由 new-sharing-key 和 directionality 两部分组成；directionality 指明该预建立媒体流的方向。",
+      "normative_strength": "§6.3.2.1.5.2(6) 在通用最终响应程序中允许携带此头（MAY）；§8.2.2(9d) 在本次预建立成功响应且 SIP 核心网支持资源共享时要求携带（SHALL），不能据通用程序省略。",
+      "limitations": [
+        "头字段描述逐流规则，不证明网络复用了某条旧承载或旧会话；确认复用须有把本次流与旧资源关联起来的网络侧证据。缺少该头也不能单独证明网络没有共享。",
+        "PF 按 §8.2.2(10) 与媒体面交互；注 1 说明本次处理在第 11 项发送 200 之前完成，第 12 项才评估 ICE。客户端按 §8.2.1 在实际收到本 INVITE 的 2xx 后与媒体面交互。PF 的响应不证明客户端已收、已有业务呼叫、ICE 已完成或 RTP 已收发。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "8.2.2, step 9(d)(A)–(D) and step 9(e): conditional Resource-Share answer, ordered two-part per-stream rules and corresponding SDP answer"
+          ],
+          "printed_pages": [
+            163
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.5.2, step 6: optional Resource-Share in the general final response procedure (comparison only)"
+          ],
+          "printed_pages": [
+            87
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "8.2.2, steps 10–12 and notes 1–2: media-plane processing before sending the response, then ICE evaluation"
+          ],
+          "printed_pages": [
+            163
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "8.2.1, receipt of the 2xx response and note 2: client media-plane interaction and ICE boundary"
+          ],
+          "printed_pages": [
+            162
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "limitations": [
