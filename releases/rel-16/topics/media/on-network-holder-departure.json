@@ -1,0 +1,188 @@
+{
+  "topic_id": "r16-media-on-network-holder-departure",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "在网组呼持有者退场：哪条媒体腿停转，何时释放话权实例？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "每条声明继承共同场景；按具体实例实收请求、内部通知和本机状态判断，接口指令不等于媒体实际结果。",
+  "common_conditions": [
+    "固定 TS 24.380 V16.9.0（Release 16，Stage 3）。同系统、已建立的普通在网 MCPTT 单话权组呼，控制侧直接关联当前获准的持有者。只研究其退场而其余参与者仍通话、不支持多人同时发言的情形。",
+    "U 指控制侧逐参与者基本话权接口；G 是同场的一般话权仲裁。两处及终端分别查证。不以松开 PTT、非控制接口 P 或整场释放替代本入口。"
+  ],
+  "claims": [
+    {
+      "id": "onnetwork-holder-departure-leg-release-steps",
+      "title": "在网持有者退场但组呼继续，甲的 U 两步分别做什么？",
+      "conditions": [
+        "面向甲的控制侧直接接口 U 不在 Start-stop 或 Releasing，且实收应用与信令面的呼叫释放第 1 步请求。其他参与者仍在同一呼叫。",
+        "第 2 步另判：U 正在 Releasing，应用与信令面确定该呼叫与甲的连接已释放，U 实收针对这个实例的第 2 步请求。"
+      ],
+      "conclusion": "第 1 步仅处理该接口所关联的甲：停向甲发话权控制消息，忽略从甲收到的控制消息；U 请求网络媒体接口停止向甲发 RTP，并请求该接口停止把从甲来的 RTP 转给分发器；通知 G 甲已开始断开，然后 U 进入 Releasing。第 2 步请求网络媒体接口释放该客户端在本呼叫的资源，U 进入 Start-stop 并终止这个逐参与者基本话权实例。",
+      "normative_strength": "§6.3.5.8.2 和 §6.3.5.9.2 在具备各自实收条件时规定 SHALL；§6.3.3 分开单人退场与整场释放的作用范围。",
+      "limitations": [
+        "第 1 步不能代替第 2 步或证明资源已回收。停转/释放请求不是执行回执；不是整场终止，也不外推其余参与者的状态或媒体。",
+        "本文所述终端接收支路另以实收本端相应请求为前提；§6.2.2 允许用户面发起第 1 步，不从接收程序反推最早由谁发起。不能把 U/G 的收件、Floor Ack 或某腿 SIP BYE 200 当作两个阶段、对端收件或媒体处理证明。",
+        "不把控制侧 U 与非控制功能的参与者接口 P 混用。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.3: two locally scoped server steps when one participant leaves a continuing call, versus whole-call release"
+          ],
+          "printed_pages": [
+            53
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.8.1–2: actual initial release request to the direct per-participant floor interface, user-plane directions and disconnection indication"
+          ],
+          "printed_pages": [
+            91
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.9.1–2: Releasing and actual step 2 request, release request for this client/call and termination of its basic instance"
+          ],
+          "printed_pages": [
+            92
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.2, 6.2.4.7.1–2 and 6.2.4.8.2: client-side separately received release step 1 stop sending and step 2 resource/instance release"
+          ],
+          "printed_pages": [
+            35,
+            47,
+            48
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "onnetwork-holder-departure-arbitration-idle-evidence",
+      "title": "G 确认获准持有者开始断开后，何时实际设置空闲？",
+      "conditions": [
+        "当前 G 为 Floor Taken，不支持多人同时发言。G 本身实收面向甲的控制侧接口发来的“甲已开始断开”指示，当时甲是当前获准持有者。",
+        "在调用 §6.3.4.3.2 后另核空队列分支：从非 Start-stop 进入，未有 MCPTT 客户端协商话权请求排队，不存在 §6.3.6 的状态机，活动请求队列实际为空。"
+      ],
+      "conclusion": "符合第一个条件时 G 须按 §6.3.4.3.2 进入空闲处理程序，不等待收到 Floor Release。符合独立列出的空队列入口时，移除所保存且关联的 Track Info（若有），向该程序规定的各话权参与者发送 Floor Idle，启动 T7 并将 C7 置 1、启动 T4，设置 G: Floor Idle。",
+      "normative_strength": "§6.3.4.4.11 在所述 G 状态和实收指示下规定 SHALL；§6.3.4.3.2 的空队列动作另需满足全部入口条件。",
+      "limitations": [
+        "接口发出指示不证明 G 收到或已处理。未协商排队不代替活动队列为空；进入空闲处理程序不等于已经设置 Idle。此处不展开队列非空、排队协商或其他状态。",
+        "G 已空闲、Floor Idle 出包和 T4 启动均不是其他端实际收到或整场已释放的证明。不擅自规定停转请求的执行时刻。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.4.11: permitted client disconnect indication in G Floor Taken and non-multi-talker dispatch to the Idle entry procedure"
+          ],
+          "printed_pages": [
+            64
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.3.2: conjunctive no-queueing/no-dual/non-Start-stop and empty active-queue distinction in the G Floor Idle entry procedure"
+          ],
+          "printed_pages": [
+            56
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.3: two locally scoped server steps when one participant leaves a continuing call, versus whole-call release"
+      ],
+      "printed_pages": [
+        53
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.5.8.1–2: actual initial release request to the direct per-participant floor interface, user-plane directions and disconnection indication"
+      ],
+      "printed_pages": [
+        91
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.5.9.1–2: Releasing and actual step 2 request, release request for this client/call and termination of its basic instance"
+      ],
+      "printed_pages": [
+        92
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.4.4.11: permitted client disconnect indication in G Floor Taken and non-multi-talker dispatch to the Idle entry procedure"
+      ],
+      "printed_pages": [
+        64
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.4.3.2: conjunctive no-queueing/no-dual/non-Start-stop and empty active-queue distinction in the G Floor Idle entry procedure"
+      ],
+      "printed_pages": [
+        56
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.2.2, 6.2.4.7.1–2 and 6.2.4.8.2: client-side separately received release step 1 stop sending and step 2 resource/instance release"
+      ],
+      "printed_pages": [
+        35,
+        47,
+        48
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcptt-onnetwork-holder-release",
+    "r16-media-on-network-noncontrolling-floor-rtp",
+    "r16-media-on-network-floor-client",
+    "r16-calls-chat-participant-or-session-release"
+  ],
+  "limitations": [
+    "不扩展至抢占、广播、临时组、非控制侧、多人或双话权、实际媒体传递、部署或 SIP 逐条映射。",
+    "不推定有排队或非空分支的推进和何时真正再授予；不从过程调用、话权消息或单端日志推断其他角色实际完成。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
