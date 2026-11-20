@@ -32,3 +32,5 @@
 | HTTP-1 | **必须用 QCI 8 或更好**；不能只按编号小于 8 判“更好”。小标题提到了身份管理 PDN，正文却只给传输 HTTP-1 的 EPS 承载规定了这个要求，不能据此给 CSC-1 也指定 QCI 8。[TS 23.280 §5.2.7.2.2，印刷页 22](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/16.07.00_60/ts_123280v160700p.pdf#page=23) |
 
 MCVideo 也采用上述公共 APN 与 EPS 规则，但它的**发送和接收控制信令**另有一条规定：QCI 69 是**推荐**值。已知传的是视频收发控制，没用 69 只说明偏离推荐；不能用这条建议放宽 SIP-1 的强制要求。若要判断视频媒体模式对应的值，查[MCVideo 单播承载](../mcvideo/eps-unicast-bearer-qci.md)。[TS 23.281 V16.4.0 §§5.5.1–3，印刷页 14](https://www.etsi.org/deliver/etsi_ts/123200_123299/123281/16.04.00_60/ts_123281v160400p.pdf#page=15)
+
+若已确认连接是 IPv4v6，查[在网各项业务与离网组用哪种 IP 版本](ip-version-by-service-and-group.md)。

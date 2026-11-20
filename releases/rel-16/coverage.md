@@ -3107,6 +3107,16 @@ LMC 请 LMS 启动目标用户的上报时，触发须有请求者的业务 ID�
 
 [读取主题](topics/calls/remotely-initiated-private-call.md)
 
+## 双栈 PDN 按业务选 IPv4 或 IPv6；离网按哪一组？
+
+在网 IPv4v6 按业务各自的初始终端指示判断；离网 ProSe 按目标组的配置判断。
+
+APN、服务器 URI、组播地址和二层组 ID 不是目标 IP 版本指示。
+
+尚未建立：不推定缺省值、回退、DNS 或实际报文使用的 IP 版本。
+
+[读取主题](topics/bearers/ip-version-by-service-and-group.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。
