@@ -6,15 +6,14 @@
   "title": "MCPTT 通话改经另一台终端接入网络：原会话何时算转完？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-23.280-v16.7.0",
-  "common_conditions": [
-    "TS 23.280 V16.7.0，Rel-16 Stage 2；远端终端经另一台 UE 接入网络使用 MC 业务。"
-  ],
+  "common_conditions": [],
   "condition_rule": "各声明只在本条条件下成立。是否离开 MBMS 覆盖、是否采用资料性 B.1、会话是否已经锚定不是所有中继场景的共同前提。",
   "claims": [
     {
       "id": "network-service",
       "title": "远端终端失去蜂窝覆盖、借另一台终端接入 MC 网络时，中继职能转送 IP，业务用户仍是远端用户",
       "conditions": [
+        "TS 23.280 V16.7.0，Rel-16 Stage 2；远端终端经另一台 UE 接入网络使用 MC 业务。",
         "远端甲失去蜂窝覆盖、需通过 ProSe UE-to-network relay 使用 MC 业务。"
       ],
       "conclusion": "R 作为中继提供三层 IP 路由；甲仍使用与在网 UE 相同的应用层 MC 业务信令。甲至 R 的 PC5 链路不把网络中的业务改成离网直通组呼。",
@@ -52,6 +51,7 @@
       "id": "session-identity",
       "title": "资料性 B.1 的 MCPTT 锚定会话：新接入注册和请求转移原会话是两步，SCC AS 靠 STI 找会话",
       "conditions": [
+        "TS 23.280 V16.7.0，Rel-16 Stage 2；远端终端经另一台 UE 接入网络使用 MC 业务。",
         "甲直连时已与 MCPTT AS 建立 SIP 会话，会话已锚定于 SCC AS、已有 STI；旧直连将失或已失。"
       ],
       "conclusion": "甲先连接 R，经新接入向 SIP 核心注册，再从新路径向 SCC AS 发带会话转移标识 STI 的 INVITE。SCC AS 靠 STI 找到该会话，更新朝 MCPTT AS 的一侧；切换前后锚点不变。",
@@ -116,6 +116,7 @@
       "id": "all-streams",
       "title": "资料性 B.1 的 MCPTT 锚定会话：所有媒体流均转到经中继的新接入才完成，旧直连仍在时可在此后注销",
       "conditions": [
+        "TS 23.280 V16.7.0，Rel-16 Stage 2；远端终端经另一台 UE 接入网络使用 MC 业务。",
         "判断 B.1 示例中已锚定会话由直连转至经 R 接入的进度。"
       ],
       "conclusion": "完成点是原会话的所有媒体流均已转到经 R 的接入路径。若原会话有两路而只证实转了一路，还不能确认全部完成。已经全部转完、旧直连也还在，甲此时可以注销旧接入；未注销不使转移退回进行中。",
@@ -171,6 +172,7 @@
       "id": "edge-eligibility",
       "title": "离开 MBMS 覆盖的中继专例：可用单播不同于正在用单播，需结合小区重选条件和 MBMS 质量判断",
       "conditions": [
+        "TS 23.280 V16.7.0，Rel-16 Stage 2；远端终端经另一台 UE 接入网络使用 MC 业务。",
         "甲从良好 MBMS 接收区向区外移动，没有在用单播承载，也没找到信号质量足以触发正常重选的目标小区。"
       ],
       "conclusion": "在仍有单播覆盖的区段就可考虑经 R 接入。客户端估计 MBMS 质量并测邻区参考信号，MBMS 质量达相应门限时才进行发现并连接 R。若已经在用单播承载，不满足这套 MBMS 程序的前提。",
@@ -217,6 +219,7 @@
       "id": "after-continuity",
       "title": "MBMS 中继程序可以采用资料性 B.1；如采用，目标侧以单播完成转移，若目标侧分发组播内容则在完成后转组播",
       "conditions": [
+        "TS 23.280 V16.7.0，Rel-16 Stage 2；远端终端经另一台 UE 接入网络使用 MC 业务。",
         "图区分 MBMS 中继程序中的连续性步骤与接下来的媒体分发；目标侧的单播完成规则只讨论采用 B.1 的情形。"
       ],
       "conclusion": "§10.7.3.7.3 步骤 3 可以按附录 B 办理。B.1 注 3 以目标侧单播完成；若目标侧正在组播分发 MCPTT 内容，之后才改组播。正文步骤 4–5 中，客户端告知 R 接收 MBMS 媒体所需的信息，R 用 ProSe 一对多直连转发从 MBMS 收到的媒体。",
@@ -250,6 +253,94 @@
           ],
           "printed_pages": [
             135
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "B.1, informative annex, figure B.1-1 and explanation"
+          ],
+          "printed_pages": [
+            219
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "B.1, figure B.1-2, step 5, all media streams and old access"
+          ],
+          "printed_pages": [
+            221
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "B.1, note 3, target-side delivery at and after completion"
+          ],
+          "printed_pages": [
+            221
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "bidirectional-anchored-access-transfer",
+      "title": "Stage 3：直连与中继间双向转移同一 MCPTT 锚定会话",
+      "standard_stage": 3,
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "conditions": [
+        "TS 24.379 V16.14.0，Rel-16 Stage 3 §14A；已在进行的 SIP 会话承载普通 MCPTT 私呼或组呼，远端终端是支持 PS-PS 接入转移的 SC UE。",
+        "远端 UE 从经 E-UTRAN 直连接入改为经 UE-to-network relay 接入，或从中继接入回到经 E-UTRAN 直连。会话在接入转移前后锚定在同一 SCC AS；判断 MBMS 报告与旧接入注销另用各自的转移成功和接入状态条件。"
+      ],
+      "conclusion": "发起转移使用预先配置的静态 PS-PS STI，或使用动态 STI：源接入腿建立该对话时返回的 Contact 里的 URI。直连转中继时，远端 UE 经 PC5 发现、选择合适中继并建立直连链路；在经中继的目标接入腿发起 IMS 注册，再单独发起会话转移。中继回直连时，UE 在直连的在网目标接入腿发起 IMS 注册，只复用正向第 5–7 步，不重复 PC5 发现、选择及连中继；两个方向的 SCC AS 都用同一被引用程序。两个方向都在会话转移成功后、并且目标侧正用 MBMS 承载分发 MCPTT 内容时，才由远端 UE 向参与功能（PF）发送 MBMS 承载监听状态报告（§14.3.3）；PF 实际收到显示客户端正在监听 MBMS 子信道的报告后，才按注 5 调用 §14.2.3。转移成功且源接入仍连接时，远端 UE 可以仅对源接入腿上登记的 IMS 公共用户身份的相应 Contact 地址办理注销。这个注册 Contact 和动态 STI 所用的源对话 Contact 用途不同。",
+      "limitations": [
+        "PC5 链路建立、目标接入 IMS 注册发起或注册成功，都不证明同一 SIP 会话已完成转移，不从编号顺序推定另有注册完成门槛。§14A 将接入转移与 SCC AS 的细节委托给引用程序，不在此推断具体转移报文字段、成功响应码或失败补偿。",
+        "目标侧有 MBMS 能力或覆盖不等于正在用 MBMS 分发此处的 MCPTT 内容；UE 发出报告不等于 PF 已收到表示实际监听的报告，调用切换程序也不证明承载切换完成、媒体无中断或每位参与者都收到。源接入 Contact 注销是可选的，不是注销全部注册、拆原 SIP 会话或验证转移成功。",
+        "对照 TS 23.280 V16.7.0 Stage 2 的资料性 B.1：文字说明反方向过程相同，图仅演示直连转中继；示例的全部媒体流完成、目标侧单播优先及可选旧接入注销不构成 §14A 的通用成功判据，也不用其正向图重建反向信令。"
+      ],
+      "normative_strength": "两个方向分别发起目标腿 IMS 注册与会话转移。成功后符合目标 MBMS 分发条件时，监听状态报告为应做动作；成功且源连接仍在时，旧接入上指定 IMS Contact 的注销可选。SCC AS、STI 的适用条件来自 §14A.1，B.1 只作资料性对照。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14A.1, in-progress MCPTT private/group SIP session: SCC AS anchor, PS-PS SC UE, and static/dynamic STI"
+          ],
+          "printed_pages": [
+            476
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14A.2.1, remote UE items 1–5: PC5 relay discovery, selection and direct link, relay-leg IMS registration initiation, then session transfer initiation"
+          ],
+          "printed_pages": [
+            476,
+            477
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14A.2.2 and 14A.3.1–14A.3.2: direct on-network target registration, reuse only forward items 5–7 (printed 14.A.2.1), and common SCC AS procedure"
+          ],
+          "printed_pages": [
+            477
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14A.2.1 items 6–7 and Note 5, applied in reverse by 14A.3.1 item 2: successful transfer, conditional MBMS report and optional old-leg IMS Contact deregistration"
+          ],
+          "printed_pages": [
+            477
           ]
         },
         {
