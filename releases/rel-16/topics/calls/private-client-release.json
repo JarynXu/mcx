@@ -196,6 +196,178 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "on-demand-release-origin-pf",
+      "title": "挂断方 PF 实收终端 BYE 后怎样向 CF 发出新 BYE？",
+      "conditions": [
+        "普通在网私呼已按需建立，有话权控制；同一系统的两名用户按 MCPTT ID 直接呼叫，由其中一名客户端主动发起释放。没有使用预建立会话。",
+        "以挂断方 PF 实际收到本侧终端的 SIP BYE 为入口；响应处理另以实际收到发给 CF 那份 BYE 的 200 为条件。"
+      ],
+      "conclusion": "PF 先与媒体面交互，再生成发向 CF 的 BYE：Request-URI 取来件中的 MCPTT 会话身份，复制来件 P-Asserted-Identity；来件含 application/vnd.3gpp.mcptt-info+xml 正文时也须复制。收到出向 BYE 的 200 后，§6.3.2.1.6 末段要求向客户端转送 200，并与媒体面交互，以释放与 CF 的 SIP 会话所关联的媒体资源。",
+      "normative_strength": "上述请求、字段、条件复制及收到匹配 200 后的处理，在所列条件下是 SHALL。",
+      "limitations": [
+        "§11.1.3.2.1.1 按本次释放方向调用参与功能程序；§6.3.2.1.6 起首写参与功能，末段原文称 terminating MCPTT function。本条保留原称谓，不将这个 200 解释成接收方终端的应答。",
+        "终端已发不证明 PF 已收；挂断方看到 200 不证明接收方已收到或回复 BYE，更不证明媒体资源释放完成。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.3.2.1.1, on-demand private call: BYE received from the releasing client"
+          ],
+          "printed_pages": [
+            389
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.6, items 1–6 and concluding response paragraph: participating function sends the business BYE towards the controlling function; the paragraph on its 200 names the terminating MCPTT function for client response and media interaction"
+          ],
+          "printed_pages": [
+            87,
+            88
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "on-demand-release-cf-before-policy",
+      "title": "CF 为什么可以在对端尚未收到 BYE 时就答复 200？",
+      "conditions": [
+        "普通在网私呼已按需建立，有话权控制；同一系统的两名用户按 MCPTT ID 直接呼叫，由其中一名客户端主动发起释放。没有使用预建立会话。",
+        "CF 实际收到挂断方方向的 BYE；生成其余参与者的 BYE 须先确认私呼释放策略要求释放；处理出向 200 还须实际收到针对该 BYE 的响应。"
+      ],
+      "conclusion": "CF 先就面向发来 BYE 的参与者的 SIP 会话与媒体面交互以释放关联资源，生成并向挂断方方向发送这笔请求的 200，然后检查 §6.3.8.2。会话中只剩一名或没有参与者，已足以要求释放，不以 T4 到期或通话超时为附加条件。还有参与者需要移出时，CF 按 §6.3.3.1.5 与媒体面交互，生成并发出另一份 BYE；若入向 BYE 含 application/vnd.3gpp.mcptt-info+xml 正文，复制到出向 BYE。CF 实收该出向请求的 200 后，就相应参与者 SIP 会话关联的媒体资源与媒体面交互。",
+      "normative_strength": "入向媒体交互、应答后检查策略、满足策略时的发送程序与条件复制，以及收到出向响应后的媒体交互均是 SHALL。",
+      "limitations": [
+        "CF 给挂断方方向的 200 不是对端终端的 200；既不等待对端应答，也不证明对端收过 BYE。零名剩余参与者不凭空产生一条对端请求。",
+        "§6.3.3.1.5 中组呼 TNG3 和组会话释放时向全组发 BYE 不作为本私呼的步骤。出向 200 所触发的媒体交互不等于资源已回收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.3.3.1, private call: controlling function receives a BYE and invokes 6.3.3.2.4"
+          ],
+          "printed_pages": [
+            389
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.2.4, items 1–3"
+          ],
+          "printed_pages": [
+            121
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.2.4, item 4(a)"
+          ],
+          "printed_pages": [
+            121
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.8.2, items 1–3 and concluding requirement"
+          ],
+          "printed_pages": [
+            136
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.5, opening and items 1–3"
+          ],
+          "printed_pages": [
+            106
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.2.4, final paragraph: receipt of the response to the outgoing BYE and its participant-leg media interaction"
+          ],
+          "printed_pages": [
+            121
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.5, concluding response paragraph: media interaction on actual receipt of 200 to the outgoing BYE; group-only paragraphs distinguished"
+          ],
+          "printed_pages": [
+            107
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "on-demand-release-recipient-pf",
+      "title": "接收方 PF 的两次媒体交互分别针对哪一侧？",
+      "conditions": [
+        "普通在网私呼已按需建立，有话权控制；同一系统的两名用户按 MCPTT ID 直接呼叫，由其中一名客户端主动发起释放。没有使用预建立会话。",
+        "接收方 PF 实际收到 CF 为释放该按需私呼而发的 BYE。终端处理另以它实收新 BYE 为条件；PF 答复 CF 则以 PF 实际收到终端对新 BYE 的 200 为条件。"
+      ],
+      "conclusion": "接收方 PF 先与媒体面交互以释放其与 CF 的 SIP 会话关联的媒体资源，生成并向终端发送新 BYE，复制来件的 P-Asserted-Identity；若有 application/vnd.3gpp.mcptt-info+xml 正文也复制。终端实收该 BYE 后，与媒体面交互并向服务器回相应 200。PF 实收对自己出向 BYE 的 200 后，先向 CF 回 200，应答此前从 CF 收到的 BYE，再就其与本侧终端的 SIP 会话关联的媒体资源与媒体面交互。",
+      "normative_strength": "相应实际收件条件下的媒体交互、条件复制、请求与匹配的答复均是 SHALL。",
+      "limitations": [
+        "§6.3.2.2.8.1 没有在这些步骤中指定终端侧 BYE 的 Request-URI 取值；不把挂断方 PF 的 URI 规则套到这一侧。",
+        "一次媒体交互或某一腿的 200 均不能证明两端都已处理或全部资源释放；一处未采到报文不等于从未发送或接收。本分支不是预建立会话的保留程序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.3.2.2.1, on-demand private call: recipient-side participating function receives the controlling function’s BYE"
+          ],
+          "printed_pages": [
+            389
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.8.1, request steps 1–5 and response steps 1–2"
+          ],
+          "printed_pages": [
+            102
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.6, steps 1–2"
+          ],
+          "printed_pages": [
+            61
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "source_references": [
