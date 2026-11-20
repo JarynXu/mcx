@@ -418,6 +418,111 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "prearranged-tng1-not-running-answers",
+      "title": "普通预安排新组呼：TNG1 未运行时，对哪一次 INVITE 回 200？",
+      "conditions": [
+        "同一 MC 系统内新建普通在网按需 MCPTT 预安排组呼，使用未重组的直接组身份，不是临时组或 TGI，不是加入既有会话；请求和组状态均非紧急、非迫近危险。",
+        "控制功能（CF）实际收到对其对应受邀成员 INVITE 的 183 或 200，按事件选用下列分支。两条分支均要求本次 TNG1 未运行、CF 支持媒体缓冲，且原发起 INVITE 的最终响应尚未发出。参与功能和话权的动作另以各自实际收到的响应或指示为条件。"
+      ],
+      "conclusion": "CF 收到受邀 INVITE 的 183 且 P-Answer-State 为 Unconfirmed 时，对原发起 INVITE 生成 200，写入 Unconfirmed，并给原 SDP offer 的 answer。这一分支未列 200 计数或 100rel 为前提。CF 收到受邀 INVITE 的 200 时，只有其已收受邀 INVITE 200 的本地计数等于组文档的 on-network-minimum-number-to-start，才在所列状态下按本地策略对原发起 INVITE 生成 200 并给出 SDP answer；此分支未规定必须写入或禁止写入 Unconfirmed。两条分支均须按条文与媒体面交互，由此次交互触发的处理完成后再由 CF 发送各自的原 INVITE 200。另按个别邀请程序，183 同时含 Require: 100rel 和 P-Answer-State: Unconfirmed 才触发这一段的 PRACK；实际收到对应的受邀 INVITE 200 才增加该计数。发起侧参与功能（O-PF）收到与自己发出 INVITE 对应的 2xx 后，给终端另生成 200 并构造相应 SDP answer；收到的 200 含 P-Answer-State 时，把这个应答状态写入自己发往终端的 200。",
+      "limitations": [
+        "TNG1 未运行是当时的状态，不能据此断定从未启动或已到期。实际到期且还有必需成员 200 待收时另有 TNG1 到期程序。只看终端 200 或 Unconfirmed，不能据此还原 CF 走的分支、已应答的人数或计数；要把同一 CF、组会话的原 INVITE 与每条实际受邀 INVITE 及其响应对应起来，再核对发送最终响应前的状态、缓冲能力和策略（适用时）。",
+        "第 248 页的 183 分支在生成 200 处回指 §6.3.3.2.3.2；第 250 页受邀 200 分支印作 §6.3.3.2.2（初始 INVITE 的 Contact 特征标记缓存）。不据此把两个 helper 改成同一条，也不补第 250 页未列的响应字段。",
+        "对带话权的新 SIP 会话，须把 SIP 应答与媒体发送许可分开看。已识别隐式话权请求且服务器支持并允许媒体缓存时，话权服务器收到被邀侧参与功能首次未确认指示，可另给主叫提前发 RTP 的指示；实际给了才由该指示获得发送许可。MCPTT 服务器缓存实际收到的 RTP，至少到首位受邀客户端接受邀请或 RTP 缓冲超过上限；这不是精确停缓冲或分发时点。SIP 200/Unconfirmed、PRACK 或发送响应前的本地媒体处理不证明这项许可已给、收到 RTP 或被邀用户已接受及听到语音。"
+      ],
+      "normative_strength": "两条 CF 发 200 的分支各有独立前提；达到对应条件时按条文构造响应、等待此次媒体处理完成并发送。个别邀请的可靠 183 PRACK、收到 INVITE 200 后计数、O-PF 条件写入应答状态均按各自条款执行。话权服务器给早期指示是可选动作，不由 SIP 响应强制触发。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.2, nonrunning TNG1 183/Unconfirmed trigger, items 1, 3–4, 7–8 and Note 9"
+          ],
+          "printed_pages": [
+            248,
+            249
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.2, nonrunning TNG1 invited-INVITE 200 trigger, exact counter equality and local policy; items 1, 3, 6–7 and Note 13"
+          ],
+          "printed_pages": [
+            250
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.1.1, individual invitee response paragraphs: 183 with Require 100rel and Unconfirmed triggers PRACK; INVITE 200 increments local counter"
+          ],
+          "printed_pages": [
+            241
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.1, originating PF received 2xx items 2–3, 6A and 8: separate client-facing 200 and conditional incoming-200 answer state"
+          ],
+          "printed_pages": [
+            232
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.2.2;6.3.3.2.3.2 (printed response-helper cross-reference comparison only)"
+          ],
+          "printed_pages": [
+            120
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.2, concluding TNG1 expiry and received final 4xx/5xx/6xx dispatch paragraphs"
+          ],
+          "printed_pages": [
+            250
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.2.1, new SIP session versus change to controlling mode"
+          ],
+          "printed_pages": [
+            51,
+            52
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.2.2, permission for confirmed/unconfirmed indications; first unconfirmed indication and early permission"
+          ],
+          "printed_pages": [
+            52
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.2.2, received RTP buffering and its two thresholds; unsupported or disallowed buffering"
+          ],
+          "printed_pages": [
+            52
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "verification": {
