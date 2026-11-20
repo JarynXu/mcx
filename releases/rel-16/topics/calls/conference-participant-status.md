@@ -23,10 +23,37 @@
 
 表中 137、138、105 是 Warning **文本中的业务编号**，不是 SIP 响应码。这三种情况也不是一条请求依次收到的三个响应。依据：[§10.1.3.3，印刷页 302–303](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=303)；[§10.1.3.4.1，印刷页 303](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=304)。
 
+## 从 PF 两侧对照：这次 SUBSCRIBE 和 NOTIFY 各把谁写进地址？
+
+设甲正在参加同一 MC 系统内的一场普通预安排或聊天组呼，想查这场通话的参加状态。甲发出 SUBSCRIBE 时，SIP 的 Request-URI 是已有组呼的会话标识。§10.1.3.2 没有说明甲最初从哪条建呼消息取得或在何时保存它；随后对 SUBSCRIBE 的 200 不能解释先前请求里的地址。
+
+PF 收到甲的 SUBSCRIBE 时，先认清入口：`P-Asserted-Service` 携带 MCPTT ICSI，`Accept` 含 `application/conference-info+xml`，`application/vnd.3gpp.mcptt-info+xml` 正文的 `<mcptt-request-uri>` 是组 ID。PF 要解析的是 **SIP 的 Request-URI**，不是这个 XML 元素。下面按请求种类对照两侧报文，不按两个 200 出现的先后判断：
+
+| PF 实际收到什么 | 在 PF 发出的对应报文中查什么 |
+| --- | --- |
+| 客户端侧：上述 SUBSCRIBE，且请求目标已解析到现有会话 | PF 向 CF 侧发出新的 SUBSCRIBE。Request-URI 填与收到的会话标识相映射的会话标识；MCPTT 信息正文加入 `<mcptt-calling-user-id>`，值为甲的 MCPTT ID；`Record-Route` 加入标识 PF 自己地址的 URI。 |
+| CF 侧：对该 SUBSCRIBE 的响应 | PF 复制收到的响应内容并向客户端侧转发。若是 **SUBSCRIBE 的 200**，PF 在**发出响应的 Contact** 中放入与收到的 Contact 内会话标识相映射的 MCPTT 会话标识。 |
+| CF 侧：由该 SUBSCRIBE 建立的对话内、发往其所服务的甲客户端的 NOTIFY | PF 发给甲的 NOTIFY 以**甲的公共服务标识（PSI）**为 Request-URI，复制收到的通知内容。这个 SIP 地址标明要通知谁，不是订阅时的会话地址，也不是从参与者名单里选出的地址。 |
+| 客户端侧：对该 NOTIFY 的响应 | PF 复制收到的响应内容并向 CF 侧转发。若是 **NOTIFY 的 200**，PF 根据**收到的 Contact** 中的 MCPTT 会话标识构造会话标识，放入发出的响应。此处条款没有指明发出时使用哪个字段，不能套用 SUBSCRIBE 的 200 响应规则。 |
+
+两个 200 回答不同的请求，都不能替代甲端收到的会议状态正文。比对时要找同一次订阅中相应的方法和方向；条款给出映射或构造关系，不能靠两侧地址字符串是否相同来判定。依据：[§10.1.3.2，印刷页 301](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=302)、[§10.1.3.3，印刷页 302–303](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=303)。
+
 ## 哪条记录才告诉甲，乙在这场通话里的状态？
 
 通过检查后，CF 按会议事件程序处理请求，缓存订阅信息，发送会议状态通知。**对 SUBSCRIBE 的 200 表明订阅请求成功，不是参与者名单。** 要判断乙的状态，应看甲端是否收到了本订阅对话的 SIP NOTIFY，以及相应的会议信息是否报告了乙的状态。PF 向所服务的客户端转送 NOTIFY；甲端须处理，**可以**显示。若只有 CF 的发送记录，不能说甲已收到；即便甲端收到了，也不能由此认定甲看过、听过语音或拿到了话权。
 
 收到按前述规定处理的订阅是一个通知触发点。对于**预安排组呼或聊天组呼（chat）**，CF 收到一位参与者的 BYE，或有新参与者被加入，也是触发点。通知送给**已订阅的参与者**，不是 G 组全体成员，也不是这场通话里每个人。不要把一次读取当成持续订阅；只拿到甲先前的一次结果，也不能断言乙后来仍在通话中。见 [§10.1.3.4.2，印刷页 304](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=305)及 §10.1.3.2 末段（印刷页 302）。
 
-若问题是断线后如何**重新加入**，先确认原来是什么组呼。普通按需聊天组中，用户回到覆盖后主动请求加入，读[聊天组的按组加入与原场判断](chat-establish-join.md)；普通按需预安排组才读[预安排组重入与晚入](rejoin-late-entry.md)。关心谁属于 G、谁已归属，读[组名单查询](../groups/group-list-query.md)或[组动态数据](../groups/group-dynamic-data.md)。这里不展开临时组中控制与非控制功能之间的互订、完整的通知正文格式或话权流程。
+## 通知的收件人是甲，正文里哪一项才是乙？
+
+CF 向订阅者甲生成会议通知时，SIP 头的 `P-Asserted-Identity` 是 **CF 自己的 PSI**，`Event` 是 `conference`，`P-Preferred-Service` 携带 MCPTT 的 ICSI（`urn:urn-7:3gpp-service.ims.icsi.mcptt`）。这条 **NOTIFY 的 Expires 默认值是 3600 秒**；甲在 SUBSCRIBE 中请求只读一次或持续接收，见上文的 0 和 4294967295。不能拿 NOTIFY 的默认值算订阅实际有效多久。
+
+| 要找什么 | 在 CF 生成的通知中看哪里 |
+| --- | --- |
+| 哪个组？通知发给哪个用户？ | 在 `application/vnd.3gpp.mcptt-info+xml` 正文中，`<mcptt-calling-group-id>` 是 G 的 MCPTT 组 ID；目标为用户时，`<mcptt-request-uri>` 是收件人甲的 MCPTT ID。同名 XML 元素在甲发起的 SUBSCRIBE 里填的却是组 ID。 |
+| 哪个组的会议信息？里面的用户是谁？ | 在 `application/conference-info+xml` 正文中，`<conference-info>` 的 `entity` 是 G 的组 ID。每个会话参与者各有一个 `<user>`，非控制 MCPTT 功能（NCF）除外。对发起、加入或重新加入的客户端，`<user>` 的 `entity` 是发出相应 SIP INVITE 的用户的 MCPTT ID；在预安排或聊天组呼中，对受邀客户端填被邀请用户的 MCPTT ID。 |
+| 怎样判断通知报告了乙的什么状态？ | 找 `entity` 为乙的 MCPTT ID 的 `<user>`。该项内有且仅有一个 `<endpoint>`，带 `entity` 属性和 `<status>` 元素。读这项的 `<status>`，才知道通知为乙报告了什么会话状态。此处没有规定 `<endpoint>` 的 `entity` 必须取哪个值。 |
+
+通知列出的是这场会话报告的参与者，不能把列出的用户或 endpoint 数量当作注册设备数、在线人数或实际收听人数。甲的收件人 ID 也不是乙的状态证据。依据：[§6.3.3.4，印刷页 124](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=125)；向已订阅参与者发送见 [§10.1.3.4.2，印刷页 304](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=305)。
+
+若问题是断线后如何**重新加入**，先确认原来是什么组呼。普通按需聊天组中，用户回到覆盖后主动请求加入，读[聊天组的按组加入与原场判断](chat-establish-join.md)；普通按需预安排组才读[预安排组重入与晚入](rejoin-late-entry.md)。关心谁属于 G、谁已归属，读[组名单查询](../groups/group-list-query.md)或[组动态数据](../groups/group-dynamic-data.md)。这里不展开临时组中控制与非控制功能之间的互订、两个 MIME 正文的完整语法、RFC 订阅生命周期或话权流程。

@@ -168,6 +168,125 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "pf-subscribe-session-mapping-and-response",
+      "title": "PF 转送订阅时分别填写会话、订阅人及自身地址，按 SUBSCRIBE 响应处理 Contact",
+      "conditions": [
+        "同一 MC 系统内，普通、发起时非广播的在网预安排或聊天组呼；不含临时组或非控制功能之间的订阅。",
+        "PF 收到其所服务用户的会议状态 SUBSCRIBE：P-Asserted-Service 含 MCPTT ICSI，Accept 含 application/conference-info+xml，application/vnd.3gpp.mcptt-info+xml 中的 <mcptt-request-uri> 是组 ID。只有收到的 SIP Request-URI 解析到现有会话才生成并发出请求。",
+        "响应处理以 PF 实际收到该 SUBSCRIBE 的响应、更具体地收到 200 时为条件。"
+      ],
+      "conclusion": "PF 发往 CF 侧的 SUBSCRIBE 以收到的 Request-URI 内会话标识所映射的 MCPTT 会话标识为 Request-URI；在 MCPTT 信息正文的 <mcptt-calling-user-id> 填所服务用户的 MCPTT ID，插入含 PF 自己地址 URI 的 Record-Route。收到 SUBSCRIBE 响应时复制其内容并向客户端侧转发；若为 200，在发出的响应的 Contact 内写入与收到的 Contact 中会话标识相映射的 MCPTT 会话标识。",
+      "normative_strength": "§10.1.3.3 对满足相应收件和解析条件的各项处理规定 SHALL。",
+      "limitations": [
+        "SIP 请求目标与正文中的组 ID 不能互换。§10.1.3.2 要求初始请求以已有组呼的会话标识为目标；它不说明客户端从哪条建呼消息取得、何时保存该标识，不能从随后 SUBSCRIBE 的 200 倒推。映射关系不等于两侧地址字符串相同。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.3.2, opening and items 1–2, 5–9: new dialog, session target, group ID and requested lifetime"
+          ],
+          "printed_pages": [
+            301
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.3.3, incoming subscription conditions and PF processing items 1–7"
+          ],
+          "printed_pages": [
+            302
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.3.3, forwarding responses and in-dialog NOTIFY"
+          ],
+          "printed_pages": [
+            302,
+            303
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "pf-notify-user-target-and-response",
+      "title": "PF 按订阅对话把通知送给所服务用户；NOTIFY 的 200 有自己的标识构造规则",
+      "conditions": [
+        "同一 MC 系统内，普通、发起时非广播的在网预安排或聊天组呼；不含临时组或非控制功能之间的订阅。",
+        "PF 收到由该 SUBSCRIBE 建立的对话内的 SIP NOTIFY，目的地是所服务的 MCPTT 客户端。响应分支只在 PF 收到对此 NOTIFY 的响应时适用。"
+      ],
+      "conclusion": "PF 将该 MCPTT 用户的公共服务标识（PSI）放在发往客户端的 SIP Request-URI，复制收到的 NOTIFY 内容并发送。收到客户端侧对 NOTIFY 的响应后，PF 复制其内容并朝 CF 侧转发；若为 200，须在发出的响应中包含一个 MCPTT 会话标识，依据收到的 200 的 Contact 中的 MCPTT 会话标识构造。",
+      "normative_strength": "§10.1.3.3 对匹配订阅对话、实际目的地和所收响应分别规定 SHALL。",
+      "limitations": [
+        "用户 PSI 是这条 NOTIFY 在客户端侧的 SIP 目标，不是组呼会话、组 ID 或名单中某一项的地址。条款明确点名 NOTIFY 的 200 入向 Contact，没有点名出向响应中承载所构造标识的字段。不能套用 SUBSCRIBE 成功响应的 Contact 写法。",
+        "两个 200 分属不同事务，不是状态正文；不能从其先后顺序、单侧的发送记录推断客户端已收到正文或已经显示。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.3.3, forwarding responses and in-dialog NOTIFY"
+          ],
+          "printed_pages": [
+            302,
+            303
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "cf-notify-recipient-group-and-participant",
+      "title": "CF 的会议通知分开标明发送功能、目标用户、组和被报告的参与者",
+      "conditions": [
+        "同一 MC 系统内，普通、发起时非广播的在网预安排或聊天组呼；不含临时组或非控制功能之间的订阅。",
+        "CF 按 §10.1.3.4.2 的触发条件向已订阅会议事件的参与者生成并发送 NOTIFY；这里的目标是一个 MCPTT 用户。"
+      ],
+      "conclusion": "P-Asserted-Identity 是 CF 自己的 PSI，Event 是 conference，Expires 默认为 3600 秒，P-Preferred-Service 含 MCPTT ICSI。application/vnd.3gpp.mcptt-info+xml 中 <mcptt-calling-group-id> 是组 ID，目标为用户时 <mcptt-request-uri> 是该收件人的 MCPTT ID。application/conference-info+xml 中 <conference-info> 的 entity 是组 ID；每位会话参与者各有一个 <user>，非控制 MCPTT 功能除外。对发起、加入、重新加入的客户端，<user> 的 entity 取相应 SIP INVITE 发起用户的 MCPTT ID；预安排或聊天组呼中的受邀客户端取被邀请用户的 MCPTT ID。每个 <user> 含且仅含一个 <endpoint>，其中有 entity 属性和指示会话状态的 <status> 元素。",
+      "normative_strength": "§10.1.3.4.2 规定通知对象和生成程序；§6.3.3.4 对所列头域、MIME 内容及相应对象的标识规定 SHALL，NOTIFY 的 Expires 取 3600 秒为默认值。",
+      "limitations": [
+        "按目标用户的 MCPTT ID 识别收件人，按对应 <user> 下的 <endpoint>/<status> 识别该用户被报告的状态。收件、注册、归属、实际收听、显示和话权不能用参与者数或 endpoint 数代替；本条不指定 endpoint 的 entity 的具体值。",
+        "NOTIFY 的 Expires 默认值不同于客户端 SUBSCRIBE 所请求的期限，不据此确定订阅实际寿命、刷新时刻或报文到达顺序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.4"
+          ],
+          "printed_pages": [
+            124
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.3.4.2, three triggers and subscribed recipients"
+          ],
+          "printed_pages": [
+            304
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "source_references": [
@@ -234,6 +353,15 @@
       "printed_pages": [
         304
       ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.3.4"
+      ],
+      "printed_pages": [
+        124
+      ]
     }
   ],
   "related": [
@@ -243,7 +371,7 @@
     "r16-mcptt-group-dynamic-data"
   ],
   "limitations": [
-    "临时组中控制与非控制功能间互订、完整会议信息正文、RFC 订阅生命周期细节及媒体或话权状态不在范围。"
+    "临时组中控制与非控制功能间互订、两个 MIME 正文的完整语法、RFC 订阅生命周期细节及媒体或话权状态不在范围。"
   ],
   "verification": {
     "original_clauses_checked": true,
