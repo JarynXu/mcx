@@ -1,0 +1,219 @@
+{
+  "topic_id": "r16-calls-first-to-answer-originating-admission",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "按需首接呼叫：主叫选了两人，为什么控制功能只收到一人？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明继承共同场景，再分别核实 O-PF 实收、出站准备和 CF 实收。不能用呼叫最终结果倒推名单。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0（Release 16，Stage 3）。同一 MCPTT 系统内的普通在网按需首接，有话权，直接指定目标用户。",
+    "不含紧急、功能别名、预建立或普通一对一。主叫配置档限本次 O-PF 处理实际使用的文档。"
+  ],
+  "claims": [
+    {
+      "id": "first-to-answer-originating-profile-admission",
+      "title": "按需首接 403：查主叫的哪项许可？",
+      "conditions": [
+        "发起侧参与功能（O-PF）实际收到 session-type=first-to-answer 的初始 INVITE，辨认绑定到 P-Asserted-Identity 公共用户身份的主叫 MCPTT ID。初始公共身份、首接服务 CF PSI 与候选被叫三者分开。",
+        "具体分支只在各自检查到达时适用；名单分支另需实际收到 resource-lists 正文。"
+      ],
+      "conclusion": "通用 allow-private-call 缺失或为 false 时 O-PF 回 403/Warning 107 并停止。PrivateCall 存在且非空、每个候选 entry 的 uri 都不匹配、未配置允许呼叫名单外用户，O-PF 回 403/Warning 153 并停止。之后若首接专用 allow-request-first-to-answer-call 缺失或为 false，O-PF 回 403/Warning 156 并停止。缺资源列表 MIME 是较早的 403/Warning 145。403 是 SIP 状态，107、145、153、156 是外层 399 的 Warning 引号内文本码。上述响应针对本腿入站 INVITE，不是从 CF 或被叫收到的应答。",
+      "normative_strength": "§11.1.1.3.1.1 第 8、10、12、13 项是各自前提下的 SHALL 和停止。",
+      "limitations": [
+        "所核是 O-PF 当时用于判断的主叫配置档。不从所预选配置档推当前已切换，不补名单外许可的外部配置字段或缺省；不以遗漏一个候选等同于每项都不匹配。",
+        "看到别的角色回 403 或本地没抓到下一腿，不据此确认某个分支。未触发某一拒绝不保证后续准入、送达或接听。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.1.1 opening and steps 3–8, 10: O-PF calling identity, first-to-answer CF service selection, resource-list body and general private-call authorisation"
+          ],
+          "printed_pages": [
+            366,
+            367
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.1.1 steps 12–14: first-to-answer no-list-match rejection, separate first-to-answer permission and next media gate"
+          ],
+          "printed_pages": [
+            368
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.4.1–2 and Table 4.4.2-1: 399 is the SIP Warning code; the quoted MCPTT reason starts with its own three-digit text code"
+          ],
+          "printed_pages": [
+            33,
+            34
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "first-to-answer-originating-resource-list",
+      "title": "主叫给了两名用户，为什么 CF 实际可能只收到一项？",
+      "conditions": [
+        "同一初始 INVITE 通过前置检查，O-PF 到达生成 CF 方向 INVITE 的步骤，主叫 PrivateCall 存在且含至少一项，比较收到的每个候选 entry 的 uri 与名单。",
+        "CF 一侧另查实际收到的是直接目标 first-to-answer INVITE，并到达非别名的邀请分支。"
+      ],
+      "conclusion": "通用构造会复制资源列表；第 15a 项只保留匹配的入站项并在 MCPTT 信息 MIME 正文设置 session-type=first-to-answer。配置仅匹配乙时，主叫清单中的乙和丙会在这条支路缩成乙，客户端最初至少两人的要求不构成服务器过滤后的最小值。出站 Request-URI 是主叫关联首接服务的 CF PSI，mcptt-calling-user-id 是主叫，候选被叫在 resource-lists 正文。CF 通过前置检查后依它实际收到的资源列表逐用户邀请，邀请的 mcptt-request-uri 是对应目标 MCPTT ID。",
+      "normative_strength": "§11.1.1.3.1.1 第 15a、16、17、22 项及 §11.1.1.4.2 第 12 项否则分支为所列条件下的 SHALL。",
+      "limitations": [
+        "名单外许可改变第 12 项的拒绝守卫，第 15a 项未列相同例外。配置允许名单外且全不匹配时，不替规范增补回填、空列表最终响应或补选策略。",
+        "发送不等于对面实收；实收资源列表不证明逐用户邀请已发、终端收到或振铃、被叫接听或媒体结果。没有某被叫的 200 不能反推过滤。",
+        "不扩到功能别名解析、预建立、普通一对一或紧急呼叫，不规定 URI 归一化和注册服务的配置实现。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.1: the originating MCPTT client starts first-to-answer to two or more users; not an O-PF survivor-count rule"
+          ],
+          "printed_pages": [
+            352
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.1.1 steps 12–14: first-to-answer no-list-match rejection, separate first-to-answer permission and next media gate"
+          ],
+          "printed_pages": [
+            368
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.3 steps 7–8: common initial INVITE construction copies inbound resource-list and MCPTT info MIME bodies"
+          ],
+          "printed_pages": [
+            85
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.1.1 steps 15(a), 16–17, 22: first-to-answer list matching clarification, service PSI, calling MCPTT ID, outgoing INVITE"
+          ],
+          "printed_pages": [
+            368,
+            369
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.1 steps 3–4 and 11.1.1.4.2 step 12 otherwise: for direct first-to-answer targets, CF invites the users in the actual received resource list and places each user in mcptt-request-uri"
+          ],
+          "printed_pages": [
+            379,
+            381
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.1: the originating MCPTT client starts first-to-answer to two or more users; not an O-PF survivor-count rule"
+      ],
+      "printed_pages": [
+        352
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.3.1.1 opening and steps 3–8, 10: O-PF calling identity, first-to-answer CF service selection, resource-list body and general private-call authorisation"
+      ],
+      "printed_pages": [
+        366,
+        367
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.3.1.1 steps 12–14: first-to-answer no-list-match rejection, separate first-to-answer permission and next media gate"
+      ],
+      "printed_pages": [
+        368
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.1.3 steps 7–8: common initial INVITE construction copies inbound resource-list and MCPTT info MIME bodies"
+      ],
+      "printed_pages": [
+        85
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.3.1.1 steps 15(a), 16–17, 22: first-to-answer list matching clarification, service PSI, calling MCPTT ID, outgoing INVITE"
+      ],
+      "printed_pages": [
+        368,
+        369
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.4.1 steps 3–4 and 11.1.1.4.2 step 12 otherwise: for direct first-to-answer targets, CF invites the users in the actual received resource list and places each user in mcptt-request-uri"
+      ],
+      "printed_pages": [
+        379,
+        381
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "4.4.1–2 and Table 4.4.2-1: 399 is the SIP Warning code; the quoted MCPTT reason starts with its own three-digit text code"
+      ],
+      "printed_pages": [
+        33,
+        34
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcptt-first-to-answer-on-demand-client",
+    "r16-calls-first-to-answer-controlling",
+    "r16-calls-private-server-admission-routing",
+    "r16-identity-user-profile-switch"
+  ],
+  "limitations": [
+    "不定义外部配置格式或名单匹配算法；保留无匹配加名单外许可的两个步骤各自条件。",
+    "只区分两条初始 INVITE 与 CF 直接候选邀请，不定义实际收件、选中、接听、资源或媒体的验收。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
