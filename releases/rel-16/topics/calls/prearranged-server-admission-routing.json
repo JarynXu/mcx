@@ -187,7 +187,7 @@
       "conditions": [
         "CF 的普通组新建请求通过相应前序准入后进入 step14(e,g)；集合选择失败仍在本条范围内，不要求组成员已经应答。"
       ],
-      "conclusion": "CF 创建组会话并分配会话身份，按 §6.3.3.5.1 处理 TNG3：组文档存在 on-network-maximum-duration 才用其值启动，缺失则不启动。选择受邀者时，§6.3.5.5 只允许邀请已归属成员，普通组从组文档 list 逐一按 §6.3.6 判断；人数超出 on-network-max-participant-count 时仅邀请上限人数，并优先 on-network-required 成员。随后若已归属人数低于 minimum-number-of-affiliated-members，或任一 affiliation-to-group-required 成员未归属，返回480+Warning112并停止。通过后，存在已归属且 on-network-required 的成员时，须在发邀请前启动 TNG1。归属门槛不是应答完成：TNG1 停止要收到全部已归属 required 成员的200，且向发起者发送200还检查200计数达到 minimum-number-to-start。CF 按 §10.1.1.4.1.1 向选定的个别用户发邀请；收到某一受邀者的200后才增加该200计数，会议通知可以早于向发起者的响应，不能证明整个组会话最终建立成功。",
+      "conclusion": "CF 创建组会话并分配会话身份，按 §6.3.3.5.1 处理 TNG3：组文档存在 on-network-maximum-duration 才用其值启动，缺失则不启动。选择受邀者时，§6.3.5.5 只允许邀请已归属成员，普通组从组文档 list 逐一按 §6.3.6 判断；人数超出 on-network-max-participant-count 时仅邀请上限人数，并优先 on-network-required 成员。随后若已归属人数低于 minimum-number-of-affiliated-members，或任一 affiliation-to-group-required 成员未归属，返回480+Warning112并停止。通过后，存在已归属且 on-network-required 的成员时，须在发邀请前启动 TNG1。归属门槛不是应答完成。按 §6.3.3.3 的正常分支，收到全部已归属且标记 required 的成员对邀请的 200 时，CF 停止 TNG1；这条分支还检查受邀 INVITE 的 200 计数大于或等于 minimum-number-to-start，才向发起侧发 200。CF 按 §10.1.1.4.1.1 向选定的个别用户发邀请；收到某一受邀者的200后才增加该200计数，会议通知可以早于向发起者的响应，不能证明整个组会话最终建立成功。",
       "source_references": [
         {
           "source_id": "3gpp-ts-24.379-v16.14.0",
@@ -325,6 +325,94 @@
         "这里只说明身份及承载交接责任，不把邀请发送、Contact 映射、SIP200或会议通知当作所有用户接听、实际话权获准或媒体可用的同一证据。"
       ],
       "normative_strength": "所述请求身份构造、绑定检查及相应拒绝、承载条件分派为 SHALL；通用 INVITE helper 的 Session-Expires 为 SHOULD，Resource-Share 为 MAY，不将可选头当准入前提。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "prearranged-tng1-required-invite-outcomes",
+      "title": "普通预安排组呼新建：区分邀请前拒绝、TNG1 期间失败与到期",
+      "conditions": [
+        "同一 MC 系统内的普通在网按需 MCPTT 预安排组呼新建；使用 GMS 管理的未重组直接组身份，不是临时组，也不是既有组呼加入。请求和组状态均非紧急、非迫近危险。",
+        "控制功能（CF）实际收到本次新建的初始组 INVITE，并走到直接组身份的邀请前门槛。只在通过该门槛且文档有已归属、标记 on-network-required 的成员时，本条才涉及启动 TNG1；到期与提前收到最终失败按各自事件条件适用。"
+      ],
+      "conclusion": "邀请前：组已归属人数低于 on-network-minimum-number-of-affiliated-members，或任一标记 on-network-affiliation-to-group-required 的成员未归属，CF 对原 INVITE 发 480，Warning 文本带 112，并跳过后续步骤；在第 14(g) 分支，此时尚未启动 TNG1 或发出成员邀请。通过后，若有已归属且标记 on-network-required 的成员，CF 发邀请前启动 TNG1。这个必需应答标记与必须归属标记不同。到期：实际到期时仍有已归属且标记 on-network-required 的成员对应 INVITE 的 200 待收，进入到期处理；若受邀成员实际 INVITE 200 的本地计数低于 on-network-minimum-number-to-start，须等受邀客户端后续的实际应答，直到 CF 的该计数等于该值。计数达到或超过门槛才按组文档的 on-network-action-upon-expiration-of-timeout-for-acknowledgement-of-required-members 处理：proceed 对原 INVITE 生成 200，Warning 文本带 111，附对原 offer 的 SDP answer，并按要求与媒体面交互；由此触发的媒体面处理完成后，才向发起侧发送这份 200。abandon 对原 INVITE 发 480，Warning 文本带 112，并按 CF 每个受邀对话的状态处理：已确认的发 BYE 并与媒体面交互，未确认的发 CANCEL。提前失败：TNG1 正运行且未到期，CF 实际收到某个已归属且标记 on-network-required 的成员对本次邀请的匹配最终 4xx/5xx/6xx。若策略决定不继续，CF 停止 TNG1，向原发起侧转发该最终失败响应并带 Warning 文本 112，不固定为 480。若策略决定继续且计数已达到或超过门槛，条文按“all other invited clients have not yet responded”列继续运行 TNG1；若其余受邀客户端均已回对应 INVITE 的 200，则停止 TNG1，对原 INVITE 生成 200，Warning 文本带 111，附对原 offer 的 SDP answer，并按要求与媒体面交互。由此触发的媒体面处理完成后，CF 才向发起侧发送这份 200。",
+      "limitations": [
+        "111、112 是 Warning 引号文本里的 MCPTT 码，Warning 外层为 399。仅见 480/112 或 200/111 不能区分触发分支，抓包缺失也不证明未邀请、未收响应或 TNG1 已到期。核对同一 CF 和组会话的原 INVITE、各受邀腿的实际往返与对话状态、成员归属及两个标记、实际计入的受邀 INVITE 200、本次 TNG1 事件和对应组文档/策略。归属人数、临时响应和 ACK 不作该 200 计数。",
+        "不把提前失败条文的 all other 原句改成“只要有人未应答”，也不据此判定有的 200、有人未答或失败等混合结果。提前决定不继续的段落没有列出到期 abandon 的同一清理动作。本条不展开其他响应聚合、无 TNG1 的路径、后续会议事件或完整释放。",
+        "这里的发送、媒体交互要求和 CF 侧对话状态不证明客户端收到最终响应或清理信令，也不证明各腿释放完成、获话权或 RTP 已通。"
+      ],
+      "normative_strength": "邀请前判断与拒绝、按条件启停 TNG1、到期且计数偏低时等待该计数等于门槛、达到或超过门槛才按本次组配置处理，以及提前失败按各自条件转发或继续均为 SHALL。按注 2 和注 5，两条 200/111 均须在规定交互所触发的媒体面处理完成后发送；不把提前策略的注释当成固定选择。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.2, steps 14(g)(i)–(ii) and (v): affiliation gates before TNG1 and individual invitations"
+          ],
+          "printed_pages": [
+            245,
+            246
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.1.1 response200 and NOTEs4–5"
+          ],
+          "printed_pages": [
+            241
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.2, concluding TNG1 expiry and received final 4xx/5xx/6xx dispatch paragraphs"
+          ],
+          "printed_pages": [
+            250
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.3, introductory paragraphs: timer start, all-required normal stop and 200-count threshold, and wait for count to reach minimum after expiry"
+          ],
+          "printed_pages": [
+            121,
+            122
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.3, expiry items 1(a)(i)–(v) and 2(a)–(c), Note 2: proceed with 200/111, or abandon with 480/112 and dialog-specific cleanup"
+          ],
+          "printed_pages": [
+            122
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.3, pre-expiry final-response paragraphs and Notes 3–5: stop and forward with 112 when policy declines, conditional continuation with timer or 200/111"
+          ],
+          "printed_pages": [
+            122,
+            123
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.4.1, general: 399 is the outer SIP Warning code when the server includes warning text in an INVITE response"
+          ],
+          "printed_pages": [
+            33
+          ]
+        }
+      ],
       "verification": {
         "original_clauses_checked": true,
         "independent_source_review": true,

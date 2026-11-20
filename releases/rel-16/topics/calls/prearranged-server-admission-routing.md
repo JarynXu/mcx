@@ -47,7 +47,7 @@ CF 的目标组来自 mcptt-request-uri，发起用户来自 mcptt-calling-user-
 
 - 条件：CF 的普通组新建请求通过相应前序准入后进入 step14(e,g)；集合选择失败仍在本条范围内，不要求组成员已经应答。
 
-CF 创建组会话并分配会话身份，按 §6.3.3.5.1 处理 TNG3：组文档存在 on-network-maximum-duration 才用其值启动，缺失则不启动。选择受邀者时，§6.3.5.5 只允许邀请已归属成员，普通组从组文档 list 逐一按 §6.3.6 判断；人数超出 on-network-max-participant-count 时仅邀请上限人数，并优先 on-network-required 成员。随后若已归属人数低于 minimum-number-of-affiliated-members，或任一 affiliation-to-group-required 成员未归属，返回480+Warning112并停止。通过后，存在已归属且 on-network-required 的成员时，须在发邀请前启动 TNG1。归属门槛不是应答完成：TNG1 停止要收到全部已归属 required 成员的200，且向发起者发送200还检查200计数达到 minimum-number-to-start。CF 按 §10.1.1.4.1.1 向选定的个别用户发邀请；收到某一受邀者的200后才增加该200计数，会议通知可以早于向发起者的响应，不能证明整个组会话最终建立成功。
+CF 创建组会话并分配会话身份，按 §6.3.3.5.1 处理 TNG3：组文档存在 on-network-maximum-duration 才用其值启动，缺失则不启动。选择受邀者时，§6.3.5.5 只允许邀请已归属成员，普通组从组文档 list 逐一按 §6.3.6 判断；人数超出 on-network-max-participant-count 时仅邀请上限人数，并优先 on-network-required 成员。随后若已归属人数低于 minimum-number-of-affiliated-members，或任一 affiliation-to-group-required 成员未归属，返回480+Warning112并停止。通过后，存在已归属且 on-network-required 的成员时，须在发邀请前启动 TNG1。归属门槛不是应答完成。按 §6.3.3.3 的正常分支，收到全部已归属且标记 required 的成员对邀请的 200 时，CF 停止 TNG1；这条分支还检查受邀 INVITE 的 200 计数大于或等于 minimum-number-to-start，才向发起侧发 200。CF 按 §10.1.1.4.1.1 向选定的个别用户发邀请；收到某一受邀者的200后才增加该200计数，会议通知可以早于向发起者的响应，不能证明整个组会话最终建立成功。
 
 规范强度：会话分配、条件启停计时器、仅邀已归属成员、上限及优先选择、门槛拒绝、计数为 SHALL；配置必需性及通知不等于建立成功按 NOTE 层次解释。
 - 边界：step14(g)(v) 字面回指13(g)(i)，而实际选人步骤在14(g)(i)；保留该号次差异，不把两个步骤静默改写成同一引用。
@@ -56,6 +56,21 @@ CF 创建组会话并分配会话身份，按 §6.3.3.5.1 处理 TNG3：组文�
 - 边界：本条只给正常邀请与必要应答门槛，不展开 TNG1 到期政策、全部响应聚合/失败补偿、会议订阅实现或完整释放生命周期。
 
 依据：3gpp-ts-24.379-v16.14.0 §10.1.1.4.2 steps14(e,g)，印刷页 245,246；3gpp-ts-24.379-v16.14.0 §6.3.5.5 full;6.3.6 full，印刷页 135,136；3gpp-ts-24.379-v16.14.0 §6.3.3.5.1 full (ordinary initial timer);6.3.3.3 initial TNG1 start/stop and minimum-response gate，印刷页 121,124,125；3gpp-ts-24.379-v16.14.0 §10.1.1.4.1.1 response200 and NOTEs4–5，印刷页 241。
+
+## TNG1 到期或必需成员提前拒绝，CF 如何处理？
+
+这里限同一 MC 系统内新建普通在网按需预安排组呼。组须由 GMS 管理，使用未重组的直接组身份，不是临时组；请求和组状态均非紧急、非迫近危险。先分清 **CF 还没发成员邀请、TNG1 正在运行，还是 TNG1 已到期**。
+
+**还没发成员邀请。** 在第 14(g) 项，若组内已归属人数低于 `on-network-minimum-number-of-affiliated-members`，或者有标记 `on-network-affiliation-to-group-required` 的成员未归属，CF 就对发起侧原 INVITE 回 480，Warning 文本带 112，并跳过后续步骤。这发生在启动 TNG1 和发出成员 INVITE 之前。通过检查后，只有组文档里有已归属且标记 `on-network-required` 的成员，才在发邀请前启动 TNG1。必须归属和必须应答是两个标记；已归属人数也不是收到邀请 200 的人数。[§10.1.1.4.2，第 14(g)(i)–(ii)、(v) 项，印刷页 245–246](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=246)；[§6.3.3.3，开头，印刷页 121](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=122)。
+
+**TNG1 已到期，仍有必需成员的 200 待收。** 这里指已归属且标记 `on-network-required` 的成员，对 CF 发出的相应 INVITE 尚有 200 未收到。若 CF 已收到的受邀成员 INVITE 200 计数低于 `on-network-minimum-number-to-start`，须等受邀客户端后续的实际应答，直到 CF 的该计数等于该值；不能仅因到期就立即回 480 或 200。计数达到或超过门槛，才看组文档的 `on-network-action-upon-expiration-of-timeout-for-acknowledgement-of-required-members`。[§10.1.1.4.2，末尾 TNG1 分派，印刷页 250](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=251)；[§6.3.3.3，到期计数条件，印刷页 121–122](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=122)。
+
+- **`proceed`：** CF 对原 INVITE 生成 200，Warning 文本带 111，附对原 offer 的 SDP answer。CF 按条文与媒体面交互；由此触发的媒体面处理完成后，CF 才向发起侧发送这份 200。
+- **`abandon`：** CF 对原 INVITE 发 480，Warning 文本带 112。按 CF 侧每条受邀对话的状态处理：已确认的发 BYE 并与媒体面交互，未确认的发 CANCEL。[§6.3.3.3，到期第 1(a)、2 项及注 2，印刷页 122](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=123)。
+
+**TNG1 运行时，CF 提前收到必需成员的最终失败。** 要有 CF 收到的实际响应：该受邀成员已归属、标记 `on-network-required`，且本次对应 INVITE 回的是最终 4xx、5xx 或 6xx。若策略决定不继续，CF 停止 TNG1，把收到的最终失败响应转发给原发起侧，Warning 文本带 112。状态码不固定为 480；这段也没有列出到期放弃时的同一清理动作。若策略决定继续，而且受邀成员 INVITE 的 200 计数已达到或超过门槛，该条列明：在 “all other invited clients have not yet responded” 的条件下，让 TNG1 继续运行；若其余受邀客户端都已对相应 INVITE 回 200，则停止 TNG1，对原 INVITE 生成带 Warning 文本 111 的 200，附对原 offer 的 SDP answer，并按条文与媒体面交互。由此触发的媒体面处理完成后，CF 才向发起侧发送这份 200。不要把前一句改成“只要有一个人没答”，也不要从这两句推定有的 200、有人未答或失败等混合结果。[§6.3.3.3，到期前收到最终失败的两段及注 3–5，印刷页 122–123](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=123)；[§10.1.1.4.2，末尾 TNG1 分派，印刷页 250](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=251)。
+
+**看响应之外的证据。** 111 和 112 在 Warning 的引号文本里，外层码是 399。光看 480/112，分不出邀请前拒绝、到期放弃，或提前收到的失败本身就是 480；光看 200/111，也分不出到期继续和提前继续。用同一 CF 的组会话记录对应原 INVITE、实际的受邀腿及响应，核对归属和标记、计入的匹配 INVITE 200、TNG1 的运行/到期事件及对应配置和策略。临时响应和 ACK 不算作受邀 INVITE 的 200；抓包没看到请求或回包，不能证明没发、没收或计时器已到期。CF 发了最终响应、BYE 或 CANCEL，不等于终端已收到、对话清理已完成或语音已通。[§4.4.1，印刷页 33](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=34)；[§10.1.1.4.1.1，收到受邀 INVITE 200 的段落，印刷页 241](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=242)。
 
 ## 下行路由到用户，组身份和会话身份仍保留
 
