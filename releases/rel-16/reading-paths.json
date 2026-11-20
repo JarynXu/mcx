@@ -704,6 +704,10 @@
         {
           "condition": "对使用未重组的 MCPTT 组身份的普通按需聊天会话（不是临时组），查客户端主动退出、控制功能发 BYE 时，参与功能在哪一侧回 200、处理媒体资源。 若要核对普通聊天组的 TNG3 启动、停止或到期，也查该会话释放页。",
           "read": "topics/calls/chat-participant-or-session-release.md"
+        },
+        {
+          "condition": "如果要判断建呼前为什么重订阅、已有订阅是否已得组文档，或非控制功能怎样处理相符文档，查 MCPTT 服务器的组文档缓存。",
+          "read": "topics/groups/mcptt-server-group-document-cache.md"
         }
       ],
       "boundary": "限未重组组 ID 的在网按需 MCPTT 聊天组。普通分支说明会话、容量与订阅通知。控制功能在紧急或迫近危险分支核对本侧来包，头缺失或值不符才纠错。读 SDP 时分别配对参与功能两侧的 INVITE。 普通聊天组收到 486 时，分别核对 O-PF 本地检查和 CF 回来的失败应答；只看状态或外层 Warning 码不能判原因。 普通聊天组的 404/141 查发起侧参与功能接收的公共用户身份与主叫 MCPTT ID 的绑定；403/108 查该功能的本地发起权限。 在同一 MC 系统内、使用未重组的 MCPTT 组身份且不是临时组的普通在网按需聊天组中，CF 组文档初检查 xcap-diff 的 113/114、组停用（组禁用）403/115、成员名单 403/116；初检通过后的未归属和隐式归属资格另查 403/120。 同一系统内未重组、非临时的普通按需聊天组收到 488，要按 O-PF 与 CF 各自收到的 SDP offer 核媒体参数和语音编解码；只看终端状态码不定位检查点。"
@@ -4936,6 +4940,26 @@
         }
       ],
       "boundary": "只限本用户本客户端在网；当同一规则同时配置两类条件时的判断以及独立组兴趣发布。"
+    },
+    {
+      "id": "r16-groups-mcptt-server-group-document-cache",
+      "question": "MCPTT 服务器组文档重新订阅及建呼时的文档取证：缓存、订阅、实收和角色如何分开？",
+      "start": "topics/groups/mcptt-server-group-document-cache.md",
+      "next_if": [
+        {
+          "condition": "实际为普通按需聊天组的 CF INVITE 时，查订阅失败、组停用、成员及后继的归属检查。",
+          "read": "topics/calls/chat-establish-join.md"
+        },
+        {
+          "condition": "实际为普通按需预安排组呼时，查控制功能另有的呼叫准入与邀请条件。",
+          "read": "topics/calls/prearranged-server-admission-routing.md"
+        },
+        {
+          "condition": "若接收点是组管理客户端，查它自己的组配置通知、获取及保存。",
+          "read": "topics/groups/client-group-configuration.md"
+        }
+      ],
+      "boundary": "服务器访问 GMS 的组文档处理。只在收到匹配文档或已有匹配缓存后，才进入所述 CF/NCF 分流；不等同业务结果。"
     }
   ]
 }

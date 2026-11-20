@@ -1,0 +1,158 @@
+{
+  "topic_id": "r16-groups-mcptt-server-group-document-cache",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 服务器删掉组文档缓存后，为什么在建呼前重新订阅？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "先对齐本 MCPTT 服务器和组标识。区分本机缓存移除的重订阅入口、实际 INVITE 的订阅入口，以及匹配文档可用后的角色分流。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0（Rel-16，Stage 3）；在网组呼所涉及的 MCPTT 服务器，以控制功能或非控制功能访问其组管理服务器。",
+    "重订阅触发与 INVITE 对应的检索分别核对。同一组标识可以是 MCPTT 组 ID 或临时组标识 TGI；不展开 TGI 的后续建呼或跨系统路由。"
+  ],
+  "claims": [
+    {
+      "id": "cached-removal-vs-invite-subscription",
+      "title": "什么触发重新订阅？什么时候收到 INVITE 才订阅？",
+      "conditions": [
+        "缓存入口：本 MCPTT 服务器曾缓存目标 MCPTT 组 ID 或 TGI 的数据，现已移除。",
+        "INVITE 入口：实际收到需要组文档的 INVITE，按 MCPTT-info XML 的 mcptt-request-uri 识别同一组文档，本服务器尚未订阅该文档。"
+      ],
+      "conclusion": "MCPTT 服务器可以缓存组文档、订阅文档变化。已缓存的指定组数据移除后，为相同组 ID 或 TGI 重新订阅其组信息变化；此动作可以早于需要该文档的 INVITE。另在实际收到 INVITE 且尚未订阅该标识的组文档时，订阅该文档的 xcap-diff 事件包。",
+      "normative_strength": "§6.3.5.1 以 can 给出一般能力、以条件句规定移除后重新订阅、注 2 允许在 INVITE 前；§6.3.5.2(1) 在实际接收 INVITE 且未订阅时明确 SHALL。",
+      "limitations": [
+        "普通缓存 miss 不能证明原有缓存已移除；不规定必须在 INVITE 前完成、不规定刷新定时、删除原因和订阅机制。",
+        "文档缓存状态与订阅状态分别判定；有缓存不能替代第 (1) 步的未订阅检查，已有订阅也不证明文档可用。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.5.1 final paragraphs and Note 2: MCPTT server cache, removal by group ID or TGI and pre-INVITE re-subscription"
+          ],
+          "printed_pages": [
+            130
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.5.2(1) and Notes 1–2: received INVITE group identity and not-yet-subscribed xcap-diff guard at CF or NCF"
+          ],
+          "printed_pages": [
+            131
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "matched-document-vs-subscribe-and-role-exit",
+      "title": "什么证明组文档可用，非控制功能能否沿用控制侧检查？",
+      "conditions": [
+        "同一实际 INVITE、同一服务器和由该 INVITE 的 mcptt-request-uri 标识确定的组文档。",
+        "本服务器实际收到 GMS 含该组文档的通知，或该组文档已在本服务器缓存。"
+      ],
+      "conclusion": "§6.3.5.2(4) 中非控制功能退出本条组文档处理程序；控制功能先识别组类型。实际收到的是给控制功能的组 INVITE，且标识是未重组的 MCPTT 组 ID 时，再按第 (5) 步查组停用、成员等。实际匹配的订阅失败应答另按第 (2) 或 (3) 步处理，不能由缺文档或没抓到通知推得。",
+      "normative_strength": "§6.3.5.2(4) 在文档可用时规定角色分流，第 (5) 步有独立 INVITE 类型和组标识守卫。",
+      "limitations": [
+        "订阅送出、订阅 2xx、订阅对话存在或无关通知不能证明文档实收或缓存有变化。匹配通知不证明实际写入缓存；需另查本机对应缓存记录。",
+        "已缓存文档须与所请求的组对应；这里不规定何时认定副本过时，也不允许泛称任意陈旧版本都可用。",
+        "非控制功能退出本条不是所有参与功能通用动作，不证明本次 INVITE 已通过、任何终端已收到或媒体已通。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.5.2(1) and Notes 1–2: received INVITE group identity and not-yet-subscribed xcap-diff guard at CF or NCF"
+          ],
+          "printed_pages": [
+            131
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.5.2(2)–(4): subscription response versus matched GMS document or cache, and NCF exit versus CF group-type decision"
+          ],
+          "printed_pages": [
+            131
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.5.2(5): subsequent controlling-function INVITE checks for a non-regrouped MCPTT group ID"
+          ],
+          "printed_pages": [
+            131,
+            132
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.5.1 final paragraphs and Note 2: MCPTT server cache, removal by group ID or TGI and pre-INVITE re-subscription"
+      ],
+      "printed_pages": [
+        130
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.5.2(1) and Notes 1–2: received INVITE group identity and not-yet-subscribed xcap-diff guard at CF or NCF"
+      ],
+      "printed_pages": [
+        131
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.5.2(2)–(4): subscription response versus matched GMS document or cache, and NCF exit versus CF group-type decision"
+      ],
+      "printed_pages": [
+        131
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.5.2(5): subsequent controlling-function INVITE checks for a non-regrouped MCPTT group ID"
+      ],
+      "printed_pages": [
+        131,
+        132
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcptt-chat-establish-join",
+    "r16-calls-prearranged-server-admission-routing",
+    "r16-groups-client-group-configuration"
+  ],
+  "limitations": [
+    "不从只发订阅、订阅 2xx、未见报文或缓存 miss 推出已收到文档、实际缓存改变或订阅失败。",
+    "不引入外部订阅实现、缓存版本或淘汰算法；文档就绪及退出此程序均不证明整场呼叫。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
