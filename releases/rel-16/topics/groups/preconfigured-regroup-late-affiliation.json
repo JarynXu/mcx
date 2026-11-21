@@ -1,0 +1,207 @@
+{
+  "topic_id": "r16-groups-preconfigured-regroup-late-affiliation",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "预配置组重组已存在：组成组有后续归属，谁补发通知？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条 claim 继承所有 common_conditions，再叠加自身 conditions。明列的初建、终接处理或 XML 分派仅为对应的比较或条件分支，不能用于断言该包走到了另一段。",
+  "common_conditions": [
+    "Release 16、Stage 3，使用 TS 24.379 V16.14.0。",
+    "问题涉及一项已经存在的、基于预配置组的组重组；初建、其他类型和接收程序仅在相应条内对照。"
+  ],
+  "claims": [
+    {
+      "id": "r16-groups-regroup-late-affiliation-recipient-list",
+      "title": "组成组后续归属按同一组成组和同一终接功能选人",
+      "conditions": [
+        "控制该组成组的 MCPTT 功能在已存在的组重组中担任 NCF；它得知一名客户端归属该组成组。"
+      ],
+      "conclusion": "NCF 创建该组成组中同时为成员、已归属且与该客户端由同一 T-PF 服务的 MCPTT ID 名单；另发一条目标为该 T-PF PSI 的 SIP MESSAGE，以该名单构造 users-for-regroup。初次创建的对照程序针对 NCF 负责的每个组成组筛出已归属的成员，再按 T-PF 合并，不能移植成此处的跨组名单。",
+      "normative_strength": "§16.2.4.3 对名单、生成、目的身份、填表和发送为 SHALL。",
+      "limitations": [
+        "不是新归属一人的差分名单，不是全重组各组成组或其他 T-PF 的名单，也不是一次呼叫的参与者清单。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.4.3(1,2,4,7,9)"
+          ],
+          "printed_pages": [
+            506
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.4.1(5–7)"
+          ],
+          "printed_pages": [
+            505
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.3.1(4a)注"
+          ],
+          "printed_pages": [
+            501
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-groups-regroup-late-affiliation-original-notice",
+      "title": "NCF 重用原 CF 通知的信息而非另建重组",
+      "conditions": [
+        "NCF 正按后续归属的 §16.2.4.3 程序构造出向 SIP MESSAGE。"
+      ],
+      "conclusion": "若原 CF 创建通知带 Accept-Contact 或 Reject-Contact，复制各该头及其特征标签、值和参数；用原通知的信息构造 mcptt-info 和 mcptt-regroup MIME 正文，用本次名单生成 users-for-regroup。第 8 项要求复制收到的 MESSAGE 的 P-Asserted-Identity。mcptt-regroup-uri 是本次重组身份，preconfigured-group 是其配置来源的身份。",
+      "normative_strength": "保留第 3、5–8 项的 SHALL 与原通知头如果存在的条件。该分支不是分配新的临时身份。",
+      "limitations": [
+        "第 8 项只有收到的 MESSAGE 的表述，不补写其身份必须是新归属者或某服务器的规则。只见 create、名单名称或预配置组身份，不证实重新创建或改变重组类型。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.1(1–2)"
+          ],
+          "printed_pages": [
+            494
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.4.3(3,5–8)"
+          ],
+          "printed_pages": [
+            506
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-groups-regroup-late-affiliation-wire-boundary",
+      "title": "名单语义不能从这一固定版的 XSD 和分派规则合成无歧义模板",
+      "conditions": [
+        "核对后续通知的重组正文及其终接参与功能分派，不假定接收已经成功。"
+      ],
+      "conclusion": "F.7.2 在参数序列中独立列两个可选名单；F.7.3 要求两者择一，组名单分支的终接功能段又引用用户名单。6.3.1.3 分别按非空组名单与非空用户名单识别组重组和用户重组创建通知。保留这些规则各自的入口。",
+      "normative_strength": "F.7.3 的名单互斥是规范要求；不能用 XSD 结构可选性放宽该语义。",
+      "limitations": [
+        "不宣称双名单报文合规、不规定删哪一方或分派优先级、不替实际报文判断接收结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.1.3 T-PF 组及用户 creation entries"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.7.2"
+          ],
+          "printed_pages": [
+            580
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.7.3 create 1c 与互斥段"
+          ],
+          "printed_pages": [
+            581
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.4.3(6–7)"
+          ],
+          "printed_pages": [
+            506
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-groups-regroup-late-affiliation-reception-evidence",
+      "title": "服务器与终端的创建通知应答不等于加入呼叫",
+      "conditions": [
+        "正在核对实际发生的终接功能或客户端通知事务；两者按各自入口判断。"
+      ],
+      "conclusion": "若 T-PF 收到并按组重组创建通知处理，且未因资源或拥塞拒绝，则先回 200，再按名单发出客户端 MESSAGE、认作归属并保存状态。若客户端随后收到并按创建通知处理，须另回 200 并认作已归属；聊天组另有宜加入要求。",
+      "normative_strength": "T-PF 在适用且未拒绝的分支与终端分别应答为 SHALL；聊天组加入为 SHOULD。",
+      "limitations": [
+        "§16.2.4.3 所列发送不自动证明走到了接收分支。前一腿 200 不证明终端收到通知，终端 200 或认作归属不证明实际入呼。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.2.4(1–4)"
+          ],
+          "printed_pages": [
+            499,
+            500
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.1.3(1–6)"
+          ],
+          "printed_pages": [
+            496,
+            497
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-groups-preconfigured-regroup-notification",
+    "r16-groups-explicit-affiliation-client",
+    "r16-groups-temporary-regroup-teardown"
+  ],
+  "limitations": [
+    "不替该固定版的分派及名单语义冲突选择唯一线格式、错误码或互通策略。",
+    "不覆盖按用户初建、同一请求的重试/去重、拆除以后，或既有呼叫实际加入与媒体到达。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
