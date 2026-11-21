@@ -3437,6 +3437,16 @@ EncryptedData 与保密保护域名分别识别两种形态；403/140 的元素�
 
 [读取主题](topics/calls/temporary-group-call-tng3.md)
 
+## 非控制 MCPTT 功能的 Floor Idle 定向、群发和确认
+
+区分收到带 Track Info 后去尾或删整字段的单发，与收到不带 Track Info 后下行不请求确认的群发。
+
+仅当服务器接口实收 Floor Idle 不带 Track Info，且原 subtype 首位为 1，NCF 才须自行向 CF 回 Source=3 / Message Type=5。终端 ACK 另查 P 的期待；被动队列不等于 CF 活动队列。
+
+尚未建立：不推定全体已收、媒体已停、异常引用处理或终端没有回某次 ACK。
+
+[读取主题](topics/media/noncontrolling-floor-idle-delivery.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

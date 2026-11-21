@@ -1,0 +1,171 @@
+{
+  "topic_id": "r16-media-noncontrolling-floor-idle-delivery",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "非控制 MCPTT 功能收到 Floor Idle：谁回 ACK，怎样认出只发给一个人？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "先核对服务器接口从 CF 实收的 Floor Idle，按入向 Track Info 选择分支；终端 ACK 的处理另看 P 的实际状态与匹配期待。",
+  "common_conditions": [
+    "固定 TS 24.380 V16.9.0 Rel-16 Stage 3。同一场普通在网 MCPTT 组呼，非双话权且非多话者；非控制功能的服务器接口实收 CF 的 Floor Idle 或处理这类消息的终端 ACK。"
+  ],
+  "claims": [
+    {
+      "id": "ncf-untracked-floor-idle-sends-unacknowledged-downstream-and-conditional-local-ack",
+      "title": "入向 Floor Idle 无 Track Info：下行不请求确认，原消息要求时 NCF 回 ACK",
+      "conditions": [
+        "NCF 服务器接口实际从 CF 收到不带 Track Info 的 Floor Idle，无 Floor Indicator 或 G 位为 0。"
+      ],
+      "conclusion": "须给本 NCF 为本场组呼服务的所有 P 发 Floor Idle，首位设 0。入向原消息首位为 1 时，NCF 须向 CF 自己发 Floor Ack，Source=3、Message Type=5。服务器接口按 §6.5.4.8 第 3 项清空本场的被动请求队列；第 3 项不只限群发分支。",
+      "normative_strength": "群发、清首位、条件 ACK 与清空本地被动队列均为 SHALL。",
+      "limitations": [
+        "NCF 生成的 ACK 不证明任一终端已收到，同一动作不意味着 CF 活动队列已清。入向和下行的首位不可混用。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.2 initializes participant interfaces for the group session"
+          ],
+          "printed_pages": [
+            103,
+            104
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.8 items 2 and 3 untracked ordinary delivery, ACK and passive queue"
+          ],
+          "printed_pages": [
+            109
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.2 Floor control message subtype"
+          ],
+          "printed_pages": [
+            147,
+            148
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ncf-targeted-floor-idle-unwinds-last-local-reference",
+      "title": "有 Track Info 的 Floor Idle 由末尾引用指定本地 P",
+      "conditions": [
+        "NCF 服务器接口实际从 CF 收到带 Track Info 的 Floor Idle，该字段有至少一项 Participant Reference。"
+      ],
+      "conclusion": "使用最后一项找到本地 P，再发给该 P。仅一项时删整个 Track Info，依所列本地序号动作处理；多项时只删末项。第 3 项另要求清空本场在 NCF 侧的被动请求队列。",
+      "normative_strength": "识别、删字段或删末项、发送及队列操作为 SHALL；单引用分支另有序号步骤。",
+      "limitations": [
+        "只看出向没带 Track Info，分不出单发或群发；不从本条补未知引用处理、通用计数算法或源头用户身份。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.8 note 1 and items 1 and 3 target demultiplexing and queue"
+          ],
+          "printed_pages": [
+            108,
+            109
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.3.13 reference scope and width"
+          ],
+          "printed_pages": [
+            154,
+            155
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "floor-participant-ack-goes-up-only-on-matching-expectation",
+      "title": "终端 Floor Idle 的 ACK 按 P 的对应消息类型期待上交",
+      "conditions": [
+        "记录期待时，P 在 has no permission 或 has permission 实收到服务器接口交给它的 Floor Idle。上交终端 ACK 时重新核对：P 实收终端 ACK，且此时处于 §6.5.5.5.1 适用状态，不含 Start-stop 和 Releasing。"
+      ],
+      "conclusion": "向终端下发 Floor Idle，首位为 1 时记下期待。若在适用状态实收终端 Floor Ack 且有和 Message Type 匹配的期待，须上交服务器接口并清掉这项期待；服务器接口收到上交才按 §6.5.4.5 外发及处理 Track Info。",
+      "normative_strength": "初次入向首位、ACK 实收时的状态及匹配期待分别是动作守卫，满足时为 SHALL；期待的 ACK 未收到时的动作是实现选项。",
+      "limitations": [
+        "不凭进入 Releasing 之前记过期待就上交迟到 ACK。不从 NCF 本地产生的 ACK 推断终端 ACK 或实际收件；同类型不证明与哪一次 Idle 对应。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.3.2 no-permission P reception"
+          ],
+          "printed_pages": [
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.4.5 permitted P reception"
+          ],
+          "printed_pages": [
+            117
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.5.1–3 applicable states, matching Ack, release boundary"
+          ],
+          "printed_pages": [
+            118
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.5 upstream forwarding upon actual P delivery"
+          ],
+          "printed_pages": [
+            107
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-media-on-network-noncontrolling-floor-grant",
+    "r16-mcptt-onnetwork-idle-floor-server",
+    "r16-media-rtcp-app-name-subtype"
+  ],
+  "limitations": [
+    "只解释非控制方接收与对应确认，不规定 CF 仲裁、媒体结果、未知引用或序号容错。",
+    "下行消息缺 Track Info、CF 收到一条 ACK 与终端实际收件分别核对。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

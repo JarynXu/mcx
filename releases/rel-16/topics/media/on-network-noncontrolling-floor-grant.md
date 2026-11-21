@@ -41,3 +41,5 @@
 3. **实际送达。** 要说“甲的这批 RTP 已转出”，查非控制侧朝 CF 的实际出口；要说“CF 已收”，查 CF 的对应入口。要证明对端终端收到了或播放了语音，还要该端的收包或播放证据，CF 收包也不能代证。
 
 判断 P 当前状态，不能只看先前的一条 Granted 或最近的一条 Release。有许可的 P 收到甲的 Floor Release，要向服务器接口转交，但这一步仍有许可；若它收到服务器接口的 Floor Idle，或本页非多人发言情形的 Floor Taken，则按相应入口把消息发给甲并转入无许可。[§6.5.5.4.3、.5、.6，印刷页 117](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=118)。
+
+若收到控制侧的 [Floor Idle，查单发与群发的 Track Info、ACK 和被动队列](noncontrolling-floor-idle-delivery.md)，不要把 Granted 的动作套给 Idle。
