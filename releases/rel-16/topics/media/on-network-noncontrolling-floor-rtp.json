@@ -6,10 +6,10 @@
   "title": "在网 MCPTT：非控制功能怎样处理无许可终端收发的 RTP？原因 #3 后的 Release 给谁？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.380-v16.9.0",
-  "condition_rule": "声明继承共同范围；P、非控制功能的服务器接口、控制方 U、终端均按各自当时的状态和实际收到的消息或指示判断。 T8 到期、RTP 收件和 Release 收件是各自的事件；区分控制侧逐终端接口 U 的当前状态、会话仲裁 G 的当前状态和来包中的 Floor Indicator G 位。 原 noncontrolling- 及 direct-u- 的七条仍限普通在网单话权组呼，未启用双话权或同时多人发言。新增 dual-cache-downlink- 三条只看非控制侧服务器接口收到分发器的 CF RTP 收件指示和当前已存双话权获准者 SSRC，不继承 P 无权、U 或终端的事件。无缓存的对照只取第 1 项。",
+  "condition_rule": "声明继承共同范围；P、非控制功能的服务器接口、控制方 U、终端均按各自当时的状态和实际收到的消息或指示判断。 T8 到期、RTP 收件和 Release 收件是各自的事件；区分控制侧逐终端接口 U 的当前状态、会话仲裁 G 的当前状态和来包中的 Floor Indicator G 位。 原 noncontrolling- 及 direct-u- 的七条仍限普通在网单话权组呼，未启用双话权或同时多人发言。新增 dual-cache-downlink- 三条只看非控制侧服务器接口收到分发器的 CF RTP 收件指示和当前已存双话权获准者 SSRC，不继承 P 无权、U 或终端的事件。无缓存的对照只取第 1 项。 新增 ncf-call-release- 三条只看非控制侧对应接口实际收到的应用与信令面释放请求。旧 noncontrolling-release-step-one 对 P 涵盖的场景仍是此前无发送许可；各旧条目不因新增逐端 Releasing 或整场释放而扩大。",
   "common_conditions": [
     "固定 3GPP TS 24.380 V16.9.0，普通在网 MCPTT 组呼；P 是组的非控制 MCPTT 功能内的参与者接口，每个会话中的每个客户端有独立实例。单话权处理和已存双话权获准者 SSRC 的下行 RTP 按各声明分开。",
-    "各声明只适用于指定角色：无发送许可的 P、同一非控制功能的服务器接口、直接关联终端的控制方 U，或终端自身。P 的状态不作为其他接口已有事件或终端实际状态的证据。"
+    "各声明只适用于指定角色，按其实际收件和状态执行。非控制侧 P 与其服务器接口分别按本端和会话处理；原 RTP、期待 Release、U 或终端的既有声明仍限各自原状态。P 的状态不作为其他接口已有事件或终端实际状态的证据。"
   ],
   "claims": [
     {
@@ -481,6 +481,136 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "ncf-call-release-per-client-step-one",
+      "title": "甲退出且组呼继续：甲的 P 实收释放第 1 步，停发本端控制、请求双向停转并进入 Releasing",
+      "conditions": [
+        "在网组呼仍与其他客户端进行。甲的 P 实际收到本场应用与信令面的 MCPTT call release step 1；处理前不在 Start-stop 或 Releasing。"
+      ],
+      "conclusion": "P 停止给甲发并忽略甲发来话权控制消息，要求甲的网络媒体接口停止向甲发 RTP、停止把甲发来的 RTP 转给媒体分发器。P 通知本非控服务器接口甲已开始断开，进入 P: Releasing，等待释放或移除完成。",
+      "normative_strength": "适用的实收步骤下，话权消息处理、媒体指令、开始断开通知和状态迁移均为 SHALL。",
+      "limitations": [
+        "这里处理甲这一端，不从 P 的断开通知或双向停转要求推出服务器接口收到整场释放第 1 步。实际没有收包和资源已释放都不是 Releasing 的定义。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.3 paragraphs 1–2: call remains ongoing with other clients, release stage boundary"
+          ],
+          "printed_pages": [
+            105
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.5.1 and .5.3; 6.5.5.6.1"
+          ],
+          "printed_pages": [
+            118,
+            119
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ncf-call-release-per-client-step-two",
+      "title": "已处于 Releasing 的该端 P 实收第 2 步，才请求释放该端在本场的媒体资源并终止本实例",
+      "conditions": [
+        "本场该客户端对应的 P 位于 P: Releasing，实际收到应用与信令面的 MCPTT call release step 2。应用与信令面对该端会话完成释放或移除。"
+      ],
+      "conclusion": "P 要求本端网络媒体接口释放该客户端在这通呼叫的全部关联资源，进入 Start-stop 并终止该参与者在这场会话的 P 状态机。",
+      "normative_strength": "向网络媒体接口请求释放、进入 Start-stop 和终止这一状态机均为 SHALL。",
+      "limitations": [
+        "同一会话每个客户端各有一个 P 实例；若组呼继续，不能把这一步扩大为清其他 P 或整场资源。条款要求发出媒体释放指令，没有给出完成回执，须另核资源清理结果；Floor Release、SIP BYE、无包或只见 Releasing 不能代证实收第 2 步。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.3 first branch"
+          ],
+          "printed_pages": [
+            105
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.1 one P per client and figure 6.5.5.1-1"
+          ],
+          "printed_pages": [
+            113
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.6.1–.2: Releasing and per-participant completion"
+          ],
+          "printed_pages": [
+            119
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ncf-call-release-server-whole-session",
+      "title": "整场结束时服务器接口按自己实收的第 1 步停分发，实收第 2 步清会话资源",
+      "conditions": [
+        "是整场本地关联 MCPTT 呼叫释放，不是单端退出而呼叫继续；服务器接口按实际收到的应用与信令面请求逐步处理；各动作只以收到本会话对应的那一步为条件。"
+      ],
+      "conclusion": "服务器接口收到第 1 步，忽略控制方话权控制服务器和 P 发来的话权控制消息，要求媒体分发器停止向本场客户端的网络媒体接口分发 RTP。收到第 2 步，释放与本会话关联的全部资源；§6.5.3 的整场完成范围还包括本场各 P 状态机。",
+      "normative_strength": "第 1 步的忽略和停止分发指令、第 2 步的会话资源释放为 SHALL。",
+      "limitations": [
+        "本场各 P 的详细第 2 步仍以各自接口实收为证，不规定服务器接口怎样分发请求或其与各 P 的先后；不从服务器停分发、某个 P 状态变化、Floor Release 或一条 SIP BYE 推知全场资源已释放。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.3 whole-call branch: whole-session resources and all participant state machines"
+          ],
+          "printed_pages": [
+            105
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.14–.15: received server interface requests over both stages"
+          ],
+          "printed_pages": [
+            112
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.6.2: actual P step 2 comparator"
+          ],
+          "printed_pages": [
+            119
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "related": [
@@ -633,6 +763,34 @@
       ],
       "printed_pages": [
         111
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.3: single ongoing call participant removal vs whole-call release"
+      ],
+      "printed_pages": [
+        105
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.4.14–6.5.4.15: server-side stop and release for their respective received requests"
+      ],
+      "printed_pages": [
+        112
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.5.5.1, 6.5.5.5.3 and 6.5.5.6.1–.2: per-client stop, Releasing, and actual step 2"
+      ],
+      "printed_pages": [
+        118,
+        119
       ]
     }
   ]
