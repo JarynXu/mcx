@@ -1,0 +1,125 @@
+{
+  "topic_id": "r16-calls-remotely-initiated-group-call",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "远程发起 MCPTT 组呼：请求和结果各填谁的 PF？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明适用主题的全部 common_conditions，并叠加该条 conditions。关联主题不是必经流程。",
+  "common_conditions": [
+    "TS 24.379 V16.14.0 §10.1.5 的在网 MCPTT 远程发起组呼；甲为请求者，乙实际发起对目标组 G 的呼叫，区分委托请求、处理腿上的事务响应及另发的组呼结果。"
+  ],
+  "claims": [
+    {
+      "id": "request-client-addresses-remote-user-pf-and-names-target-group",
+      "title": "远程发起组呼的委托 MESSAGE 按乙 PF 寻址，名单写乙，业务正文写组 G",
+      "conditions": [
+        "甲的客户端执行 §10.1.5.2.1，已通过适用的权限和前置条件，开始生成委托请求。"
+      ],
+      "conclusion": "Request-URI 是服务乙的 PF 的 PSI；资源列表写乙的 MCPTT ID；正文 mcptt-request-uri 写 G，request-type 为 remotely-initiated-group-call-request。若无允许远程发起组呼的配置项或配置为 false，客户端须停止，不到此步骤。",
+      "normative_strength": "§10.1.5.2.1 第 1–3 项，重点第 3d–f 项。",
+      "limitations": [
+        "仅描述客户端构造，不当作其他服务器腿的全部地址；甲要求查乙的归属才进入此前置检查，不能因此取消后续 CF 拒绝条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.5.1 roles, 10.1.5.2.1 steps 1–3d–f"
+          ],
+          "printed_pages": [
+            313,
+            314,
+            315
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "cf-request-affiliation-gate-and-address-role-change",
+      "title": "CF 针对委托请求查乙对 G 的归属；到转发步骤时在出站正文分开组和接收用户",
+      "conditions": [
+        "CF 收到委托请求或业务结果；§10.1.5.4 第 3 项的未归属拒绝只在入站 request-type 指明委托且列表用户未归属入站组时适用。"
+      ],
+      "conclusion": "满足未归属拒绝条件则回 SIP 403 和 Warning 文本编号 120，并停止。若走到转发，CF 把入站 mcptt-request-uri 的组写入出站 mcptt-calling-group-id，把列表中的用户写入出站 mcptt-request-uri，用这个接收用户的终接 PF PSI 作外层地址。",
+      "normative_strength": "§10.1.5.4 第 3、7–8 项。",
+      "limitations": [
+        "不把甲的客户端前置选择当服务器免查，不将第 3 项移植到 response-type；本版不提供查找终接 PF 地址的方法。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.5.4 incoming types, steps 3, 7–8 and NOTE"
+          ],
+          "printed_pages": [
+            318,
+            319
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "remote-client-new-result-message-is-not-transaction-200",
+      "title": "乙另发 outcome 给甲，委托 MESSAGE 的 200 不是组呼成功",
+      "conditions": [
+        "乙接到远程发起组呼委托，受调用的组呼发起程序结束；或观察者只有原委托 MESSAGE 的 SIP 事务应答。"
+      ],
+      "conclusion": "乙另发 MESSAGE，外层 Request-URI 指向服务甲的 PF 的 PSI，资源列表取接收委托中的 mcptt-calling-user-id，正文 mcptt-request-uri 是 G；response-type 为 remotely-initiated-group-call-response，remotely-initiated-call-outcome 为 success 或 fail。甲按结果正文判断成功或失败。",
+      "normative_strength": "§10.1.5.2.1 结果接收段和 §10.1.5.2.2；事务 2xx/200 对照 §§10.1.5.3.1 和 10.1.5.4 末段。",
+      "limitations": [
+        "无结果消息时不能靠 200 推定组呼成功，也不能仅以未见登记失败。此 outcome 是发起过程的结果，不是组成员实收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.5.2.1 result receive, 10.1.5.2.2 result send"
+          ],
+          "printed_pages": [
+            315,
+            316
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.5.3.1 and 10.1.5.4 last response paragraphs"
+          ],
+          "printed_pages": [
+            317,
+            319
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-remotely-initiated-private-call",
+    "r16-calls-prearranged-client-establishment"
+  ],
+  "limitations": [
+    "只核对客户端的两向 MESSAGE、CF 的指定归属守卫、转发字段和结果证据。不展开显示策略、下游所有准入、PF 发现算法或真实用户记录。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

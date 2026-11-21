@@ -15,3 +15,5 @@
 若是在被叫忙时留下请求，由被叫用户后来决定拨回，查[私呼回电](private-callback.md)；若要判断实际接通，还要查[按需私呼的应答与媒体证据](private-client-answer-evidence.md)。
 
 依据：[3GPP TS 24.379 V16.14.0，Release 16，Stage 3，印刷页 415–418（ETSI）](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=416)。
+
+若甲要求乙发起的是 MCPTT 组呼，查[远程发起组呼的两向 PF 与结果](remotely-initiated-group-call.md)；组呼客户端寻址与本私呼条款不同。
