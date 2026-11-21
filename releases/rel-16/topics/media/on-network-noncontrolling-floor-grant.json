@@ -6,7 +6,7 @@
   "title": "在网 MCPTT：非控制侧怎样把 Floor Granted 送回申请话权的终端？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.380-v16.9.0",
-  "condition_rule": "声明继承共同范围；逐个区分实际收件的 P、服务器接口和终端，以及各自的原状态。可选导读不是连续执行步骤。 新增 Taken 分支限 NCF 的服务器接口实际收到 CF 的 Taken，不是 NCF 在收到 Granted 后本地产生的 Taken；发给 P、P 收到、终端收到与 CF 收到确认是不同事件。",
+  "condition_rule": "声明继承共同范围；逐个区分实际收件的 P、服务器接口和终端，以及各自的原状态。可选导读不是连续执行步骤。 新增 Taken 分支限 NCF 的服务器接口实际收到 CF 的 Taken，不是 NCF 在收到 Granted 后本地产生的 Taken；发给 P、P 收到、终端收到与 CF 收到确认是不同事件。 新增队位查询按各接口实际收件与状态分开使用；查队位不等于申请或撤回话权。CF 回报的队列、本地被动队列与终端的 U 状态分别取证。",
   "common_conditions": [
     "3GPP TS 24.380 V16.9.0；普通在网 MCPTT 单话权组呼，不含广播、环境监听或 audio cut-in，当前不涉及合组、角色切换、抢占、双话权或同时多人发言。",
     "P 是非控制功能中每个会话内逐终端的话权参与者接口；服务器接口在同一功能内面向 CF。终端、P 和 CF 不共享一个许可状态。"
@@ -421,6 +421,152 @@
           "printed_pages": [
             118,
             107
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ncf-queue-position-query-forwarding",
+      "title": "NCF 的队位查询没有本地被动队列命中前提",
+      "conditions": [
+        "在普通在网单话权场景，P: has no permission 实收对应终端发来的 Floor Queue Position Request。服务器转发动作另以本地服务器接口实际收到该 P 交来的查询为入口。"
+      ],
+      "conclusion": "P 交给本地服务器接口并保持无权限。服务器接口转发给 CF，保留参与者字段；Track Info 已存在时追加该 P 的本地临时标识为最后一项，未存在时新建，用协商的 mc_queueing 填 Queueing Capability，并以该 P 的临时标识填首个 Participant Reference。这个查询分支不要求本地已缓存请求，也未列插入、移动或删除被动队列项。",
+      "normative_strength": "对应实际收件的转交、转送、保留字段与规定填值是 SHALL。",
+      "limitations": [
+        "不移入真正 Floor Request 的 Participant Type 的已知值或 unknown 和能力值=1 时入队的动作。查询新建字段时未定 Participant Type 取值；通用格式列出该字段，不因未规定选值而视作允许删字段。被动队列未命中不证明 CF 未排队。",
+        "本地转发并不准许任意终端发查询，也不把终端 U: queued 发起时的 T104/C104 移给 NCF。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.3.8: P receives and stays without permission"
+          ],
+          "printed_pages": [
+            115
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.4: forward, preserve fields and use append or create"
+          ],
+          "printed_pages": [
+            106,
+            107
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.2: distinguish actual Floor Request; 8.2.3.13: Track Info layout"
+          ],
+          "printed_pages": [
+            106,
+            154,
+            155
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.9.9: local UE queued start and timers only"
+          ],
+          "printed_pages": [
+            50
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ncf-queue-position-info-matched-return",
+      "title": "只用 CF 实收和实际返回引用追查队位答复落在哪一腿",
+      "conditions": [
+        "控制侧接口处于 U: not permitted and Floor Taken 且实收关联参与者查询时，才用所列 CF 入口。NCF 路由另要求其服务器接口实收带有可识别末尾引用的 Info；P 下发另以无权限的 P 实际接到本地接口交来的 Info 为入口。"
+      ],
+      "conclusion": "CF 发 Queue Position Info，Queue Info 携位置与话权优先级，接口留原状态。CF 的复制条件写出向 Info 含 Track Info 时才带来向字段；通用 Info 格式另有涉及 NCF 时包含该字段的表述。NCF 按实际最后一个引用找 P，多引用删最后一项。无权限 P 实收该 Info 则发给终端；收到的 subtype 首位为 1 时才登记期待此种 Ack，P 仍无权限。",
+      "normative_strength": "受状态和收件条件约束的所列响应、定位和转送是 SHALL；CF 请求确认的 subtype 首位为 MAY。",
+      "limitations": [
+        "不能把查询含 Track Info 改成该条明示的无条件回带规则；不要补找不到引用时的默认 P、SSRC 替代或丢弃行为。§6.5.4.11 的单引用删除对象原文写 Floor Granted，不据此规定 Info 单引用必删。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.4.7: CF answer, optional ack and Info-conditional copy"
+          ],
+          "printed_pages": [
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.11: actual tail and literal mismatch; 6.5.5.3.7: P dispatch"
+          ],
+          "printed_pages": [
+            111,
+            115
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.12 Track Info: generic field statement"
+          ],
+          "printed_pages": [
+            173
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ncf-queue-position-info-254-255-local-t104",
+      "title": "匹配 Info 的 254/255 与客户端 U: queued、T104 不互作佐证",
+      "conditions": [
+        "判读 CF 回报前先配对参与者、同一会话及查询实际 Info；判断终端本地动作另要求实际处于 U: queued 且收到 Info，或发生各自的 T104 计时事件。"
+      ],
+      "conclusion": "Queue Info 里的 Queue Position Info 值为 254 时 报告对应参与者在报告时未排队；255 不给队位，条文列出已排队但服务器无法确定位置，或服务器策略不披露；不能用它确认退队、具体名次或所走原因。终端已有 U: queued 时，实际收到 Info 须停仍在运行的 T104 并保持 U: queued。T104 在 C104 上限耗尽的本地分支须提示队列超时、发 Floor Release 并进入 pending Release。",
+      "normative_strength": "位置特殊值和各实际事件下的状态/计时处理为条文明示；不以本地状态替代 CF 回报。",
+      "limitations": [
+        "缺回包、一次超时、发出释放或旧本地队列项不证明 CF 队列已产生任何对应结果；匹配的 254 也不证明是哪条撤回造成。通用 Info 还可来自非查询事件，不用时间靠近单独做匹配。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.3.5 table 8.2.3.5-1 and values: 254, 255"
+          ],
+          "printed_pages": [
+            150,
+            151
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.9.7 and 6.2.4.9.9–.11: actual Info, running T104 and timeout sequence"
+          ],
+          "printed_pages": [
+            49,
+            50,
+            51
           ]
         }
       ],

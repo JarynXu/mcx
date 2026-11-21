@@ -26,6 +26,21 @@
 
 **Deny 和队位通知有一处原文用词不能照 Granted 类推。** 两个条款第 2a 项都把“单引用时删除整个 Track Info”的对象写作外发 **Floor Granted**；第 3 项却分别要求转发 **Floor Deny** 和 **Floor Queue Position Info**。目标 P、要转的消息种类以及多引用去尾都有明文；仅凭这两处单引用文字，不能断言外发 Deny 或队位通知一定删除整个字段。[§6.5.4.7，印刷页 108](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=109)、[§6.5.4.11，印刷页 111](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=112)。若想知道的是 CF 在什么条件下会授予，要看[控制侧已处于 Idle 时怎样处理请求](on-network-idle-floor-server.md)；若甲是在撤回排队，见[撤回后两侧怎样各自移队](on-network-preemption-revoke.md)。
 
+## NCF 的被动队列里没找到这人，队位查询还要往上送吗？
+
+**要转发。** 在普通在网单话权组呼里，先分清终端发的是 **Floor Queue Position Request（查队位）**，还是 Floor Request（申请话权）。终端发来的队位查询由处于 `P: has no permission` 的参与者接口 P 交给本地服务器接口；P 保持无权限。服务器接口**实际收到 P 交来的查询**后须向 CF 转发。该条没有要求本地被动队列先有这人的条目，也没有规定把这次查询加入、移除或移动该队列。找不到本地条目，不能按这条将查询拦下，也不能由此判定 CF 侧未排队。终端如何发起查询另看自己的状态：本分支所对照的终端规程是在 `U: queued` 收到客户端查询指示时发查询、启动 T104 并把 C104 设为 1，不是由 NCF 的被动队列状态决定。[TS 24.380 V16.9.0 §6.5.5.3.8，印刷页 115](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=116)；[§6.5.4.4，印刷页 106–107](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=107)；[§6.2.4.9.9，印刷页 50](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=51)。
+
+### 发往 CF 的引用填什么？
+
+保留实际收到的参与者字段。查询**已有 Track Info**时，把与该 P 对应的本地临时标识追加到末尾，不用本地协商值覆盖原字段。查询**没有 Track Info**时，NCF 补这个字段：Queueing Capability 写协商的 `mc_queueing`，把该临时标识放在第一个 Participant Reference。这里不是“只有能力为 1 才转发”；能力为 1 时保存外发消息的步骤属于 **Floor Request** 的规程。Track Info 的通用格式列有 Participant Type；查询分支没有规定新建时该值如何选。不要据此把该字段从格式删掉，也不要借用申请话权分支的 `unknown` 作为查询分支的默认值。[§6.5.4.4 第 1 项，印刷页 106–107](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=107)；[§6.5.4.2，仅用于 Floor Request 对照，印刷页 106](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=107)；[§8.2.3.13，印刷页 154–155](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=155)。
+
+### 有上行查询，没有终端答复，先查哪里？
+
+1. **核对 CF 实收与发出的 Info。** CF 侧对应接口处于 `U: not permitted and Floor Taken`、实际收到关联参与者的查询时，须发 Floor Queue Position Info，Queue Info 携位置和优先级，接口保持原状态。通用格式说涉及 NCF 的呼叫携 Track Info；而 CF 这段程序的复制条件写在**出向 Info 含该字段**，不是“只要来向查询带了就无条件回带”。仍要核对实际返回字段，不能凭查询中附过引用便代填缺失的答复。[§6.3.5.4.7，印刷页 83](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=84)；[§8.2.12 的 Track Info，印刷页 173](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=174)。
+2. **核对 NCF 实收与具体终端。** NCF 实收到带引用的 Info，按最后一项找本地 P；多项则去掉末项。上文的单引用用词差异仍在，不能把写成 Floor Granted 的删除对象改作一条明确的 Info 删除规则。若没有可识别的末尾引用，不能用本地被动队列、SSRC 或本次发包顺序代替这个查找，也不能凭该条断言规范要求丢弃。P 实收给自己的 Info 才按其状态送终端；在无权限状态，按实际首位决定是否登记期待对这类消息的确认，仍保持无权限。[§6.5.4.11，印刷页 111](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=112)；[§6.5.5.3.7，印刷页 115](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=116)。
+
+只在**已配对到本次会话、参与者和查询**的 Info 中判读 Queue Info 字段里的队位值（Queue Position Info）：**254 报告当时未排队；255 不提供队位。原文列了两种情况：终端已排队但服务器不能确定位置，或服务器策略不向终端公开队位。不能用 255 判退队、名次或是哪种原因。** CF 队位报告和客户端本地状态仍是两件事。若终端当时处于 `U: queued`，实收 Info 时按该入口停止仍在运行的 T104，保持 `U: queued`；不能用本地状态反证 CF 回报的 254。反过来，没收到答复或 T104 重试耗尽也不证明 CF 没排队或已移队。耗尽时终端另按规程发 Floor Release；它的发出不是 CF 的移队结果。若问题是查[撤回后是否移出 CF 的活动队列](on-network-preemption-revoke.md)，按实际查询答复和撤回记录分别判断。[§8.2.3.5，印刷页 150–151](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=151)；[§6.2.4.9.7、.9–.11，印刷页 49–51](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=50)。
+
 ## 甲的 P 需要等 Ack 才有许可吗？
 
 **不需要。** 在无许可状态，甲的 P 收到本地服务器接口给它的 Granted、Deny 或队位通知，都要把相应消息发给甲。若所收消息的 subtype 首位为 1，P 还须记下期待对**这种消息**的 Floor Ack。处理 Granted 时，P 进入 `P: has permission`，没有“先收到 Ack”这一条件。处理 Deny 或队位通知时，P 仍是 `P: has no permission`。这是 P 的状态转换，不是终端收件的证明，也不规定几条日志的出现顺序。[§6.5.5.3.5，印刷页 114](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=115)、[§6.5.5.3.6–7，印刷页 115](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=116)。
