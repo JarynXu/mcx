@@ -1,0 +1,170 @@
+{
+  "topic_id": "r16-identity-sip-database-routing-and-authorization",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "SIP 用户库的“位置”和“授权”分别能证明什么？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "先分查终接路由所需数据、SIP 层控制记录和应用层的本次业务授权或位置结果。",
+  "common_conditions": [
+    "固定 TS 23.280 V16.7.0 Stage 2 在网架构。用户认证与授权以 §10.6.1 主系统为应用层对照；不套伙伴迁移流程或具体 IMS 报文。"
+  ],
+  "claims": [
+    {
+      "id": "r16-identity-sip-database-routing-and-authorization-routing",
+      "title": "当前服务注册器、终端联系绑定和跨系统位置是分开的证据",
+      "conditions": [
+        "检查 SIP 控制面正在为某次终接呼叫或会话定位目标用户；手头有 SIP 数据库或注册器数据。"
+      ],
+      "conclusion": "SIP 数据库支持用户注册，也存有跨系统层面 UE 位置信息；终接时提供当前由哪个注册器服务目标用户，以及另有按用户提供给 finder 的注册器能力要求。注册器维护用户身份与 SIP 联系位置的关联，SIP 核心提供联系地址绑定、URI 解析。对失败来话分别验证实际查到的服务注册器和实际使用的联系绑定。",
+      "normative_strength": "所列为 Stage 2 功能职责与定位区分，不是固定消息流程。",
+      "limitations": [
+        "规范未在这里规定跨系统位置字段的格式或把该字段定义为注册器名称、Contact 地址、坐标、厂商字段名或某次终接成功。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.1.3.4"
+          ],
+          "printed_pages": [
+            35,
+            36
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.2.1"
+          ],
+          "printed_pages": [
+            36
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.2.2(b,c)"
+          ],
+          "printed_pages": [
+            36,
+            37
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "9.2.1.3"
+          ],
+          "printed_pages": [
+            49
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-identity-sip-database-routing-and-authorization-access",
+      "title": "移动接入许可、SIP 层业务触发和 MC 业务授权分别核对",
+      "conditions": [
+        "手头有注册器发起的接入查询、SIP 库终接/业务调用信息或应用服务选择的记录。"
+      ],
+      "conclusion": "SIP 数据库应注册器请求为用户提供移动接入授权，允许漫游到访问网是例子。它还为终接呼叫/会话建立与业务调用提供基础授权，可用过滤条件更新注册器以便触发 MC 业务服务器；看到规则不证明这笔事务已经选择或触发应用。主系统的相应 MC 客户端利用认证注册程序所得结果为用户办理对应业务授权，须另核本次业务授权结果。",
+      "normative_strength": "移动接入与基础服务授权为两类功能；以过滤条件更新注册器是能力，不是每次必须执行。",
+      "limitations": [
+        "不把访问网许可、过滤规则、实际应用触发、SIP 注册或可选第三方注册等同某项 MC 业务授权；不规定具体 IMS 触发规则。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.1.3.4"
+          ],
+          "printed_pages": [
+            35,
+            36
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.2.2(g,h)"
+          ],
+          "printed_pages": [
+            37
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.6.1"
+          ],
+          "printed_pages": [
+            114,
+            115
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-identity-sip-database-routing-and-authorization-location",
+      "title": "SIP 跨系统位置不能替代业务位置报告",
+      "conditions": [
+        "用 SIP 数据库中跨系统层面 UE 位置信息回答调度的业务位置问题。"
+      ],
+      "conclusion": "这项 SIP 数据是信令控制面资料，不能单凭它断定目标人的实际业务位置或终端定位结果。位置管理服务器 LMS 经 CSC-14 从位置管理客户端接收报告，MC 业务服务器经 CSC-15 向 LMS 请求和接收位置信息；核对本次业务取数与返回证据，不拿 SIP 库字段代替。",
+      "normative_strength": "Stage 2 的数据/功能边界，不对用户是否获授权、位置来源或新鲜度作统一结论。",
+      "limitations": [
+        "不要求所有位置请求必须先从终端得到新报告，也不从日期或命名推断坐标；权限、分支和触发看对应定位程序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.4.3.2.1"
+          ],
+          "printed_pages": [
+            36
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.2.14–7.5.2.15"
+          ],
+          "printed_pages": [
+            40
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-identity-registrar-selection",
+    "r16-identity-home-system-authentication",
+    "r16-location-on-demand-location-consent-and-source"
+  ],
+  "limitations": [
+    "不提供线上的字段编码、具体 IMS 分发规则或用户查询授权方法；本次选路、触发、获准与取数结果须各查实际记录。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
