@@ -6,7 +6,7 @@
   "title": "普通按需预安排组呼：服务器准入与邀请路由",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
-  "condition_rule": "Inherit common_conditions and add claim conditions. 带“迫近危险初始准入”的声明按该条实际收到的初始 INVITE、所指组和组旧状态分别适用，不套用普通请求的无优先指示前提。",
+  "condition_rule": "Inherit common_conditions and add claim conditions. 带“迫近危险初始准入”的声明按该条实际收到的初始 INVITE、所指组和组旧状态分别适用，不套用普通请求的无优先指示前提。 三条新增普通按需起呼声明分别核对角色部署及实收请求或响应。按需 offer 或 answer 的构造不以合设为前提；只有省略相应字段替换才要检查本次 O-PF 与 CF 是否合设、PF 是否缺对应专用地址或端口。",
   "common_conditions": [
     "固定 TS24.379 V16.14.0 的在网、直接组身份、GMS 管理的普通预安排组；组文档不含 temporary/regrouped，不是 constituent 组或预配置重组；不含 chat、广播、功能别名或离网业务。",
     "除条件明确标为“迫近危险初始准入”的声明，其余声明仍限不带 emergency-ind/imminentperil-ind/alert-ind、且组不处于紧急或迫近危险状态的普通请求。各角色按实际收到的初始请求处理；不以主叫已归属、文档已取得、目标已接受或全链成功作为公共前提。",
@@ -942,6 +942,118 @@
             244,
             245,
             246
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "prearranged-originating-pf-cf-shared-server-signalling",
+      "title": "合设的 O-PF 到 CF 的内部请求不经过底层 IMS SIP 核心",
+      "conditions": [
+        "普通按需预安排组呼的 O-PF 与 CF 由同一 MCPTT 服务器承担；核对的请求是在该服务器的两种功能之间传递。"
+      ],
+      "conclusion": "MCPTT 功能可合设于一台服务器，也可分在多台。同一服务器内部功能间发送请求不遍历底层 IMS SIP 核心。O-PF 仍按本次呼叫的组 ID 确定 CF PSI，发起侧程序依然有 CF 路由目标和角色处理。",
+      "normative_strength": "§5.3.1 的角色组合为可选能力；§5.3.2 注说明合设部署下的可见信令；组侧目标选择按相应起呼程序。",
+      "limitations": [
+        "同一系统不等于同一服务器。缺少 IMS 的内部请求抓包，不能判定 CF 已收或未收、已处理或未处理；需查相应部署和本次服务端记录。不会由这一说明推出终端到 O-PF 不经 IMS，也不定义本地 API、进程或 SIP 事务形式。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "5.3.1 and 5.3.2 Note: MCPTT functional roles and underlying IMS traversal boundary"
+          ],
+          "printed_pages": [
+            51,
+            52
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.1 items 8–13: group CF identity, logical request target and offer"
+          ],
+          "printed_pages": [
+            231
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "prearranged-originating-pf-ondemand-offer-rewrite",
+      "title": "发起 PF 的按需 offer 按实际入向 offer 判断媒体与控制项",
+      "conditions": [
+        "O-PF 处理到普通按需预安排组初始 INVITE 的出向构造，以实际收到的终端 SDP offer 为输入。"
+      ],
+      "conclusion": "出向 offer 包含来向的一个 MCPTT 语音媒体级描述；来向有媒体面控制消息描述时包含一个。语音媒体流在需要时替换为 PF 的 IP 地址和端口；来向有媒体面控制通道时按规程替换该通道的 IP 地址和端口。对本次普通直接组，O-PF 与当前 CF 由同一 MCPTT 服务器承担，且该 PF 没有相关流或通道的专用 IP 地址或专用端口时，注 2 省略对应替换。",
+      "normative_strength": "组成、条件性语音替换及有控制通道时的替换为 SHALL；合设且缺相应专用值时省略是注 2 的适用说明。",
+      "limitations": [
+        "媒体流和媒体面控制通道分别判断，不因某个端口相同形成全局透传。通用注 2 也列了 PF 与 NCF 合设；本次 O-PF 到 CF 的路由不以和其他 NCF 合设为触发条件。不从相同 SDP 值推定实际呼叫的部署或媒体路径。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.1 item 13: outgoing offer based on the received client's offer"
+          ],
+          "printed_pages": [
+            231
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.1.1: media-level section constraints, replacement steps 1–2 and Note 2"
+          ],
+          "printed_pages": [
+            83
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "prearranged-originating-pf-ondemand-answer-rewrite",
+      "title": "发起 PF 的按需 200 answer 从实际收到的 answer 换写已接受项",
+      "conditions": [
+        "O-PF 实收匹配这条出向普通按需预安排组 INVITE 的 2xx，按条款为主叫终端生成 SIP 200 和 SDP answer。"
+      ],
+      "conclusion": "替换发生在实收的 SDP answer：来向 offer 的媒体流获接受且需要改写时，替换为 PF 的媒体流 IP 地址和端口；来向 offer 有媒体面控制通道且该通道获接受时，换写其 IP 地址和端口。对本次普通直接组，O-PF 与当前 CF 合在一台 MCPTT 服务器，且该 PF 对该流或通道没有专用 IP 地址或专用端口时，省略相应字段替换。",
+      "normative_strength": "为指定 SIP 200 携 answer、按接受和需要的条件替换为 SHALL；合设字段例外在该 answer 规程的注 2 单独说明。",
+      "limitations": [
+        "这不是原终端 offer 或预建立承载协商；只见一份 SIP 200 或数值相同不能推出另一方向也执行了同样取值、PF 未处理或实际媒体已通。 通用注 2 也列 PF 与 NCF 合设，本次不将其他 NCF 改作 CF 的匹配对象。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.1 upon receiving 2xx items 2–3: generating caller 200 and the SDP answer"
+          ],
+          "printed_pages": [
+            232
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.2.1: accepted media and control channel, replacement steps 1–2 and Note 2"
+          ],
+          "printed_pages": [
+            84
           ]
         }
       ],
