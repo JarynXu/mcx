@@ -36,6 +36,30 @@
 
 如果实际是原持有者主动松开 PTT，读[持有者放权与控制方的停转请求](on-network-holder-release.md)。若要判断**终端自己**收到 Revoke 后是否启动 T100，先核实该端当时确在 *has permission* 且实际收到 Revoke，再看[普通在网话权客户端](on-network-floor-client.md)及[§6.2.4.5.4，印刷页 43](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=44)。P 发出的 #3 不能代替这个终端收件条件，T100 也不是 P 等 Release 的计时器。
 
+## 控制侧 T8 到期：先分清是催原发言者停发，还是无许可却来包
+
+同一个 T8 名字，对应的是直接面向终端的控制侧接口 **U 的两个状态**。先在同一通话、同一关联终端的记录里查 U 状态和实收事件，不按重复 Revoke 的次数判断媒体有没有进分发器。
+
+| 当时的 U 状态 | 关联终端送来带载荷 RTP | 这个 U 的 T8 实际到期 |
+| --- | --- | --- |
+| `U: pending Floor Revoke`，原发言者正在被撤权 | U 须把收到的 RTP 转给媒体分发器，留在原状态。这一步不是分发器已向听众转发的证据。 | 重发 Floor Revoke，沿用上一份的 `Rejection Cause` 和 `Floor Indicator`，再启动 T8，仍留在原状态。 |
+| `U: not permitted but sends media`，已无许可却仍发包 | U 不得要求网络媒体接口把该终端的 RTP 转给媒体分发器。 | 发 Floor Revoke，原因置 **#3**（无发送媒体突发的许可），重启 T8，仍留在原状态。 |
+
+依据：[TS 24.380 V16.9.0，Rel-16，Stage 3，§§6.3.5.6.1–4，印刷页 87–88](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=88)；[§§6.3.5.7.1–3，印刷页 89–90](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=90)。这里只取普通在网单话权。非控制功能的 P 再发原因 #3 可能是又实收该终端来包的指示，不是这里的 T8 到期。
+
+两个到期条款都把重发次数和放弃后的动作留给实现；放弃时**建议**将该客户端断开出这通呼叫，不是计时一到就必须断开。表 11.1.3-1 的 T8 默认 1 秒，可配置。表中启动列描述向有权发送者发 Revoke；无权却发包时进入上述第二种状态，§6.3.5.7.2 也明确启动 T8。判断重发到限或是否实际断开，查实现配置和服务端动作，不能数几份报文就下结论。[§11.1.3 表 11.1.3-1，印刷页 219](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=220)。
+
+## 无许可发包的终端后来发 Floor Release，控制侧怎么回？
+
+同一 U 还在 `not permitted but sends media`，收到关联终端的 Floor Release。其 subtype 首位为 1 才触发 Floor Ack；程序列的是 `Message Type=4`（Floor Release）、`Source=2`（控制 MCPTT 功能）。**仲裁 G 处于下列两个状态之一时，无论是否要求 Ack，都要回相应的状态消息：**
+
+- **`G: Floor Idle`：** U 须给该端发 Floor Idle，`Message Sequence Number` 加 1，转为 `U: not permitted and Floor Idle`。
+- **`G: Floor Taken`：** U 须给该端发 Floor Taken，`Granted Party’s Identity` 填当时获准者的 MCPTT ID；未请求隐私时可附该获准者的功能别名。普通非广播呼叫可给 `Permission to Request the Floor=1`，也可要求对这份 Taken 确认。U 转为 `U: not permitted and Floor Taken`；允许申请不等于允许发送。
+
+分支看的是**控制侧本次收件时这通呼叫的 G 状态**，不是来包里的 Floor Indicator G 位。§6.3.5.7.4 没有给其他 G 状态（如正在撤销另一位发言者的话权）指定状态消息。也不要套抢占后原持有者的 Release 分支。后者在 U 仍为 `pending Floor Revoke` 且来包 G 位为 0 时，先把 Release 转给 G、自身留在 pending，再看实际收到的仲裁消息。两个处理不会因为都回 Ack 就变成同一个。T8 表列出的正常停止原因是 T3 到期或收到被撤权参与者的 Release；§6.3.5.7.4 没有单列停表步骤，不能从抓到 Ack 或状态消息推定这台服务什么时候取消计时器。[§§6.3.5.6.5–7，印刷页 88–89](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=89)；[§6.3.5.7.4，印刷页 90](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=91)；[§11.1.3 表 11.1.3-1，印刷页 219](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=220)。
+
+**若排查的是 Ack 字节，保留两个读数。** 上面是流程条款写的 Message Type 值 4。通用编码 §8.2.3.14 要求把被确认消息 subtype 的五位（含首位）复制到这个字段，前补三个 0。对要求确认的 Floor Release，`x0100` 的 `x=1`，按该通用编码所得是 `00010100`（十进制 20）。抓包时把来向 Release 的 subtype、回向 Ack 的字段原值和解码结果一起记录。本页不把 4 和 20 当作相同的线值，也不替实现选择该发哪一个、收到哪个算通过。[表 8.2.2.1-1，印刷页 148](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=149)；[§8.2.3.14，印刷页 155](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=156)。
+
 ## 什么才是呼叫释放的停媒体指令？
 
 甲的 P 尚处于无许可状态，若它**收到应用与信令面发来的呼叫释放第 1 步请求**，它须停止向甲发话权控制消息、忽略来自甲的话权控制消息，并要求网络媒体接口既停止向甲发 RTP，也停止将甲的 RTP 转给分发器。P 通知服务器接口甲已开始断开，进入 `P: Releasing`。甲离开会话就可能触发这个入口，不等于其他人也离开。[§6.5.5.5.1、§6.5.5.5.3，印刷页 118](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=119)。
