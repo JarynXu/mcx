@@ -3407,6 +3407,16 @@ EncryptedData 与保密保护域名分别识别两种形态；403/140 的元素�
 
 [读取主题](topics/calls/sip-xml-confidentiality-copy.md)
 
+## 在网 MCPTT 话权的位置字段和多话者映射
+
+初次和限内重发的 Floor Request、单话者 Floor Taken 的字段存在、Type 0 和非经纬度类型。
+
+多话者 Floor Taken 中位置与用户等数同序；位置不可用或不许报告时保留 Type 0 项。
+
+尚未建立：不判断超出所列分支的报文规则、列表错误后的接收策略、定位新鲜度、用户在场或 LMS 上报结果。
+
+[读取主题](topics/media/floor-talker-location.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

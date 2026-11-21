@@ -1,0 +1,183 @@
+{
+  "topic_id": "r16-media-floor-talker-location",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 话权消息的位置：没有坐标时怎么查，多话者按什么顺序对人？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "先核对实际消息、方向和构造分支。Type 0 与缺字段分别记录；多话者匹配只看同一条通知。",
+  "common_conditions": [
+    "固定 TS 24.380 V16.9.0，Rel-16 Stage 3；普通在网 MCPTT 组呼，仅 §6.2.4.3.5、§6.2.4.4.5 和 §6.3.4.4.2 第 3 项。不是离网、环境监听确认、LMS 位置上报或其他 Floor Taken 发送入口。"
+  ],
+  "claims": [
+    {
+      "id": "floor-request-and-retry-encode-location-absence-as-type-zero",
+      "title": "初次话权请求和限内重发都携带位置字段",
+      "conditions": [
+        "终端在 U: has no permission 发起 Floor Request，或在 U: pending Request 中 T101 到期且未达 C101 上限再发请求。"
+      ],
+      "conclusion": "带 Location。当前位置不可用或 MCPTT 用户档案不允许报告时 Type 0，无位置值；可用且允许时按表填写类型和值。地理坐标是 Type 6，并非所有非零类型。",
+      "normative_strength": "两条发送程序的 Location 为 SHALL；编码按表 8.2.3.21-3。",
+      "limitations": [
+        "Type 0 不是字段缺失、真实坐标 (0,0) 或原因码。先确认报文完整和构造分支。不从该字段推断新定位或 LMS 已收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.3.5 initial transmission"
+          ],
+          "printed_pages": [
+            38,
+            39
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.4.5 retry before limit"
+          ],
+          "printed_pages": [
+            40
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.3.21 Location and Table 8.2.3.21-3"
+          ],
+          "printed_pages": [
+            159,
+            160
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "single-talker-floor-taken-location-and-identity-have-separate-guards",
+      "title": "单话者占权通知中，位置可用性与身份隐私分开判断",
+      "conditions": [
+        "服务器仲裁进入 G: Floor Taken，只有一人获准，向其他话权参与者发 Floor Taken。"
+      ],
+      "conclusion": "带 Location，不可用或档案不准报告时 Type 0，否则按表编码。获准者的 MCPTT ID 在未请求隐私时带上，功能别名在未请求隐私时可带。",
+      "normative_strength": "Location 及条件 MCPTT ID 为 SHALL；条件功能别名为 MAY。各字段按自己的条件判定。",
+      "limitations": [
+        "不能仅从身份字段缺失判断是否请求隐私，也不能据此判断位置 Type 0、定位或接收结果。不是所有发送 Floor Taken 的入口。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.4.2 item 3(a) single granted participant and privacy conditions"
+          ],
+          "printed_pages": [
+            59
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.3.21 Location and Table 8.2.3.21-3"
+          ],
+          "printed_pages": [
+            159,
+            160
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.9 Location and granted party coding"
+          ],
+          "printed_pages": [
+            168,
+            169
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "multi-talker-floor-taken-positions-match-user-list-even-when-not-provided",
+      "title": "多话者的位置列表按获准用户列表等数同序，未提供仍占一项",
+      "conditions": [
+        "服务器仲裁进入 G: Floor Taken，支持 multi-talker，且当前不止一位参与者获准发送，向其他参与者发 Floor Taken。"
+      ],
+      "conclusion": "I 位为 1，带获准用户列表、SSRC 列表和位置列表。Number of Locations 必须等于 No of users，位置与用户同序。当前条目的位置不可用或不允许报告时，仍留该项并置 Type 0；不得删除后把下一项配到前一人。",
+      "normative_strength": "构造和列表的等数、同序及缺位置时 Type 0 为 SHALL。§8.2.9 分别说明 SSRC 与同一用户列表对应。",
+      "limitations": [
+        "同一报文内核对。位置列表不是仅包含有坐标者的稀疏列表；不规定计数或顺序错误时的接收端动作，也不由字段推断实际媒体或位置上报成功。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.4.2 item 3(b) multi-talker mandatory fields"
+          ],
+          "printed_pages": [
+            59
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.3.17 No of users"
+          ],
+          "printed_pages": [
+            157
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.3.22 Location list count, order and Not provided entry"
+          ],
+          "printed_pages": [
+            160,
+            161
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.9 Floor Taken list linkage"
+          ],
+          "printed_pages": [
+            168,
+            169
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcptt-onnetwork-idle-floor-server",
+    "r16-media-on-network-floor-client",
+    "r16-mcptt-on-network-release-multi-talker",
+    "r16-location-event-reporting-configuration"
+  ],
+  "limitations": [
+    "只解释所列构造分支及编码，不给其他消息扩充字段，不规定不合规列表的接收或容错策略。",
+    "话权、身份、位置类型、位置采集、实际媒体接收和 LMS 上报是不同证据。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
