@@ -7,9 +7,9 @@
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.380-v16.9.0",
   "common_conditions": [
-    "Release 16，在网 MCPTT 组会话；原控制 MCPTT 功能因与另一场组会话合并，要从控制模式改为非控制模式。不是新 SIP 会话第一次建立组会话。"
+    "Release 16，在网 MCPTT 已有组会话合并或拆分中的话权控制角色切换；不是新 SIP 会话首次建立组会话，也不是 MCVideo。"
   ],
-  "condition_rule": "各项分别适用于准备、进入第二步、原队列存在或后来收到参会指示等明确条件；不可把某一分支或记录反推为所有条件均已满足。",
+  "condition_rule": "各项分别适用于准备、进入第二步、原队列存在或后来收到参会指示等明确条件；不可把某一分支或记录反推为所有条件均已满足。 原 prepare-not-change、prepare-per-local-participant、confirmed-link-and-finalize、resubmit-track-information、passive-queue-not-permission 五条仍限定原控制 MCPTT 功能因并接由控制转非控制。新增 split- 三条仅适用于拆分时由非控制接回控制或判断这一事件的证据，不把并接的前提和逐项重递倒放。",
   "claims": [
     {
       "id": "prepare-not-change",
@@ -419,6 +419,129 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "split-actual-instruction-and-new-control-instances",
+      "title": "在网预安排组或聊天组的媒体接口实收拆分指令后，接回本场话权控制并新建两层实例",
+      "conditions": [
+        "在网预安排组呼或聊天组呼仍在进行；本组非控制侧的话权控制服务器接口实际收到应用与信令面给本场的拆分指令。"
+      ],
+      "conclusion": "按 §6.5.4.16 执行 §6.3.2.3。切回时本组 MCPTT 服务器新建一个一般话权控制实例，为本场每个 MCPTT 客户端各增加一个面向其的基本话权控制实例。",
+      "normative_strength": "实收时执行所引过程为 SHALL；新建一般及逐客户端实例是该过程规定的行为。",
+      "limitations": [
+        "不按排队者名单建实例，不扩大到未参会成员，无待迁请求也不免除建实例；不以用户下一次按 PTT、SIP 首次建组或保留一套旧实例替代该过程。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.16: split instruction actual receipt; invokes 6.3.2.3"
+          ],
+          "printed_pages": [
+            112
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.2.1 and 6.3.2.3: contrast with new call and both new instance types"
+          ],
+          "printed_pages": [
+            52,
+            53
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "split-passive-requests-move-to-active-locally",
+      "title": "拆分后接回控制，将本组被动队列现有话权请求移入主动队列",
+      "conditions": [
+        "在网已有预安排组呼或聊天组呼拆分时，本组实际执行从非控制切回控制；被动队列跟踪它所管话权参与者的请求。"
+      ],
+      "conclusion": "把被动队列中每项已有话权请求移入本组主动队列。逐项向控制服务器重发 Floor Request、处理 Track Info 是相反方向且有旧主动队列时的并接规程，不是 §6.3.2.3 的要求。",
+      "normative_strength": "将现有请求移入主动队列是 §6.3.2.3 规定的动作；未列出接回时逐项重发或 Track Info 重写要求。",
+      "limitations": [
+        "没有已有请求时无项可迁，仍执行实例新建。不能从迁移推定原队位、首位、授权、实际 RTP 或原远侧控制方队列的状态。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.2.3 and NOTE: move present passive requests to active; monitored local request scope"
+          ],
+          "printed_pages": [
+            52,
+            53
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.2.3.3 items 2–3: old opposite-direction reissue and active-to-passive move"
+          ],
+          "printed_pages": [
+            104,
+            105
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "split-signaling-is-not-media-execution-evidence",
+      "title": "在网组呼拆分的信令处理与媒体接口实收拆分指令是两层证据",
+      "conditions": [
+        "区分固定 TS 24.379 所列的预安排组或聊天组拆分信令，以及 TS 24.380 所列的本场媒体接口实收事件。"
+      ],
+      "conclusion": "呼叫侧两节在策略要求继续原组呼时才要求媒体切回，并引用 TS 24.380 §6.3.5。媒体侧 §6.5.4.16 反向引用这两节，却明确在实收拆分指令时执行 §6.3.2.3。分析记录时分别核对呼叫侧保留策略和媒体侧实际指令及执行。",
+      "normative_strength": "策略保留时请求媒体切回与收到媒体拆分指令时执行所引过程，各由其条文规定；不合并两处字面引用。",
+      "limitations": [
+        "单见 BYE、其 200 或会议通知不证明本组已执行接回话权或迁队；不统一预安排组和聊天组的信令触发、通知条件或内部实现顺序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.16: actual receive; two signaling references; media action points to 6.3.2.3"
+          ],
+          "printed_pages": [
+            112
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.2.4, opening, steps 1–2 and NOTE 1"
+          ],
+          "printed_pages": [
+            262
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.5.1.4, opening, steps 1–2 and NOTE 1"
+          ],
+          "printed_pages": [
+            299
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "related": [
@@ -428,7 +551,7 @@
     "r16-media-temporary-group-floor-initial-arbitration"
   ],
   "limitations": [
-    "只论在网 MCPTT 由控制变非控制的媒体面程序。反向接任、首次建组、呼叫信令如何拆分及 MCVideo 的同号条款不在此篇裁定。",
+    "并接讨论在网 MCPTT 由控制转非控制；拆分讨论保留的会话由非控制接回控制。首次建组、其他拆分信令和 MCVideo 的同号条款不在此篇裁定。",
     "按条文记录程序要求、交接角色及证据边界，不给具体网络或客户端补出未观察的动作，不复述引用规范的信令或参与者类型细节。"
   ],
   "verification": {
@@ -544,6 +667,43 @@
       ],
       "printed_pages": [
         162
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.4.16: split instruction actual receipt; references to prearranged and chat signaling; action in 6.3.2.3"
+      ],
+      "printed_pages": [
+        112
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.2.1 and 6.3.2.3 and NOTE: reverse role switch, new operation instances and passive-to-active move"
+      ],
+      "printed_pages": [
+        52,
+        53
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.5.2.4, opening, steps 1–2 and NOTE 1"
+      ],
+      "printed_pages": [
+        262
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.5.1.4, opening, steps 1–2 and NOTE 1"
+      ],
+      "printed_pages": [
+        299
       ]
     }
   ]
