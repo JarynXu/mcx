@@ -6,10 +6,10 @@
   "title": "普通按需预安排组呼：服务器准入与邀请路由",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
-  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "condition_rule": "Inherit common_conditions and add claim conditions. 带“迫近危险初始准入”的声明按该条实际收到的初始 INVITE、所指组和组旧状态分别适用，不套用普通请求的无优先指示前提。",
   "common_conditions": [
     "固定 TS24.379 V16.14.0 的在网、直接组身份、GMS 管理的普通预安排组；组文档不含 temporary/regrouped，不是 constituent 组或预配置重组；不含 chat、广播、功能别名或离网业务。",
-    "普通请求不带 emergency-ind/imminentperil-ind/alert-ind，组也不处于紧急或迫近危险状态。各角色按实际收到的初始请求处理；不以主叫已归属、文档已取得、目标已接受或全链成功作为公共前提。",
+    "除条件明确标为“迫近危险初始准入”的声明，其余声明仍限不带 emergency-ind/imminentperil-ind/alert-ind、且组不处于紧急或迫近危险状态的普通请求。各角色按实际收到的初始请求处理；不以主叫已归属、文档已取得、目标已接受或全链成功作为公共前提。",
     "范围是 O-PF/CF/T-PF 的准入、组资格、受邀集合及身份路由。新建与加入既有普通会话分别适用，不提供完整响应聚合、会议事件、媒体/安全实现或组呼释放生命周期。"
   ],
   "claims": [
@@ -786,6 +786,162 @@
           ],
           "printed_pages": [
             123
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "initial-imminent-peril-client-and-group-authorisation",
+      "title": "客户端许可不替代初始 INVITE 的 CF 复核；控制功能还要查目标组许可",
+      "conditions": [
+        "迫近危险初始准入：同一 MC 系统，目标为普通在网按需预安排组的未重组直接组身份；CF 处理的是初始 INVITE，不是会话内 re-INVITE。",
+        "客户端收到用户发起迫近危险组呼的请求；CF 的判断以自己实收初始 INVITE 中 imminentperil-ind=true 为前提。各角色各用本段收到的事件。"
+      ],
+      "conclusion": "客户端按主叫用户档 ruleset 的 allow-imminent-peril-call=true，再核对 DedicatedGroup 的目标组或 UseCurrentlySelectedGroup 的模式。CF 按主叫 MCPTT ID 取用户档，并另按请求指向的 MCPTT 组身份取组文档，用户档 ruleset 与组文档 list-service 的 allow-imminent-peril-call 都须为 true；然后按 DedicatedGroup 查对应 entry 的 uri-entry 是否含该目标组，或按 UseCurrentlySelectedGroup 的模式判定。",
+      "normative_strength": "授权判断为 SHALL；不把用户权限、目标组权限、选组模式和实际准入合并。",
+      "limitations": [
+        "用户档许可不是组文档许可，当前选中组分支也不免除组文档检查。此处不解释 TS 24.481/24.484 的 XML 模式或部署策略。客户端通过权限后，写入 true 和状态迁移仍有 §6.2.8.1.9 的本地状态条件，不能仅凭配置单推定实际报文。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.8.1.8, client imminent-peril origination authorisation"
+          ],
+          "printed_pages": [
+            66
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.8.1.9, client origination state preconditions"
+          ],
+          "printed_pages": [
+            66
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.1.1, initial origination step 2"
+          ],
+          "printed_pages": [
+            220
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.13.5, CF imminent-peril origination authorisation"
+          ],
+          "printed_pages": [
+            113,
+            114
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "initial-imminent-peril-unauthorised-false",
+      "title": "CF 判定初始迫近危险请求未授权时，回 403 并把正文的迫近危险指示写成 false",
+      "conditions": [
+        "迫近危险初始准入：同一系统内未重组直接预安排组，CF 收到初始 INVITE。第 9 项先判组呼是否正在进行；第 11 项不以原组呼是否正在进行为门槛。",
+        "CF 实际收到 imminentperil-ind=true 并到达 §10.1.1.4.2 第 11 项，按 §6.3.3.1.13.5 判为未授权。"
+      ],
+      "conclusion": "CF 须在对该初始 INVITE 的 403 中放入 MCPTT 信息正文，设置 imminentperil-ind=false，发送后不执行后续步骤。",
+      "normative_strength": "是初始发起权限的拒绝，并非取消。用同一 CF 入向初始请求与所生成应答配对，不以转发节点替代生成者。",
+      "limitations": [
+        "不凭一份 403 或 false 判断是哪项权限不满足，也不推出组旧状态或取消成功；核对 CF 当时读到的主叫用户档、目标组档和选组模式。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.2, step 11(a)–(b)"
+          ],
+          "printed_pages": [
+            244
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.13.5, CF authorisation"
+          ],
+          "printed_pages": [
+            113,
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.2, order of step 9 and split into steps 14–15"
+          ],
+          "printed_pages": [
+            244,
+            245,
+            246
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "initial-imminent-peril-priority-only-403",
+      "title": "CF 实收迫近危险优先级却无迫近危险指示且组原不在该状态时，按另一分支回 403",
+      "conditions": [
+        "迫近危险初始准入：同一系统内未重组直接预安排组；CF 收到初始 INVITE 且已到达第 12(b) 项。是否已有活动组呼不是此项条件。",
+        "CF 实收 Resource-Priority 为迫近危险对应值，正文没有 imminentperil-ind，CF 的组进行中迫近危险状态为 false。"
+      ],
+      "conclusion": "控制功能须用 403 拒绝并跳过后续步骤。第 12(b) 项没有第 11 项的生成 `imminentperil-ind=false` 正文要求；它核对的是请求优先级与指示及 CF 旧状态，不是发起权限测试。",
+      "normative_strength": "按该分支三项并列条件使用，元素缺失不是明确 false。",
+      "limitations": [
+        "若 CF 的组原已处于迫近危险，此项条件不满足，不能因此判定其余检查都能通过。只看客户端版本的报文或同一个 SIP 状态码不足以确定 CF 本段分支。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.2, step 12(b)"
+          ],
+          "printed_pages": [
+            244
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.2, step 11 for comparison"
+          ],
+          "printed_pages": [
+            244
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.2, order of step 9 and split into steps 14–15"
+          ],
+          "printed_pages": [
+            244,
+            245,
+            246
           ]
         }
       ],
