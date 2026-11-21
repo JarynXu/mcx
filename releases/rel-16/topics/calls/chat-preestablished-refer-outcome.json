@@ -6,7 +6,7 @@
   "title": "用预建立会话加入聊天组：REFER 的 200 算入会成功吗？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
-  "condition_rule": "每条 claim 继承所有 common_conditions，再叠加自身 conditions。发起侧的客户端发送、O-PF 前置准入和 CF 应答正负分支互不替代。终接侧限实际收到发给 T-PF 的聊天组初始 INVITE。",
+  "condition_rule": "每条 claim 继承所有 common_conditions，再叠加自身 conditions。发起侧的客户端发送、O-PF 前置准入和 CF 应答正负分支互不替代。原 chat-terminating- 三条仍限实际收到发给 T-PF 的聊天组初始 INVITE。新增 chat-tpf-mid-dialog- 三条按在网聊天组的 T-PF 实际收到的对话内 re-INVITE、出向终端对话和实际匹配应答分别适用。",
   "common_conditions": [
     "Release 16、Stage 3，依据 TS 24.379 V16.14.0。"
   ],
@@ -294,6 +294,188 @@
           ],
           "printed_pages": [
             94
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "chat-tpf-mid-dialog-entry-and-outgoing-headers",
+      "title": "聊天组 T-PF 实收 re-INVITE：查优先级头、区分实际出向对话",
+      "conditions": [
+        "T-PF 已实际收到发给在网聊天组终接客户端的对话内 re-INVITE，不是初始邀请或主叫 REFER。"
+      ],
+      "conclusion": "T-PF 须查来向是否包含 Resource-Priority，有时可对已包含的头作本规范范围外的处理。若实际出向 re-INVITE 将在预建立会话的 SIP 对话内发送，走 §10.1.2.3.2.2 并跳过按需步骤；否则走本条按需步骤。两路按 §6.3.2.2.10 构造终端 re-INVITE，Supported 必含 tdialog，Resource-Share 可选，来向有 Resource-Priority 时须按来向值带入，MIME 按 §6.3.2.2.9 处理。",
+      "normative_strength": "检查与适用的头字段复制、tdialog 及 MIME 规程为 SHALL；对已带优先级头作进一步处理及 Resource-Share 为 MAY。",
+      "limitations": [
+        "本条不以初始 INVITE 的 isfocus/403/104 或空闲会话的两段匹配作重跑步骤，不以这段沉默排除其他独立规定。",
+        "没有 Resource-Priority 时，该 helper 的复制条件不成立；不因此补一个默认优先级、固定本地优先级处置或 PAI 复制。未逐项说明 MIME 内容，不把复制写成一般无条件透传。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.4 第1–3项"
+          ],
+          "printed_pages": [
+            281
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.10"
+          ],
+          "printed_pages": [
+            103
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.9"
+          ],
+          "printed_pages": [
+            102,
+            103
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.2.2"
+          ],
+          "printed_pages": [
+            285,
+            286
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "chat-tpf-mid-dialog-on-demand-answer",
+      "title": "非预建立终端腿：上游 SDP answer 基于匹配终端 200 的 answer",
+      "conditions": [
+        "T-PF 已实际收到发给在网聊天组终接客户端的对话内 re-INVITE；出向终端 re-INVITE 不在预建立会话的 SIP 对话内。"
+      ],
+      "conclusion": "T-PF 另构造并发送终端 re-INVITE，按 §6.3.2.2.1 基于实际来向 re-INVITE 的 SDP offer 生成出向 offer。真正收到终端对本次出向 re-INVITE 的 200 后，按 §6.3.2.2.4.2 生成上游 200，SDP answer 按 §6.3.2.2.2.1 以收到的终端 200 中的 SDP answer 为基础，再转发给上游。",
+      "normative_strength": "出向构造、发送及实际对应终端 200 后构造、转发为 SHALL。",
+      "limitations": [
+        "本条是非预建立更新腿，不是另起初始 INVITE。既有对话上的旧 200 或别侧成功码不替本次匹配应答。",
+        "本节在该回复分支没有列出初始 INVITE 的回复前媒体交互步骤；不是禁止媒体交互，也不证明已处理媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.4 第3–5项及终端200分支"
+          ],
+          "printed_pages": [
+            281,
+            282
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.1"
+          ],
+          "printed_pages": [
+            93
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.2.1"
+          ],
+          "printed_pages": [
+            94
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.4.2"
+          ],
+          "printed_pages": [
+            95
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "chat-tpf-mid-dialog-pre-established-answer",
+      "title": "预建立终端腿：仍等自己的 re-INVITE 200，改用已协商 SDP 的 answer 规则",
+      "conditions": [
+        "T-PF 已实际收到发给在网聊天组终接客户端的对话内 re-INVITE；实际出向将使用已有预建立会话的 SIP 对话。"
+      ],
+      "conclusion": "T-PF 按 §10.1.2.3.2.2 在该预建立对话里生成并发送终端 re-INVITE，基于来向 offer 用 §6.3.2.1.1.2 的原已协商语音及适用控制通道参数构造。收到终端对应的 200 后，按 §6.3.2.2.4.2 构造上游 200，SDP answer 按 §6.3.2.2.2.2 处理实际来向提供、既有协商及终端接受的适用媒体，再发送上游。",
+      "normative_strength": "转入该子规程后，终端对话内发送与收到匹配 200 后的上游应答为 SHALL。",
+      "limitations": [
+        "不能以旧 200、主叫 REFER 响应或媒体 Connect 代替本次终端 re-INVITE 的 200；不把预建立应答等同于逐字复制终端 answer。",
+        "本节回复分支也未单列初始按需分支的回复前媒体交互，不作禁止或成功推断。一开始收到初始 INVITE 的复用准入与本次既有会话更新是不同入口。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.4 第2项"
+          ],
+          "printed_pages": [
+            281
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.2.2"
+          ],
+          "printed_pages": [
+            285,
+            286
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.1.2"
+          ],
+          "printed_pages": [
+            83,
+            84
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.2.2"
+          ],
+          "printed_pages": [
+            94
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.4.2"
+          ],
+          "printed_pages": [
+            95
           ]
         }
       ],
