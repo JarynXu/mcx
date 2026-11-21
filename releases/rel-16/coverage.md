@@ -3217,6 +3217,16 @@ CF 按请求类型检查乙归属 G，命中未归属须回 403/120；走到转�
 
 [读取主题](topics/calls/remotely-initiated-group-call.md)
 
+## 隐式话权请求的 SDP answer 中 mc_ssrc 与 mc_granted 分别说明什么？
+
+mc_ssrc 指 offerer 的 SSRC：可沿用，也可因检测到冲突换值；offer 不指明时服务器可以确定。接纳时才返回，不是授予指示。
+
+mc_granted 的初始 offer 表示支持 200 中授予，适用 answer 才是已授予；缺失不等于请求拒绝。通用 fmtp 丢弃范围是额外参数，另有 mc_ssrc 专门返回条件。
+
+尚未建立：比较两个 SSRC 值不能认定谁已收到语音、实际采用的 RTP SSRC、整个答复被拒或每种实现的参数处理顺序。
+
+[读取主题](topics/media/implicit-floor-sdp-ssrc.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

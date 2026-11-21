@@ -1,0 +1,141 @@
+{
+  "topic_id": "r16-media-implicit-floor-sdp-ssrc",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "隐式话权请求：SDP answer 的 mc_ssrc 属于谁？它是授权吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "每条声明适用主题的全部 common_conditions，并叠加该条 conditions。关联主题不是必经流程。",
+  "common_conditions": [
+    "固定 TS 24.380 V16.9.0，普通在网、非临时 MCPTT 呼叫的初始 SIP INVITE 与匹配 SDP answer，通过媒体控制段请求话权。不套用加入 chat 或进行中预安排组呼。"
+  ],
+  "claims": [
+    {
+      "id": "answer-mc-ssrc-identifies-offerer-and-may-differ-on-collision",
+      "title": "answer 的 mc_ssrc 是 offerer 的 SSRC；冲突时值可以变化",
+      "conditions": [
+        "offer 带隐式话权请求，answerer 接纳；offer 有 ssrc 媒体属性或未指明 SSRC。"
+      ],
+      "conclusion": "匹配 answer 的 mc_ssrc 指 offerer。offer 提供值时，服务器返回原值，检测到冲突可换新值；offer 未指明值时，服务器可以确定合适值。",
+      "normative_strength": "§12.1.2.2 和 §14.3.6；缺值后的分配是可选，不能从条件推为必分配。",
+      "limitations": [
+        "值不同不等于拒绝或属于应答方，不证明冲突位置、实际 RTP SSRC 或发言权。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "12.1.2.2 mc_ssrc semantics"
+          ],
+          "printed_pages": [
+            226
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "14.3.6 echo/collision/no-value case"
+          ],
+          "printed_pages": [
+            240
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "implicit-request-acceptance-does-not-equal-media-grant",
+      "title": "mc_ssrc 和 mc_implicit_request 的接纳不等于 mc_granted",
+      "conditions": [
+        "分析初始隐式话权请求的 SDP answer，且要区分已接纳、已授予或待确认。"
+      ],
+      "conclusion": "mc_ssrc 只在接纳 offer 隐式请求时返回；answer 的 mc_implicit_request 表示接纳，不是授予。mc_granted 在初始 offer 是支持用 200 接收授予指示，适用时 answer 才表示授予；缺 mc_granted 不能说明隐式请求被拒，mc_ssrc 自身不是发送许可。",
+      "normative_strength": "§12.1.2.2 语义，下行 SDP 授予选择受 §14.3.4 约束。",
+      "limitations": [
+        "不要用 SSRC、200 或接纳替代有效 SDP 授予或 Floor Granted；也不证明语音实际送达。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "12.1.2.2 and NOTES 2/4; mc_implicit_request versus actual grant"
+          ],
+          "printed_pages": [
+            225,
+            226
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "14.2.4–5, 14.3.4–6, offer capability and answer constraints"
+          ],
+          "printed_pages": [
+            238,
+            239,
+            240
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "general-fmtp-filter-is-parameter-scoped-not-automatic-answer-reject",
+      "title": "通用 fmtp 匹配与 mc_ssrc 专门返回分开看；未对应时规则针对参数",
+      "conditions": [
+        "分析 SDP 的媒体控制 fmtp 与相应 offer，需判断返回的 SSRC 或其他扩展参数。"
+      ],
+      "conclusion": "§14.3.1 限制 answer fmtp 新增 offer 不包含的参数，§14.4 要 offerer 丢弃这种额外参数。§14.3.6 单独写的是从 offer 的 ssrc 媒体属性情形到 answer 的 mc_ssrc fmtp，还区分碰撞和无值情形，不依赖 mc_granted。",
+      "normative_strength": "通用构造/接收检查的作用域是参数；专门返回条件另按 §14.3.6。",
+      "limitations": [
+        "不把 ssrc 与 mc_ssrc 当同名 SDP 参数，也不从本条推算法优先级、任意其他参数豁免、整份 answer 拒绝或 RTP 重写。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "14.3.1 generic answer"
+          ],
+          "printed_pages": [
+            239
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "14.3.6 specific mc_ssrc; 14.4 discard only parameters"
+          ],
+          "printed_pages": [
+            240
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcptt-implicit-floor-early-media",
+    "r16-media-on-network-floor-client"
+  ],
+  "limitations": [
+    "不实现 SSRC 冲突检测算法、实际 RTP 重写、后续 SDP 更新、临时组或其他 Release。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

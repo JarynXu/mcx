@@ -48,3 +48,5 @@
 - 通话建立后，服务器如何处理空闲话权上的显式请求，见[Idle 状态的服务器仲裁](on-network-idle-floor-server.md)。
 
 来源：[ETSI TS 124 380 V16.9.0（Release 16）](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf)。
+
+若抓到 SDP answer 的 mc_ssrc 与 offer 的 ssrc 不同，读[隐式话权请求的 SSRC 分配与接纳](implicit-floor-sdp-ssrc.md)；SSRC 的取值不能代替本页的授予及媒体证据。
