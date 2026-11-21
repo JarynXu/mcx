@@ -1,0 +1,140 @@
+{
+  "topic_id": "r16-calls-sip-xml-integrity-verification",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 的 XML 签名校验：SIP 403 和 Warning 文本 139 能定位哪一步？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "各声明均适用全部 common_conditions，并叠加本条 conditions。关联主题不是必经流程。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0，MCPTT 客户端或服务器处理接收的 SIP 消息中适用 §6.6 的 XML MIME 正文；按同一消息与同一正文取证。"
+  ],
+  "claims": [
+    {
+      "id": "signature-determination-is-not-verification",
+      "title": "有签名元素仅说明已施加保护，校验结果按正文确定",
+      "conditions": [
+        "查看接收端的保护判定，或需区分签名 MIME 正文与实际受保护的 XML MIME 正文。"
+      ],
+      "conclusion": "§6.6.3.4.1 以 XML MIME 正文中 Signature 元素有无表述是否施加完整性保护。§6.6.3.1 的签名在单独的签名 MIME 正文中，按引用与被签正文的 Content-ID 对应。",
+      "normative_strength": "保护判定按 §6.6.3.4.1，按 §6.6.3.1 分正文关联签名。",
+      "limitations": [
+        "只在业务正文中搜不到签名，不足以判它未受保护；别的正文有签名，不证明这份正文受保护。匹配到签名仍不等于校验通过。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.6.3.1, Fig. 6.6.3.1-1 per-body signature and Content-ID"
+          ],
+          "printed_pages": [
+            143,
+            144
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.6.3.4.1 receiver presence determination"
+          ],
+          "printed_pages": [
+            147
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "missing-required-signature-information-exits-without-specified-139",
+      "title": "缺少必需签名信息且双方另无所知时退出，不能补 403/139",
+      "conditions": [
+        "Signature 的必需子元素在 MIME 正文中缺失，且收发双方也未从其他途径得知该信息。"
+      ],
+      "conclusion": "§6.6.3.4.2 第 1 步判过程失败并退出；该步骤没有规定发送 SIP 403/Warning 139。",
+      "normative_strength": "第 1 步明确失败与退出，但未规定此处线上的应答。",
+      "limitations": [
+        "不写成必发 403/139，也不写成一定静默；不扩展所需子元素清单或其他协议的失败行为。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.6.3.4.2 step 1, absent and not otherwise known"
+          ],
+          "printed_pages": [
+            147
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "reference-and-signature-failures-share-warning",
+      "title": "引用失败和签名值失败都发 403/139；只有走完校验才成功",
+      "conditions": [
+        "已进入该正文的完整性校验，需区分失败分支或确认成功。"
+      ],
+      "conclusion": "先验证 Reference，失败则发 SIP 403 和 Warning 文本 139 并停止；引用通过后以收到的 XPK-ID 取得 XPK，验证 SignatureValue，失败发同样响应并停止；两项通过且达到第 6 步才返回成功。完整性保护检查失败不继续 §6.6.1.4 的后续检查。",
+      "normative_strength": "§6.6.3.4.2 第 2–6 步及 §6.6.1.4 的接收处理顺序。服务器在 SIP INVITE 响应中携带此 Warning 时，§4.4.1 规定 Warning 码 399。",
+      "limitations": [
+        "139 是 Warning 文本编号，不是 SIP 状态码或外层 Warning 码；同一响应分不出两次校验。通过不证明已解密、业务获准或呼叫建立。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.4.1 Warning for INVITE response, 4.4.2 Table 4.4.2-2 warning text"
+          ],
+          "printed_pages": [
+            33,
+            37
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.6.1.4 integrity before confidentiality handling"
+          ],
+          "printed_pages": [
+            139
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.6.3.4.2 steps 2–6 reference, signature and success"
+          ],
+          "printed_pages": [
+            147
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-sip-mime-body-order",
+    "r16-mcptt-negotiated-affiliation-client"
+  ],
+  "limitations": [
+    "不从本节补密钥配置与获取失败的响应、必需 XML 子元素清单、RFC/XML 签名算法实现、未签名时的业务准入决定、其他 Release 或其他业务。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
