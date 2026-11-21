@@ -1,0 +1,229 @@
+{
+  "topic_id": "r16-calls-private-fta-pck-authentication",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "普通私呼与首接应答：PCK 在哪份 SDP，验签失败为何是 488 或 BYE？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条 claim 继承所有 common_conditions，再叠加自身 conditions。呼叫类型、密钥上下文和收到的消息按各分支分别适用。",
+  "common_conditions": [
+    "Release 16、Stage 3，依据 TS 24.379 V16.14.0。",
+    "适用于普通在网按需 MCPTT 语音呼叫中的 private 或 first-to-answer，带话权控制；不使用预建立会话，不扩展紧急状态。"
+  ],
+  "claims": [
+    {
+      "id": "r16-calls-private-fta-pck-offer-private",
+      "title": "普通按需私呼的密钥消息随主叫 offer",
+      "conditions": [
+        "主叫发起 session-type=private；有端到端安全上下文需要建立，或正在核对要求端到端安全的初始 SDP offer。"
+      ],
+      "conclusion": "新安全上下文的 PCK/PCK-ID 由主叫客户端准备给被叫，I_MESSAGE 的 IDRi 是主叫用户的 MCPTT ID。端到端安全要求适用时，初始 INVITE 的 SDP offer 带 a=key-mgmt 的 mikey 值。",
+      "normative_strength": "各相应安全条件下的 PCK 准备和 SDP 携带是 SHALL。",
+      "limitations": [
+        "不把这条 offer 要求扩到首接应答或预建立；不是明文密钥，也不是已经验证或已入呼。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.1(11–12)"
+          ],
+          "printed_pages": [
+            353,
+            354
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.1(4)"
+          ],
+          "printed_pages": [
+            57
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-calls-private-fta-pck-answer-fta",
+      "title": "首接应答的密钥消息来自被叫的 answer",
+      "conditions": [
+        "收到 session-type=first-to-answer 的被叫客户端要建立端到端安全上下文，或实际接受了要求端到端安全的这次呼叫。"
+      ],
+      "conclusion": "建立该上下文时，被叫客户端为主叫准备 PCK/PCK-ID，IDRi 指被叫的 MCPTT ID。按适用接听程序接受后，200 的 SDP answer 把 I_MESSAGE 放在 a=key-mgmt 的 mikey 值中。",
+      "normative_strength": "上下文准备与适用应答的携带各是 SHALL；准备和接受是不同事实。",
+      "limitations": [
+        "不把 I_MESSAGE 发起者当成 SIP INVITE 发起者；某个被叫准备密钥或本地发送不证明被选中、主叫收到或验证通过。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.2(5)及注4"
+          ],
+          "printed_pages": [
+            357
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.2(5)/6.2.3.1.1(7–8)"
+          ],
+          "printed_pages": [
+            58
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.3.2.1"
+          ],
+          "printed_pages": [
+            59
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-calls-private-fta-pck-verification-roles",
+      "title": "初始 INVITE 的被叫失败与 200 后的主叫失败是两项处理",
+      "conditions": [
+        "被叫实收初始 INVITE 的 offer 带指定 I_MESSAGE，或首接应答主叫实收该初始 INVITE 的 200 且其 answer 带指定 I_MESSAGE。"
+      ],
+      "conclusion": "各方验所收消息；失败时被叫对自己的 INVITE 回 488 和 Warning 文本 136，首接主叫则另发 BYE，在 MCPTT 信息正文带本版规定的 MIKEY-SAKE 认证失败 release-reason 并停止该条余项。成功验证才继续解封和取 PCK-ID。",
+      "normative_strength": "在各自入向含 I_MESSAGE 且认证失败的条件下，拒绝或释放动作是 SHALL。",
+      "limitations": [
+        "136 是 Warning 文本编号，不是 SIP 状态或 BYE 原因码。保留过程里 SAKE 与 Warning 表中 SAKKE 的字面差异；缺该消息不按此条推断成功或认证失败。 单见 488 不证明认证失败；CF 的媒体接受检查另可回 488。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.4.1–2/表4.4.2-2"
+          ],
+          "printed_pages": [
+            33,
+            34,
+            37
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.2(4)"
+          ],
+          "printed_pages": [
+            357
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.1 收到200后(2)"
+          ],
+          "printed_pages": [
+            355
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.1.2"
+          ],
+          "printed_pages": [
+            546
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.2(5)"
+          ],
+          "printed_pages": [
+            380
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-calls-private-fta-pck-evidence-after-response",
+      "title": "200 或发出 BYE 不终结安全结果判断",
+      "conditions": [
+        "区分呼叫信令答复、话务安全和 CF 实际收到匹配 BYE 的独立事件；各判断按相应 call 与事务。"
+      ],
+      "conclusion": "普通 private 的 CF 实收 Unconfirmed 183、支持缓冲且未向发起侧给出最终响应时，发送带 Unconfirmed 的 200。首接应答 CF 实收来自发起侧且匹配规定认证失败原因的 BYE 后，执行指定私呼释放程序。PCK 成功共享说明两端能使用 SRTP/SRTCP，不证明媒体实际保护或到达。",
+      "normative_strength": "私呼早回 200 和首接匹配 BYE 的动作在各自条件下是 SHALL；注4的能使用不是交付保证。",
+      "limitations": [
+        "不把普通 private 早回分支搬给首接，不能用单份 200 证明密钥校验、实际收听、对端完成释放或自动改选。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.2"
+          ],
+          "printed_pages": [
+            381,
+            382,
+            383
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.3.3.1"
+          ],
+          "printed_pages": [
+            389
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.1 注4"
+          ],
+          "printed_pages": [
+            355
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcptt-first-to-answer-on-demand-client",
+    "r16-calls-private-client-answer-evidence",
+    "r16-calls-first-to-answer-controlling",
+    "r16-calls-private-client-release"
+  ],
+  "limitations": [
+    "不展开密钥算法、外部安全标准、密钥管理部署、未携带该消息时的统一处理或其他会话中的协商。",
+    "不凭 SIP 状态推断媒体保护、实际入呼、对端送达或更换应答候选。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

@@ -3537,6 +3537,16 @@ RTP 和话权使用各自守卫；对已进入活动 MBMS 分支的 Idle/Taken �
 
 [读取主题](topics/media/floor-deny-revoke-cause.md)
 
+## 普通私呼与首接应答的 PCK 与认证诊断
+
+按 INVITE offer 或 200 answer 查 PCK 的密钥消息，区分被叫 488/136 与首接主叫 BYE；不能以 200 代替验证。
+
+分别按是否需要端到端上下文、实收 I_MESSAGE、普通私呼早回和首接匹配 BYE 执行。
+
+尚未建立：不确立密钥计算、未携带消息的统一处理、实际媒体安全或自动改选。
+
+[读取主题](topics/calls/private-fta-pck-authentication.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

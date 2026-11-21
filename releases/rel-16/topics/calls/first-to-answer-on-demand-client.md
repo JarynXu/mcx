@@ -66,3 +66,5 @@
 - 想知道别名是否已启用，参见[功能别名的申请与状态观察](../identity/mcptt-functional-alias-client.md)。
 
 来源：[ETSI TS 124 379 V16.14.0（3GPP Release 16）](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf)。
+
+首接应答需要端到端语音安全时，另见[私呼与首接应答的 PCK 和验签结果](private-fta-pck-authentication.md)。收到密钥消息、实际验证与接听结果要分开。
