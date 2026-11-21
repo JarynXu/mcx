@@ -3507,6 +3507,16 @@ RTP 和话权使用各自守卫；对已进入活动 MBMS 分支的 Idle/Taken �
 
 [读取主题](topics/media/mbms-pf-floor-routing.md)
 
+## 按需私呼的 SIP 会话刷新分段判断
+
+按初始 INVITE 和生成最终 200 的角色核对 Session-Expires / refresher，区分两参与侧的缺省值、控制侧和被叫终端的固定值，以及私呼业务计时器。
+
+普通按需聊天组只对照控制功能的最终 200；终接侧参与功能的缺省值仅在其实际收到的 INVITE 无 refresher 时适用。
+
+尚未建立：不建立一般 SIP 计时器协商、预建立会话刷新、具体通话是否已刷新或实际释放原因。
+
+[读取主题](topics/calls/sip-session-refresh-by-leg.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

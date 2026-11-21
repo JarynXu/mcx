@@ -1,0 +1,302 @@
+{
+  "topic_id": "r16-calls-sip-session-refresh-by-leg",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 按需私呼的 SIP 会话刷新：哪一段由谁刷新？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条 claim 继承所有 common_conditions，并叠加自身 conditions。只有明列对照时才离开普通按需私呼场景。",
+  "common_conditions": [
+    "Release 16、Stage 3；依据 TS 24.379 V16.14.0。",
+    "除明列的普通在网按需聊天组对照外，仅普通在网、单被叫、带话权控制的按需 MCPTT 私呼；双方不复用预建立会话。",
+    "信令条款只涉及初始 INVITE 及其最终 200；不用于 PRACK、UPDATE、re-INVITE 或 REFER 的应答。业务计时器单列。"
+  ],
+  "claims": [
+    {
+      "id": "r16-calls-sip-session-refresh-pf-defaults",
+      "title": "两侧参与功能的最终响应头相同，省略时的刷新方不同",
+      "conditions": [
+        "发起侧参与功能或终接侧参与功能按本页适用的按需程序，为本段收到的初始 INVITE 生成最终 200。"
+      ],
+      "conclusion": "两侧参与功能的最终 200 都必须带 Require: timer 和 Session-Expires。若本段来向 INVITE 未带 refresher，发起侧参与功能回 uac，指主叫终端；终接侧参与功能回 uas，指它自身。",
+      "normative_strength": "响应头强制；来向未带 refresher 时的填值强制。",
+      "limitations": [
+        "来向显式带参数不免除响应头要求，但不套省略时的取值。两条 helper 都引用 RFC 4028 的 UAS 规则；本条不规定显式值下一定回什么。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.5.2(1–2)"
+          ],
+          "printed_pages": [
+            87
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.4.2(1–2)"
+          ],
+          "printed_pages": [
+            95
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.5.1–2"
+          ],
+          "printed_pages": [
+            95,
+            96,
+            97
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.6.1–2"
+          ],
+          "printed_pages": [
+            98,
+            99,
+            100
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.1.1"
+          ],
+          "printed_pages": [
+            370
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.2(7–8)"
+          ],
+          "printed_pages": [
+            377
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-calls-sip-session-refresh-cf-outbound",
+      "title": "CF 生成发往终接侧的初始请求时省略刷新方",
+      "conditions": [
+        "CF 按 §11.1.1.4.1 生成发往终接侧参与功能的初始 SIP INVITE。"
+      ],
+      "conclusion": "初始 INVITE 建议带 Session-Expires，必须省略 refresher，且必须带 Supported: timer。",
+      "normative_strength": "Session-Expires 是 SHOULD；参数省略和 Supported: timer 是 SHALL。",
+      "limitations": [
+        "这是 CF 生成请求的要求，与终接侧何时生成 200 无关。不凭终接侧实际收到了显式参数就断言该参数由 CF 写入。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.2(6–7)"
+          ],
+          "printed_pages": [
+            106
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.1(1)"
+          ],
+          "printed_pages": [
+            378
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-calls-sip-session-refresh-cf-private-response",
+      "title": "CF 私呼最终响应指定发起侧参与功能刷新",
+      "conditions": [
+        "CF 按普通按需私呼程序，为发起侧参与功能发来的初始 INVITE 生成最终 200。"
+      ],
+      "conclusion": "CF 在 200 中加入 Require: timer 与 Session-Expires，将 refresher 置为 uac，指发起侧参与功能；CF 监督该 SIP 会话。",
+      "normative_strength": "这四项均是 SHALL；填值不以本段请求省略该参数为条件。",
+      "limitations": [
+        "监督 SIP 会话的 CF 在本段不是指定的刷新方；200 不证明后续刷新已执行。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.2.3.2(1–3)"
+          ],
+          "printed_pages": [
+            120
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.2"
+          ],
+          "printed_pages": [
+            382
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-calls-sip-session-refresh-terminal-response",
+      "title": "被叫终端的最终响应指定被叫终端刷新",
+      "conditions": [
+        "普通按需私呼中，被叫终端按自动应答或手动接受程序，为自己收到的初始 INVITE 生成最终 200。"
+      ],
+      "conclusion": "被叫终端在 200 中加入 Require: timer 与 Session-Expires，将 refresher 置为 uas，指它自身，并启动本段 SIP 会话定时器。",
+      "normative_strength": "本分支上述行为为 SHALL；手动程序在生成 200 时复用自动程序的规则。",
+      "limitations": [
+        "不用于手动应答的 180 或拒绝响应，也不把本段终端响应与终接侧参与功能的应答合成一个对话。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.3.1.1(2,5)"
+          ],
+          "printed_pages": [
+            58
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.3.2.1"
+          ],
+          "printed_pages": [
+            59
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.2(9–10)"
+          ],
+          "printed_pages": [
+            358
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-calls-sip-session-refresh-cf-chat-contrast",
+      "title": "按需聊天组控制功能的最终响应另有规则",
+      "conditions": [
+        "作为本页明列的对照，控制功能处理普通在网按需聊天组的初始 INVITE，按 §10.1.2.4.1.1 第 17–18 项生成最终 200。"
+      ],
+      "conclusion": "建议加入 Session-Expires 并监督 SIP 会话，建议省略 refresher；若填写必须为 uac。Require: timer 必带。",
+      "normative_strength": "第 17 项为 SHOULD 与建议省略，已填写时为 SHALL uac；第 18 项为 SHALL。",
+      "limitations": [
+        "不把聊天组的推荐省略推定为实际协商结果，不套普通私呼 CF 的固定填值要求。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1(17–18)"
+          ],
+          "printed_pages": [
+            290
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-calls-sip-session-refresh-private-duration",
+      "title": "私呼最长时长不由 SIP 刷新定时器表示",
+      "conditions": [
+        "核对同一场普通按需私呼的 CF 发起邀请、业务计时或释放原因；不要求观察到某个 SIP 200。"
+      ],
+      "conclusion": "CF 发出该次私呼的邀请后，用为该用户配置的最大私呼时长启动私呼业务计时器；该计时器到期时按私呼释放程序处理。§6.3.8.2 另列私呼释放条件：收到媒体面 T4 到期指示、超过最大私呼时长，或只剩一名或没有参与者。SIP 刷新结果不能代替业务计时器的配置、启动或到期证据。",
+      "normative_strength": "§11.1.1.4.1 规定启动和到期处理；§6.3.8.2 的适用条件下 CF 须释放。",
+      "limitations": [
+        "仅有 SIP 200、Session-Expires 或 BYE，均不能判定此次业务释放的原因；不把组呼 TNG3 当成私呼计时器。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.1(9–10) 与到期段"
+          ],
+          "printed_pages": [
+            379
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.8.2"
+          ],
+          "printed_pages": [
+            136
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.4.4"
+          ],
+          "printed_pages": [
+            390
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-private-server-admission-routing",
+    "r16-calls-server-private-call-release",
+    "r16-calls-chat-participant-or-session-release"
+  ],
+  "limitations": [
+    "不定义 RFC 4028 的一般协商算法、刷新方法选择或策略定时值。",
+    "不用于预建立会话、紧急、first-to-answer 或无话权私呼，也不推断哪一段已成功刷新或具体通话是否继续。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
