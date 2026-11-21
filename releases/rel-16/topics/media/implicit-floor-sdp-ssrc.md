@@ -22,3 +22,5 @@
 §14.3.1 规定 answer 的 `fmtp` 不得增加相应 offer 没有的参数；§14.4 规定 offerer 丢弃这种额外**参数**，不是丢弃整份 answer。§14.3.6 的专门文字使用的是 **offer 中的 `ssrc` 媒体属性**和 **answer 中的 `mc_ssrc` fmtp 参数**，并明确与 `mc_granted` 是否出现无关。两个字段不是同名参数。排查时要把通用匹配规则和专门返回条件列开；这里不替本版制定通用豁免、实现优先级或自动拒绝策略。〔§§14.3.1、14.3.6、14.4，印 239–240〕
 
 来源：[TS 24.380 V16.9.0，Release 16，Stage 3（ETSI），SDP 语义，印 225–226](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=226)；[IE 配置与应答处理，印 238–240](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=239)。
+
+如果查的是同一话权控制通道的后续协商，见[后续 SDP 的 mc_granted 禁用与紧急升级隐式请求](subsequent-floor-control-sdp.md)，不能直接沿用初始 INVITE 的授予条件。

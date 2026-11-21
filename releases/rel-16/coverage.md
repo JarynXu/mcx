@@ -3567,6 +3567,16 @@ RTP 和话权使用各自守卫；对已进入活动 MBMS 分支的 Idle/Taken �
 
 [读取主题](topics/media/mbms-musik-download.md)
 
+## 后续 SDP 协商话权通道与紧急升级请求
+
+区分通道初次和会话初始 INVITE；后续 offer 排除 mc_granted，answer 对新增参数按字段处理。
+
+后续 mc_implicit_request 只在普通转紧急的 SIP re-INVITE 有该语义；指定 U 状态收到升级提示先入仲裁，另等实际 Floor Granted。
+
+尚未建立：不定义普通修改的新拒绝码；不能仅凭 SIP 200 状态码确认许可或 RTP 已送达。
+
+[读取主题](topics/media/subsequent-floor-control-sdp.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

@@ -1,0 +1,189 @@
+{
+  "topic_id": "r16-media-subsequent-floor-control-sdp",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "重新协商话权通道：后续 SDP offer 能带 mc_granted 吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "每条 claim 继承所有 common_conditions，再叠加自身 conditions；生成、收到 answer 和媒体面接收内部事件各按自己的触发条件。",
+  "common_conditions": [
+    "Release 16、Stage 3，依据 TS 24.380 V16.9.0。",
+    "适用于在网 MCPTT 的媒体面话权控制通道，不扩展到离网协商或无话权的预建立通道。"
+  ],
+  "claims": [
+    {
+      "id": "r16-media-floor-sdp-first-channel-offer",
+      "title": "通道初次 offer 不等于初始 SIP INVITE",
+      "conditions": [
+        "确认 SDP 是否在协商这条媒体面控制通道的 m=application 段，并检查该通道先前的协商。"
+      ],
+      "conclusion": "initial offer 指第一次协商该媒体面控制通道的 offer，不一定是会话的第一个 offer。若客户端可接受初始 SIP INVITE 的 200 内的 SDP 授予指示，初始 INVITE 的 offer 须带 mc_granted；这是支持这种指示，不是请求或授予。",
+      "normative_strength": "初次定义来自 §14.2.1 注；初始 INVITE 的条件性携带是 SHALL。",
+      "limitations": [
+        "不能仅凭 re-INVITE 判是后续通道 offer，也不能由通道首次协商推出符合初始 SIP INVITE 的 mc_granted 条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "14.2.1 及注、14.2.4"
+          ],
+          "printed_pages": [
+            238
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "12.1.2.2 及注2"
+          ],
+          "printed_pages": [
+            225
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-media-floor-sdp-reoffer-granted",
+      "title": "后续 offer 不带 mc_granted；answer 新增参数另查",
+      "conditions": [
+        "发起同一通道的后续 SDP offer，或 offerer 收到此控制通道的匹配 SDP answer。"
+      ],
+      "conclusion": "后续 offer 沿用初始生成规则，但不得带 mc_granted，本版不定义该字段在后续 offer 的语义。若匹配 answer 在控制通道 fmtp 新增对应 offer 未有的参数，offerer 丢弃新增参数。",
+      "normative_strength": "后续 offer 的排除与 answer 对新增参数的丢弃均按相应条件为 SHALL NOT 或 SHALL。",
+      "limitations": [
+        "只丢新增参数不是拒绝整份 answer；坏 offer 本来也有同名字段时不套“新增”处理，但仍不证明有效授予。 适用的初始 answer 缺 mc_granted，不证明已拒绝或以后不会另行授予。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "14.4/14.5"
+          ],
+          "printed_pages": [
+            240
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "14.3.4（初始应答证据边界）"
+          ],
+          "printed_pages": [
+            239,
+            240
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-media-floor-sdp-reoffer-emergency-only",
+      "title": "后续 offer 的隐式请求语义只定义在 normal → emergency",
+      "conditions": [
+        "检查 MCPTT 控制通道的后续 SDP offer 是否为用 SIP re-INVITE 把普通呼叫升级为紧急呼叫，或处理适用的隐式请求 answer。"
+      ],
+      "conclusion": "只有上述升级定义后续 offer 的 mc_implicit_request 语义；普通改媒体不能套该语义。适用的 answer 中该字段表示受理，不能等同 Floor Granted。",
+      "normative_strength": "14.5 的已定义语义范围与 12.1.2.2 的字段含义，不是一般 SIP 拒绝规则。",
+      "limitations": [
+        "不把迫近危险升级或媒体面其他内部事件反写为已定义 SDP 语义，也不为范围外协商补失败码或默认授权。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "14.5"
+          ],
+          "printed_pages": [
+            240
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "12.1.2.2 及注4"
+          ],
+          "printed_pages": [
+            226
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-media-floor-sdp-reoffer-arbitration-grant",
+      "title": "Floor Taken 时，入仲裁后保持未许可，收到授予才改态",
+      "conditions": [
+        "话权服务器面对申请客户端的接口在 U: not permitted and Floor Taken，且持续会话升级为紧急组呼、应用和信令面已报告后续 offer 含 mc_implicit_request；或同一 U 状态的接口实际收到仲裁发来的 Floor Granted。"
+      ],
+      "conclusion": "前一分支向话权仲裁逻辑指示紧急升级隐式请求并留在原状态。后一分支将 Floor Granted 转发给对应话权参与者并入 U: permitted。",
+      "normative_strength": "通知、保持原程序状态、实收授予后的转发和入 permitted 是各自条件下的 SHALL。",
+      "limitations": [
+        "不承诺请求必获权；仲裁过程、空闲状态和终端实收/发语音各需证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.4.1"
+          ],
+          "printed_pages": [
+            77,
+            78
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.4.8"
+          ],
+          "printed_pages": [
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.4.9"
+          ],
+          "printed_pages": [
+            84
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-media-implicit-floor-sdp-ssrc",
+    "r16-mcptt-onnetwork-preemption-revoke",
+    "r16-mcptt-emergency-group-client"
+  ],
+  "limitations": [
+    "不把通道初次协商替代初始 SIP INVITE 的条件，不为一般媒体修改补 SIP 拒绝码或媒体结果。",
+    "不能只凭内部仲裁请求或 SIP 200 状态码确认许可；服务端发出 Floor Granted 不证明终端实收或语音已经送出。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
