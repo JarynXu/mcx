@@ -1,0 +1,132 @@
+{
+  "topic_id": "r16-identity-mcptt-client-id-lifecycle",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 客户端 ID：SIP 掉注册、重启和恢复出厂后，哪些状态能沿用？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明继承全部 common_conditions，再叠加本条 conditions；关联主题不是必经流程。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0，Rel-16 Stage 3；核对 MCPTT 客户端 ID 的持久性、授权入口证据或实际归属判定。"
+  ],
+  "claims": [
+    {
+      "id": "client-id-first-use-persists-through-registration-loss-and-power-cycle",
+      "title": "首用由 MCPTT 客户端分配；四种普通状态保留，恢复出厂不保留",
+      "conditions": [
+        "正在判断同一 MCPTT 客户端的首次使用或其终端注册／电源／恢复出厂事件。"
+      ],
+      "conclusion": "首次使用时由客户端分配 ID。已 SIP 注册、未注册但 UE 开机、UE 关机及电源重启时都保留该 ID。恢复出厂设置时不保留。",
+      "normative_strength": "§4.10 陈述的分配、持久化及 NOTE 中的恢复出厂例外。",
+      "limitations": [
+        "不从 ID 变化反推出具体操作，不补应用重装、换账号、生成算法或标准外生命周期。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.10 first assignment, four explicit preservation states and factory reset note"
+          ],
+          "printed_pages": [
+            49
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "authorization-client-id-public-user-id-and-registration-token-have-separate-roles",
+      "title": "区分授权来件的客户端 ID、IMS 公共用户身份和终端资源共享令牌",
+      "conditions": [
+        "服务器收到 §7.3.2 所定义的第三方 REGISTER，内嵌的客户端 REGISTER 主体含 MCPTT 授权信息及客户端 ID；令牌分支另要求内层 Resource-Share=supported。"
+      ],
+      "conclusion": "IMS 公共用户身份从外层第三方 REGISTER 识别。客户端 ID 从内嵌 REGISTER 的 MCPTT 正文取得；授权成功且该用户在另一客户端曾获授权时，以 ID 比较区分客户端并保留旧绑定、另建新绑定。若内嵌 REGISTER 带 Resource-Share=supported，外层 Contact 的 +g.3gpp.registration-token 标识注册 UE，用于资源共享绑定检查，不替代客户端 ID。",
+      "normative_strength": "§7.3.2 入口及步骤 1、4a、5，§8.1A 对 UE 注册令牌用途。",
+      "limitations": [
+        "成功注册、公共用户身份或资源共享令牌不证明本次报文使用的客户端 ID。此两节不规定与 SIP +sip.instance 的转换关系。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.2 input, steps 1, 4a and 5 distinguish user/client and registration-token"
+          ],
+          "printed_pages": [
+            155
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "8.1A UE identification for resource sharing"
+          ],
+          "printed_pages": [
+            161
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "same-user-same-group-does-not-inherit-affiliation-after-client-id-change",
+      "title": "按实际请求的客户端 ID 查组归属；恢复出厂不证明旧记录删除",
+      "conditions": [
+        "服务器正在执行 §6.3.6 的指定用户、指定组及当前 MCPTT 客户端的归属检查。"
+      ],
+      "conclusion": "对照组和用户条目，若找不到本次客户端 ID，判该用户在该客户端未归属；找到还须核用户条目未到期。只有 A 而本次请求使用 B，不得以内含 A 的旧记录代用。§4.10 的恢复出厂例外不证明服务器删除了 A。",
+      "normative_strength": "§6.3.6 步骤 1–5 及客户端 ID 出处注；§4.10 限本地标识持久性，记录清理是独立证据。",
+      "limitations": [
+        "不能只因客户端 ID 延续就认定归属未过期，不推导某次请求是否豁免归属、隐式归属结果或服务器清理机制。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.6 group/user/client match, applicable user expiry and note on carried client ID"
+          ],
+          "printed_pages": [
+            135,
+            136
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.10 client ID nonpreservation is local"
+          ],
+          "printed_pages": [
+            49
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-identity-shared-sip-registration",
+    "r16-identity-cross-service-user-mapping",
+    "r16-mcptt-implicit-affiliation-n2",
+    "r16-mcptt-chat-establish-join"
+  ],
+  "limitations": [
+    "不等同于 IMPI/IMPU、会话 GRUU、设备注册令牌或 SIP 实例标识；不据此补完整授权或服务器记录清理程序。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
