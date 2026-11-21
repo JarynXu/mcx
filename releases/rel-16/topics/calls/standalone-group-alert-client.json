@@ -6,11 +6,11 @@
   "title": "独立组紧急告警：本人发起、取消与反馈证据",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
-  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "condition_rule": "Inherit common_conditions and add claim conditions. 独立回执按 CF 发出与终接 PF 实收分别适用；区分 SIP 请求行的 Request-URI、正文 MCPTT ID 和绑定所得公有用户身份。客户端状态按各自的收件守卫处理。",
   "common_conditions": [
-    "固定TS24.379 V16.14.0，在网直接组身份的独立告警客户端责任，主线为本人发起、本人取消及实际反馈。不是紧急组呼建立/升级流程，不扩离网、私呼目标、功能别名或区域触发。",
+    "固定TS24.379 V16.14.0，在网直接组身份的独立告警，主线为本人发起、本人取消及实际反馈；各声明按所列客户端、CF 或终接 PF 角色分别适用。不是紧急组呼建立/升级流程，不扩离网、私呼目标、功能别名或区域触发。",
     "用户请求、原请求响应、取消回执和接收通知分别适用；不把已授权、已起呼、已归属、所有人收到或成功取消设为共同前提。原文要求的授权与匹配条件只限制对应动作。",
-    "第三方取消、额外组紧急状态取消和服务器处理仅作必要接口/状态比较，不承诺完整端到端分发、归属或取消闭环。"
+    "第三方取消、额外组紧急状态取消仅作必要接口/状态比较；服务器侧只取明确列出的独立回执及相关比较，不承诺完整端到端分发、归属或取消闭环。"
   ],
   "claims": [
     {
@@ -190,6 +190,159 @@
             448,
             548,
             549
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "standalone-group-alert-receipt-cf-route",
+      "title": "CF 成功分支的独立告警回执是另一个 MESSAGE，不是原请求 200 或成员通知",
+      "conditions": [
+        "固定版在网直接组身份的独立紧急告警或其本人取消。CF 走 §12.1.3.1 第 4(b) 项或 §12.1.3.2 第 2 项的相应成功分支，已满足该分支的授权与前序守卫。两者分别适用。"
+      ],
+      "conclusion": "CF 就原请求发 200 后另构造并发送回执 MESSAGE 给原请求者。其 Request-URI 是与目标用户 MCPTT ID 相关联的终接 PF 地址，P-Asserted-Identity 是 CF PSI；MCPTT XML 的 mcptt-request-uri 是目标用户 MCPTT ID。Accept-Contact 含 MCPTT 及 MCPTT ICSI 的各自匹配条件。相应成功分支设置 alert-ind-rcvd=true，告警为 alert-ind=true，成功取消为 alert-ind=false，并取该入向请求的 mcptt-client-id。",
+      "normative_strength": "相应成功分支的 CF 两项发送及字段为 SHALL；不把前置授权和未拒绝守卫从旧声明移除。",
+      "limitations": [
+        "回执报告本次请求被接收，不能替代组成员的通知收件、显示或已读证据。客户端取消状态仍按实际匹配回执；不从本声明为所有取消请求发明必填客户端 ID。",
+        "不将该分支推广到授权拒绝或只获准取消组紧急状态等其他组合，也不覆盖告警区域、离网或紧急呼叫建立。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.20: distinct MESSAGE, Request-URI, PAI and body identity"
+          ],
+          "printed_pages": [
+            119
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "12.1.3.1 step 4(b)(iii)–(vi): authorized origination 200 and receipt"
+          ],
+          "printed_pages": [
+            453,
+            454
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "12.1.3.2 step 2(e)–(k): authorized cancellation 200 and receipt"
+          ],
+          "printed_pages": [
+            456
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.1.3 item 18: successful receipt meaning of alert-ind-rcvd"
+          ],
+          "printed_pages": [
+            549
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "standalone-group-alert-receipt-pf-entry-binding",
+      "title": "终接 PF 按自身 PSI 受理回执，用正文 MCPTT ID 查绑定",
+      "conditions": [
+        "终接 PF 通过初始过滤准则实际收到 SIP MESSAGE，入向 Request-URI 为自身 PSI，MCPTT 信息 XML 中存在 alert-ind-rcvd。继续处理的查询和相应拒绝按各自条件适用。"
+      ],
+      "conclusion": "资源不足导致不能处理，或有拥塞风险，PF 可以回 500，可选带 Retry-After；若走该拒绝分支就跳过后续。否则必须读取入向 XML 的 mcptt-request-uri 中 MCPTT ID，查询它与公有用户身份的绑定。绑定不存在时必须回 404，否则继续构造出向消息。",
+      "normative_strength": "条件性的 500 及 Retry-After 为 MAY；正文 ID 查找、无绑定 404 为 SHALL。入口只查 alert-ind-rcvd 存在；不搬用客户端状态程序的 value=true/客户端 ID 匹配。",
+      "limitations": [
+        "不存在本条入口或没有可解析 MCPTT ID，不等于一次已查询出的绑定不存在；本条未为这些情况指定统一 404。",
+        "成员通知是 §12.1.2.2；§6.3.1.3 的通知描述看 alert-ind 或 emergency-ind，而这样的回执可同时带 alert-ind 和 alert-ind-rcvd。原文不据此规定两条分类互斥、优先级或必然都执行。",
+        "本人取消的客户端匹配回执是另一个位置的处理，不从 PF 命中入口推定客户端已收件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "12.1.2.3 entry and items 1–3: R-URI PSI, presence, optional overload, XML ID lookup and absence"
+          ],
+          "printed_pages": [
+            452
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.1.3: incoming notification descriptors at terminating PF"
+          ],
+          "printed_pages": [
+            79
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "12.1.2.2: terminating PF member notification, comparison only"
+          ],
+          "printed_pages": [
+            451,
+            452
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "12.1.1.2: actual client cancellation receipt matches request ID and true value"
+          ],
+          "printed_pages": [
+            446
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "standalone-group-alert-receipt-pf-outbound-evidence",
+      "title": "终接 PF 转出独立回执：保留入出 URI、正文及实际 2xx 的各自证据",
+      "conditions": [
+        "终接 PF 在 §12.1.2.3 的入向实收处理中查询到绑定，继续第 4–5 项；出向 MESSAGE 的 2xx 是另一个实际收件事件。"
+      ],
+      "conclusion": "PF 另构造并发送 MESSAGE。复制入向 MCPTT 信息正文、P-Asserted-Identity、实际收到的全部 Accept-Contact 和 Reject-Contact 及其标签/值/参数。出向 Request-URI 按步骤 4(b) 用相应 MCPTT ID 的公有用户身份；步骤 4(b) 写 ID 位于入向 SIP Request-URI，入口写入向 SIP Request-URI 是 PF PSI，步骤 2 却规定从 XML 取查询 ID。核对入向/出向 SIP URI、XML ID、绑定日志及其事务响应分别成立；实际收到出向请求 2xx 时 PF 按引用的 SIP 程序处理。",
+      "normative_strength": "出向构造、所列复制、地址类型和发送为 SHALL；保留本版三个位置的原文差异，不规定冲突时的具体选值。",
+      "limitations": [
+        "不能把 PF PSI 用作步骤 2 的查找 ID；也不能把步骤 2 的输入自动替换到步骤 4(b) 当成本版明写的归一规则。",
+        "本条不规定原样将该 2xx 转回 CF；原请求 200、回执送到 PF、PF 发往用户和客户端真正处理是不同证据，不推导显示、阅读或端上状态变化。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "12.1.2.3 entry, items 2 and 4–5, final paragraph: lookup, raw address discrepancy, copied fields and 2xx"
+          ],
+          "printed_pages": [
+            452
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.20 items 4–6: CF constructs PF target address and XML target user ID"
+          ],
+          "printed_pages": [
+            119
           ]
         }
       ],

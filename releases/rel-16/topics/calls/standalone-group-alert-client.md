@@ -34,6 +34,20 @@
 
 依据：3gpp-ts-24.379-v16.14.0 §12.1.1.1 responses/NOTEs3–4；§12.1.3.1 steps1–4b(vi) (success-branch guards and comparison)；§6.3.3.1.11–12;6.3.3.1.20；§F.1.3 items17–18；§G.1;G.5 (informative comparison)，印刷页 110,111,119,445,452,453,454,549,584,587。
 
+## 原 MESSAGE 已回 200，发起者的告警回执从哪条链回来？
+
+原请求的 SIP 200、给组内其他成员的告警通知、给原请求者的回执是三类记录。对本页的独立组告警，控制 MCPTT 功能（CF）在发起或取消程序各自的成功分支中，回复原请求，然后另发一份 SIP MESSAGE，告知这次告警或取消请求已被接收。这不是组成员已经收到、显示或阅读告警的回执。[TS 24.379 V16.14.0，Release 16，Stage 3，§12.1.3.1 第 4(b)(iii)–(vi) 项，印刷页 453–454](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=454)；[§12.1.3.2 第 2(e)–(k) 项，印刷页 456](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=457)；[§F.1.3 第 18 项，印刷页 549](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=550)。
+
+**在 CF 发出的回执中，目的地和目标用户写在两处。** SIP Request-URI 指向与原请求者的 MCPTT ID 对应的终接参与功能（PF）地址，P-Asserted-Identity 填 CF 的 PSI。目标用户的 MCPTT ID 则写在 `application/vnd.3gpp.mcptt-info+xml` 正文的 `mcptt-request-uri` 中。CF 分别放入 MCPTT 和 MCPTT ICSI 的 Accept-Contact 条件；上述成功分支还写入 `alert-ind-rcvd=true`、发起为 `alert-ind=true` 或成功取消为 `alert-ind=false`，并按条文取相应入向请求的客户端 ID。要查回执，找这份独立请求，不拿原请求的 200 或某个成员收到的告警通知代替。[§6.3.3.1.20，印刷页 119](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=120)；[§12.1.3.1 第 4(b)(v)–(vi) 项，印刷页 453–454](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=454)；[§12.1.3.2 第 2(g)–(k) 项，印刷页 456](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=457)。
+
+### 终接 PF 实收回执：查正文的用户 ID，不用自己的 PSI 查绑定
+
+1. **先确认入口。** §12.1.2.3 从终接 PF 经初始过滤准则实收 MESSAGE 开始：入向 SIP Request-URI 是该 PF 自己的 PSI，MCPTT 信息正文含 `alert-ind-rcvd`。入口写的是元素**存在**，没有额外要求值为 true 或比对客户端 ID。回执声明成功、请求者匹配后更新本机状态，各有自己的条件。例如本人取消的客户端分支还要求 `alert-ind-rcvd=true` 和匹配已发请求的客户端 ID。组成员通知的程序是 §12.1.2.2；§6.3.1.3 的对应描述查 `alert-ind` 或 `emergency-ind`，没有说必须缺少 `alert-ind-rcvd`。因而不能仅凭 `alert-ind` 区分两种用途，也不据这几条补互斥分类或处理优先级。[§§12.1.2.2–3，印刷页 451–452](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=452)；[§6.3.1.3，印刷页 79](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=80)；[§12.1.1.2，印刷页 446](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=447)。
+2. **区分两种失败。** 若资源不足而无法处理，或有拥塞风险，PF **可以**拒绝并回 500，亦可附 Retry-After；走拒绝分支就不继续做后续步骤。继续处理时，步骤 2 要求用正文 `mcptt-request-uri` 内的 MCPTT ID 查询它与公有用户身份的绑定。步骤 3 要求在找不到这项绑定时回 404。这不是“只要没看到正文或字段就必回 404”的规则。[§12.1.2.3 第 1–3 项，印刷页 452](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=453)。
+3. **查实际出向 MESSAGE。** 找到绑定时继续构造并发送出向请求。复制入向 MCPTT 信息正文、P-Asserted-Identity，以及实际收到的全部 Accept-Contact 和 Reject-Contact（含特性标签、值、参数）。出向 Request-URI 要用公有用户身份。步骤 4(b) 却把相应 MCPTT ID 的位置写成**入向 SIP Request-URI**；入口说该 URI 是 PF 的 PSI，步骤 2 又从 **XML** 取 ID。排障时分开保留两份 SIP Request-URI、XML ID 和绑定结果。不能把入向 PSI 当用户 ID 去查，也不能用常见转发规则替本版文字选定步骤 4(b) 有歧义的输入。[§12.1.2.3 第 2–5 项及末段，印刷页 452](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=453)。
+
+若只有一份 200，先把它对到实际请求和接收点。原请求的 200 不证明 CF 的回执已到 PF；PF 构造或发送回执不证明终端已实收。终接 PF 收到它自己发出的 MESSAGE 的 2xx，只证明实际有这份事务响应；本条没有规定可凭它断言原请求者已显示、读取或完成客户端状态更新，也没有规定必须把这一份 2xx 原样转回 CF。[§§12.1.2.3、12.1.3.1，印刷页 452–454](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=453)。
+
 ## 本人取消依实际回执处理，不能用2xx替代取消结果
 
 条件：用户请求本人取消指定组告警时先检查allow-cancel-emergency-alert；只有其值true的请求获授权。构造发送、收到匹配取消回执、收到4xx/5xx/6xx是各自事件；未授权不执行发送分支。反馈不以已取消成功为前提。
