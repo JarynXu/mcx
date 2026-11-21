@@ -3197,6 +3197,16 @@ NCF 无已有预安排组呼时，无互助可进入 403/128 停止分支；受�
 
 [读取主题](topics/calls/trusted-regroup-refused-uri-list.md)
 
+## MCPTT 组地理区域通知何时只回执，何时还要发解除归属？
+
+group-geo-area-ind 表示进出，associated-group-id 是涉事组。200 是收件证据：true 没有自动归属步骤；false 另调用解除归属。不要套紧急告警区的指示。
+
+PUBLISH 列仍关心的全部组，至少一组时 Expires 为 4294967295，均不关心时为 0。确认结果要看归属状态确定程序。
+
+尚未建立：只看到地理区域通知、200、UI 提示或发出 PUBLISH，不能认定终端已加入组、服务器已解除归属或现有组呼被释放。
+
+[读取主题](topics/groups/group-geographic-area-notification.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

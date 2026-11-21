@@ -1,0 +1,142 @@
+{
+  "topic_id": "r16-groups-group-geographic-area-notification",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 组地理区域通知：进区会归属吗？离区 200 能证明已解除吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明适用主题的全部 common_conditions，并叠加该条 conditions。关联主题不是必经流程。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0；MCPTT 参与功能判定客户端进入或离开预设组地理区域，检查的是组地理区域通知以及指定客户端调用的组归属程序。"
+  ],
+  "claims": [
+    {
+      "id": "group-geo-area-ind-selects-group-entry-or-exit",
+      "title": "组地理区域通知靠 group-geo-area-ind 和 associated-group-id 判进出与组",
+      "conditions": [
+        "PF 判定目标 MCPTT 客户端进入或退出预设的组地理区域，生成发给客户端的 SIP MESSAGE。"
+      ],
+      "conclusion": "外层 Request-URI 为关联的公共用户身份；正文 mcptt-request-uri 为目标用户 MCPTT ID，associated-group-id 为涉事组，group-geo-area-ind 的 true 为进区、false 为离区。不同于 emergency-alert-area-ind 的紧急告警区通知。",
+      "normative_strength": "§6.3.2.4.2 第 4、8 项 SHALL；§6.2.0.1 按业务正文识别通知。",
+      "limitations": [
+        "不以同种方法、单独的布尔值或组号判定本次定位精度、设备实际已经归属或处于紧急状态。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.0.1 group geography vs emergency-alert notification discrimination"
+          ],
+          "printed_pages": [
+            56
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.4.2 steps 4 and 8"
+          ],
+          "printed_pages": [
+            104,
+            105
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "area-200-receipt-is-not-completed-affiliation-change",
+      "title": "200 是组地理区域通知收件证据，false 才调用本节的解除归属",
+      "conditions": [
+        "MCPTT 客户端收到这份组地理区域通知，PF 观察到与该通知相符的响应。"
+      ],
+      "conclusion": "客户端向 PF 回 SIP 200；PF 据原通知指出的方向记已收到进或离区通知。true 分支只规定显示条件，未规定仅靠通知自动归属；false 分支另须调用 §9.2.1.2 对指定组解除。已有环境监听时不得显示进出提示；否则可显示。",
+      "normative_strength": "§§6.3.2.4.2 末段、12.1.1.4 第 1–2 项。",
+      "limitations": [
+        "不能以没有提示断言未收到；不能以通知 200 代替解除结果或否定另有独立的进区归属规则。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.4.2 response to notification"
+          ],
+          "printed_pages": [
+            105
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "12.1.1.4 receive, UI conditions and de-affiliation"
+          ],
+          "printed_pages": [
+            449
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "exit-publish-expires-depends-on-all-remaining-groups",
+      "title": "离开某组后的归属 PUBLISH 按仍关心的全部组决定 Expires",
+      "conditions": [
+        "客户端在离区分支按 §9.2.1.2 发起归属变更，检查这一用户及目标客户端的剩余感兴趣组。"
+      ],
+      "conclusion": "正文列仍关心的全部组；仍关心至少一组时 Expires 为 4294967295，完全没有时才用 0。要获知变动成功或拒绝，按 §9.2.1.1 先启动 §9.2.1.3 的归属状态确定程序。",
+      "normative_strength": "§9.2.1.2 第 4–6 项为 SHALL；§9.2.1.1 末段说明结果取证的先后。",
+      "limitations": [
+        "不把区域通知的 200、单次 PUBLISH 或省去 G 直接登记为服务器已经更新；也不证明组成员资格或现有呼叫被撤销。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "12.1.1.4 item 2b iii, trigger §9.2.1.2"
+          ],
+          "printed_pages": [
+            449
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.1.1 final paragraph; 9.2.1.2 steps 4–6; 9.2.1.3 start"
+          ],
+          "printed_pages": [
+            168,
+            169
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-groups-client-group-deaffiliation",
+    "r16-mcptt-area-alert-notification",
+    "r16-groups-client-rules-affiliation",
+    "r16-groups-explicit-affiliation-client"
+  ],
+  "limitations": [
+    "只说明组地理区域通知的字段、接收和组归属入口；不定义地理位置算法、媒体行为、终端环境监听的启动或某次已获归属的结果。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
