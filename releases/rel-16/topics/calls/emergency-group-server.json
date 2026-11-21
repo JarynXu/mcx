@@ -6,11 +6,11 @@
   "title": "已有按需预安排组会话：CF紧急升级、取消与分层反馈",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
-  "condition_rule": "Inherit common_conditions and add claim conditions. 既有四条声明只适用 CF；ID 以 terminating-pf-priority-reinvite- 开头的三条只适用终接 PF。按各自实际的收件和发送分别判断，不以一条腿的数据推定另一腿的状态。 原 CF 四条仍限 emergency-ind 升级或取消，不展开新告警发起；已有告警取消和拒绝反馈按各自条件保留。其 imminent 字段只用于验证或原文分支比较，无效请求仍适用相应拒绝检查。原 response-warning-and-ack-info 条的 149 正文只取未获准撤警。终接 PF 的原三条仍只说明紧急或迫近危险指示的接收、转送和响应，不展开迫近危险业务生命周期。新增 priority-149- 三条只看本场 CF 回复及匹配 ACK 后的反馈，不以初始 INVITE、聊天组或预建立行为补齐。",
+  "condition_rule": "Inherit common_conditions and add claim conditions. 既有四条声明只适用 CF；ID 以 terminating-pf-priority-reinvite- 开头的三条只适用终接 PF。按各自实际的收件和发送分别判断，不以一条腿的数据推定另一腿的状态。 原 CF 四条仍限 emergency-ind 升级或取消，不展开新告警发起；已有告警取消和拒绝反馈按各自条件保留。其 imminent 字段只用于验证或原文分支比较，无效请求仍适用相应拒绝检查。原 response-warning-and-ack-info 条的 149 正文只取未获准撤警。终接 PF 的原三条仍只说明紧急或迫近危险指示的接收、转送和响应，不展开迫近危险业务生命周期。新增 priority-149- 三条只看本场 CF 回复及匹配 ACK 后的反馈，不以初始 INVITE、聊天组或预建立行为补齐。 原 CF 四条、terminating-pf-priority-reinvite- 三条及 priority-149- 三条仍须处于已有按需预安排组会话，旧角色及收件条件保留不变。新增 tng2-expiry- 三条只论该组 CF 实际处理 TNG2 到期；参会 re-INVITE 与非参会 MESSAGE 单独取条件，不把活动组会话或信令响应设为后者前提。",
   "common_conditions": [
-    "固定TS24.379 V16.14.0，在网已有按需预安排组会话，直接组身份。既有四条声明的主体是 CF，terminating-pf-priority-reinvite- 的声明主体是终接 PF；按各自事件适用。排除初始建立、chat/预建立、临时/重组、广播/system、离网、跨系统及完整媒体/话权算法。",
+    "固定 TS 24.379 V16.14.0，在网按需预安排组，直接组身份；按声明区分 CF 和终接 PF，以及本组是否有活动会话。排除初始建立、chat/预建立、临时/重组、广播/system、离网、跨系统及完整媒体/话权算法。",
     "CF 紧急升级、取消、终接 PF 转送，以及 CF 对新告警未获准或组已紧急时迫近危险请求的局部反馈，各按自己的业务分支适用；不展开随呼告警发送、迫近危险业务生命周期或媒体承载。",
-    "每条按实际角色、请求/响应/ACK事件及旧组状态分别适用；不以已获授权、组状态false、已取消成功或所有下游已响应为共同前提。CF组状态与客户端MEG/MEGC/MES/MEA不可互换。"
+    "每条按实际角色、请求/响应/ACK 或计时到期事件及旧组状态分别适用；不以已获授权、组状态 false、已取消成功或所有下游已响应为共同前提。CF 组状态与客户端 MEG/MEGC/MES/MEA 不可互换。"
   ],
   "claims": [
     {
@@ -485,6 +485,120 @@
           ],
           "printed_pages": [
             118
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "tng2-expiry-active-members-reinvite-and-media",
+      "title": "本组 TNG2 实际到期，CF 清组紧急状态；有活动组呼或组会话时给参会成员发普通级别 re-INVITE",
+      "conditions": [
+        "在网按需预安排组的 CF 实际处理本组 TNG2 到期。对参会 re-INVITE 的构造和发送另要求该组存在活动的组呼或组会话，且目标是参会成员。"
+      ],
+      "conclusion": "CF 须置该组进行中紧急状态为 false。有活动组呼或会话时，向各参会成员发 re-INVITE，以当前与终接客户端建立的媒体参数形成 SDP offer，Resource-Priority 取普通组呼值，MCPTT 正文 emergency-ind=false。CF 实收对该 re-INVITE 的对应 200 时执行该媒体接口动作。",
+      "normative_strength": "清组状态与适用条件下构造、发送和实收对应 200 后媒体交互都是 SHALL。",
+      "limitations": [
+        "没有活动组呼或会话，不产生这一项的参会 re-INVITE；不把它扩为非参会通知条件。不等待全员 200 后才清组紧急状态，不自动发 BYE、撤告警或断言普通承载已生效。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.16 items 1–2 and matched re-INVITE 200 paragraph"
+          ],
+          "printed_pages": [
+            117
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.9–.10 and 6.3.3.1.19: established SDP and normal Resource-Priority with emergency=false"
+          ],
+          "printed_pages": [
+            109,
+            110,
+            119
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "tng2-expiry-affiliated-nonparticipants-message",
+      "title": "TNG2 到期，CF 对已归属但未参与者另发取消组紧急状态 MESSAGE",
+      "conditions": [
+        "在网按需预安排组的 CF 实际处理本组 TNG2 到期；目标成员已归属该组但不参加本场。"
+      ],
+      "conclusion": "向每一符合条件者发 SIP MESSAGE。Request-URI 是目标用户 MCPTT ID 对应终接 PF 的地址；MCPTT 正文 mcptt-request-uri 是目标用户 ID，mcptt-calling-group-id 是本组 ID，emergency-ind=false。CF PSI 置 P-Asserted-Identity，条文称消息服务头 P-Asserted-Service-Id，装入 MCPTT ICSI。",
+      "normative_strength": "已归属且非参会者的构造字段、身份和发通知为 SHALL。",
+      "limitations": [
+        "不把未起麦或听不到等同非参会，只查归属及实际参与。第 3 项不以有活动组会话、参会成员应答或媒体处理为条件。不要把组状态变化解读为 alert-ind 已撤、缓存已清或终端实际收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.16 item 3: receiver cohort, message, group state flag and CF headers"
+          ],
+          "printed_pages": [
+            117
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.11 items 4–8: destination PF, user and group identifiers"
+          ],
+          "printed_pages": [
+            110
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "tng2-expiry-configured-tng3-not-residual",
+      "title": "仍进行的组呼在 TNG2 到期后按组文档启动 TNG3，不延续原剩余量",
+      "conditions": [
+        "在网按需预安排组的本场呼叫仍进行，运行的 TNG2 实际到期，组文档有 on-network-maximum-duration。"
+      ],
+      "conclusion": "CF 用该组文档时长启动本场 TNG3。TNG3 自身到期才进入所引组会话释放规程；两次到期不是同一个触发。",
+      "normative_strength": "§6.3.3.5.2 的到期接续和 §6.3.3.5.1 的 TNG3 到期释放分别为 SHALL，表给出时长和事件对照。",
+      "limitations": [
+        "到期段没有指定缺字段时如何给值；不由该段推出无活动会话仍需建计时器，不恢复旧的剩余时长，也不从一个会话的日志替代本场计时或释放记录。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.5.1–.2: provided group duration, expiry vs release and group timer restart"
+          ],
+          "printed_pages": [
+            124,
+            125
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "B.2.1 table B.2.1-1 TNG2/TNG3 rows and notes"
+          ],
+          "printed_pages": [
+            533
           ]
         }
       ],
