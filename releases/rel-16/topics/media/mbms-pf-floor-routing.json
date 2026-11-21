@@ -1,0 +1,161 @@
+{
+  "topic_id": "r16-media-mbms-pf-floor-routing",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "已报 MBMS 监听，为什么参与服务器还单播话权？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "先认实际方向、消息类别和相关通话是否使用 MBMS，再核对该终端最新监听报告、话权保护要求和 PF 对 MuSiK 支持的判断。",
+  "common_conditions": [
+    "固定 TS 24.380 V16.9.0 的在网 MCPTT 参与功能 PF；业务按需会话已建立，或预建立会话确实在用。选择下行时，核对该包关联的会话内通话与该终端的报告，不把另一会话的 MBMS 状态套进来。"
+  ],
+  "claims": [
+    {
+      "id": "r16-media-mbms-pf-floor-routing-direction",
+      "title": "上行话权和不用 MBMS 的下行话权照常转发",
+      "conditions": [
+        "PF 已在处理已建立的按需会话或确实在用的预建立会话，收到话权消息。"
+      ],
+      "conclusion": "从终端话权参与者收到话权消息时，立即向话权控制服务器转发。若关联通话不用 MBMS 子信道、且消息来自话权控制服务器，立即向话权参与者转发。使用 MBMS 时，往受服务终端送的话权消息按下一分支逐类核对。",
+      "normative_strength": "所述适用条件下的立即转发是强制要求。",
+      "limitations": [
+        "监听报告不能改变第 1 项规定的上行转发，也不能替代对消息所关联通话的检查；第 3 项用于本页下行判断，没有另写消息来源。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.4.1"
+          ],
+          "printed_pages": [
+            101
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.4.2(1–3)"
+          ],
+          "printed_pages": [
+            101,
+            102
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-media-mbms-pf-floor-routing-floor",
+      "title": "用 MBMS 的通话仍可对单个终端单播话权",
+      "conditions": [
+        "PF 正在判断关联通话确实用 MBMS 子信道时，如何向该终端送话权消息。"
+      ],
+      "conclusion": "满足任一项便立即向终端话权参与者转发：消息不是 Floor Idle、Floor Taken 或 Floor Release Multi Talker 三者之一；终端未报告 listening；最新实收报告为 not-listening；消息属三者之一、且要求 MBMS 下行话权保护、PF 判定该终端不支持 MuSiK。以下条件同时成立时，按 §10.2 处理：最新实收报告为 listening；消息属三者之一；不要求该保护，或 PF 已判定该终端支持 MuSiK。",
+      "normative_strength": "所列守卫成立时必须执行相应分支；按 §10.2 处理不等于每条必发或已实收。",
+      "limitations": [
+        "未知 MuSiK 支持不是已判定不支持，不在此补缺省分支。保护要求不是加密或端到端交付的成功证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.4.2(3a–b) and NOTE"
+          ],
+          "printed_pages": [
+            102
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.2.3.2–10.2.3.3a"
+          ],
+          "printed_pages": [
+            206,
+            207
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-media-mbms-pf-floor-routing-rtp",
+      "title": "RTP 的选路不套话权 MuSiK 条件，PF Ack 不是终端收讫",
+      "conditions": [
+        "PF 收到 CF 或 NCF 的下行 RTP，或进入活动会话的 §10.2 处理已分派的三类下行话权消息。"
+      ],
+      "conclusion": "关联通话没用 MBMS 子信道时按 §6.4.3 立即转发 RTP；已用 MBMS、但终端未报告 listening 或最新实收报告为 not-listening 时也立即转发；关联通话使用 MBMS 且最新实收为 listening 时，按 §10.2 处理，不套用话权消息类别/MuSiK 守卫。§10.2 已活动时，针对监听端的 Floor Idle/Taken 若实际送上 MBMS，把出向确认位设为 0；入向请求确认，PF 自己向 CF 发送 Ack（Source 1），不证明终端实收。多人释放的专条没有同样的改位或回 Ack 步骤。",
+      "normative_strength": "按各自条件执行转发、媒体面处理、确认位和 PF 回 Ack；没有由 Ack 推导终端结果的规则。",
+      "limitations": [
+        "同一终端可能有 RTP 经 MBMS、要求保护的话权状态走单播的组合。实际交付及接收另查；不从 §10.2.3.3a 无此步骤推断所有多人释放消息都不确认。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.4.2(3a)(iv)"
+          ],
+          "printed_pages": [
+            102
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.4.3"
+          ],
+          "printed_pages": [
+            102,
+            103
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.2.3.2–10.2.3.3a"
+          ],
+          "printed_pages": [
+            206,
+            207
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.2.3.5"
+          ],
+          "printed_pages": [
+            208
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-media-mbms-floor-ack-and-rtp-duplicates",
+    "r16-bearers-mbms-application-control-signalling",
+    "r16-media-on-network-unicast-media-protection"
+  ],
+  "limitations": [
+    "限所述路径和可见证据，不规定 MuSiK 能力协商的线上字段、保护实现、未知能力回退或发包后终端实际行为。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

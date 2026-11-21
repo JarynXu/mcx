@@ -3497,6 +3497,16 @@ LMS 先查按需请求方；走目标终端取数时询问目标用户是否共�
 
 [读取主题](topics/identity/sip-database-routing-and-authorization.md)
 
+## MBMS 组呼的 PF 下行：按话权类别与 RTP 分路
+
+区分上行、无通话 MBMS 子信道、终端监听状态、三类话权消息及保护和 MuSiK 条件。
+
+RTP 和话权使用各自守卫；对已进入活动 MBMS 分支的 Idle/Taken 分开核对确认位与 PF 回 Ack。
+
+尚未建立：不规定未知能力的默认选路、传输加密结果、空口收讫、播放或所有话权确认规则。
+
+[读取主题](topics/media/mbms-pf-floor-routing.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

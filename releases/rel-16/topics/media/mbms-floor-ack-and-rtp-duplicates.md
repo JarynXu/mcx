@@ -17,3 +17,5 @@ PF 收到发往监听该子信道客户端的 RTP，查的是**该包是否已�
 要看[MBMS 应用控制消息和终端监听报告](../bearers/mbms-application-control-signalling.md)，或[非控制功能的其他 RTP 权限分支](on-network-noncontrolling-floor-rtp.md)，请按实际角色和消息类型分开查。
 
 依据：[3GPP TS 24.380 V16.9.0，Release 16，Stage 3（ETSI，印刷页 205–208）](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=206)。
+
+若还没确定该消息为什么应进入 MBMS 子信道处理，先查[参与功能怎样选择下行话权和 RTP 路径](mbms-pf-floor-routing.md)。本页只处理已经进入活动 MBMS 会话分支的去重与确认。
