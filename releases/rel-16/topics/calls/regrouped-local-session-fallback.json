@@ -1,0 +1,191 @@
+{
+  "topic_id": "r16-calls-regrouped-local-session-fallback",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "临时预安排组呼：转出 INVITE 收到非 2xx，本地还起呼吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明继承全部 common_conditions，再叠加本条 conditions；两个最终响应分支互斥，关联主题不是必经顺序。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0，Rel-16 Stage 3。预安排组呼未在进行，组 NCF 实际执行 §10.1.1.5.5 的临时组会话启动程序；该节开头的入站事务和本地另发给 CF 的事务分开。"
+  ],
+  "claims": [
+    {
+      "id": "regrouped-ncf-onward-invite-separates-group-tgi-and-user-identities",
+      "title": "向控制方发的新 INVITE 以 CF PSI 寻址，正文区分 TGI 与组成组 ID",
+      "conditions": [
+        "实际进入临时组会话启动，NCF 完成该程序适用的入站检查后按 §6.3.4.1.4 生成发往 CF 的新 INVITE。"
+      ],
+      "conclusion": "Request-URI 是 CF PSI，P-Asserted-Identity 是 NCF PSI，Contact 带 isfocus；业务正文 session-type 为 prearranged、mcptt-request-uri 为组文档取得的 TGI、mcptt-calling-user-id 为组成组 ID。按该节上下文，第 7 项授权检查的是开头那笔入站请求的正文所指用户。",
+      "normative_strength": "§10.1.1.5.5 入口、第 1–9 项及 §6.3.4.1.4 的 shall；§6.3.1.1 用于请求分类。",
+      "limitations": [
+        "组 PSI、isfocus 和无进行中组呼不足以选定 §10.1.1.5.5；§10.1.1.5.2.1 也在未进行时指向 §10.1.1.5.2.2。§10.1.1.5.5 注 2 和第 7 项及 §6.3.4.1.4(3) 用给 CF 的名称，与 §10.1.1.5.5 入口给 NCF 的名称不同；不补通用选路或 CF 地址发现规则。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.1.1 group PSI and Contact isfocus classification"
+          ],
+          "printed_pages": [
+            78
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.4.1.4 onward INVITE and scope notes"
+          ],
+          "printed_pages": [
+            127,
+            128
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.5.4 initiating user authorisation"
+          ],
+          "printed_pages": [
+            134,
+            135
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.2.1–2 sibling path with overlapping entry conditions"
+          ],
+          "printed_pages": [
+            259,
+            260
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.5 steps 1–9"
+          ],
+          "printed_pages": [
+            264
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "non2xx-onward-leg-starts-local-controlling-function",
+      "title": "转出 INVITE 收到非 2xx 最终响应，本地改为 CF 并继续邀请",
+      "conditions": [
+        "实际收到的是本地 NCF 向 CF 发出的那一笔 INVITE 的非 2xx 最终响应。"
+      ],
+      "conclusion": "向 CF 发 ACK，按 §10.1.1.4 开始充当控制功能，按 §6.3.4.1.2 邀请成员。注 4 限定本地继续邀请的范围：以这个 NCF 为宿主的组成员。",
+      "normative_strength": "§10.1.1.5.5 其他最终响应分支的 shall 与注 4。",
+      "limitations": [
+        "不把无响应、超时或 NCF 对原入站请求回 403 当成收到 CF 最终响应；此分支未列对原入站腿回 200/148。原文把该 ACK 写作 SIP ACK response，不补报文格式。 该分支要求改作 CF，但所引 §6.3.4.1.2 以 NCF 为主语；不据此替换报头规则。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.5 other final response and note 4"
+          ],
+          "printed_pages": [
+            265
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.4.1.2 member INVITE cross-reference only"
+          ],
+          "printed_pages": [
+            126,
+            127
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "two-success-legs-distinguish-ncf-role-from-member-media-evidence",
+      "title": "转出 INVITE 的 2xx 使本地开始作 NCF，不证明成员已接听",
+      "conditions": [
+        "本地 NCF 实收本次发往 CF 的 INVITE 的 2xx；后续收到成员 INVITE 2xx 是另一事件。"
+      ],
+      "conclusion": "向 CF 发 ACK，按上下文读法，对开头的入站腿构造 200，含本地 NCF PSI、Warning 文本 148 和按指定规则生成的 SDP 应答。开始充当 NCF 并与媒体面交互，按 §6.3.5.5 从已归属成员中选受邀者并发邀请。成员腿实收 2xx 时，另按该腿发 ACK 并与媒体面交互；§10.1.1.5.1 也要求对受邀客户端的 3xx、4xx、5xx、6xx 发 ACK。",
+      "normative_strength": "§10.1.1.5.5 成功分支和受邀成员响应段的 shall；注 4 本地成员范围。",
+      "limitations": [
+        "CF 的 2xx、原入站腿的 200/148、成员腿的 2xx 与实际音频各自取证。成功第 2 项称入站请求给 CF，入口称给 NCF；第 2(d) 项称 200 为 request。成功 SDP 子项指定使用收到的 200 的 SDP 应答，§6.3.4.2.1 的字段改写说明写作收到的 SDP 提议；不合成新模板或替其他 2xx 补 SDP 来源。ACK 本身不证明成员接受。宿主范围不是客户端组归属状态。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.5 success and invited-member handling"
+          ],
+          "printed_pages": [
+            264,
+            265
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.4.2.1 SDP answer"
+          ],
+          "printed_pages": [
+            128
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.5.5 affiliated members and selection"
+          ],
+          "printed_pages": [
+            135
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.1 member invites"
+          ],
+          "printed_pages": [
+            258,
+            259
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-trusted-regroup-refused-uri-list",
+    "r16-calls-direct-tgi-constituent-authorization",
+    "r16-calls-prearranged-group-join-split"
+  ],
+  "limitations": [
+    "不从重复的入口条件推定 §10.1.1.5.5 和 §10.1.1.5.2.2 之间的选择；保留 §10.1.1.5.5 的请求名称及 200 用语差异，不定义 CF PSI 查找、定时器或通用恢复。",
+    "不把未响应当成最终拒绝，不把控制腿应答当成成员已经参与或收音。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

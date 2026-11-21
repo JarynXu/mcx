@@ -5743,6 +5743,26 @@
         }
       ],
       "boundary": "起始 PF PSI、目标 PF PSI、发起与目标 MCPTT ID、PIDF 用户和客户端各有职责；200 不等于已归属。"
+    },
+    {
+      "id": "r16-calls-regrouped-local-session-fallback",
+      "question": "临时预安排组呼的转出 INVITE 失败，本地还会继续吗？200/148 又证明哪一腿？",
+      "start": "topics/calls/regrouped-local-session-fallback.md",
+      "next_if": [
+        {
+          "condition": "回包方向是本地 NCF 对 CF 的入站 INVITE，现场是伙伴互助判定，且查的是 128 或 P-Refused-URI-List。",
+          "read": "topics/calls/trusted-regroup-refused-uri-list.md"
+        },
+        {
+          "condition": "初始 INVITE 直接面向 TGI，想查组成组 OPTIONS 快查与其后原 INVITE 的 302，不是原组成组 ID 的重定向。",
+          "read": "topics/calls/direct-tgi-constituent-authorization.md"
+        },
+        {
+          "condition": "本地预安排组已在进行，问题是合并、拆分或角色切换。",
+          "read": "topics/calls/prearranged-group-join-split.md"
+        }
+      ],
+      "boundary": "本页只判断实际执行的临时组会话启动及该笔转出 INVITE 的最终响应；不据此判断同类其他入口或成员媒体。"
     }
   ]
 }

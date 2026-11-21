@@ -23,3 +23,5 @@ NCF **成功**条目明确要求名单头，没有同时写“加 128”；CF **
 若组成组**已在通话**，另查[已有组呼并接与拆分](prearranged-group-join-split.md)。若收到的是**直接以 TGI 为目标**的请求，查[直接 TGI 的组文档和授权](direct-tgi-constituent-authorization.md)。这两种场景不由这里的 403 名单分支代替。
 
 来源：[3GPP TS 24.379 V16.14.0，Release 16，Stage 3（ETSI），CF 接收 §10.1.1.4.1.2，印 241–242](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=242)；[NCF 生成 §10.1.1.5.2.2，印 259–260](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=260)。
+
+若取到的是临时组会话启动中、NCF 发给 CF 的另一笔 INVITE 的最终响应，读[转出 INVITE 收到非 2xx 时本地临时预安排组呼如何继续](regrouped-local-session-fallback.md)。先核对发请求和回包的方向。
