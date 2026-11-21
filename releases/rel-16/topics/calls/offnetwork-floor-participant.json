@@ -6,7 +6,7 @@
   "title": "离网话权：请求、排队确认、发送与交接",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.380-v16.9.0",
-  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "condition_rule": "Inherit common_conditions and add claim conditions. 授给其他人的消息和后续 RTP 分开，按本机收到每一项时的状态、已存角色和实际到达顺序判断。",
   "common_conditions": [
     "固定TS24.380 V16.9.0的普通离网基本话权。各条按客户端当时状态和实际消息/用户/计时器事件分别适用，不把已排队、已获准或已成功发送设为全页前提。",
     "排队及持有者非抢占准入中的组配置守卫只在该配置适用时使用，不给私呼补造组配置。本文不覆盖抢占、广播/系统/紧急/危急及多发言者流程。",
@@ -283,6 +283,134 @@
         }
       ],
       "normative_strength": "初始化、停止、清理和未处理输入动作按SHALL；T230相对T203的配置关系为SHOULD，话权终止引发呼叫终止为may。",
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "queued-other-grant-replaces-candidate",
+      "title": "离网排队端收到授给别人的消息，当前或候选仲裁者都可成为有效发送者",
+      "conditions": [
+        "普通离网 MCPTT 组呼，本机实际处于 O: queued。",
+        "Floor Granted 的 User ID 不是本机 MCPTT ID；发送者的 SSRC 匹配已存当前仲裁者，或者当前不匹配而匹配已存候选仲裁者。"
+      ],
+      "conclusion": "须请求停播、重启 T203，把候选写为这条消息里被授予者的 SSRC，保持 O: queued；不把被授者立即改成当前。发件者 SSRC、被授予者 SSRC 和 User ID 是分开的字段角色。",
+      "normative_strength": "只在满足本条身份守卫时执行，字段角色不同并不要求所有字段的运行时值互不相同。",
+      "limitations": [
+        "任一身份守卫不满足时不能用这条分支替换候选或推出播放；授给本机的消息另查 T233 和用户确认。一次他人授予不授予本机权限，也不证明收到被授予者的 RTP。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.8.9, other-user Floor Granted and two sender guards"
+          ],
+          "printed_pages": [
+            143
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.5, Table 8.2.5-1 and sender / granted SSRC and User ID"
+          ],
+          "printed_pages": [
+            162,
+            163
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "queued-rtp-current-versus-candidate",
+      "title": "排队中的当前方 RTP 分支未要求清候选；候选方 RTP 分支须更新当前并清候选",
+      "conditions": [
+        "普通离网 MCPTT 组呼，本机收到 RTP 时处于 O: queued。",
+        "先匹配已存当前仲裁者的 SSRC；否则检查是否匹配已存候选 SSRC。"
+      ],
+      "conclusion": "两条匹配分支均须请求渲染、重启 T203 并保持 O: queued。当前匹配分支没有清候选动作；候选匹配分支须把 RTP 源记为当前并清候选。",
+      "normative_strength": "按本机实际收包和当前／候选守卫执行，不用网络发送时间排序，不把候选动作复制到当前分支。",
+      "limitations": [
+        "这个当前包的规定动作没有清候选，不证明后续未知事件也不改候选。不匹配不支持这个渲染或角色更新结论；请求渲染不是实际播放。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.8.2, queued RTP with current / candidate SSRC"
+          ],
+          "printed_pages": [
+            140,
+            141
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.1, receiver arrival order"
+          ],
+          "printed_pages": [
+            121
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "queued-vs-passive-late-current-rtp",
+      "title": "同一组呼先到当前方 RTP 时，排队端和无发送权未排队端的候选处理不同",
+      "conditions": [
+        "普通离网 MCPTT 组呼；当前 A 和被授者 B 的 SSRC 不同，两台收到 A 给 B 的有效授予并保存候选 B。",
+        "无其他事件介入，两台均实际先收到 A 的 RTP、再收到 B 的 RTP；一台为 O: queued，另一台未申请且为 O: has no permission。"
+      ],
+      "conclusion": "排队端处理 A 包不按这一步清候选；B 随后匹配候选，须请求渲染、更新当前到 B、清候选并继续排队。未排队端收到 A 包要清候选 B；随后 B 不匹配该端的当前/候选，不能用原授予要求播放 B。",
+      "normative_strength": "同一 RTP 输入因本机状态不同走不同条款。未排队端的规则仅用于比较，不作为排队规则。",
+      "limitations": [
+        "若后来又收到其他有效消息、发生到期或本机状态变化，要按实际新状态重新判断；两个收端实际播放分别看各自播放器。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.8.9 and 7.2.3.8.2, queued other grant and received RTP"
+          ],
+          "printed_pages": [
+            140,
+            141,
+            143
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.4.5–6, non-queued other grant and RTP"
+          ],
+          "printed_pages": [
+            127,
+            128
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.1, receiver arrival order"
+          ],
+          "printed_pages": [
+            121
+          ]
+        }
+      ],
       "verification": {
         "original_clauses_checked": true,
         "independent_source_review": true,

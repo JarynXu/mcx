@@ -274,15 +274,19 @@
     },
     {
       "id": "r16-calls-offnetwork-floor-participant",
-      "question": "离网话权：请求、排队确认、发送与交接",
+      "question": "离网话权：请求、排队确认、发送与交接 离网排队时，授给别人的消息与后到 RTP 怎样更新候选？当前方迟到 RTP 会清候选还是维持排队，和无发送权接收端有什么差别？",
       "start": "topics/calls/offnetwork-floor-participant.md",
       "next_if": [
         {
           "condition": "若当前讲者收到需要判断能否抢占的 Floor Request，查离网话权抢占。",
           "read": "topics/calls/offnetwork-floor-preemption.md"
+        },
+        {
+          "condition": "若本机是已加入普通离网 MCPTT 单话权组呼的终接成员，未申请话权、没有排队，收包前处于 O: has no permission 或 O: silence，要查该接收端的候选、RTP 和播放动作，转读非排队接收主题。不用于离网私呼，也不以无发送权提示代替本机状态名。",
+          "read": "topics/media/offnetwork-receiver-playback.md"
         }
       ],
-      "boundary": "不覆盖抢占、特殊优先级、多发言者或完整媒体实现；本地许可不证明全网独占，首次队列通知身份生产/消费差异未闭合。"
+      "boundary": "不覆盖抢占、特殊优先级、多发言者或完整媒体实现；本地许可不证明全网独占，首次队列通知身份生产/消费差异未闭合。 普通离网 MCPTT 单话权组呼中，本机在 O: queued 时按实际到达序列核对当前和候选；已加入该组呼、未申请话权的非排队接收端按自身状态另查。不要照搬清候选或计时动作；匹配 RTP 与实际播放器记录分别支撑请求渲染和执行结果。"
     },
     {
       "id": "r16-mcptt-onnetwork-idle-floor-server",
