@@ -30,3 +30,5 @@
 若问题发生在[普通按需私呼](private-client-answer-evidence.md)或[在网紧急预安排组呼](emergency-group-client.md)，要按该通呼叫的角色和状态取证。本页不规定告警的实际投递、媒体结果、失败后的回退或取消程序。
 
 若主叫通过预建立会话发起紧急私呼，查[REFER 2xx、同会话 re-INVITE 与释放前的紧急状态](preestablished-emergency-private-confirmation.md)，不套此处的按需 INVITE 应答规则。
+
+若同一通在网紧急私呼已经接通，现收到 `emergency-ind=false` 的 re-INVITE 或遇到取消后的 200/149，查[私呼降级及撤警结果](emergency-private-downgrade.md)，不要套这里发警的 MPEA 2 条件。

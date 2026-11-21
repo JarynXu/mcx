@@ -6283,6 +6283,26 @@
         }
       ],
       "boundary": "只涉及本系统单项业务 Stage 2。显式客户端触发可由地理事件引起；5a/5b 两个观察点及逐组字段各自核对，无固定先后。无 SIP 或跨系统拓扑保证。"
+    },
+    {
+      "id": "r16-calls-emergency-private-downgrade",
+      "question": "在网的紧急私呼已接通，遇到降级 re-INVITE 的 403、出站 alert-ind 改写或 200/149，怎样区分私呼和告警结果？",
+      "start": "topics/calls/emergency-private-downgrade.md",
+      "next_if": [
+        {
+          "condition": "若抓到初始 INVITE 在发起紧急私呼并向对端发警，不是原通话中取消，查初建应答和 MPEA 2。",
+          "read": "topics/calls/emergency-private-call-alert.md"
+        },
+        {
+          "condition": "若抓到离网私呼的取消消息、计时器或确认，按离网状态和消息判断。",
+          "read": "topics/calls/offnetwork-private-emergency-downgrade.md"
+        },
+        {
+          "condition": "若抓到的是在网私呼实际释放的 BYE，查独立释放程序，不从 re-INVITE 拒绝倒推。",
+          "read": "topics/calls/server-private-call-release.md"
+        }
+      ],
+      "boundary": "限指定版本在网带话权的一对一紧急私呼，同一通话 re-INVITE。实际降级或撤警取证要区分 CF 缓存、两段 SIP 对话及客户端实际收到的 INFO。 §11.1.1.2.1.4 的组会话字样不能作为私呼接收端一定分派的证明。"
     }
   ]
 }

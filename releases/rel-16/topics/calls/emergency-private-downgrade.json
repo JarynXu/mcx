@@ -1,0 +1,269 @@
+{
+  "topic_id": "r16-calls-emergency-private-downgrade",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "在网紧急私呼降级：怎样区分 403、200/149 和撤警结果？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明继承全主题共同条件，再叠加声明自身条件。入向请求、出向请求、响应、ACK 与 INFO 是不同事件，不相互代替。",
+  "common_conditions": [
+    "在网、带话权控制的 MCPTT 一对一私呼原处于紧急状态，讨论同一通话的降级。",
+    "CF 收到的降级请求为 re-INVITE 且 MCPTT 业务正文 emergency-ind=false；相关后续事件要对上该过程。",
+    "仅 TS 24.379 V16.14.0 Stage 3 的限定调用；不默认任何授权已经通过或后续消息已接收。"
+  ],
+  "claims": [
+    {
+      "id": "r16-calls-private-downgrade-denial",
+      "title": "两种降级 403 的条件和正文不同",
+      "conditions": [
+        "CF 审核实际入站请求；先考虑 SDP 与优先标志组合，再分私呼取消未获权和请求头仍为配置紧急值。"
+      ],
+      "conclusion": "若没有任何媒体流同时满足参数及至少一种 codec/格式可接受，则 488 并停止；emergency-ind=false 且带 imminentperil-ind 违例，返回 403/Warning 文本码 150，alert-ind 本身可有可无。私呼取消许可 false 或缺失时，403 含 emergency-ind=true，若明确请求撤警且未授权再含 alert-ind=true，随后停止。若实际带紧急 Resource-Priority，另有独立 403 和停止，不承接前项的正文要求。",
+      "normative_strength": "SDP 校验、组合拒绝、两种拒绝及所列正文为 SHALL。",
+      "limitations": [
+        "单独 403 不足以识别原因或证明通话已结束。头值守卫不要求入站必带普通头；撤警许可的缺失无本条默认。 发起端仍须按 §§11.1.1.2.1.4、6.2.8.3.3 带普通档；有 emergency-ind=true 的响应与完全无 MCPTT 正文的客户端回退条件不同。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.4 入口及步骤 1–4"
+          ],
+          "printed_pages": [
+            384,
+            385
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.13.3–.4"
+          ],
+          "printed_pages": [
+            113
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.17"
+          ],
+          "printed_pages": [
+            117,
+            118
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "表 4.4.2-2（150 行）"
+          ],
+          "printed_pages": [
+            37
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.4 步骤 4、负响应与注 2"
+          ],
+          "printed_pages": [
+            360,
+            361
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.8.3.3（普通优先级）"
+          ],
+          "printed_pages": [
+            73
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-calls-private-downgrade-clear",
+      "title": "通话紧急记录与告警记录独立清理",
+      "conditions": [
+        "CF 已走到获准取消私呼紧急状态的步骤 5，未在前序拒绝停止。"
+      ],
+      "conclusion": "CF 清原发起者与目标间的进行中紧急私呼记录。只有另有 alert-ind=false 且撤警获准，才清尚未撤销的告警记录；有 originated-by 取其 MCPTT ID，否则取请求发送者 MCPTT ID。撤警检查仍取请求方对应配置。",
+      "normative_strength": "前述缓存动作与身份条件按 SHALL 分支执行。",
+      "limitations": [
+        "不带 alert-ind 不等于撤警申请；清缓存不是释放全通话、不是已收到对端响应。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.4 步骤 5–6"
+          ],
+          "printed_pages": [
+            385
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.13.3–.4"
+          ],
+          "printed_pages": [
+            113
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-calls-private-downgrade-forward",
+      "title": "下游 re-INVITE 可写 emergency=false、alert=true",
+      "conditions": [
+        "CF 在已授权取消私呼紧急状态的分支构造发向入站 resource-lists 所列用户的 re-INVITE。"
+      ],
+      "conclusion": "复制收到的 MCPTT 正文并将 emergency-ind 设 false；明确 alert-ind=false 且撤警授权时设 alert-ind=false，有 originated-by 按此支复制；明确 alert-ind=false 且不获授权时改写 alert-ind=true。Resource-Priority 用 OnNetwork 的 normal-resource-priority namespace/priority；收到这份下游 re-INVITE 的 200 时缓存其 Contact。",
+      "normative_strength": "所列构造、条件字段、转发和下游 Contact 缓存为 SHALL。",
+      "limitations": [
+        "缺席的 alert-ind 不按 false 处理；下游 200 和 Contact 不代替上游 200 或撤警结果。 .6 步骤 3b、3c 字面写 SIP INVITE，按其 re-INVITE 降级入口和步骤 2 解读，不借初始请求。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.4 步骤 6"
+          ],
+          "printed_pages": [
+            385
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.6"
+          ],
+          "printed_pages": [
+            386,
+            387
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.19（正常优先级）"
+          ],
+          "printed_pages": [
+            118,
+            119
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-calls-private-downgrade-warning",
+      "title": "上游 200/149、对应 ACK 和实际收到 INFO 分开判断",
+      "conditions": [
+        "CF 实收其下游 re-INVITE 的 200 且还未把响应发给邀请者；后续 ACK 与邀请端实收 INFO 是分别适用的事件。"
+      ],
+      "conclusion": "CF 生成响应、为入站 offer 作 SDP answer 并与媒体面交互后发送。明确 alert-ind=false 且撤警未获权时上游 200 带 Warning 文本码 149。CF 实收这份带 149 的上游 200 的 ACK，才按该分支发同一邀请方对话的 SIP INFO，包 g.3gpp.mcptt-info、MCPTT 正文 alert-ind=true。邀请端实际进入 §6.2.8.3.7 的 INFO 处理且在 MPEA 4，则 alert-ind=true 回 MPEA 3，false 进 MPEA 1；此拒绝分支给 true。",
+      "normative_strength": "所列 CF 应答、条件告警、ACK 触发 INFO 和客户端条件状态转移为 SHALL。",
+      "limitations": [
+        "150 与 149 不是响应状态码；149 不是撤警已完成。不能用任意 ACK、发端 INFO 记录或初建 MPEA 2 代替所列接收条件；不从别的 INFO 分支带入 emergency-ind=true。 实收该 re-INVITE 2xx 的 MEPP 1、MEPC 1 与撤警独立。.2.1.4 的 2xx 步骤 4 写 priority group call、INFO 入口写 ongoing group session；不补私呼客户端分派或无 149 时的无条件结论。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.4 的 200 / ACK 分支"
+          ],
+          "printed_pages": [
+            385,
+            386
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.18"
+          ],
+          "printed_pages": [
+            118
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.8.3.7 步骤 2"
+          ],
+          "printed_pages": [
+            75
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.4.1、表 4.4.2-1 的 Warning 文本结构"
+          ],
+          "printed_pages": [
+            33,
+            34
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "表 4.4.2-2（149 行）"
+          ],
+          "printed_pages": [
+            37
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.4 的注 1、2xx 及 INFO 接收段"
+          ],
+          "printed_pages": [
+            361
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-emergency-private-call-alert",
+    "r16-calls-offnetwork-private-emergency-downgrade",
+    "r16-calls-server-private-call-release",
+    "r16-calls-preestablished-emergency-private-confirmation"
+  ],
+  "limitations": [
+    "不能把降级当作 BYE、SIP CANCEL、离网降级、普通初建或组呼。状态、缓存、两侧事务和媒体交付分别判断。",
+    "CF 撤警授权条文仅列告警许可字段 true 与 false，不从私呼取消字段的缺失规则推导撤警字段缺失；不扩展外部 SIP/媒体处理。",
+    "§11.1.1.2.1.4 的注 1、2xx 撤警分支及 INFO 接收入口有组呼／组会话字样；不据此断言私呼终端必然分派 INFO，不把调用歧义写成固定实现。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
