@@ -3351,9 +3351,9 @@ Q1 接收同场取消仍应处理并确认；Q2 的 TFP8 到期按本端隐式�
 
 可判甲松开后覆盖者乙能否继续本次发言，谁收到 Idle/Taken、D 的资源如何回收。
 
-G: Floor Taken 与 D: Start-stop 可同时成立；仅在各 D 定时器运行时移交对应 T1/T2。
+G: Floor Taken 与 D: Start-stop 可同时成立；仅在各 D 定时器运行时移交对应 T1/T2。 NCF 实收 CF 的无 Track Info Taken，已存双话权获准者 SSRC 且来向无 Indicator/G=0 时，向非仅听覆盖一路的本地 P 发 Taken；G=1 时保存来向获准参与者 SSRC，并按本地收听策略分别发 Taken 与 G=0 的 Idle。合成 Idle 不代替实收 CF 的无 Track Info 且 G=1 的 Idle 清缓存入口。
 
-尚未建立：不将双话权结束等同整组空闲或媒体可闻，不从 D 终止推定定时器按完整配置值重启。
+尚未建立：不将双话权结束等同整组空闲或媒体可闻，不从 D 终止推定定时器按完整配置值重启。 保存 §6.5.4.9(2)(d)(i) 发送 Taken 而字段/序号段写 Idle 的差异；不推定收件分组互斥、实际送达、缓存已清或媒体已到。
 
 [读取主题](topics/media/on-network-dual-floor-handover.md)
 

@@ -6,9 +6,9 @@
   "title": "在网双话权交接：甲松开一般话权，乙要重新抢话吗？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.380-v16.9.0",
-  "condition_rule": "每条声明继承全部 common_conditions，再叠加本条 conditions；关联主题不是必经流程。",
+  "condition_rule": "每条声明继承全部 common_conditions，再叠加本条 conditions；关联主题不是必经流程。 原有 general-holder-release-notifies-listener-subsets-while-switching-talker、terminate-transfers-running-dual-timer-values-and-preserves-current-burst、override-holder-release-is-not-general-handover 三条仍限定已建立双话权、一般持有者甲被乙覆盖的控制侧场景，按实际进入 G 或 D 的事件读取。新增 ncf-dual-taken- 开头的三条仅取非控制侧相关实收与本地保存状态，不要求 G/D 已经历交接。",
   "common_conditions": [
-    "固定 TS 24.380 V16.9.0，Rel-16 Stage 3；普通在网组呼已建立双话权，G 的话权持有人甲被乙覆盖；不支持 multi-talker，本篇不含音频切入。按实际进入一般或覆盖状态机的事件读取。"
+    "固定 TS 24.380 V16.9.0，Rel-16 Stage 3；普通在网 MCPTT 组呼中的双话权及非控制侧收到相关通知，不支持 multi-talker，不含音频切入。控制侧交接与非控制侧入向通知按各声明的实际角色、事件和状态适用。"
   ],
   "claims": [
     {
@@ -118,6 +118,118 @@
           "printed_pages": [
             100,
             101
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ncf-dual-taken-stored-ssrc-nonoverriding-listener-set",
+      "title": "已存覆盖话权 SSRC 时，G=0 或无 Indicator 的 Taken 不向只听覆盖一路者发送",
+      "conditions": [
+        "NCF 服务器接口实收 CF 发来的 Floor Taken，入向无 Track Info；本场已存关联双话权的获准者 SSRC，实收消息无 Floor Indicator 或其中 G=0。"
+      ],
+      "conclusion": "按发送句，向本场所有本地 P 发 Floor Taken，排除只收听覆盖发言者 RTP 的参与者。该项随后把收到字段与本地序号值加 1 的说明写作 Floor Idle。",
+      "normative_strength": "受入向与本地保存条件限制的通知对象为 SHALL。",
+      "limitations": [
+        "不把字段说明对象静默改成 Taken，不解释为另外生成的 Floor Idle；不据此判定丢包、缓存清除、整体失权、字段或出向序号最终如何编码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.9 items 2 and 2(d)(i): stored dual-grantee state, restricted recipient set and literal Taken/Idle difference"
+          ],
+          "printed_pages": [
+            109,
+            110
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.1: per-client P instance scope"
+          ],
+          "printed_pages": [
+            113
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ncf-dual-taken-g1-store-and-synthesize-idle",
+      "title": "无 Track Info 的 G=1 Taken 保存双话权 SSRC，并按本地策略发 Taken 和合成 Idle",
+      "conditions": [
+        "NCF 服务器接口实收来自 CF 的 Floor Taken，入向无 Track Info，带 Floor Indicator 且 G=1。"
+      ],
+      "conclusion": "保存来向 SSRC of granted floor participant 并关联双话权。按本地策略，向收听覆盖发言者 RTP 的参与者发 Taken，向只收听覆盖发言者 RTP 的参与者发 Idle。两种出向报文按其分支带来向字段及本地序号值加 1，出向 Idle 的 Floor Indicator G 位设为 0。",
+      "normative_strength": "保存、按策略组分别发送、两条序号构造和出向 Idle G 位的修改为 SHALL。",
+      "limitations": [
+        "不以收件前已存 SSRC 为条件，G=1 的步骤先保存。两组并未被明文设为互斥；不决定客户端已实收两条、到达顺序、已听到 RTP 或按同一规则清缓存。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.9 item 2(b) and 2(d)(ii)(A)/(B): save received grantee SSRC, policy groups and outgoing Idle G=0"
+          ],
+          "printed_pages": [
+            110
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ncf-dual-taken-synthesized-idle-vs-actual-clear",
+      "title": "NCF 合成出向 G=0 Idle 与实际 CF Idle 清缓存是不同的事件",
+      "conditions": [
+        "已区分这场的 NCF 出向合成 Idle 与实际 NCF 从 CF 收到的 Floor Idle；缓存删除的比较入口要求入向 Idle 无 Track Info 且带 Floor Indicator、其中 G=1。"
+      ],
+      "conclusion": "出向合成 Idle 不触发按实际收到 CF Idle 处理的动作。§6.5.4.8 第 2(b)(ii) 项在实收所述 CF Idle 时要求删除所存双话权 SSRC；第 3 项是该实收 Idle 过程的被动队列清空。实际 RTP 转发另看分发器的实收指示与来包 SSRC、当前缓存及收听策略。",
+      "normative_strength": "实际入向 Idle 按各明示步骤为 SHALL；分发指示依独立的实收流量信号与 SSRC 判断。",
+      "limitations": [
+        "只见出向 G=0 Idle、CF 收到 Ack 或终端没见 Taken，都不是实收那条入向 Idle、已清队、实际缓存内容或媒体到达的证明；不添加统一纠错或缓存回收算法。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.9 item 2(d)(ii)(B): synthesized Idle output"
+          ],
+          "printed_pages": [
+            110
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.8 item 2(b)(ii)(B) and item 3: indicated ingress Idle discard and queue action"
+          ],
+          "printed_pages": [
+            109
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.12 items 2–3: separate distributor report and packet source branches"
+          ],
+          "printed_pages": [
+            111
           ]
         }
       ],
