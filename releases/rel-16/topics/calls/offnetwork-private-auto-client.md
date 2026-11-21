@@ -40,3 +40,5 @@
 依据：§11.2.2.4.3.3–5，页 428–429；表 B.3.2-1 的 TFP4 行，页 537；表 C.2.2-1 的 CFP4 行，页 542。
 
 等用户应答、取消或退出，见[离网手动私呼](offnetwork-private-manual-client.md)。若记录是 SIP INVITE 或 2xx，而不是这里的离网私呼消息，见[在网按需私呼的客户端应答](private-client-answer-evidence.md)。本文不展开紧急呼叫、密码算法、媒体播放或后续话权仲裁。
+
+如果 SETUP、ACCEPT 或 ACK 已在抓包中，但解析器因陌生字段、字段顺序或必需部分过短停止，先查[离网 MONP 的字段定界与缺失诊断](offnetwork-monp-ie-decoding.md)，再用本页的状态机判断终端收到该消息后的动作。

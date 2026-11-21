@@ -1,0 +1,168 @@
+{
+  "topic_id": "r16-calls-offnetwork-monp-ie-decoding",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "离网 MONP 的未知字段、顺序与缺失诊断",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "先按当前消息定义确定必备部分与非必备部分的边界，再分别检查字段定界、顺序和出现条件。",
+  "common_conditions": [
+    "TS 24.379 V16.14.0 Annex I 所述标准 MONP 消息的接收端；不套用在网 SIP 或 RTCP 话权包。"
+  ],
+  "claims": [
+    {
+      "id": "r16-calls-offnetwork-monp-ie-decoding-unknown",
+      "title": "非必备部分的未知 IEI 用缺省格式定界",
+      "conditions": [
+        "当前标准 MONP 消息的非必备部分出现本消息不认识的 IEI，且具体协议未另定规则。"
+      ],
+      "conclusion": "读 IEI 所在八位组：位 8 为 1，整个 IE 占 1 个八位组，可为 1 型 TV 或 2 型 T；位 8 为 0 且位 7 到位 4 全为 1，用 6 型 TLV-E、2 个长度八位组；位 8 为 0 其余组合用 4 型 TLV、1 个长度八位组。LI 只数值部分，按 IEI、LI 与值合计跳过；未知 IEI 出现本身不构成错误。",
+      "normative_strength": "具体协议未另行规定时，接收端须按缺省规则定界、跳过未知 IE，并且不能仅以出现未知 IEI 为由报错。",
+      "limitations": [
+        "只按足以确定边界的编码说明跳过；不能据未知字段豁免其余检查，也未统一规定 LI 所示字节不足时的处置。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "I.2.2.2"
+          ],
+          "printed_pages": [
+            599
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "I.2.2.7"
+          ],
+          "printed_pages": [
+            603
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "I.2.2.8"
+          ],
+          "printed_pages": [
+            604
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "I.2.2.9"
+          ],
+          "printed_pages": [
+            604
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-calls-offnetwork-monp-ie-decoding-order",
+      "title": "已知 IE 乱序按本消息已知格式解码",
+      "conditions": [
+        "当前标准 MONP 消息的非必备部分有在本消息中已知的 IEI，位置不符合该消息的顺序规则。"
+      ],
+      "conclusion": "按该消息对该 IEI 定义的格式解码；3 型还按其在该消息中规定的长度。除非另有规定，单纯乱序不构成错误，不套未知 IEI 的定界规则。",
+      "normative_strength": "已知乱序 IE 按本消息定义解码；除非另有规定，接收端不能仅以乱序为由报错。",
+      "limitations": [
+        "不推定乱序消息一定合格、重复字段一律取最后一个，或当前消息可以借用另一种消息的 IEI 定义。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "I.2.2.7"
+          ],
+          "printed_pages": [
+            603
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "I.2.2.8"
+          ],
+          "printed_pages": [
+            604
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-calls-offnetwork-monp-ie-decoding-presence",
+      "title": "必备部分过短与 M/C/O 字段出现诊断分开",
+      "conditions": [
+        "接收端检查标准 MONP 消息的必备部分完整性，或按该消息的 M/C/O 属性检查字段出现与否。"
+      ],
+      "conclusion": "消息短到放不下完整必备部分时，诊断必备消息部分错误；处置见相关协议。M 缺失诊断 missing mandatory IE，非必备部分也可有 M。C 只在非必备部分，用消息本身的充分静态条件，分别诊断应有未有和应无却有。O 也只在非必备部分，不能仅凭出现或缺失诊断上述 M/C 三类错误。",
+      "normative_strength": "所列诊断以各自条件为准；未规定不同错误的诊断次序或错误后的统一处理。",
+      "limitations": [
+        "接收端状态不是 C 的静态条件，但状态或资源仍可导致其他错误；不定义统一丢包、应答码或重传。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "I.2.2.6.0"
+          ],
+          "printed_pages": [
+            602
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "I.2.2.6.1"
+          ],
+          "printed_pages": [
+            602,
+            603
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "I.2.2.8"
+          ],
+          "printed_pages": [
+            603,
+            604
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-offnetwork-private-auto-client",
+    "r16-calls-offnetwork-private-manual-client",
+    "r16-calls-offnetwork-group-client"
+  ],
+  "limitations": [
+    "只解释标准离网消息 Annex I 的编码和诊断，不保证整个消息通过，不推导具体终端动作、媒体或业务结果。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
