@@ -31,3 +31,5 @@ PF 须先释放**所有使用这项预建立会话的呼叫中的相关参与者
 甲收到 PF 的预建立 BYE，也要检查还有没有呼叫在用。有已建立的业务会话，甲须按 TS 24.380 逐会话退出；无业务会话使用时，甲断开面向 PF 的媒体资源，并对收到的 BYE 回 200。**客户端这一段没有规定“建立中就发 CANCEL”**，不能把 PF 收到客户端 BYE 时的规则倒过来套用。上述条款指向 TS 24.229 的 SIP 程序和 TS 24.380 的媒体程序，本页不推导未列出的超时或响应，也不凭一条记录判断双方已清理完毕。[§8.4.1.2 第 1、2 项，印刷页 165–166](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=166)；[§8.4.2.1 第 1(b) 项，印刷页 166](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=167)。
 
 若要查最初怎样建立这项会话，或没有业务使用时怎样修改、释放，见[预建立会话的生命周期](preestablished-session-lifecycle.md)。若只想挂断某通普通私呼，见[私呼释放与预建立会话的区别](private-client-release.md)。若关心各种 MC 业务共用的 Stage 2 流程，以及改为非活动和释放有何不同，见[修改媒体与释放整项会话](../bearers/common-preestablished-media-change-release.md)。[结构化条件与声明](preestablished-session-in-use-release.json)。
+
+若客户端没有发预建立对话内的 BYE，而是用 REFER 退出一通已经建立的预安排组呼，见[预安排组呼离会的 REFER 200 与控制侧 BYE](prearranged-participant-refer-leave.md)。它解释应答为何先于业务 BYE，不能照本页把预建立会话整体拆掉。
