@@ -1,0 +1,172 @@
+{
+  "topic_id": "r16-bearers-mbms-discovery-and-distribution-fields",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MBMS 已发现 TMGI：分发还缺哪些字段，三种 QCI 含义怎样区分？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "每条 claim 继承所有 common_conditions，再叠加自身消息类型和角色条件。通用表与同场组呼例的特定条件分开，不把前一往返成功当成本次请求完整或媒体实送。",
+  "common_conditions": [
+    "Release 16，Stage 2；依据 TS 23.280 V16.7.0。",
+    "限业务服务器与承担 MBMS 承载控制角色的另一业务服务器之间的发现、分发和释放信息流。不把表中状态解释成线协议序列、具体 SIP 字段或终端结果。"
+  ],
+  "claims": [
+    {
+      "id": "r16-bearers-mbms-discovery-qci",
+      "title": "发现请求与响应的 QCI 用途不同",
+      "conditions": [
+        "本次是业务服务器向承载控制服务器查询承载，或控制服务器回应本次发现查询。字段与缺项判断按通用表 10.7.2.4-1、10.7.2.5-1。本条所举的同场组呼用例对应 §10.7.3.9.2.2 步骤 3，须满足该场景前提。"
+      ],
+      "conclusion": "请求 M 为服务区标识列表、所需最大带宽，O 为期望 QCI；响应 M 为 TMGI 列表及相关信息、对应的发现成功服务区标识列表，O 为适用多载波时的频率及供 ProSe UE-to-Network relay 确定 PC5 转送组播包逐包优先级的 QCI。 同场组呼例的发现答复说明目标区是否有满足请求带宽的承载。",
+      "normative_strength": "M/O 为 Stage 2 表中信息元素状态。",
+      "limitations": [
+        "不把发现响应 QCI 当成分发回复的实际 QCI、PC5 优先级本身或网络/中继执行证明；本表不规定向中继交付该信息的具体信令。响应只支持其对应成功区域，不能替整个请求覆盖背书。 表 .5 未列 Bandwidth；没有回带宽数值不是该表缺 M 的证据，也不由可满足推导分发获准量。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.2.4、10.7.2.5"
+          ],
+          "printed_pages": [
+            120
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.9.2.2 适用条件及步骤 3"
+          ],
+          "printed_pages": [
+            138,
+            139
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-bearers-mbms-distribution-request-fields",
+      "title": "分发请求还须给出独立话权承载选择和 SDP",
+      "conditions": [
+        "业务服务器向具有所选承载的控制服务器请求媒体分发；同场组呼的 MC Group ID 比较另需符合 §10.7.3.9.2.2 的同区、同类、配置共享及联系信息前提并处于步骤 6a/6b。"
+      ],
+      "conclusion": "请求 M 为 TMGI、所需最大带宽、Separate floor control 是或否、媒体及话权 SDP；O 为期望 QCI、用于具体组呼的 MC Group ID。同场组呼示例的两份分发请求都包含 MC Group ID。",
+      "normative_strength": "M/O 为通用 Stage 2 表；场景步骤给出同场请求的实际字段。",
+      "limitations": [
+        "必须指明是否需要独立承载，不是必须分配。完整信息流记录与日志摘要/一份 SIP 报文不同；不据摘要认定遗漏，不由此给出线协议字段。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.2.6"
+          ],
+          "printed_pages": [
+            120
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.9.2.2 前提及步骤 6a–6b"
+          ],
+          "printed_pages": [
+            138,
+            140
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-bearers-mbms-distribution-response-fields",
+      "title": "分发回复中的实际 QCI、流标识和发送指示",
+      "conditions": [
+        "控制所选承载的服务器发本次媒体分发响应给申请服务器；涉及同场免播的判断另需处于 §10.7.3.9.2.2 的已配置同区同类共享场景和对应角色。"
+      ],
+      "conclusion": "响应 M 为 TMGI、所需最大带宽、媒体及话权 SDP；O 为实际 QCI、标出 SDP 中该场流的 Media stream identifier、说明应否发送持续中组通信媒体的 Media distribution indicator。场景中给服务器 3 的实际答复表明另一服务器已在本条承载播送同场媒体，3 可决定不重复广播。",
+      "normative_strength": "通用字段 M/O；场景依实际答复决定免重复为可选。",
+      "limitations": [
+        "表未把响应带宽称为获准量，未给缺失分发指示的默认值、拒绝报文结构或场景消息与可选字段的固定编码关系。TMGI、流标识及响应类型本身不证明该场已播或终端已收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.2.7"
+          ],
+          "printed_pages": [
+            121
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.9.2.2 前提及步骤 7a–7b、9–10"
+          ],
+          "printed_pages": [
+            138,
+            140
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-bearers-mbms-distribution-release-fields",
+      "title": "媒体分发释放带的是要释放的带宽",
+      "conditions": [
+        "实际是业务服务器向已用 MBMS 承载的控制服务器发送媒体分发释放，而非申请或答复。"
+      ],
+      "conclusion": "M 为 TMGI、本次释放的带宽；O 为针对具体组呼的 MC Group ID。表题写 request 不改变 §10.7.2.10 标题、介绍及字段语义所指的释放。",
+      "normative_strength": "M/O 为释放信息流的 Stage 2 表。",
+      "limitations": [
+        "不把这里的带宽解释成所需最大带宽；不从释放申请推出释放已经执行、整条承载已拆或本页给出了释放响应结构。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.2.10"
+          ],
+          "printed_pages": [
+            121
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-bearers-same-group-call-broadcast",
+    "r16-bearers-mbms-relay-media-continuity",
+    "r16-media-mbms-pf-floor-routing"
+  ],
+  "limitations": [
+    "只用对应消息的完整 Stage 2 信息流记录检验 M 项；不从单份日志或 SIP 报文的省略推导协议违规。",
+    "没有定义 QCI 间的自动等值、发不发的缺省行为、网络配置生效或终端收到媒体的证据。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
