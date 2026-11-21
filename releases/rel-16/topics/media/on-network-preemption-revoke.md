@@ -109,3 +109,5 @@ U收到Release时，若subtype要求ACK，须回Floor Ack，Message Type=4、Sou
 
 - [普通在网话权客户端](on-network-floor-client.md)：普通客户端请求、授权和释放事件。
 - [Idle服务器条件授予](on-network-idle-floor-server.md)：仅已有Idle上的非排队请求，不补本页排队推进。
+
+若组实际配置了 audio cut-in，查[低或同优先级请求怎样替换当前发言人](on-network-audio-cut-in.md)，不要套本页按有效抢占优先级的入口。
