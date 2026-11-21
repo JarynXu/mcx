@@ -1,0 +1,143 @@
+{
+  "topic_id": "r16-calls-offnetwork-floor-queueing-capability",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "离网话权排队：私呼看双方 SDP，组呼看哪一位发出的请求？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "每条声明继承全部 common_conditions，再叠加本条 conditions；关联主题不是必经流程。",
+  "common_conditions": [
+    "固定 TS 24.380 V16.9.0，Rel-16 Stage 3；离网 MCPTT 话权请求排队。每条按呼叫类型和实见完整报文判定。"
+  ],
+  "claims": [
+    {
+      "id": "private-call-offer-and-answer-both-advertise-queueing",
+      "title": "离网私呼排队能力看本次 SETUP 与 ACCEPT 中对应 SDP",
+      "conditions": [
+        "离网 MCPTT 私呼发起，且被叫接受私呼时核对对应的 SDP offer/answer。"
+      ],
+      "conclusion": "PRIVATE CALL SETUP REQUEST 带 offer，PRIVATE CALL ACCEPT 带 answer。支持排队的主叫须在 offer 带 mc_queueing；被叫在 offer 已带且自己支持时须在 answer 带。该参数按裸 token 编码，表示支持而非实际入队。",
+      "normative_strength": "§14.6.1 的承载，§14.6.2 的两个 shall，§§12.1.2.2–.3 的语义和语法。",
+      "limitations": [
+        "offer 单方表明支持；接受呼叫不等于接受排队能力。不完整抓包不能判 answer 缺参，完整 answer 缺参也不裁定未填原因或呼叫失败。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "14.6.1–.2 private call carrier and queueing offer/answer rules"
+          ],
+          "printed_pages": [
+            240,
+            241
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "12.1.2.2–.3 MCPTT fmtp queueing semantics and syntax"
+          ],
+          "printed_pages": [
+            225,
+            226
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "group-announcement-does-not-negotiate-peers-queueing-capability",
+      "title": "离网组呼通告不协商能力；普通组的发起者声明与个体 F 位是两项证据",
+      "conditions": [
+        "组呼由 GROUP CALL ANNOUNCEMENT 或 GROUP CALL BROADCAST 发起；普通组呼的 mc_queueing 和参加者反馈只按各自条件读取。"
+      ],
+      "conclusion": "这两类组呼建呼不协商本次所用能力。普通组呼的发起者若支持排队须在 SDP offer 带 mc_queueing；在使用排队的组呼中，参加者按条文注用自己的 Floor Request 的 Floor Indicator 表明支持，表中 F=1 表示支持。",
+      "normative_strength": "§14.6.1 的不能协商，§14.6.2 的组呼发起 shall 与其注，§8.2.3.15 表 8.2.3.15-2 的 F 位。",
+      "limitations": [
+        "发起者的参数不证明其他参加者的支持，也不证明入队。不能把后续 F 位当成私呼 SDP answer 或另造 ACK，不推导广播的排队仲裁。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "14.6.1–.2 group/broadcast non-negotiation and group announcement/participant indications"
+          ],
+          "printed_pages": [
+            241
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.3.15 Table 8.2.3.15-2, F-bit semantics"
+          ],
+          "printed_pages": [
+            156
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "group-current-arbitrator-queueusage-f-bit-and-capacity",
+      "title": "普通离网组呼中，通告不能补缺失 F 位，F=1 也不是入队凭据",
+      "conditions": [
+        "当前仲裁终端在 O: has permission；普通离网组的组配置适用，收到按 §4.1.1.5 已判非抢占的 Floor Request。"
+      ],
+      "conclusion": "QueueUsage=true 时，本请求 F=0 或缺 Floor Indicator 须回 Floor Deny cause #1；发起者的 SDP 不代替本请求字段。QueueUsage=true 且 F=1 仍受队列容量限制，满时须回 cause #7。若要确认终端进入 queued，需核对该终端收到并按自身身份及仲裁者 SSRC 条件接受的队列通知。",
+      "normative_strength": "§§7.2.3.5.1、.5.4 的持有者及非抢占组请求，§7.2.3.6.3 的接收条件。",
+      "limitations": [
+        "不能把 F=1 或发起者通告当成入队、授予或 RTP 的证据，不把适用的组配置守卫套用到私呼、广播或抢占。首次队列通知身份字段与接收条件见原主题，未在此补实现。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.5.1, 7.2.3.5.4 roles, non-pre-emptive QueueUsage/F-bit branches and queue-capacity responses"
+          ],
+          "printed_pages": [
+            128,
+            129
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "7.2.3.6.3 Floor Queue Position Info receiver and pending-to-queued conditions"
+          ],
+          "printed_pages": [
+            133,
+            134
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-offnetwork-floor-preemption",
+    "r16-calls-offnetwork-floor-participant",
+    "r16-calls-offnetwork-private-auto-client"
+  ],
+  "limitations": [
+    "不从离网组呼的组配置推定私呼或广播的排队策略，不裁定固定版没有给出的队列排序、字段生产修订和未填写参数的原因。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

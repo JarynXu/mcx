@@ -3297,6 +3297,16 @@ Q1 接收同场取消仍应处理并确认；Q2 的 TFP8 到期按本端隐式�
 
 [读取主题](topics/calls/conference-event-subscription-termination.md)
 
+## Rel-16 离网私呼排队协商、组呼公告和 F 位
+
+可判 mc_queueing 在离网私呼的 SDP offer/answer 与普通组呼公告中各表示什么，以及 GROUP CALL BROADCAST 不进行此类能力协商。
+
+按请求者的 F 位、适用组 QueueUsage 与队列容量区分普通离网组呼的回复。
+
+尚未建立：单凭公告、任一端参数或 F=1，不证明所有参加者支持、某个请求已入队或已获话权。
+
+[读取主题](topics/calls/offnetwork-floor-queueing-capability.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。
