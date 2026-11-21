@@ -57,3 +57,5 @@ CF 向订阅者甲生成会议通知时，SIP 头的 `P-Asserted-Identity` 是 *
 通知列出的是这场会话报告的参与者，不能把列出的用户或 endpoint 数量当作注册设备数、在线人数或实际收听人数。甲的收件人 ID 也不是乙的状态证据。依据：[§6.3.3.4，印刷页 124](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=125)；向已订阅参与者发送见 [§10.1.3.4.2，印刷页 304](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=305)。
 
 若问题是断线后如何**重新加入**，先确认原来是什么组呼。普通按需聊天组中，用户回到覆盖后主动请求加入，读[聊天组的按组加入与原场判断](chat-establish-join.md)；普通按需预安排组才读[预安排组重入与晚入](rejoin-late-entry.md)。关心谁属于 G、谁已归属，读[组名单查询](../groups/group-list-query.md)或[组动态数据](../groups/group-dynamic-data.md)。这里不展开临时组中控制与非控制功能之间的互订、两个 MIME 正文的完整语法、RFC 订阅生命周期或话权流程。
+
+临时组呼还在进行，退订或计时器到期后要判断哪条服务器间订阅会结束，查[最后一笔 conference 事件订阅怎样收尾](conference-event-subscription-termination.md)。

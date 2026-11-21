@@ -3287,6 +3287,16 @@ Q1 接收同场取消仍应处理并确认；Q2 的 TFP8 到期按本端隐式�
 
 [读取主题](topics/bearers/mcx1-coordination-reference-point.md)
 
+## Rel-16 临时组 conference 事件退订与最后一个订阅到期
+
+可判 CF、NCF 各自何时结束在对方功能上建立的 conference 事件订阅，以及哪向订阅不纳入 NCF 清点。
+
+区分主动退订的 SIP 200 OK、订阅计时器到期及各订阅对话的清理证据。
+
+尚未建立：不凭一笔退订回复证明所有订阅均已终止、组呼已释放或用户已退组。
+
+[读取主题](topics/calls/conference-event-subscription-termination.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。
