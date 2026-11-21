@@ -1,0 +1,163 @@
+{
+  "topic_id": "r16-calls-sip-xml-confidentiality-copy",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT SIP XML 保密保护：怎样区分元素和 URI 属性，转发时能照抄密文吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明继承公共条件，并只按实际接收、解密和复制的事件及对应方向判读。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0，Rel-16 Stage 3。第 9–12 章业务 SIP 请求中 §4.8 约定的敏感 XML 值；不取第 7 章授权、预建立 REFER 嵌套正文、SIP 报头 URI 或用户面。"
+  ],
+  "claims": [
+    {
+      "id": "xml-element-and-attribute-confidentiality-markers-differ",
+      "title": "XML 元素按 EncryptedData，XML URI 属性按保护域名判定",
+      "conditions": [
+        "实际解析 §4.8 涵盖的 XML 元素或 URI 属性，按各自保护形态识别。"
+      ],
+      "conclusion": "包含 EncryptedData 的 XML 元素按元素保密处理；XML URI 属性用 MCPTT 保密保护域名识别。都需查实际解密结果，不能从标志证明成功。",
+      "normative_strength": "§6.6.2.4.1 的两种判定，§6.6.2.3.4 与 .4.3 的属性结构对照。",
+      "limitations": [
+        "不把 SIP 报头 URI、普通 sip: 或任意属性全当密文。发送/接收的 key-id 拼法和保护域名引文编号有差异；不补规则或域名值。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.8 scope and resource-list attributes"
+          ],
+          "printed_pages": [
+            45,
+            46
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.6.2.3.4 and 6.6.2.4.1 and 6.6.2.4.3 protection markers and textual differences"
+          ],
+          "printed_pages": [
+            141,
+            142
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "xml-element-decryption-140-is-not-an-attribute-generic-reply",
+      "title": "403/140 对应所列元素解密失败，不代替 URI 属性错误处理",
+      "conditions": [
+        "进入 §6.6.2.4.2 元素解密程序；接收前置检查及 URI 属性程序按实际走到的步骤区分。"
+      ],
+      "conclusion": "缺所需 EncryptedData 或子元素，或元素解密失败，回 403 且 Warning 文本编号 140。已施加的完整性检查在元素解密前；完整性失败不继续该条。属性解密 §6.6.2.4.3 另列恢复步骤，未列同一失败回包。",
+      "normative_strength": "§6.6.1.4 前置顺序与停止、§6.6.2.4.2 的回包与成功，§6.6.2.4.3 为对照。",
+      "limitations": [
+        "有标志不是解密成功。总述回引元素解密；不是全局 URI 属性错误协议，也不把完整性 139 当保密 140。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.6.1.4 ordering and element cross-reference"
+          ],
+          "printed_pages": [
+            139
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.6.2.4.2–.3 element versus URI failure handling"
+          ],
+          "printed_pages": [
+            141,
+            142
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.6.3.4.2 integrity comparison only"
+          ],
+          "printed_pages": [
+            147
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "copying-protected-xml-checks-reception-before-egress-policy",
+      "title": "复制业务值时先解密，出站启用保护才用出站方向重新保护",
+      "conditions": [
+        "MCPTT 服务器实际按 §6.6.2.5 将收到的 SIP 请求中的业务 XML 元素或属性不作修改地复制进发出的 SIP 请求；相关值按 §6.6.2.4.1 判为加密。"
+      ],
+      "conclusion": "按入站方向密钥和实际元素或属性程序解密；成功才继续。该复制条款随后看出站配置，已启用则用出站密钥重新保护，未启用则按该条使用解密值。客户端与服务器互发使用 CSK；同域或跨域服务器间使用 SPK。入站实际保护形态和出站配置不是同一个守卫。",
+      "normative_strength": "§6.6.1.2 的复制例外；§6.6.2.2、.3.1–.2 和 .5 对入出站的方向、配置及实际复制动作。",
+      "limitations": [
+        "不把原样复制写成原密文直接转发。不假定每个未知属性或其他 SIP 转发场景执行该条，不提供关闭保护的步骤或密码实现。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.6.1.2 copy exception"
+          ],
+          "printed_pages": [
+            138
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.6.2.2 and 6.6.2.3.1–.2 CSK/SPK and applicable configuration"
+          ],
+          "printed_pages": [
+            139,
+            140
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.6.2.5 element and attribute copying actions"
+          ],
+          "printed_pages": [
+            142,
+            143
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-sip-xml-integrity-verification",
+    "r16-calls-sip-mime-body-order",
+    "r16-calls-session-gruu-sensitive-identity"
+  ],
+  "limitations": [
+    "固定原文的发送/接收差异不静默纠正；不据此配置未知域名、接收容错、密钥分发或其他 Release。",
+    "接收、保护形态、解密成功、出站合规和业务结果都需单独证据。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
