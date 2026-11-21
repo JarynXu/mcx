@@ -6,7 +6,7 @@
   "title": "已有的在网 MCPTT 预安排组呼怎样并接？拆开后原组呼还能继续吗？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
-  "condition_rule": "各项声明继承共同范围，分别按邀请、确认和拆分的实际触发及本项条件使用。",
+  "condition_rule": "各项声明继承共同范围，分别按邀请、确认和拆分的实际触发及本项条件使用。 新增 ncf-merge-speaker-info- 三条只论已有预安排组成组并接的本组 NCF，匹配的 ACK、缓存、报文构造与可加的位置正文分别取各自条件。旧六条适用范围不变。",
   "common_conditions": [
     "在网 MCPTT 已有预安排组呼，讨论组成组的非控制 MCPTT 功能在组级并接或拆分中的职责。"
   ],
@@ -223,6 +223,131 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "ncf-merge-speaker-info-after-ack-and-cache",
+      "title": "本组并接实收 ACK 且有旧讲话者缓存，才向对方 CF 发该 SIP INFO",
+      "conditions": [
+        "本组成组已有预安排组呼，已进入接受并接邀请的非控制功能流程。"
+      ],
+      "conclusion": "本组媒体初始化完成后，若报告了当前讲话者则缓存资料，随后发送并接 INVITE 的 200。缓存不是发送该 200 的前提。NCF 实收该 200 对应的 SIP ACK，若有缓存的讲话者资料，须构造并向对方 CF 发送 SIP INFO；该 ACK 段将有缓存时的 INFO 发送列在请求最终媒体切换之前；最终切换指令不以有缓存或已收到 INFO 的响应为条件。",
+      "normative_strength": "初始化处理完成后发送邀请的 200、资料可得时缓存，以及实收匹配 ACK 后按各自条件发送 INFO 和请求最终切换，均为 SHALL。",
+      "limitations": [
+        "查同一并接腿的实际 ACK，而不是并接 200、发起端发送 ACK 的记录或其他 SIP 响应。没有缓存时不由这条规则构造空的讲话者 INFO。INFO 转告不是重复 RTCP Floor Request、对方实收或新话权授予；没有将 INFO 的 200 设为发出最终切换指令的条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.2.3 items 8–10, note 2 and ACK paragraph items 1–2"
+          ],
+          "printed_pages": [
+            261,
+            262
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "J.1.2.1–.2 and .9: old speaker transfer to temporary-group CF, one INFO generated after setup"
+          ],
+          "printed_pages": [
+            605,
+            606
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ncf-merge-speaker-info-package-and-references",
+      "title": "讲话者 INFO 分开写临时组和组成组，按原 Track Info 顺序传引用",
+      "conditions": [
+        "本组成组已有预安排组呼，已进入接受并接邀请的非控制功能流程；本组 NCF 实收对该次并接邀请 200 的 SIP ACK。 有此次切换初始化时缓存的当前讲话者资料，按此分支构造发往对方 CF 的 SIP INFO。"
+      ],
+      "conclusion": "Info-Package 填 g.3gpp.mcptt-floor-request。application/vnd.3gpp.mcptt-info+xml 中 mcptt-request-uri 是临时组 ID，mcptt-calling-group-id 是组成组 ID。另有 application/vnd.3gpp.mcptt-floor-request+xml，Content-Disposition 为 Info-Package。按每名当前讲话者填 general 或 dual、其终端 SSRC、实际 floor-priority、其 MCPTT 用户 ID，track-info 中带排队能力、参与者类型和一个或多个引用，顺序与 Track Info 的对应字段一致。过程规定有补充信息时带 floor-indicator。",
+      "normative_strength": "所列头、正文和每名讲话者字段为 SHALL；floor-indicator 在过程中的条件为信息可得。",
+      "limitations": [
+        "F.5 的 MIME 名与发送过程含 mcptt-，J.1.2.7 印刷名不含该前缀；不把它们声明成可互换或确认哪种实现收取。F.5.2 的 floor-indicator 未标可选，与发送条款的条件并存；不裁定该差异、规定缺省值或从常见解码器猜容错。给每人填写字段不等于规定把两个 XML 根拼在一个正文。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.4.1.3 items 1–3: INFO-package, two bodies and ordered references"
+          ],
+          "printed_pages": [
+            127
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.5.1–F.5.3 and table F.5.3-1: XML elements, order and floor type values"
+          ],
+          "printed_pages": [
+            574,
+            575
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "J.1.2.4 and .7: package name and literal MIME difference"
+          ],
+          "printed_pages": [
+            605,
+            606
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ncf-merge-speaker-info-location-report",
+      "title": "在应发的讲话者 INFO 中，位置 Report 须另满足三项条件",
+      "conditions": [
+        "本组成组已有预安排组呼，已进入接受并接邀请的非控制功能流程；本组 NCF 实收对该次并接邀请 200 的 SIP ACK。 有此次切换初始化时缓存的当前讲话者资料，按此分支构造发往对方 CF 的 SIP INFO。",
+        "NCF 有这台 MCPTT 客户端的位置，该位置未向 CF 发过或自上次发送以来有变化；主叫 MCPTT 用户配置档 ruleset 的 allow-location-info-when-talking 为 true。"
+      ],
+      "conclusion": "在必需的 INFO 业务正文和讲话者正文之外，再带 application/vnd.3gpp.mcptt-location-info+xml，location-info 根内写 Report。",
+      "normative_strength": "三个条件都满足须加入位置正文。",
+      "limitations": [
+        "不能仅凭有旧位置、组已并接或看到话权体就要求带位置；不把一般成员或组配置替代主叫用户权限。无缓存的普通 ACK 路径不靠位置补出 INFO，也不从 Report 存在推断坐标、实际收件、保存或处理。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.2.3 ACK paragraph item 1: sender INFO context"
+          ],
+          "printed_pages": [
+            262
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.4.1.3 item 4: available, unsent or changed, and caller profile true"
+          ],
+          "printed_pages": [
+            127
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "source_references": [
@@ -288,6 +413,27 @@
       "printed_pages": [
         262
       ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.4.1.3 items 1–4: speaker INFO package, identity roles, per-speaker fields and conditional location Report"
+      ],
+      "printed_pages": [
+        127
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "F.5.1–F.5.3 and J.1.2.1–.2, .4, .7–.9: exact body identifiers, procedure/schema and annex disagreement"
+      ],
+      "printed_pages": [
+        574,
+        575,
+        605,
+        606
+      ]
     }
   ],
   "related": [
@@ -298,7 +444,7 @@
     "r16-calls-temporary-group-call-tng3"
   ],
   "limitations": [
-    "不涉及客户端重入、离网同组呼叫择一或临时组创建。说明信令和媒体面职责边界，不给出报文构造、实现或实测证据。"
+    "不涉及单客户端重入、离网同组呼叫择一或新临时组的完整建会。补充此组成组并接时的讲话者 INFO，不重建对端仲裁、实际媒体交付或完整报文编码。"
   ],
   "verification": {
     "original_clauses_checked": true,

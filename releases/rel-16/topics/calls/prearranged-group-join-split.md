@@ -6,7 +6,7 @@
 
 **看到 200，媒体已经切过去了吗？** 在接受分支，本组功能先生成对邀请的 200 成功响应，写入媒体协商应答，再要求本组媒体面初始化向非控制模式的切换。这一步的媒体处理完成后，媒体面指示话权状态；若话权已被占用，还提供当前讲话者信息。本组功能在获得讲话者信息时缓存它，然后才把 200 发给对方控制功能。对方即使已收到 200，也不能据此判断本组媒体面已完成最终切换。〔§10.1.1.5.2.3，收到 INVITE 后步骤 6–10、注 2，印刷页 261–262〕
 
-本组功能收到确认（ACK）后，如果有缓存的当前讲话者信息，先向对方控制功能发 INFO 转告；没有缓存，就没有这项转告。无论是否转告，本组功能都要求媒体面最终切换到非控制模式。如果本组这场会话至少有一个客户端订阅了会议事件，本组功能还须向对方控制功能订阅会议事件。讲话者缓存不是发起订阅的条件，订阅也不是最终切换的条件。〔§10.1.1.5.2.3，收到 ACK 后步骤 1–3，印刷页 262〕
+本组功能收到确认（ACK）后，若缓存了当前讲话者，先向对方控制功能发 INFO，报文见下文；没缓存时不走这项转告。无论是否转告，本组功能都要求媒体面最终切换到非控制模式。如果本组这场会话至少有一个客户端订阅了会议事件，本组功能还须向对方控制功能订阅会议事件。讲话者缓存不是发起订阅的条件，订阅也不是最终切换的条件。〔§10.1.1.5.2.3，收到 ACK 后步骤 1–3，印刷页 262〕
 
 **拆分时，各自收到什么？** 本组功能收到来自对方控制功能的两种来件之一，就进入拆分分支：BYE 请求，或者最终拒绝响应。来自其他实体的 BYE 不属于这里的组级拆分触发。如果释放策略要求原预安排组呼继续，本组功能先要求媒体面切回控制模式，并等这一步媒体处理完成。只有触发拆分的是 BYE 时，才向对方回复该 BYE 的 200；这一回应不以原组呼保留为条件，也不适用于最终拒绝。不能把对 BYE 的确认当成本组已散会或已成功保留通话的证明。〔§10.1.1.5.2.4，首段、步骤 1–2 及注 1，印刷页 262〕
 
@@ -17,3 +17,16 @@
 若伙伴的组成组没有正在进行的预安排组呼，返回的 403 带有成员名单或业务文本 128，另查[重组组呼的 403 名单与直接邀请](trusted-regroup-refused-uri-list.md)；不要套用已有呼叫的并接分支。
 
 若已核对组呼确实并接或拆分，下一步查[各场组呼的 TNG3 由谁停、由谁启动](temporary-group-call-tng3.md)。
+
+## 并接后给新控制方的讲话者 INFO 怎么写？
+
+本组原来就在通话。先对上**组成组非控制功能（NCF）实际收到的这次并接 ACK**。本组媒体面初始化切换时若给出当前讲话者资料，NCF 先缓存，随后才发出对邀请的 200。收到相应 ACK 后，有缓存便先向对方控制功能（CF）发这份 SIP INFO，再请求最终切换媒体；没有缓存则跳过 INFO，仍请求最终切换。这里没有写等待 INFO 的 200 才下切换指令。看到并接 200、对方发了 ACK 或本组发了 INFO，各只能说明相应的一段，不能代证[新临时组已完成话权初选](../media/temporary-group-floor-initial-arbitration.md)或有人继续发言。[TS 24.379 V16.14.0，§10.1.1.5.2.3 第 8–10 项、注 2 及 ACK 段，印刷页 261–262](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=263)。
+
+**这是 SIP INFO 的讲话者资料，不是一包 RTCP。** `Info-Package` 写 `g.3gpp.mcptt-floor-request`。业务正文 `application/vnd.3gpp.mcptt-info+xml` 上的 `mcptt-request-uri` 是**临时组 ID**，`mcptt-calling-group-id` 是**本组成组 ID**。这两个都是正文元素，不是 SIP 请求行的 URI。另一份 `application/vnd.3gpp.mcptt-floor-request+xml` 的 `Content-Disposition` 写 `Info-Package`，按旧媒体面实际报告的每名当前讲话者填写：
+
+- `floor-type` 用 `general` 或 `dual`，看该讲话者持有哪种话权；`ssrc` 用该讲话者终端的 SSRC，`floor-priority` 用实际话权优先级，`user-id` 用该讲话者的 MCPTT 用户 ID。
+- `track-info` 携 `queueing-capability`、`participant-type` 和一个或多个 `floor-participant-reference`。若原 Track Info 引用依次是 17、9，XML 也按 17、9 排列；不要按数值排序、把末尾移到前面或把 SSRC 当引用。发送条款在补充信息可得时要求写 `floor-indicator`。
+
+核对 MIME 名时保留版内差异：**发送条款和 F.5 使用 `application/vnd.3gpp.mcptt-floor-request+xml`，J.1.2.7 印成不含 `mcptt-` 的 `application/vnd.3gpp.floor-request+xml`。** F.5.2 的 schema 也未把 `floor-indicator` 标为可选，但发送条款带信息可得的条件。不要把两个 MIME 名自动当作相同，或给缺失的 `floor-indicator` 补一个默认值。按每名讲话者填写也不等于可以把两个 XML 根拼在一个正文里。[§6.3.4.1.3 第 1–3 项，印刷页 127](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=128)；[F.5.1–3，印刷页 574–575](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=575)；[J.1.2.7，印刷页 606](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=607)。
+
+**位置是另加的正文。** NCF 有这台客户端的位置，该位置尚未给 CF 发过或与上次发送相比有变化，且主叫 MCPTT 用户的配置档 `ruleset/allow-location-info-when-talking=true`，三项都满足才按此条加 `application/vnd.3gpp.mcptt-location-info+xml`，在 `location-info` 根内放 `Report`。只见有坐标，没看到位置正文不必然是错；查这次位置是否已发且未变、主叫方权限，以及原 INFO 的实际 MIME 体。没有讲话者缓存，也不靠位置体单独触发这份 INFO。[§6.3.4.1.3 第 4 项，印刷页 127](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=128)。
