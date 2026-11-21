@@ -6,7 +6,7 @@
   "title": "按需 MCPTT 聊天组：怎样新建或加入会话？控制功能为什么有时先发 UPDATE，再接受 INVITE？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
-  "condition_rule": "Each claim inherits common_conditions and its own conditions. The ordinary call path and the priority-correction branches have different preconditions.",
+  "condition_rule": "Each claim inherits common_conditions and its own conditions. The ordinary call path and the priority-correction branches have different preconditions. 新增 chat-cf-implicit- 三条只论同一系统的普通在网按需聊天组，分开 CF 判资格、实际写记录和按订阅通知。原十三条不因本段扩大。",
   "common_conditions": [
     "Release 16、Stage 3，在网按需 MCPTT 聊天组语音呼叫。客户端以未重组的 MCPTT 组 ID 请求发起或加入，不使用临时组身份（TGI）或预建立会话。"
   ],
@@ -922,6 +922,163 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "chat-cf-implicit-eligibility-local-group-row",
+      "title": "GMS 中是成员且本端未归属，不等于 CF 可以判隐式归属有资格",
+      "conditions": [
+        "同一 MC 系统内普通在网按需 MCPTT 聊天组，非紧急、非迫近危险，不使用临时组、重组身份或预建立会话；CF 处理本次发往组的入向 INVITE。",
+        "组文档初检已通过并实际到第 5 项；按 §6.3.6 已判主叫在此次发起客户端未归属。"
+      ],
+      "conclusion": "CF 按 §9.2.2.3.6 调用 .3.8。用正文 mcptt-request-uri 定位组、mcptt-calling-user-id 定位主叫，逐项核 GMS 内组存在、该用户是成员、CF 的本地组信息表已有匹配项。任一不满足即判不具资格并停止资格过程；本次在第 5 项判不具资格，CF 对原 INVITE 回 SIP 403，Warning 文本码 120 并停止本条后续步骤。",
+      "normative_strength": "所列资格检查和本分支的适用拒绝为 SHALL。",
+      "limitations": [
+        "GMS 组文档与 CF 归属用组信息项不是同一项。查不到日志不等于确定缺少本地项。文档初检有不同结果：本次匹配的 XCAP 订阅 404 对应 404/113；其他匹配的 4xx、5xx 或 6xx 对应 Warning 文本码 114，未指定统一 SIP 状态。实际查阅的组文档若没有主叫的成员项才是 403/116。三者都不是第 5 项的资格拒绝；也不从 120 反推唯一是本地项缺失。具资格不证已写归属或取得入会许可。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1 items 4–5: CF group document and eligibility 403/120"
+          ],
+          "printed_pages": [
+            287
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.5.2 items 1–5 and 6.3.6: distinct initial check and observed affiliation"
+          ],
+          "printed_pages": [
+            131,
+            132,
+            135,
+            136
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.3.6/.8: user eligibility and required GMS/local group tests"
+          ],
+          "printed_pages": [
+            191,
+            192,
+            193
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "chat-cf-implicit-write-client-id-and-user-expiry",
+      "title": "CF 实际调用隐式归属才写入本端客户端，设置的是所属用户记录的期限",
+      "conditions": [
+        "同一 MC 系统内普通在网按需 MCPTT 聊天组，非紧急、非迫近危险，不使用临时组、重组身份或预建立会话；CF 处理本次发往组的入向 INVITE。 处理本次尚未归属的主叫时实际调用 §9.2.2.3.7，尚有可匹配的本地目标组信息项。"
+      ],
+      "conclusion": "CF 按原请求正文组 ID 选择既有本地组项，按主叫 MCPTT ID 选用户项；用户项不存在才插入。把由本次 SIP 请求派生的客户端 ID 加入这个用户的客户端清单，已有该 ID 不重复加入；设置该用户项的到期时间，取本地策略。第 12 项只在确实走到这一步，且第 5 项已判此 INVITE 有资格、本条尚未调用 .3.7 时才要求执行。",
+      "normative_strength": "实际执行时，适用的插入、追加、设置期限和第 12 项调用条件为 SHALL。",
+      "limitations": [
+        "期限不属于单个客户端，也不从 INVITE/SUBSCRIBE 的 Expires 照抄；此次客户端已列在清单、但用户项已过期时，不把“不重复追加”解释成不更新期限。不能由有资格推定一定走到第 12 项或断言没有先前调用；第 9 项的 488 不会继续至第 12 项。此条不负责补建缺失组项、不证明其他客户端实际在线或取得呼叫资格。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.3.2: local group hierarchy and expiry at MCPTT user record"
+          ],
+          "printed_pages": [
+            188
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.3.7 items 1–4: select, insert if absent, append if new and set expiry"
+          ],
+          "printed_pages": [
+            192
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.6: same request client and expiry lookup"
+          ],
+          "printed_pages": [
+            135,
+            136
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1 items 9,12: earlier media stop and conditional call-site"
+          ],
+          "printed_pages": [
+            288
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "chat-cf-implicit-notify-and-record-evidence",
+      "title": "实际归属写入后的组 NOTIFY 是订阅层结果，不代替本端查证",
+      "conditions": [
+        "同一 MC 系统内普通在网按需 MCPTT 聊天组，非紧急、非迫近危险，不使用临时组、重组身份或预建立会话；CF 处理本次发往组的入向 INVITE。 处理本次尚未归属的主叫时实际调用 §9.2.2.3.7，尚有可匹配的本地目标组信息项。",
+        "CF 已按 .3.7 处理该用户／客户端。"
+      ],
+      "conclusion": "CF 按 .3.7 第 5 项调用 .3.5。有按 .3.4 建立的相应订阅时，向该订阅发 SIP NOTIFY，使用该组、该用户的按组归属 PIDF 正文，affiliation 元素含 expires。要确认某客户端确已归属，核对 CF 本地组下该用户的客户端清单及该用户项的到期时间。",
+      "normative_strength": "实际调用 .3.5 和在相应订阅条件下生成并发送通知、填 expires 为 SHALL。",
+      "limitations": [
+        ".3.5 的 p-id 回填明确限 .3.3 调用且已识别 handled p-id，本次隐式归属调用不能仅凭 INVITE 补这个值。通知的发出不证明客户端或 PF 已收，在下游看到一条通知也须核对组、用户、客户端及期限；建呼 200 不代替具体归属结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.3.7 item 5: invoke notification"
+          ],
+          "printed_pages": [
+            192
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.3.4–.5 p190–191: valid subscription, group PIDF expires and conditional p-id"
+          ],
+          "printed_pages": [
+            190,
+            191
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.6 items 1–5: independent record lookup for this client"
+          ],
+          "printed_pages": [
+            135,
+            136
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "source_references": [
@@ -1331,6 +1488,28 @@
       ],
       "printed_pages": [
         33
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.2.3.6–.8: GMS existence and membership, existing CF row and actual implicit-affiliation write"
+      ],
+      "printed_pages": [
+        191,
+        192,
+        193
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9.2.2.3.2 and .4–.5: local record shape, expiry and subscription notification"
+      ],
+      "printed_pages": [
+        188,
+        190,
+        191
       ]
     }
   ],
