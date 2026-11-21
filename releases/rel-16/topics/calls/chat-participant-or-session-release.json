@@ -7,10 +7,10 @@
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
   "common_conditions": [
-    "Release 16，Stage 3；本文选取普通在网、按需建立的 MCPTT 聊天组呼。",
+    "Release 16，Stage 3，在网 MCPTT 聊天组呼。普通按需的客户端退出、移出、整场释放和 TNG3 与临时组内组成聊天组的拆分是不同分支，各按本条条件使用。",
     "各条按观察角色和本条的消息条件使用。原有控制功能条目仍从该组会话的控制 MCPTT 功能看参与者一侧的退出、控制功能主动移出一人和整场释放；客户端与参与功能条目不继承控制功能的动作。"
   ],
-  "condition_rule": "先分别识别来向 BYE、主动移出、须整场释放；通知还受该分支的条件与会议订阅范围限制。 客户端与参与功能条目分别按客户端主动退出或控制功能发起 BYE 的方向，核对各自收到的请求及应答。",
+  "condition_rule": "先分别识别来向 BYE、主动移出、须整场释放；通知还受该分支的条件与会议订阅范围限制。 客户端与参与功能条目分别按客户端主动退出或控制功能发起 BYE 的方向，核对各自收到的请求及应答。 组成聊天组拆分按非控制功能在临时组呼中的角色和该条来件条件使用，不继承未重组普通聊天组的参与者退出程序。",
   "claims": [
     {
       "id": "chat-incoming-bye-leg",
@@ -498,6 +498,155 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "chat-constituent-split-trigger",
+      "title": "正在进行的组成聊天组收到控制功能的 BYE，进入聊天组拆分程序",
+      "conditions": [
+        "原组成聊天组已在进行并接入临时组，承载原组成组的 MCPTT 功能在该临时组中处于非控制模式。",
+        "核对来件是否由临时组控制 MCPTT 功能发给这一非控制功能。"
+      ],
+      "conclusion": "此分支由对端 BYE 请求触发，未列最终拒绝为另一入口。预安排组的对应程序列出来自控制功能的 BYE 或最终 SIP 拒绝；不要用预安排组规则把一条最终拒绝认作已在进行的组成聊天组的拆分来件。",
+      "normative_strength": "分支入口；不同来件和原组成呼叫类型不能互换。",
+      "limitations": [
+        "不是说聊天组的其他分支不处理最终拒绝。原先无聊天会话、非控制功能按临时会话发起规程向控制功能发了 INVITE 时，匹配该 INVITE 的非 2xx 最终响应另有 ACK，并转用预安排拆分条款。此处不推断会话已经建立或之后必继续。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.5.1.1, non-controlling mode and incoming BYE from CF"
+          ],
+          "printed_pages": [
+            297
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.5.1.4, opening"
+          ],
+          "printed_pages": [
+            299
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.2.4, opening"
+          ],
+          "printed_pages": [
+            262
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.5.1.8, opening"
+          ],
+          "printed_pages": [
+            299
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.5.1.8, final non-2xx branch steps 1–2"
+          ],
+          "printed_pages": [
+            300
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "chat-constituent-split-media-and-bye-ack",
+      "title": "拆分 BYE 要回 200；只有保留原聊天组呼时才要求媒体切回控制模式",
+      "conditions": [
+        "承载原组成聊天组的非控制功能在临时组中收到控制功能的拆分 BYE。"
+      ],
+      "conclusion": "组呼释放策略判定保留原聊天组呼时，要求媒体切回控制模式，相关媒体处理完成后再回这条 BYE 的 200。即使策略不保留原聊天组呼，仍须答复这条 BYE。",
+      "normative_strength": "媒体处理有保留条件；对匹配 BYE 的应答没有该保留条件。",
+      "limitations": [
+        "200 不是本组呼叫继续或已结束的证明，也不能单凭它确认实际完成媒体切回；查策略判定及该组成组的本地媒体记录。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.5.1.4, steps 1–2 and NOTE 1"
+          ],
+          "printed_pages": [
+            299
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.8.1, group call release policy"
+          ],
+          "printed_pages": [
+            136
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "chat-constituent-split-notify-audience-and-departures",
+      "title": "组成聊天组的拆分通知按会议事件订阅发送；本组成组用户不是通知里的离会对象",
+      "conditions": [
+        "承载原组成聊天组的非控制功能在临时组中收到控制功能的拆分 BYE。",
+        "至少一名 MCPTT 客户端已订阅该会议事件包。"
+      ],
+      "conclusion": "非控制功能在应答后须向所有订阅会议事件的参与者发送 NOTIFY。通知表示除它所承载的组成组的 MCPTT 用户外，其他参与者都已离开该组会话；这个例外限定离会名单，不是收件人过滤规则。",
+      "normative_strength": "本步骤列出订阅条件，不再要求保留原聊天组呼；预安排拆分条款另有保留原呼叫且剩余客户端有订阅的两项条件。",
+      "limitations": [
+        "与接收和转发临时组控制功能的会议通知不同。没有通知、看到发出通知或看到离会名单，都不能单独证明媒体结果；也不要由一次发出推定每个订阅者已收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.5.1.4, steps 2–3 and NOTE 2"
+          ],
+          "printed_pages": [
+            299
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.3.5.2, NCF conference-event notification recipients"
+          ],
+          "printed_pages": [
+            306
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.2.4, step 3 and NOTE 2"
+          ],
+          "printed_pages": [
+            262
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "source_references": [
@@ -763,8 +912,9 @@
     "r16-calls-conference-participant-status"
   ],
   "limitations": [
-    "原有控制功能条目不展开客户端与参与功能之间的协议细节；本主题不展开预建立会话、临时重组及跨系统切换。",
-    "不以控制功能发送的通知或 BYE 推断客户端已经收到或用户看过；媒体部分只核对 TS 24.380 规定的本地释放指示和对应动作，不展开其他媒体实现。"
+    "原有控制功能条目不展开客户端与参与功能之间的协议细节，只讨论未重组普通按需聊天组。另列的组成聊天组拆分不展开临时组的创建、跨系统信令路由或预建立会话。",
+    "不以控制功能发送的通知或 BYE 推断客户端已经收到或用户看过；媒体部分只核对 TS 24.380 规定的本地释放指示和对应动作，不展开其他媒体实现。",
+    "只区分已在进行的组成聊天组拆分的来件、应答、媒体处理和离会通知；不判断某个实际部署是否已切换媒体、哪些用户收到通知，或订阅已经终止。"
   ],
   "verification": {
     "original_clauses_checked": true,
