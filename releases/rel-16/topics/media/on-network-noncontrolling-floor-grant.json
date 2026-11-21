@@ -6,9 +6,9 @@
   "title": "在网 MCPTT：非控制侧怎样把 Floor Granted 送回申请话权的终端？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.380-v16.9.0",
-  "condition_rule": "声明继承共同范围；逐个区分实际收件的 P、服务器接口和终端，以及各自的原状态。可选导读不是连续执行步骤。 新增 Taken 分支限 NCF 的服务器接口实际收到 CF 的 Taken，不是 NCF 在收到 Granted 后本地产生的 Taken；发给 P、P 收到、终端收到与 CF 收到确认是不同事件。 新增队位查询按各接口实际收件与状态分开使用；查队位不等于申请或撤回话权。CF 回报的队列、本地被动队列与终端的 U 状态分别取证。",
+  "condition_rule": "声明继承共同范围；逐个区分实际收件的 P、服务器接口和终端，以及各自的原状态。可选导读不是连续执行步骤。 新增 Taken 分支限 NCF 的服务器接口实际收到 CF 的 Taken，不是 NCF 在收到 Granted 后本地产生的 Taken；发给 P、P 收到、终端收到与 CF 收到确认是不同事件。 新增队位查询按各接口实际收件与状态分开使用；查队位不等于申请或撤回话权。CF 回报的队列、本地被动队列与终端的 U 状态分别取证。 新增 ncf-granted-dual- 三条限 NCF 实收 CF 的 Floor Granted，分清定向授予、本地生成的 Taken/Idle 与实际从 CF 收到的 Taken/Idle。",
   "common_conditions": [
-    "3GPP TS 24.380 V16.9.0；普通在网 MCPTT 单话权组呼，不含广播、环境监听或 audio cut-in，当前不涉及合组、角色切换、抢占、双话权或同时多人发言。",
+    "3GPP TS 24.380 V16.9.0；在网 MCPTT 组呼，不含广播、环境监听、audio cut-in、合组、角色切换或多话者模式。除 ncf-granted-dual- 开头的声明外，均限普通单话权组呼，不涉及抢占或双话权。",
     "P 是非控制功能中每个会话内逐终端的话权参与者接口；服务器接口在同一功能内面向 CF。终端、P 和 CF 不共享一个许可状态。"
   ],
   "claims": [
@@ -575,6 +575,115 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "ncf-granted-dual-target-and-store",
+      "title": "NCF 按实际 CF Granted 的末尾引用定向送授予，来向 G=1 保存获准者 SSRC",
+      "conditions": [
+        "非控制侧服务器接口实际收到同一组呼的 CF Floor Granted，Track Info 末尾是可识别的本地 P 引用。",
+        "来向 Granted 含 Floor Indicator 且其 G=1。"
+      ],
+      "conclusion": "服务器接口按 Track Info 的末尾引用将 Granted 发给本地对应 P；一个引用时外发去掉整个 Track Info，多引用时仅去末尾。保存获准话权的参与者 SSRC，与这场呼叫的双话权关联。",
+      "normative_strength": "定向、引用处理及送往 P，和在 G=1 时保存获准者 SSRC，均为 SHALL。",
+      "limitations": [
+        "使用 Granted 的获准者 SSRC，不用 RTCP 发送者的 SSRC 或 Participant Reference。被动队列若有这个 P 对应的 Floor Request，才移除该请求；这一步不是清队。发送动作不能代证 P 或实际终端已收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.6 items 1 and 3: tail routing, pop, dual grantee storage, matching passive removal"
+          ],
+          "printed_pages": [
+            107,
+            108
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.5 Floor Granted, packet sender SSRC and granted source SSRC fields"
+          ],
+          "printed_pages": [
+            162,
+            163
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ncf-granted-dual-taken-and-idle-cohorts",
+      "title": "G=1 的同一份 Granted 分别触发 Taken 和 G=0 Idle，收件范围可重合",
+      "conditions": [
+        "非控制侧服务器接口实际收到同一组呼的 CF Floor Granted，Track Info 末尾是可识别的本地 P 引用。",
+        "来向 Granted 的 Floor Indicator 为 G=1；按本地策略核对各端是否听、是否只听覆盖发言者的 RTP。"
+      ],
+      "conclusion": "服务器接口向按本地策略会听覆盖发言者的参与者发 Floor Taken，保留来向 Floor Indicator，Taken 的 subtype 首位置 0；另向只听覆盖发言者的参与者发 Floor Idle，复制该 Indicator 并把 G 改为 0。两种通知的 Message Sequence Number 均填本地值加 1。只听的端若也满足 Taken 条件，可同时列在两个应发集合中；这里没有二选一。",
+      "normative_strength": "符合各自条件的通知和列出的本地字段为 SHALL。",
+      "limitations": [
+        "不把第 2(a)/(b) 项的获准者排除条件加到第 2(c) 项；不把 Taken 的确认位规定搬到第 4 项的 Idle。不从本地合成 G=0 的 Idle 认定删除双话权 SSRC、清被动队列、实际消息排序、送达或媒体结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.6 items 2c–e, 4 and note 1: distinct local recipients and output field construction"
+          ],
+          "printed_pages": [
+            107,
+            108
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.8 item 2b(ii)(B) and item 3: contrast with real incoming Idle, not synthetic"
+          ],
+          "printed_pages": [
+            109
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ncf-granted-dual-cache-later-normal-taken",
+      "title": "仍有双话权 SSRC，后续无 Indicator 或 G=0 的 Granted 限制 Taken 收件范围",
+      "conditions": [
+        "非控制侧服务器接口实际收到同一组呼的 CF Floor Granted，Track Info 末尾是可识别的本地 P 引用。",
+        "服务器接口仍为同一场话保存双话权获准者 SSRC；这份来向 Granted 不带 Floor Indicator，或带 Indicator 且 G=0。"
+      ],
+      "conclusion": "另发 Taken，排除本次接收 Granted 的 P 和只听覆盖发言者的参与者。带 Indicator 时复制，不带时不由第 2(e) 项填写 G=0。这一步不触发第 4 项的本地 Idle，没有这一条来向 Granted 删除双话权 SSRC 的步骤。",
+      "normative_strength": "匹配该分支时，发送 Taken 和来向有 Indicator 时复制字段均为 SHALL。",
+      "limitations": [
+        "只有当时确未保存双话权 SSRC 才走第 2(a) 项，给本次获准 P 以外的接口发 Taken；不能靠前一次局部 Idle 猜缓存。此处不判断这些端已收到通知或实际听到哪个 RTP 流。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.6 items 1b, 2a–b, 2d–e and 4: stored versus absent selector, indicator-presence and no G=1 Idle branch"
+          ],
+          "printed_pages": [
+            107,
+            108
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "related": [
@@ -585,7 +694,7 @@
     "r16-media-noncontrolling-floor-idle-delivery"
   ],
   "limitations": [
-    "解释非控制侧对普通请求、答复和许可后上行的责任，不重建 CF 仲裁、缺失引用恢复、完整报文编码或端到端语音交付。",
+    "解释普通请求、答复、许可后上行，以及双话权授予所生的本地通知。不重建 CF 仲裁、缺失引用恢复、完整报文编码或端到端语音交付。",
     "本地规则写明谁应采取什么动作。要认定某次发生，须区分各自收件、指令、实际发出、对端接收。"
   ],
   "verification": {
@@ -769,6 +878,25 @@
       ],
       "printed_pages": [
         117
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.4.6 items 1b, 2b–e and 4: granted SSRC cache, separate Taken and synthetic Idle receiver tests"
+      ],
+      "printed_pages": [
+        107,
+        108
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.4.8 item 2b(ii)(B) and item 3: actual inbound Idle contrast only"
+      ],
+      "printed_pages": [
+        109
       ]
     }
   ]
