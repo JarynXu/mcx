@@ -6,10 +6,10 @@
   "title": "已有按需预安排组会话：CF紧急升级、取消与分层反馈",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
-  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "condition_rule": "Inherit common_conditions and add claim conditions. 既有四条声明只适用 CF；ID 以 terminating-pf-priority-reinvite- 开头的三条只适用终接 PF。按各自实际的收件和发送分别判断，不以一条腿的数据推定另一腿的状态。",
   "common_conditions": [
-    "固定TS24.379 V16.14.0，在网已有按需预安排组会话，直接组身份，由其controlling MCPTT function处理re-INVITE。排除初始建立、chat/预建立、临时/重组、广播/system、离网、跨系统及完整媒体/话权算法。",
-    "聚焦emergency-ind升级或取消；不发起新的emergency alert，已有告警取消和拒绝反馈按各自条件保留。imminent字段只用于验证/原文分支比较，不展开其业务；无效请求仍能进入对应拒绝检查。",
+    "固定TS24.379 V16.14.0，在网已有按需预安排组会话，直接组身份。既有四条声明的主体是 CF，terminating-pf-priority-reinvite- 的声明主体是终接 PF；按各自事件适用。排除初始建立、chat/预建立、临时/重组、广播/system、离网、跨系统及完整媒体/话权算法。",
+    "CF 主线聚焦emergency-ind升级或取消；不发起新的emergency alert，已有告警取消和拒绝反馈按各自条件保留。CF 主线的imminent字段只用于验证或原文分支比较，无效请求仍适用其对应拒绝检查。终接 PF 只说明紧急或迫近危险指示的接收、转送与响应，不展开迫近危险业务生命周期。",
     "每条按实际角色、请求/响应/ACK事件及旧组状态分别适用；不以已获授权、组状态false、已取消成功或所有下游已响应为共同前提。CF组状态与客户端MEG/MEGC/MES/MEA不可互换。"
   ],
   "claims": [
@@ -192,6 +192,151 @@
             547,
             548,
             549
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "terminating-pf-priority-reinvite-entry-and-header",
+      "title": "终接 PF 以实际收到带紧急或迫近危险元素的 re-INVITE 为入口，按入向 Resource-Priority 处理",
+      "conditions": [
+        "已有按需预安排组呼；终接 PF 实收发往关联终端的 SIP re-INVITE，其 MCPTT 信息正文含 emergency-ind 或 imminentperil-ind。条文以元素存在为入口，未要求值为 true。"
+      ],
+      "conclusion": "PF 须检查入向 Resource-Priority 是否存在。存在时，下发给终端的 re-INVITE 须包含同内容的 Resource-Priority；PF 对实收的头可按 TS 24.229 进一步处理；这些动作超出当前 TS 24.379 的范围。缺头不改变 §10.1.1.3.6 构造和发送终端腿的条件，列出的条文未要求从 XML 另算补值，也未列缺头拒绝。",
+      "normative_strength": "实际入口、检查、条件复制、构造与发送为 SHALL；针对入向现有头的进一步处理为 MAY，按 TS 24.229 而不由 TS 24.379 定义。",
+      "limitations": [
+        "任一符合的元素明写 false 并非元素不存在；仅见 Resource-Priority 或 alert-ind，不能证明该入口成立。CF 自身的字段组合校验与授权另适用。",
+        "CF §6.3.3.1.8 用于错误初始 INVITE 优先级头，有可靠 183、对应 PRACK/200 和 UPDATE；终接 PF 不套该角色和过程，也不由头值证明承载实际采用该优先级。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.6 opening and items 1–4: presence and terminating PF method"
+          ],
+          "printed_pages": [
+            239,
+            240
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.10 item 4: when present copy actual Resource-Priority contents"
+          ],
+          "printed_pages": [
+            103
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.8: CF Resource-Priority correction, comparison only"
+          ],
+          "printed_pages": [
+            109
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "terminating-pf-priority-reinvite-build",
+      "title": "终接 PF 从本次入向 offer 与 MIME 构造发往终端的 re-INVITE",
+      "conditions": [
+        "终接 PF 命中前述接收事件，正在构造并发送该请求对应的终端腿 re-INVITE。适用条件为已建立的按需预安排会话及该次实际收到的入向 offer。"
+      ],
+      "conclusion": "终端腿 re-INVITE 的 Supported 包含 tdialog，可加 Resource-Share。MIME 按 §6.3.2.2.9 处理；实收 MCPTT 信息正文尚未复制时复制其内容，不转抄实收的 MKFC-GKTP 元素。SDP offer 以同一份入向 re-INVITE 的 SDP offer 为基础，按按需辅助程序保留一个 MCPTT 语音媒体段，存在媒体面控制段时包含它，并按条件替换地址和端口。随后发送给终端。",
+      "normative_strength": "Supported、条件 MIME 复制及例外、按需 SDP 构造和发送为 SHALL；Resource-Share 为 MAY。",
+      "limitations": [
+        "不是无条件逐字节复制原 MIME/SDP，不把不转抄的条件改成所有出向报文都绝不可能包含该名称。",
+        "不规定其他 MIME/加密细节、没有入向 offer 的缺省算法，或按预建立会话的模板处理。本声明也不以发出 offer 推导终端接收或接受。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.6 items 2–4: downstream re-INVITE built from received offer"
+          ],
+          "printed_pages": [
+            240
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.9 and 6.3.2.2.10: topic MIME guards, MKFC-GKTP, Supported and optional Resource-Share"
+          ],
+          "printed_pages": [
+            102,
+            103
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.1 and 6.3.2.1.1.1: on-demand offer derivation and address/port conditions"
+          ],
+          "printed_pages": [
+            83,
+            93
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "terminating-pf-priority-reinvite-200-media-order",
+      "title": "收到终端对该次 re-INVITE 的 200，PF 用该份 answer 生成返回响应并在媒体交互后才转送",
+      "conditions": [
+        "在 §10.1.1.3.6 入口的同一终接 PF 中，实收终端对其上述出向 re-INVITE 的对应 SIP 200，不以收到另一个 ACK 为该动作的守卫。"
+      ],
+      "conclusion": "PF 先按 §6.3.2.2.4.2 生成返回的 200，按需会话 SDP answer 取该份实际终端 200 的 answer 为基础。生成响应的 Contact 包含从 CF 入向请求 Contact 所带 MCPTT 会话身份映射来的身份。然后与媒体面交互，再向控制侧转送该 200。",
+      "normative_strength": "实收对应 200 后的构造、answer、媒体面交互和转送顺序为 SHALL；ACK 不是该段明列的事件。",
+      "limitations": [
+        "不是把终端 200 透明原样转发；这里不实现 SIP ACK 规则，也不推导全部参与者已应答。",
+        "PF 侧动作不证明控制侧已实收、终端已改状态、承载已采用优先级或听众有媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.6 response items 1–4: actual corresponding 200 and media-before-forward"
+          ],
+          "printed_pages": [
+            240
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.4.2: generated response and mapped Contact identity"
+          ],
+          "printed_pages": [
+            95
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.2.1 and 6.3.2.1.2.1: on-demand SDP answer with address/port conditions"
+          ],
+          "printed_pages": [
+            84,
+            94
           ]
         }
       ],
