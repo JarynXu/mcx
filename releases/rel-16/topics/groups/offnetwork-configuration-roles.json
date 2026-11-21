@@ -7,9 +7,9 @@
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-23.280-v16.7.0",
   "common_conditions": [
-    "Release 16 Stage 2 离网 MC 架构：无中继 UE 间通信、UE 3 与离线公共服务服务器之间的配置和组管理，以及离线公共服务服务器与公共服务核心为同一实体或同一组实体时对配置管理服务器并发配置的限制。"
+    "只用 3GPP TS 23.280 V16.7.0（Release 16，Stage 2）。离网架构、合设并发限制和先后配置分别按各条条件判读，不互为前提。"
   ],
-  "condition_rule": "先区分无中继 UE 间通信和离网管理。非 EPS 接入条件指 UE 3 与离线公共服务服务器。离线公共服务服务器与公共服务核心为同一实体或同一组实体时，配置管理服务器不得在线、离线同时为同一 UE 上的同一用户配置参数；对于该 UE 上的该用户，还明文禁止经 CSC-11 和 CSC-4 同时配置相同参数。",
+  "condition_rule": "先区分无中继 UE 间通信和离网管理。非 EPS 接入条件指 UE 3 与离线公共服务服务器。离线公共服务服务器与公共服务核心为同一实体或同一组实体时，配置管理服务器不得在线、离线同时为同一 UE 上的同一用户配置参数；对于该 UE 上的该用户，还明文禁止经 CSC-11 和 CSC-4 同时配置相同参数。 附录 A.1 的先后提供和单参考点规则分别按其自身条件，不以服务器合设或两次同时配置为前提。",
   "claims": [
     {
       "id": "direct-communication-and-management-models",
@@ -297,6 +297,83 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "latest-configuration-made-available",
+      "title": "同一 UE 上同参数以后向 UE 提供的配置覆盖前一份",
+      "conditions": [
+        "同一台 MC 业务 UE、同一配置对象中的同一参数，实际先后向该 UE 提供两份配置。",
+        "举跨方式例时，该参数须确实可在线和离线配置；不假定各参数都两用。"
+      ],
+      "conclusion": "以向 UE 提供的最新配置数据覆盖此前数据。不论先离线后在线还是先在线后离线，后提供的那一份覆盖前一份，没有按方式优先。",
+      "normative_strength": "对向 UE 提供的最新配置覆盖旧配置为 SHALL。",
+      "limitations": [
+        "只有配置服务器编辑、保存或发送时间不足以确定提供顺序；已确定提供顺序支持规范应然值，不证明实际已保存、读取或生效。",
+        "不定义用于排序的时间戳、报文字段、并列、整份删除或合并算法；不裁定业务授权后初始引导配置的继续使用（FFS）。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "Annex A (normative) A.1: per-instance category context and hierarchy; final paragraph last sentence"
+          ],
+          "printed_pages": [
+            211
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.1.1.1, final editor's note (bootstrap comparison only)"
+          ],
+          "printed_pages": [
+            59
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "one-reference-point-per-configuration-mode",
+      "title": "每个可配置参数各以单一在线或单一离线参考点配置",
+      "conditions": [
+        "同一个配置参数可用正在核对的方式配置。在线约束和离线约束分别适用。"
+      ],
+      "conclusion": "可在线配置的参数只经一个在线参考点；可离线配置的参数只经一个离线参考点。仅仅两项操作不同时，不准因此给同一参数多用一个同方式参考点。",
+      "normative_strength": "两种方式各自在适用条件下为 SHALL only。",
+      "limitations": [
+        "不是两种方式合计只许一个，不要求两种方式都得使用，不约定所有参数共享同一个参考点。",
+        "不以支持两种方式或符合最新覆盖规则为理由豁免 §9.3.1 合设部署中的并发限制。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "Annex A (normative) A.1, final paragraph first and second sentences"
+          ],
+          "printed_pages": [
+            211
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "9.3.1, paragraph after note 2 (simultaneous configuration comparison only)"
+          ],
+          "printed_pages": [
+            57
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "related": [
@@ -304,8 +381,9 @@
     "r16-identity-ue-configuration-retrieval"
   ],
   "limitations": [
-    "仅核对 Stage 2 的角色、部署选项、接入条件和两句限制；不从架构推导报文字段、部署台数或一次配置结果。",
-    "接入选择与参考点关系不代替对终端实际接收、保存或生效的记录。"
+    "仅核对 Stage 2 的角色、部署选项、接入、两句并发限制和附录 A.1 的参考点／覆盖规则；不推出链路、报文字段、部署台数或某次现场配置已生效。",
+    "接入选择与参考点关系不代替对终端实际接收、保存或生效的记录。",
+    "授权后还用不用初始引导配置是 §10.1.1.1 的独立 FFS，不从一般覆盖规则裁定。"
   ],
   "verification": {
     "original_clauses_checked": true,
