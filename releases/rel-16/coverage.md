@@ -3417,6 +3417,16 @@ EncryptedData 与保密保护域名分别识别两种形态；403/140 的元素�
 
 [读取主题](topics/media/floor-talker-location.md)
 
+## MBMS 经 UE-R 续收媒体的交接与取证
+
+远端向 UE-R 交 TMGI、MBMS SAI、ProSe 逐包优先级；UE-R 以一对多直连转发收到的 MBMS 媒体。
+
+另可转送组播与单播互转的请求；核对接入、通知、转送和实际接收各自证据。
+
+尚未建立：不规定 PC5 载荷布局、切换完成码、重试或终端播放保证。
+
+[读取主题](topics/bearers/mbms-relay-media-continuity.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

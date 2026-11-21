@@ -67,3 +67,5 @@
 - **重叠区换 MBMS 承载。** 两个部分重叠的 MBSFN 区各有一条活动承载，播的是同一条媒体流，且没有另设跨区应用信令承载，这是[重叠区域内换承载](mbms-overlapping-mbsfn-continuity.md)所讲的第一种部署。若配置中另有承载专门跨区传应用信令，就不能从该页判定客户端必须用单播上报位置和监听状态。
 - **重新加入原组呼。** 在网 MCPTT 客户端通过已有预建立会话，主动重入正在进行的普通预安排组呼，且不请求隐式话权时，查[预建立组呼重入](../calls/preestablished-group-rejoin.md)。那里区分客户端发给参与功能（PF）的 REFER 和 PF 另发给控制侧的 INVITE。若本次请求了隐式话权，就不是该页解释的分支。
 - **不经网络服务器的组呼。** 若问题是离网 MCPTT 客户端怎样探测、建立或加入普通组呼（BASIC GROUP CALL），查[离网普通 MCPTT 组呼](../calls/offnetwork-group-client.md)。同样不经服务器的 MCVideo 组呼不能用这套 MCPTT 程序解释；经 R 转送网络业务也不属于这套程序。
+
+若接入转移之外还要查离开 MBMS 覆盖后怎样经中继继续接收媒体，读[远端交给 UE-R 的承载信息和媒体路径](mbms-relay-media-continuity.md)。
