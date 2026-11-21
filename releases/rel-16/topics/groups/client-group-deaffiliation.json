@@ -9,7 +9,7 @@
   "common_conditions": [
     "TS 23.280 V16.7.0，Release 16，Stage 2，针对单一 MC 业务中的用户与组。"
   ],
-  "condition_rule": "先分清所问的是在网组的地理策略，还是客户端已经发起的解除程序。地理判定要看用户原来的归属及该组两项区域配置，不以请求已经发出为前提；程序按组定义在哪一系统、授权结果与实际观测分别判断。",
+  "condition_rule": "先分清所问的是在网组的地理策略，还是客户端已经发起的解除程序。地理判定要看用户原来的归属及该组两项区域配置，不以请求已经发出为前提；程序按组定义在哪一系统、授权结果与实际观测分别判断。 判读解除归属信息流时须先识别请求、对应答复或服务器发起的通知，再按该段的组清单和逐组结果核对；服务间按原请求所达目标系统分界。",
   "claims": [
     {
       "id": "client-request",
@@ -358,6 +358,143 @@
           ],
           "printed_pages": [
             216
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "client-deaffiliation-per-group-results",
+      "title": "终端解除归属请求列出拟解除组，答复给每组结果",
+      "conditions": [
+        "已识别由 MC 业务客户端发给业务服务器的解除组归属请求，或业务服务器给请求客户端的对应答复。"
+      ],
+      "conclusion": "请求须有发起者的 MC 业务 ID 和至少一个拟解除的组 ID；答复须有发起者的业务 ID、拟解除的组 ID 清单和答复清单中每个组的解除结果。未关联具体组的单个成功摘要不能代替各组结果。",
+      "normative_strength": "信息流表中这些要素均为 M（必备）。",
+      "limitations": [
+        "请求只表示意图；信息不齐不能判定未获结果的组失败或已完成。",
+        "此资料不指定响应的 Stage 3 编码。",
+        "条文未给出请求和答复清单的逐项比对规则。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.2.6；表 10.8.2.6-1"
+          ],
+          "printed_pages": [
+            148
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.2.8；表 10.8.2.8-1"
+          ],
+          "printed_pages": [
+            148,
+            149
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "interserver-deaffiliation-destination-list",
+      "title": "业务服务器之间的解除清单限于原请求的目的系统所定义的组",
+      "conditions": [
+        "已识别针对一项 MC 业务的服务器间解除归属请求或对应答复，例如客户端解除伙伴系统定义的组，主系统转发到该伙伴系统。"
+      ],
+      "conclusion": "服务间请求及其对应答复须含发起者业务 ID；组清单是发起者拟解除且在该请求的目标 MC 系统定义的一组或多组。答复须给答复清单内每组的解除结果。表 10.8.2.9-1 的目标系统按图 10.8.4.3-1 指原请求的目标，不是答复回达的系统。",
+      "normative_strength": "服务间两张信息流表中所列要素均为 M；§10.8.4.3 描述主系统按请求中的组信息确定对应的伙伴服务端。",
+      "limitations": [
+        "这段答复不证明其它系统定义的组、客户端收报或 GMS 收报；条款没有定义跨系统合并策略或原子性。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.2.7；表 10.8.2.7-1"
+          ],
+          "printed_pages": [
+            148
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.2.9；表 10.8.2.9-1"
+          ],
+          "printed_pages": [
+            149
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.4.3，步骤 3、6、8"
+          ],
+          "printed_pages": [
+            157
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "deaffiliation-notification-versus-response",
+      "title": "解除通知与终端答复的业务字段和承载不能单独判别消息用途",
+      "conditions": [
+        "比较 MC 业务服务器主动解除后给 MC 业务客户端的通知，与同类业务中服务器给客户端的解除请求答复。"
+      ],
+      "conclusion": "主动解除通知须有被解除归属者的 MC 业务 ID、相关组 ID 清单和逐组结果。客户端答复与服务器主动解除通知均可单播或多播，均个别寻址。诊断按已核明的客户端请求与答复关系，或服务器发起解除的事实识别，不凭相同字段、承载或抓包缺失确定。",
+      "normative_strength": "两张表均规定所列必备信息，表前说明均指个别寻址。角色及发起事件取自对应程序。",
+      "limitations": [
+        "没有捕获客户端请求不等于客户端未请求；对 GMS 的状态更新是另一条路径。",
+        "未规定 SIP 方法、事务标识或组播目的地址。",
+        "表 10.8.2.13-1 的组清单行使用 originator，不改变业务 ID 行所标明的是被解除归属者，也不证明由客户端发起。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.2.8；表 10.8.2.8-1"
+          ],
+          "printed_pages": [
+            148,
+            149
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.2.13；表 10.8.2.13-1"
+          ],
+          "printed_pages": [
+            150
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.8.4.4–5（通知步骤）"
+          ],
+          "printed_pages": [
+            157,
+            158,
+            159
           ]
         }
       ],
