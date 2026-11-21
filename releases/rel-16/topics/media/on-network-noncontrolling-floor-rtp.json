@@ -6,9 +6,9 @@
   "title": "在网 MCPTT：非控制功能怎样处理无许可终端收发的 RTP？原因 #3 后的 Release 给谁？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.380-v16.9.0",
-  "condition_rule": "声明继承共同范围；P、非控制功能的服务器接口、控制方 U、终端均按各自当时的状态和实际收到的消息或指示判断。 T8 到期、RTP 收件和 Release 收件是各自的事件；区分控制侧逐终端接口 U 的当前状态、会话仲裁 G 的当前状态和来包中的 Floor Indicator G 位。",
+  "condition_rule": "声明继承共同范围；P、非控制功能的服务器接口、控制方 U、终端均按各自当时的状态和实际收到的消息或指示判断。 T8 到期、RTP 收件和 Release 收件是各自的事件；区分控制侧逐终端接口 U 的当前状态、会话仲裁 G 的当前状态和来包中的 Floor Indicator G 位。 原 noncontrolling- 及 direct-u- 的七条仍限普通在网单话权组呼，未启用双话权或同时多人发言。新增 dual-cache-downlink- 三条只看非控制侧服务器接口收到分发器的 CF RTP 收件指示和当前已存双话权获准者 SSRC，不继承 P 无权、U 或终端的事件。无缓存的对照只取第 1 项。",
   "common_conditions": [
-    "固定 3GPP TS 24.380 V16.9.0，普通在网 MCPTT 单话权组呼，未启用双话权或同时多人发言。P 是组的非控制 MCPTT 功能内的参与者接口，每个会话中的每个客户端有独立实例。",
+    "固定 3GPP TS 24.380 V16.9.0，普通在网 MCPTT 组呼；P 是组的非控制 MCPTT 功能内的参与者接口，每个会话中的每个客户端有独立实例。单话权处理和已存双话权获准者 SSRC 的下行 RTP 按各声明分开。",
     "各声明只适用于指定角色：无发送许可的 P、同一非控制功能的服务器接口、直接关联终端的控制方 U，或终端自身。P 的状态不作为其他接口已有事件或终端实际状态的证据。"
   ],
   "claims": [
@@ -377,6 +377,110 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "dual-cache-downlink-different-ssrc",
+      "title": "非控制侧已存双话权获准者 SSRC，收到不同 SSRC 的 CF RTP 指示时，排除按本地策略只收听双话权者",
+      "conditions": [
+        "非控制侧服务器接口实际收到媒体分发器指示从 CF 收到 RTP；本场已存与双话权关联的获准者 SSRC，来包 SSRC 与所存值不同。"
+      ],
+      "conclusion": "请求分发器把收到的 RTP 转给由该非控制功能控制且使用 SSRC 与来包不同、按本地策略并非只收听双话权的客户端。",
+      "normative_strength": "实收与两个不同的 SSRC 比较及策略条件满足时，请求转发为 SHALL。",
+      "limitations": [
+        "缓存比较只选分支；候选客户端的 SSRC 比较是另外一步。只收听双话权者未列入该请求，不等于发生丢包。若现场称为只听覆盖一路，需查这台的真实 RTP 收听策略分类；Taken 或 Idle 通知范围不能代用。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.12 receiving distributor indication and item 2(i–ii); item 1 comparison"
+          ],
+          "printed_pages": [
+            111
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "dual-cache-downlink-equal-ssrc",
+      "title": "CF 来包 SSRC 与双话权所存值相同，仍须按本地策略收听双话权并排除同 SSRC 客户端",
+      "conditions": [
+        "非控制侧服务器接口实际收到媒体分发器指示从 CF 收到 RTP；本场已存与双话权关联的获准者 SSRC，来包 SSRC 等于所存值。"
+      ],
+      "conclusion": "请求分发器向本地策略下收听双话权、且使用 SSRC 与来包不同的所有符合这两个条件的客户端转发。第 3 项的 all MCPTT client 后明列两项筛选，未重复第 2 项由本非控制功能控制的字样。",
+      "normative_strength": "两项筛选及请求转发为 SHALL；第 3 项不规定无差别广播。",
+      "limitations": [
+        "本地策略若对同一客户端既判定收听双话权，又判定并非只收听双话权，该客户端可以在两种来包中分别满足对应的收听筛选，仍须逐包比较其使用的 SSRC。字面范围不足以推出其他 NCF 也收到、目标实际收到、播放或得到话权。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.12 items 2(i–ii), 3(i–ii): listener policies and same-source exclusion"
+          ],
+          "printed_pages": [
+            111
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.1: distinct local NCF server/participant interfaces"
+          ],
+          "printed_pages": [
+            103
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "dual-cache-downlink-receive-route-and-delivery-evidence",
+      "title": "非控制侧双话权 RTP 的转发申请、实际出口和客户端收件是三处证据",
+      "conditions": [
+        "按同一会话及同一份来包区分分发器实收指示、当时已存双话权获准者 SSRC 和目标客户端证据。"
+      ],
+      "conclusion": "先用来包、缓存、候选客户端使用的 SSRC 和本地策略核对服务器接口应请求的转发；另核对分发出口和客户端实际收件才能判断送达。第 2–3 项不替代控制消息的缓存处理。",
+      "normative_strength": "规范规定服务器接口在条件满足时请求转发；实发、送达和播放需各自证据。",
+      "limitations": [
+        "用于比较的缓存输入包括实收 G=1 Granted 或实收无 Track Info 且 G=1 Taken；不从一条控制消息或本地 Idle 代替媒体实收，不假定缓存只有这两种入口，也不扩到完整缓存、回收、丢包分类或媒体实现。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.12 opening and items 1–3: the trigger and distributor requests"
+          ],
+          "printed_pages": [
+            111
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.6 item 1(b), 6.5.4.8(2)(b)(ii)(B), 6.5.4.9(2)(b): distinctly received control inputs for comparison"
+          ],
+          "printed_pages": [
+            107,
+            109,
+            110
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "related": [
@@ -386,7 +490,7 @@
     "r16-media-mbms-floor-ack-and-rtp-duplicates"
   ],
   "limitations": [
-    "不重建双话权、多人同时发言、抢占、完整队列仲裁或 SIP 释放过程。",
+    "不重建双话权状态机、多人同时发言、抢占、完整队列仲裁或 SIP 释放过程；已存双话权获准者 SSRC 的条目只处理本非控制侧收到的 CF 下行 RTP。",
     "按接口规定的指令、消息和状态回答，不规定实现如何关联包、记录期待或抓包。不从本地 Revoke、确认、某处无包推定媒体交付或全组停止。"
   ],
   "verification": {
@@ -520,6 +624,15 @@
       ],
       "printed_pages": [
         112
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.5.4.12 items 2–3 and no-cache item 1 comparison: packet SSRC compare and recipient policy"
+      ],
+      "printed_pages": [
+        111
       ]
     }
   ]
