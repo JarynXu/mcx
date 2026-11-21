@@ -1,0 +1,153 @@
+{
+  "topic_id": "r16-media-mbms-musik-download",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MBMS 话权 MuSiK：默认下载点名一个组，哪些组的密钥会变？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条 claim 继承所有 common_conditions，再叠加自身 conditions。发送下载、客户端收件和 PF 实收对应 200 是不同事件。",
+  "common_conditions": [
+    "Release 16、Stage 3，依据 TS 24.379 V16.14.0。",
+    "适用于在网 MCPTT 的 MBMS 下行话权信令所用 MuSiK 的下载，不扩展到语音 RTP 的密钥。"
+  ],
+  "claims": [
+    {
+      "id": "r16-media-mbms-musik-download-request",
+      "title": "PF 按意图保护的终端和 MuSiK 发送下载",
+      "conditions": [
+        "PF 拟经 MBMS 承载向某 MCPTT 客户端发送保密保护的话权控制信令。"
+      ],
+      "conclusion": "PF 为该客户端的每个 MuSiK 执行下载，发送 SIP MESSAGE，MBMS 用途正文 version=1，含至少列一个组的 explicit 下载元素，或可不列组的 default 下载元素。默认值可共用，显式下载只针对使用指定组的客户端。对要用 MuSiK 保护的指定组，按本条加入含加密密钥和对应 ID 的 application/mikey。",
+      "normative_strength": "逐客户端逐 MuSiK 式下载、请求生成与正文在各自适用条件下是 SHALL。",
+      "limitations": [
+        "不把向一台客户端发消息当成对其他终端确认；默认不列组也不是可一概省略 MIKEY 的规则。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.2.2.5 开头与第1、5–7项"
+          ],
+          "printed_pages": [
+            468
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-media-mbms-musik-impacted-groups",
+      "title": "显式与两种默认名单决定受影响组",
+      "conditions": [
+        "客户端实收具有规定 MCPTT P-Asserted-Service 和相应 MBMS 用途正文分支的下载 MESSAGE。"
+      ],
+      "conclusion": "explicit 只取列出的组。default 没列组时取当前无有效显式关联的客户端支持的所有组；default 列组时先解除所列组的有效显式关联，再取此时无有效显式关联的客户端支持的全部组，包括未列但无该关联的组。",
+      "normative_strength": "按三种分支确定范围，以及默认带名单的解除关联动作是 SHALL。",
+      "limitations": [
+        "名单参与范围判断而不是密钥安装成功证明；不据此删除未列组的有效显式关联或归属关系。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.3.4 入口与受影响组第1–3项"
+          ],
+          "printed_pages": [
+            474,
+            475
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.2.2.5 开头与第5项"
+          ],
+          "printed_pages": [
+            468
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-media-mbms-musik-local-validation",
+      "title": "客户端按受约束的校验与 Status 存储或停用",
+      "conditions": [
+        "收到规定的下载；MIKEY 负载 key identifier 属于 MuSiK-ID 时适用具体校验及逐组状态分支。"
+      ],
+      "conclusion": "按服务该客户端的 PF 公共服务身份核发起者、验证 I_MESSAGE，读取 Status；按 Status 对受影响组设置 security not in use 或添加、替换 MuSiK 和 MuSiK-ID。列明的身份、鉴权或缺 Status 失败须回 488 和以 136 开头的 Warning 文本 并停。客户端只对语法正确、认定有效无错的默认或显式下载回 200。",
+      "normative_strength": "匹配的校验、拒绝或逐组存储，以及发 200 的条件均受本条约束。",
+      "limitations": [
+        "无 MIKEY 或 key identifier 不是 MuSiK-ID 时不能套缺 Status 的 488，也不能直接判停用或装钥；只能据下载正文和处理记录判别本次设置或停用，不能以 200 推断媒体保护。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.3.4 MuSiK-ID 分支与客户端 200 条件"
+          ],
+          "printed_pages": [
+            475,
+            476
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-media-mbms-musik-unicast-fallback",
+      "title": "本客户端的实际下载应答决定原拟保护组的回退",
+      "conditions": [
+        "PF 已发出这台客户端的 MuSiK 下载 MESSAGE，核对该次请求的响应。"
+      ],
+      "conclusion": "PF 实际收到该次 200 才把密钥下载视为成功。未收到指定客户端的 200 时，PF 须对该客户端、仅该 MuSiK 原拟覆盖的组用单播话权信令。",
+      "normative_strength": "成功认定和缺对应 200 的单播话权均按 SHALL。",
+      "limitations": [
+        "其他客户端的 200、MBMS listening 或只见客户端发出 200 不能替代 PF 实收。回退规定不决定所有组、语音 RTP、能力判定或实际收听。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.2.2.5 第7项及末两段"
+          ],
+          "printed_pages": [
+            468
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-media-mbms-pf-floor-routing",
+    "r16-bearers-mcptt-mbms-status-message-rejection",
+    "r16-media-on-network-unicast-media-protection"
+  ],
+  "limitations": [
+    "不规定如何计算或封装密钥，不替本版补缺 MIKEY 或其他 key identifier 的统一处置。",
+    "不以其他终端的结果、MBMS 监听或密钥下载确认推断实际话权消息、RTP 发送、接收或播放。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

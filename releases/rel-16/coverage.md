@@ -3557,6 +3557,16 @@ RTP 和话权使用各自守卫；对已进入活动 MBMS 分支的 Idle/Taken �
 
 [读取主题](topics/calls/temporary-group-conference-notify.md)
 
+## MBMS 话权 MuSiK 的默认与单独下载
+
+按 explicit 或 default 的名单算受影响组，识别本客户端下载 200 与无对应应答时由 PF 对指定组回退单播话权。
+
+进入 MuSiK-ID 分支后须核验发起者与消息；缺 Status 会被拒绝，通过校验后按 Status 处理。监听报告与下载 200 是不同证据。
+
+尚未建立：不确立缺 MIKEY 的统一处理、语音 RTP 路径变动、实际交付或密钥计算。
+
+[读取主题](topics/media/mbms-musik-download.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

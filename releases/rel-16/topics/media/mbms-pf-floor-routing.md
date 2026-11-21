@@ -26,3 +26,5 @@ PF 从控制功能（CF）或非控制功能（NCF）实际收到下行 RTP 后�
 在 §10.2 的**活动通话**分支，发往监听终端的 Floor Idle 或 Floor Taken 真正送上 MBMS 时，PF 把出向确认位设为 0。若入向请求确认，由 **PF** 向 **CF** 回 Floor Ack（Source 1）。重复序号可能不会再下发，但入向按要求回 Ack 仍适用。因此见到这个 Ack，不表示 PF 再次下发，更不表示终端收到；缺一个终端 Ack 也不能在此判它未收到。多讲者释放的专条没有同样的置位和回 Ack 步骤，不能给它照搬 Idle/Taken 的规则。RTP 已发送过的判断也不是话权序号比较。[§10.2.3.2、§10.2.3.3、§10.2.3.3a，印刷页 206–207](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=207)；[§10.2.3.5，印刷页 208](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=209)
 
 已进入 MBMS 活动会话，要核对[去重和 PF 确认](mbms-floor-ack-and-rtp-duplicates.md)；要查哪份报告属于这个承载，读[监听与应用控制信令](../bearers/mbms-application-control-signalling.md)；已确认消息走单播、要查加密保护，看[在网单播语音与两段话权](on-network-unicast-media-protection.md)。
+
+终端支持 MuSiK 但 PF 未收到本次密钥下载的 200 时，查[默认与单独 MuSiK 下载、逐端单播回退](mbms-musik-download.md)。这是密钥下载结果，不是对终端的能力判定。
