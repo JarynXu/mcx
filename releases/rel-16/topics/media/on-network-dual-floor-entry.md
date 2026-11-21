@@ -43,3 +43,5 @@
 固定原文：[3GPP TS 24.380 V16.9.0 / ETSI TS 124 380 V16.9.0（2022-10）](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf)。
 
 若覆盖发言已建立，要区分 RTP 断流、发言时限和一般话权的后续通知，查[双话权 T11/T12 超时](on-network-dual-floor-timeouts.md)。
+
+若这场组呼配置成多话者，不用双话权覆盖分支判并发上限。查[多话者未满员加人、满员撤谁](on-network-multi-talker-capacity.md)，核对获准名单、I 位和满员抢占队首。

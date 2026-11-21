@@ -1,0 +1,206 @@
+{
+  "topic_id": "r16-media-on-network-multi-talker-capacity",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "在网多话者组收到新话权请求：未满员怎么加人，满员抢占撤谁？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "每条 claim 继承共同场景范围。U 转交请求、G 实收及分支选择、U 实收内部 Granted 是分别适用的事件条件。不把转交时的人数或名单作为 G 授权后处理的条件。",
+  "common_conditions": [
+    "Release 16、Stage 3，TS 24.380 V16.9.0。",
+    "已建立的普通在网 MCPTT 组呼配置为多话者。从一般仲裁 G 已在 Floor Taken 时处理原先尚未获许可者的显式 Floor Request 开始；各动作仍按自己的事件或状态判断，不将请求时未获准延续为授权后的条件。不涵盖双话权、音频切入、已获准者的重复请求或临时组首次选择。"
+  ],
+  "claims": [
+    {
+      "id": "r16-media-multi-talker-u-forward-and-grant",
+      "title": "逐参与者接口转交不等于授予",
+      "conditions": [
+        "两项是替代事件：转交入口是 U 在 not permitted and Floor Taken 实收关联参与者的 Floor Request，且该参与者在允许名单、当时获准数低于上限；许可下发入口是处于该 U 状态的接口后来实收 G 的 Floor Granted，不再要求名单或当前人数低于上限。"
+      ],
+      "conclusion": "收到符合条件的请求时 U 须转交 G，仍在 not permitted and Floor Taken。U 实收 G 的 Floor Granted 时转发给关联参与者、进入 U: permitted。",
+      "normative_strength": "对应实收事件的转交与状态动作均为 SHALL。",
+      "limitations": [
+        "不凭允许名单、已转交或已排队认定获准。满员时 U 的转发、拒绝或排队组合另受协商和本地政策影响，不由此条补齐。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.4.4 第二段及后续条件界限"
+          ],
+          "printed_pages": [
+            78,
+            79,
+            80,
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.4.9"
+          ],
+          "printed_pages": [
+            84
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-media-multi-talker-under-capacity-granted",
+      "title": "G 未到上限时加一名获准者并保持 Taken",
+      "conditions": [
+        "G 实收本次合规显式 Floor Request，且当前获准的多话者数小于适用上限。"
+      ],
+      "conclusion": "允许原说话者与新请求者发送；向请求者发送 Floor Granted，含 I=1、新获准者 SSRC、授予优先级、取 T2 时长值的 Duration。向当前获准名单添加新获准者的 MCPTT ID，为该人启动 T1，G 仍在 Floor Taken。",
+      "normative_strength": "列明的条件许可、字段、状态和 T1 动作为 SHALL。",
+      "limitations": [
+        "这里只枚举诊断所需的字段，不是完整报文表；Duration 值不表示已启动 T2。消息中的获准者 SSRC 不等于 RTCP 头中的服务器 SSRC。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.4.7a 第 1b 及 3a、3b、3d、3f 项"
+          ],
+          "printed_pages": [
+            62,
+            63
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.5"
+          ],
+          "printed_pages": [
+            162,
+            163
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-media-multi-talker-taken-recipients",
+      "title": "给涉事非控制功能及选中的本地听众发 Taken",
+      "conditions": [
+        "G 对未满额的合规新请求选保留原说话者并增加请求者的发送许可，按第 3c 项通知。"
+      ],
+      "conclusion": "向涉及的非控制 MCPTT 功能发 Floor Taken；直接由控制功能管理的参与者则以本地政策选择收听该新获准者 RTP 的听众。Taken 的 I=1，序号增 1，携当前获准 MCPTT 用户与 SSRC 两种列表。 两个列表按相同顺序对应。",
+      "normative_strength": "相应发送、序号及所列标志和列表为 SHALL；本地策略选择控制功能直接管理的听众。",
+      "limitations": [
+        "本步不要求向全组广播，接收人按本条条件判断。Taken 不是新的发言许可或端到端 RTP 交付凭据；多话者 Taken 不用单人获准者 SSRC 字段。此处不展开隐私、其他字段或一般进入 G Taken 的通知。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.4.7a 第 3c、3f 项"
+          ],
+          "printed_pages": [
+            63
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.3.17–.18"
+          ],
+          "printed_pages": [
+            157,
+            158
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.9"
+          ],
+          "printed_pages": [
+            167,
+            168,
+            169
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-media-multi-talker-at-capacity-preemption",
+      "title": "满员遇有效抢占：撤最低者并把请求者移到队首",
+      "conditions": [
+        "G 实收 Floor Request，当前获准数已达到多话者上限，且这条请求的有效优先级是抢占。"
+      ],
+      "conclusion": "选当前获准者中优先级最低的一人。停止该人的 T1/T20（若运行），调用 G: pending Floor Revoke 入口，向选中者发原因 4 的 Floor Revoke，启动对应 T3 后设为该状态。把请求者插入或移到所有其他活动队列请求之前；已协商排队才按本步骤发 Floor Queue Position Info。",
+      "normative_strength": "上述选择、撤权、状态和队列动作及有条件队位通知为 SHALL。",
+      "limitations": [
+        "未协商排队并不取消本分支的服务端队首操作，也不意味着授予。无抢占或尚未被 G 收到不套本分支；不规定并列优先级胜负、原持有者已停发或请求者后续必然获权。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.4.7a 第 1a、2 项"
+          ],
+          "printed_pages": [
+            62
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.5.1–.2"
+          ],
+          "printed_pages": [
+            64,
+            65
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "4.1.1.2、4.1.1.4"
+          ],
+          "printed_pages": [
+            20,
+            21
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcptt-onnetwork-dual-floor-entry",
+    "r16-mcptt-onnetwork-preemption-revoke",
+    "r16-mcptt-on-network-release-multi-talker"
+  ],
+  "limitations": [
+    "不由语音流数、排队或 Taken 推定授予或媒体交付；获准数与实际有 RTP 的人数不同。",
+    "不补满员 U 完整策略或撤权后的下一步许可，不把双话权 G-bit 与多话者 I-bit 混用。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
