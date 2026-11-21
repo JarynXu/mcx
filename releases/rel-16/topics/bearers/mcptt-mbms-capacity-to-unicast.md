@@ -20,3 +20,5 @@
 终端甲从 MBMS 子信道实际收到 Unmap，只在本地查消息所指的组。若存在相应关联，甲的 MBMS 接口解除 TMGI（临时移动组标识）、音频子信道、话权控制子信道与该组会话中这段通话的关联。这项动作不等于停用整条承载，也不能用来断定 SIP 会话已结束、乙也解除了映射，或甲已经收到单播媒体。[§10.3.1、§10.3.4，印刷页 209–210](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=211)。
 
 若容量问题出在多台服务器查询、共享一条承载，见[同一组呼的 MBMS 发现与分发](same-group-call-broadcast.md)；若只有甲即将离开覆盖，见[单台终端从 MBMS 切到单播](mbms-edge-to-unicast.md)。若收到的不是寻呼，而是 MBMS 上的“组呼进行中”通知，见[组状态通知与通话媒体的区别](../calls/mcptt-mbms-group-status.md)。[结构化条件与声明](mcptt-mbms-capacity-to-unicast.json)。
+
+如果只看到通用子信道反复发 Map，或某段安静通话连续发 Unmap，先用[映射重发与子信道释放计时](mcptt-mbms-map-unmap-timers.md)找 T15、T16、T17 和应用的监听指示；不要从包名推断正在迁移。

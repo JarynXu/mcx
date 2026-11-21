@@ -1,0 +1,180 @@
+{
+  "topic_id": "r16-bearers-mcptt-mbms-map-unmap-timers",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 组播：Map 为什么反复发，Unmap 什么时候停止重发？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "每条声明继承公共条件，按实际定时器事件和应用指示进入相应分支。关联主题不是执行步骤。",
+  "common_conditions": [
+    "固定 TS 24.380 V16.9.0，Rel-16 Stage 3。在网 MCPTT 组会话，参与功能支持 MBMS 子信道控制，已为这段通话建立该控制实例；本页讨论活跃状态内的计时与接收证据。"
+  ],
+  "claims": [
+    {
+      "id": "active-conversation-map-is-periodic-not-device-receipt",
+      "title": "T16 到期重发 Map 并保持活跃，不需要借终端确认解释每次重发",
+      "conditions": [
+        "同一段通话的控制实例处于 M: A conversation is active，实际发生 T16 到期。"
+      ],
+      "conclusion": "PF 在通用 MBMS 子信道发含 TMGI、MBMS Subchannel 和 MCPTT Group ID 的 Map，重启 T16，保持活跃。终端这部分另限支持经 MBMS 接收话权控制和 RTP、承载已激活并已通告；该客户端实收通用子信道上的 Map，才按 §10.3.2 关联 TMGI、音频及话权子信道与目标组。",
+      "normative_strength": "§10.2.3.7、§10.3.2 的 shall，§10.2.2.2 和 §10.2.3.1 为计时入口与状态依据。",
+      "limitations": [
+        "重复发送不证明新分配或该终端实收。§10.2.2.2 第 4 项的 T16 括号名与其实际到期动作及表名不一致。承载通告的状态报告不当成 Map 的确认。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.2.2.2 and 10.2.3.1 start and active timer context"
+          ],
+          "printed_pages": [
+            205,
+            206
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.2.3.7 actual T16 expiry"
+          ],
+          "printed_pages": [
+            208
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.3.1–.2 and 10.3.6 supported/active/announced terminal reception and distinct announcement"
+          ],
+          "printed_pages": [
+            209,
+            210
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "Table 11.1.4-2 T16"
+          ],
+          "printed_pages": [
+            222
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "conversation-expiry-branches-by-application-listener-evidence",
+      "title": "T15 到期先看应用指示：无监听释放，有监听发 Unmap 并启动 T17",
+      "conditions": [
+        "同一活跃通话的 T15 实际到期，且应用给出监听情况。"
+      ],
+      "conclusion": "应用指示无人监听时释放该通话的 MBMS 子信道管理实例并进入 Start-stop；有客户端仍监听时，经 MBMS 子信道发送带 MCPTT Group ID 的 Unmap，启动 T17，把 C17 设为 1，仍处于活跃状态。",
+      "normative_strength": "§10.2.3.6 第 1、2 项按各自守卫执行。",
+      "limitations": [
+        "表 11.1.4-2 的 T15 到期栏较简，不代替编号步骤的监听分支。不从下发 Unmap 签认客户端实收、组呼结束或整个 MBMS 承载停用。 终端解绑对照仅限 §10.3.1 前提下实际经 MBMS 子信道收到 Unmap 且已有相应关联。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.2.3.6 actual T15 expiry and application indication"
+          ],
+          "printed_pages": [
+            208
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "Table 11.1.4-2 T15 and T17"
+          ],
+          "printed_pages": [
+            222
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.3.1 and 10.3.4 UE scope and receipt with association"
+          ],
+          "printed_pages": [
+            209,
+            210
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "unmap-t17-c17-retry-limit-is-per-conversation",
+      "title": "达到 T17/C17 上限事件后按详细步骤发送 Unmap 再释放本段实例",
+      "conditions": [
+        "T15 有监听者分支已启动 T17，今次实际发生 T17 到期。"
+      ],
+      "conclusion": "未到 C17 上限时，重发带组 ID 的 Unmap，重启 T17 并把 C17 加 1。达到 §10.2.3.9 的上限事件时，该编号条款列发送带组 ID 的 Unmap，随后释放本段子信道实例。T15/T16/T17 默认 30 秒/500 毫秒/200 毫秒，C17 默认上限 3，均可配置。",
+      "normative_strength": "§10.2.3.8–.9 的定时事件和动作；表 11.1.4-2 与表 11.2.4-2 的默认及可配项。",
+      "limitations": [
+        "§10.2.3.8 第 2 项括号名写 Map；按 T17 和 Unmap 事件核对。C17 到限表述与详细动作不完全相同，不从默认值宣布固定发送次数或推断组会话、整条承载或某台终端的结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.2.3.8–.9 retransmit and upper-limit event"
+          ],
+          "printed_pages": [
+            208,
+            209
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "Table 11.1.4-2 defaults and timer labels"
+          ],
+          "printed_pages": [
+            222
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "Table 11.2.4-2 C17 default limit and wording"
+          ],
+          "printed_pages": [
+            225
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-bearers-mcptt-mbms-capacity-to-unicast",
+    "r16-bearers-mcptt-mbms-announcement-sdp",
+    "r16-media-mbms-floor-ack-and-rtp-duplicates"
+  ],
+  "limitations": [
+    "只讨论 MCPTT PF 在既有 MBMS 子信道的通话计时。无应用监听指示或消息不明时，不从包数断定分支。 终端侧另限客户端支持经 MBMS 接收话权消息和 RTP，且承载已激活并已通告。",
+    "不以 Map/Unmap 判断整条承载激活、独立 SIP 组会话结束、终端实收或收听；不静默修正 T16/T17 命名及 C17 表与正文的不同表述。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
