@@ -1,0 +1,178 @@
+{
+  "topic_id": "r16-calls-temporary-group-call-tng3",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "两场在网组呼并接成临时组呼，再拆分：TNG3 由谁停、由谁启动？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "先查实际完成的合并或拆分与各场的控制功能，再按每场组呼和对应实例分开查事件。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0，Rel-16 Stage 3；普通在网 MCPTT 活动组呼并接为临时组呼，或临时组呼实际拆成独立活动组呼。不是组配置变更、离网组呼或紧急状态 TNG2。"
+  ],
+  "claims": [
+    {
+      "id": "active-group-call-merge-stops-source-and-starts-temporary-tng3",
+      "title": "合并活动组呼：原场分别停 TNG3，临时场启动 TNG3",
+      "conditions": [
+        "两场或更多正在活动的组呼实际合并为一场临时组呼。"
+      ],
+      "conclusion": "原活动组呼的各控制功能须停各原场的 TNG3；临时组呼的控制功能须启动临时场的 TNG3。原场与临时场分别由不同服务器承载时，原场服务器成为该临时组呼的非控制 MCPTT 功能。",
+      "normative_strength": "并接启停为 SHALL；宿主不同的角色说明见 §6.3.3.5.1 注 2；表 B.2.1-1 注 1 允许同一控制功能有各场独立实例。",
+      "limitations": [
+        "不是临时组身份创建或一笔 SIP 应答触发的通用规则。本条未把启停绑定到某个 SIP 消息或同一时刻。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.5.1 merge and note 2"
+          ],
+          "printed_pages": [
+            125
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "Table B.2.1-1 TNG3 row and note 1"
+          ],
+          "printed_pages": [
+            533
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "temporary-group-call-split-stops-temporary-and-starts-independent-tng3",
+      "title": "拆分成独立活动组呼：临时场停 TNG3，各独立场分别启动",
+      "conditions": [
+        "临时组呼实际拆成仍各自活动的独立组呼；不把不再继续的组成呼叫算成活动组呼。"
+      ],
+      "conclusion": "临时组呼的控制功能须停临时场的 TNG3，各独立组呼的控制功能须分别为各场启动 TNG3。计时表将计时值指向组文档 on-network-maximum-duration。",
+      "normative_strength": "拆分启停为 SHALL；计时表分别列组呼实例、拆分启停和组文档来源。",
+      "limitations": [
+        "本条未规定续用原场或临时场的剩余秒数，不自行选择算式或把普通新呼 INVITE 条件作为拆分触发。原预安排组呼是否保留看 §6.3.8.1 组呼释放策略；BYE 200 不证明继续。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.5.1 start conditions, split responsibilities"
+          ],
+          "printed_pages": [
+            124,
+            125
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "Table B.2.1-1 TNG3 row and note 1"
+          ],
+          "printed_pages": [
+            533
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.8.1 group release policy compared by 10.1.1.5.2.4"
+          ],
+          "printed_pages": [
+            136
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.2.4 split notice, release-policy guard and response boundary"
+          ],
+          "printed_pages": [
+            262
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "tng3-expiry-releases-associated-group-call-not-every-group",
+      "title": "TNG3 到期释放其关联组呼，不替拆分后的各场判结束",
+      "conditions": [
+        "控制功能实际观察到属于特定组呼的 TNG3 到期，或正在核对并接或拆分后看到的旧场到期记录。"
+      ],
+      "conclusion": "实际到期触发对应组呼释放。需整场释放时，控制功能按 §6.3.3.1.5 向该场全体参与者发送 BYE；收到对应 BYE 200 后按该程序交互释放关联媒体资源。",
+      "normative_strength": "TNG3 到期后的整场释放及全体发送为 SHALL；表 B.2.1-1 注 1 按场关联实例。",
+      "limitations": [
+        "晚看到的日志不等于另一场计时到期；不能用一个临时场的到期或一腿 200 判多个独立场释放完成。本条未规定竞态、延迟回调或日志处理。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.5.1 expiry"
+          ],
+          "printed_pages": [
+            125
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.8.1 TNG3 release trigger"
+          ],
+          "printed_pages": [
+            136
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.5 BYE all participants and response"
+          ],
+          "printed_pages": [
+            106,
+            107
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "Table B.2.1-1 TNG3 row and note 1"
+          ],
+          "printed_pages": [
+            533
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-prearranged-group-join-split",
+    "r16-calls-chat-participant-or-session-release",
+    "r16-mcptt-emergency-group-server"
+  ],
+  "limitations": [
+    "会话计时，不从 TGI、接受邀请、媒体切换开始或 SIP 应答推定计时动作完成。",
+    "不发明合并拆分后的旧时限继承、统一启停顺序、回调竞态方案或全体应答证据。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

@@ -15,3 +15,5 @@
 来源：[3GPP TS 24.379 V16.14.0，Release 16，Stage 3，§§10.1.1.5.2.3–4，印刷页 261–262](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=262)。这里处理已经在进行的组呼，不是新建临时组。若只有一名用户返回原通话，查[在网预安排组的重入与晚入](rejoin-late-entry.md)；若终端离网时发现同组有两场呼叫，查[离网组呼合并](offnetwork-group-call-merge.md)；若要从客户端查参会者，查[会议参与状态](conference-participant-status.md)。
 
 若伙伴的组成组没有正在进行的预安排组呼，返回的 403 带有成员名单或业务文本 128，另查[重组组呼的 403 名单与直接邀请](trusted-regroup-refused-uri-list.md)；不要套用已有呼叫的并接分支。
+
+若已核对组呼确实并接或拆分，下一步查[各场组呼的 TNG3 由谁停、由谁启动](temporary-group-call-tng3.md)。
