@@ -3267,6 +3267,16 @@ Q1 接收同场取消仍应处理并确认；Q2 的 TFP8 到期按本端隐式�
 
 [读取主题](topics/calls/offnetwork-private-emergency-downgrade.md)
 
+## MCPTT 跨参与功能查询别名状态的身份、403 与 200/NOTIFY
+
+查 O-PF 与 T-PF 的 Request-URI、P-Asserted-Identity 和正文两个用户身份；不同用户且无权修改被查者状态时返回 403。
+
+200 应答订阅，按用户的 PIDF 通知排除已过期和停用条目；按别名找启用者使用另一流程。
+
+尚未建立：不凭 200 判别名启用，不假设 PSI 发现算法、MIME 容错或组织的权限策略。
+
+[读取主题](topics/identity/functional-alias-cross-pf-status.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

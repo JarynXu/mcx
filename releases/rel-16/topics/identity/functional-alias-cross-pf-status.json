@@ -1,0 +1,140 @@
+{
+  "topic_id": "r16-identity-functional-alias-cross-pf-status",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 跨参与功能查别名状态：乙侧从哪里认出查询者甲，何时回 403？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明继承全部 common_conditions，再叠加本条 conditions；关联主题不是必经流程。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0，Rel-16 Stage 3 MCPTT 功能别名状态 SUBSCRIBE，按目标用户的 MCPTT ID 查其别名，主要看 O-PF 与目标 T-PF 两段。"
+  ],
+  "claims": [
+    {
+      "id": "cross-pf-subscribe-keeps-target-and-moves-caller-to-body",
+      "title": "别名状态查询跨 PF 时，SIP 路由 PSI 与正文用户 ID 分开",
+      "conditions": [
+        "客户端按 §9A.2.1.3 发起查询，且 O-PF 收到满足 §9A.2.2.2.9 的请求，目标 MCPTT ID 不由该 O-PF 服务。"
+      ],
+      "conclusion": "客户端向自己的 O-PF 发，正文 mcptt-request-uri 是目标。O-PF 从入站 P-Asserted-Identity 的公共用户身份识别查询者；向目标 T-PF PSI 发新 SUBSCRIBE，P-Asserted-Identity 写 O-PF PSI，正文 mcptt-request-uri 写目标 MCPTT ID，mcptt-calling-user-id 写查询者 MCPTT ID。",
+      "normative_strength": "§9A.2.1.3 的客户端构造及 §9A.2.2.2.9 的转发字段为规定动作。",
+      "limitations": [
+        "不把终接入口检查冒充转发入口，不从 MIME 名文字差异补容错，也不定义如何发现 T-PF。不是按别名查启用者。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.1.3 client sends status determination"
+          ],
+          "printed_pages": [
+            200,
+            201
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.2.9 server forwarding entry and construction"
+          ],
+          "printed_pages": [
+            210,
+            211
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "other-user-subscribe-forbidden-uses-modify-authorization",
+      "title": "T-PF 从正文认查询者；不同身份且无修改权限才触发该条 403",
+      "conditions": [
+        "MCPTT 服务器实际收到符合 §9A.2.2.2.4 的针对本服务器服务用户的状态订阅。"
+      ],
+      "conclusion": "T-PF 入口从 mcptt-calling-user-id 认查询者，O-PF 入口从 P-Asserted-Identity 公共用户身份认查询者；目标用正文 mcptt-request-uri。若查询者与目标不同且无权修改目标功能别名状态，必须返回 403 并停止。",
+      "normative_strength": "§9A.2.2.2.4 两种身份来源及 403 条件。",
+      "limitations": [
+        "检查看修改权限，不表示本次 SUBSCRIBE 修改数据；同一用户并非自动通过其他检查，不从本程序补组织的授权策略。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.2.4 entry, steps 1–4"
+          ],
+          "printed_pages": [
+            205
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "subscribe-200-is-not-alias-state-read-per-user-notify",
+      "title": "200 是订阅回执，别名状态看按用户的 NOTIFY",
+      "conditions": [
+        "服务器通过该订阅处理或在存续期间按 §9A.2.2.2.5 通知变化。"
+      ],
+      "conclusion": "服务器生成 SUBSCRIBE 的 200，并按用户构造 PIDF 通知，排除已过期或 deactivated 条目。跨 PF 时订阅响应和订阅期间通知依 §9A.2.2.2.9 转发。按实际收到的正文判所列别名状态。",
+      "normative_strength": "§9A.2.2.2.4–.5 响应与通知，§9A.2.2.2.9 末段转发；§9A.2.1.3 客户端判状态。",
+      "limitations": [
+        "200 不能替代所查别名状态或通知送达，没看到通知不能推定没有别名；不补最终反向 SIP 回执路由。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.2.4–.5 acceptance and PIDF exclusions"
+          ],
+          "printed_pages": [
+            206
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.2.9 final paragraph"
+          ],
+          "printed_pages": [
+            211
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.1.3 client NOTIFY processing"
+          ],
+          "printed_pages": [
+            201
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcptt-functional-alias-client",
+    "r16-identity-alias-owner-resolution-subscription"
+  ],
+  "limitations": [
+    "不扩展 SIP 代理实现、PSI 查询机制、MIME 容错、终接权限配置实现、完整 PUBLISH 状态变更或其他 Release/业务。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

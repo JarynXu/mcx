@@ -25,3 +25,5 @@
 若甲手动启用一个别名，客户端和服务端的两段 PUBLISH 都已收到 200，见[参与功能凭哪份通知把甲登记为已启用](mcptt-functional-alias-activation-servers.md)。
 
 若要查 MC 业务的公共流程，例如出区触发的明确停用请求，以及组播状态通知与逐别名结果的区别，见 [客户端请求停用功能别名的 Stage 2 流程](functional-alias-client-deactivation.md)。
+
+查询另一名用户时，若目标不由本侧参与功能服务，查[跨参与功能查询别名状态的身份、403 与回执](functional-alias-cross-pf-status.md)。
