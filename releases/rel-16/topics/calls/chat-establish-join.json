@@ -6,15 +6,16 @@
   "title": "按需 MCPTT 聊天组：怎样新建或加入会话？控制功能为什么有时先发 UPDATE，再接受 INVITE？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
-  "condition_rule": "Each claim inherits common_conditions and its own conditions. The ordinary call path and the priority-correction branches have different preconditions. 新增 chat-cf-implicit- 三条只论同一系统的普通在网按需聊天组，分开 CF 判资格、实际写记录和按订阅通知。原十三条不因本段扩大。",
+  "condition_rule": "Each claim inherits common_conditions and its own conditions. The ordinary call path and the priority-correction branches have different preconditions. 新增 chat-cf-implicit- 三条只论同一系统的普通在网按需聊天组，分开 CF 判资格、实际写记录和按订阅通知。原十三条不因本段扩大。 新增 chat-imminent-midcall- 三条只论用直接组身份建立的按需聊天会话已经存在，CF 实际收到指向该聊天会话身份、带正值迫近危险指示的 re-INVITE。旧十六条的发起或加入条件保留在各条 conditions。",
   "common_conditions": [
-    "Release 16、Stage 3，在网按需 MCPTT 聊天组语音呼叫。客户端以未重组的 MCPTT 组 ID 请求发起或加入，不使用临时组身份（TGI）或预建立会话。"
+    "Release 16、Stage 3，在网按需 MCPTT 聊天组语音呼叫。"
   ],
   "claims": [
     {
       "id": "group-addressed-invite",
       "title": "初始 INVITE 发给谁，要加入哪个组又写在哪里？",
       "conditions": [
+        "客户端以未重组的 MCPTT 组 ID 请求发起或加入，不使用临时组身份（TGI）或预建立会话。",
         "普通组呼：本次请求不是紧急或迫近危险请求，组也不处于这两种状态。",
         "用户要求以标识 chat 组的组身份发起或加入会话。"
       ],
@@ -45,6 +46,7 @@
       "id": "create-or-use-session",
       "title": "谁判断要不要建会？",
       "conditions": [
+        "客户端以未重组的 MCPTT 组 ID 请求发起或加入，不使用临时组身份（TGI）或预建立会话。",
         "普通组呼：本次请求不是紧急或迫近危险请求，组也不处于这两种状态。",
         "控制功能收到以未重组的 MCPTT 组 ID 标识 chat 组的请求。组文档、资格和媒体检查各有相应入口；建会判断仅适用于通过前序处理并到达步骤 10 的请求。"
       ],
@@ -116,6 +118,7 @@
       "id": "ongoing-at-capacity",
       "title": "正在进行的组已满，较高优先级是否保证入会？",
       "conditions": [
+        "客户端以未重组的 MCPTT 组 ID 请求发起或加入，不使用临时组身份（TGI）或预建立会话。",
         "普通组呼：本次请求不是紧急或迫近危险请求，组也不处于这两种状态。",
         "控制功能处理加入请求，chat 会话已在进行，且已达组的在网参与人数上限（on-network-max-participant-count）。"
       ],
@@ -167,6 +170,7 @@
       "id": "success-and-subscribers",
       "title": "普通组呼的 200(INVITE) 与会议通知分别能证明什么？",
       "conditions": [
+        "客户端以未重组的 MCPTT 组 ID 请求发起或加入，不使用临时组身份（TGI）或预建立会话。",
         "普通组呼：本次请求不是紧急或迫近危险请求，组也不处于这两种状态。",
         "控制功能已走到接受其入向 INVITE 的分支；通知还要求已有会话且至少一名参与者订阅。客户端动作以收到对其客户端侧 INVITE 的 2xx 为条件。"
       ],
@@ -215,6 +219,7 @@
       "id": "resource-priority-check",
       "title": "初始 INVITE 缺少 Resource-Priority，控制功能就要发 UPDATE 吗？",
       "conditions": [
+        "客户端以未重组的 MCPTT 组 ID 请求发起或加入，不使用临时组身份（TGI）或预建立会话。",
         "控制功能（CF）已通过前序检查，处理发起侧参与功能（O-PF）为同一按需聊天组请求生成的入向 INVITE。"
       ],
       "conclusion": "紧急指示 emergency-ind 为 true，或组已处于紧急状态时，控制功能核对自己收到的 INVITE 是否带紧急档。若组不处于紧急状态，而迫近危险指示 imminentperil-ind 为 true 或组已处于迫近危险状态，则核对迫近危险档。两处分支分别是 13a 和 14a。只有头缺失或与应有档不符，这两个分支才调用同一个纠错程序（§6.3.3.1.8）生成 UPDATE。调用它的分支负责把 UPDATE 发向这份入向 INVITE 的发起方，并在收到该 UPDATE 的 200 后继续。头值正确就不走这项纠错。",
@@ -280,6 +285,7 @@
       "id": "resource-priority-update-values",
       "title": "UPDATE 里的优先级跟随请求的指示，还是跟随组状态？",
       "conditions": [
+        "客户端以未重组的 MCPTT 组 ID 请求发起或加入，不使用临时组身份（TGI）或预建立会话。",
         "控制功能在其入向 INVITE 上通过步骤 13a 或 14a 调用 §6.3.3.1.8，正为向该 INVITE 发起方发送的 UPDATE 填写 Resource-Priority。"
       ],
       "conclusion": "控制功能看填写 UPDATE 时组的进行中状态：紧急为 true 取紧急档；紧急为 false、迫近危险为 true 取迫近危险档；两者都为 false 取普通档。按 §6.3.3.1.19，从 MCPTT 服务配置的 OnNetwork 下对应的 emergency-resource-priority、imminent-peril-resource-priority 或 normal-resource-priority 同时读取 resource-priority-namespace 和 resource-priority-priority。",
@@ -346,6 +352,7 @@
       "id": "priority-correction-transactions",
       "title": "控制功能侧的 183、UPDATE 与三个 200，怎样和两侧的 INVITE 配对？",
       "conditions": [
+        "客户端以未重组的 MCPTT 组 ID 请求发起或加入，不使用临时组身份（TGI）或预建立会话。",
         "观察在网按需聊天组中 O-PF 与控制功能 CF 的信令：CF 所收 INVITE 在 13a 或 14a 命中纠错，最终 200(INVITE) 还要求该入向请求走到接受步骤。讨论终端侧 200 时，另以 O-PF 收到其发往 CF 的 INVITE 的 2xx 为条件。"
       ],
       "conclusion": "客户端发给 O-PF 的 INVITE 带 offer A。O-PF 另生成一份 INVITE 发往 CF，其中的 offer B 以 A 为基础，须替换媒体流地址时，O-PF 写入自己的 IP 地址和端口。CF 纠错时先向客户端方向发可靠 183（Require: 100rel），里面的 SDP answer 回答 B。收到针对该 183 的 PRACK 后，CF 回 200(PRACK)，再向其入向 INVITE 的发起方发带 Resource-Priority 的 UPDATE；UPDATE 携带新 offer C，编制依据仍是 B，不是 183 中的 answer。即使 A 和 B 中的字段碰巧相同，也要按 CF 收到的那份 INVITE 配对。",
@@ -458,6 +465,7 @@
       "id": "chat-user-join-after-coverage-return",
       "title": "回到覆盖后主动加入：同一个组不等于同一场会话",
       "conditions": [
+        "客户端以未重组的 MCPTT 组 ID 请求发起或加入，不使用临时组身份（TGI）或预建立会话。",
         "同一 MC 系统内的普通在网按需 MCPTT 聊天组，以未重组的组 ID 标识；客户端回到覆盖范围，用户明确请求按组身份加入。不以失覆盖前一定参会、原会话仍在或已获准入为前提。"
       ],
       "conclusion": "客户端收到用户要求加入的指示后，向服务该用户的参与功能公共服务身份发初始 SIP INVITE，正文 session-type 写 chat，mcptt-request-uri 写组 ID；不用旧会话身份作该请求的目标。控制功能通过前序检查到步骤 10 时，只在该组当前无聊天会话身份的条件下新建并分配会话身份；如已有进行中的会话且接纳本次加入，则加入当前的会话。判断是不是原场，先把这次成功响应配到各自那侧的 INVITE，再比较控制侧实际使用的会话身份。客户端侧的会话身份须经参与功能的映射与控制侧对应，不能把两腿的 Contact 当成同一个裸值比较。只有客户端这次收到 2xx，不能区分加入原场、加入另一个已开始的同组会话，还是这次请求新建。",
@@ -544,6 +552,7 @@
       "id": "chat-pf-local-486-causes",
       "title": "发起侧参与功能的 486：用户组呼并发超限，还是隐式归属失败？",
       "conditions": [
+        "客户端以未重组的 MCPTT 组 ID 请求发起或加入，不使用临时组身份（TGI）或预建立会话。",
         "同一 MC 系统内的普通在网按需 MCPTT 聊天组，使用未重组的 MCPTT 组身份，不是临时组；本次请求和组状态均非紧急、非迫近危险。",
         "发起侧参与功能（O-PF）实际收到客户端的初始 chat INVITE，并到达 §10.1.2.3.1.1 的相应检查。"
       ],
@@ -603,6 +612,7 @@
       "id": "chat-486-warning-and-hop",
       "title": "同样的 486：从 Warning 文本和两侧 INVITE 区分拒绝从哪来",
       "conditions": [
+        "客户端以未重组的 MCPTT 组 ID 请求发起或加入，不使用临时组身份（TGI）或预建立会话。",
         "同一 MC 系统内的普通在网按需 MCPTT 聊天组，使用未重组的 MCPTT 组身份，不是临时组；本次请求和组状态均非紧急、非迫近危险。",
         "收到或排查发起侧参与功能（O-PF）两侧的一次按需聊天组 INVITE 失败；按各侧实际请求和应答分别判断，不预设本次曾发出发往控制功能的 INVITE。"
       ],
@@ -690,6 +700,7 @@
       "id": "chat-originating-pf-binding-and-policy",
       "title": "普通聊天组的 404/141 与 403/108：发起侧参与功能先查主叫身份，再查发起权限",
       "conditions": [
+        "客户端以未重组的 MCPTT 组 ID 请求发起或加入，不使用临时组身份（TGI）或预建立会话。",
         "同一 MC 系统内的普通在网按需 MCPTT 聊天组，使用未重组的 MCPTT 组身份，不是临时组；请求和组状态均非紧急、非迫近危险。",
         "发起侧参与功能（O-PF）收到客户端面向它发出的初始 chat INVITE，并已到达 §10.1.2.3.1.1 中相应的检查。第 2、2a 项和第 3 项按各自条件适用；第 2a 项拒绝后不再继续其余步骤。"
       ],
@@ -761,6 +772,7 @@
       "id": "chat-cf-group-document-admission",
       "title": "聊天组的 CF 收到 INVITE 后：区分组文档取不到、禁用、不在名单和未归属",
       "conditions": [
+        "客户端以未重组的 MCPTT 组 ID 请求发起或加入，不使用临时组身份（TGI）或预建立会话。",
         "同一 MC 系统内的普通在网按需 MCPTT 聊天组；使用未重组的 MCPTT 组身份，不是临时组；请求和组状态均非紧急、非迫近危险。",
         "控制功能（CF）实际收到发起侧参与功能（O-PF）发来的、指明聊天组的这一次 INVITE，处理到 §10.1.2.4.1.1 第 4 项。分别按实际订阅结果、目标组文档是否已取得、组文档初检结果判断，不预设已经有可用文档。"
       ],
@@ -851,6 +863,7 @@
       "id": "chat-dual-leg-media-488",
       "title": "普通聊天组收到 488：分别核对 O-PF 和 CF 各自收到的 SDP offer",
       "conditions": [
+        "客户端以未重组的 MCPTT 组 ID 请求发起或加入，不使用临时组身份（TGI）或预建立会话。",
         "同一 MC 系统内的普通在网按需 MCPTT 聊天组；使用未重组的 MCPTT 组身份，不是临时组；请求和组状态均非紧急、非迫近危险。",
         "发起侧参与功能（O-PF）实际收到客户端的初始 chat INVITE 并到达第 4 项，或控制功能（CF）实际收到发往它的 INVITE 并到达第 9 项。查失败回送时，另以 O-PF 收到对它已发 INVITE 的匹配 4xx/5xx/6xx 为条件。"
       ],
@@ -927,6 +940,7 @@
       "id": "chat-cf-implicit-eligibility-local-group-row",
       "title": "GMS 中是成员且本端未归属，不等于 CF 可以判隐式归属有资格",
       "conditions": [
+        "客户端以未重组的 MCPTT 组 ID 请求发起或加入，不使用临时组身份（TGI）或预建立会话。",
         "同一 MC 系统内普通在网按需 MCPTT 聊天组，非紧急、非迫近危险，不使用临时组、重组身份或预建立会话；CF 处理本次发往组的入向 INVITE。",
         "组文档初检已通过并实际到第 5 项；按 §6.3.6 已判主叫在此次发起客户端未归属。"
       ],
@@ -979,6 +993,7 @@
       "id": "chat-cf-implicit-write-client-id-and-user-expiry",
       "title": "CF 实际调用隐式归属才写入本端客户端，设置的是所属用户记录的期限",
       "conditions": [
+        "客户端以未重组的 MCPTT 组 ID 请求发起或加入，不使用临时组身份（TGI）或预建立会话。",
         "同一 MC 系统内普通在网按需 MCPTT 聊天组，非紧急、非迫近危险，不使用临时组、重组身份或预建立会话；CF 处理本次发往组的入向 INVITE。 处理本次尚未归属的主叫时实际调用 §9.2.2.3.7，尚有可匹配的本地目标组信息项。"
       ],
       "conclusion": "CF 按原请求正文组 ID 选择既有本地组项，按主叫 MCPTT ID 选用户项；用户项不存在才插入。把由本次 SIP 请求派生的客户端 ID 加入这个用户的客户端清单，已有该 ID 不重复加入；设置该用户项的到期时间，取本地策略。第 12 项只在确实走到这一步，且第 5 项已判此 INVITE 有资格、本条尚未调用 .3.7 时才要求执行。",
@@ -1035,6 +1050,7 @@
       "id": "chat-cf-implicit-notify-and-record-evidence",
       "title": "实际归属写入后的组 NOTIFY 是订阅层结果，不代替本端查证",
       "conditions": [
+        "客户端以未重组的 MCPTT 组 ID 请求发起或加入，不使用临时组身份（TGI）或预建立会话。",
         "同一 MC 系统内普通在网按需 MCPTT 聊天组，非紧急、非迫近危险，不使用临时组、重组身份或预建立会话；CF 处理本次发往组的入向 INVITE。 处理本次尚未归属的主叫时实际调用 §9.2.2.3.7，尚有可匹配的本地目标组信息项。",
         "CF 已按 .3.7 处理该用户／客户端。"
       ],
@@ -1071,6 +1087,175 @@
           "printed_pages": [
             135,
             136
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "chat-imminent-midcall-entry-and-priority",
+      "title": "聊天组 re-INVITE 进入迫近危险处理后，纠正优先级只等对应 UPDATE 的 200",
+      "conditions": [
+        "CF 实际收到指向既有聊天组 MCPTT 会话身份的 re-INVITE，正文迫近危险指示为 true；已有会话用未重组组身份按需建立，不用预建立或 TGI。",
+        "请求到达 §10.1.2.4.1.2 第8项；本条只分析正值请求，在组未紧急时看获准分支。"
+      ],
+      "conclusion": "第8项转入 §10.1.2.4.1.3，不再走外层剩余步骤。到专门处理后若按 §6.3.3.1.13.5 判发起未授权，回 403，正文的 imminentperil-ind 为 false，并停止。通过授权且进入组未紧急的第2项时，Resource-Priority 不合规定才走 §6.3.3.1.8；CF 向发起侧发送生成的 UPDATE，收到这份 UPDATE 的对应 200 才继续。头已正确不触发这次纠正。",
+      "normative_strength": "转入、明确拒绝、存在错误时发送 UPDATE 和等待对应 200，均为各自条件下的 SHALL。",
+      "limitations": [
+        "早在 §10.1.2.4.1.2 第7(b)项退出的 403 未在该项规定同一 false 正文，不靠状态码代换。",
+        "纠正 helper 按当前组状态选 Resource-Priority；不能把首升请求要达到的等级当成纠正 UPDATE 绝对值。PRACK 的 200 和发起 re-INVITE 的最终 200 不替代对应 UPDATE 的 200。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.2 入口、第7–8项"
+          ],
+          "printed_pages": [
+            291,
+            293,
+            294
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.3 第1、2(a)项"
+          ],
+          "printed_pages": [
+            294,
+            295
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.8"
+          ],
+          "printed_pages": [
+            109
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.13.5"
+          ],
+          "printed_pages": [
+            113,
+            114
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "chat-imminent-midcall-initial-fanout",
+      "title": "聊天组首次迫近危险：已入会生成 re-INVITE，已归属未入会发初始 INVITE",
+      "conditions": [
+        "CF 实际处理指向既有聊天会话的正值 re-INVITE；原会话用未重组组身份按需建立，不用预建立或 TGI。",
+        "授权与适用优先级前置步骤已通过；组没有进行中的紧急，且原迫近危险组状态为 false。"
+      ],
+      "conclusion": "CF 将组迫近危险状态置 true，按 §6.3.3.1.15 为其他已归属且已入会参与者生成 re-INVITE。为已归属未入会成员按 §6.3.3.1.7 分别生成并发送初始 INVITE；收到对应邀请的 200 才按这条分支与媒体面交互。CF 缓存该用户已发起迫近危险呼叫的信息。",
+      "normative_strength": "状态更新、两类生成、每个未入会成员的 INVITE 发送、对应 200 后媒体交互、缓存均为 SHALL。",
+      "limitations": [
+        "对已入会一侧，第2(c)(ii)项列到生成，未另列发送、接收匹配 200 或媒体动作；不据此说不发送或用预安排组的发送规则替代。",
+        "预安排首次升级对已归属未参会者发 MESSAGE；本条不是同一分发分支。媒体交互动作不证明对端已入会、收听或收到 RTP。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.3 第2(c)项"
+          ],
+          "printed_pages": [
+            295
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.7"
+          ],
+          "printed_pages": [
+            108,
+            109
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.15"
+          ],
+          "printed_pages": [
+            116,
+            117
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.8 第1(b)项 预安排对照"
+          ],
+          "printed_pages": [
+            256,
+            257
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "chat-imminent-midcall-active-new-indication",
+      "title": "聊天组已经迫近危险后，确有新指示才走 MESSAGE/true 分支",
+      "conditions": [
+        "CF 实际处理该既有按需聊天会话的正值 re-INVITE；原会话使用未重组组身份，不用预建立或 TGI。",
+        "授权与适用优先级检查已通过，组未紧急且原迫近危险状态为 true，并确认为该用户新指示。"
+      ],
+      "conclusion": "按 §10.1.2.4.1.3 第2(b)项，CF 为其他已归属成员生成并发送带 imminentperil-ind=true 的 SIP MESSAGE，缓存该用户已发起迫近危险呼叫的信息。该项没有重复首次升级的初始 INVITE 分发。发起侧最终 re-INVITE 200 是单独响应；到达第5–9项时，未走指定纠正 helper 才带所列 SDP answer，与媒体面交互后发送。",
+      "normative_strength": "第2(b)项通知与缓存及走到第5–9项后的应答各按条件为 SHALL。",
+      "limitations": [
+        "第2(b)项的收件范围按调用点为其他已归属成员；§6.3.3.1.11 通用说明提未参会，不据此替换调用点或补一套实现收件算法。",
+        "没有新指示、只是改优先级、看见同一请求重传或一般 200，不证明执行了第2(b)。不推定所有邀请响应先于发起侧最终 200，不把正值通知写成取消。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.3 第2(b)项"
+          ],
+          "printed_pages": [
+            295
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.11"
+          ],
+          "printed_pages": [
+            110
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.3 第5–9项"
+          ],
+          "printed_pages": [
+            296
           ]
         }
       ],
