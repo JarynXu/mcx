@@ -1,0 +1,186 @@
+{
+  "topic_id": "r16-groups-mandatory-remote-affiliation-publish",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "强制变更他人的 MCPTT 组归属：跨 PF 的 PUBLISH 和结果取证",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明继承全部 common_conditions，再叠加本条 conditions；关联主题不是规定的执行顺序。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0，Rel-16 Stage 3。在网 MCPTT 强制模式下，甲请求修改不同的乙在客户端 C 的组归属，起始与终接参与功能不同。按实际接收分支判读。"
+  ],
+  "claims": [
+    {
+      "id": "mandatory-affiliation-publish-crosses-participating-functions",
+      "title": "跨 PF 的强制归属变更仍是 PUBLISH，公共信令身份与用户业务身份分开",
+      "conditions": [
+        "起始 PF 实际收到符合 §9.2.2.2.9 入口的 PUBLISH，业务正文指向其不服务的乙。"
+      ],
+      "conclusion": "起始 PF 从入站 P-Asserted-Identity 的公共用户身份识别甲；生成发往终接 PF PSI 的 PUBLISH，P-Asserted-Identity 填起始 PF PSI，业务正文 mcptt-request-uri 填乙、mcptt-calling-user-id 填甲。带上其他信令元素，转发收到的响应。",
+      "normative_strength": "§9.2.2.2.9 入站条件与生成、发送、转发响应的 shall。",
+      "limitations": [
+        "不套用协商 MESSAGE 或查询 SUBSCRIBE。原文入站类型无 +xml，客户端构造、出站与终接类型有 +xml；客户端步骤 2 只写该 MCPTT 用户，转发接收才明确指向非本侧服务的目标。这里不裁定 MIME 匹配，不补客户端构造或终接 PSI 查找算法。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.1.2 mandatory mode and client body construction comparison"
+          ],
+          "printed_pages": [
+            168,
+            169
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.9 receipt and origin-to-target PF forwarding"
+          ],
+          "printed_pages": [
+            181,
+            182
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.3 terminating ingress +xml comparison"
+          ],
+          "printed_pages": [
+            173
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.6.1.1 protection applicability"
+          ],
+          "printed_pages": [
+            138
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "terminating-pf-affiliation-auth-and-body-guards-straddle-200",
+      "title": "终接 PF 先查权限及期限，200 后再核 PIDF entity",
+      "conditions": [
+        "终接 PF 实际收到符合 §9.2.2.2.3 入口的 PUBLISH，起始用户甲与所服务用户乙不同。"
+      ],
+      "conclusion": "用业务正文识别甲和乙。甲未获授权则回 403 并停止；Expires 缺失或非零且低于 4294967295 则回 423 和 Min-Expires 后停止。通过前置检查后先回 200；如果 PIDF presence entity 不等于乙则停止。通过后 tuple id 标识乙的客户端 C。",
+      "normative_strength": "§9.2.2.2.3 第 1–10 项的身份、响应及条件停止规则。",
+      "limitations": [
+        "Expires 为零另走撤销兴趣。200 不能证明 PIDF 用户一致、候选状态已经处理或已完成归属。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.3 terminating entry, steps 1–10"
+          ],
+          "printed_pages": [
+            173,
+            174
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.3 zero interval steps 7 and 15"
+          ],
+          "printed_pages": [
+            173,
+            175
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mandatory-affiliation-result-needs-target-client-and-group-state",
+      "title": "变更结果按乙、C、G 和通知中的本次 p-id 核实",
+      "conditions": [
+        "观察乙的组归属；或终接 PF 按变更程序调用通知生成程序且已识别 handled p-id。"
+      ],
+      "conclusion": "要通过此程序获知成功或拒绝，客户端须在变更前启动对乙的状态确定。订阅端实收有效按用户 PIDF NOTIFY 后，核对乙、客户端 C 及组 G 的报告状态。符合调用守卫时生成的通知写入本次 PUBLISH 的 handled p-id；关联后仍需核对单个组的状态。",
+      "normative_strength": "§9.2.1.1 的前置状态确定要求、§9.2.1.3 的观察、§9.2.2.2.3 第 18–19 项和 §9.2.2.2.5 的通知及 p-id 守卫。",
+      "limitations": [
+        "通知未到无法定结果；缺 G 不能单凭这份报告签认本次解除，因为可能已到期、已解除或被过滤。不能证明某场组呼已接听。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.1.1 and 9.2.1.3 starting observation and receiving per-user NOTIFY"
+          ],
+          "printed_pages": [
+            167,
+            168,
+            169,
+            170
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.3 steps 18–19"
+          ],
+          "printed_pages": [
+            176
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.4 and 9.2.2.2.5 notification and p-id"
+          ],
+          "printed_pages": [
+            176,
+            177
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.3.1.2 per-user syntax"
+          ],
+          "printed_pages": [
+            194,
+            195,
+            196
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-groups-explicit-affiliation-client",
+    "r16-mcptt-negotiated-affiliation-client",
+    "r16-groups-other-user-affiliation-status"
+  ],
+  "limitations": [
+    "只讨论不同 PF 承接的强制模式变更。客户端构造的用户字面与转发接收的目标身份表述不同；不补写客户端构造、信任规则、寻址算法或 MIME 拼写互通结论。",
+    "不能用回包推断组归属、组成员资格或媒体结果。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

@@ -3357,6 +3357,16 @@ G: Floor Taken 与 D: Start-stop 可同时成立；仅在各 D 定时器运行�
 
 [读取主题](topics/media/on-network-dual-floor-handover.md)
 
+## 强制变更他人归属的跨 PF PUBLISH
+
+实际进入转发分支时，起始 PF 取入站公共用户身份，再以自己的 PSI 指明出站服务器身份；发往乙侧 PF PSI，业务正文分列乙和甲。
+
+终接 PF 先检查权限和期限，再回 200；通过回包后的 PIDF entity 检查才处理乙的客户端条目。要用状态确定程序获知结果，先于变更启动；按实际收到的 NOTIFY 核实乙、客户端与组，有 p-id 时按其关联。
+
+尚未建立：本条不补写客户端用语未明之处，不规定如何选择终接 PF、怎样匹配 MIME 拼写，也不以 PUBLISH 200、缺通知或缺组条目证明本次归属结果。
+
+[读取主题](topics/groups/mandatory-remote-affiliation-publish.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。
