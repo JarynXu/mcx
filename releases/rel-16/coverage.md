@@ -3307,6 +3307,16 @@ Q1 接收同场取消仍应处理并确认；Q2 的 TFP8 到期按本端隐式�
 
 [读取主题](topics/calls/offnetwork-floor-queueing-capability.md)
 
+## Rel-16 会话 GRUU 与敏感业务身份
+
+可判在何条件下会话 URI 不得含 MCPTT 用户 ID 或组 ID，及 PF 如何映射本地与 CF 会话 URI。
+
+区分会话身份内容要求、正文机密性配置和 XML 签名；保留第 7 章和预建立 REFER 的独立规则。
+
+尚未建立：不能由 GRUU 可读性推知 XML 是否加密，也不从历史 Contact 推断映射仍有效、路由已成功或已获授权。
+
+[读取主题](topics/calls/session-gruu-sensitive-identity.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

@@ -91,3 +91,5 @@ CF可因资源/拥塞拒绝500并可带Retry-After；若Request-URI所指组呼�
 - [on-network-idle-floor-server](../media/on-network-idle-floor-server.md)
 
 若收到重入请求的是非控制 MCPTT 功能，或由它在新归属、回覆盖后主动邀请，查 [NCF 重入时的 Contact 与晚入响应](noncontrolling-prearranged-rejoin.md)。
+
+若排查的是会话 GRUU 是否能携带组号、正文已加密时该怎样判断，查[会话 GRUU 与敏感业务身份的边界](session-gruu-sensitive-identity.md)。
