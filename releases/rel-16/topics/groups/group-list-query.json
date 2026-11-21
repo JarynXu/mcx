@@ -6,9 +6,9 @@
   "title": "组里有哪些人，哪些人已归属？怎样主动查名单？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-23.280-v16.7.0",
-  "condition_rule": "Inherit common_conditions and add claim conditions. Related topics are alternative lookups, not mandatory steps.",
+  "condition_rule": "Inherit common_conditions and add claim conditions. Related topics are alternative lookups, not mandatory steps. 字段表对照、名册是否按需提供、收到完整查询结果是不同检查，不把对其他检查的事实当作共同前提。",
   "common_conditions": [
-    "固定 TS 23.280 V16.7.0、Rel16、Stage 2；由 MC 业务用户的组管理客户端就目标组主动向 GMS 查询名单。"
+    "固定 TS 23.280 V16.7.0、Rel16、Stage 2。主动查询由 MC 业务用户的组管理客户端就目标组向 GMS 发起；在网组配置对照可在未发出查询时核对，不把配置下发当作主动查询。"
   ],
   "claims": [
     {
@@ -155,6 +155,137 @@
       ],
       "limitations": [
         "本范围不规定拒绝时的错误码、空名单或静默行为；不能由空名单反推拒绝。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "group-roster-request-not-default",
+      "title": "在网组成员名册只按请求提供给授权用户，不随普通配置默认提供",
+      "conditions": [
+        "核对这个在网组的普通配置接收或成员名单获取；不预设已经发了名单查询或已经授权。"
+      ],
+      "conclusion": "表 A.4-1 注 1 限定名册只在授权用户提出请求时提供，不默认提供。主动查名单时，GMS 根据请求类型和对该发起用户的授权取数据，再回给提问者的组管理客户端。",
+      "normative_strength": "有请求和授权才进入所列名单获取；已经拿到配置或持有授权不等于收到了成员名单。",
+      "limitations": [
+        "没有名册不构成普通组配置下发失败的证据；也不能以有通知证明 GMS 已处理主动查询。未获授权的实际响应不在此表规定。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "Table A.4-1, group member list and NOTE 1"
+          ],
+          "printed_pages": [
+            214,
+            215
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.5.2, Figure 10.2.5.2-1, steps 1–3"
+          ],
+          "printed_pages": [
+            102
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "complete-group-roster-includes-partner-members",
+      "title": "完整成员名册包含该组在主系统和伙伴系统中的成员",
+      "conditions": [
+        "请求类型确为成员名单而非已归属名单；讨论该组完整成员名单，不是成员变动、活动会话名单、单系统视图或局部导出。"
+      ],
+      "conclusion": "表 A.4-1 注 8 所说的名单由该组主系统和伙伴 MC 系统中的全部成员组成。查完整查询结果只见主系统成员且确认伙伴用户是该组成员时，不能把结果解释为完整名册本来按主系统截断。",
+      "normative_strength": "这是全体成员名单的范围；一次观察须先核对目标组、查询类型、授权、GMS 原始答复和视图是否完整。",
+      "limitations": [
+        "不从名单范围推断伙伴方的用户都已归属、已通话、何时同步、按照哪个协议分段，或每个转发和导出都是整表。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "Table A.4-1, group member list and NOTE 8"
+          ],
+          "printed_pages": [
+            214,
+            215
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "Table 10.2.2.17-1, query result according to query type"
+          ],
+          "printed_pages": [
+            91
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.5.2, Figure 10.2.5.2-1, steps 1–3"
+          ],
+          "printed_pages": [
+            102
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "group-roster-authorization-table-row-scope",
+      "title": "授权用户配置的两行不能合并；父行的 UE 列不能替逐业务 ID 子行",
+      "conditions": [
+        "在网组的 Stage 2 配置对照，查固定版表 A.4-2 的成员名单授权用户与组信息授权用户两项。"
+      ],
+      "conclusion": "可请求成员名单的授权用户列表父行，依 UE、MC 业务服务器、GMS 顺序为 Y/Y/Y；可获取组信息的授权用户列表是另一个父行，三个对象列均空白。两行各自的 MCPTT、MCVideo、MCData ID 子行，仅在 GMS 栏印有 Y，另两栏空白。",
+      "normative_strength": "按附录 A.1 的图例，Y 表示其所在行的参数须配置给该功能实体。父行的 Y 不补入逐业务 ID 子行，也不把空白写成表中明确的 N。",
+      "limitations": [
+        "表未给出两行是否必须相同、应分别或同时如何参与授权、是否互相替代、部署默认、线上字段和绝对发送禁令。发起用户的实际查询授权仍看 GMS 的相应处理。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "A.1, meaning of Y and N for each functional-entity column"
+          ],
+          "printed_pages": [
+            211
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "Table A.4-2, two authorisation lists and respective service ID child rows"
+          ],
+          "printed_pages": [
+            216
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.2.5.2, authorisation check"
+          ],
+          "printed_pages": [
+            102
+          ]
+        }
       ],
       "verification": {
         "original_clauses_checked": true,
