@@ -1,0 +1,201 @@
+{
+  "topic_id": "r16-media-on-network-unicast-media-protection",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "在网单播的加密语音和话权，各在哪一段处理？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "先确认在网呼叫与实际角色，再按 RTP 语音、RTCP APP 话权及各段协商分别判断。",
+  "common_conditions": [
+    "仅 TS 24.380 V16.9.0 §13 所述在网单播：目标组不是临时组的组成组，或本次是在网私呼；按实际承担的 PF/CF 功能判断。"
+  ],
+  "claims": [
+    {
+      "id": "r16-media-on-network-unicast-media-protection-voice",
+      "title": "语音保护已协商时 PF 和 CF 不解密 RTP 负载",
+      "conditions": [
+        "在本页范围内的组呼或私呼已协商语音媒体保护，观察 PF 或 CF 的 RTP 转发。"
+      ],
+      "conclusion": "PF 与 CF 须透明转发加密 RTP，不解密负载。目标组不是临时组组成组的组呼由该组的 GMK/GMK-ID 保护终端收发的语音；在网私呼用 PCK/PCK-ID。解开一段话权消息不改变 RTP 负载的该项要求。",
+      "normative_strength": "条件成立时，透明转发加密 RTP、不得解密负载是强制要求。",
+      "limitations": [
+        "透明性不替代对 RTP 报头、逐包一一对应、下游收到或终端解密与播放的核对。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.1"
+          ],
+          "printed_pages": [
+            226,
+            227,
+            228
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.3.2(1)"
+          ],
+          "printed_pages": [
+            229
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.3.4(1)"
+          ],
+          "printed_pages": [
+            235
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-media-on-network-unicast-media-protection-ue-pf",
+      "title": "终端与服务 PF 的单播话权保护用 CSK/CSK-ID",
+      "conditions": [
+        "终端与服务它的 PF 已协商该段单播话权保护，且 PF 确已通过 SIP 收到该终端提供的 CSK 与 CSK-ID。"
+      ],
+      "conclusion": "终端生成 CSK/CSK-ID 并经 SIP 提供给服务 PF；条件成立的 PF 对发往该终端的单播话权消息加密、对从该终端收到的单播话权消息解密，使用从二者导出的保护材料。",
+      "normative_strength": "协商与接收条件成立后的 PF 加解密是强制要求。",
+      "limitations": [
+        "仅见 SIP 事务或此段一向处理成功，不证明 PF–CF 已协商、配置或实收。§13.2 区分来源密钥及 ID 与导出的材料；不提供具体 SIP 条文或密钥后备判断。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.1"
+          ],
+          "printed_pages": [
+            227,
+            228,
+            229
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.2"
+          ],
+          "printed_pages": [
+            229
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.3.2(2)"
+          ],
+          "printed_pages": [
+            229
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-media-on-network-unicast-media-protection-pf-cf",
+      "title": "PF 与 CF 的话权保护另核协商与各自 SPK/ID",
+      "conditions": [
+        "PF–CF 已协商话权保护；判断每一端的动作时，SPK 与 SPK-ID 须已配置在该端。"
+      ],
+      "conclusion": "PF 往 CF 发的话权消息加密、从 CF 收到的话权消息解密；CF 以自己的配置条件核对发往 PF 的加密、从 PF 收到的解密。两端都使用来自 SPK/ID 的保护材料，不能用终端–PF 段的 CSK 处理记录代替。RTCP SR/RR/SDES 属媒体控制，另核媒体控制保护协商。",
+      "normative_strength": "对各端分别满足的条件，朝对端加密、从对端接收解密是强制要求。",
+      "limitations": [
+        "不规定某条话权消息必须一对一转发，也不从一端的配置、另一段的成功或 SIP 正文保护推断本段通过。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.1"
+          ],
+          "printed_pages": [
+            226,
+            227,
+            228,
+            229
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.2"
+          ],
+          "printed_pages": [
+            229
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.3.2(4)"
+          ],
+          "printed_pages": [
+            230
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.3.2(7,8)"
+          ],
+          "printed_pages": [
+            230,
+            231
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.3.4(2A)"
+          ],
+          "printed_pages": [
+            235
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.3.4(4A)"
+          ],
+          "printed_pages": [
+            236
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcptt-onnetwork-floor-media-timeouts",
+    "r16-media-on-network-floor-client",
+    "r16-calls-sip-xml-confidentiality-copy"
+  ],
+  "limitations": [
+    "不覆盖 MBMS、离网、临时组组成组、预建立会话专用控制或 SIP XML 正文。仅判断指定媒体面保护与观测边界，不判断密钥派生算法、故障回退、实际通话或认证结果。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

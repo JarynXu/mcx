@@ -44,3 +44,5 @@
 依据：§6.3.4.4.4 步骤 1–3（印刷页 60）；§6.3.4.5.2 步骤 1–3（页 65）。
 
 固定原文：[3GPP TS 24.380 V16.9.0，Release 16，Stage 3（ETSI，2022-10）](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf)。若要查服务器何时才会授予请求，见[空闲服务器的条件授予](on-network-idle-floor-server.md)；若触发事件是另一人的抢占请求而非发言超时，见[在网单话权抢占与撤销](on-network-preemption-revoke.md)。
+
+如果服务器在转发受保护的 RTP，同时能处理单播话权消息，先查[在网单播语音与话权保护各在哪一段](on-network-unicast-media-protection.md)。加密负载与话权保护分开；本页计时器入口仍以实际收到的消息和状态为准。
