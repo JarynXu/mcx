@@ -3587,6 +3587,16 @@ RTP 和话权使用各自守卫；对已进入活动 MBMS 分支的 Idle/Taken �
 
 [读取主题](topics/calls/private-routing-annex-identifiers.md)
 
+## 预建立聊天组发起与加入的 REFER 和后续结果
+
+SIP 会话、聊天组和业务类型分开；O-PF 发 REFER 200 前先确认 CF。若 INVITE 已发，配对 CF 的响应再判本次隐式归属；O-PF 本地拒绝原请求是独立的通用取消入口。
+
+不能拿 REFER 200 或本地拒绝码当归属处理记录；组归属与媒体交互分别验。
+
+尚未建立：不确立接入方 MIME 兼容、CF 地址发现、终接模式或实际媒体。
+
+[读取主题](topics/calls/chat-preestablished-refer-outcome.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

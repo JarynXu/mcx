@@ -1,0 +1,212 @@
+{
+  "topic_id": "r16-calls-chat-preestablished-refer-outcome",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "用预建立会话加入聊天组：REFER 的 200 算入会成功吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条 claim 继承所有 common_conditions，再叠加自身 conditions；客户端发送、O-PF 前置准入、CF 应答正负分支互不替代。",
+  "common_conditions": [
+    "Release 16、Stage 3，依据 TS 24.379 V16.14.0。",
+    "限同系统内、在网、普通直接组身份的 MCPTT 聊天组发起或加入，使用已有适用的预建立会话；不是按需、预安排、紧急、迫近危险或临时组分支。"
+  ],
+  "claims": [
+    {
+      "id": "r16-calls-preestablished-chat-refer-identities",
+      "title": "对话外 REFER 指明现有会话与业务聊天组",
+      "conditions": [
+        "终端接到用户请求，使用所给预建立会话发起或加入目标聊天组。"
+      ],
+      "conclusion": "发对话外 SIP REFER。Request-URI 和 Target-Dialog 分别按各自规则标识预建立会话；Refer-To 的 cid 引用 Content-ID 对应的 application/resource-lists 资源列表，唯一 entry 的 uri 标识聊天组。该 URI 的 body 传 session-type=chat 与 mcptt-client-id，适用时再带 SDP；Supported=norefersub，Refer-Sub=false。",
+      "normative_strength": "按相应规范条件生成与带字段为 SHALL。",
+      "limitations": [
+        "Target-Dialog 不构成对话内 REFER；不把现有会话身份与目标组互换，也不把只适用的 SDP 变成每次必填。涉及 MIME 写法时保留 chat 小节及通用 helper 的不同文本，不补收包兼容规则。 不把一般隐式归属程序取正文 mcptt-request-uri 的写法当成聊天 REFER 在 entry@uri 之外再填一份组 ID 的要求；不规定 PF 内部输入转换。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.2.1 第1–3、9–10项"
+          ],
+          "printed_pages": [
+            273,
+            274,
+            275
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.1.2"
+          ],
+          "printed_pages": [
+            78
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.4 第8、11项"
+          ],
+          "printed_pages": [
+            85,
+            86
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.12 第1–2项"
+          ],
+          "printed_pages": [
+            184
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-calls-preestablished-chat-refer-200-before-cf",
+      "title": "发送 REFER 200 前先识别 CF，另发 INVITE",
+      "conditions": [
+        "O-PF 实收对应 chat REFER，通过前置检查走到应答构造和 CF 识别；或终端实际收到本次 REFER 的最终 2xx。"
+      ],
+      "conclusion": "在 O-PF 处理分支，先生成 200 并按相应头组合不建隐式订阅；无法确定 CF 时向原 REFER 回 404 和Warning 文本 142 unable to determine the controlling function，停止后续步骤。成功时先发送 REFER 200，再构造向 CF 的 INVITE，SIP Request-URI 写 CF PSI，mcptt-request-uri 写目标组。在终端实收分支，收到本次 REFER 最终 2xx 后与媒体面交互。",
+      "normative_strength": "按各自适用条件，查 CF、404 分支、成功的发送与独立 INVITE、实收 2xx 的媒体交互为 SHALL。",
+      "limitations": [
+        "只生成未发送、PF 发送未送达、终端实收是不同记录。REFER 200 不是 CF 的 INVITE 应答、完成归属、实际入会、获话权或收到语音。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.2.1 第11–19项及注6–8"
+          ],
+          "printed_pages": [
+            283,
+            284
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.2.1 REFER最后2xx"
+          ],
+          "printed_pages": [
+            275
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.4"
+          ],
+          "printed_pages": [
+            85,
+            86
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-calls-preestablished-chat-refer-affiliation-complete",
+      "title": "实际 CF 2xx 才触发这次隐式归属的完成分支",
+      "conditions": [
+        "O-PF 实收 CF 对本次向它发出的 INVITE 的 2xx；对归属部分，本次已执行 §9.2.2.2.12。"
+      ],
+      "conclusion": "O-PF 缓存 Contact，按已执行过的归属入口完成归属；把候选列表中为本次已添加的组条目置为 affiliated，并执行通知程序。另与媒体面交互。",
+      "normative_strength": "实收对应响应的处理、满足条件时完成与采用指定媒体交互为 SHALL。",
+      "limitations": [
+        "若本次未触发隐式归属，则不能用此路径制造一条新记录；CF 的 2xx 本身不代替 O-PF 的处理、终端入会证据或实际媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.2.1 CF INVITE 2xx 第1–2、4项"
+          ],
+          "printed_pages": [
+            284
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.12/.13"
+          ],
+          "printed_pages": [
+            183,
+            184,
+            185
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-calls-preestablished-chat-refer-affiliation-cancel",
+      "title": "规定的 CF 失败或 O-PF 本地拒绝可触发本次取消",
+      "conditions": [
+        "CF 应答分支：O-PF 实收 CF 对本次 INVITE 的 4xx、5xx 或 6xx；此分支只对归属取消另要求本次已调用 §9.2.2.2.12。本地拒绝分支：本次请求已触发 §9.2.2.2.12，且 O-PF 认定须拒绝原请求。"
+      ],
+      "conclusion": "CF 应答分支的媒体面交互不以调用隐式归属为条件；实际已调用才在此分支取消。通用本地拒绝分支也取消。取消只移除该用户、该客户端列表中本次新增的目标组条目。CF 302 另有流程，不是这个取消入口。",
+      "normative_strength": "CF 失败的媒体交互及由 §9.2.2.2.14 守卫约束的取消，分别为 SHALL。",
+      "limitations": [
+        "聊天组本地 404/142 步骤未重复列出取消调用；不能由这个响应认定原流程已触发、条目已新增或取消已执行。也不重写已发 REFER 200 或清除所有终端。 不从通用本地取消推导媒体面动作。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.2.1 CF INVITE 302、4xx–6xx"
+          ],
+          "printed_pages": [
+            285
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9.2.2.2.14"
+          ],
+          "printed_pages": [
+            185
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcptt-chat-establish-join",
+    "r16-mcptt-implicit-affiliation-n2",
+    "r16-media-preestablished-connect-outcome"
+  ],
+  "limitations": [
+    "不作为完整 SIP 编码模板，不替版本差异补 MIME 兼容、CF 发现或失败上报规则。",
+    "区分明示/隐式归属和聊天组加入；不凭 REFER 结果、内部交互或一次消息发出推断终端实际获话权、加入、收到或播放媒体。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

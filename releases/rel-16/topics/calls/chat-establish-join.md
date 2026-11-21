@@ -150,3 +150,5 @@ N6 和 N2 都是在 O-PF 处理客户端请求时检查，不是 CF 在数这场
 若已经加入使用未重组的 MCPTT 组身份的普通按需聊天会话，且不是临时组，要查客户端主动退出或控制功能发 BYE 时参与功能的两侧处理，见[聊天组 BYE 与单人或整场释放](chat-participant-or-session-release.md)。
 
 来源：[3GPP TS 24.379 V16.14.0 / ETSI TS 124 379 V16.14.0，Release 16](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf)。
+
+若本次使用已有的预建立会话发起或加入聊天组，查[聊天组 REFER 的会话和组标识、200 和归属结果](chat-preestablished-refer-outcome.md)。此时第一笔是对话外 REFER，不是此页的按需 INVITE。
