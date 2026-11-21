@@ -6,9 +6,9 @@
   "title": "预安排组呼离会：为什么 REFER 的 200 早于控制侧 BYE？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
-  "condition_rule": "先识别要结束的对象与实际请求腿，再对照响应所答的方法及控制功能的整场释放决定。",
+  "condition_rule": "先识别要结束的对象与实际请求腿，再对照响应所答的方法及控制功能的整场释放决定。 以 r16-calls-prearranged-participant-refer-leave- 开头的三条声明只用于终端主动离会；以 r16-calls-prearranged-release- 开头的三条声明只用于控制功能主动移出成员或结束整场。控制侧释放须核对实际业务 BYE 的方向、目标和会话映射，不能拿其他腿的 200 替代。",
   "common_conditions": [
-    "只讲普通在网、单系统、已经建立的预安排 MCPTT 组呼中，终端请求离开业务会话。客户端使用预建立承载为主要入口；按需及拆除预建立 SIP 会话只作对照。"
+    "普通在网、单系统、已经建立的预安排 MCPTT 组呼；是终端主动离会，还是控制功能主动移出成员或结束整场，按各声明的角色和事件区分。拆除预建立 SIP 会话只作对照。"
   ],
   "claims": [
     {
@@ -150,6 +150,129 @@
           ],
           "printed_pages": [
             251
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-calls-prearranged-release-cf-target",
+      "title": "CF 主动移人和释放整场共用发送 BYE 程序，但目标集合不同",
+      "conditions": [
+        "控制功能决定从预安排组呼移出一名成员，或按组呼释放条件需要结束该场。"
+      ],
+      "conclusion": "移出一人时，CF 须为该参与者的会话释放与媒体面交互，生成并向该参与者发送 BYE；成功移出后可向订阅会议事件的客户端发 NOTIFY。全场释放时按同一程序向本场所有参与者发 BYE。CF 实收某条出向 BYE 的 200 后须再与媒体面交互释放该 SIP 会话关联的媒体资源。",
+      "normative_strength": "单人 BYE、整场向全体发 BYE 和对应媒体交互为 SHALL；成功移出后的会议通知为 MAY。",
+      "limitations": [
+        "同样的 BYE 不说明目标集合；没有会议事件 NOTIFY 不否定已经移出，一条 200 不说明全场参与者已应答或媒体均已释放。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.4.2–.3: CF invokes BYE helper, successful removal and optional notification"
+          ],
+          "printed_pages": [
+            251,
+            252
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.5: per-participant send, all when group session is to be released, media on actual 200"
+          ],
+          "printed_pages": [
+            106,
+            107
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-calls-prearranged-release-terminating-pf-ondemand",
+      "title": "终接 PF 按需腿另发终端 BYE，并在实收该 BYE 的 200 后回复 CF",
+      "conditions": [
+        "在按需承载的这一参与者腿，终接 PF 实收 CF 的本次业务 SIP BYE。"
+      ],
+      "conclusion": "PF 先与媒体面交互以释放 CF 侧 SIP 会话关联资源，再生成并发送终端 BYE，复制入向 P-Asserted-Identity，若有 mcptt-info 则复制。终端实收这条 BYE 后先与媒体面交互，再回 200。PF 实收它发给终端的 BYE 的 200 后，先向 CF 回原 BYE 的 200，再与媒体面交互释放终端侧 SIP 会话关联资源。",
+      "normative_strength": "请求和实际响应各自触发相应 SHALL 步骤；mcptt-info 按入向正文存在条件复制。",
+      "limitations": [
+        "§10.1.1.3.4.1 标题写 private call on-demand，正文在预安排组呼范围调用相同按需收件流程，不把私呼策略移入；本步骤未给出终端 BYE 的具体 Request-URI，也不规定失败或超时收尾。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.4.1: invocation at terminating PF with fixed-edition subsection title"
+          ],
+          "printed_pages": [
+            239
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.8.1: request steps 1–5 and response steps 1–2"
+          ],
+          "printed_pages": [
+            102
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.3.3; 6.2.6: client performs media interaction before replying to a received BYE"
+          ],
+          "printed_pages": [
+            229,
+            61
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-calls-prearranged-release-terminating-pf-preestablished",
+      "title": "业务标识命中预建立用户时，终接 PF 自己回 200，保留终端预建立会话",
+      "conditions": [
+        "终接 PF 实收 CF 的本次业务 SIP BYE，且本次 MCPTT 会话标识指向与该 PF 有预建立会话的用户。"
+      ],
+      "conclusion": "PF 先与媒体面交互断开面向 CF 的资源，向 CF 发送 200；再与媒体面交互，断开终端侧和 CF 侧媒体资源的连接，保留面向该终端的预建立会话。此分支不规定另向 UE 发送 SIP BYE，不将终端 SIP 200 或媒体面确认列为回复 CF 的前提。",
+      "normative_strength": "断开各侧媒体资源关系、PF 应答及保持预建立会话是该分支所列 SHALL 动作。",
+      "limitations": [
+        "用户有任意旧对话不足以证明本次满足业务会话标识关联；PF 的业务 BYE 200 不证明回复后的媒体动作、客户端停播、收到媒体面释放指示、拆除其预建立会话或整个组呼释放。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.4.2: actual CF BYE and MCPTT session identity to pre-established user mapped at this PF"
+          ],
+          "printed_pages": [
+            239
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.8.2: ordered media interaction, PF response, separation and retention"
+          ],
+          "printed_pages": [
+            102
           ]
         }
       ],
