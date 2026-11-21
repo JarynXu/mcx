@@ -35,3 +35,5 @@ Floor Ack 要看它确认哪条消息。服务器给放权者的 Ack（Message T
 单点看到迟到的 RTP，只能说明包到了该点；不能据此推断终端仍有话权、分发器已转发或听众已播放。这里的 Revoke 针对无许可发送，不表示有人抢占。§6.3.5.3.8 的注另行说明：若关联的一方是非控制功能的服务器接口，未授权 RTP 由该非控制功能处理，不套用本页的直接客户端入口。
 
 要核对终端重传或其他等待结果，读[普通在网话权客户端](on-network-floor-client.md)。如果实际起点是空闲时收到新申请，读[空闲服务器如何授予话权](on-network-idle-floor-server.md)；没有 Release 而是收包超时或到达发言时限，读[媒体与发言超时](on-network-floor-media-timeouts.md)。若控制方此前已选择撤销，或发送者只是撤回排队，读[抢占撤销与退队](on-network-preemption-revoke.md)。
+
+若一般持有者松开时另有正在运行的覆盖实例，转查[双话权交接、听众通知和计时移交](on-network-dual-floor-handover.md)。

@@ -1,0 +1,144 @@
+{
+  "topic_id": "r16-media-on-network-dual-floor-handover",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "在网双话权交接：甲松开一般话权，乙要重新抢话吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "每条声明继承全部 common_conditions，再叠加本条 conditions；关联主题不是必经流程。",
+  "common_conditions": [
+    "固定 TS 24.380 V16.9.0，Rel-16 Stage 3；普通在网组呼已建立双话权，G 的话权持有人甲被乙覆盖；不支持 multi-talker，本篇不含音频切入。按实际进入一般或覆盖状态机的事件读取。"
+  ],
+  "claims": [
+    {
+      "id": "general-holder-release-notifies-listener-subsets-while-switching-talker",
+      "title": "甲释放一般话权，G 向收听甲者发 Idle、只听甲者再发 Taken",
+      "conditions": [
+        "G 在 Floor Taken 实收一般持有者甲的 Floor Release；进入 §6.3.4.3.2 的入口时非 Start-stop 且覆盖状态机 D 存在。"
+      ],
+      "conclusion": "要求媒体分发器停止转发甲的 RTP，停止甲的 T2/T20（如运行），清 G 已存 Track Info（如有）。向配置收听甲者发 Floor Idle，向配置仅收听甲者发 Floor Taken，两类消息均递增序号；未请求隐私时 Taken 携乙的 MCPTT ID。G 设为 Floor Taken 后向 D 发 Terminate。",
+      "normative_strength": "§6.3.4.4.6 第 1–4 项，§6.3.4.3.2 D 存在分支第 1–5 项的 shall。",
+      "limitations": [
+        "不能从 Idle 确认全组空闲、终端收到通知或媒体已可闻；不把仅配置支持当成 D 实际存在。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.4.6 ordinary release of general holder, non-multi-talker entry"
+          ],
+          "printed_pages": [
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.3.2 existing dual state machine and recipient subsets"
+          ],
+          "printed_pages": [
+            56,
+            57
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "terminate-transfers-running-dual-timer-values-and-preserves-current-burst",
+      "title": "D 实收 Terminate 后分别移交正在运行的 T11/T12，乙持话权到本次发言结束",
+      "conditions": [
+        "上述交接中，覆盖状态机 D 已实际收到终止指令。"
+      ],
+      "conclusion": "T11 若在运行，把 T1 值设为 T11 值并启动 T1；T12 若在运行，把 T2 值设为 T12 值并启动 T2。随后释放 D 的保留资源并停止其关联运行定时器、进入 Start-stop。乙保有话权直到当前 talk burst 结束。",
+      "normative_strength": "§6.3.6.3.9 的四个 shall 及保留话权的 NOTE。",
+      "limitations": [
+        "不按本条为未运行的 D 定时器启动对应 G 定时器，也不把值限定为剩余值、经过时长或重新开始完整时限；发送指令不证明 D 实收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.6.3.9 D actually receives Terminate, independent running timers, resources and talk-burst note"
+          ],
+          "printed_pages": [
+            100,
+            101
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "override-holder-release-is-not-general-handover",
+      "title": "乙向 D 松开覆盖话权，与 G 通知 D 终止实例不同",
+      "conditions": [
+        "对照事件是 D: Floor Taken 实收覆盖持有者乙的 Floor Release，而不是来自 G 的 Terminate。"
+      ],
+      "conclusion": "D 按 §6.3.6.3.6 要求媒体分发器停止转发乙的 RTP，并回收覆盖资源；该分支不是把乙的 T11/T12 值移交给 G 的 Terminate。T11/T12 的到期也是另行处理。",
+      "normative_strength": "§6.3.6.3.6 覆盖持有者的 Release，§§6.3.6.3.3–.4 的到期和 §6.3.6.3.9 Terminate，按实收消息或定时器事件选用。",
+      "limitations": [
+        "不能用相同消息名判断 G 或 D 入口，不从 D 回到 Start-stop 反推是谁松开，完整到期规程在原主题。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.6.3.6 D receive Floor Release"
+          ],
+          "printed_pages": [
+            99,
+            100
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.6.3.3 and .4 D timer expiry comparison"
+          ],
+          "printed_pages": [
+            97,
+            98
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.6.3.9 D receives Terminate"
+          ],
+          "printed_pages": [
+            100,
+            101
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcptt-onnetwork-holder-release",
+    "r16-media-on-network-dual-floor-timeouts",
+    "r16-mcptt-onnetwork-dual-floor-entry"
+  ],
+  "limitations": [
+    "限普通在网 G/D 已存在情形，不扩大到组呼结束、双话权初次授予、multi-talker、audio cut-in 或其他定时器算法。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

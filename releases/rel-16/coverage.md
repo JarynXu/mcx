@@ -3347,6 +3347,16 @@ Q1 接收同场取消仍应处理并确认；Q2 的 TFP8 到期按本端隐式�
 
 [读取主题](topics/calls/preestablished-emergency-private-confirmation.md)
 
+## Rel-16 在网双话权交接：听众通知和计时移交
+
+可判甲松开后覆盖者乙能否继续本次发言，谁收到 Idle/Taken、D 的资源如何回收。
+
+G: Floor Taken 与 D: Start-stop 可同时成立；仅在各 D 定时器运行时移交对应 T1/T2。
+
+尚未建立：不将双话权结束等同整组空闲或媒体可闻，不从 D 终止推定定时器按完整配置值重启。
+
+[读取主题](topics/media/on-network-dual-floor-handover.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。
