@@ -21,3 +21,5 @@
 依据：[RTCP APP 头与 Name，印刷页 145–146](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=146)；[终端预建立会话在用状态，印刷页 196](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=197)。
 
 已能认出消息族后，若实际接收记录提示 subtype 未知、字段未规定或可选字段语法错误，查[未知消息或字段的忽略范围](rtcp-app-unknown-control-fields.md)。日志少打一项，不等于接收端遇到未知项。
+
+已确认是 MCPT 话权消息、还要解释 Floor Deny 或 Floor Revoke 的 Reject Cause 时，查[为什么拒绝与撤权可有同值不同原因](floor-deny-revoke-cause.md)。字段 ID 不是原因码。

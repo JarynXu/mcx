@@ -3527,6 +3527,16 @@ RTP 和话权使用各自守卫；对已进入活动 MBMS 分支的 Idle/Taken �
 
 [读取主题](topics/groups/preconfigured-regroup-late-affiliation.md)
 
+## Floor Deny 与 Floor Revoke 的 Reject Cause 诊断
+
+先认 MCPT APP 的 subtype，再按字段长度和各消息自己的表解释 2/3/4；区分只有一人、无发送权、抢占和 T9 尚未到期。
+
+示例状态仅限各自入口；如日志缺消息类型，须查原始包或能区分此项的记录。
+
+尚未建立：不建立所有原因值、T9 配置算法、是否实际停发、是否已入呼或后续请求能否获准。
+
+[读取主题](topics/media/floor-deny-revoke-cause.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。
