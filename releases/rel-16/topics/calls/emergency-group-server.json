@@ -6,10 +6,10 @@
   "title": "已有按需预安排组会话：CF紧急升级、取消与分层反馈",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
-  "condition_rule": "Inherit common_conditions and add claim conditions. 既有四条声明只适用 CF；ID 以 terminating-pf-priority-reinvite- 开头的三条只适用终接 PF。按各自实际的收件和发送分别判断，不以一条腿的数据推定另一腿的状态。",
+  "condition_rule": "Inherit common_conditions and add claim conditions. 既有四条声明只适用 CF；ID 以 terminating-pf-priority-reinvite- 开头的三条只适用终接 PF。按各自实际的收件和发送分别判断，不以一条腿的数据推定另一腿的状态。 原 CF 四条仍限 emergency-ind 升级或取消，不展开新告警发起；已有告警取消和拒绝反馈按各自条件保留。其 imminent 字段只用于验证或原文分支比较，无效请求仍适用相应拒绝检查。原 response-warning-and-ack-info 条的 149 正文只取未获准撤警。终接 PF 的原三条仍只说明紧急或迫近危险指示的接收、转送和响应，不展开迫近危险业务生命周期。新增 priority-149- 三条只看本场 CF 回复及匹配 ACK 后的反馈，不以初始 INVITE、聊天组或预建立行为补齐。",
   "common_conditions": [
     "固定TS24.379 V16.14.0，在网已有按需预安排组会话，直接组身份。既有四条声明的主体是 CF，terminating-pf-priority-reinvite- 的声明主体是终接 PF；按各自事件适用。排除初始建立、chat/预建立、临时/重组、广播/system、离网、跨系统及完整媒体/话权算法。",
-    "CF 主线聚焦emergency-ind升级或取消；不发起新的emergency alert，已有告警取消和拒绝反馈按各自条件保留。CF 主线的imminent字段只用于验证或原文分支比较，无效请求仍适用其对应拒绝检查。终接 PF 只说明紧急或迫近危险指示的接收、转送与响应，不展开迫近危险业务生命周期。",
+    "CF 紧急升级、取消、终接 PF 转送，以及 CF 对新告警未获准或组已紧急时迫近危险请求的局部反馈，各按自己的业务分支适用；不展开随呼告警发送、迫近危险业务生命周期或媒体承载。",
     "每条按实际角色、请求/响应/ACK事件及旧组状态分别适用；不以已获授权、组状态false、已取消成功或所有下游已响应为共同前提。CF组状态与客户端MEG/MEGC/MES/MEA不可互换。"
   ],
   "claims": [
@@ -337,6 +337,154 @@
           "printed_pages": [
             84,
             94
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "priority-149-alert-activation-denied",
+      "title": "已有预安排组呼同意紧急升级但不准发起随呼告警时，CF 以 149 和 INFO 分开说明业务结果",
+      "conditions": [
+        "本场 CF 实收的重新邀请带合法 emergency-ind=true 和 alert-ind=true；紧急组呼已获授权，独立告警发起未按 §6.3.3.1.13.1 获授权；进入该程序的 200 构造分支。"
+      ],
+      "conclusion": "CF 发给邀请客户端的 200 须带 Warning 文本 149。只有实收对应这份上游 200 的 ACK 后按 §6.3.3.1.18 发送 INFO，正文写 emergency-ind=true、alert-ind=false。不得仅因告警失败把已获准的紧急组呼记为整笔拒绝。",
+      "normative_strength": "该步骤的 149、实收匹配 ACK 后的 INFO 及所列字段为 SHALL。",
+      "limitations": [
+        "这里只取紧急组呼与发起告警同时请求的场景；第 5 项原文本身只列入向 alert-ind=true 且告警未获授权为该项条件。不是未获准撤警的 3(b)，也不证明以前的告警被清或全组状态同步。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.7 request items 2–3 and 6; response item 5 and ACK paragraph"
+          ],
+          "printed_pages": [
+            253,
+            254,
+            256
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.13.1/.13.2: alert and emergency group authorization separate"
+          ],
+          "printed_pages": [
+            111,
+            112
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.17–18 item 3(a): valid indicator combination; INFO values"
+          ],
+          "printed_pages": [
+            117,
+            118
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "priority-149-imminent-peril-while-already-emergency",
+      "title": "本组已处于紧急状态时，获授权的迫近危险请求回 149 并按紧急级别获准",
+      "conditions": [
+        "本场 CF 实收合法的 imminentperil-ind=true 请求，迫近危险组呼获授权，组的进行中紧急状态为 true；进入该程序的 200 构造分支。"
+      ],
+      "conclusion": "给邀请客户端的 200 须带 Warning 文本 149。拒绝的是迫近危险这一项，请求按紧急级别获准；实际收到该 200 的 ACK 后须在原对话发 INFO，写 imminentperil-ind=false、emergency-ind=true。",
+      "normative_strength": "第 7 项的 149 及实收对应 ACK 后的 INFO 字段为 SHALL；按紧急级别获准的解释来自注 5。",
+      "limitations": [
+        "合法的来向迫近危险指示不与 emergency-ind 或 alert-ind 共存；回报字段不证明来向存在这两种指示，也不表示请求方取消。未处于紧急状态另走 §10.1.1.4.8；不由本回复推定授权配置、CF 以外状态或实际无线承载。",
+        "请求第 4 项字面引用 §6.3.3.1.13.6（取消授权），而固定版 §6.3.3.1.13.5 才是发起授权；本条只取实际获授权的响应分支，不替原文更换引用或根据 200/149 补出授权决定。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.7 request items 2 and 9; response item 7, NOTE 5 and ACK paragraph"
+          ],
+          "printed_pages": [
+            253,
+            255,
+            256
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.17 and 6.3.3.1.18 item 3(c): valid received combination and distinct returned indicators"
+          ],
+          "printed_pages": [
+            117,
+            118
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.7 request item 4; 6.3.3.1.13.5 and 6.3.3.1.13.6 headings and authorization conditions: literal difference"
+          ],
+          "printed_pages": [
+            113,
+            114,
+            254
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "priority-149-match-ack-and-original-dialog-info",
+      "title": "CF 发送带 149 的 200 后实收匹配 ACK，才按该早先业务分支发同对话 INFO",
+      "conditions": [
+        "本场 CF 已向邀请客户端发送这份带 Warning 文本 149 的 200；本条看 CF 实收匹配的 ACK，不以某一条下游 ACK 或客户端抓到自身发 ACK 代替。"
+      ],
+      "conclusion": "在邀请客户端请求建立的对话内发 SIP INFO，Info-Package 为 g.3gpp.mcptt-info，正文为 application/vnd.3gpp.mcptt-info+xml。按实际业务分支填入适用的字段；200 只靠自身不区分这些分支。",
+      "normative_strength": "已发送带 149 的 200 且实际收到它的 ACK 时，CF 发同对话 INFO 并带指定包名和正文是 SHALL。表中 149 是 Warning 的业务文字编号。",
+      "limitations": [
+        "不推导收到请求就无条件回 200、必须先收齐下游 200、INFO 已送达或已生效；不把撤警失败的 alert-ind=true 当成告警发起失败或迫近危险反馈。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.4.2 table 4.4.2-2: Warning text number 149"
+          ],
+          "printed_pages": [
+            37
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.7 response opening, items 5–7 and ACK paragraph"
+          ],
+          "printed_pages": [
+            256
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.18 items 1–4 and branches 3(a)–(c): packet, dialog and fields"
+          ],
+          "printed_pages": [
+            118
           ]
         }
       ],
