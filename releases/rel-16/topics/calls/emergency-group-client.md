@@ -95,3 +95,5 @@ MES 是个人 MCPTT emergency state；MEG 是客户端对组 in-progress emergen
 
 - 这是客户端有界职责，不是服务端全局准入、所有设备同步、紧急话权算法或完整SIP/XML/安全实现。§6.5/§6.6及配置依赖仍适用。
 - 初始化状态表为 informative；不据其概述补正文未给的取消缺省、MES回滚或释放调用。
+
+若用户取消的不是紧急或告警，而是现有在网按需预安排组呼的迫近危险状态，读[迫近危险取消的 re-INVITE、403 正文和成员分发](onnetwork-imminent-peril-cancellation.md)，不要混用两种授权和状态迁移。

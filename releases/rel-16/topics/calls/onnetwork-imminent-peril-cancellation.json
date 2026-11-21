@@ -1,0 +1,193 @@
+{
+  "topic_id": "r16-calls-onnetwork-imminent-peril-cancellation",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "取消在网迫近危险组呼状态：403 的 false 为什么不算取消成功？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明继承公共条件，并按本次实际请求、响应与组状态选取分支；发起/转发/接收的证据独立。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0，Rel-16 Stage 3。已建立的在网按需预安排 MCPTT 组呼，组没有进行中的紧急状态。本页只讨论取消迫近危险状态，不释放整场会话。"
+  ],
+  "claims": [
+    {
+      "id": "imminent-peril-cancel-request-and-forbidden-false-are-separate",
+      "title": "取消请求的 false 与 CF 拒绝响应的 false 含义不同",
+      "conditions": [
+        "本次为对既有组呼的迫近危险取消；按角色实际进入客户端生成请求或 CF 对 §10.1.1.4.8 编号取消分支的判断。"
+      ],
+      "conclusion": "客户端按发起用户的 allow-cancel-imminent-peril 检查已列授权情形，调用生成程序前已授权且 MIGC 3 或 MIG 2；发会话内 re-INVITE，imminentperil-ind=false，置 MIG 3。CF 入站先校验三种指示的组合，带迫近危险元素时不得并带紧急或告警元素；§10.1.1.4.7 第 9 项条件成立才转入。CF 独立查权限，false 或缺项判未授权；拒绝回 403、正文 imminentperil-ind=false、停止余项。",
+      "normative_strength": "§§6.2.8.1.10–.11、10.1.1.2.1.5、10.1.1.4.7、6.3.3.1.17、6.3.3.1.13.6、10.1.1.4.8 的相应条件动作。",
+      "limitations": [
+        "403/false 不代表改成 false；组合无效另有 403/150。§10.1.1.4.8 开头 true 与编号 false 条款、权限辅助说明中的 emergency 词语均保留，不补客户端缺权限字段的缺省判定。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.8.1.10–.11 local check, pending gate"
+          ],
+          "printed_pages": [
+            67
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.1.5 client request"
+          ],
+          "printed_pages": [
+            225,
+            226
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.13.6 CF cancellation authorization"
+          ],
+          "printed_pages": [
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.17 indicator composition and 403/150"
+          ],
+          "printed_pages": [
+            117,
+            118
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.7 incoming check and dispatch"
+          ],
+          "printed_pages": [
+            253,
+            255
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.8 lead and numbered cancellation refusal"
+          ],
+          "printed_pages": [
+            256,
+            257
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "imminent-peril-client-response-explicit-false-failure-is-not-enumerated",
+      "title": "发起端不能把 4xx/5xx/6xx 正文的 false 当成成功或自行选状态",
+      "conditions": [
+        "发起客户端实际收到自己这笔取消 re-INVITE 的最终响应。"
+      ],
+      "conclusion": "2xx 时与用户面交互并把组状态置 MIG 1、呼叫状态置 MIGC 1；4xx/5xx/6xx 且迫近危险元素 true 或未带该元素时，组状态置 MIG 2。该节未列 4xx/5xx/6xx 且明确 false 的迁移，需看终端自身执行及后续信令。",
+      "normative_strength": "§10.1.1.2.1.5 的实收响应及条件状态动作。",
+      "limitations": [
+        "不得替未列的组合补 MIG 1、MIG 2 或无限等待，也不能用终端结果代替 CF 实际状态或证明其他成员已收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.1.5 client received success and listed failure alternatives"
+          ],
+          "printed_pages": [
+            226
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.8 explicit false in denial response"
+          ],
+          "printed_pages": [
+            257
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "imminent-peril-authorized-cancel-is-local-state-and-per-recipient-notification",
+      "title": "CF 实际取消后分别通知在场与未参加的归属成员",
+      "conditions": [
+        "CF 进入 §10.1.1.4.8 编号取消分支，请求获准，组的进行中迫近危险状态原为 true。"
+      ],
+      "conclusion": "CF 清组迫近危险状态，记录该发起用户不再有未结的此类呼叫。向其他参加本场者发送 re-INVITE：按引用构造取普通 Resource-Priority，正文 emergency-ind 与 imminentperil-ind 均为 false；CF 实收对应 200 后与媒体面交互。对已归属但不在场者发含 imminentperil-ind=false 的 SIP MESSAGE。成员端实收该业务 re-INVITE 时按 §10.1.1.2.1.6 第 4 项更新自己的状态。",
+      "normative_strength": "§10.1.1.4.8 第 3–8 项，§6.3.3.1.15 re-INVITE 构造，§10.1.1.2.1.6 第 4 项的成员接收行为。",
+      "limitations": [
+        "发送不等于接收；发起端 2xx 不代替成员腿，成员 200 不证明实际收音。入站组合校验不套到该出站构造。保留注 2 的紧急/告警措辞，不从这里推断告警取消或组会话释放。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.8 clearing state and differentiated fan-out"
+          ],
+          "printed_pages": [
+            257,
+            258
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.15 terminating re-INVITE body and priority construction"
+          ],
+          "printed_pages": [
+            116,
+            117
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.1.6 step 4 actual member-side receipt"
+          ],
+          "printed_pages": [
+            227,
+            228
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcptt-emergency-group-client",
+    "r16-mcptt-emergency-group-server",
+    "r16-mcptt-chat-establish-join",
+    "r16-calls-offnetwork-group-emergency-downgrade"
+  ],
+  "limitations": [
+    "只讨论按需预安排会话且无进行中的紧急状态；不定义预建立、chat、离网等其他上下文的取消。",
+    "编号取消分支、条首和引用注的差异均保留；不统一未写出的终端失败状态或组呼结束条件。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
