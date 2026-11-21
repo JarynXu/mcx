@@ -28,3 +28,5 @@
 **后续查主叫实收的同对话 SIP INFO。** Request-URI 中的 MCPTT session ID 要标识进行中的会话；INFO 还须位于该优先私呼请求的对话内，`Info-Package` 为 `g.3gpp.mcptt-info`，并带与包关联的 `application/vnd.3gpp.mcptt-info+xml` 正文。该程序要求正文至少设置 `alert-ind`、`imminentperil-ind` 或 `emergency-ind` 之一。若主叫处理时告警仍在 `MPEA 2`，按实际 `alert-ind` 值分流：true → `MPEA 3`，false → `MPEA 1: no-alert`。若只设置了其他字段，不能当作 `alert-ind=false`；也不能把另一对话的 INFO、发端发送记录或定时猜测代替本次实收。这里的状态是主叫的告警结果，不是被叫实际收到告警或媒体的证明。[§11.1.1.2.1.1 的 INFO 入口，印刷页 356](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=357)；[§6.2.8.3.7 前提及第 1 项，印刷页 75](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=76)。
 
 若问题发生在[普通按需私呼](private-client-answer-evidence.md)或[在网紧急预安排组呼](emergency-group-client.md)，要按该通呼叫的角色和状态取证。本页不规定告警的实际投递、媒体结果、失败后的回退或取消程序。
+
+若主叫通过预建立会话发起紧急私呼，查[REFER 2xx、同会话 re-INVITE 与释放前的紧急状态](preestablished-emergency-private-confirmation.md)，不套此处的按需 INVITE 应答规则。

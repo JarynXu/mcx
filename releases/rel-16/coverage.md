@@ -3337,6 +3337,16 @@ Q1 接收同场取消仍应处理并确认；Q2 的 TFP8 到期按本端隐式�
 
 [读取主题](topics/identity/mcptt-client-id-lifecycle.md)
 
+## Rel-16 预建立紧急私呼的状态确认和待确认释放
+
+区分 REFER 最终 2xx、目标预建立会话内 re-INVITE、媒体面释放三件事。
+
+按 MEPC/MEPP/MPEA 守卫判断本机紧急、优先级和告警状态；MPEA 2 时区分缺失、true 和 false。
+
+尚未建立：不据 REFER 2xx 认定紧急或告警已确认，不把待确认释放推广到 MEPC 3 或用户紧急状态。
+
+[读取主题](topics/calls/preestablished-emergency-private-confirmation.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

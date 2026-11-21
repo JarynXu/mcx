@@ -1,0 +1,133 @@
+{
+  "topic_id": "r16-calls-preestablished-emergency-private-confirmation",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "预建立紧急私呼：REFER 收到 2xx，什么才算已确认？中途释放要清哪些等待状态？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明继承全部 common_conditions，再叠加本条 conditions；关联主题不是必经流程。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0，Rel-16 Stage 3；在网、带话权控制的 MCPTT 紧急私呼，主叫客户端使用已建立的预建立会话发起，按实际事件和当前状态取分支。"
+  ],
+  "claims": [
+    {
+      "id": "refer-final-success-is-media-interaction-not-emergency-confirmation",
+      "title": "REFER 的最终 2xx 触发媒体面交互，不独立确认紧急私呼和告警",
+      "conditions": [
+        "主叫已在对话外发 REFER 并以 Target-Dialog 指向预建立会话，实际收到此次 REFER 的最终 2xx。"
+      ],
+      "conclusion": "主叫须与媒体面交互。该 2xx 分支未将 MEPC 置为已获准或确认告警；同一目标预建立会话内实收 re-INVITE 后按其本地状态分支判断。",
+      "normative_strength": "§11.1.1.2.2.1 对话外 REFER、步骤 12、最终 2xx 和收到 re-INVITE 的独立入口。",
+      "limitations": [
+        "不把 REFER 响应、按需 INVITE 2xx 或主叫发回 re-INVITE 的 200 混为同一事务；不证明被叫接听、媒体结果、告警实际送达或强制事件顺序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.2.1 initial REFER outside dialog"
+          ],
+          "printed_pages": [
+            362
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.2.1 Target-Dialog step 12, final REFER response and received re-INVITE entry"
+          ],
+          "printed_pages": [
+            364,
+            365
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "matching-reinvite-confirms-emergency-and-conditional-alert",
+      "title": "目标会话内 re-INVITE 按 MEPC 和待确认告警分别改变状态",
+      "conditions": [
+        "主叫实收 re-INVITE 在已发 REFER 指定的预建立会话内，已发 REFER 请求紧急私呼，当前 MEPC 为 2 或 3。"
+      ],
+      "conclusion": "应置 MEPC 3，MEPP 不是 2 时置 MEPP 2。当前 MPEA 2 时，实收 re-INVITE 的 alert-ind=true 或元素缺失置 MPEA 3；alert-ind=false 置 MPEA 1。",
+      "normative_strength": "§11.1.1.2.2.1 收到 re-INVITE 的入口及第 2(a) 项。",
+      "limitations": [
+        "未处于 MPEA 2 不用此段推出告警；不添加来件 emergency-ind 作为本文状态守卫，不从本机状态证明其他用户收到告警。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.2.1 matching pre-established dialogue and emergency/alert status from incoming re-INVITE"
+          ],
+          "printed_pages": [
+            364,
+            365
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "media-plane-release-clears-pending-private-states-only-under-mepc2",
+      "title": "媒体面释放时仅在 MEPC 2 下执行本段待确认回退",
+      "conditions": [
+        "已发 REFER 旨在建立紧急私呼，其建立中或进行中实际发生 §11.1.1.2.2.1 引的媒体面释放，释放时 MEPC 2。"
+      ],
+      "conclusion": "须置 MEPC 1；MEPP 3 为 confirm-pending 时须置 MEPP 1；MPEA 2 时须置 MPEA 1。该条没有 MEPC 3 的同类分支，也未在此清除用户自身 MCPTT 紧急状态。",
+      "normative_strength": "§11.1.1.2.2.1 末段回指 §6.2.8.1.18，后者按当前 MEPC/MEPP/MPEA 的三个 shall。",
+      "limitations": [
+        "不从该分支推出 MEPC 3 释放后的全部状态；不视为 REFER 4xx/5xx/6xx 分支，不证明整条预建立 SIP 会话拆除。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.8.1.18 receipt of release for emergency private call and MEPC2 conditional cleanup"
+          ],
+          "printed_pages": [
+            71
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.2.1 REFER failure vs media-interface release"
+          ],
+          "printed_pages": [
+            364,
+            366
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-emergency-private-call-alert",
+    "r16-calls-private-preestablished-origination",
+    "r16-calls-private-client-release"
+  ],
+  "limitations": [
+    "限主叫使用预建立会话发紧急私呼的确认与待确认释放，不给普通私呼、按需、无话权、被叫或 first-to-answer 复制状态变化。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
