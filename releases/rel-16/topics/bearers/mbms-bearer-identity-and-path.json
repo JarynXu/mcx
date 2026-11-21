@@ -1,0 +1,159 @@
+{
+  "topic_id": "r16-bearers-mbms-bearer-identity-and-path",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "LTE MCX 的 MBMS 承载怎样辨认？TMGI、上行单播和 MB2 各说明什么？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "各声明继承全部 common_conditions，再叠加本条 conditions；关联主题不是必经流程。",
+  "common_conditions": [
+    "固定 TS 23.280 V16.7.0，Rel-16 Stage 2 在网 LTE MC 业务、支持 MBMS 的场景；只核功能角色、承载标识和取证位置。"
+  ],
+  "claims": [
+    {
+      "id": "mbms-bearer-key-and-group-are-distinct",
+      "title": "TMGI 或 TMGI 加流标识可唯一标识承载，不是组 ID",
+      "conditions": [
+        "核对网络和终端记录的 MBMS 承载或相关场次。"
+      ],
+      "conclusion": "承载用 TMGI 或 TMGI 与 flow identifier 组合标识；在组合方式下不要只拿 TMGI 对账。同一承载可供同一组的多项 MC 业务或并行组通信使用，不能用标识反推业务组。",
+      "normative_strength": "§5.2.6 定义两类标识，§10.7.1 说明可能的共享。",
+      "limitations": [
+        "不从表 10.7.2.2-1 的按 TMGI 上报推断每个承载只用 TMGI，或反推该组已映射；不规定何时采用哪一种键。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.6 bearer identity paragraph"
+          ],
+          "printed_pages": [
+            20,
+            21
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.1 single bearer uses"
+          ],
+          "printed_pages": [
+            118
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.2.2 Table 10.7.2.2-1 status by TMGI"
+          ],
+          "printed_pages": [
+            119
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "lte-mcx-ul-unicast-and-dl-options",
+      "title": "LTE MC 媒体上行单播，下行可单播、MBMS 或两者",
+      "conditions": [
+        "排查该 LTE MC 业务媒体的上行、下行或终端单播无线承载状态。"
+      ],
+      "conclusion": "上行承载总按单播分配；下行可单播、MBMS 或两者。终端可在没有单播无线承载时接收 MBMS 流量。",
+      "normative_strength": "§5.2.6 的上、下行承载区别与 §5.2.7.1 下行接收能力。",
+      "limitations": [
+        "两路并用是选项，不是固定重复发送；能力不证明特定终端实际收到，也不取消 SIP/业务前提。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.6 uplink/downlink bearer paragraph"
+          ],
+          "printed_pages": [
+            20
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.7.1 reception without unicast radio bearer"
+          ],
+          "printed_pages": [
+            21
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mb2-control-media-and-gc1-evidence-are-distinct",
+      "title": "MB2-C 激活、MB2-U 下行媒体和 GC1 决策输入分别取证",
+      "conditions": [
+        "核对与同一承载相关的控制、媒体或覆盖/监听报告。"
+      ],
+      "conclusion": "网络承载事件示例经 MB2-C 激活；BM-SC 编码 FEC 示例经 MB2-U 向 BM-SC 发下行媒体。业务服务器可用 GC1 上已归属组成员的小区标识决定广播区，可据报告决定给用户改走单播。",
+      "normative_strength": "§5.2.6 图和正文是架构；§10.7.3.10.2 与 §10.7.3.11.2 提供不同接口动作的示例。",
+      "limitations": [
+        "请求不是承载可用；送往 BM-SC 不是无线终端已收；报告不是已切换。不从示意图推断物理合设、具体线上字段或切换算法。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.6 Fig. 5.2.6-1, colocated drawing and optional use of GC1 evidence"
+          ],
+          "printed_pages": [
+            20,
+            21
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.10.2 steps 1–5 activation and use"
+          ],
+          "printed_pages": [
+            141
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.11.2 step 5 MB2-U media to BM-SC"
+          ],
+          "printed_pages": [
+            143
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-bearers-mbms-network-bearer-events",
+    "r16-bearers-mbms-bearer-announcement",
+    "r16-bearers-mbms-reception-quality"
+  ],
+  "limitations": [
+    "不定义 MCPTT 或其他业务的具体线上字段、标识语法、MBSFN 选区算法、重复包策略、接收与切换的实现，或其他 Release。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

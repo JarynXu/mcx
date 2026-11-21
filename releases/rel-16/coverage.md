@@ -3247,6 +3247,16 @@ mc_granted 的初始 offer 表示支持 200 中授予，适用 answer 才是已�
 
 [读取主题](topics/calls/ambient-call-release-evidence.md)
 
+## LTE MC 业务的 MBMS 承载标识、媒体方向与接口证据
+
+可区分 TMGI 或 TMGI 加流标识与业务组 ID；上行单播、下行可单播或 MBMS 或都用；可区分 MB2-C 激活与 MB2-U 送下行媒体。
+
+GC1 的小区标识和状况报告可以作选区与切换输入；在没有单播无线承载时仍具备 MBMS 接收能力。
+
+尚未建立：不从单个 TMGI、激活响应或发往 BM-SC 的包断定目标组、无线收包或已切换。
+
+[读取主题](topics/bearers/mbms-bearer-identity-and-path.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。
