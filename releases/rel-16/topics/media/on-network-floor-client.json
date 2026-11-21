@@ -6,7 +6,7 @@
   "title": "普通在网话权：客户端请求、排队确认与释放",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.380-v16.9.0",
-  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "condition_rule": "Inherit common_conditions and add claim conditions. 判读 SDP 控制通道时先确认准确的媒体段、offer 的用途、其他段所用 RTCP 端口及是否使用独立控制 IP；通道声明不是话权获准。",
   "common_conditions": [
     "固定 TS24.380 V16.9.0，在网且采用话权控制的普通客户端；限非ambient、非broadcast、非dual/multi-talker、非抢占业务，不展开紧急/迫近危险/system call、audio cut-in或预建立承载建立。",
     "客户端当前状态与收到的用户指示、控制消息、媒体、计时器或信令层事件共同决定动作；各claim事件是替代入口，失败、撤回及释放不以已经获准发送为前提。",
@@ -327,6 +327,120 @@
       "limitations": [
         "本页解释话权状态与媒体动作证据，不展开SIP释放事务、完整服务器仲裁、安全密钥/加解密、RTP编码与送达保证。",
         "可选T103表示接收媒体结束，表中建议等于T1且由配置确定；不能把T103到期一概解释为通话释放或发送获准。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "control-app-rtcp-port-comparison",
+      "title": "话权控制媒体行的端口是 RTCP 端口，比对的是其他媒体段的 RTCP",
+      "conditions": [
+        "普通在网、有话权控制的 MCPTT；正在判读用于协商媒体控制通道的 SDP，且比对同份 SDP 中所涉媒体段。"
+      ],
+      "conclusion": "这条控制媒体行是 m=application <RTCP端口> udp MCPTT；媒体控制通道以 UDP/IP 上的 RTCP APP 承载。其 RTCP 端口必须不同于其他媒体行所关联的 RTCP 端口；这些端口不是其他 RTP 流 m= 中直接写的 RTP 端口。",
+      "normative_strength": "表中媒体描述及表后的分端口要求为 SHALL；注 1 按 RTP/RTCP 对端口语义分流。",
+      "limitations": [
+        "若控制端口等于某音频段的实际 RTCP 端口，违反这项分离要求。若只知道等于或不同于该音频段 m= 的 RTP 端口，不能用这项规则判冲突或证明复用合规。",
+        "不推定未取证的音频 RTCP 端口，不据端口规则判定 SIP 交换、NAT、实际收包、指示获准或报文丢失原因。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "4.3.2，媒体控制通道承载"
+          ],
+          "printed_pages": [
+            31
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "4.3.3.1；表 4.3.3.1-1、表后正文及注 1"
+          ],
+          "printed_pages": [
+            32
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "control-different-ip-associated-c-line",
+      "title": "控制通道使用与其他媒体不同的 IP 时须关联控制段的 c=",
+      "conditions": [
+        "已定位同份 SDP 上的 MCPTT 媒体控制 m= 行，以及另一个媒体段；控制通道使用与其他媒体不同的 IP 地址。"
+      ],
+      "conclusion": "不同控制 IP 需要一条专属于该控制媒体段的 c= 行。只见音频媒体段的 c=，不能用它作为另一控制 IP 的声明。",
+      "normative_strength": "§4.3.3.1 注 2 给出的地址不同条件。",
+      "limitations": [
+        "不能据此要求控制与其他媒体使用相同地址时也必须为控制段单列 c=；也不以地址不同免除控制 RTCP 端口与其他媒体 RTCP 的分离要求。",
+        "SDP 的地址声明不证明该地址可达、成功收到 RTCP APP 或可发言。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "4.3.3.1，表后正文及注 2"
+          ],
+          "printed_pages": [
+            32
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "control-offer-media-line-versus-fmtp",
+      "title": "协商建立控制通道的 offer 必须带媒体行，fmtp 的存在和具体参数另判",
+      "conditions": [
+        "确认该 SDP 是为首次协商该媒体控制通道作出的 offer，即使它不是该会话内第一份 offer；不把未协商该通道的 SDP 或 answer 纳入。本通道协商后的修改另按 §14.5。"
+      ],
+      "conclusion": "这个 offer 必须包含媒体控制通道的 m= 行；一般可在该段附 fmtp。客户端支持话权请求排队时则必须在 offer 带 mc_queueing。控制通道的初次 offer 可以与该会话的初始 offer 不是同一份。",
+      "normative_strength": "§14.2.1 中 m= SHALL、附 fmtp MAY；§14.2.2 按角色和支持条件对 mc_queueing 另有 SHALL，客户端条件如上。",
+      "limitations": [
+        "不从未见 fmtp 判定未声明控制 m=、通道协商失败或服务器已授予话权。",
+        "只见 offer 不证明 answer 接受或实际控制报文收发；条款不要求每条 SIP 消息、每份 SDP 都带这一控制媒体行。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "14.1，SDP offer/answer 经 SIP 消息协商"
+          ],
+          "printed_pages": [
+            237
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "14.2.1–2，建立控制通道的媒体行、属性与客户端排队"
+          ],
+          "printed_pages": [
+            238
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "14.5，后续修改边界（复用 §14.2 并有例外）"
+          ],
+          "printed_pages": [
+            240
+          ]
+        }
       ],
       "verification": {
         "original_clauses_checked": true,
