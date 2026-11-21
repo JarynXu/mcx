@@ -1,0 +1,196 @@
+{
+  "topic_id": "r16-calls-private-routing-annex-identifiers",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "私呼路由表 H.3-1：被叫放在哪个字段，200 必须回被叫 ID 吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条 claim 继承所有 common_conditions，再叠加自身条件；请求构造、绑定查询、XML 语义和响应复制不是同一个事件。",
+  "common_conditions": [
+    "Release 16、Stage 3，依据 TS 24.379 V16.14.0。",
+    "限同系统归属网内的普通在网按需一对一 MCPTT 私呼，带话权控制，session-type=private；不扩展紧急、首接应答、无话权或预建立模式。"
+  ],
+  "claims": [
+    {
+      "id": "r16-calls-private-annex-cf-request-identity",
+      "title": "CF 发 INVITE 用 SIP PSI 与 XML 被叫 ID 分开",
+      "conditions": [
+        "CF 按普通私呼程序向 T-PF 实际发出邀请，该用户已在入向资源列表被选作邀请目标。"
+      ],
+      "conclusion": "CF 从入向资源列表取被叫 MCPTT ID 写 application/vnd.3gpp.mcptt-info+xml 的 mcptt-request-uri，SIP Request-URI 写服务被叫的 T-PF PSI；P-Asserted-Identity 复制主叫公共用户身份。mcptt-calling-user-id 保留主叫 MCPTT ID。",
+      "normative_strength": "§11.1.1.4.1 对构造和字段值的动作是 SHALL；H.3-1 是资料性对照。",
+      "limitations": [
+        "附录 H.3 写 mcptt-called-party-id，并不取代请求处理的 mcptt-request-uri，也不规定如何发现 T-PF 的地址。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.1 第1项及注1、第4–6项与注2"
+          ],
+          "printed_pages": [
+            378,
+            379
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "Annex H/H.3 表 H.3-1"
+          ],
+          "printed_pages": [
+            595,
+            597
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-calls-private-annex-tpf-binding-evidence",
+      "title": "T-PF 读取规定的被叫 XML 槽再查绑定",
+      "conditions": [
+        "T-PF 实际收到发给它的普通私呼 INVITE，经前序检查走到被叫绑定查询。"
+      ],
+      "conclusion": "T-PF 从 mcptt-request-uri 取被叫 MCPTT ID 来查公共用户身份绑定，绑定不存在则按该分支响应 404。",
+      "normative_strength": "读取及绑定不存在时的 404 为相应守卫下的 SHALL。",
+      "limitations": [
+        "没有完整 XML、只见 mcptt-called-party-id、缺 mcptt-request-uri 或更早被拒，不是已经查明绑定不存在；不据此为缺元素固定响应码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.2 第2–5项"
+          ],
+          "printed_pages": [
+            376,
+            377
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-calls-private-annex-called-user-schema",
+      "title": "表的 mcptt-called-user 不是已声明的 mcptt-called-party-id",
+      "conditions": [
+        "对照本版 H.3-1 的 T-PF→CF 应答行和 F.1 业务 XML 声明。"
+      ],
+      "conclusion": "表写 mcptt-called-user；F.1.2 中具名的元素是可选的 mcptt-called-party-id，F.1.3 允许它表示终接用户 MCPTT ID，另以 mcptt-request-uri 表达本请求目标。",
+      "normative_strength": "H.3-1 为资料性；F.1 XML 声明和语义按原字段，不增加必填。",
+      "limitations": [
+        "该表和 schema 不确立 mcptt-called-user 是规范字段或别名，不从 schema 的扩展入口推断所有实现的错误处理。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "Annex H/H.3 表 H.3-1"
+          ],
+          "printed_pages": [
+            595,
+            597
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.1.2"
+          ],
+          "printed_pages": [
+            545,
+            546
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.1.3 第3b、4–5项"
+          ],
+          "printed_pages": [
+            548
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-calls-private-annex-auto-answer-copy",
+      "title": "按需自动应答的 200 只按条件复制入向 mcptt-info",
+      "conditions": [
+        "T-PF 在适用的按需自动接听流程里向 CF 生成原 INVITE 的 200，而不是回应 PRACK。"
+      ],
+      "conclusion": "T-PF 调用最终响应通则；对应入向 SIP 应答含 application/vnd.3gpp.mcptt-info+xml 时复制该正文。此规则没要求没有该正文也创建被叫元素。客户端自动应答的步骤也未单设字段插入。",
+      "normative_strength": "调用最终响应生成程序和有正文时的复制是 SHALL，不是每份 200 都提供新字段。",
+      "limitations": [
+        "分别对应客户端腿和 CF 腿各自的 INVITE 与 200；缺 mcptt-called-user 或 mcptt-called-party-id 不证明未接听，也不把终端应答当作服务器已经转发、CF 实收或媒体可用。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.4.2 第5项"
+          ],
+          "printed_pages": [
+            95
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.5.1–2 适用段与最终200"
+          ],
+          "printed_pages": [
+            95,
+            96,
+            97
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.2 第9项、6.2.3.1.1"
+          ],
+          "printed_pages": [
+            58,
+            59,
+            358
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-private-server-admission-routing",
+    "r16-calls-private-client-answer-evidence",
+    "r16-identity-cross-service-user-mapping"
+  ],
+  "limitations": [
+    "不把资料性表当完整 INVITE/200 模板，不自动接受或拒绝未知元素。",
+    "不决定 T-PF 发现、缺字段的一般 SIP 响应；每条呼叫腿的接听和媒体结果都需实际证据。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

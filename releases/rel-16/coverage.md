@@ -3577,6 +3577,16 @@ RTP 和话权使用各自守卫；对已进入活动 MBMS 分支的 Idle/Taken �
 
 [读取主题](topics/media/subsequent-floor-control-sdp.md)
 
+## 私呼路由表 H.3 与实际被叫 XML 字段
+
+区分 SIP 路由 PSI、主叫公共身份和 T-PF 查绑定的被叫 mcptt-request-uri；解释资料性表与自动接听 200 的字段差异。
+
+进入绑定查询且绑定不存在才用其 404；按需自动接听 200 的 mcptt-info 复制以该次入向应答实际有正文为条件。
+
+尚未建立：不制定未知/缺失字段的一般错误处理、T-PF 发现或实际接听/媒体结果。
+
+[读取主题](topics/calls/private-routing-annex-identifiers.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

@@ -150,3 +150,5 @@ T-PF 设置 Confirmed，不等于 CF 的普通最终响应条款要求把它原�
 若问题是抓包里有 SDP 却看不到业务正文，先区分发送消息实际带了哪些段和接收方记录了哪些段，见[MCPTT SIP 多正文封装与 SDP 顺序](sip-mime-body-order.md)。
 
 抓包时若同场私呼的两处初始 INVITE 200 分别写 `refresher=uac` 和 `refresher=uas`，按[各段 SIP 会话刷新](sip-session-refresh-by-leg.md)配对请求与响应，别把业务最大私呼时长当成 SIP 会话定时器。
+
+若抓包或验收按附录 H.3 的被叫字段排查，见[资料性路由表与私呼主程序的字段差异](private-routing-annex-identifiers.md)。绑定查询要分清 INVITE 和 200 的方向。
