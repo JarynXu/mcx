@@ -13,6 +13,30 @@
 
 如果通知目标是用户，`mcptt-request-uri` 用目标用户的 MCPTT ID，不套用表里的对端组 ID。不要把这个 **XML 元素**当成 SIP 请求行的 Request-URI，也不要把它或 `mcptt-calling-group-id` 当成另一份正文 `application/conference-info+xml` 的 `conference-info@entity`。[§6.3.3.4，印 124](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=125)；[§6.3.4.3，印 129–130](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=130)。
 
+## 上游会议订阅还没发出，先查两边各自触发条件
+
+临时组 T 的 CF 向组成组 A、B 的 NCF 订阅会议状态，不必等所有 NCF 都接受邀请。§10.1.3.4.3 有两个入口：
+
+- **先有参会者订阅，后来有 NCF 回应：** CF 实收发给某个 NCF 的 INVITE 的 200，并且本场已有至少一位参会者按 §10.1.3.4.1 向这个 CF 订阅会议事件。只有组成组 NCF 上的客户端订阅，不满足这个入口。
+- **先有 NCF 加入，后来有首个订阅：** CF 实收符合 §10.1.3.4.1 的首个参会者订阅，且本场已有至少一个 NCF 参与。
+
+进入任一分支后，CF **逐个检查 NCF**：对这场会话发给它的 INVITE 已实收 200，且尚未向它发送这项订阅，才发一条新的 SUBSCRIBE。比如，首个订阅到达时甲的 200 已到、乙的还没到，就先给甲发；乙的 200 后到且这个 CF 上仍有参会者订阅，才轮到乙，甲不会因乙的 200 再发一遍。若两边的 200 先到、之后才有首个合格订阅，两边都符合条件。已发出 INVITE、收到其他方法的 200 或 NCF 在别处留下“已发送 200”的日志，都不能代替 CF 本机实收这条腿的应答。[TS 24.379 V16.14.0 §10.1.3.4.1 步骤 5，印 303](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=304)；[§10.1.3.4.3 入口及步骤，印 304](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=305)。
+
+**A 的 NCF 何时反向订阅 T 的 CF？** 在 NCF 接收订阅的正常分支，触发的是来自**本侧 MCPTT 客户端**的首个会议事件订阅，不是 CF 发来的一条服务器订阅。另一个入口是已有预安排或聊天组呼并入临时组：NCF 实收该并入流程的 ACK，且组成组会话内至少有一台客户端已有会议事件订阅，才按反向程序订阅 CF。不能仅凭一个 ACK、CF 已发订阅或没有跨组名单判断反向订阅已发或已获准。[§10.1.3.5.1 步骤 5、§10.1.3.5.3，印 306–307](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=307)；[§10.1.1.5.2.3，印 262](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=263)；[§10.1.2.5.1.3，印 298–299](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=300)。
+
+## 发出的 SUBSCRIBE 和接收入口写了不同的字段
+
+下面是**服务器间订阅请求**的构造，不是上文的 NOTIFY。两个方向各建一个新 SIP 对话，请求的 `Expires` 均为 `4294967295`；该值不能证明订阅获准或会一直有效。
+
+| SUBSCRIBE 方向 | SIP 请求行的 Request-URI | MCPTT 信息正文的 `mcptt-request-uri` | 正文的 `mcptt-calling-group-id` |
+| --- | --- | --- | --- |
+| CF → A 的 NCF | 服务组成组 A 的 NCF 公共服务标识（PSI） | 组成组 A | 临时组 T |
+| A 的 NCF → CF | 先前发给该 NCF 的 INVITE 的 Contact 中的临时会话标识 | 临时组 T | 组成组 A |
+
+NCF 面向本地客户端另用自己生成的会话标识，不能放到反向订阅的 Request-URI。两个发送条款讲的是 **`mcptt-calling-group-id`**。在相关接收条款中，CF 核对正文中的组会话组 ID，再读 **`mcptt-calling-user-id`** 中的参会者 ID 或组成组 ID；NCF 核对正文中的组成组 ID，再读 **`mcptt-calling-user-id`** 中的参会者 ID 或临时组 ID。这里不合并两种字段拼写，也不推定中间节点自动转换。[§10.1.3.4.3，印 304](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=305)；[§10.1.3.5.3，印 306–307](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=307)；[§10.1.3.4.1，印 303](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=304)；[§10.1.3.5.1，印 305–306](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=306)。
+
+**不能把没收到 NOTIFY 定性为 403/138。** 找到这笔服务器订阅实际发出的请求，再查另一端实收的正文、目标、`P-Asserted-Service` 中的 MCPTT 服务标识和 `Accept: application/conference-info+xml`。符合该非广播接收入口后，若组文档的 `on-network-allow-conference-state` 检查不允许，才是这两条中的 **403 / Warning 文本 138** 分支。只知道实收请求缺少 `mcptt-calling-user-id`，不能凭这两条推出同一拒绝，也不能把两种字段都加上当成规范要求。原文未裁定这里的互通处理；不要用另一方向的 NOTIFY 或一笔普通客户端订阅的成功替代这笔 SUBSCRIBE 的实际结果。[§10.1.3.4.1、§10.1.3.5.1，印 303、305–306](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=304)。
+
 ## 跟着订阅对话查名单经过哪一端
 
 认清**订阅的发起方向和返回通知的方向相反**，再核对这份来向 NOTIFY 是否对应早先发出的 SUBSCRIBE：

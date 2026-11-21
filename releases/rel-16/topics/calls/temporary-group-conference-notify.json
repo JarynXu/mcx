@@ -6,7 +6,7 @@
   "title": "临时组呼的 conference NOTIFY：组标识怎么写，参与者名单从哪来？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
-  "condition_rule": "每条 claim 继承所有 common_conditions，再叠加自身 conditions。生成通知和实际收到先前订阅的通知是不同事件。",
+  "condition_rule": "每条 claim 继承所有 common_conditions，再叠加自身 conditions。生成通知和实际收到先前订阅的通知是不同事件。 服务器先分别核对发送或接收 SUBSCRIBE 的实际方向、事件和适用身份字段；CF 的实收 NCF INVITE 200 入口需要该 CF 上已有参会者订阅，不把发起请求与接收守卫视为同一报文定义。",
   "common_conditions": [
     "Release 16、Stage 3，依据 TS 24.379 V16.14.0。",
     "适用于在网 MCPTT 临时组会话的会议事件包，CF 控制临时组，NCF 对应组成组。"
@@ -154,6 +154,152 @@
           ],
           "printed_pages": [
             130
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "temporary-conference-cf-to-ncf-subscribe",
+      "title": "临时组 CF 按首个订阅或实收对应 INVITE 200 的事件进入，逐个筛出应订阅的 NCF",
+      "conditions": [
+        "临时组会话中，CF 实收发给 NCF 的对应 INVITE 200 且该 CF 上已有至少一位参会者按 §10.1.3.4.1 订阅会议事件，或者实收符合 §10.1.3.4.1 的首个参会者订阅且已有 NCF 参与。"
+      ],
+      "conclusion": "对每个 CF 已收到此 INVITE 200 且尚未发对应 SUBSCRIBE 的 NCF，新建订阅对话，Request-URI 用其 PSI；mcptt-request-uri=组成组 ID，mcptt-calling-group-id=临时组 ID；Expires=4294967295。",
+      "normative_strength": "§10.1.3.4.3 的两种入口、逐 NCF 筛选及发起为 SHALL。",
+      "limitations": [
+        "无需等所有 NCF 都回 200；已发出本腿 SUBSCRIBE 不因另一腿回 200 再发。",
+        "INVITE 200 只是该腿建呼应答，不能代替此订阅已接受或收到通知；不补重试或过期机制。",
+        "订阅只在组成组 NCF 上，不能满足「该 CF 上已有参会者订阅」这项条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.3.4.1，步骤 5"
+          ],
+          "printed_pages": [
+            303
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.3.4.3，触发和步骤 1–9"
+          ],
+          "printed_pages": [
+            304
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "temporary-conference-ncf-to-cf-subscribe",
+      "title": "临时组 NCF 按本侧首个客户端订阅或规定的并入支路向 CF 发订阅",
+      "conditions": [
+        "NCF 按 §10.1.3.5.1 的正常程序接收本地 MCPTT 客户端首个订阅，或在规定的已有组呼并入流程中实际收到相应 ACK 且该组成组会话已有至少一台客户端订阅。"
+      ],
+      "conclusion": "NCF 新建 SUBSCRIBE 对话，SIP Request-URI 是先前发给该 NCF 的 INVITE 的 Contact 中的临时会话标识；mcptt-request-uri=临时组 ID，mcptt-calling-group-id=组成组 ID；Expires=4294967295。",
+      "normative_strength": "§10.1.3.5.1 步骤 5、§10.1.3.5.3 与并入 ACK 条款中的条件化 SHALL。",
+      "limitations": [
+        "不是 CF 发来的服务器订阅本身触发本侧首个客户端分支；不使用 NCF 面向本机客户端的会话标识。",
+        "单一 ACK、收到服务器订阅或 Expires 值不证明这次反向请求发出、获准、永久有效或已收到 NOTIFY。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.3.5.1，步骤 5；10.1.3.5.3，发起及 Contact 注"
+          ],
+          "printed_pages": [
+            306,
+            307
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.2.3，接收 ACK 后步骤 3"
+          ],
+          "printed_pages": [
+            262
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.5.1.3，接收 ACK 后步骤 3"
+          ],
+          "printed_pages": [
+            298,
+            299
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "temporary-conference-subscribe-wire-receive-fields",
+      "title": "服务器订阅发送列 calling-group-id、接收入口列 calling-user-id，不能凭缺字段判授权拒绝",
+      "conditions": [
+        "区分 §10.1.3.4.3 或 .5.3 实际发出的服务器 SUBSCRIBE，与同一订阅在另一端实际收到的请求；拒绝结论限于满足 §10.1.3.4.1 或 .5.1 的非广播接收入口。"
+      ],
+      "conclusion": "两发送条款在 MCPTT 信息正文写 mcptt-calling-group-id；接收条款则核对 mcptt-calling-user-id，CF 入口允许参会者 ID 或组成组 ID，NCF 入口允许参会者或临时组 ID。对满足适用入口、包括 MCPTT P-Asserted-Service 和 conference-info Accept 的请求，若适用组文档授权检查为不允许，则回 403/Warning 文本 138 并停止。",
+      "normative_strength": "保留发送和接收条款各自字面；403/138 限于适用非广播接收入口下的授权否决。",
+      "limitations": [
+        "只见缺字段或没有 NOTIFY，不能从这两条判 403/138；未给转换/补齐方案，不宣称两项都必带或此组合必不互通。",
+        "非控制功能入口接受临时组 ID 的形状，后续策略步骤文字仍写 MCPTT ID；不重新定义这套策略比较。",
+        "不把普通客户端路径的状态、另一方向通知或其它 200 当作本次服务器订阅结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.3.4.1，非广播入口和拒绝"
+          ],
+          "printed_pages": [
+            303
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.3.4.3，步骤 8"
+          ],
+          "printed_pages": [
+            304
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.3.5.1，非广播入口和拒绝"
+          ],
+          "printed_pages": [
+            305,
+            306
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.3.5.3，步骤 7"
+          ],
+          "printed_pages": [
+            307
           ]
         }
       ],
