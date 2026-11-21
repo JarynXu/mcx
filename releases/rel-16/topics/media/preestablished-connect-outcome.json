@@ -9,7 +9,7 @@
   "common_conditions": [
     "TS 24.380 V16.9.0（Release 16，Stage 3），在网 MCPTT，客户端与 PF 已有预建立会话。"
   ],
-  "condition_rule": "状态以本次消息对应的预建立会话为单位，客户端与 PF 分开；自动应答的 CF INVITE、收到正负确认、T55 到期分别是替代入口。 发起侧还要分开 PF 实收 REFER、主叫实收 REFER 2xx 和已在用的发起 PF 实收 CF 业务 INVITE 200；不能把受邀侧的 INVITE 请求或一条腿的状态作为另一条腿的前提。",
+  "condition_rule": "状态以本次消息对应的预建立会话为单位，客户端与 PF 分开；自动应答的 CF INVITE、收到正负确认、T55 到期分别是替代入口。 发起侧还要分开 PF 实收 REFER、主叫实收 REFER 2xx 和已在用的发起 PF 实收 CF 业务 INVITE 200；不能把受邀侧的 INVITE 请求或一条腿的状态作为另一条腿的前提。 受邀侧这三条字段声明限实际自动应答且原预建立会话未在用的普通私呼；分别核对入向 INVITE 的身份和安全负载、两份 SDP 与实际 Connect，不用别的腿的字段或终端确认替代。",
   "claims": [
     {
       "id": "pc-ack-format",
@@ -599,6 +599,172 @@
           "printed_pages": [
             198,
             199
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "pc-term-private-inviter-privacy",
+      "title": "自动应答私呼 Connect：邀请者身份与会话身份分开，匿名写法有固定版差异",
+      "conditions": [
+        "受邀侧 PF 的预建立会话已建且未在用，实际收到 CF 的 SIP INVITE，按自动应答处理。入向 MCPTT 信息正文的 session-type=private。"
+      ],
+      "conclusion": "Connect Session Type 设置 private。若入向 SIP INVITE 有可用的 mcptt-calling-user-id 且邀请者 MCPTT ID 无隐私要求，按正文填写 Inviting MCPTT User Identity（ID 5）；若 ID 不可用或有隐私要求，第 1(c)(ii) 项写 anonymous@anonymous.invalid。该字段不取 Contact；Contact 的 URI 填会话身份。§8.3.4 在要求隐私时写 <sip:anonymous@invalid.invalid>，不合并这两个字面。",
+      "normative_strength": "对应状态下的字段选择、类型设置、条件身份和占位文字在各自条款为 SHALL。",
+      "limitations": [
+        "仅缺来向邀请者 ID 不自动套 §8.3.4 的隐私句；单个匿名值不够区分缺失和隐私，也不识别真实邀请者。",
+        "字段表和 §8.3.3.7 对应邀请者 URI；§8.3.4 的编码回指 §8.3.3.5、§8.3.3.7 的长度段命名则写组身份。不要据此补编码优先级、占位符替换或接收侧行为。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.3.3 item 1(a), 1(c)(i)–(iii): private session, inviter source and procedure literal"
+          ],
+          "printed_pages": [
+            198,
+            199
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.3.3.1 table 8.3.3.1-2 and 8.3.3.7: Field 5, ABNF, length wording"
+          ],
+          "printed_pages": [
+            176,
+            178,
+            179
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.3.4: privacy literal and encoding reference"
+          ],
+          "printed_pages": [
+            181
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "pc-term-private-pck-message",
+      "title": "PCK I_MESSAGE 的在网自动应答私呼传送只看同一次实际 INVITE 的安全负载",
+      "conditions": [
+        "原未在用预建立会话的受邀 PF 自动应答这次普通私呼；CF 发来的实际 SIP INVITE 在 private 分支且含 MIKEY-SAKKE I_MESSAGE 时，适用所列发送动作。"
+      ],
+      "conclusion": "PF 须将所收 MIKEY-SAKKE I_MESSAGE 按实收值放入本次向受邀客户端发的单播 MCPC Connect 的 PCK I_MESSAGE 字段。不是重新生成或把邀请者身份、会话身份或 PCK-ID 单独作为该字段。字段 ID=192；按通用格式，两八位组的长度只计字段值，不含为对齐追加的填充。",
+      "normative_strength": "实际带该消息时按值携带为 SHALL；字段 ID 与长度取对应表和通用格式。",
+      "limitations": [
+        "隐私或匿名条件不替 PCK 传送判断；收到 Accepted 仅是相应控制应答，不从本款证明已验证签名、已解密或媒体已保护。",
+        "不以同名 SIP 按需私呼/首接应答的安全响应代替这条 MCPC 程序；不规定未见 I_MESSAGE 时端上密钥默认、材料生成或失败响应。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.3.3 item 1(c)(iv): actual inbound MIKEY-SAKKE I_MESSAGE copied as received"
+          ],
+          "printed_pages": [
+            199
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.3.3.10 and 8.3.4: PCK field meaning and terminating private Connect"
+          ],
+          "printed_pages": [
+            180,
+            181
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.3.3.1 table 8.3.3.1-2; 8.1.3: ID 192, two-octet length and padding"
+          ],
+          "printed_pages": [
+            176,
+            146,
+            147
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.2.2.3.2 and 9.2.2.4.2: client accept and active acknowledgement not cryptographic proof"
+          ],
+          "printed_pages": [
+            195,
+            196
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "pc-term-private-media-streams-subset",
+      "title": "Connect 的 Media Streams 取预建立协商流；无话权私呼的控制通道值 0 不等于端口",
+      "conditions": [
+        "受邀侧在网自动应答普通私呼，PF 实收 CF INVITE 且所选预建立会话之前未在用。比较这条预建立会话实际协商的流和本次 INVITE SDP 所需的流。客户端限制流的动作另以未在用、实收 Connect 带该字段并接受来呼为条件。"
+      ],
+      "conclusion": "预建立协商的媒体流多于本次 INVITE SDP 所需时，PF 须发含 Media Streams 字段的 Connect。字段内的 Media Stream 引用预建立协商的 m=audio 行编号，适用时 Control Channel 引用 m=application 行编号；本次无话权控制时的私呼例用 Control Channel=0。若客户端实收带该字段的 Connect 并接受来呼，须只用所指本次使用的流。",
+      "normative_strength": "满足流数量前提时带字段、编码和满足客户端条件时只用指示流为 SHALL；无话权私呼例见注 1。",
+      "limitations": [
+        "行编号不是 RTP/RTCP 端口，本段不指定编号基准或所有 SDP 组合。§12.1.2.2 对无话权会话规定可在已接受的媒体面控制通道承载预建立会话控制；Control Channel=0 本身不证明 MCPC 传输或语音流停用。",
+        "无该字段不按本条推出全开、不启用或话权许可。汇总例仅为现有预建立受邀分支，不套到主叫 Connect、非私呼、按需或人工应答。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.3.3 item 1(d), Note 1: excess streams in negotiated SDP and no-floor example"
+          ],
+          "printed_pages": [
+            199
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.3.3.2 and table 8.3.3.2-1: negotiated m-line references and Control Channel"
+          ],
+          "printed_pages": [
+            176
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.2.2.3.2 item 1(b): accepting client uses indicated streams when field present"
+          ],
+          "printed_pages": [
+            195
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "12.1.2.2: offered and accepted pre-established call control channel without floor (comparison only)"
+          ],
+          "printed_pages": [
+            226
           ]
         }
       ],

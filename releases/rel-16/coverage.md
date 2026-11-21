@@ -2471,9 +2471,9 @@ MCPTT、MCVideo 的伙伴复制例中，甲乙互联，A 由组主系统甲服�
 
 在客户端已经使用的那条预建立会话上，再收到要求确认的 Connect，客户端须回 Accepted，这条会话保持在用，不能据此多记一通。受邀侧 PF 收到 CF 的 INVITE，在自动应答模式下用原未在用的预建立会话承接来呼；向受邀客户端发出 Connect 后，这条会话在 PF 侧就转为在用，不等于终端已答。 主叫 Connect 由发起侧 PF 在实际收到 CF 对业务 INVITE 的 200 后发送；身份值取那份响应的 Contact，不取 REFER 的 200。
 
-本次 Connect 对应的预建立会话在 PF 侧在用。收到客户端对该 Connect 的确认时，PF 停 T55；若为 Accepted，对受邀侧的这份 INVITE，仅在尚未给 CF 回 200 时才回，仍在用；非 Accepted 则向客户端发 Disconnect，启 T56、向 CF 发释放指示，转入正在释放。未获本次确认时，T55 到期未到限则重发原 Connect；到限则须向 CF 发释放指示，回到未在用。 该业务 200 缺 session-type 时写 no session type；实际 Connect 缺 Answer State 时接收端按 confirmed。发起侧宜置确认位，启 T55、C55 加 1；受邀自动分支才按其条款初始化计数。
+本次 Connect 对应的预建立会话在 PF 侧在用。收到客户端对该 Connect 的确认时，PF 停 T55；若为 Accepted，对受邀侧的这份 INVITE，仅在尚未给 CF 回 200 时才回，仍在用；非 Accepted 则向客户端发 Disconnect，启 T56、向 CF 发释放指示，转入正在释放。未获本次确认时，T55 到期未到限则重发原 Connect；到限则须向 CF 发释放指示，回到未在用。 该业务 200 缺 session-type 时写 no session type；实际 Connect 缺 Answer State 时接收端按 confirmed。发起侧宜置确认位，启 T55、C55 加 1；受邀自动分支才按其条款初始化计数。 受邀侧 PF 用原未在用的预建立会话自动应答普通私呼时，若入向正文有邀请者 ID 且无隐私要求，才将该 ID 放进 Connect；缺 ID 或需要隐私按私呼程序填写匿名值，隐私时还须保留通用条款的不同字面。实收有指定 I_MESSAGE 时按值传入 PCK 字段；已协商流多于来呼所需时带 Media Streams。
 
-尚未建立：单个 MCPC 确认无 MCPTT 会话身份；只有相同 SSRC 和 Accepted 不能识别两次新来呼或收到话权。短片段未见确认不证明终端拒绝或 PF 到限；到限也不证明用户按过拒绝或整个预建立会话已拆除。 不从 REFER 200、Connect 或 confirmed 缺省推断人工接听、话权授予或 RTP 到达。
+尚未建立：单个 MCPC 确认无 MCPTT 会话身份；只有相同 SSRC 和 Accepted 不能识别两次新来呼或收到话权。短片段未见确认不证明终端拒绝或 PF 到限；到限也不证明用户按过拒绝或整个预建立会话已拆除。 不从 REFER 200、Connect 或 confirmed 缺省推断人工接听、话权授予或 RTP 到达。 不据匿名值分辨原身份缺失或隐私，不把 PCK 传输与密钥验证、Accepted 与安全建立、SDP 行编号与端口混用，不为匿名两种字面或字段 5 的回指差异制定线行为。
 
 [读取主题](topics/media/preestablished-connect-outcome.md)
 
