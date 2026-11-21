@@ -1,0 +1,166 @@
+{
+  "topic_id": "r16-calls-ambient-call-release-evidence",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "在网按需 MCPTT 环境监听怎么停止？哪一路的 BYE/200 才能证明停止到哪一步？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明继承全部 common_conditions，并叠加该条 conditions；关联主题不是必经流程。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0，已有在网按需 MCPTT 环境监听呼叫；只分析用户发起或控制功能主动释放的适用分支。"
+  ],
+  "claims": [
+    {
+      "id": "ambient-release-user-and-feature-capability",
+      "title": "先看角色和谁发起，再核客户端实际收到的释放能力指示",
+      "conditions": [
+        "一个用户要求停止本场环境监听；查其客户端在本对话收到的 INVITE 或对自己发出 INVITE 的匹配 200。"
+      ],
+      "conclusion": "听方可发起释放；被听方当且仅当是发起者才在列出的适用范围。未收到 Feature-Caps 的 g.3gpp.mcptt.ambient-listening-call-release 就跳过余下步骤。符合客户端释放程序时，先与媒体面交互，再在本场对话发 BYE。",
+      "normative_strength": "§11.1.6.1 定义场景，§11.1.6.2.1.3 对检测及释放步骤写 shall；D.3 说明指示的能力语义。",
+      "limitations": [
+        "截断记录不能证明指示缺失。指示表示服务器能接收释放 BYE，不证明已经发送、收到或完成释放。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.6.1 user-initiated release scope"
+          ],
+          "printed_pages": [
+            396
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.6.2.1.3 feature gate and release"
+          ],
+          "printed_pages": [
+            400
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "D.3 feature-capability indicator meaning"
+          ],
+          "printed_pages": [
+            543
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.1.3 item 19(a) roles for local-init and remote-init"
+          ],
+          "printed_pages": [
+            549
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "server-release-first-leg-is-not-second-leg-completion",
+      "title": "CF 主动释放：被听方先回 200，不能替听方确认",
+      "conditions": [
+        "CF 按 §11.1.6.4.3 收到释放一场进行中环境监听的触发。"
+      ],
+      "conclusion": "用听方 MCPTT ID、被听方 MCPTT ID 和类型确定会话，先向被听方发 BYE。收到该 BYE 的 200 后，CF 才给听方发带 release-reason 的 BYE。两路事务分别用对应 BYE 和 200 取证。",
+      "normative_strength": "§11.1.6.4.3 该分支明确各动作与顺序。",
+      "limitations": [
+        "首路 200 不证明听方收到或响应，不证明实际媒体已经停止；不改写客户端触发释放或重传/异常处理。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.6.4.3 controlling function initiated BYE dialogs"
+          ],
+          "printed_pages": [
+            413,
+            414
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "private-call-expiry-reason-wording-conflicts",
+      "title": "私呼定时器到期的 release-reason 在本版原文中有不同拼写",
+      "conditions": [
+        "该环境监听由 CF 因私呼定时器到期走主动释放，要审查 BYE 的原因字段。"
+      ],
+      "conclusion": "§11.1.6.4.1 调用 §11.1.6.4.3 且写 private-call-timer-expiry；§11.1.6.4.3 听方 BYE 的到期路径、F.1.2 枚举及 F.1.3 说明写 private-call-expiry。",
+      "normative_strength": "保留同版条款和 schema 的差异，不强加合并行为。",
+      "limitations": [
+        "不能视作两个不同到期事件、两个都在 schema 中，或以本条决定一定收到/接受哪一串；不规定走错值后的响应。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.6.4.1 timer expiry cross-reference and wording"
+          ],
+          "printed_pages": [
+            411
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.6.4.3 listener BYE value"
+          ],
+          "printed_pages": [
+            413
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.1.2 releaseReasonType"
+          ],
+          "printed_pages": [
+            546
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.1.3 item 19(b)(i)"
+          ],
+          "printed_pages": [
+            549
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-private-client-release",
+    "r16-calls-server-private-call-release"
+  ],
+  "limitations": [
+    "不涉及建立环境监听、用户提示、预建立会话释放、管理员触发机制、媒体加密、其他业务或 Release。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

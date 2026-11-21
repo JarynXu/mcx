@@ -42,3 +42,5 @@ REFER 还必须带 `Refer-Sub: false` 和 `Supported: norefersub`。客户端实
 这些条款区分信令和媒体面的交接点，不给出所有资源释放完毕的确认，也不保证预建立会话今后不会因其他原因被释放。
 
 若要追到媒体面，见[Disconnect 的确认、重试到限与本地状态](../media/preestablished-release-outcome.md)。
+
+若现场是已经建立的在网按需环境监听，不走本页普通私呼的挂断判断；查[环境监听的停止权限、BYE 与定时器](ambient-call-release-evidence.md)。
