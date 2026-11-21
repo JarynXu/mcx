@@ -1,0 +1,179 @@
+{
+  "topic_id": "r16-media-temporary-group-floor-initial-arbitration",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "临时组呼已经收到第一个最终 SIP 响应，新控制方为何还不选话权？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "每条 claim 继承所有 common_conditions，再叠加该条事件条件；初始化、等待中缓存、处于 G: Initialising 时全部最终响应指示到达是不同事件。有 general 和无 general 为替代条件；dual 候选独立。",
+  "common_conditions": [
+    "Release 16、Stage 3，依据 TS 24.380 V16.9.0。",
+    "在网 MCPTT 新临时组会话的控制服务器；限其首次话权仲裁，一般话权为主，双话权仅用于划清分支。不处理原组成组的角色切换、重递队列或普通呼叫仲裁。"
+  ],
+  "claims": [
+    {
+      "id": "r16-media-temporary-group-floor-init-final-barrier",
+      "title": "先进入 G: Initialising，等待组成组最终 SIP 响应",
+      "conditions": [
+        "MCPTT 临时组会话初始化；面向参与者的基本状态机初始化完成是后续 G 入态的前提，不是创建一般话权状态机的前提。"
+      ],
+      "conclusion": "控制服务器创建一般话权状态机，等待面向话权参与者的基本操作状态机初始化，再进入 G: Initialising。此状态等待所有受邀组成 MCPTT 组的最终 SIP 响应；无运行中的话权计时器，依赖应用和信令面的 SIP 计时器。",
+      "normative_strength": "创建、等待基本状态初始化、入态为 SHALL；等待对象与计时器为状态定义。",
+      "limitations": [
+        "不是所有必须成功、不是第一个 200，也不是逐个受邀客户端统计。只见本地超时不能替代向仲裁逻辑提供的全部最终响应指示。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.2.2 第 1、2、4 项"
+          ],
+          "printed_pages": [
+            55
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.8.1、6.3.4.8.2、6.3.4.8.4 首段"
+          ],
+          "printed_pages": [
+            68
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-media-temporary-group-floor-init-cache",
+      "title": "受邀组成组的请求先缓存，不触发初选",
+      "conditions": [
+        "G 处于 Initialising，应用和信令面指示某个受邀组成组的请求已在 application/vnd.3gpp.mcptt-floor-request+xml MIME 正文中收到。"
+      ],
+      "conclusion": "缓存此 MIME 正文，留在 G: Initialising。",
+      "normative_strength": "缓存为 SHALL，状态保持为该事件行为。",
+      "limitations": [
+        "缓存、某组的 200、获许可和收到 RTP 是不同记录。不是普通 RTCP Floor Request 的授予入口。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.8.3"
+          ],
+          "printed_pages": [
+            68
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-media-temporary-group-floor-init-general-contest",
+      "title": "有 general 时比较有效优先级，落选者撤权",
+      "conditions": [
+        "G 仍处于 Initialising，应用和信令面实际指示所有受邀组成组都给出最终 SIP 响应，并至少缓存一份 floor-type=general 正文。"
+      ],
+      "conclusion": "比较缓存的 general 参与者；发起参与者仅在按第 14 章协商隐式话权请求时入选候选。按有效优先级选择；向缓存中未获准的 general 参与者发 Floor Revoke，Reject Cause=4、关联 Track Info，带临时组 Floor Indicator。获选的是某个受邀组成组以组成组身份上报的 general 候选时，转换并缓存其 track-info，以该请求者进入 G: Taken。",
+      "normative_strength": "选择、撤权及条件转换与入态为 SHALL。",
+      "limitations": [
+        "§6.3.4.8.4 第 1c 项只写受邀组成组以组成组身份获选；发起方的组成员身份不把发起方候选变成组成组候选，不用无 general 分支填补发起方获选的状态或报文。协商隐式请求不是授予；该条不给出统一的数字或到达顺序胜出规则；只看这些字段或先后顺序不能认定谁获选。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.8.4 第 1 项"
+          ],
+          "printed_pages": [
+            68,
+            69
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "4.1.1.4"
+          ],
+          "printed_pages": [
+            21
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.4.2"
+          ],
+          "printed_pages": [
+            59
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "12.1.2.2"
+          ],
+          "printed_pages": [
+            226
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-media-temporary-group-floor-init-no-general",
+      "title": "没有 general 时按隐式请求协商结果入态",
+      "conditions": [
+        "G 仍处于 Initialising，应用和信令面实际指示所有受邀组成组都给出最终 SIP 响应；缓存里没有 floor-type=general 正文，有无 dual 均可。"
+      ],
+      "conclusion": "建会时按第 14 章协商隐式话权请求则进入 G: Taken；否则进入 G: Idle。只缓存了 dual 仍符合无 general 条件。双话权选择与这条一般话权条件独立。",
+      "normative_strength": "相应一般话权入态为 SHALL。",
+      "limitations": [
+        "第 2b(ii) 在双话权撤权的 Track Info 处现文指向 general 正文；本条不补只有 dual 时的填写或修订规则。第 3 项不适用于已有 general 但发起方获选。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.8.4 第 2–3 项"
+          ],
+          "printed_pages": [
+            69
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-mcptt-merge-floor-queue",
+    "r16-calls-prearranged-group-join-split",
+    "r16-calls-temporary-group-call-tng3"
+  ],
+  "limitations": [
+    "不从一条 SIP 200、已缓存请求或隐式请求接受断定话权已交接或媒体已送达。",
+    "不规定全部最终响应指示的内部接口、超时映射、优先级算法或发起方获选时规范未明写的入态。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

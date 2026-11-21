@@ -3597,6 +3597,16 @@ SIP 会话、聊天组和业务类型分开；O-PF 发 REFER 200 前先确认 CF
 
 [读取主题](topics/calls/chat-preestablished-refer-outcome.md)
 
+## 在网 MCPTT 临时组呼的首次话权仲裁
+
+区分 G: Initialising 内缓存组成组请求和全部受邀组成组最终 SIP 响应指示到达后的择优与入态。
+
+等待态无运行话权计时器；有 general 时已协商隐式请求的发起方才是候选；无 general 时按建会隐式协商决定 G 入态，dual 独立。
+
+尚未建立：不由第一条 200、缓存或隐式请求接受证明已获话权；不建立发起者获选时未明写的入态、dual-only Track Info 填法或 RTP 已送达。
+
+[读取主题](topics/media/temporary-group-floor-initial-arbitration.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

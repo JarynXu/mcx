@@ -18,3 +18,5 @@
 例如，原来林在讲，周和陈排队。甲可以先交代林，再在切换时分别为周、陈递交请求。即便找到了两条请求和甲的被动队列，也不能据此登记“周已获准”或“陈已开口”：前者要看能对应周及本场会话的授予依据，后者要看陈在本场实际发出语音媒体的依据。两条请求也没说明谁会先获准。[§6.5.2.3.2–3，印刷页 104–105](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=105)
 
 若要查预安排组呼的呼叫信令和拆分条件，读[既有组呼的并接与拆分](../calls/prearranged-group-join-split.md)；要判断终端何时获准发送，读[普通在网客户端话权](on-network-floor-client.md)。[MCVideo 的控制方切换](../mcvideo/role-switch-transmission-queue.md)处理的是视频传输请求，即使条款号相同，也不是这里的 MCPTT 话权程序。
+
+若查的是新临时组呼的控制方，而非旧组成组重递队列，读[临时组呼首次话权仲裁](temporary-group-floor-initial-arbitration.md)。定位 G: Initialising、受邀组成组的最终 SIP 响应和一般话权候选。
