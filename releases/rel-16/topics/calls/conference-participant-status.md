@@ -59,3 +59,5 @@ CF 向订阅者甲生成会议通知时，SIP 头的 `P-Asserted-Identity` 是 *
 若问题是断线后如何**重新加入**，先确认原来是什么组呼。普通按需聊天组中，用户回到覆盖后主动请求加入，读[聊天组的按组加入与原场判断](chat-establish-join.md)；普通按需预安排组才读[预安排组重入与晚入](rejoin-late-entry.md)。关心谁属于 G、谁已归属，读[组名单查询](../groups/group-list-query.md)或[组动态数据](../groups/group-dynamic-data.md)。这里不展开临时组中控制与非控制功能之间的互订、两个 MIME 正文的完整语法、RFC 订阅生命周期或话权流程。
 
 临时组呼还在进行，退订或计时器到期后要判断哪条服务器间订阅会结束，查[最后一笔 conference 事件订阅怎样收尾](conference-event-subscription-termination.md)。
+
+临时组涉及 CF 与组成组 NCF 互发会议通知时，查[临时组呼的 NOTIFY 组标识和名单来源](temporary-group-conference-notify.md)。普通用户订阅和服务器互发通知要分开看。

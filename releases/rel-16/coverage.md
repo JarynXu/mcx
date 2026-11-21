@@ -3547,6 +3547,16 @@ RTP 和话权使用各自守卫；对已进入活动 MBMS 分支的 Idle/Taken �
 
 [读取主题](topics/calls/private-fta-pck-authentication.md)
 
+## 临时组呼的 conference NOTIFY 标识与跨组名单
+
+按 CF 与 NCF 的通知方向判读两个组 ID；对照 NCF 收到、保存和发给客户端的状态定位跨组名单缺失。
+
+服务器可能是会话参与者，但不能据此要求对端把它列为 user。排查入向通知的改写和转发时，按各自先前发起的订阅对照。
+
+尚未建立：不确立通用名单拼接算法、实际入呼、退呼或媒体送达。
+
+[读取主题](topics/calls/temporary-group-conference-notify.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。
