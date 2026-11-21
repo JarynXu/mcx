@@ -23,3 +23,5 @@
 依据：§14.2.2.1（印刷页 464），§14.2.2.4 步骤 1–4（页 467–468），§14.3.2 撤告项的步骤 2(a)–(d)（页 471）。
 
 固定原文：[TS 24.379 V16.14.0，Release 16，Stage 3](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=471)。若要查的是[通过已监听的承载向客户端通告另一条承载](mbms-bearer-announcement.md)，读 Stage 2 流程；要查[何时检测承载暂停和报告](mbms-suspension-reporting.md)，再查报告条件。
+
+如果收件方不是终端而是 PF，且这笔 MBMS MESSAGE 返回 403，查[通告方向与上报者绑定](mcptt-mbms-status-message-rejection.md)。

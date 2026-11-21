@@ -3317,6 +3317,16 @@ Q1 接收同场取消仍应处理并确认；Q2 的 TFP8 到期按本端隐式�
 
 [读取主题](topics/calls/session-gruu-sensitive-identity.md)
 
+## Rel-16 MCPTT MBMS MESSAGE 的 403、方向和身份校验
+
+可用正文与实际接收角色识别通告或报告，判断 PF 两项独立 403 守卫。
+
+把 Request-URI 的 PF 寻址、PAI 公共用户身份和正文 MCPTT ID 分开核对，保留状态报告绑定不成立时缺省响应未指定。
+
+尚未建立：不由相同 MIME、报告应答或某个 403 独立判断起因、实际监听或承载切换。
+
+[读取主题](topics/bearers/mcptt-mbms-status-message-rejection.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。
