@@ -6,7 +6,7 @@
   "title": "在网 MCPTT：非控制侧怎样把 Floor Granted 送回申请话权的终端？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.380-v16.9.0",
-  "condition_rule": "声明继承共同范围；逐个区分实际收件的 P、服务器接口和终端，以及各自的原状态。可选导读不是连续执行步骤。",
+  "condition_rule": "声明继承共同范围；逐个区分实际收件的 P、服务器接口和终端，以及各自的原状态。可选导读不是连续执行步骤。 新增 Taken 分支限 NCF 的服务器接口实际收到 CF 的 Taken，不是 NCF 在收到 Granted 后本地产生的 Taken；发给 P、P 收到、终端收到与 CF 收到确认是不同事件。",
   "common_conditions": [
     "3GPP TS 24.380 V16.9.0；普通在网 MCPTT 单话权组呼，不含广播、环境监听或 audio cut-in，当前不涉及合组、角色切换、抢占、双话权或同时多人发言。",
     "P 是非控制功能中每个会话内逐终端的话权参与者接口；服务器接口在同一功能内面向 CF。终端、P 和 CF 不共享一个许可状态。"
@@ -274,6 +274,153 @@
           ],
           "printed_pages": [
             117
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ncf-cf-floor-taken-target-by-track-tail",
+      "title": "CF 来向 Floor Taken 有 Track Info 时，末尾引用选出一个本地 P",
+      "conditions": [
+        "在本页普通在网单话权范围，NCF 的服务器接口实收 CF 发来的 Floor Taken，入向含 Track Info 且含可识别的末尾引用。"
+      ],
+      "conclusion": "按末尾 Participant Reference 定位并只交给对应本地 P。若只有一个引用，出向删除整个 Track Info，Message Sequence Number 填本地值加 1；有多个时只删除最后一项。",
+      "normative_strength": "定位、按引用数量改写及定向发给 P 按 §6.5.4.9 第 1 项为 SHALL。",
+      "limitations": [
+        "不套用群发的 subtype 清位；多引用未列单引用的序号动作。出向缺 Track Info 和序号不能单独区分单发与群发。末尾引用不是用户 ID 或 RTP SSRC，本分支未规定未知引用的恢复。",
+        "程序用本地序号值加 1 填字段；此处没有 Idle 单引用分支另行更新所存计数的步骤。§8.2.9 泛称涉及 NCF 时包含 Track Info；不以接收分支判报文是否合规。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.9 Note 1 and items 1(a)–(d): target, reference removal and sequence"
+          ],
+          "printed_pages": [
+            109,
+            110
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.3.13: reference meaning"
+          ],
+          "printed_pages": [
+            154,
+            155
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.9 Track Info: sender-field wording, separate from received-message branch"
+          ],
+          "printed_pages": [
+            169
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ncf-cf-floor-taken-group-ack-provenance",
+      "title": "普通群发 Taken 下行无需确认，按原入向首位判断 NCF 是否回 ACK",
+      "conditions": [
+        "NCF 服务器接口实收 CF 的 Floor Taken；入向无 Track Info，Floor Indicator 未出现或 G=0，且本地未存双话权授予者 SSRC。"
+      ],
+      "conclusion": "服务器接口将出向 Taken 的 subtype 首位设 0，向本场所有本地 P 发出，Message Sequence Number 用本地值加 1。若原入向 Taken 首位为 1，NCF 自行向 CF 发送 Floor Ack，Source=3，§6.5.4.9 第 2(e) 项照字面写 Message Type=2。通用 §8.2.3.14 保留整 5 位 subtype 含确认位，按 Taken 的 x0010 且 x=1 得 18。",
+      "normative_strength": "普通无 Track Info 分支的清位、群发、序号及条件上行 Ack 为 SHALL；判断使用原入向首位。",
+      "limitations": [
+        "NCF 本地生成的 Ack 不证明任何终端实收或媒体结果。§6.5.4.9 没有 §6.5.4.8(3) 的 Idle 被动队列清空步骤，这条 Taken 本身不证明队列被清空或现状。",
+        "不在程序字面 2 与通用编码 18 间选择统一的线行为，不推定端上一定接受某值。无入向 Track Info 走本接收分支，不等于已证明发送端字段合规或非法。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.9 item 2(a), 2(c), 2(e) and Note 2: no downstream Ack and conditional CF Ack"
+          ],
+          "printed_pages": [
+            110,
+            111
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.2.1 table 8.2.2.1-1: incoming first bit"
+          ],
+          "printed_pages": [
+            147,
+            148
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.8 item 3: Idle queue contrast only"
+          ],
+          "printed_pages": [
+            109
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.3.14 full subtype coding; 8.2.9 Track Info, fixed-version wording"
+          ],
+          "printed_pages": [
+            155,
+            169
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "ncf-cf-floor-taken-p-state-and-peer-ack",
+      "title": "P 转发 Taken 的许可转换和实际终端 Ack 各有自己的触发事件",
+      "conditions": [
+        "本地 P 实收本地服务器接口给它的普通 Taken，原状态是 P: has no permission 或 P: has permission；这里非多人发言。处理终端 Ack 还需后来实际收到该端 Ack、P 处于 §6.5.5.5.1 适用状态且已记有相符 Message Type 的期待。"
+      ],
+      "conclusion": "P 向对应终端发送 Taken，收到的 subtype 首位为 1 时登记期待此类型 Ack；原无权限保持，原有权限转无权限，不以终端回 Ack 为转换条件。之后若实收且期待类型相符，P 将 Ack 上交并清掉所匹配的期待；服务器接口实际收到 P 上交的 Ack 时按 §6.5.4.5 发往 CF，并按该条处理 Track Info。",
+      "normative_strength": "实际事件下的转发、条件期待、许可变化及条件 Ack 路由为 SHALL。",
+      "limitations": [
+        "不把群发链中 NCF 生成的 Source=3 Type=2 认成终端的回包。P 的期待不是终端已回包；缺 Ack 时的动作由实现决定，不从 P 的状态判定终端已停发。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.3.3; 6.5.5.4.6: P dispatch, acknowledgement expectation and non-multitalker state"
+          ],
+          "printed_pages": [
+            114,
+            117
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.5.1–.2; 6.5.4.5: applicable state, matching expectation and forwarding"
+          ],
+          "printed_pages": [
+            118,
+            107
           ]
         }
       ],
