@@ -1,0 +1,158 @@
+{
+  "topic_id": "r16-calls-offnetwork-private-emergency-downgrade",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "离网紧急私呼取消：本端已回 Q1，对端确认了吗？TFP6 和 TFP8 各管什么？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "各声明继承全部 common_conditions，再叠加本条 conditions；关联主题不是必经流程。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0，Rel-16 Stage 3 离网 MCPTT，针对已进行的紧急私呼取消或隐式降级；Q 为呼叫类型控制，P 为并行基本呼叫控制。"
+  ],
+  "claims": [
+    {
+      "id": "cancel-sender-q1-does-not-prove-peer-ack",
+      "title": "Q2 主动发紧急取消后本地进 Q1，不等对端 ACK",
+      "conditions": [
+        "Q2 主叫请求取消，或被叫请求且其 CancelPriority 叶节点存在并为 true。"
+      ],
+      "conclusion": "发送 PRIVATE CALL EMERGENCY CANCEL，填已存 Call identifier 与两端用户 ID。停运行中的 TFP1 和 TFP8，CFP6 置 1，启动 TFP6，类型设普通私呼并进 Q1。",
+      "normative_strength": "§11.2.3.4.6.1 的角色、计时和本端换态；§15.1.12 是取消紧急模式的 MONP 消息。",
+      "limitations": [
+        "仅进入 Q1 不是对端接收、媒体重建、优先级已复原或语音送达的证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.3.4.6.1 cancel authorization and sender local transition"
+          ],
+          "printed_pages": [
+            441
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "15.1.12–13 emergency cancel vs ACK meaning"
+          ],
+          "printed_pages": [
+            483
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "cancel-ack-vs-retry-limit-q-and-p",
+      "title": "匹配 ACK 恢复媒体配置；TFP6 达限则核 Q0 和 P1",
+      "conditions": [
+        "发起端在 Q1，收到本次取消的同 Call identifier ACK，或 TFP6 到期时核 CFP6；P4 是并行基本控制的达限条件。"
+      ],
+      "conclusion": "有匹配 ACK：停运行中的 TFP6，用已存 SDP 应答建立媒体，设普通私呼 ProSe 分组优先级，留 Q1。TFP6 到期但 CFP6 未达上限：重发、计数加一、重启计时、留 Q1。等于上限：Q 释放已存类型和优先级并进 Q0；若 P 在 P4，启动 TFP7、停 TFP5、释放类型状态机并进 P1。",
+      "normative_strength": "§11.2.3.4.6.2–.4 和 §11.2.2.4.5.9；两种状态机按各自适用条件判定。",
+      "limitations": [
+        "§11.2.3.4.6.2 第 3 步把 CFP6 写作 timer；按该段条件和附录 C.2.2 的计数器表核对。达限不等于对端收到取消，不自行添加发 RELEASE、状态机先后或媒体实际通断。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.3.4.6.2–.4 TFP6/CFP6 outcome"
+          ],
+          "printed_pages": [
+            441,
+            442
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.2.4.5.9 P4 exhaustion"
+          ],
+          "printed_pages": [
+            435
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.3.1 parallel machines"
+          ],
+          "printed_pages": [
+            436
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "C.2.2 Table C.2.2-1 CFP6 counter"
+          ],
+          "printed_pages": [
+            542
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "receiver-responds-in-q1-and-tfp8-is-local",
+      "title": "Q1 仍处理同场取消；Q2 的 TFP8 是隐式本地降级",
+      "conditions": [
+        "接收端在 Q1 或 Q2 收到相同 Call identifier 的紧急取消；或本端在 Q2 发生 TFP8 到期。"
+      ],
+      "conclusion": "收到取消时发 ACK、用已存 SDP 应答建媒体并设普通私呼 ProSe 分组优先级，原在 Q2 另停 TFP8、改普通类型并进 Q1。Q2 的 TFP8 到期则直接用已存应答建立媒体、恢复普通优先级、改呼叫类型并进 Q1。",
+      "normative_strength": "§11.2.3.4.6.5 是收到取消的支路，§11.2.3.4.6A 是本端隐式计时支路。",
+      "limitations": [
+        "TFP8 到期段不要求发 CANCEL、等 ACK 或终止整通呼叫；不能用本端状态推断对端已切换或已收媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.3.4.6.5 receiving in Q1 or Q2"
+          ],
+          "printed_pages": [
+            442,
+            443
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.3.4.6A implicit downgrade"
+          ],
+          "printed_pages": [
+            443
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-offnetwork-private-emergency-upgrade",
+    "r16-calls-offnetwork-private-release-evidence"
+  ],
+  "limitations": [
+    "不扩展 TS 24.483 配置、计时器实际配置值、完整 MONP 字段编码、空口优先级数值、媒体计时排序或其他 Release/业务。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
