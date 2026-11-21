@@ -1,0 +1,170 @@
+{
+  "topic_id": "r16-groups-same-system-explicit-affiliation",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "本系统显式组归属：进区由谁发请求，GMS 先收到更新正常吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "每条 claim 继承共同场景后，再应用各自观察点和事件。客户端发起、授权保存、发客户端答复、发 GMS 更新及各方收到分别核实。",
+  "common_conditions": [
+    "Release 16 Stage 2，依据 TS 23.280 V16.7.0。",
+    "限在网、一项 MC 业务中用户当前由目标组所在的系统提供服务，使用 §10.8.3.1 客户端触发的显式归属；非伙伴组、非多项业务合并、非隐式或第三方命令。对照图 10.8.3.1-1 的整套流程时，GMS 已订阅定义该组系统中的业务服务器。"
+  ],
+  "claims": [
+    {
+      "id": "r16-groups-same-system-affiliation-trigger",
+      "title": "用户操作或允许区域事件均可触发显式归属",
+      "conditions": [
+        "客户端已有允许归属的组资料或指针；由用户操作或适用事件使客户端实际发起。"
+      ],
+      "conclusion": "触发可以是终端进入允许的组工作区域。客户端向业务服务器发送归属请求，必需内容是发起者 MC 业务 ID 和一个或多个待申请的 MC 业务组 ID。服务器预取订阅／策略、客户端先申请组配置更新不是必经条件。",
+      "normative_strength": "触发为 §10.8.3.1 所述或选入口，两个请求信息元素为 M。",
+      "limitations": [
+        "不能仅从位置、通知 200、用户无手动操作推断归属已开始、已获准或属于隐式归属；不得推定每次入区自动请求。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "表 10.8.2.1-1"
+          ],
+          "printed_pages": [
+            147
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "图 10.8.3.1-1 及前提 1–5、步骤 1"
+          ],
+          "printed_pages": [
+            150,
+            151
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-groups-same-system-affiliation-policy",
+      "title": "查组策略缓存，再做授权和 N2 检查",
+      "conditions": [
+        "业务服务器收到本次客户端归属请求，进入 §10.8.3.1 步骤 2–4。"
+      ],
+      "conclusion": "组策略本地未缓存才向 GMS 请求取得；根据组策略和用户订阅检查组启用和该客户端获准归属，并检查用户可同时归属的 MC 业务组总数上限 N2；用户获准时保存对本次所请求组的归属状态。",
+      "normative_strength": "按该流程所述检查；查询只在缓存未命中、保存以获准为前提。",
+      "limitations": [
+        "不把组策略通知、无查询或任一个单独条件看作本次已授权／保存。N2 非请求列表长度；不规定越限移组顺序、拒绝码或混合群组请求的回滚策略。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "图 10.8.3.1-1 及步骤 2a–4"
+          ],
+          "printed_pages": [
+            151
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-groups-same-system-affiliation-client-response",
+      "title": "一份客户端答复按列表逐组给结果",
+      "conditions": [
+        "业务服务器在步骤 5a 对本次客户端归属请求发回应。"
+      ],
+      "conclusion": "个别寻址，使用单播或多播；M 为发起者 MC 业务 ID、请求所指组 ID 列表和列表每个组各自的目标归属结果。",
+      "normative_strength": "§10.8.2.3 所列信息元素为 M；5a 是给客户端的结果动作。",
+      "limitations": [
+        "服务器发送的证据不等于客户端实收，不从群组列表推定全成功、全失败或事务原子性。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "表 10.8.2.3-1"
+          ],
+          "printed_pages": [
+            147
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "图 10.8.3.1-1 及步骤 5a、注"
+          ],
+          "printed_pages": [
+            151
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-groups-same-system-affiliation-gms-update",
+      "title": "GMS 更新对应一个订阅组和用户，和客户端答复无固定先后",
+      "conditions": [
+        "在描述的本系统流程中，业务服务器按 5b 向已订阅的 GMS 发送本次动态数据更新。"
+      ],
+      "conclusion": "M 为 GMS 所订阅的组 ID、被更新状态的用户 MC 业务 ID、对该组的归属或解除归属状态（通用表语义；本流程 5b 更新这次办理的归属）。5a 与 5b 可以任意先后或并行。",
+      "normative_strength": "§10.8.2.14 所列信息元素为 M；5a/5b 顺序和并行为原文允许。",
+      "limitations": [
+        "单组信息不证明其他组状态、终端收到答复或客户端参加呼叫。语义粒度不是物理报文数或消息批处理编码。未展开 GMS 对同一用户多 UE 的状态算法。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "表 10.8.2.14-1"
+          ],
+          "printed_pages": [
+            150
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "图 10.8.3.1-1 及前提 5、步骤 4–5、注"
+          ],
+          "printed_pages": [
+            151
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-groups-gms-affiliation-subscription",
+    "r16-groups-explicit-affiliation-client",
+    "r16-groups-group-geographic-area-notification"
+  ],
+  "limitations": [
+    "本页不规定 SIP 方法、报文状态码或超限策略；5a 与 5b 互相没有固定先后，不等于此前的授权和保存也无次序。",
+    "不以任一方向的异步发送推导另一方向已到达，或从归属成功推导已经加入组呼。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}
