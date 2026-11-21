@@ -1,0 +1,221 @@
+{
+  "topic_id": "r16-groups-preconfigured-group-regroup-creation",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "按组清单创建预配置组重组：少一份 200，CF 能先确认吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明继承全主题共同条件，再加本条实际事件守卫。CF 收创建、各 NCF 响应、发送补偿、NCF 实收补偿和 O-PF 重试分别适用，不以任何后续动作已结束为全页前提。",
+  "common_conditions": [
+    "在网 MCPTT，用预配置组为组成组清单创建临时重组，SIP MESSAGE 的 groups-for-regroup 标识组成组，不是 users-for-regroup 的初始请求。",
+    "按 TS 24.379 V16.14.0 Stage 3 及同一次创建的子事务对应；T 是临时重组，P 是预配置组。",
+    "不预设请示已经分发、全部应答已收齐、某侧完成补偿、终端收到通知或实际参加呼叫。"
+  ],
+  "claims": [
+    {
+      "id": "r16-groups-create-by-group-route",
+      "title": "分发依据是组成组清单，T 与 P 不互换",
+      "conditions": [
+        "CF 收到发给它的按组成组创建 MESSAGE；分发是未在前序拒绝停止的分支。"
+      ],
+      "conclusion": "不能基于 P 处理则回 480 并停止；判定 T 已用则回 403/Warning 文本码 165 并停止。分发时逐组找其控制功能，后者本次充当 NCF，请求发往该 NCF 的 PSI；复制来件所含 MCPTT 业务和重组正文、PAI 及收到的 Accept/Reject-Contact。",
+      "normative_strength": "分支响应和停止、后续确定与发信为 SHALL。",
+      "limitations": [
+        "T、P、组成组 ID 和 NCF PSI 是不同角色的值；前置 480 不说明已分发。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.1.1 步骤 3、7–8"
+          ],
+          "printed_pages": [
+            495
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.3.1 步骤 2–5"
+          ],
+          "printed_pages": [
+            501
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "表 4.4.2-2 的 165 行"
+          ],
+          "printed_pages": [
+            38
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-groups-create-by-group-all-replies",
+      "title": "收齐且全为精确 200 才触发创建确认",
+      "conditions": [
+        "CF 已向 NCF 发出创建 MESSAGE，按本次相应请求等待实际收到所有所通知 NCF 的响应。"
+      ],
+      "conclusion": "全是 SIP 200 时向 O-PF 回 200、保存组成组清单/T/P。至少一份实际非 2xx 时回 480。若全部为 2xx 但不全为 200 不满足这两个明文守卫；没收到某份不算该侧回了非 2xx。",
+      "normative_strength": "等待、匹配守卫下的响应和保存为 SHALL。",
+      "limitations": [
+        "不规定等候时长／超时归类；不是任一 T-PF 200 的用户名单规则，不是全套下游回执。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.3.1 步骤 5–7"
+          ],
+          "printed_pages": [
+            501,
+            502
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.3.3.1 步骤 6–7（用户名单对照）"
+          ],
+          "printed_pages": [
+            511
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-groups-create-by-group-compensate",
+      "title": "回 480 后只给实际回过 200 的 NCF 发移除",
+      "conditions": [
+        "CF 已等齐本次发送的 NCF 响应并有至少一个实际非 2xx；按此前创建的精确 200 选补偿对象。"
+      ],
+      "conclusion": "CF 向 O-PF 回 480，并对每个本次实际回 200 的 NCF 发送另一个 SIP MESSAGE，Request-URI 为该 NCF 的 PSI，重组 XML 含 mcptt-regroup-uri=T 和 regroup-action=remove。",
+      "normative_strength": "符合失败守卫后的 480 与定向补偿为 SHALL。",
+      "limitations": [
+        "第 7b 项原文回指发送的步骤 4，接收在步骤 5。不向非 200 者或成员终端补偿；不以移除已实收或完成作前提。 发送条款没有列复制 P；符合 NCF 接收分类是另一个事件，不能只凭这些最小列项推定已经进入处理。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.3.1 步骤 4–5、7a–b"
+          ],
+          "printed_pages": [
+            501,
+            502
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.1.3 NCF 移除分类（对照）"
+          ],
+          "printed_pages": [
+            82
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "r16-groups-create-by-group-recovery-evidence",
+      "title": "NCF 的 200、O-PF 重试与终端实际状态分开",
+      "conditions": [
+        "分别讨论 NCF 实收创建、实收符合 §6.3.1.3 分类的移除，或 O-PF 实收自己所发创建请求的 480（及对应 2xx 对照）。"
+      ],
+      "conclusion": "NCF 对已重组的本侧组成组回 403/Warning 文本码 148 并停；正常创建先保存信息再回 200，再按 T-PF 分发。§6.3.1.3 的分类写 S-CSCF 按初始过滤规则路由、NCF PSI、重组正文含 preconfigured-group 与 remove。符合该入口的移除实际收到后缺资源/拥塞风险可回 500 并停；正常先回 200，再按 T 找所管组成组与 T-PF 并下发。O-PF 对实际 480 的编号步骤为另选 CF 并向其 PSI 另发请求，注 2 的是否重试属部署决定字样保留；其收到 2xx 后的客户端 200 是另一腿。",
+      "normative_strength": "NCF 正常回应和下发、既有重组拒绝按 SHALL，资源拒绝 MAY；实际 480 的编号处理为 SHALL，注 2 不改写。",
+      "limitations": [
+        "不以任一 200 或二次尝试认定旧侧已清、所有下游已收到、全组恢复或强制无限重试。 T/remove 的发出或传输收件不证明 §6.3.1.3 分类命中，也不补字段缺失时的失败码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.4.1 步骤 2–7"
+          ],
+          "printed_pages": [
+            504,
+            505
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "表 4.4.2-2 的 148 行"
+          ],
+          "printed_pages": [
+            37
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.4.2 步骤 1–4"
+          ],
+          "printed_pages": [
+            505,
+            506
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.2.2 的 480、2xx 分支及注 2"
+          ],
+          "printed_pages": [
+            498
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.1.3 NCF 移除 MESSAGE 分类"
+          ],
+          "printed_pages": [
+            82
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    }
+  ],
+  "related": [
+    "r16-groups-user-regroup-response",
+    "r16-groups-preconfigured-regroup-notification",
+    "r16-groups-preconfigured-regroup-late-affiliation",
+    "r16-groups-single-system-temporary-regroup"
+  ],
+  "limitations": [
+    "条款没有规定等待时长、全部 2xx 但不全为 200 的结果或补偿事务收敛／原子保证。无响应不是非 2xx。",
+    "不借 Stage 2 GMS 流程、用户名单重组门槛、后来归属或终端通知程序补 CF 守卫。",
+    "第 7b 项构造列 T 与 remove，不列 P；不能据此推定仅这两项满足 §6.3.1.3 的 NCF 移除分类，也不声称禁带 P 或必拒绝。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": true,
+    "independent_usage_acceptance": true
+  }
+}

@@ -31,3 +31,5 @@
 
 - 组管理客户端已取得组成组的配置，向其中一个组成组的组管理服务器（GMS）请求合并这些组，想查哪些组可以合并、GMS 要通知哪些对象，读[同系统临时重组的组成条件及通知](single-system-temporary-regroup.md)。这是业务流程（TS 23.280 V16.7.0 §10.2.4.1）。
 - MCPTT 客户端向发端参与功能的 PSI 发创建 MESSAGE，正文列的是 `groups-for-regroup`，则是**按组成组**创建预配置组重组，见 [TS 24.379 V16.14.0 §16.2.1.1，印 495](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=496)。它不是上一项的 GMS 消息，也不是本页按用户名单创建的 MESSAGE；不能把本页“任一被请求的终接参与功能的 200 到达控制方就够”的规则套给它。
+
+若这次 MESSAGE 用的是 `groups-for-regroup`，查[按组清单创建的全部应答与失败补偿](preconfigured-group-regroup-creation.md)。不能沿用本页任一 T-PF 回 200 即可的门槛。
