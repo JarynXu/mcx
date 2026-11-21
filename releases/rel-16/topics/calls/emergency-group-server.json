@@ -6,10 +6,10 @@
   "title": "已有按需预安排组会话：CF紧急升级、取消与分层反馈",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
-  "condition_rule": "Inherit common_conditions and add claim conditions. 既有四条声明只适用 CF；ID 以 terminating-pf-priority-reinvite- 开头的三条只适用终接 PF。按各自实际的收件和发送分别判断，不以一条腿的数据推定另一腿的状态。 原 CF 四条仍限 emergency-ind 升级或取消，不展开新告警发起；已有告警取消和拒绝反馈按各自条件保留。其 imminent 字段只用于验证或原文分支比较，无效请求仍适用相应拒绝检查。原 response-warning-and-ack-info 条的 149 正文只取未获准撤警。终接 PF 的原三条仍只说明紧急或迫近危险指示的接收、转送和响应，不展开迫近危险业务生命周期。新增 priority-149- 三条只看本场 CF 回复及匹配 ACK 后的反馈，不以初始 INVITE、聊天组或预建立行为补齐。 原 CF 四条、terminating-pf-priority-reinvite- 三条及 priority-149- 三条仍须处于已有按需预安排组会话，旧角色及收件条件保留不变。新增 tng2-expiry- 三条只论该组 CF 实际处理 TNG2 到期；参会 re-INVITE 与非参会 MESSAGE 单独取条件，不把活动组会话或信令响应设为后者前提。",
+  "condition_rule": "Inherit common_conditions and add claim conditions. 既有四条声明只适用 CF；ID 以 terminating-pf-priority-reinvite- 开头的三条只适用终接 PF。按各自实际的收件和发送分别判断，不以一条腿的数据推定另一腿的状态。 原 CF 四条仍限 emergency-ind 升级或取消，不展开新告警发起；已有告警取消和拒绝反馈按各自条件保留。其 imminent 字段只用于验证或原文分支比较，无效请求仍适用相应拒绝检查。原 response-warning-and-ack-info 条的 149 正文只取未获准撤警。终接 PF 的原三条仍只说明紧急或迫近危险指示的接收、转送和响应，不展开迫近危险业务生命周期。新增 priority-149- 三条只看本场 CF 回复及匹配 ACK 后的反馈，不以初始 INVITE、聊天组或预建立行为补齐。 原 CF 四条、terminating-pf-priority-reinvite- 三条及 priority-149- 三条仍须处于已有按需预安排组会话，旧角色及收件条件保留不变。新增 tng2-expiry- 三条只论该组 CF 实际处理 TNG2 到期；参会 re-INVITE 与非参会 MESSAGE 单独取条件，不把活动组会话或信令响应设为后者前提。 新增 imminent-init- 三条仅限已经通过上游检查、组未紧急的在网既有按需预安排组呼的正值请求；不改既有十三条的适用条件，不把首升、已迫近危险下新的指示、取消和 149 的各自条件相互代入。",
   "common_conditions": [
     "固定 TS 24.379 V16.14.0，在网按需预安排组，直接组身份；按声明区分 CF 和终接 PF，以及本组是否有活动会话。排除初始建立、chat/预建立、临时/重组、广播/system、离网、跨系统及完整媒体/话权算法。",
-    "CF 紧急升级、取消、终接 PF 转送，以及 CF 对新告警未获准或组已紧急时迫近危险请求的局部反馈，各按自己的业务分支适用；不展开随呼告警发送、迫近危险业务生命周期或媒体承载。",
+    "CF 紧急升级或取消、终接 PF 转送、CF 的 149 局部反馈、本组 TNG2 到期和获准发起迫近危险均按各自的事件、权限和原组状态适用。不展开整个紧急或迫近危险生命周期、新告警发送或媒体承载。",
     "每条按实际角色、请求/响应/ACK 或计时到期事件及旧组状态分别适用；不以已获授权、组状态 false、已取消成功或所有下游已响应为共同前提。CF 组状态与客户端 MEG/MEGC/MES/MEA 不可互换。"
   ],
   "claims": [
@@ -607,6 +607,140 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "imminent-init-first-transition-and-reinvite",
+      "title": "组原未处于迫近危险时，获准请求置本组为迫近危险并向其他参会者发对应 re-INVITE",
+      "conditions": [
+        "在网已有按需预安排组呼，CF 实收标识本会话的 re-INVITE，MCPTT 正文 imminentperil-ind=true，已通过适用检查且上游已判非未授权请求；本组进行中的紧急状态为 false，按 §10.1.1.4.7 第 9 项转入 §10.1.1.4.8。",
+        "本组进行中迫近危险状态原为 false；该下行请求的目标是本场其他实际参会成员。"
+      ],
+      "conclusion": "CF 将本组进行中的迫近危险状态置 true。给其他参会者构造 re-INVITE：Contact 是本会话 MCPTT session identity，含 g.3gpp.mcptt 和 isfocus；SDP 用与该终接客户端当前已建立的媒体参数；正文 mcptt-calling-user-id 是发起用户；imminentperil-ind=true。Resource-Priority 的命名空间和优先级取服务配置 OnNetwork 的 imminent-peril-resource-priority。",
+      "normative_strength": "此入口的组状态更新、对其他参会者构造发送和所列字段为 SHALL。",
+      "limitations": [
+        "来向含 imminentperil-ind 时验证要求 emergency-ind 和 alert-ind 均缺席，不把 false 当作省略；出向正值构造不抄发起人的原请求，§6.3.3.1.15 第 4 项也未要求另写 emergency-ind=false。不要借取消分支第 5 项补字段。声称已获授权须有该 CF 上游判断的证据；第 4.7(4) 项字面引用为取消权限 .1.13.6，不能替换为发起权限 .1.13.5 或从没看到 403 反推。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.7 items 1–4 and 9; 10.1.1.4.8 item 1b and note 1"
+          ],
+          "printed_pages": [
+            253,
+            254,
+            255,
+            256,
+            257
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.15 items 1–5; 6.3.3.1.17 and 6.3.3.1.19 positive branch"
+          ],
+          "printed_pages": [
+            116,
+            117,
+            118
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.13.5–.6: literal initiation/cancellation authorization difference"
+          ],
+          "printed_pages": [
+            113,
+            114
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "imminent-init-affiliated-messages-and-user-record",
+      "title": "首次升迫近危险与已升后的新指示使用不同 MESSAGE 收件描述",
+      "conditions": [
+        "在网已有按需预安排组呼，CF 实收标识本会话的 re-INVITE，MCPTT 正文 imminentperil-ind=true，已通过适用检查且上游已判非未授权请求；本组进行中的紧急状态为 false，按 §10.1.1.4.7 第 9 项转入 §10.1.1.4.8。"
+      ],
+      "conclusion": "原状态 false 时，对本组已归属但未参会者另发 MESSAGE。原状态 true 且是新指示时，第 1(a) 项要求给其他已归属成员发 MESSAGE，不写非参会或重新向成员发 re-INVITE 的条件。两项所列 MESSAGE 写 imminentperil-ind=true，使用目标用户 MCPTT ID 对应的终接 PF 作 Request-URI，正文目标用户和组各填相应 ID；第 1(c) 项另要求 CF 缓存发起用户记录，不受第 1(a) 项新指示条件限制。",
+      "normative_strength": "两分支相应的发送、业务字段和用户记录均为 SHALL。",
+      "limitations": [
+        "第 1(a) 项的字面收件描述与所引 §6.3.3.1.11 只描述已归属非参会者的引言不同；保留差异，不把第 1(a) 项自行缩成首次升级的范围，也不据此保证实际参会终端收到。不把 SIP 重传当作新指示或认定 CF 必须重新执行此流程；不推定清告警或开始 TNG2。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.8 items 1a–c and note 1"
+          ],
+          "printed_pages": [
+            256,
+            257
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.11 opening and items 4–8: general helper introduction and exact routing fields"
+          ],
+          "printed_pages": [
+            110
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "imminent-init-originator-200-distinct-media",
+      "title": "正值分支给发起人的 200 不以全体成员应答作为明写条件",
+      "conditions": [
+        "在网已有按需预安排组呼，CF 实收标识本会话的 re-INVITE，MCPTT 正文 imminentperil-ind=true，已通过适用检查且上游已判非未授权请求；本组进行中的紧急状态为 false，按 §10.1.1.4.7 第 9 项转入 §10.1.1.4.8。",
+        "本次处理进入 §10.1.1.4.8 第 4–8 项的发起请求响应段；不是已紧急触发的 149 或取消分支。"
+      ],
+      "conclusion": "对发起请求的 200 写 SDP answer，按 §6.3.3.2.1 用 CF 的地址和端口处理接纳的媒体，以及存在且接纳的媒体控制通道并带 Supported: norefersub、tdialog，执行媒体面交互后向发起方发送该 200。对另发 MESSAGE 的实收 2xx 按所引 SIP 规程处理，不能用它代替响应发起 re-INVITE。",
+      "normative_strength": "所列发起人 200 构造、媒体动作和发送均为 SHALL；正文未写等待一个或全部成员 200 的门槛。",
+      "limitations": [
+        "第 4.7 项末尾有接收 re-INVITE 200 的媒体文字，第 4.8(3)(c)(ii) 是取消分支的成员 200；不要把它们做成正值第 1 项或发起人 200 的阻塞条件，也不宣称正值成员腿永不处理响应或一定迟于发起人 200。不由任一 200 断言全员收件、状态更新或承载已生效。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.7 item 9 and p256 contrast; 10.1.1.4.8 items 1, 3c, 4–8 and final MESSAGE response paragraph"
+          ],
+          "printed_pages": [
+            255,
+            256,
+            257,
+            258
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.2.1: SDP answer for accepted media and media control"
+          ],
+          "printed_pages": [
+            119,
+            120
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "limitations": [
@@ -621,5 +755,40 @@
     "original_clauses_checked": true,
     "independent_source_review": true,
     "independent_usage_acceptance": true
-  }
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.4.7 items 2, 4, 9: validation, literal cancellation cross-reference at positive guard and no-emergency dispatch"
+      ],
+      "printed_pages": [
+        253,
+        254,
+        255
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.4.8 item 1(a)–(c) and items 4–8: positive indications by former group state, initiation record and initiating leg response"
+      ],
+      "printed_pages": [
+        256,
+        257,
+        258
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.3.1.15 and positive 6.3.3.1.19: terminating media parameters, calling user, imminent peril configured header and indication"
+      ],
+      "printed_pages": [
+        116,
+        117,
+        118
+      ]
+    }
+  ]
 }
