@@ -3,19 +3,20 @@
   "release": 16,
   "standard_stage": 3,
   "state": "draft",
-  "title": "MCPTT 客户端收到 MBMS 承载撤告：什么时候才能删除共用的 SDP？",
+  "title": "MCPTT 承载通告：怎样读初始 SDP、解释 Map 和处理撤告？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
-  "condition_rule": "每项声明继承共同条件，并叠加各自 announcement 或事件条件。 后续 Map 以其实际接收通用子信道确定 SDP 解释和默认密钥上下文。通告安全检查的入口是带服务区的通告项，且 SDP 中通用子信道的媒体段含 a=key-mgmt、mikey 与 I_MESSAGE；IDRi 和签名是否通过是检查结果。",
+  "condition_rule": "先区分 PF 构造初始通告与终端实际收到通告。每条声明继承共同条件，再叠加各自条件；发送端不以终端收包为前提。后续 Map 另查它实际到达的通用子信道。",
   "common_conditions": [
-    "Rel-16，TS 24.379 V16.14.0，普通在网 MCPTT 客户端实际收到 SIP MESSAGE；P-Asserted-Service 包含 MCPTT ICSI urn:urn-7:3gpp-service.ims.icsi.mcptt。",
-    "消息有 application/vnd.3gpp.mcptt-mbms-usage-info+xml，且其中至少一项 announcement；按该项有没有 mbms-service-areas 分支。"
+    "Rel-16，TS 24.379 V16.14.0，在网 MCPTT 的 MBMS 承载通告。"
   ],
   "claims": [
     {
       "id": "announcement-store-by-tmgi",
       "title": "带服务区的通告：同 TMGI 替换，否则新建",
       "conditions": [
+        "普通在网 MCPTT 客户端实际收到 SIP MESSAGE；P-Asserted-Service 包含 MCPTT ICSI urn:urn-7:3gpp-service.ims.icsi.mcptt。",
+        "消息有 application/vnd.3gpp.mcptt-mbms-usage-info+xml，且其中至少一项 announcement；按该项有没有 mbms-service-areas 分支。",
         "本项 announcement 含 mbms-service-areas。"
       ],
       "conclusion": "用 TMGI 查已有通告；有同值时替换旧项，没有同值时存新项。把收到的通告与 SDP、GPMS 和从 P-Asserted-Identity 取得的参与功能 MBMS 公共业务标识关联。",
@@ -45,6 +46,8 @@
       "id": "update-does-not-remove-omitted",
       "title": "更新甲而未列乙，不会隐式撤告乙",
       "conditions": [
+        "普通在网 MCPTT 客户端实际收到 SIP MESSAGE；P-Asserted-Service 包含 MCPTT ICSI urn:urn-7:3gpp-service.ims.icsi.mcptt。",
+        "消息有 application/vnd.3gpp.mcptt-mbms-usage-info+xml，且其中至少一项 announcement；按该项有没有 mbms-service-areas 分支。",
         "收到只列部分既有通告的新消息；如是 §14.2.2.3 的发送端更新，按该程序。"
       ],
       "conclusion": "同消息可含不同种类的通告。不因一项旧通告未列出而删除它。参与功能按更新程序沿用原 TMGI、GPMS 和初始 SDP；服务区列表可保留或更新。一般条款的 SDP 替换与未列通告的存续分开。",
@@ -92,6 +95,8 @@
       "id": "withdraw-only-matching-tmgi",
       "title": "撤告按 TMGI；无其他通告关联才删除已存 SDP",
       "conditions": [
+        "普通在网 MCPTT 客户端实际收到 SIP MESSAGE；P-Asserted-Service 包含 MCPTT ICSI urn:urn-7:3gpp-service.ims.icsi.mcptt。",
+        "消息有 application/vnd.3gpp.mcptt-mbms-usage-info+xml，且其中至少一项 announcement；按该项有没有 mbms-service-areas 分支。",
         "本项 announcement 包含被撤告的 TMGI，但不带 mbms-service-areas；实际存在以该值标识的已存通告。"
       ],
       "conclusion": "丢弃该条通告、去掉它与已存 SDP 的关联，并停止监听相应通用 MBMS 子信道。只有没有其他已存通告关联这份 SDP 时才删它；撤告后检查报告条件。发送方在 usage-info XML 体里的所有通告项都是撤告时，须省略 GPMS 和整个 SDP 体。",
@@ -139,6 +144,8 @@
       "id": "listening-area-and-report-check",
       "title": "监听条件和报告检查不等于已收到媒体",
       "conditions": [
+        "普通在网 MCPTT 客户端实际收到 SIP MESSAGE；P-Asserted-Service 包含 MCPTT ICSI urn:urn-7:3gpp-service.ims.icsi.mcptt。",
+        "消息有 application/vnd.3gpp.mcptt-mbms-usage-info+xml，且其中至少一项 announcement；按该项有没有 mbms-service-areas 分支。",
         "本项包含服务区。若触发 §14.3.2(1)(f)，须先按该安全分支，只有未进入拒绝并停止的路径才继续。"
       ],
       "conclusion": "处理有效项就检查 §14.3.3 的监听状态报告条件，不以进入服务区为前提。进入该承载可用的服务区时，监听 SDP 中 m=application 指定的通用 MBMS 子信道。撤告分支也须检查报告条件。",
@@ -176,6 +183,8 @@
       "id": "map-uses-receiving-gpms-associated-sdp",
       "title": "解释 Map 的 m= 行编号时使用实收该 Map 的通用子信道关联的 SDP",
       "conditions": [
+        "普通在网 MCPTT 客户端实际收到 SIP MESSAGE；P-Asserted-Service 包含 MCPTT ICSI urn:urn-7:3gpp-service.ims.icsi.mcptt。",
+        "消息有 application/vnd.3gpp.mcptt-mbms-usage-info+xml，且其中至少一项 announcement；按该项有没有 mbms-service-areas 分支。",
         "在共同条件的 MCPTT 通告场景中，客户端获得通告的 SDP 或安全密钥；随后对实际从某通用 MBMS 子信道收到的 Map 解释内容。"
       ],
       "conclusion": "把收到的 SDP 体和收到的安全密钥与同一承载通告消息所宣告的通用子信道关联；Map 内容以实际接收该 Map 的通用子信道关联的 SDP 为上下文，例如 m= 行编号。",
@@ -205,6 +214,8 @@
       "id": "mapped-bearer-default-source-gpms-key",
       "title": "映射到目标承载时，默认安全密钥取实际承载 Map 的通用子信道",
       "conditions": [
+        "普通在网 MCPTT 客户端实际收到 SIP MESSAGE；P-Asserted-Service 包含 MCPTT ICSI urn:urn-7:3gpp-service.ims.icsi.mcptt。",
+        "消息有 application/vnd.3gpp.mcptt-mbms-usage-info+xml，且其中至少一项 announcement；按该项有没有 mbms-service-areas 分支。",
         "在所述 MCPTT 承载通告场景中，已知媒体或媒体控制到某承载的 Map 是由哪条通用 MBMS 子信道传送；判断目标承载上相关子信道的保护。"
       ],
       "conclusion": "映射到该 MBMS 承载的相关子信道使用承载 Map 的通用子信道当时生效的安全密钥，除非已有适用的另一密钥或存在不加密指示。",
@@ -243,6 +254,8 @@
       "id": "gpms-announcement-idri-signature-mscck",
       "title": "GPMS 保护通告核对 IDRi 后验证签名，两类失败回 488/136",
       "conditions": [
+        "普通在网 MCPTT 客户端实际收到 SIP MESSAGE；P-Asserted-Service 包含 MCPTT ICSI urn:urn-7:3gpp-service.ims.icsi.mcptt。",
+        "消息有 application/vnd.3gpp.mcptt-mbms-usage-info+xml，且其中至少一项 announcement；按该项有没有 mbms-service-areas 分支。",
         "收到的 announcement 具有 mbms-service-areas；收到的 SDP 在通用 MBMS 子信道 m=application 段含 a=key-mgmt、mikey 和 MIKEY-SAKKE I_MESSAGE。"
       ],
       "conclusion": "IDRi 的发起者 URI 与为该用户服务的参与 MCPTT 功能 PSI 不符，拒绝该 SIP MESSAGE 并回 488/Warning 文本 136、停止后续步骤。身份相符后转 UID 并验证签名，验证不通过同样回 488/136 并停止；通过后按本条提取和解开封装的 MSCCK，另取标识该密钥的 MSCCK-ID。",
@@ -279,12 +292,113 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "initial-announcement-gpms-media-line",
+      "title": "初始通告用哪个应用媒体行给出通用信令端点？",
+      "conditions": [
+        "PF 按 §14.2.2.2 为目标 MCPTT 客户端生成初始 MBMS 承载通告 SIP MESSAGE；可在发送侧判读，不要求已经收到终端响应。"
+      ],
+      "conclusion": "每条初始消息宣告一条承载通用子信道的承载，还可宣告其他媒体或媒体控制承载。消息必须含一份 Content-Disposition 为 render 的 application/sdp；其中一条 m=application 用作通用子信道，要求有效组播 IP 和有效端口。承载该通用子信道的 announcement 中，GPMS 给出同一 SDP 内这条媒体行的编号。",
+      "normative_strength": "通用子信道用途、SDP、端点和承载它的通告项中的 GPMS 是本初始发送分支的规定；不是所有承载项都有此用途。",
+      "limitations": [
+        "GPMS 值不是端口或 TMGI，不能仅选第一条 m=application；编号或其指向的有效应用段不可核对时，不据端口、段顺序猜测，也不推断接收端错误码。",
+        "通用子信道端点用于组播信令。媒体子信道的实际媒体参数由 Map Group To Bearer 给出；只有实际收到 Map 才按接收它的通用子信道所关联的 SDP 解读其行编号。仅见通告不能证明已映射某组、终端已进入服务区、已监听、已解密或收到了媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.2.2.1：每条初始消息中的通用子信道承载及可附加的媒体或媒体控制承载"
+          ],
+          "printed_pages": [
+            464
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.2.2.2(5a,5d,6f)：render、通用子信道的有效组播端点和 GPMS 所指媒体行"
+          ],
+          "printed_pages": [
+            465,
+            467
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.2.2.2 注 2 及 14.3.2 开头、1(f)–(h)：Map 中的媒体参数、实际接收子信道和监听条件"
+          ],
+          "printed_pages": [
+            466,
+            470,
+            471
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "initial-announcement-audio-floor-placeholders",
+      "title": "哪些行用端口 9，音频与话权在什么条件下分开？",
+      "conditions": [
+        "PF 按 §14.2.2.2 为目标 MCPTT 客户端生成初始 MBMS 承载通告 SIP MESSAGE；可在发送侧判读，不要求已经收到终端响应。"
+      ],
+      "conclusion": "音频兼媒体控制和只传音频两类 m=audio 都是分别建议提供一条或多条，不是整份 SDP 二选一。对任一类已包含的行，IPv4 c= 为 0.0.0.0，IPv6 为 .invalid 顶级域下的域名，媒体端口为 9。兼传控制的行须含 a=rtcp-mux 和 a=rtcp:9；只传音频的行不含 a=rtcp-mux 或 a=rtcp:。有只传音频的行时，须有一条或多条用于话权控制的 m=application，使用相同的 IPv4/IPv6 占位地址和端口 9；不用独立话权子信道时，话权消息走媒体子信道。",
+      "normative_strength": "5(b)、(c) 的行组各为 SHOULD，已包含时的地址、端口及该角色的属性按本款；5(e) 在有只传音频行时为 SHALL。注 1、3 区分行属性和分离话权的适用范围。",
+      "limitations": [
+        "独立话权行不是 GPMS。IPv6 地址占位不是 ::；单看一个音频段的地址和端口 9 不能判别其复用方式、另一段是否存在或实际组媒体目的地。不能把占位值当作发送语音或话权的地址。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.2.2.2(5a,5d,6f)：render、通用子信道的有效组播端点和 GPMS 所指媒体行"
+          ],
+          "printed_pages": [
+            465,
+            467
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.2.2.2(5b,5c,5e) 及注 1、3：两类音频行、占位地址和端口、分离话权条件"
+          ],
+          "printed_pages": [
+            465,
+            466
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.2.2.2 注 2 及 14.3.2 开头、1(f)–(h)：Map 中的媒体参数、实际接收子信道和监听条件"
+          ],
+          "printed_pages": [
+            466,
+            470,
+            471
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "related": [
     "r16-bearers-mbms-bearer-announcement",
     "r16-bearers-mbms-suspension-reporting",
-    "r16-bearers-mcptt-mbms-status-message-rejection"
+    "r16-bearers-mcptt-mbms-status-message-rejection",
+    "r16-bearers-mcptt-mbms-map-unmap-timers"
   ],
   "limitations": [
     "区分同存储对象的关联与两个 SDP 文本看起来相同。只记录条款的存续判据，不规定本地数据结构或其他服务的动作。"
