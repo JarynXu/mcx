@@ -593,6 +593,128 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "mcptt-location-report-on-mbms-listening-address",
+      "title": "位置随 MBMS 监听上报发出时，哪份旧消息决定地址？",
+      "conditions": [
+        "终端已进入位置报告程序，又因监听状态实际需要另发 MBMS 监听 SIP MESSAGE；对独立发送作比较时没有其他待发 SIP 请求。"
+      ],
+      "conclusion": "随包时在已需发送的 MBMS MESSAGE 中加入位置 Report，保留该请求按承载通告 P-Asserted-Identity 所取的 MBMS PSI 作为 Request-URI；独立位置 MESSAGE 则用实收位置配置 P-Asserted-Identity 的 SIP URI。含 MBMS usage、mcptt-info 和位置体时，外层 multipart/mixed，各段自己的 Content-Type。",
+      "normative_strength": "进入 §13.3.4.2 对应分支时须按其规则发送；MBMS 原请求与多正文规则仍分别适用。",
+      "limitations": [
+        "不是每次监听状态变化都要加位置；不从两种取址来源推断 URI 必须不同。§4.2 假定同一 PF 的 MBMS PSI 与服务该用户的 PF PSI 配为同一 URI。",
+        "应用段的 MIME 排列不规定接收端业务处理顺序；不补缺少位置配置时的替代地址。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.2 item 1(b–c) and note: configured MBMS and serving participating-function PSIs"
+          ],
+          "printed_pages": [
+            33
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.5: several MIME bodies, outer multipart/mixed, per-body Content-Type and MCPTT body order"
+          ],
+          "printed_pages": [
+            137,
+            138
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "13.3.4.1–2: location reporting trigger, piggyback on already needed SIP request, and standalone addressing"
+          ],
+          "printed_pages": [
+            463,
+            464
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.3.3.2 step 1(a,e–h): MBMS listening MESSAGE Request-URI and MIME bodies"
+          ],
+          "printed_pages": [
+            473
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "mcptt-location-report-on-mbms-listening-evidence",
+      "title": "同一条 MBMS 监听 MESSAGE 带位置体时，200 或 403 不能替代位置结果",
+      "conditions": [
+        "PF 实收的同一在网 MCPTT SIP MESSAGE 有 MBMS 监听正文及用户 mcptt-info，又携带位置 Report；分别按实际命中的接收和异常条件判断。"
+      ],
+      "conclusion": "MBMS 侧按 §14.2.3 的 P-Asserted-Identity 与正文用户 MCPTT ID 绑定处理；位置侧按 §13.2.4 的 Report 实收及实际收到的 MCPTT ID 核准、按需使用。整条 200 加监听状态更新，或确认为 MBMS 异常条件的 403，都不证明位置侧收到、核准、使用、丢弃或回滚的结果。",
+      "normative_strength": "位置核准与 MBMS 检查各按条款条件；是否实际运行这些动作须另查同一笔请求的 PF 业务记录。",
+      "limitations": [
+        "§6.3.1.3 写 Location 根、§13.2.4 和 F.3.2 用 location-info；接收处未明写 multipart 外层和段内类型怎样用于分流。不规定等价根、确定的多正文分流或兼容处理、跨正文的先后或一起成功／失败。",
+        "§13.2.4 未把 MBMS 正文某字段指定为收到的 MCPTT ID 的固定来源。该收报条件不等于 §13.2.5 的 Request／Configuration 删除条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.5: several MIME bodies, outer multipart/mixed, per-body Content-Type and MCPTT body order"
+          ],
+          "printed_pages": [
+            137,
+            138
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.1.3: identification of MBMS listening and location-reporting SIP MESSAGE, including the printed Location root wording"
+          ],
+          "printed_pages": [
+            78
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "13.2.4: inbound Report recognition and authorisation based on received MCPTT ID; location use"
+          ],
+          "printed_pages": [
+            461
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.2.3–4: MBMS listening body, served ID, asserted user binding, media interaction, and independent 403 conditions"
+          ],
+          "printed_pages": [
+            468,
+            469,
+            470
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.3.2: location-info XML root for Report"
+          ],
+          "printed_pages": [
+            559
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
     }
   ],
   "related": [
@@ -602,7 +724,8 @@
     "r16-mcptt-standalone-group-alert-client",
     "r16-mcptt-area-alert-notification",
     "r16-groups-group-geographic-area-notification",
-    "r16-calls-prearranged-server-admission-routing"
+    "r16-calls-prearranged-server-admission-routing",
+    "r16-bearers-mcptt-mbms-status-message-rejection"
   ],
   "limitations": [
     "不描述通用 Stage 2 LMS/LMC 订阅或其他 Release，也不论证 LMS 的 SIP PSI、SIP SUBSCRIBE、每次 IMS 注册后的配置或完整地理区域处理。",

@@ -4762,7 +4762,7 @@
     },
     {
       "id": "r16-location-mcptt-participating-location-signaling",
-      "question": "参与 MCPTT 功能怎样用 SIP 配置或请求位置？终端什么时候等 minimumReportInterval，报告送到哪里、能证明什么？第二份位置配置什么时候追加，什么时候替换？普通和紧急的位置触发规则及 ReportType 怎样核对？ 有小区而没有坐标，或经纬度只见密文，分别能说明什么？ 换小区算不算进围栏？怎样核对进入字段和区域形状？",
+      "question": "参与 MCPTT 功能怎样用 SIP 配置或请求位置？终端什么时候等 minimumReportInterval，报告送到哪里、能证明什么？第二份位置配置什么时候追加，什么时候替换？普通和紧急的位置触发规则及 ReportType 怎样核对？ 有小区而没有坐标，或经纬度只见密文，分别能说明什么？ 换小区算不算进围栏？怎样核对进入字段和区域形状？ 同一 SIP MESSAGE 带 MBMS 监听状态和位置 Report：Request-URI 从哪来，200 或 403 能证明位置侧什么？",
       "start": "topics/location/mcptt-participating-location-signaling.md",
       "next_if": [
         {
@@ -4788,6 +4788,10 @@
         {
           "condition": "若用户获准上报，且 PF 判定终端进出组地理区域，查 PF 向终端发送的组地理区域通知。",
           "read": "topics/groups/group-geographic-area-notification.md"
+        },
+        {
+          "condition": "若同一请求还报 MBMS 监听状态，查该正文的身份绑定和 403 条件；该结果不替代位置处理。",
+          "read": "topics/bearers/mcptt-mbms-status-message-rejection.md"
         }
       ],
       "boundary": "此页是 Release 16 的 PF 与 MCPTT 终端之间的 Stage 3 信令。配置、显式请求、报告实收和 PF 核准分别查证；不由 PF 的 PSI 推定 LMS 接口。"
@@ -5766,7 +5770,7 @@
     },
     {
       "id": "r16-bearers-mcptt-mbms-status-message-rejection",
-      "question": "MCPTT 组播 SIP MESSAGE：哪些事件要报监听？怎么区分会话和通用子信道、即将暂停和撤回？PF 在何种条件下回 403？",
+      "question": "MCPTT 组播 SIP MESSAGE：哪些事件要报监听？怎么区分会话和通用子信道、即将暂停和撤回？PF 在何种条件下回 403？ 同一请求还带位置 Report，能否用监听结果判断位置也已处理？",
       "start": "topics/bearers/mcptt-mbms-status-message-rejection.md",
       "next_if": [
         {
@@ -5780,6 +5784,10 @@
         {
           "condition": "方向、身份均正常；需要查既有通话接入转移和报告／媒体连续性。",
           "read": "topics/bearers/anchored-session-transfer.md"
+        },
+        {
+          "condition": "若这份监听 MESSAGE 同时携带位置 Report，核对两种取址来源、位置授权与多正文证据边界。",
+          "read": "topics/location/mcptt-participating-location-signaling.md"
         }
       ],
       "boundary": "先判角色、XML 信息及绑定；403 不唯一，服务范围和同一对用户绑定不同。 暂停报告说明 RAN 的决定，不证明承载真的停下或恢复；程序与本版 XSD 对多目标表示的差异保留。 监听状态和实际媒体转发分开判断；注释与 XSD 对同正文混合监听状态的支持有差异。"

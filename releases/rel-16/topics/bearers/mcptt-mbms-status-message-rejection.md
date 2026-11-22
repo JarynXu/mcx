@@ -70,3 +70,5 @@
 排查时把三项分开记录：**这段 MESSAGE 寻址的 PF**（看 `Request-URI`，再核实际收件记录）、**谁在上报**（PF 收到的 `P-Asserted-Identity`）、**上报指向谁**（`mcptt-request-uri`）。§4.2 的配置假定中，MBMS PSI 与服务该用户的 PF PSI 是同一 URI；这不是头部用户身份和正文身份可以互换的理由。查完路由与身份也不能拿 SIP 响应代替终端实际监听或承载切换的证据。[§4.2，印 33](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=34)；[§6.3.1.3，印 78](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=79)；[§14.2.3，印 468–469](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=469)。
 
 已有正常监听报告，需复核中继切换前后的承载／报告链路，查[锚定会话的接入转移](anchored-session-transfer.md)。若收件方确是终端，查[如何处理通告和撤告](mcptt-mbms-announcement-sdp.md)。若要确认无线暂停、恢复及客户端该不该上报，查[MBMS 暂停上报](mbms-suspension-reporting.md)。
+
+若这份监听 MESSAGE 还携带位置 `Report`，查[同一请求里的两项上报怎样分别取证](../location/mcptt-participating-location-signaling.md#location-on-mbms-listening)。本页的 MBMS 绑定、状态更新或 403 不代替位置报告的处理结果。

@@ -88,6 +88,17 @@ PF 需要终端位置时，§13.1 把配置放在**MCPTT 业务授权成功**之
 
 PF 实际收到 Content-Type 匹配、位置体的 `<location-info>` 内有 `<Report>` 的 SIP 请求，须按**收到的 MCPTT ID** 核准这份报告。用户获准上报后，PF 按需使用位置信息，并检查以下两种情况：若 PF 判定终端进出紧急告警区，按[紧急告警区通知](../calls/area-alert-notification.md)处理；若 PF 判定终端进出组地理区域，按[组地理区域通知](../groups/group-geographic-area-notification.md)处理。这是 PF 收报后的步骤，与终端先前匹配围栏触发条件不同。这里不指定 MCPTT ID 必在某一字段，也没有给出专用的 SIP 成功或拒绝码。终端发出报告、见到任意 SIP 2xx，或能用回填值配对，都不能单独证明 PF 已核准并使用位置。看到 `Report` 元素也不能直接断定含坐标。[§13.2.4，印刷页 461](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=462)。
 
+<a id="location-on-mbms-listening"></a>
+## MBMS 监听和位置同在一份 MESSAGE：200 或 403 能证明哪一项？
+
+终端**已经需要上报位置**，又正好要发送一份 MBMS 监听状态 SIP MESSAGE，须把位置 `Report` 加进这份请求。§13.3.4.2 明列监听报告作为例子；监听变化本身并不要求每次都附位置。这里比较的是同一条 SIP 请求里的三份应用正文：`application/vnd.3gpp.mcptt-mbms-usage-info+xml`，另有 `application/vnd.3gpp.mcptt-info+xml` 和 `application/vnd.3gpp.mcptt-location-info+xml`。按 §6.5，外层 `Content-Type` 是带分隔参数的 `multipart/mixed`，各段标自己的类型；这些应用段之间的排列不规定 PF 的业务处理顺序。[TS 24.379 V16.14.0，§13.3.4.1–2，印刷页 463–464](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=464)；[§14.3.3.2，页 473](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=474)；[§6.5，页 137–138](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=138)。
+
+**地址看承载这份报告的请求。** 随 MBMS 监听 MESSAGE 发时，Request-URI 仍取此前**承载通告**的 `P-Asserted-Identity` 所给的 MBMS PSI。没有其他 SIP 请求要发，才另建位置 MESSAGE，Request-URI 取实收**位置配置** MESSAGE 的 `P-Asserted-Identity` 中的 SIP URI，不取索要位置的 `Request` 来件。两种做法取址的消息不同，不表示 URI 值必须不同；§4.2 假定参与功能的 MBMS PSI 和服务该用户的 PF PSI 配为同一 URI。[§14.3.3.2 第 1(a) 项，印刷页 473](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=474)；[§13.3.4.2，页 463–464](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=464)；[§4.2，页 33](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=34)。
+
+**抓到整包、看到监听状态已更新，仍要另查位置侧。** MBMS 监听按 §14.2.3 核对 PF 实收的 `P-Asserted-Identity` 与 `mcptt-info` 的用户 ID 是否绑定；位置侧按 §13.2.4 核对 PF 是否实际识别了 `Report`、用了哪个收到的 MCPTT ID 核准，以及是否使用了报告。该位置条款没有指定 ID 必须来自 MBMS 正文的某个字段。用同一请求对应的 PF 收件及业务处理记录分别验证。即使 403 的起因已证实为 [MBMS 的异常条件](../bearers/mcptt-mbms-status-message-rejection.md)，该 403 也不能说明位置体被处理、丢弃或回滚；看到 200 和监听更新同样不能证明位置报告已核准或使用。条款未写三个正文必定一起成功或失败，也未规定不同业务检查或落地动作的先后。[§14.2.3–4，印刷页 468–470](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=469)；[§13.2.4，页 461](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=462)。
+
+本版对位置上报的两处接收描述不同：§6.3.1.3 识别位置上报 MESSAGE 时写 `Content-Type` 为位置媒体类型，把根称为 `Location`；§13.2.4 写同一类型，把根写作 `location-info`，与 F.3.2 的 XSD 一致。这两条没有说明在一条 `multipart/mixed` 来件中，如何把外层与段内 `Content-Type` 用于位置分支。不能把两种根名字视为别名，或由这一处文字推出兼容策略；也不能用接收处的写法否定发端明确列出的随包上报。若缺少 PF 实际走到位置分支的记录，位置结果仍待确认。[§6.3.1.3，印刷页 78](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=79)；[§6.5，页 137–138](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=138)；[§13.2.4，页 461](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=462)；[F.3.2，页 559](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=560)。
+
 <a id="report-location-content"></a>
 ## 收到位置报告却读不到经纬度，包里到底有什么？
 
