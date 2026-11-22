@@ -3,18 +3,17 @@
   "release": 16,
   "standard_stage": 3,
   "state": "draft",
-  "title": "重组组呼收到 403，CF 何时按伙伴名单发邀请？",
+  "title": "伙伴组 INVITE：预安排组的 403 名单与组成聊天组的 403、488 和 200",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
   "condition_rule": "每条声明适用主题的全部 common_conditions，并叠加该条 conditions。关联主题不是必经流程。",
-  "common_conditions": [
-    "固定 TS 24.379 V16.14.0 的预安排组呼，区分 CF 发往伙伴组 NCF 的组 INVITE 接收分支与 NCF 无正在进行组呼时的响应生成分支。"
-  ],
+  "common_conditions": [],
   "claims": [
     {
       "id": "cf-requires-policy-and-full-403-evidence-before-user-invites",
       "title": "CF 按伙伴名单直接邀请须有本地策略、403、业务文本 128、名单头和资源列表正文",
       "conditions": [
+        "固定 TS 24.379 V16.14.0 的预安排组呼，区分 CF 发往伙伴组 NCF 的组 INVITE 接收分支与 NCF 无正在进行组呼时的响应生成分支。",
         "CF 实际收到对它发往伙伴组 NCF 的组 INVITE 的 403，且本地策略允许该分支。"
       ],
       "conclusion": "同一 403 须同时有 Warning 中的 MCPTT 业务编号 128、P-Refused-URI-List 头以及 application/resource-lists+xml 正文。正文提供要邀请的伙伴用户 MCPTT ID；通过才按本条的名单发邀请。",
@@ -53,6 +52,7 @@
       "id": "cf-cap-and-policy-limit-partner-user-selection",
       "title": "CF 检查组文档人数上限，超限从名单选人，不把名单当作入会记录",
       "conditions": [
+        "固定 TS 24.379 V16.14.0 的预安排组呼，区分 CF 发往伙伴组 NCF 的组 INVITE 接收分支与 NCF 无正在进行组呼时的响应生成分支。",
         "已通过这条 403 的接收条件，CF 使用响应的资源列表邀请本次组呼的伙伴成员。"
       ],
       "conclusion": "检查组成员数是否超过组文档的 on-network-max-participant-count。超限时，只从响应正文中邀请上限所列人数；谁被选中由运营方策略决定。按该节使用名单中的 MCPTT ID 发邀请。",
@@ -81,6 +81,7 @@
       "id": "ncf-list-success-is-not-the-cf-receive-guard",
       "title": "NCF 查成员成功的名单与失败的 128 分开，不能倒推 CF 条件",
       "conditions": [
+        "固定 TS 24.379 V16.14.0 的预安排组呼，区分 CF 发往伙伴组 NCF 的组 INVITE 接收分支与 NCF 无正在进行组呼时的响应生成分支。",
         "收到发给本组 NCF 的 INVITE，本组无正在进行的预安排组呼，且流程到达关系或成员查询分支。"
       ],
       "conclusion": "无互助关系时返回 403 与 128 并停止。受信任互助且支持所引用查询程序时，生成 403 并查组成员，成功则用已归属成员填名单头，失败则写 128；发回 CF 后不再执行剩余步骤。NCF 成功项未明写 128；CF 直接邀请要求 128、名单头和正文齐备。",
@@ -115,6 +116,153 @@
           ],
           "printed_pages": [
             242
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "idle-chat-ncf-incoming-offer-and-service-tags",
+      "title": "本组聊天未在进行时，实际入站 NCF 邀请分别按 offer 和业务标签检查",
+      "conditions": [
+        "组成组没有正在进行的聊天组呼；NCF 实际收到给本组非控制功能的初始 INVITE：终接侧直接 PSI 路由，SIP Request-URI 为服务该组的 PSI，请求 Contact 含 isfocus。",
+        "按 §10.1.2.5.1.2 的次序执行至相应检查。"
+      ],
+      "conclusion": "因资源不足无法处理或有拥塞风险时可回 500。入站 offer 的媒体参数不可接受，或没有提供 MCPTT 语音编码，回 488。Accept-Contact 缺 g.3gpp.mcptt，或缺值为 urn:urn-7:3gpp-service.ims.icsi.mcptt 的 g.3gpp.icsi-ref，回 403 并停止。",
+      "normative_strength": "500 为可选；媒体或标签检查失败时须按本项拒绝。",
+      "limitations": [
+        "第 1 项以 CF 为可选 Retry-After 的主体，不能改写为 NCF 必须加头。请求 Contact 的 isfocus 用于分类，与 Accept-Contact 的两个业务标签不是同一检查。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.1.1, initial INVITE classification for NCF"
+          ],
+          "printed_pages": [
+            78
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.5.1.1 and 10.1.2.5.1.2, NOTE 1 and steps 1–3"
+          ],
+          "printed_pages": [
+            297
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "idle-chat-ncf-partner-mutual-aid-403",
+      "title": "NCF 用入站 P-Asserted-Identity 识别主系统；无互助关系时回 403/128",
+      "conditions": [
+        "组成组没有正在进行的聊天组呼；NCF 实际收到给本组非控制功能的初始 INVITE：终接侧直接 PSI 路由，SIP Request-URI 为服务该组的 PSI，请求 Contact 含 isfocus。",
+        "程序到达伙伴系统与主系统的互助关系检查。"
+      ],
+      "conclusion": "伙伴系统与入站 P-Asserted-Identity 所识别的主系统没有互助关系时，NCF 必须回 403，Warning 文本写 128 isfocus already assigned，并停止后续步骤。",
+      "normative_strength": "第 4 项规定本笔组邀请的拒绝、Warning 文本和停止条件。",
+      "limitations": [
+        "128 是 Warning 文本内的业务编号；这条聊天组拒绝不是成员查询结果、逐人拒接或 CF 按预安排组名单发邀请的依据。第 3 项的标签缺失也回 403，但该项未要求使用这段 Warning 文本。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.5.1.2 steps 3–4"
+          ],
+          "printed_pages": [
+            297
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "idle-chat-ncf-generates-before-media-sends-after",
+      "title": "NCF 生成服务器间 200，回答收到的 offer，等媒体面处理完成才发给 CF",
+      "conditions": [
+        "组成组没有正在进行的聊天组呼；NCF 实际收到给本组非控制功能的初始 INVITE：终接侧直接 PSI 路由，SIP Request-URI 为服务该组的 PSI，请求 Contact 含 isfocus。",
+        "入站组邀请通过前置检查，进入 §10.1.2.5.1.2 第 5–9 项。"
+      ],
+      "conclusion": "检查请求是否含 Resource-Priority，可给予优先处理。NCF 生成 200，再附本笔 offer 的 SDP answer；已接受的媒体流使用 NCF 的 IP 和端口，若 offer 中的媒体控制通道也被接受，则用 NCF 的 IP 和端口并带规定的 fmtp。按 TS 24.380 §6.3.5 与媒体面交互，待相应处理完成才向 CF 发出 200。",
+      "normative_strength": "须查头、生成应答、完成相应媒体处理后发送；给予优先处理可选。",
+      "limitations": [
+        "本条不引入既有聊天组角色切换、缓存讲话者或等 ACK 再完成切换的步骤。已发送、CF 实收、用户收音是三个不同的观察结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.5.1.2 steps 5–9 and NOTE 2"
+          ],
+          "printed_pages": [
+            297,
+            298
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.4.2.1 SDP answer generation"
+          ],
+          "printed_pages": [
+            128
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "idle-chat-ncf-interserver-response-identity",
+      "title": "成功响应里的 NCF PSI、组成组 ID 与另两笔事务的会话身份分开",
+      "conditions": [
+        "组成组没有正在进行的聊天组呼；NCF 实际收到给本组非控制功能的初始 INVITE：终接侧直接 PSI 路由，SIP Request-URI 为服务该组的 PSI，请求 Contact 含 isfocus。",
+        "NCF 为实际入站 INVITE 构造成功响应。"
+      ],
+      "conclusion": "本笔 200 的 P-Asserted-Identity 是 NCF 的 PSI，Contact 列 MCPTT 和对应 MCPTT ICSI 两个业务标签；mcptt-info 的 mcptt-called-party-id 是组成组 ID，floor-state 写话权状态。§6.3.4.2.2.2 未指定这份 Contact URI 是 NCF 客户端腿的本地会话身份。反向会议订阅用入站 INVITE Contact 中的临时会话身份；NCF 在非控制连接模式下接受组成组客户端加入时，另一笔客户端 200 的 Contact 才适用本地会话身份规则。",
+      "normative_strength": "按非控制侧响应生成条款写字段；两类会话身份分别受订阅和客户端加入条款约束。",
+      "limitations": [
+        "列出必需的 Contact 业务标签不表示其他标签一律禁止。组级 200 与 floor-state 不是某个终端已经入会、获话权或收到语音的证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.5.1.2 steps 6–9; 6.3.4.2.2.2 steps 4, 5 and 8"
+          ],
+          "printed_pages": [
+            129,
+            297,
+            298
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.5.1.5 item 1; 10.1.3.5.3 item 2 and NOTE"
+          ],
+          "printed_pages": [
+            299,
+            306
           ]
         }
       ],
