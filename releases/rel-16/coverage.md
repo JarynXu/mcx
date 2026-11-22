@@ -3591,9 +3591,9 @@ RTP 和话权使用各自守卫；对已进入活动 MBMS 分支的 Idle/Taken �
 
 SIP 会话、聊天组和业务类型分开；O-PF 发 REFER 200 前先确认 CF。若 INVITE 已发，配对 CF 的响应再判本次隐式归属；O-PF 本地拒绝原请求是独立的通用取消入口。
 
-不能拿 REFER 200 或本地拒绝码当归属处理记录；组归属与媒体交互分别验。 终接 T-PF 已收到聊天组初始 INVITE 时，先区分 Contact 缺 isfocus（403/104）与两段 SDP 不匹配；只有未关联业务会话且语音及话权两个媒体段均匹配才可按策略复用。复用发送终端对话内 re-INVITE，以对应 200 作为回复上游的条件。 T-PF 实收在网聊天组对话内 re-INVITE 时查来向 Resource-Priority，出向复制仅限来向带该头；按终端实际出向对话选按需或预建立。各自等对应终端 re-INVITE 的 200，按本支 SDP answer 规则回复上游。
+不能拿 REFER 200 或本地拒绝码当归属处理记录；组归属与媒体交互分别验。 终接 T-PF 已收到聊天组初始 INVITE 时，先区分 Contact 缺 isfocus（403/104）与两段 SDP 不匹配；只有未关联业务会话且语音及话权两个媒体段均匹配才可按策略复用。复用发送终端对话内 re-INVITE，以对应 200 作为回复上游的条件。 T-PF 实收在网聊天组对话内 re-INVITE 时查来向 Resource-Priority，出向复制仅限来向带该头；按终端实际出向对话选按需或预建立。各自等对应终端 re-INVITE 的 200，按本支 SDP answer 规则回复上游。 在网聊天组 O-PF 实收所服务终端的 re-INVITE 并发出对应 CF 腿后，匹配 CF 403 要另生成终端 403、带实际收到的 Warning 和适用 MCPTT 正文；匹配 2xx 生成终端 200，按实际终端腿区分按需/预建立 SDP，Warning 与适用正文取实际收到的 200。
 
-尚未建立：不确立接入方 MIME 兼容、CF 地址发现、终接模式或实际媒体。 不由终接规则反推普通聊天的 CF 发邀，也不把终端同意复用、O-PF REFER 结果或媒体控制报文当成终接 SIP 200 的证据。 不把聊天组初始 INVITE 的 isfocus 和预建立可用性检查套到对话内 re-INVITE，也不以其他对话的 200、REFER 或媒体 Connect 代替这条终端应答；不由省略媒体动作推论禁止交互。
+尚未建立：不确立接入方 MIME 兼容、CF 地址发现、终接模式或实际媒体。 不由终接规则反推普通聊天的 CF 发邀，也不把终端同意复用、O-PF REFER 结果或媒体控制报文当成终接 SIP 200 的证据。 不把聊天组初始 INVITE 的 isfocus 和预建立可用性检查套到对话内 re-INVITE，也不以其他对话的 200、REFER 或媒体 Connect 代替这条终端应答；不由省略媒体动作推论禁止交互。 不把初始 INVITE 对 4xx–6xx 的处理或 T-PF 的匹配终端 200 套到 O-PF 这笔 re-INVITE；不凭单个状态码补正文、Warning、业务状态或媒体结果。
 
 [读取主题](topics/calls/chat-preestablished-refer-outcome.md)
 

@@ -6,7 +6,7 @@
   "title": "用预建立会话加入聊天组：REFER 的 200 算入会成功吗？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
-  "condition_rule": "每条 claim 继承所有 common_conditions，再叠加自身 conditions。发起侧的客户端发送、O-PF 前置准入和 CF 应答正负分支互不替代。原 chat-terminating- 三条仍限实际收到发给 T-PF 的聊天组初始 INVITE。新增 chat-tpf-mid-dialog- 三条按在网聊天组的 T-PF 实际收到的对话内 re-INVITE、出向终端对话和实际匹配应答分别适用。",
+  "condition_rule": "每条 claim 继承所有 common_conditions，再叠加自身 conditions。发起侧的客户端发送、O-PF 前置准入和 CF 应答正负分支互不替代。原 chat-terminating- 三条仍限实际收到发给 T-PF 的聊天组初始 INVITE。新增 chat-tpf-mid-dialog- 三条按在网聊天组的 T-PF 实际收到的对话内 re-INVITE、出向终端对话和实际匹配应答分别适用。 新增 chat-opf-mid-dialog- 三条限在网聊天组 O-PF 实际收到所服务终端的对话内 re-INVITE，分本地检查与对应 CF 403 或 2xx；不套初始主叫、CF 内部判定或 T-PF 的端向答复。",
   "common_conditions": [
     "Release 16、Stage 3，依据 TS 24.379 V16.14.0。"
   ],
@@ -476,6 +476,141 @@
           ],
           "printed_pages": [
             95
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "chat-opf-mid-dialog-local-gate-and-cf-send",
+      "title": "聊天组 O-PF 先处理所服务终端的 re-INVITE，再生成发往 CF 的请求",
+      "conditions": [
+        "在网聊天组已建立；O-PF 实际收到所服务客户端发出的对话内 re-INVITE；不是初始 INVITE、主叫 REFER 或 T-PF 收网络侧更新。",
+        "请求走到收包步骤第 2 项，没有被此前分支拒绝。"
+      ],
+      "conclusion": "O-PF 查实际收到的 SDP offer：媒体参数可接受且提供 MCPTT 语音 codec 才继续，任一不满足则回 488。继续后按 §6.3.2.1.9 另生成发往 CF 的 re-INVITE，写入主叫 MCPTT ID。按需时以实际来向 offer 生成出向 offer，预建立时以先前协商的 SDP 为依据。来向有 Resource-Priority 才按实际值复制，CF 检查其有效性；第 8 项发送。",
+      "normative_strength": "前置条件成立时的检查、拒绝或继续生成/发出是 SHALL；Resource-Priority 复制仅在来向已带该头时。",
+      "limitations": [
+        "资源或拥塞项写了 MAY 500 / MAY Retry-After，却把被拒绝的请求名称写成终接初始 INVITE；保留与本条入口不一致，不据此给本次 500 补某条腿。",
+        "预建立语音、话权控制媒体与既有协商相同在注 2 是预期，不是这里重跑 T-PF 初始复用准入。发往 CF 的 SDP 和原终端 offer 不必逐字相同。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.2 第1–8项"
+          ],
+          "printed_pages": [
+            279,
+            280
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.9"
+          ],
+          "printed_pages": [
+            92
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.1.1 / 6.3.2.1.1.2"
+          ],
+          "printed_pages": [
+            83,
+            84
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "chat-opf-mid-dialog-matched-cf-403",
+      "title": "CF 的匹配 403：O-PF 另生成客户端 403，带实际收到的正文和 Warning",
+      "conditions": [
+        "O-PF 已从所服务客户端实收这次在网既有聊天组 re-INVITE，并发出对应 CF 腿；实际收到的是对这笔 CF 腿 re-INVITE 的 403。"
+      ],
+      "conclusion": "O-PF 另生成客户端侧 403。来向 CF 403 含 application/vnd.3gpp.mcptt-info+xml 才复制那个正文；带上实际收到的 Warning 字段，再向所服务客户端发送。",
+      "normative_strength": "生成和发送为 SHALL；该 MCPTT 正文仅在实际收到时复制，Warning 按实际收到的字段。",
+      "limitations": [
+        "不是逐字转发整份 403，不凭 SIP 状态码补缺失正文、缺失 Warning 或判组状态。此负分支具体写 403，不能推广给任一 4xx–6xx，也不套用初始 INVITE 的广义失败入口。",
+        "不从 CF 已发或 O-PF 已发推定终端已收到。没有匹配的两笔请求和应答，不用任一 403 推断该响应属于这里。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.2 收到 CF 腿 403 的第1–4项"
+          ],
+          "printed_pages": [
+            280
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.1 初始 INVITE 失败应答对照"
+          ],
+          "printed_pages": [
+            279
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "chat-opf-mid-dialog-matched-cf-success",
+      "title": "CF 腿匹配 2xx：O-PF 生成主叫 200，按实际终端回复腿取 SDP",
+      "conditions": [
+        "O-PF 已从所服务客户端实收这次在网既有聊天组 re-INVITE 并另发对应 CF 腿，实际收到对此 CF 腿的匹配 2xx。"
+      ],
+      "conclusion": "O-PF 按 §6.3.2.1.5.2 生成客户端侧 200 并发送。若回复走按需会话，SDP answer 按 §6.3.2.1.2.1 处理收到的 answer；若回复走预建立会话，基于此前协商的 SDP。Warning 按本条字面取实际收到的 200；该终结响应构造规程也仅在收到的 200 含相应 MCPTT MIME 时复制那个正文。",
+      "normative_strength": "匹配 2xx 后生成和发送客户端 200、按本支处理 SDP、带实际 200 的 Warning 和适用正文为 SHALL。",
+      "limitations": [
+        "本段开头回指第 7 项，但第 7 项写 Resource-Priority，第 8 项才是实际发送。应答与实际发出的 CF 腿配对，不用错误编号认领另一笔。",
+        "不是把任意 2xx 当作确实观察到 200 的 Warning 或正文，不用 T-PF 的匹配终端 200/SDP 构造来证明这条 O-PF 事务。不推定业务状态变更、媒体或客户端收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.2 匹配 CF 腿 2xx 后的第1–5项"
+          ],
+          "printed_pages": [
+            280
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.2.1"
+          ],
+          "printed_pages": [
+            84
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.5.2"
+          ],
+          "printed_pages": [
+            87
           ]
         }
       ],
