@@ -1,0 +1,326 @@
+{
+  "topic_id": "r16-bearers-iops-local-mcptt-service",
+  "release": 16,
+  "standard_stage": 1,
+  "state": "draft",
+  "title": "LTE 站点回传中断：IOPS 下的本地 MCPTT 要保留哪些能力？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-22.346-v16.0.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "Release 16；考察公共安全终端仍在孤立 E-UTRAN 覆盖内的场景。不同业务能力和转换事件不互相替代，按每条的独立条件判断。"
+  ],
+  "claims": [
+    {
+      "id": "mcx-capability-in-iops",
+      "title": "IOPS 下的 MCX 业务能力与可能缩减",
+      "conditions": [
+        "MCX 业务运行在 3GPP 网络的 IOPS 模式中。"
+      ],
+      "conclusion": "MCX 业务须具有在该模式提供业务的能力。附注说明业务可能减少，例如缺少回传。",
+      "normative_strength": "R-10-001 为 SHALL；业务可能减少是 NOTE，不是必做的降级方案。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "10 R-10-001",
+            "10 NOTE"
+          ],
+          "printed_pages": [
+            61
+          ]
+        }
+      ],
+      "source_detail": "R-10-001 和紧随其后的附注；不能用它替代 TS 22.346 的 MCPTT 限定。",
+      "limitations": [
+        "不保证每种正常业务继续，不能由此认定语音、视频或 SDS 的具体降级矩阵。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "local-conditions-and-group-provisioning",
+      "title": "同一孤立网的 MCPTT 适用条件与组成员预配置",
+      "conditions": [
+        "终端在同一孤立 E-UTRAN 内，且涉及的 (N)eNB 在非孤立时就支持 MCPTT。"
+      ],
+      "conclusion": "同一孤立 E-UTRAN 内的最低 MCPTT 要求包含支持预配置组成员资格的机制，也包含 MCPTT 紧急组。孤立网可含一个或多个 (N)eNB。",
+      "normative_strength": "预配置支持是 SHALL；一个或多个站点是 MAY。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.2.3",
+            "5.3.2"
+          ],
+          "printed_pages": [
+            9
+          ]
+        }
+      ],
+      "source_detail": "§5.2.3 开头和预配置段；§5.3.2 的一个或多个基站。",
+      "limitations": [
+        "同一孤立网不一定是同一小区或同一基站；近邻不证明两站已联合。处于孤立 LTE 覆盖不同于离网直连。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "emergency-preconfigured-affiliated-reach",
+      "title": "本地紧急组呼触达按预配置的已归属接收方",
+      "conditions": [
+        "终端在同一孤立 E-UTRAN 内，且涉及的 (N)eNB 在非孤立时就支持 MCPTT。",
+        "发起者是公共安全用户；对列举的接收方按预配置为已归属组成员的条件判断。"
+      ],
+      "conclusion": "公共安全用户须能发起 MCPTT 紧急组呼，并能按配置到达适用的接收范围：直连 (N)eNB 或经 UE 的调度员、该孤立网内的组员，和／或该孤立网覆盖内所有 UE 的选项。",
+      "normative_strength": "在所述条件下须具备 SHALL 能力；不要求每个呼叫同时覆盖所有列举类别。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.2.3"
+          ],
+          "printed_pages": [
+            9
+          ]
+        }
+      ],
+      "source_detail": "印 9 的紧急组呼段和接收方清单。",
+      "limitations": [
+        "覆盖不是组归属；不把所有已覆盖 UE 无条件视作接收方，不推定网外调度员或另一个孤立网可达。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "minimum-local-group-voice",
+      "title": "每组至少一项 MCPTT 语音组通信",
+      "conditions": [
+        "终端在同一孤立 E-UTRAN 内，且涉及的 (N)eNB 在非孤立时就支持 MCPTT。",
+        "孤立 E-UTRAN 正在运行；只按现有的可用无线资源判断。"
+      ],
+      "conclusion": "每组须能发起至少一项 MCPTT 语音组通信；组内获授权的成员都被允许加入，以可用无线资源为限。",
+      "normative_strength": "SHALL，受资源界限约束。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.2.3"
+          ],
+          "printed_pages": [
+            9
+          ]
+        }
+      ],
+      "source_detail": "印 9 的最低语音组通信段。",
+      "limitations": [
+        "允许加入不证明同时接通或实际收听；不是网络内并行组呼数量的统一指标。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "voice-preemption-capability",
+      "title": "具备本地语音组通信抢占视频或其他数据的能力",
+      "conditions": [
+        "终端在同一孤立 E-UTRAN 内，且涉及的 (N)eNB 在非孤立时就支持 MCPTT。",
+        "正在判断孤立运行下的 MCPTT 语音组通信能力。"
+      ],
+      "conclusion": "MCPTT 语音组通信须能够抢占视频通信或其他数据业务。",
+      "normative_strength": "抢占能力为 SHALL。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.2.3"
+          ],
+          "printed_pages": [
+            9
+          ]
+        }
+      ],
+      "source_detail": "印 9 的末段。",
+      "limitations": [
+        "不推定每通语音都自动抢占，也不把它当终端扬声器优先规则。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "backhaul-loss-detection-and-entry",
+      "title": "检测回传损失和启动孤立运行的能力",
+      "conditions": [
+        "处于运营中 eNB / NeNB 开始孤立运行的流程。"
+      ],
+      "conclusion": "支持孤立运行的 eNB 须能检测回传连接丢失，并能启动孤立运行；运营方控制下的 NeNB 须具备启动能力。(N)eNB 进入孤立运行时，覆盖内的公共安全 UE 须有业务支持。",
+      "normative_strength": "各项在各自适用条件下是 SHALL。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.3.2"
+          ],
+          "printed_pages": [
+            9
+          ]
+        }
+      ],
+      "source_detail": "印 9 的检测、NeNB 启动和覆盖内服务要求。",
+      "limitations": [
+        "能力不等于已切换、即时启动或所有常态业务持续。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "minimize-disruption-to-established-service",
+      "title": "运营方策略允许时尽量降低已建立业务的中断",
+      "conditions": [
+        "处于运营中 eNB / NeNB 开始孤立运行的流程。",
+        "已有业务是在进入孤立运行的 eNB 所服务的公共安全 UE 之间建立的；运营方策略允许。"
+      ],
+      "conclusion": "eNB 须具备尽量减小这些既有业务中断的能力。",
+      "normative_strength": "受策略条件限制的 SHALL 能力。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.3.2"
+          ],
+          "printed_pages": [
+            9
+          ]
+        }
+      ],
+      "source_detail": "印 9 的既有业务中断段第一句。",
+      "limitations": [
+        "不承诺继续、无缝切换、复用 Call-ID 或相同的业务可用性。不能把运营方条件移给下一条终止要求。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "terminate-if-no-path-supports-service",
+      "title": "本地与可用有限回传都无法支持时终止",
+      "conditions": [
+        "正在处理 eNB 转入孤立运行时已经在运行的业务。",
+        "这项业务既不能在孤立 E-UTRAN 本地支持，也不能由任何可用的有限回传支持。"
+      ],
+      "conclusion": "eNB 须终止这项业务。",
+      "normative_strength": "SHALL，测试的是两个支持途径都不成立。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.3.2"
+          ],
+          "printed_pages": [
+            9
+          ]
+        }
+      ],
+      "source_detail": "印 9 的既有业务中断段第二句。",
+      "limitations": [
+        "这条终止要求不受上一句的运营方策略许可限制；仅有有限回传信号不证明它能承载本业务；有支持途径也不保证继续。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "network-indication-to-ue",
+      "title": "孤立网向公共安全 UE 指示业务可用范围",
+      "conditions": [
+        "公共安全 UE 处于孤立 E-UTRAN 覆盖内。"
+      ],
+      "conclusion": "孤立 E-UTRAN 须指示有限带宽回传业务是否可用，或是否仅支持本地业务；须有能力持续提供该指示直至孤立运行结束。",
+      "normative_strength": "指示与持续提供能力为 SHALL。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.3.2"
+          ],
+          "printed_pages": [
+            10
+          ]
+        }
+      ],
+      "source_detail": "印 10 的网至终端指示段；不是 §5.3.1 的介绍。",
+      "limitations": [
+        "不指定消息、计时、发送频率；网络侧发送不能证明用户已经看到。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "ue-indication-to-user",
+      "title": "终端向人提示隔离状态与有限回传／仅本地",
+      "conditions": [
+        "公共安全 UE 正由孤立 E-UTRAN 服务。"
+      ],
+      "conclusion": "UE 须向用户指示正在孤立 E-UTRAN 内通信，并指示有限回传业务是否可用或只支持本地业务。",
+      "normative_strength": "SHALL；隔离状态与可用范围均须向用户指示。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.3.2"
+          ],
+          "printed_pages": [
+            10
+          ]
+        }
+      ],
+      "source_detail": "印 10 的 UE 至用户指示段。",
+      "limitations": [
+        "不规定图标、措辞或消息格式；不把模式提示当成每条会话已接通。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-offnetwork-group-client",
+    "r16-media-concurrent-services-ue-resources",
+    "r16-bearers-mbms-relay-media-continuity"
+  ],
+  "limitations": [
+    "只覆盖 Rel-16 Stage 1 的 IOPS 一般业务能力、普通回传丢失后启动与转入，以及同一孤立 E-UTRAN 内最低本地 MCPTT。不是 UE 离网直连，也不建立同一 Call-ID、无缝续接、完整业务可用、网络协议或现网合规。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
