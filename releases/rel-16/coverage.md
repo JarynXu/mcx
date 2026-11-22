@@ -3887,6 +3887,16 @@ GMS 更新与客户端答复可以任意先后或并行；客户端列表与 GMS
 
 [读取主题](topics/mcdata/lmr-group-standalone-sds.md)
 
+## MCData 数据负载保护和发送者认证（安全条款）
+
+Message Type 两位的含义，共享保护密钥和认证预置的区别，以及 ECCSI 验签后仍须做的发送者检查。
+
+Bit 7 表示加密和完整性保护，Bit 8 表示认证，分别判定。服务提供方要求保护私聊或组数据负载时，分别用 PCK 或 GMK，负载认证另可应用。ECCSI 验签通过后，发送者 URI 与 Signing UID 不对应仍判验证失败。
+
+尚未建立：不从标志认定实际验证成功；不衍生两类处理的顺序、某个 SIP 头或验签失败后的处置。
+
+[读取主题](topics/mcdata/payload-protection-and-authentication.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

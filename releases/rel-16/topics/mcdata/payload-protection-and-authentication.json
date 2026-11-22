@@ -1,0 +1,275 @@
+{
+  "topic_id": "r16-mcdata-payload-protection-and-authentication",
+  "release": 16,
+  "standard_stage": null,
+  "state": "draft",
+  "title": "MCData 数据负载：加密和完整性保护，怎样与发送者认证区分？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v16.13.0",
+  "condition_rule": "每条声明继承共同条件，再按该条的负载类型、通信范围和验证步骤判断。",
+  "common_conditions": [
+    "3GPP TS 33.180 V16.13.0，Release 16 安全规范；讨论 MCData 负载的保护和认证。"
+  ],
+  "claims": [
+    {
+      "id": "message-type-flags-are-independent",
+      "title": "Bit 7 表示加密和完整性保护；Bit 8 表示负载认证",
+      "conditions": [
+        "按 §8.5.1 确定或读取适用 MCData 负载的 Message Type。"
+      ],
+      "conclusion": "负载已加密且有完整性保护时，Bit 7 须为 1，否则为 0。负载已认证时，Bit 8 须为 1，否则为 0。两个标志分别判定。",
+      "normative_strength": "§8.5.1 对每一位的 1 与 0 都使用 shall。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "8.5.1, Message Type Bit 7 and Bit 8 and combined Data Payload"
+          ],
+          "printed_pages": [
+            91
+          ]
+        }
+      ],
+      "limitations": [
+        "一个标志置位不推出另一位；标志不是实际验证结果，不能据此推出所有类型许可的组合或畸形输入处置。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "combined-data-payload-applies-both-procedures",
+      "title": "合用的 Data Payload 置两位并应用两套过程",
+      "conditions": [
+        "SDS 或文件分发（FD）使用 §8.5.1 定义的 Authenticated and Protected Data Payload。"
+      ],
+      "conclusion": "Message Type 的 Bit 7 与 Bit 8 均须为 1；负载保护（加密与完整性保护）和负载认证两套过程都适用。",
+      "normative_strength": "位值依 §8.5.1 的 shall；本节说明合用负载应应用两类处理。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "8.5.1, Message Type Bit 7 and Bit 8 and combined Data Payload"
+          ],
+          "printed_pages": [
+            91
+          ]
+        }
+      ],
+      "limitations": [
+        "此条不建立两套过程的执行顺序、所有负载都支持合用，或接收方已完成验证。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "protected-payload-needs-shared-dppk",
+      "title": "加密和完整性保护依赖共享 DPPK 及对应的 DPPK-ID",
+      "conditions": [
+        "对 MCData 的 protected payload 应用加密和完整性保护。"
+      ],
+      "conclusion": "参与保护的 MC 客户端或服务器须有共享的 DPPK 和 DPPK-ID。DPPK 按所保护的负载取 CSK、SPK、MuSiK、GMK 或 PCK，DPPK-ID 取实际密钥对应的标识。",
+      "normative_strength": "§8.5.2.1 规定共享密钥前提；密钥种类和相应的标识用 shall。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "8.5.2.1, shared DPPK and DPPK-ID"
+          ],
+          "printed_pages": [
+            91
+          ]
+        }
+      ],
+      "limitations": [
+        "不为所有负载固定选用 PCK 或 GMK，不把共享保护密钥作为发送者签名认证的凭据。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "provider-required-protection-and-optional-authentication",
+      "title": "服务提供方要求的数据保护须执行；另可做负载认证",
+      "conditions": [
+        "讨论 §8.3 一对一 SDS 或 FD 的数据负载，或 §8.4 组通信的数据负载；按通信范围区分。",
+        "判断这些数据负载的保护义务时，核对 MCData 服务提供方是否要求保护。"
+      ],
+      "conclusion": "一对一通信的 DPPK 是 PCK，组通信的 DPPK 是 GMK。MCData 服务提供方要求保护时，须用相应的 PCK 或 GMK 保护 Data payload。两节均允许负载认证。",
+      "normative_strength": "§§8.3–8.4 的 DPPK 取值用 shall；保护用带服务提供方条件的 shall；负载认证用 may。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "8.3, private SDS and FD data protection and provider requirement"
+          ],
+          "printed_pages": [
+            90
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "8.4, group data protection and provider requirement"
+          ],
+          "printed_pages": [
+            90,
+            91
+          ]
+        }
+      ],
+      "limitations": [
+        "不能由两节得出所有负载均须保护或认证，也不因保护要求便认定已认证、或排除另有适用的认证要求。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "authentication-prerequisites-and-eccsi",
+      "title": "认证负载需要 KMS 预置；MC 客户端须支持 ECCSI",
+      "conditions": [
+        "讨论 §8.5.2.2 和 §8.5.5 的 MCData 负载认证，不是仅做加密和完整性保护。"
+      ],
+      "conclusion": "做负载认证的前提是 MC 客户端已由 KMS 配置 SSK、PVT 和 KPAK。MC 客户端须支持 ECCSI；使用 ECCSI 时，Signing Data 须包含 Signing UID 和签名者的 KMS URI（Signing KMS）。",
+      "normative_strength": "§8.5.2.2 明列认证前提；§8.5.5 的算法支持和 ECCSI Signing Data 使用 shall，表 8.5.5-2 两项为 M。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "8.5.2.2, authenticated payload prerequisites"
+          ],
+          "printed_pages": [
+            91
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "8.5.5, ECCSI support, Table 8.5.5-2 and sender URI correspondence"
+          ],
+          "printed_pages": [
+            93
+          ]
+        }
+      ],
+      "limitations": [
+        "须支持 ECCSI 不等于所有负载都须认证、每次都使用 ECCSI，或 KMS 材料存在即已经验签。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "sender-uri-must-correspond-to-signing-uid",
+      "title": "密码学验签之后，发送者 URI 不对应 Signing UID 仍判失败",
+      "conditions": [
+        "收到按 §8.5.5 使用 ECCSI 的认证负载；验证方已完成对该负载的密码学签名验证且通过。"
+      ],
+      "conclusion": "验证方须从该消息的其他位置提取发送者 URI，并检查它是否与 Signing UID 字段的 UID 对应。不对应时，签名验证判为失败。",
+      "normative_strength": "§8.5.5 末段对提取、检查和不对应时的失败判定使用 shall。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "8.5.5, ECCSI support, Table 8.5.5-2 and sender URI correspondence"
+          ],
+          "printed_pages": [
+            93
+          ]
+        }
+      ],
+      "limitations": [
+        "对应不等于 URI 和 UID 字面相同；本条不指定某个 SIP 头、失败后响应或丢弃规则，也不推定不支持的算法或畸形输入的行为。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-mcdata-sds-control-client",
+    "r16-mcdata-group-sds-control-client",
+    "r16-identity-ue-key-persistence"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "8.3, private SDS and FD data protection and provider requirement"
+      ],
+      "printed_pages": [
+        90
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "8.4, group data protection and provider requirement"
+      ],
+      "printed_pages": [
+        90,
+        91
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "8.5.1, Message Type Bit 7 and Bit 8 and combined Data Payload"
+      ],
+      "printed_pages": [
+        91
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "8.5.2.1, shared DPPK and DPPK-ID"
+      ],
+      "printed_pages": [
+        91
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "8.5.2.2, authenticated payload prerequisites"
+      ],
+      "printed_pages": [
+        91
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "8.5.5, ECCSI support, Table 8.5.5-2 and sender URI correspondence"
+      ],
+      "printed_pages": [
+        93
+      ]
+    }
+  ],
+  "limitations": [
+    "限 TS 33.180 V16.13.0 的 MCData 安全条款。分开读取标志、适用的保护及认证前提、验签与发送者 URI 对应检查。",
+    "不展开密钥分发、保护算法参数或完整编码；不从标志、配置或验签步骤推断某次传输已经通过其余处理，或实际到达。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
