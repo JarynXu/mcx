@@ -1,0 +1,288 @@
+{
+  "topic_id": "r16-identity-kms-redirect-response",
+  "release": 16,
+  "standard_stage": null,
+  "state": "draft",
+  "title": "跨域密钥协商收到 KRR：谁生成了 KRR，还能继续吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v16.13.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "Release 16；所讨论的是跨安全域的 MIKEY 密钥交换、KMS 重定向响应及相邻证书处理。"
+  ],
+  "claims": [
+    {
+      "id": "domain-rejection-and-roles",
+      "title": "生成 KRR 的角色与原因",
+      "conditions": [
+        "正在判断密钥消息的接收方或路径节点是否可以产生 KRR。"
+      ],
+      "conclusion": "KRR 朝原 MIKEY 发起方返回。原发起方是该密钥消息的发送实体，例如 MC 客户端或 GMS。沿途 MCX 服务器或信令代理可因域不匹配或策略不接受所用的域而生成 KRR。终接客户端已收到 MIKEY，但判定所用域不被许可时，也可生成 KRR 告知允许的域。密钥接收方收到来自发起方的第一份 MIKEY 后，还可按本地策略给出偏好清单。若原发起侧 URI 属于接收方的外部 KMS，发起侧清单须保留它；若原接收侧 URI 属于接收方的 Home KMS 或已配置的迁移 KMS，接收侧清单须保留它。",
+      "normative_strength": "分支角色和方向为流程说明；终接不许可或首份消息后的偏好响应为 MAY，给出偏好时满足各侧条件须保留相应 URI。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.2.8.1.1",
+            "5.2.8.1.2",
+            "5.2.8.2.2",
+            "5.2.8.2.3",
+            "5.2.8.3"
+          ],
+          "printed_pages": [
+            47,
+            48,
+            49,
+            52
+          ]
+        }
+      ],
+      "source_detail": "印刷页 47 的触发条件；页 48 的逻辑 KMS 模型；页 48–49 接收方收到第一份 MIKEY 后的偏好分支；页 49 和页 52 步骤 1a、2a 的沿途节点分支；页 52 步骤 3、3a 的终接不许可。",
+      "limitations": [
+        "不由 SIP 呼叫方向推断 MIKEY 角色，不指定 SIP 承载。",
+        "只见 KRR 不能认定某一侧 URI 被拒、发生沿途拦截或 MIKEY 未送到。",
+        "按 TS 33.180 模型，逻辑 KMS、KMS URI 与安全域一一对应。两个确认不同的逻辑 KMS URI 代表两个不同域；仅两处配置或日志字段不同，不证明本次选择或归属域。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "generation-drops-mikey",
+      "title": "网络节点由 MIKEY 生成 KRR 时丢弃该 MIKEY",
+      "conditions": [
+        "路径上的网络节点收到 MIKEY，并据此生成 KRR。"
+      ],
+      "conclusion": "生成节点须丢弃所收到的这一份 MIKEY。路径上收到 KRR 的实体须把响应朝原 MIKEY 发起方转发，满足替代条件时可改为转发替代响应。",
+      "normative_strength": "shall",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.2.8.2.3",
+            "5.2.8.2.4"
+          ],
+          "printed_pages": [
+            49,
+            50
+          ]
+        }
+      ],
+      "source_detail": "印刷页 49 的 .2.3 结尾，印刷页 50 的 .2.4 最后两段。",
+      "limitations": [
+        "仅凭发起端收到 KRR 或看到直接发送者，不能认定哪个网络节点生成响应并丢弃 MIKEY；不要把路径节点丢弃的规则套到接收方已收到 MIKEY 后生成的两类响应。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "replacement-towards-original-initiator",
+      "title": "替代响应保留收到的 KRR，回到原 MIKEY 发起方",
+      "conditions": [
+        "路径节点收到 KRR，按该节点的边界、角色与策略决定生成新 KRR。"
+      ],
+      "conclusion": "新 KRR 包含收到的 KRR；节点不另转发旧响应，向原 MIKEY 发起方转发新响应。缩减哪一份清单取决于分支条件。 KRR 内容须声明生成者；发生替代时，可分别从外层和嵌入的旧响应读取各自声明的生成者。",
+      "normative_strength": "shall",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.2.8.2.1",
+            "5.2.8.2.4"
+          ],
+          "printed_pages": [
+            48,
+            49,
+            50
+          ]
+        }
+      ],
+      "source_detail": "印刷页 48 的必带生成者及条件嵌入字段，印刷页 49–50 的替代、嵌入与转发。",
+      "limitations": [
+        "不以“入站”或“出站”一词概括全部分支，不把替代节点认定为原始拒绝者。 仅知道收到了响应或直接发送者，不能认定哪一层的生成者。声明可用于定位，不能充作身份已核验的证据；签名存在也不等于验证通过。 替代 KRR 本身不是另一次 MIKEY 拒绝的证据。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "any-empty-or-missing",
+      "title": "分开发起方和接收方清单，区分 ANY、空和缺项",
+      "conditions": [
+        "正在解释 KRR 的两份清单，或节点缩减一份清单的结果。"
+      ],
+      "conclusion": "KRR 内容需同时有发起方、接收方两份清单。ANY 表示该清单不限定某个 KMS，不撤销其他信任条件。沿途筛到无项时返回明确空清单，通信失败。缺少清单不符合这里的内容要求，既不是 ANY 也不是明确空清单。",
+      "normative_strength": "shall",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.2.8.2.1",
+            "5.2.8.2.4",
+            "5.2.8.3"
+          ],
+          "printed_pages": [
+            48,
+            49,
+            50,
+            53
+          ]
+        }
+      ],
+      "source_detail": "印刷页 48 的两份清单、ANY 和必带项；印刷页 49–50 的过滤结果；印刷页 53 的归属安全域限制。",
+      "limitations": [
+        "所引内容和过滤条款不能确定缺项后的解析、回应或回退。日志没记录清单不等于线上没有清单。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "selection-attempt-not-success",
+      "title": "选出配对才发新的 MIKEY",
+      "conditions": [
+        "发起方初次分发密钥但未知接收方 KMS，或发起方按策略处理前次尝试的 KRR。"
+      ],
+      "conclusion": "初次未知接收方 KMS 时以 ANY/ANY 为输入；处理 KRR 时使用它的两份清单。选不出配对则通信失败；选出配对就用所选 KMS 发一份新的 MIKEY。",
+      "normative_strength": "shall",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.2.8.2.5",
+            "5.2.8.3"
+          ],
+          "printed_pages": [
+            50,
+            51,
+            53
+          ]
+        }
+      ],
+      "source_detail": "印刷页 50–51 的选择输入及结尾结果，印刷页 53 的图示步骤 4。",
+      "limitations": [
+        "不把步骤内部措辞转成选序算法；不代表对端验签、接收密钥或媒体建立成功。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "home-policy-and-certificate",
+      "title": "归属 KMS 决定 KRR 使用及未知证书请求",
+      "conditions": [
+        "终端按 KRR 程序判断是否接受外部安全域或请求其证书。"
+      ],
+      "conclusion": "终端只接受归属安全域许可且由 Home KMS 配置的外部安全域；KRR 不发证书。策略禁用 KRR 时忽略。启用未知证书请求策略且接收方清单列出一个证书未知的外部 KMS 时，须向 Home KMS 请求该证书；若启用等待认可策略，在收到 Home KMS 判定前不对 KRR 采取行动。",
+      "normative_strength": "shall",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.2.8.1.1",
+            "5.2.8.3",
+            "5.2.8.5"
+          ],
+          "printed_pages": [
+            47,
+            51,
+            53
+          ]
+        }
+      ],
+      "source_detail": "印刷页 47 的重定向边界，印刷页 51、53 的外部域预置条件和印刷页 53 的策略项。",
+      "limitations": [
+        "仅规定本文的外部域和证书分支；不扩到迁移 KMS 或任一 KMS 接口。URI 不证明证书可用或获信任。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "krr-signature-policy",
+      "title": "KRR 不是必带签名的消息；验收仍受策略限制",
+      "conditions": [
+        "正在判断 KRR 内容的签名是否必须，或已收到未签名、签名 KMS 未知的 KRR。"
+      ],
+      "conclusion": "KRR 内容推荐签名但不要求必带。未签或以未知、未配置的 KMS URI 签名的 KRR，能否接受取决于归属 KMS 策略。",
+      "normative_strength": "内容推荐签名；对指定来源或未签名情形的接受取决于策略。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.2.8.2.1",
+            "5.2.8.3"
+          ],
+          "printed_pages": [
+            48,
+            53
+          ]
+        }
+      ],
+      "source_detail": "印刷页 48 内容列表末项与末句；印刷页 53 注 1。",
+      "limitations": [
+        "不解释另一条策略中有歧义的签名开关文字；不把内容可选当成客户端必接收，不推定签名验证机制。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "i-message-verification",
+      "title": "收到的 I_MESSAGE 域校验不是 KRR 签名校验",
+      "conditions": [
+        "客户端正在验证收到的 MIKEY I_MESSAGE。"
+      ],
+      "conclusion": "若消息带 KMSUri，客户端须核对它与相应配置一致，并借助由 Home KMS 提供的对应 KMS 证书缓存取得验证参数。若没有匹配证书，可以向 Home KMS 请求。",
+      "normative_strength": "有该字段时核对域及从缓存取参数为 SHALL；没有匹配证书时向 Home KMS 请求为 MAY。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.2.7.3"
+          ],
+          "printed_pages": [
+            47
+          ]
+        }
+      ],
+      "source_detail": "印刷页 47 验证 I_MESSAGE 与查不到匹配证书两段。",
+      "limitations": [
+        "不从 KMSUri 缺失推定回退；不把该字段认定为本流程未指明的 IDRkmsr；不把允许请求视为 KRR 策略下必须请求。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-private-peer-kms-uri",
+    "r16-calls-private-fta-pck-authentication"
+  ],
+  "limitations": [
+    "限跨安全域的 KRR 与相关证书判断。本主题未收录 SIP 承载、精确选序、KRR 签名校验机制和迁移 KMS 程序；所引内容和过滤条款不足以判断缺项后的处理。不能据此认定实际通信结果。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}

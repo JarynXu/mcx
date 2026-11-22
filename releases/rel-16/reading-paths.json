@@ -6336,6 +6336,10 @@
         {
           "condition": "若手头查的是一份组配置里的成员逐业务 KMSUri，而不是终端私呼用户档。",
           "read": "topics/groups/member-kms-uri.md"
+        },
+        {
+          "condition": "若已查到 URI 却收到 KRR，或要区分 URI 代表的逻辑安全域与本次实际选择。",
+          "read": "topics/identity/kms-redirect-response.md"
         }
       ],
       "boundary": "不从配置 URI 推断运行时 KMS 请求、取得密钥或媒体保护。"
@@ -6619,6 +6623,22 @@
         }
       ],
       "boundary": "限远程换组两类 MESSAGE 的参与功能；不裁定固定版本的字段歧义，不由 SIP 响应推断目标所选组。"
+    },
+    {
+      "id": "r16-identity-kms-redirect-response",
+      "question": "跨域密钥协商收到 KRR：谁生成、为何生成？区分沿途拦截、接收方不许可与首份 MIKEY 后的偏好。",
+      "start": "topics/identity/kms-redirect-response.md",
+      "next_if": [
+        {
+          "condition": "要核对最初从哪份本端配置读取对端 URI。",
+          "read": "topics/calls/private-peer-kms-uri.md"
+        },
+        {
+          "condition": "要核对普通私呼与首接应答分别在哪份 SDP 带 PCK，以及相应的认证结果。",
+          "read": "topics/calls/private-fta-pck-authentication.md"
+        }
+      ],
+      "boundary": "限跨安全域的 KRR 与相关证书判断。本主题未收录 SIP 承载、精确选序、KRR 签名校验机制和迁移 KMS 程序；所引内容和过滤条款不足以判断缺项后的处理。不能据此认定实际通信结果。"
     }
   ]
 }
