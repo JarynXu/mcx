@@ -6,16 +6,16 @@
   "title": "临时组呼的 conference NOTIFY：组标识怎么写，参与者名单从哪来？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
-  "condition_rule": "每条 claim 继承所有 common_conditions，再叠加自身 conditions。生成通知和实际收到先前订阅的通知是不同事件。 服务器先分别核对发送或接收 SUBSCRIBE 的实际方向、事件和适用身份字段；CF 的实收 NCF INVITE 200 入口需要该 CF 上已有参会者订阅，不把发起请求与接收守卫视为同一报文定义。",
+  "condition_rule": "每条 claim 继承所有 common_conditions，再叠加自身 conditions。生成通知和实际收到先前订阅的通知是不同事件。 服务器先分别核对发送或接收 SUBSCRIBE 的实际方向、事件和适用身份字段；CF 的实收 NCF INVITE 200 入口需要该 CF 上已有参会者订阅，不把发起请求与接收守卫视为同一报文定义。 组成聊天组的客户端入口先核对 NCF 实际收到的请求及本地会话，再分客户端腿与临时组 CF 的服务器腿。",
   "common_conditions": [
-    "Release 16、Stage 3，依据 TS 24.379 V16.14.0。",
-    "适用于在网 MCPTT 临时组会话的会议事件包，CF 控制临时组，NCF 对应组成组。"
+    "Release 16、Stage 3，依据 TS 24.379 V16.14.0。"
   ],
   "claims": [
     {
       "id": "r16-calls-temporary-conference-notify-group-ids",
       "title": "按通知方向填写 MCPTT 信息正文的组 ID",
       "conditions": [
+        "适用于在网 MCPTT 临时组会话的会议事件包，CF 控制临时组，NCF 对应组成组。",
         "CF 或 NCF 生成临时组会话的 Event: conference SIP NOTIFY，目标为对端相应功能或 MCPTT 用户。"
       ],
       "conclusion": "CF→NCF 的 mcptt-calling-group-id 用临时组 ID、mcptt-request-uri 用组成组 ID；NCF→CF 对调。通知目标为用户时，mcptt-request-uri 改用目标用户的 MCPTT ID。",
@@ -54,6 +54,7 @@
       "id": "r16-calls-temporary-conference-notify-function-user-exclusion",
       "title": "会话参与功能不列入对端通知的 user",
       "conditions": [
+        "适用于在网 MCPTT 临时组会话的会议事件包，CF 控制临时组，NCF 对应组成组。",
         "CF 或 NCF 生成临时组会话的 application/conference-info+xml 正文。"
       ],
       "conclusion": "会话中的 NCF 可以作为参与者，但 CF 不把 NCF 列为 user。CF 可以在会话中作为参与者，但 NCF 不把 CF 列为 user。用户的 endpoint/status 是会话状态。",
@@ -91,6 +92,7 @@
       "id": "r16-calls-temporary-conference-notify-cf-forward",
       "title": "CF 按控制侧规则改写并转给其他订阅参与者",
       "conditions": [
+        "适用于在网 MCPTT 临时组会话的会议事件包，CF 控制临时组，NCF 对应组成组。",
         "CF 实收对应先前向 NCF 发出的会议事件 SUBSCRIBE 的来向 NOTIFY。"
       ],
       "conclusion": "CF 处理这份通知，按 6.3.3.4 改写，再转发给所有其他订阅会议事件包的参与者。",
@@ -129,6 +131,7 @@
       "id": "r16-calls-temporary-conference-notify-ncf-roster",
       "title": "NCF 保存上游会议状态并带上本侧状态发给订阅客户端",
       "conditions": [
+        "适用于在网 MCPTT 临时组会话的会议事件包，CF 控制临时组，NCF 对应组成组。",
         "NCF 实收对应先前向 CF 发出的会议事件 SUBSCRIBE 的来向 NOTIFY；或生成该临时会话的非控制侧通知正文。"
       ],
       "conclusion": "对来向通知，NCF 处理并按正文保存会议信息，按 6.3.4.3 改写再转给所有订阅该事件包的 MCPTT 客户端。NCF 生成的 conference-info 正文包含从 CF 的 NOTIFY 保存的会议状态及本侧参与者状态。",
@@ -167,6 +170,7 @@
       "id": "temporary-conference-cf-to-ncf-subscribe",
       "title": "临时组 CF 按首个订阅或实收对应 INVITE 200 的事件进入，逐个筛出应订阅的 NCF",
       "conditions": [
+        "适用于在网 MCPTT 临时组会话的会议事件包，CF 控制临时组，NCF 对应组成组。",
         "临时组会话中，CF 实收发给 NCF 的对应 INVITE 200 且该 CF 上已有至少一位参会者按 §10.1.3.4.1 订阅会议事件，或者实收符合 §10.1.3.4.1 的首个参会者订阅且已有 NCF 参与。"
       ],
       "conclusion": "对每个 CF 已收到此 INVITE 200 且尚未发对应 SUBSCRIBE 的 NCF，新建订阅对话，Request-URI 用其 PSI；mcptt-request-uri=组成组 ID，mcptt-calling-group-id=临时组 ID；Expires=4294967295。",
@@ -206,6 +210,7 @@
       "id": "temporary-conference-ncf-to-cf-subscribe",
       "title": "临时组 NCF 按本侧首个客户端订阅或规定的并入支路向 CF 发订阅",
       "conditions": [
+        "适用于在网 MCPTT 临时组会话的会议事件包，CF 控制临时组，NCF 对应组成组。",
         "NCF 按 §10.1.3.5.1 的正常程序接收本地 MCPTT 客户端首个订阅，或在规定的已有组呼并入流程中实际收到相应 ACK 且该组成组会话已有至少一台客户端订阅。"
       ],
       "conclusion": "NCF 新建 SUBSCRIBE 对话，SIP Request-URI 是先前发给该 NCF 的 INVITE 的 Contact 中的临时会话标识；mcptt-request-uri=临时组 ID，mcptt-calling-group-id=组成组 ID；Expires=4294967295。",
@@ -255,6 +260,7 @@
       "id": "temporary-conference-subscribe-wire-receive-fields",
       "title": "服务器订阅发送列 calling-group-id、接收入口列 calling-user-id，不能凭缺字段判授权拒绝",
       "conditions": [
+        "适用于在网 MCPTT 临时组会话的会议事件包，CF 控制临时组，NCF 对应组成组。",
         "区分 §10.1.3.4.3 或 .5.3 实际发出的服务器 SUBSCRIBE，与同一订阅在另一端实际收到的请求；拒绝结论限于满足 §10.1.3.4.1 或 .5.1 的非广播接收入口。"
       ],
       "conclusion": "两发送条款在 MCPTT 信息正文写 mcptt-calling-group-id；接收条款则核对 mcptt-calling-user-id，CF 入口允许参会者 ID 或组成组 ID，NCF 入口允许参会者或临时组 ID。对满足适用入口、包括 MCPTT P-Asserted-Service 和 conference-info Accept 的请求，若适用组文档授权检查为不允许，则回 403/Warning 文本 138 并停止。",
@@ -300,6 +306,166 @@
           ],
           "printed_pages": [
             307
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "temporary-chat-ncf-client-invite-contact-local-session-identity",
+      "title": "临时聊天组组成组身份匹配时，客户端腿的 200 Contact 取 NCF 本地会话身份",
+      "conditions": [
+        "组成聊天组的 NCF 正在以非控制连接模式参与临时组呼；它实际收到按组 CF 分类的初始 INVITE，MCPTT-info 正文 mcptt-request-uri 指向该临时组呼内的组成聊天组身份。"
+      ],
+      "conclusion": "NCF 面向该 MCPTT 客户端按 §10.1.2.4.1.1 充当 CF；该 INVITE 的 200 Contact 中的 MCPTT 会话身份由 NCF 生成。它不同于 NCF 向临时组 CF 发反向 SUBSCRIBE 时使用的临时会话身份。",
+      "normative_strength": "NCF 面向该 MCPTT 客户端按 §10.1.2.4.1.1 充当 CF；若该笔 INVITE 实际走到成功 200，响应 Contact 中的 MCPTT 会话身份由 NCF 生成。它不同于 NCF 向临时组 CF 发反向 SUBSCRIBE 时使用的临时会话身份。",
+      "limitations": [
+        "这条只判断实际加入入口和成功响应内的标识，不承诺任意请求成功或客户端实际收到 200。",
+        "组成组业务身份不是 SIP 请求行目标，也不能以客户端 Contact 取代服务器间订阅的临时会话身份。",
+        "200 的身份来源不等于每位加入者都分配新身份；§10.1.2.4.1.1 第 10 项的聊天会话创建和分配另有条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.5.1.5"
+          ],
+          "printed_pages": [
+            299
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1"
+          ],
+          "printed_pages": [
+            286,
+            287,
+            288,
+            289,
+            290
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.3.5.3 NOTE"
+          ],
+          "printed_pages": [
+            306
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.1.1"
+          ],
+          "printed_pages": [
+            78
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "temporary-chat-ncf-actual-client-reinvite-local-cf",
+      "title": "组成组服务器收到本地终端的 re-INVITE，按本地聊天组 CF 处理",
+      "conditions": [
+        "在临时聊天组的组成组一侧，NCF 实际收到 MCPTT 客户端的 SIP re-INVITE；按所引用的聊天组 CF 程序核对该请求指向聊天组会话的 MCPTT 会话身份。"
+      ],
+      "conclusion": "NCF 在这次请求处理中充当 CF，执行 §10.1.2.4.1.2；这不是以 O-PF 角色把请求透明转发给临时组 CF 后等待应答。",
+      "normative_strength": "shall",
+      "limitations": [
+        "不能单凭 re-INVITE 或任意 200 证明本地终端更新成功或临时组全局控制移交；不以这条覆盖 CF 所引条款在满足各自条件时另行生成的消息。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.5.1.6"
+          ],
+          "printed_pages": [
+            299
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.2"
+          ],
+          "printed_pages": [
+            291,
+            292,
+            293,
+            294
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "temporary-chat-ncf-join-conference-notify-subscribed-participants",
+      "title": "组成聊天组实际新增参与者或实收参与者 BYE，通知会议事件订阅者",
+      "conditions": [
+        "§10.1.2.5.1.5 入口适用时，NCF 按所引非控制侧通知程序处理；程序触发为预安排或聊天组会话内实际新增参与者，或实收该会话一个参与者的 SIP BYE。",
+        "接收范围只看已经订阅该会话会议事件包的参与者。",
+        "沿所引用 §10.1.2.4.1.1 第 25 项检查本次加入的通知时，聊天会话先前已在进行且至少一位参与者已订阅；§10.1.2.5.1.5 第 2 项指定非控制侧通知助手。"
+      ],
+      "conclusion": "NCF 按 §6.3.4.3 生成会议通知包，并发 SIP NOTIFY 给所有订阅了会议事件包的参与者。",
+      "normative_strength": "shall",
+      "limitations": [
+        "不把初始 INVITE 的 200 当成实际新增参与者、有订阅或已发通知的证据；不把通知当成实际送达、全局控制移交、临时组拆分或媒体送达。",
+        "临时组 CF 发来的 BYE 导致组成组拆分另核 §10.1.2.5.1.4。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.5.1.5 item 2 and 10.1.2.5.1.4"
+          ],
+          "printed_pages": [
+            299
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.3.5.2"
+          ],
+          "printed_pages": [
+            306
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.4.3"
+          ],
+          "printed_pages": [
+            129,
+            130
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.4.1.1 item 25"
+          ],
+          "printed_pages": [
+            290
           ]
         }
       ],
