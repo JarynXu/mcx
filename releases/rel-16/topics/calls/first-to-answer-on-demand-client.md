@@ -18,7 +18,7 @@
 若需要随本次邀请标识主叫使用的活动别名，另填 functional-alias-URI；后者不是被呼叫的别名。
 
 - 附录 F.1.3 说明接收时缺少 call-to-functional-alias-ind 按候选用户 ID 理解；这不取消主叫构造邀请时按 §11.1.1.2.1.1 第 15(b) 项显式填写的要求。
-- 资源列表中写一个功能别名，不说明客户端已解析出具体成员，也不证明任何候选人已接受。
+- 资源列表中写一个功能别名，不说明客户端已解析出具体成员，也不证明任何候选人已接受。要找实际受邀人，见[控制功能如何根据别名通知发出邀请](first-to-answer-controlling.md)。
 
 依据：§11.1.1.1, private versus first-to-answer target population（印刷页 352）；§11.1.1.2.1.1, steps 1–2 and 9–10（印刷页 353）；§11.1.1.2.1.1, steps 14(c), 15(a–c) and 17（印刷页 354, 355）；§F.1.3, functional-alias-URI; call-to-functional-alias-ind and its absence（印刷页 551）。
 
