@@ -3,7 +3,7 @@
   "release": 16,
   "standard_stage": 3,
   "state": "draft",
-  "title": "MCPTT 离网广播组呼：拒接后还会响吗？谁能结束这通广播？",
+  "title": "MCPTT 离网广播组呼：中途怎样加入，拒接后还会响吗，谁能结束？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
   "condition_rule": "Inherit common_conditions and add claim conditions.",
@@ -12,6 +12,50 @@
     "各条分别由实际用户动作、收到的消息或计时器到期触发；不要求同一终端按文章顺序经历全部事件。"
   ],
   "claims": [
+    {
+      "id": "originating-broadcast-repeat",
+      "title": "发起端重传同一广播，不以有人未确认为条件",
+      "conditions": [
+        "首次发起的入口是发起端在 B1 收到本机用户发起广播的指示；重传的独立入口是发起端在 B2 且本机 TFB2 到期。"
+      ],
+      "conclusion": "发起时保存 SDP、均匀随机选取的呼叫标识（0 至 65535）、本机发起用户标识和广播呼叫类型。初发和重传都用保存的呼叫标识、类型、发起用户标识、组标识及 SDP。初发后先启动 TFB2、再启动 TFB1 并进入 B2；重传时依据 TFB2 到期发送 GROUP CALL BROADCAST，重启 TFB2 并保持 B2。TFB2 取自终端初始配置，默认 3 秒，最大 10 秒。",
+      "normative_strength": "满足各自入口时所列发起及重传动作为 SHALL。表 B.3.3-1 的默认值可配置，不是每台接收机的收包周期。",
+      "limitations": [
+        "发送重传不以前一次未获确认为条件，也不因此重启发起端 TFB1。一次重传能否使后来开机者按新来件接听，取决于该接收机实际收到消息、本机状态、呼叫标识和确认配置。抓包无后续消息不能证明终端已结束或收到了 END；同组、同号或相近间隔不能单独证明同一次发起。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.3.2.4.1 steps 1–12: broadcast origin, saved values and startup of TFB2 and TFB1"
+          ],
+          "printed_pages": [
+            348
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.3.2.4.9 steps 1–4: originating B2 retransmission upon TFB2 expiry using the five stored items"
+          ],
+          "printed_pages": [
+            350
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "B.3.3, table B.3.3-1, TFB2 row: configured value, default, maximum, start, stop and expiry"
+          ],
+          "printed_pages": [
+            539
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
     {
       "id": "receive-and-accept",
       "title": "收到新广播：按本机确认配置接通或等待",
