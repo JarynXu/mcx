@@ -6,15 +6,16 @@
   "title": "在网紧急私呼：通话已获准，随呼告警也发出了吗？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
-  "condition_rule": "分别核对主叫实际请求、对应响应、收到的会话内 INFO 及本地状态，不用一段信令替代后续事件。",
+  "condition_rule": "每条声明继承全页范围。按声明区分主叫终端与 CF、入向与出向、个人与参与者对；不同事件不得互相代替。",
   "common_conditions": [
-    "固定 TS 24.379 V16.14.0 Rel-16 Stage 3；主叫 MCPTT 客户端，在网一对一带话权控制的普通按需紧急私呼，非 first-to-answer；以同一私呼和可选告警为对象。"
+    "固定 TS 24.379 V16.14.0 Rel-16 Stage 3，在网一对一、带话权控制的按需私呼，非 first-to-answer。"
   ],
   "claims": [
     {
       "id": "call-and-alert-separate-per-recipient",
       "title": "同一被叫的紧急私呼与告警按不同配置授权",
       "conditions": [
+        "固定 TS 24.379 V16.14.0 Rel-16 Stage 3；主叫 MCPTT 客户端，在网一对一带话权控制的普通按需紧急私呼，非 first-to-answer；以同一私呼和可选告警为对象。",
         "客户端收到主叫用户发起 MCPTT 紧急私呼的请求；如果还请求对该用户告警，分别执行两个发起授权检查。"
       ],
       "conclusion": "主叫档中私呼要求 allow-emergency-private-call=true 和 PrivateCall/EmergencyCall/MCPTTPrivateRecipient 规则；告警要求 allow-activate-emergency-alert=true 和 OnNetwork/PrivateEmergencyAlert 规则。各自的 UsePreConfigured 要求相应 uri-entry 含目标 MCPTT ID；各自的 LocallyDetermined 不要求该名单匹配，但仍需自己的开关为 true。",
@@ -56,6 +57,7 @@
       "id": "authorised-originator-sets-request-state",
       "title": "获准的紧急私呼不以获准告警为前提；未请求和请求未获准分开",
       "conditions": [
+        "固定 TS 24.379 V16.14.0 Rel-16 Stage 3；主叫 MCPTT 客户端，在网一对一带话权控制的普通按需紧急私呼，非 first-to-answer；以同一私呼和可选告警为对象。",
         "已按 §6.2.8.3.1.1 判为获准的紧急私呼，主叫私呼状态为 MEPC 1。"
       ],
       "conclusion": "客户端设置尚未设置的紧急状态，在 SIP 请求的指定 MIME 正文中设置 emergency-ind=true、置 MEPC 2；私呼紧急优先级若非 MEPP 2 则置 MEPP 3 等待确认。用户同时请求且获准告警时另写 alert-ind=true、置 MPEA 2 并按告警位置条款纳入信息。用户未请求告警时写 alert-ind=false；请求却未获准不属于这两条告警赋值分支。",
@@ -105,6 +107,7 @@
       "id": "warning-149-is-alert-pending-not-call-failure",
       "title": "对应成功响应带业务文本号 149，私呼仍获准，不能把待确认告警置为已发起",
       "conditions": [
+        "固定 TS 24.379 V16.14.0 Rel-16 Stage 3；主叫 MCPTT 客户端，在网一对一带话权控制的普通按需紧急私呼，非 first-to-answer；以同一私呼和可选告警为对象。",
         "在按需初始 INVITE 程序实际收到该邀请的 SIP 200，或在 §6.2.8.3.4 的状态入口实际收到相应紧急私呼请求的 SIP 2xx，处理时 MEPC 为 2 或 3。"
       ],
       "conclusion": "若紧急优先级尚未是 MEPP 2 则置 MEPP 2，私呼置 MEPC 3。仅当告警在 MPEA 2 且该响应不含 §4.4 定义的 Warning 文本号 149，才在该响应步骤置 MPEA 3。149 不取消通话获准，也不改变本步骤的 MPEA 2。149 是业务文本号码；INVITE 响应中 Warning 外层码是 399。",
@@ -156,6 +159,7 @@
       "id": "dialog-info-alert-value",
       "title": "实际收到对应对话中的 INFO 后，等待确认的告警按 alert-ind 的显式值分流",
       "conditions": [
+        "固定 TS 24.379 V16.14.0 Rel-16 Stage 3；主叫 MCPTT 客户端，在网一对一带话权控制的普通按需紧急私呼，非 first-to-answer；以同一私呼和可选告警为对象。",
         "主叫收到 Request-URI 的 MCPTT session ID 标识进行中会话的 SIP INFO；在该优先私呼请求的对话内，包名 g.3gpp.mcptt-info，带对应 application/vnd.3gpp.mcptt-info+xml 正文，三种列明指示至少一项已设置，告警当时为 MPEA 2。"
       ],
       "conclusion": "实际 alert-ind=true 置 MPEA 3，实际 alert-ind=false 置 MPEA 1。只设置 imminentperil-ind 或 emergency-ind 不等于 alert-ind=false。",
@@ -193,6 +197,7 @@
       "id": "initial-invite-final-error-clears-call-priority-and-alert-conditionally",
       "title": "初始 INVITE 失败：私呼、紧急优先级与告警各按什么复位？",
       "conditions": [
+        "固定 TS 24.379 V16.14.0 Rel-16 Stage 3；主叫 MCPTT 客户端，在网一对一带话权控制的普通按需紧急私呼，非 first-to-answer；以同一私呼和可选告警为对象。",
         "主叫实收这份紧急私呼初始 INVITE 的 4xx、5xx 或 6xx 最终响应；本机该通紧急私呼处于 MEPC 2（已请求）或 MEPC 3（已获准）。"
       ],
       "conclusion": "置 MEPC 1。仅当本通私呼的紧急优先级为程序中所称的 MEPP 3: confirm-pending 时置 MEPP 1；已是 MEPP 2 时本项不要求重置。仅当原发 INVITE 的 application/vnd.3gpp.mcptt-info+xml 正文含 alert-ind=true 时置 MPEA 1，不另要求旧状态为 MPEA 2；false 或缺少该元素不触发此项。",
@@ -237,6 +242,85 @@
           ],
           "printed_pages": [
             592
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "redial-user-emergency-versus-pair-emergency",
+      "title": "重拨、回拨或换人拨：紧急状态属于用户，还是属于两个人？",
+      "conditions": [
+        "以新发起的按需初始 INVITE 为对象。分别核主叫发起时的本地状态与对该目标的许可、CF 当前保存的参与者对；CF 出向规则只在前序处理允许继续并实际构造邀请时适用。"
+      ],
+      "conclusion": "主叫明确请求紧急私呼，或发起私呼时其 MES 已设置，终端都须检查发起许可；获准按 §6.2.8.3.2，在 MEPC 1 时写 emergency-ind=true，未获准宜提示。CF 管理这两人之间的 IPEPC，在状态取消前两人之间的新私呼均为紧急，包括反向回拨，即使主叫没有 MES。换第三人时，原有参与者对不适用，需另核主叫的 MES 与对新目标的授权及新一对的状态。",
+      "normative_strength": "§4.6.2 说明状态适用范围；发起、缓存、出向紧急优先级的具体 SHALL 和未授权提示的 SHOULD 按各步骤前提适用。附录 G 为资料性。",
+      "limitations": [
+        "MEPP 是终端对本通紧急私呼优先级的认识；MEPP 2 可独立触发终端填紧急 Resource-Priority，不能用它代替 CF 记录或用户 MES。",
+        "CF 实收完整 INVITE 没有 emergency-ind=true，不触发 §11.1.1.4.2 第 9 项的新写入（另须 private 且此前没有该对状态），不清除旧状态。CF 出向步骤 7 将本次请求获准与该对已有状态列为二选一；步骤 2 不仅因已有状态就要求写 true。单一出向头不证明触发原因、告警、接听或实际承载优先级。",
+        "不把 §11.1.1.4.2 第 8 项的双重否定及跳指第 4 项改写成入向 403 的确定判定表，也不据先前通话或 BYE 推定当前缓存。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.6.2, MCPTT emergency state, in-progress emergency private call state and local MEPP"
+          ],
+          "printed_pages": [
+            40,
+            41
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.1, initial INVITE items 3 and 16: emergency origination and Resource-Priority"
+          ],
+          "printed_pages": [
+            353,
+            355
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.8.3.1.1 and 6.2.8.3.2–3, originator authorisation, emergency indicator and priority"
+          ],
+          "printed_pages": [
+            71,
+            72,
+            73
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.2, private initial INVITE items 4 and 6–9: admission and the new participant-pair record"
+          ],
+          "printed_pages": [
+            380,
+            381
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.1, outgoing INVITE items 2 and 7: emergency indicator and Resource-Priority"
+          ],
+          "printed_pages": [
+            378,
+            379
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "Annex G (informative), G.9 table G.9-1 and G.10 opening, participant-pair state and client perspective"
+          ],
+          "printed_pages": [
+            590
           ]
         }
       ],
