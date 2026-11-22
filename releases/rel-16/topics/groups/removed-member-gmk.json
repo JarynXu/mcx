@@ -1,0 +1,114 @@
+{
+  "topic_id": "r16-groups-removed-member-gmk",
+  "release": 16,
+  "standard_stage": null,
+  "state": "draft",
+  "title": "成员被移出组后，终端何时必须删除组主密钥（GMK）？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v16.13.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "Release 16；用户被移出指定 MC 组。"
+  ],
+  "claims": [
+    {
+      "id": "ue-delete-removed-group-gmk",
+      "title": "终端删除 GMK 的条件",
+      "conditions": [
+        "终端收到配置管理服务器（CMS）的用户配置档更新，表明该用户已不是所指组 ID 的成员。",
+        "与该组 ID 相关的组通信均已结束。",
+        "该组 ID 的 GMK 不与该用户仍是成员的其他组共用。"
+      ],
+      "conclusion": "终端必须立即以安全方式删除该组 ID 对应的 GMK。",
+      "normative_strength": "shall；收到更新、通信结束和密钥不再与保留成员资格的其他组共用，这三项条件须同时成立。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.7.3"
+          ],
+          "printed_pages": [
+            62
+          ]
+        }
+      ],
+      "limitations": [
+        "若尚有通信未结束，或其他保留成员资格的组仍共用该密钥，不能根据这条移出规则要求立即删除。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "ue-delete-gmks-across-services",
+      "title": "一个组 ID 对应多项 MC 业务",
+      "conditions": [
+        "终端收到配置管理服务器（CMS）的用户配置档更新，表明该用户已不是所指组 ID 的成员。",
+        "同一组 ID 用于 MCPTT、MCData、MCVideo 中的多项业务。",
+        "各项业务下与该组 ID 相关的组通信均已结束。",
+        "该组 ID 对应的 GMK 均不与该用户仍是成员的其他组共用。"
+      ],
+      "conclusion": "终端必须立即以安全方式删除与该组 ID 关联的 GMK。只结束一项业务的通信不足以判定该组的所有通信均已结束。",
+      "normative_strength": "shall；按同一组 ID 核对通信和关联密钥。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.7.3"
+          ],
+          "printed_pages": [
+            62
+          ]
+        }
+      ],
+      "limitations": [
+        "本条没有规定每项业务各有一把 GMK，也没有给出多把密钥部分共用时的逐把处理算法。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "gms-optional-group-gmk-update",
+      "title": "GMS 是否必须更新组的密钥",
+      "conditions": [],
+      "conclusion": "组管理服务器（GMS）可按该组的安全配置决定是否更新与该组 ID 关联的 GMK。",
+      "normative_strength": "may；不是每次移出成员都必须更新。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.7.3"
+          ],
+          "printed_pages": [
+            62
+          ]
+        }
+      ],
+      "limitations": [
+        "GMS 更新密钥不证明终端已删除原 GMK；终端也不以收到 GMS 换钥为上述删除义务的前提。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-groups-group-membership-notification"
+  ],
+  "limitations": [
+    "这里只说明成员被移出时的安全过程。规范规定的动作不等于某台终端已执行。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
