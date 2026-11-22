@@ -1,0 +1,173 @@
+{
+  "topic_id": "r16-location-lmc-lms-access-token",
+  "release": 16,
+  "standard_stage": null,
+  "state": "draft",
+  "title": "LMC 发给 LMS 的位置消息，何时带令牌？验不过怎么处理？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v16.13.0",
+  "condition_rule": "每条声明继承共同条件，再按该条的通信对象、方向与验证结果判断。",
+  "common_conditions": [
+    "3GPP TS 33.180 V16.13.0，Release 16 安全规范；讨论位置管理访问令牌及相应的授权。"
+  ],
+  "claims": [
+    {
+      "id": "access-token-on-each-location-message",
+      "title": "LMC 每条发往 LMS 的位置消息都带位置管理范围的访问令牌",
+      "conditions": [
+        "MC 终端支持任务关键位置业务，且 LMC 向 LMS 发送一条位置消息。"
+      ],
+      "conclusion": "LMC 在每条位置消息中包含访问令牌，令牌须涵盖位置管理业务范围。位置信息报告和位置上报触发只是消息示例。",
+      "normative_strength": "§5.1.3.1 对每条消息描述授权方式，对访问令牌的服务范围使用 shall。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.1.3.1, LMS paragraph"
+          ],
+          "printed_pages": [
+            32
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex B.4.2.2, Table B.4.2.2-1, scope row and authentication-request example"
+          ],
+          "printed_pages": [
+            128
+          ]
+        }
+      ],
+      "limitations": [
+        "不限定为首条消息或初始注册；不能据此推断反方向的配置授权或 LMC→LMS 的协议、承载及令牌字段。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "request-location-scope-from-idms",
+      "title": "向 IdMS 请求位置管理范围，不等于该范围已授予",
+      "conditions": [
+        "MCX Connect 的 IdM 客户端在认证请求中向 IdMS 的授权端点申请位置管理访问。"
+      ],
+      "conclusion": "表 B.4.2.2-1 定义位置管理业务范围值为 3gpp:mc:location_management_service。scope 表示请求的资源访问范围，获准的所请求范围绑定到返回给客户端的访问令牌。",
+      "normative_strength": "scope 为 MCX Connect 的 REQUIRED 请求参数；请求范围与访问令牌绑定以获准为条件。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex B.4.2.2, Table B.4.2.2-1, scope row and authentication-request example"
+          ],
+          "printed_pages": [
+            128
+          ]
+        }
+      ],
+      "limitations": [
+        "看到认证请求或 scope 值不证明授权成功，不能证明令牌已发出或 LMS 已验过它。附录的 HTTP GET 是给 IdMS 的请求，不是 LMC→LMS 报文。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "validate-then-process",
+      "title": "LMS 验证访问令牌，成功则处理该位置消息",
+      "conditions": [
+        "MC 终端支持任务关键位置业务，且 LMC 向 LMS 发送一条位置消息。",
+        "LMS 收到该位置消息及其访问令牌。"
+      ],
+      "conclusion": "LMS 验证访问令牌，验证成功就处理消息。接受并存储位置信息报告是原文给出的处理示例。",
+      "normative_strength": "§5.1.3.1 说明验证与成功后的处理；存储报告是示例。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.1.3.1, LMS paragraph"
+          ],
+          "printed_pages": [
+            32
+          ]
+        }
+      ],
+      "limitations": [
+        "不规定所有消息都要落库，不由发出、验令牌成功或普通响应证明实际落库、目标共享许可或通知送达。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "validation-failure-local-policy",
+      "title": "令牌无法验证时，处置可由 LMS 本地策略决定",
+      "conditions": [
+        "MC 终端支持任务关键位置业务，且 LMC 向 LMS 发送一条位置消息。",
+        "LMS 收到该位置消息，但无法验证访问令牌。"
+      ],
+      "conclusion": "本地策略可以规定 LMS 如何处置收到的位置消息；应急时按策略留存位置信息报告是例子。",
+      "normative_strength": "§5.1.3.1 用 may 表述由本地策略决定处置，并以可能要求作应急存储举例。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.1.3.1, LMS paragraph"
+          ],
+          "printed_pages": [
+            32
+          ]
+        }
+      ],
+      "limitations": [
+        "不规定所有失败都拒绝、所有紧急报告都存储或某一固定响应；例外处置不等于令牌已通过验证。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-location-event-reporting-configuration",
+    "r16-location-client-triggered-reporting",
+    "r16-identity-home-system-authentication"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "5.1.3.1, LMS paragraph"
+      ],
+      "printed_pages": [
+        32
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "Annex B.4.2.2, Table B.4.2.2-1, scope row and authentication-request example"
+      ],
+      "printed_pages": [
+        128
+      ]
+    }
+  ],
+  "limitations": [
+    "限 TS 33.180 V16.13.0 §5.1.3.1 的 LMS 段与附录 B.4.2.2 的位置范围。区分向 IdMS 申请范围、LMC 逐消息带令牌、LMS 验证，以及无法验证时的本地策略。",
+    "不指定 LMC→LMS 接口的 HTTP/SIP 绑定、令牌在报文中的字段、失败状态码、初始 LMS 注册或 LMS→LMC 配置授权。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}

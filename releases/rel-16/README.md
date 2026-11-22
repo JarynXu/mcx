@@ -13,7 +13,7 @@
 - [MCVideo](topics-mcvideo.json)：谁能发起视频呼叫，发送和接收许可如何区分？[组呼下行怎样选择组播或单播](topics/mcvideo/mbms-group-downlink.md)？
 - [用户身份](topics-identity.json)：[同一用户能登录几台终端，谁能让谁远程退出](topics/identity/multiple-device-login.md)？[同一用户跨业务或跨终端时，用哪些标识对应](topics/identity/cross-service-user-mapping.md)？[终端重启或换人登录后，哪些密钥要留、哪些要删](topics/identity/ue-key-persistence.md)？ [查到对端 KMS URI，为什么还会收到 KRR](topics/identity/kms-redirect-response.md)？
 - [公共承载](topics-bearers.json)：[执行优先级决定时怎样管理不同 MC 业务的数据流](topics/bearers/cross-service-priority.md)？[MBMS 承载暂停时，没被要求上报的客户端还要检测吗](topics/bearers/mbms-suspension-reporting.md)？ [LTE 站回传断了，IOPS 要保留哪些本地 MCPTT 能力](topics/bearers/iops-local-mcptt-service.md)？
-- [位置服务](topics-location.json)：[一条周期位置消息适用于哪些业务或组](topics/location/periodic-message-scope.md)？[初次注册何时可能触发终端上报位置？LMS 是否因此须另发配置？](topics/location/event-reporting-configuration.md)
+- [位置服务](topics-location.json)：[LMC 发位置消息怎样带令牌，LMS 验不过怎么办](topics/location/lmc-lms-access-token.md)？ [一条周期位置消息适用于哪些业务或组](topics/location/periodic-message-scope.md)？[初次注册何时可能触发终端上报位置？LMS 是否因此须另发配置？](topics/location/event-reporting-configuration.md)
 
 知道主题名可直接查[全部主题](topics.json)；想对照另一角色或相邻程序，查[相关问题](reading-paths.json)。判断某次通信是否进入某个分支时，再核对该分支的角色、状态与消息。
 
