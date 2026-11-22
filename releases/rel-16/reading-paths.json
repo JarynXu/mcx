@@ -167,11 +167,11 @@
     },
     {
       "id": "r16-calls-prearranged-server-admission-routing",
-      "question": "普通按需预安排组呼：服务器准入与邀请路由 普通预安排组呼提前继续的建呼 200 后，发起端能否收到未应答成员名单？CF 实收确认和发起方配置各起什么作用？ 发起侧收到按成员的报告，与其他提示和会议通知怎样区分？名单是否等于全体缺席，或只列未应答的必需成员？ 发起迫近危险预安排组呼时，怎样从初始 INVITE 区分 CF 的权限 403/false 和只带优先级的 403？ 查合设 O-PF/CF 时 IMS 缺少内部腿、以及普通按需发起侧 SDP offer 与 200 answer 的地址和端口。 掉线后丢了旧会话 URI，按组重新发起普通预安排组呼，200 / Warning 文本 123 是加入还是重入？ 普通按需预安排组呼出站 INVITE 带 Report，O-PF 是复制来件还是加入已有位置？开关为 false 怎样核对？",
+      "question": "普通按需预安排组呼：服务器准入与邀请路由 普通预安排组呼提前继续的建呼 200 后，发起端能否收到未应答成员名单？CF 实收确认和发起方配置各起什么作用？ 发起侧收到按成员的报告，与其他提示和会议通知怎样区分？名单是否等于全体缺席，或只列未应答的必需成员？ 发起迫近危险预安排组呼时，怎样从初始 INVITE 区分 CF 的权限 403/false 和只带优先级的 403？ 查合设 O-PF/CF 时 IMS 缺少内部腿、以及普通按需发起侧 SDP offer 与 200 answer 的地址和端口。 掉线后丢了旧会话 URI，按组重新发起普通预安排组呼，200 / Warning 文本 123 是加入还是重入？ 普通按需预安排组呼出站 INVITE 带 Report，O-PF 是复制来件还是加入已有位置？开关为 false 怎样核对？ 按组加入已有组呼的 200／123 会重启 TNG3 吗，CF 响应里的 refresher=uac 指谁？",
       "start": "topics/calls/prearranged-server-admission-routing.md",
       "next_if": [
         {
-          "condition": "要比较初始准入、针对既有会话的重入 INVITE 和服务器收到新归属或回覆盖通知后的晚入。 迫近危险初始 403 先留在本页；只有需要辨认针对既有会话重入的请求时，才走此路径。",
+          "condition": "要比较初始准入、针对既有会话的重入 INVITE 和服务器收到新归属或回覆盖通知后的晚入。 迫近危险初始 403 先留在本页；只有需要辨认针对既有会话重入的请求时，才走此路径。 若关注加入后的刷新方或 TNG3，到重入页比较。",
           "read": "topics/calls/rejoin-late-entry.md"
         },
         {
@@ -386,12 +386,16 @@
     },
     {
       "id": "r16-mcptt-rejoin-late-entry",
-      "question": "普通预安排组重入与晚入：会话身份、准入和恢复证据",
+      "question": "普通预安排组重入与晚入：会话身份、准入和恢复证据 普通重入 200 带 Session-Expires，终端和 CF 两段各由谁刷新？很快收到 BYE 是该场 TNG3 到期吗？",
       "start": "topics/calls/rejoin-late-entry.md",
       "next_if": [
         {
           "condition": "若实收重入请求的是 NCF，或 NCF 主动发出晚入邀请，查本地 Contact 及受邀腿的响应。",
           "read": "topics/calls/noncontrolling-prearranged-rejoin.md"
+        },
+        {
+          "condition": "若已经找到组呼释放事件，要区分移出一人与整场释放、按需腿与预建立腿，转离会主题。",
+          "read": "topics/calls/prearranged-participant-refer-leave.md"
         }
       ],
       "boundary": "主动重入以initial INVITE的Request-URI携session identity，正文仍为group ID；CF晚入须实际新归属/回覆盖通知且有ongoing呼叫。PF PSI与session URI、各角色分别判断；4.5提供Contact/PF映射依据。不覆盖完整断线自动恢复、丢失会话身份发现、NCF、媒体重建或全组交付；主动重入和CF晚入为替代入口，SIP200不证明话权，媒体初始化回指差异不由普通Idle页修补。"
@@ -6102,7 +6106,7 @@
     },
     {
       "id": "r16-calls-prearranged-participant-refer-leave",
-      "question": "退出预安排组呼时，怎样分终端 REFER 的 200、控制侧业务 BYE 和整场释放？ CF 主动移出一名参与者或结束全场时，分按需与预建立腿查下行 BYE、哪个实体先回 200、旧对话是否保留。 按需重入预安排组呼后，终端主动发 BYE。PF 要把 Request-URI 换成映射到 CF 的 GRUU 吗？等哪份 200 再回终端？",
+      "question": "退出预安排组呼时，怎样分终端 REFER 的 200、控制侧业务 BYE 和整场释放？ CF 主动移出一名参与者或结束全场时，分按需与预建立腿查下行 BYE、哪个实体先回 200、旧对话是否保留。 按需重入预安排组呼后，终端主动发 BYE。PF 要把 Request-URI 换成映射到 CF 的 GRUU 吗？等哪份 200 再回终端？ 刚重入就收到 BYE，怎么查同一组呼的 TNG3 到期，而不是某一 SIP 对话或其他释放条件？",
       "start": "topics/calls/prearranged-participant-refer-leave.md",
       "next_if": [
         {
@@ -6116,6 +6120,10 @@
         {
           "condition": "手上只有 conference NOTIFY，需判断该订阅报告的参会状态与身份。",
           "read": "topics/calls/conference-participant-status.md"
+        },
+        {
+          "condition": "若刚重入便收到 BYE，区分每条 SIP 对话的刷新和同场 TNG3 的停止、到期记录。",
+          "read": "topics/calls/rejoin-late-entry.md"
         }
       ],
       "boundary": "以本次请求所指会话、实际回复对应方法和 CF 策略分开做结论，不从一条 200 推定全场释放或预建立会话拆除。 终接 PF 只有在本次业务会话标识指向与它有预建立会话的用户时按预建立分支处理；上行 200 不证明下行媒体动作。"
