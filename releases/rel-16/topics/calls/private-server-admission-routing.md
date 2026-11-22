@@ -94,6 +94,23 @@ T-PF 检查 Contact 的 isfocus，缺失则返回 403+Warning104 并停止；从
 
 依据：TS24.379 V16.14.0 §6.3.1.1 T-PF classification；§11.1.1.3.2 steps2–8；§11.1.1.3.1.1 step11(c) (outgoing comparison)；§6.3.2.2.5.1 full;6.3.2.2.6.1 full (on-demand selection dependency)，印刷页 77, 78, 95, 96, 98, 367, 368, 376, 377。
 
+<a id="terminating-media-addresses"></a>
+
+## 被叫在 NAT 后：应当比较哪两份 offer、哪两份 answer？
+
+普通按需私呼中，乙自动接听，主叫却听不见乙。乙网卡上的地址、乙在 200 中给出的地址、控制功能（CF）收到的地址可以不同。先按**谁发给谁**配对：终接参与功能（T-PF）在两条 SIP 腿之间生成新报文，发往乙的 INVITE 与发往 CF 的 200 不是一对 offer/answer。这里只看初始邀请、按需自动应答、无 `Replaces` 的分支。[§11.1.1.3.2(7)，印 377](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=378)；[§6.3.2.2.5.1，印 95–96](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=96)。
+
+| 要核对的两份 SDP | T-PF 怎样构造出向描述 |
+| --- | --- |
+| **去乙的 offer：**CF → T-PF 的 INVITE，与 T-PF → 乙的 INVITE | 以 T-PF 从 CF 收到的 offer 为底稿。保留一个 MCPTT 语音段；来向有媒体面控制段，才带一个控制段。语音流在需要替换时换成 T-PF 的 IP 和端口；来向有控制通道，就按规程替换该通道的 IP 和端口，不能把语音的“需要时”套给它。 |
+| **回 CF 的 answer：**乙 → T-PF 对其 INVITE 的 200，与 T-PF → CF 对 CF 的 INVITE 的 200 | 以 T-PF **实收乙的 answer** 为底稿，不是从早先的 offer 复制地址。已接受的语音流在需要时换成 T-PF 的 IP 和端口；控制通道要在收到的 offer 中存在且获接受，才替换该通道在 answer 中的 IP 和端口。 |
+
+终接程序分别引用 offer 和 answer 的通用处理：[§6.3.2.2.5.2 第 9 项及最终响应第 2 项，印 97](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=98)；[§6.3.2.2.1，印 93](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=94)；[§6.3.2.2.2.1，印 94](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=95)。两张底稿和替换条件分别见 [§6.3.2.1.1.1，印 83](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=84)、[§6.3.2.1.2.1，印 84](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=85)。
+
+**假如两侧的控制端口相同，能说 T-PF 没参与吗？** 两条通用处理的注 2 都给出合设情况：PF 和 CF（通则也列 PF 和非控制功能）在同一台 MCPTT 服务器上，且 PF 对该媒体流或控制通道没有专用 IP 或没有专用端口，则省去相应地址或端口的替换。例如，控制通道没有专用端口，省去的是这项端口替换，不能据此决定语音流用哪个地址。只在一处抓包，既不能确认另一腿的值，也不能据相同数值倒推合设或媒体直通。[offer 注 2，印 83](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=84)；[answer 注 2，印 84](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=85)。
+
+乙自己怎样填写 answer、NAT 为什么可能使它不同于网卡地址，见[被叫答复的媒体地址](private-client-answer-evidence.md#callee-nat-answer)。T-PF 发给乙的 INVITE 在 SIP `Contact` 中写映射后的**会话身份**。[§6.3.2.2.3(4d)，印 94](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=95)。T-PF 回 CF 的 200 也要写映射的会话身份，其依据是 **CF 来向 INVITE 的 Contact**，不是乙回的 200 的 Contact。两处都不是语音接收地址。[§6.3.2.2.4.2(3c)，印 95](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=96)。排查“主叫听不见乙”，把上表四份信令按各自 INVITE 事务对应起来，再沿**乙发声到主叫收听**的方向，对照实际的语音 RTP 收发和可用的 NAT 映射记录。只看到 200、话权控制消息或 SDP 中的地址变化，不能定位语音丢在哪一段；也不能由这些字段推导 SIP 的路由集。
+
 ## 可靠 183 的 PRACK 和被叫最终响应：哪个 200 要等？
 
 先认事务：**PRACK 的 200** 是 T-PF 对可靠临时响应确认请求的答复；**INVITE 的 200** 是建立呼叫的最终响应。再认方向：被叫终端向 T-PF 回的 INVITE 200、T-PF 向 CF 发的 INVITE 200、CF 向主叫方向发的 INVITE 200，各应答本段的请求。本节限同系统、双方都按需建立、直接按 MCPTT ID 呼叫且有话权控制的普通一对一私呼。

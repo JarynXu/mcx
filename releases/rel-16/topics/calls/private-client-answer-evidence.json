@@ -229,6 +229,53 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "callee-initial-answer-nat-and-media-sections",
+      "title": "被叫在 NAT 后，按需自动接听时，200 的 SDP 中语音和话权控制的地址、端口必须等于网卡地址吗？",
+      "conditions": [
+        "乙实际收到普通初始私呼 INVITE 并进入自动应答程序；无 Replaces，按来向 offer 生成 answer。NAT 注记以乙位于 NAT 后为条件。"
+      ],
+      "conclusion": "乙在 INVITE 的 200 中答复收到的 offer。接受语音流、设置客户端的媒体 IP，在 m=audio 中给出该流端口；offer 包含话权控制实体时，为接受的控制实体设置客户端 IP，并包含该实体的 m=application 段。NAT 后，answer 所列 IP 和端口可因 SIP/IP 核心采用的穿越方法而与终端实际值不同。 自动应答程序另规定：客户端支持 NAT 穿越且位于 NAT 后时，SIP 响应同时按本条和 RFC 5626 生成。此条件不同于 SDP 应答的 NAT 注记。",
+      "normative_strength": "应答构造为条件式 SHALL；NAT 地址可能不同是 §6.2.2 的注，不是改写义务。",
+      "limitations": [
+        "不规定 NAT 方法、公网地址、端口映射或可达性；该应答不代表 CF 侧另一个 INVITE 的 200，也不证明 RTP 已双向到达。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.2 step 9; 6.2.3.1.1 steps 7–8: automatic private call answer without Replaces"
+          ],
+          "printed_pages": [
+            58,
+            358,
+            359
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.2 steps 1–4 and NOTE: accepted speech and offered control entity, media-level sections, client address and NAT in the answer"
+          ],
+          "printed_pages": [
+            57,
+            58
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.3.1.1 final paragraph: SIP response generation when the client both supports NAT traversal and is behind NAT"
+          ],
+          "printed_pages": [
+            59
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
     }
   ],
   "limitations": [

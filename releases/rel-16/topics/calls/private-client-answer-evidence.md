@@ -56,6 +56,14 @@ Answer-Mode=Auto 且本地自动，或本地手动但愿意自动应答，进入
 
 依据：TS24.379 V16.14.0 §11.1.1.2.1.2 steps9–10 and NOTE5；§6.2.3.1.1 full (Replaces comparison)；§6.2.3.2.1 full；§6.2.2，印刷页 57, 58, 59, 358, 359。
 
+<a id="callee-nat-answer"></a>
+
+## 被叫在 NAT 后，200 里的地址必须等于网卡地址吗？
+
+乙收到普通按需私呼的初始 INVITE，走自动应答，且 INVITE 没有 `Replaces`。乙在这笔 INVITE 的 200 中回答**自己收到的 offer**：接受 MCPTT 语音流，给出客户端的媒体 IP，在 `m=audio` 中给出语音端口；offer 中含话权控制实体时，也为接受的控制实体设置客户端 IP，并在应答中包含它的 `m=application` 媒体段。语音与控制要分开读。[§11.1.1.2.1.2(9)，印 358–359](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=359)；[§6.2.3.1.1(7–8)，印 58](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=59)；[§6.2.2(1–4)，印 57–58](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=58)。
+
+**不要求两者数值相等。** §6.2.2 的注说明，乙在网络地址转换（NAT）之后时，随 SIP/IP 核心网使用的穿越方式不同，应答里的 IP 和端口可能与乙实际使用的 IP 和端口不同。注没有指定必须填某个公网地址，也没有保证该地址可达。自动应答条款另有一条关于 **SIP 响应** 的规则：若乙支持 NAT 穿越且位于 NAT 后，生成 SIP 响应时还须遵循 RFC 5626。这不是 SDP 选址或语音转发算法。[§6.2.3.1.1 末段，印 59](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=60)。若还要和 CF 一侧的 200 比较，要查[终接 PF 如何从乙的 answer 生成自己的 answer](private-server-admission-routing.md#terminating-media-addresses)，不能直接认定是乙填错。[§6.2.2 注，印 58](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=59)。
+
 ## CANCEL 的 200 不接受原 INVITE
 
 适用事件：对话已存在，客户端收到针对该 INVITE 的 CANCEL，且尚未对 INVITE 发送 200。
