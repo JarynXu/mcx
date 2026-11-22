@@ -26,6 +26,8 @@
 
 前述两项 Contact 标记在两种注册方式里都要带，不能拿它们或一个注册 200 当作终端支持接入转移的证明。这里不从所引程序推算额外必带的 REGISTER 字段。若是在验收网络部署，另查[注册时 SCC AS 是否在路径上，主叫和被叫时它分别排第几](../bearers/anchored-session-transfer.md#scc-as-path)。
 
+如果是在验收终端的授权 REGISTER，查[客户端 ID 应生成什么值，明文和密文各用哪个 XML 子元素](mcptt-client-id-lifecycle.md#client-id-on-wire)。
+
 ## 到 MCPTT 服务器，查哪项结果？
 
 | 服务器收到什么 | 它怎样识别用户、检查授权 |

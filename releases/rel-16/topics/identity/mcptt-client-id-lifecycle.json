@@ -8,13 +8,14 @@
   "source_id": "3gpp-ts-24.379-v16.14.0",
   "condition_rule": "每条声明继承全部 common_conditions，再叠加本条 conditions；关联主题不是必经流程。",
   "common_conditions": [
-    "固定 TS 24.379 V16.14.0，Rel-16 Stage 3；核对 MCPTT 客户端 ID 的持久性、授权入口证据或实际归属判定。"
+    "固定 TS 24.379 V16.14.0，Rel-16 Stage 3，讨论 MCPTT 客户端 ID。"
   ],
   "claims": [
     {
       "id": "client-id-first-use-persists-through-registration-loss-and-power-cycle",
       "title": "首用由 MCPTT 客户端分配；四种普通状态保留，恢复出厂不保留",
       "conditions": [
+        "固定 TS 24.379 V16.14.0，Rel-16 Stage 3；核对 MCPTT 客户端 ID 的持久性、授权入口证据或实际归属判定。",
         "正在判断同一 MCPTT 客户端的首次使用或其终端注册／电源／恢复出厂事件。"
       ],
       "conclusion": "首次使用时由客户端分配 ID。已 SIP 注册、未注册但 UE 开机、UE 关机及电源重启时都保留该 ID。恢复出厂设置时不保留。",
@@ -43,6 +44,7 @@
       "id": "authorization-client-id-public-user-id-and-registration-token-have-separate-roles",
       "title": "区分授权来件的客户端 ID、IMS 公共用户身份和终端资源共享令牌",
       "conditions": [
+        "固定 TS 24.379 V16.14.0，Rel-16 Stage 3；核对 MCPTT 客户端 ID 的持久性、授权入口证据或实际归属判定。",
         "服务器收到 §7.3.2 所定义的第三方 REGISTER，内嵌的客户端 REGISTER 主体含 MCPTT 授权信息及客户端 ID；令牌分支另要求内层 Resource-Share=supported。"
       ],
       "conclusion": "IMS 公共用户身份从外层第三方 REGISTER 识别。客户端 ID 从内嵌 REGISTER 的 MCPTT 正文取得；授权成功且该用户在另一客户端曾获授权时，以 ID 比较区分客户端并保留旧绑定、另建新绑定。若内嵌 REGISTER 带 Resource-Share=supported，外层 Contact 的 +g.3gpp.registration-token 标识注册 UE，用于资源共享绑定检查，不替代客户端 ID。",
@@ -80,6 +82,7 @@
       "id": "same-user-same-group-does-not-inherit-affiliation-after-client-id-change",
       "title": "按实际请求的客户端 ID 查组归属；恢复出厂不证明旧记录删除",
       "conditions": [
+        "固定 TS 24.379 V16.14.0，Rel-16 Stage 3；核对 MCPTT 客户端 ID 的持久性、授权入口证据或实际归属判定。",
         "服务器正在执行 §6.3.6 的指定用户、指定组及当前 MCPTT 客户端的归属检查。"
       ],
       "conclusion": "对照组和用户条目，若找不到本次客户端 ID，判该用户在该客户端未归属；找到还须核用户条目未到期。只有 A 而本次请求使用 B，不得以内含 A 的旧记录代用。§4.10 的恢复出厂例外不证明服务器删除了 A。",
@@ -112,6 +115,85 @@
         "original_clauses_checked": true,
         "independent_source_review": true,
         "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "client-instance-uuid-urn-and-authorization-register-xml",
+      "title": "授权 REGISTER 要写哪个实例的 ID，明文和密文怎么区分？",
+      "conditions": [
+        "判断 §3.1/§4.10 的发起客户端实例标识；核对线上字段时限于认证成功、有访问令牌，且选择用 REGISTER 申请 MCPTT 业务授权的客户端。未加密与加密是替代分支。"
+      ],
+      "conclusion": "MCPTT 客户端 ID 是具体实例的全局唯一 UUID URN，首次使用由客户端分配，按所引 RFC 4122 §4.2 生成。同一用户在不同实例登录不能共用用户身份或同一枚 UUID。此授权 REGISTER 必须带访问令牌和发起客户端 ID。无机密性（含仅完整性）时 mcptt-client-id 的 type=Normal，mcpttString 承载 UUID URN；有机密性则令牌和客户端 ID 均加密，客户端 ID 的 type=Encrypted，用 XML Encryption 命名空间的 EncryptedData，含 CipherData/CipherValue。 字段在业务命名空间 urn:3gpp:ns:mcpttInfo:1.0 内的 mcpttinfo/mcptt-Params/mcptt-client-id；EncryptedData 使用 http://www.w3.org/2001/04/xmlenc# 命名空间，识别不取决于前缀拼写。",
+      "normative_strength": "§3.1 定义和 §4.10 分配规则；§7.2.1 在其业务条件下要求携带；F.1.3 按是否加密规定表示方式。",
+      "limitations": [
+        "F.1.2 通用模式内该元素可选且共用类型允许若干子元素，F.1.3 第 17 项列可携带它的请求；都不免除具体授权程序的要求。字符串通过 XSD 校验不证明其为实例的 UUID URN；mcpttURI 不代替本字段的明文 mcpttString。",
+        "只启用完整性不加密；加密结构不证明接收端已取得正确实例标识、授权已成功或绑定已更新。只做 SIP 注册是另一个入口。",
+        "poc-settings 表 7.4.1.2.2-3 的 entity/@id 示例不提供生产用客户端 ID；不从这些条款推出与 +sip.instance 等值、统一拒绝码、完整 UUID 生成算法或 XML 可发送模板。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "3.1 MCPTT client ID definition; 4.10 first use / generation reference and preservation"
+          ],
+          "printed_pages": [
+            29,
+            49
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.2.1 service-authorisation REGISTER: both protections disabled or either enabled; 7.2.1AA registration without authorisation"
+          ],
+          "printed_pages": [
+            148,
+            149
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.3.1A receiver handling of joint, partial or absent confidentiality for token and client ID"
+          ],
+          "printed_pages": [
+            154
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.1.2 XML schema: MCPTT namespace, optional client-id in shared parameters and common content type"
+          ],
+          "printed_pages": [
+            545,
+            546
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.1.3 representation items 1–3 and client-id item 17(a)"
+          ],
+          "printed_pages": [
+            547,
+            548,
+            549
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "7.4.1.2.2 table 7.4.1.2.2-3, illustrative service-settings entity IDs"
+          ],
+          "printed_pages": [
+            160,
+            161
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
       }
     }
   ],
