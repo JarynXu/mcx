@@ -95,3 +95,5 @@ CF可因资源/拥塞拒绝500并可带Retry-After；若Request-URI所指组呼�
 若排查的是会话 GRUU 是否能携带组号、正文已加密时该怎样判断，查[会话 GRUU 与敏感业务身份的边界](session-gruu-sensitive-identity.md)。
 
 已成功重入，随后由终端主动离会，查[PF 怎样取出站 BYE 的会话标识，以及哪份 200 才能回给终端](prearranged-participant-refer-leave.md#on-demand-member-bye)。
+
+如果终端已没有旧会话 URI，用户按组身份重新发起普通按需呼叫，见[已有活动组呼时的 200 / 123](prearranged-server-admission-routing.md#join-active-group-123)。这是按组加入的独立入口，不是把组 ID 填入定向重入请求。

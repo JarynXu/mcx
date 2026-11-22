@@ -6,7 +6,7 @@
   "title": "普通按需预安排组呼：服务器准入与邀请路由",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
-  "condition_rule": "Inherit common_conditions and add claim conditions. 带“迫近危险初始准入”的声明按该条实际收到的初始 INVITE、所指组和组旧状态分别适用，不套用普通请求的无优先指示前提。 三条新增普通按需起呼声明分别核对角色部署及实收请求或响应。按需 offer 或 answer 的构造不以合设为前提；只有省略相应字段替换才要检查本次 O-PF 与 CF 是否合设、PF 是否缺对应专用地址或端口。",
+  "condition_rule": "Inherit common_conditions and add claim conditions. 带“迫近危险初始准入”的声明按该条实际收到的初始 INVITE、所指组和组旧状态分别适用，不套用普通请求的无优先指示前提。 涉及合设与 SDP 改写的声明分别核对角色部署及实收请求或响应。按需 offer 或 answer 的构造不以合设为前提；只有省略相应字段替换才要检查本次 O-PF 与 CF 是否合设、PF 是否缺对应专用地址或端口。 按组加入与定向重入须按实际目标及到达的分支区分。",
   "common_conditions": [
     "固定 TS24.379 V16.14.0 的在网、直接组身份、GMS 管理的普通预安排组；组文档不含 temporary/regrouped，不是 constituent 组或预配置重组；不含 chat、广播、功能别名或离网业务。",
     "除条件明确标为“迫近危险初始准入”的声明，其余声明仍限不带 emergency-ind/imminentperil-ind/alert-ind、且组不处于紧急或迫近危险状态的普通请求。各角色按实际收到的初始请求处理；不以主叫已归属、文档已取得、目标已接受或全链成功作为公共前提。",
@@ -1062,6 +1062,93 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "group-target-active-join-warning-123",
+      "title": "按组发起遇到已有活动组呼：CF 对接受的本次加入回 200/123",
+      "conditions": [
+        "终端按通常组呼方式发起按需初始 INVITE，业务正文标识目标组，O-PF 的出向请求以 CF PSI 为目标。不是使用已有会话身份的定向重入。",
+        "CF 实收对应的初始 INVITE；已为该组呼分配会话身份、且会话活动时进入已有组呼分支。下述成功行为以各准入条件通过为前提。O-PF 按其实际收到的匹配 200 分别处理。"
+      ],
+      "conclusion": "无活动会话另走新建条件；普通直接组的归属不符合时，已有会话分支仍须拒绝为 403、Warning 文本 120。相应准入通过后，CF 生成 200，给入站 offer 作 SDP answer，Contact 带 CF 侧会话 URI，Warning 外层码 399，文本编号 123；媒体面交互触发的处理完成后发送，接着向会议事件订阅者发入会通知。O-PF 收到相应的 200 和 Warning 后，须把收到的 Warning 带入终端侧自己的 200，Contact 给出映射的 PF 侧会话身份。",
+      "normative_strength": "会话状态判断、归属拒绝、成功分支的响应、条件 Warning 转带和后续通知为 SHALL。不是主动重入的成功条件；新建也有自己的准入条件。",
+      "limitations": [
+        "成功接入已有业务会话不代表恢复历史 SIP 对话、确认原通话尚未结束、已获话权或端到端媒体实达。 新建分支也可因归属不符回 403/120；单看它不能判定组呼原状态。两角色合设时以本次内部记录核对，不能要求 IMS 一定出现中间腿。",
+        "定向重入成功步骤未列 123 义务；单份日志缺 123 不足以判定走了新建。旧 URI 丢失不构成自动再发请求的要求，也不能从此推出 ACK/代理下一跳。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.1.1 steps 10 and 14: initial group-addressed establishment; 10.1.1.2.4.1: initial session-targeted rejoin"
+          ],
+          "printed_pages": [
+            220,
+            221,
+            229
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.1 steps 8–12 and matching 2xx steps 2–8: ordinary group target at CF and originating PF Warning/Contact propagation"
+          ],
+          "printed_pages": [
+            231,
+            232
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.2 step 9 and steps 14–15: active session determination, ordinary join admission and 200/123"
+          ],
+          "printed_pages": [
+            244,
+            245,
+            246,
+            247,
+            248
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.4.1–2 and Table 4.4.2-2 row 123: Warning header code and three-digit text code; 4.5: role-local session identity and mapping; 6.3.3.2.3.2(5): CF Contact"
+          ],
+          "printed_pages": [
+            33,
+            34,
+            36,
+            38,
+            39,
+            120
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.5.1: mapped rejoin target; 10.1.1.4.5.1 steps 11–16: rejoin success, distinct from the group-targeted procedure"
+          ],
+          "printed_pages": [
+            239,
+            253
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "5.3.1–2: co-located originating participating and controlling functions use internal request transfer without the IMS SIP core"
+          ],
+          "printed_pages": [
+            51,
+            52
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
     }
   ],
   "verification": {
@@ -1098,5 +1185,8 @@
         122
       ]
     }
+  ],
+  "related": [
+    "r16-mcptt-rejoin-late-entry"
   ]
 }
