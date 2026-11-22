@@ -1,0 +1,291 @@
+{
+  "topic_id": "r16-groups-partner-regroup-gmk",
+  "release": 16,
+  "standard_stage": null,
+  "state": "draft",
+  "title": "跨域临时重组：谁生成 GMK，伙伴 GMS 怎样发给自己的成员？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v16.13.0",
+  "condition_rule": "每条声明继承共同条件，再按收件方、流程步骤与网关条件判断。",
+  "common_conditions": [
+    "3GPP TS 33.180 V16.13.0，Release 16 安全规范；MCPTT 重组涉及多个 MC 域，为同一临时组建立和分发组密钥。"
+  ],
+  "claims": [
+    {
+      "id": "prior-kms-provisioning",
+      "title": "流程开始前由 KMS 向终端与两侧 GMS 提供资料",
+      "conditions": [
+        "还未开始 §7.3.3.3 的重组安全流程。"
+      ],
+      "conclusion": "MC 终端、主 GMS 和伙伴 GMS 在流程开始前均已按 §5.3 由 KMS 提供资料。",
+      "normative_strength": "§7.3.3.3 图后所列前提。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "7.3.3.3, introduction, Figure 7.3.3.3-1 and prior KMS provisioning"
+          ],
+          "printed_pages": [
+            79
+          ]
+        }
+      ],
+      "limitations": [
+        "不从此推断各端必须使用同一 KMS 或重组时需重新办理 KMS 配置。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "primary-creates-group-key-and-id",
+      "title": "主 GMS 为临时组新建 GMK 和 GMK-ID",
+      "conditions": [
+        "已进入主 GMS 为临时组建立安全上下文的步骤。"
+      ],
+      "conclusion": "主 GMS 为该临时组创建新 GMK 和 GMK-ID，并创建其他组相关信息。",
+      "normative_strength": "§7.3.3.3 步骤 6 描述创建。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "7.3.3.3, step 6"
+          ],
+          "printed_pages": [
+            79
+          ]
+        }
+      ],
+      "limitations": [
+        "不是沿用任一组成组的 GMK，也不以伙伴 GMS 另造 GMK 作为成员分发的起点。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "primary-secures-transport-to-partner",
+      "title": "发给伙伴 GMS：按伙伴身份加密，按主 GMS 身份签名",
+      "conditions": [
+        "主 GMS 向伙伴 GMS 发重组通知。"
+      ],
+      "conclusion": "通知含 Group Key Transport 载荷。主 GMS 按 §5.7 把伙伴 GMS 当作组内接收者，以伙伴 GMS 的身份加密新 GMK，以主 GMS 自己的身份签名。GUK-ID 以从伙伴 GMS 的 URI 生成的 User Salt 派生。",
+      "normative_strength": "§7.3.3.3 步骤 7–8 描述。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "7.3.3.3, Figure 7.3.3.3-1 and steps 7–8"
+          ],
+          "printed_pages": [
+            79
+          ]
+        }
+      ],
+      "limitations": [
+        "不从签名者判断密文收件者；不把此 GUK-ID 当作临时组的 GMK-ID，也不以通知或确认代替终端安装记录。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "optional-kms-redirect-and-reattempt",
+      "title": "KMS 不获接受时，KRR 和重试均是可能分支",
+      "conditions": [
+        "主 GMS 向伙伴 GMS 发送的重组通知所载 MIKEY 消息中，所选发起方 KMS（IDRkmsi）或接收方 KMS（IDRkmsr）不获接受。"
+      ],
+      "conclusion": "可有带 KMS 信息的 KMS Redirect Response 返回主 GMS。若发生该分支，主 GMS 可重新尝试前述过程。",
+      "normative_strength": "注 1 对返回和重新尝试都使用 may。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "7.3.3.3, NOTE 1"
+          ],
+          "printed_pages": [
+            80
+          ]
+        }
+      ],
+      "limitations": [
+        "未指定每次必回、必重试、替代 KMS 的选取策略或次数。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "partner-rewraps-same-group-key",
+      "title": "伙伴取出原 GMK 与 GMK-ID，再为本域成员重封装",
+      "conditions": [
+        "伙伴 GMS 收到重组通知，办理向其所在域已归属用户发放。"
+      ],
+      "conclusion": "伙伴 GMS 从通知提取 GMK 和 GMK-ID；以各已归属用户的身份重新加密这把 GMK，为每位用户生成新的 GUK-ID，以伙伴 GMS 自己的身份签名，按 §5.7 通知这些用户。",
+      "normative_strength": "§7.3.3.3 步骤 11 描述。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "7.3.3.3, step 11"
+          ],
+          "printed_pages": [
+            80
+          ]
+        }
+      ],
+      "limitations": [
+        "同组的 GMK、GMK-ID 与各份 GUK-ID 不同类。不是转发原封装，也不新建 T 的 GMK、GMK-ID，不从这里要求不同收件人的 GUK-ID 相同或推断具体报文编码。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "primary-distributes-separately-to-own-affiliates",
+      "title": "主 GMS 为本域已归属用户另发载荷",
+      "conditions": [
+        "主 GMS 办理本域已归属用户的重组通知。"
+      ],
+      "conclusion": "主 GMS 发含 GMK 和 GUK-ID 的 Group Key Transport 载荷，以收件 MC 用户身份加密 GMK，以主 GMS 的身份签名。",
+      "normative_strength": "§7.3.3.3 步骤 14 描述。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "7.3.3.3, step 14"
+          ],
+          "printed_pages": [
+            80
+          ]
+        }
+      ],
+      "limitations": [
+        "这条分发不绕经伙伴 GMS；不据步骤号确定两域全局发送、送达、安装先后或各份 GUK-ID 相同。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "gateway-bit-indicates-sharing",
+      "title": "伙伴由安全网关代表时，主 GMS 必须标示 GMK 共享",
+      "conditions": [
+        "至少一个伙伴 GMS 由 MC Security Gateway 代表。"
+      ],
+      "conclusion": "该伙伴 GMS 的 KMS 证书属性 IsSecurityGateway 为 true。主 GMS 须通过设置 GMK 密钥参数的 Status 字段中的 Security Gateway 位，向所有组用户及本次重组的所有伙伴 GMS 标明 GMK 与 MC Security Gateway 共享。",
+      "normative_strength": "§7.3.3.3 末段：主 GMS 的告知义务为 shall。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "7.3.3.3, MC Security Gateway paragraph"
+          ],
+          "printed_pages": [
+            80
+          ]
+        }
+      ],
+      "limitations": [
+        "不从加密或签名断言所有跨域重组都有完整端到端安全；不据标志推断终端处置、安装已完成、加密媒体已送达或其他网关行为。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-groups-partner-system-regroup",
+    "r16-groups-removed-member-gmk",
+    "r16-identity-kms-redirect-response"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "7.3.3.3, introduction, Figure 7.3.3.3-1 and prior KMS provisioning"
+      ],
+      "printed_pages": [
+        79
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "7.3.3.3, step 6"
+      ],
+      "printed_pages": [
+        79
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "7.3.3.3, Figure 7.3.3.3-1 and steps 7–8"
+      ],
+      "printed_pages": [
+        79
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "7.3.3.3, NOTE 1"
+      ],
+      "printed_pages": [
+        80
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "7.3.3.3, step 11"
+      ],
+      "printed_pages": [
+        80
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "7.3.3.3, step 14"
+      ],
+      "printed_pages": [
+        80
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "7.3.3.3, MC Security Gateway paragraph"
+      ],
+      "printed_pages": [
+        80
+      ]
+    }
+  ],
+  "limitations": [
+    "限 TS 33.180 V16.13.0 §7.3.3.3 跨多个 MC 域的 MCPTT 重组安全流程；不以 Stage 2 回执判定 GMK 安装，不直接套用两份规范的步骤号。",
+    "不收录普通建组密钥分发、同域临时重组、成员移出换钥细节、一般 KRR 策略、密码字段或线上报文编码，也不据此认定某次部署已端到端互通。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}

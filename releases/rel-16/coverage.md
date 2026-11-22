@@ -3837,6 +3837,16 @@ GMS 更新与客户端答复可以任意先后或并行；客户端列表与 GMS
 
 [读取主题](topics/location/lmc-lms-access-token.md)
 
+## 跨域 MCPTT 临时重组的 GMK 与网关标记
+
+谁为临时组生成 GMK 和 GMK-ID、谁签署给伙伴和各侧成员的载荷、何时可能有 KRR 或重试、网关代表时如何标记。
+
+主 GMS 产生组密钥；伙伴 GMS 保留同一 GMK 与 GMK-ID，为本域已归属用户另封装。主 GMS 独立发给本域。有伙伴 GMS 由 MC Security Gateway 代表时，主 GMS 须通过设置 GMK 密钥参数的 Status 字段中的 Security Gateway 位，向所有组用户及本次重组的所有伙伴 GMS 标明 GMK 与安全网关共享。
+
+尚未建立：不通过业务通知回执推断终端已解密或安装 GMK，不确定两个规范的步骤号一一对应、KRR 必返或必重试、固定密码报文或完整端到端覆盖。
+
+[读取主题](topics/groups/partner-regroup-gmk.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。
