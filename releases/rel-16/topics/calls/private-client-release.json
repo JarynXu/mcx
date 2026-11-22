@@ -9,7 +9,7 @@
   "common_conditions": [
     "3GPP TS 24.379 V16.14.0（Release 16，Stage 3），在网普通 MCPTT 私呼由客户端发起结束；看本地角色、会话类型、状态和实际到达的信令。"
   ],
-  "condition_rule": "前两项按需发起分支互斥；预建私呼的发起方、实际收到 BYE 的客户端、收到 CF 的 BYE 的终接侧 PF 分别进入各自的程序，不得串成每次必经的步骤。",
+  "condition_rule": "按需私呼先分仍在建立和已经建立。预建立私呼按本次释放中实际处理请求或响应的角色选取声明：挂断方客户端、从客户端收到 REFER 的 PF、收到控制侧 BYE 的终接 PF，以及实际收到 BYE 的客户端。不能把各角色的收件或媒体动作串成每次必经的步骤。",
   "claims": [
     {
       "id": "cancel-pending-on-demand",
@@ -368,6 +368,76 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "preestablished-private-release-refer-binding",
+      "title": "挂断方 PF 怎样识别用户、拒绝或应答 REFER？",
+      "conditions": [
+        "已建立的普通私呼使用预建立会话；用户主动挂断，PF 实收该客户端的 REFER，Refer-To 中的 URI 带 method=BYE。"
+      ],
+      "conclusion": "按 §11.1.3.2.1.2 进入 §6.3.2.1.7。PF 由实收 REFER 的 P-Asserted-Identity 公共身份确定挂断方 MCPTT ID。找不到绑定，则对 REFER 回 403，Warning 文本编号 141，并停止。继续处理时，如请求同时带 Refer-Sub: false 和 Supported: norefersub，不建隐含订阅。PF 生成并发送给客户端的 REFER 200 带 Supported: norefersub；请求有 Refer-Sub: false 时也回该值。",
+      "normative_strength": "满足各分支条件时，所列 PF 动作为 SHALL。",
+      "limitations": [
+        "“不能创建 SIP 会话”不是这里的绑定失败条件；这些释放条款不为这个笼统描述规定状态码。REFER 的 200 不证明业务 BYE 已发、CF 收到或对端挂断。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.3.2.1.2: originating participating function receives the client’s REFER for private call release using a pre-established session"
+          ],
+          "printed_pages": [
+            389
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.7, steps 1–5: P-Asserted-Identity binding, 403/141 and stop; subscription and REFER response"
+          ],
+          "printed_pages": [
+            88
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "preestablished-private-release-cf-bye",
+      "title": "PF 发往控制侧的 BYE 用哪个会话身份？收到该 BYE 的 200 后处理哪侧资源？",
+      "conditions": [
+        "已建立的普通私呼使用预建立会话；挂断侧 PF 实收客户端发来的 REFER，Refer-To 中的 URI 带 method=BYE，且身份绑定检查通过。媒体交互以 PF 实际收到其 CF 方向业务 BYE 的 200 为条件。"
+      ],
+      "conclusion": "先发送给客户端的 REFER 200，再生成并向 CF 发送另一笔业务 BYE。新 BYE 的 Request-URI 是实收 REFER 的 Refer-To 中待释放的 MCPTT 业务会话身份；P-Asserted-Identity 复制自该 REFER。PF 收到对自己发给 CF 的 BYE 的 200 后，与媒体面交互以释放其与 CF 的 SIP 会话所关联的媒体资源。",
+      "normative_strength": "满足各分支条件时，所列 PF 动作为 SHALL。",
+      "limitations": [
+        "先后指 PF 发出顺序；第二个 200 不是另一份给客户端的 REFER 响应。它不证明远端终端已处理释放、媒体资源实际回收完毕或客户端预建立会话已拆。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.3.2.1.2: originating participating function receives the client’s REFER for private call release using a pre-established session"
+          ],
+          "printed_pages": [
+            389
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.7, steps 5–7 and final paragraph: send REFER 200, create CF-bound BYE from Refer-To with received P-Asserted-Identity, handle its 200"
+          ],
+          "printed_pages": [
+            88
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
     }
   ],
   "source_references": [
@@ -451,6 +521,33 @@
       ],
       "printed_pages": [
         389
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.3.2.1.2: originating participating function receives the client’s REFER for private call release using a pre-established session"
+      ],
+      "printed_pages": [
+        389
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.1.7, steps 1–5: P-Asserted-Identity binding, 403/141 and stop; subscription and REFER response"
+      ],
+      "printed_pages": [
+        88
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.1.7, steps 5–7 and final paragraph: send REFER 200, create CF-bound BYE from Refer-To with received P-Asserted-Identity, handle its 200"
+      ],
+      "printed_pages": [
+        88
       ]
     }
   ],
