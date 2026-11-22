@@ -5324,6 +5324,10 @@
         {
           "condition": "若事件是非控制功能在单播上处理无许可终端，查其 RTP 权限。",
           "read": "topics/media/on-network-noncontrolling-floor-rtp.md"
+        },
+        {
+          "condition": "已取得终端 MBMS 接口的收包记录，要查话权参与者、媒体混音器和本端 SSRC，而非 PF 有没有重复发送。",
+          "read": "topics/bearers/mcptt-mbms-map-unmap-timers.md"
         }
       ],
       "boundary": "入向 Ack 请求、MBMS 发送与客户端收到分别取证；RTP 判重不借用话权消息的序号规则。"
@@ -5786,7 +5790,7 @@
     },
     {
       "id": "r16-bearers-mcptt-mbms-map-unmap-timers",
-      "question": "Map Group To Bearer 的 Floor m-line Number 为 0 或非零时，哪个是语音端口？IP Version 如何决定地址宽度，缺通告 SDP 还能读出什么？ 同段通话反复发组播 Map 或 Unmap，怎么查 T16、T15 监听分支和 T17/C17 到限？",
+      "question": "Map Group To Bearer 的 Floor m-line Number 为 0 或非零时，哪个是语音端口？IP Version 如何决定地址宽度，缺通告 SDP 还能读出什么？ 同段通话反复发组播 Map 或 Unmap，怎么查 T16、T15 监听分支和 T17/C17 到限？ 终端在 MBMS 子信道收到话权消息和 RTP，应交给谁？怎样区分没有通话关联、缺关联记录和 RTP 的 SSRC 与本机相同？",
       "start": "topics/bearers/mcptt-mbms-map-unmap-timers.md",
       "next_if": [
         {
@@ -5802,7 +5806,7 @@
           "read": "topics/media/mbms-floor-ack-and-rtp-duplicates.md"
         }
       ],
-      "boundary": "Map 可按字段读出端口，但要定位相应媒体描述须取得其接收子信道关联的 SDP。重复 Map 是 T16 的可能现场证据，实际事件靠 PF 日志对证；T15/T17 和终端实收须另证。"
+      "boundary": "Map 可按字段读出端口，但要定位相应媒体描述须取得其接收子信道关联的 SDP。重复 Map 是 T16 的可能现场证据，实际事件靠 PF 日志对证；T15/T17 和终端实收须另证。 终端应怎样处置来包，查它收包时的通话关联；不知道本端状态时不能判定忽略。"
     },
     {
       "id": "r16-calls-onnetwork-imminent-peril-cancellation",

@@ -3,18 +3,19 @@
   "release": 16,
   "standard_stage": 3,
   "state": "draft",
-  "title": "MCPTT 组播：怎样读 Map 的端口，Map、Unmap 为什么重发？",
+  "title": "MCPTT 组播映射：Map 的端口、终端收包和 Map／Unmap 重发",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.380-v16.9.0",
-  "condition_rule": "按对象分别核对 Map 字段、PF 的实际定时器事件和应用指示，或终端实收记录。每条声明继承公共条件；读发包字段不要求先取得定时器日志。",
+  "condition_rule": "按对象分别核对 Map 字段、PF 的实际定时器事件和应用指示，或终端实收记录。每条声明继承公共条件；读发包字段不要求先取得定时器日志。解释终端收包时，核对该终端的 MBMS 接口、收包时的本端通话关联及适用的 RTP SSRC；不要求抓包本身包含先前的 Map。",
   "common_conditions": [
-    "Rel-16，在网 MCPTT 组播的 Map／Unmap 子信道控制。"
+    "Rel-16，在网 MCPTT 组播子信道。"
   ],
   "claims": [
     {
       "id": "active-conversation-map-is-periodic-not-device-receipt",
       "title": "T16 到期重发 Map 并保持活跃，不需要借终端确认解释每次重发",
       "conditions": [
+        "Rel-16，在网 MCPTT 组播的 Map／Unmap 子信道控制。",
         "固定 TS 24.380 V16.9.0，Rel-16 Stage 3。在网 MCPTT 组会话，参与功能支持 MBMS 子信道控制，已为这段通话建立该控制实例；本页讨论活跃状态内的计时与接收证据。",
         "同一段通话的控制实例处于 M: A conversation is active，实际发生 T16 到期。"
       ],
@@ -73,6 +74,7 @@
       "id": "conversation-expiry-branches-by-application-listener-evidence",
       "title": "T15 到期先看应用指示：无监听释放，有监听发 Unmap 并启动 T17",
       "conditions": [
+        "Rel-16，在网 MCPTT 组播的 Map／Unmap 子信道控制。",
         "固定 TS 24.380 V16.9.0，Rel-16 Stage 3。在网 MCPTT 组会话，参与功能支持 MBMS 子信道控制，已为这段通话建立该控制实例；本页讨论活跃状态内的计时与接收证据。",
         "同一活跃通话的 T15 实际到期，且应用给出监听情况。"
       ],
@@ -121,6 +123,7 @@
       "id": "unmap-t17-c17-retry-limit-is-per-conversation",
       "title": "达到 T17/C17 上限事件后按详细步骤发送 Unmap 再释放本段实例",
       "conditions": [
+        "Rel-16，在网 MCPTT 组播的 Map／Unmap 子信道控制。",
         "固定 TS 24.380 V16.9.0，Rel-16 Stage 3。在网 MCPTT 组会话，参与功能支持 MBMS 子信道控制，已为这段通话建立该控制实例；本页讨论活跃状态内的计时与接收证据。",
         "T15 有监听者分支已启动 T17，今次实际发生 T17 到期。"
       ],
@@ -169,6 +172,7 @@
       "id": "map-floor-number-selects-port-layout",
       "title": "Map 里第一个端口给谁？",
       "conditions": [
+        "Rel-16，在网 MCPTT 组播的 Map／Unmap 子信道控制。",
         "读参与 MCPTT 功能发给客户端的 Map Group To Bearer。核对 RTCP APP 的 PT=204、Name=MCMC、subtype=00000，定位该消息中的 MBMS Subchannel 字段（ID 0）。"
       ],
       "conclusion": "前三个 32 位字之后，组 ID、TMGI、MBMS Subchannel 三个字段的顺序不限。MBMS Subchannel 内 Floor m-line Number 为 4 位：值为 0 表示媒体与话权共用子信道，不携带独立 Floor control Port Number；值大于 0 时先读 32 位话权端口。两种情形都接着读 32 位 Media Port Number，再读 IP Address。IP Version 为 0 时地址为 32 位 IPv4，为 1 时为 128 位 IPv6，其余编码保留。",
@@ -217,6 +221,7 @@
       "id": "map-line-references-need-announcement-context",
       "title": "有 Map 端口但没有当时的 SDP，可以回答到哪里？",
       "conditions": [
+        "Rel-16，在网 MCPTT 组播的 Map／Unmap 子信道控制。",
         "已定位 Map 的 MBMS Subchannel 字段。读取端口和行号不要求终端收件；要解释某终端实收 Map 的媒体行，另须知道它经哪条通用子信道收到。"
       ],
       "conclusion": "4 位 Audio m-line Number 指向承载通告 SIP MESSAGE 的 m=audio；非零 4 位 Floor m-line Number 指向供话权使用的 m=application。终端按实收 Map 的通用子信道所关联的 SDP 解释这些编号。通告的 GPMS 标识通用信令应用行，两种行号不是 UDP 端口；该组的媒体地址和端口取自 Map，不取通告中的占位端口 9。",
@@ -274,6 +279,55 @@
             466,
             470,
             471
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.3.1–.2/.4/.6 UE prerequisites, actual receipt, mapping, unmapping, separate bearer announcement"
+          ],
+          "printed_pages": [
+            209,
+            210
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "client-dispatches-received-floor-and-rtp-by-conversation",
+      "title": "终端实收 MBMS 包：话权参与者、媒体混音器，还是忽略？",
+      "conditions": [
+        "客户端支持经 MBMS 接收话权控制消息和 RTP；承载已激活并已通告。该客户端的 MBMS 接口实际在 MBMS 子信道收到本次话权控制消息或 RTP 媒体包。"
+      ],
+      "conclusion": "先查 TMGI、音频及话权子信道是否在本端关联到组会话中正在进行的这段通话。有此关联，话权控制消息须交给这段通话的话权参与者；若收到的 RTP 的 SSRC 与接收客户端使用的 SSRC 不同，则须将该 RTP 包交给这段通话的媒体混音器。确认没有此关联，两类来包均须忽略。",
+      "normative_strength": "§10.3.3 第 1a、1b、2a 项分别规定条件成立时的必做动作；第 1b 项的 SSRC 条件仅适用于 RTP。",
+      "limitations": [
+        "有关联而 RTP 的 SSRC 与本端相同，只能判定未满足第 1b 项的转交条件；本条没有规定此时必须忽略或另作何处理。交给混音器不证明已经播放。",
+        "本端在通用 MBMS 子信道实收 Map，将 TMGI、音频和话权子信道关联到消息所指的 MCPTT 组。在 MBMS 子信道实收该组的 Unmap，且已有相应关联时，解除这段通话的相应关联。看不到建关联的记录不能当作已确认无关联；PF 发包、PF 去重或其他终端的记录都不能替本端证明收包时的关联。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.3.1: supporting client procedures assume an active and announced MBMS bearer"
+          ],
+          "printed_pages": [
+            209,
+            210
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.3.3(1a,1b,2a): client dispatch of actually received floor control or RTP by active conversation association and RTP SSRC"
+          ],
+          "printed_pages": [
+            210
           ]
         },
         {
