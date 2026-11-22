@@ -1,0 +1,347 @@
+{
+  "topic_id": "r16-calls-lmr-interworking-private-auto-setup",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCPTT 与 LMR 的自动开始私呼：谁核权、谁能用新参数重试、谁管话权？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v16.8.0",
+  "condition_rule": "每条声明继承共同条件，再按主叫一侧、角色、参数结果和话权条件判断。",
+  "common_conditions": [
+    "3GPP TS 23.283 V16.8.0，Release 16，Stage 2；主叫在 MCPTT 与 LMR 的互通私呼中选择自动开始，MCPTT 客户端已登记到 MCPTT 业务。",
+    "LMR 主叫的方向以 LMR 用户已经向 MCPTT 用户发起私呼为前提。"
+  ],
+  "claims": [
+    {
+      "id": "mcptt-origin-admission",
+      "title": "MCPTT 主叫：查能否发起私呼及以自动方式发起",
+      "conditions": [
+        "MCPTT 用户主叫，LMR 用户被叫。",
+        "MCPTT 客户端向 MCPTT 服务器发出自动开始私呼请求。"
+      ],
+      "conclusion": "MCPTT 服务器分别核对主叫的私呼发起权限和自动开始发起权限。获准时向 IWF 发私呼请求，提供初始所提媒体类型的全部或子集。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.2.1, introduction and preconditions 1–2"
+          ],
+          "printed_pages": [
+            89
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.2.1, Figure 10.4.2.1-1, steps 1–3 excluding the location items and NOTE"
+          ],
+          "printed_pages": [
+            90
+          ]
+        }
+      ],
+      "limitations": [
+        "登记到 MCPTT 业务不能代替这两项权限核对，也不指定 IMS/SIP 注册报文、拒绝码或 IWF 至 LMR 的本地操作。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcptt-origin-response-and-alternative",
+      "title": "MCPTT 主叫：结果成功进入步骤 6；失败时可按可接受的替代参数另发请求",
+      "conditions": [
+        "MCPTT 用户主叫，LMR 用户被叫。",
+        "IWF 已返回私呼响应，MCPTT 服务器向主叫客户端转达本次私呼的响应。"
+      ],
+      "conclusion": "IWF 响应含成功或失败，失败可附一个或多个替代参数。只有主叫客户端收到并处理这次响应，才能按下面的结果或参数进入后续分支。只见服务器转发，不能据此判断客户端已进入哪一分支。结果成功则主叫客户端进入步骤 6；失败但替代参数可接受时，客户端可以用新参数发送一份新的私呼请求，主叫可选择结束，参数变更也可通知主叫。在该失败分支中，返回的参数不可接受则呼叫失败。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.2.1, introduction and preconditions 1–2"
+          ],
+          "printed_pages": [
+            89
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.2.1, steps 4–5"
+          ],
+          "printed_pages": [
+            90,
+            91
+          ]
+        }
+      ],
+      "limitations": [
+        "替代参数不是成功结果，不要求重试或承诺会通知。不给没有可用替代参数的失败补写后续请求。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-origin-admission",
+      "title": "LMR 主叫：查 MCPTT 被叫是否获准且能接，并查自动开始接收权限",
+      "conditions": [
+        "LMR 用户主叫，MCPTT 用户被叫；LMR 用户已向 MCPTT 用户发起私呼。",
+        "IWF 向 MCPTT 服务器发出自动开始私呼请求。"
+      ],
+      "conclusion": "MCPTT 服务器查 MCPTT 被叫是否获准且有能力接收私呼，并查是否获准接收自动开始的呼叫。该流程在获准后向 MCPTT 客户端发送私呼请求，提供收到的媒体类型的全部或子集。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.2.2, introduction, preconditions 1–3 and NOTE 1"
+          ],
+          "printed_pages": [
+            91
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.2.2, Figure 10.4.2.2-1, steps 1–3 excluding the location items"
+          ],
+          "printed_pages": [
+            91,
+            92
+          ]
+        }
+      ],
+      "limitations": [
+        "登记与这些检查不能互相代替。不由检查项推定能力不足的具体拒绝原因码、位置传递规则或本地 LMR 操作。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-origin-response-and-alternative",
+      "title": "LMR 主叫：IWF 仅在参数改变且可接受时可从步骤 1 重试",
+      "conditions": [
+        "LMR 用户主叫，MCPTT 用户被叫；LMR 用户已向 MCPTT 用户发起私呼。",
+        "MCPTT 客户端已给出私呼响应，MCPTT 服务器向 IWF 回私呼响应。"
+      ],
+      "conclusion": "客户端响应报成功或失败，失败可以附替代参数。服务器回复 IWF 时提供客户端所答的同一媒体类型。只有 IWF 收到并处理这次响应，才能按下面的参数进入后续分支。只见服务器回送，不能据此判断 IWF 已进入哪一分支。参数不可接受则失败；参数改变且可接受，IWF 可用新参数从步骤 1 重发。§10.4.2.2 步骤 5 把参数没有变化列为进入步骤 6 的正常后续分支。参数变更可通知 LMR 主叫。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.2.2, introduction, preconditions 1–3 and NOTE 1"
+          ],
+          "printed_pages": [
+            91
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.2.2, steps 4–5 and NOTE 2"
+          ],
+          "printed_pages": [
+            92
+          ]
+        }
+      ],
+      "limitations": [
+        "对同时明确失败且参数未变的响应，不用最后一句把失败改写为成功，也不补写拒绝方式或重试规则。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "media-plane-separate-from-response",
+      "title": "步骤 6 是客户端与 IWF 的媒体面建立，不是实收证据",
+      "conditions": [
+        "任一方向已经推进至本方向步骤 6。"
+      ],
+      "conclusion": "MCPTT 客户端对 IWF 的媒体面建立，任一端可以传送媒体。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.2.1, step 6"
+          ],
+          "printed_pages": [
+            91
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.2.2, step 6"
+          ],
+          "printed_pages": [
+            92
+          ]
+        }
+      ],
+      "limitations": [
+        "成功响应、流程中的媒体面建立和现场实收媒体是不同证据；不从响应或本条推断已经发出或收到语音。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "originating-system-owns-floor",
+      "title": "有话权控制时，发起私呼的系统负责授予、裁决与撤销",
+      "conditions": [
+        "任一方向已经推进至本方向步骤 6；本次私呼使用话权控制。"
+      ],
+      "conclusion": "发起私呼的系统负责授予话权、裁决竞争请求、发出话权撤销指示：MCPTT 主叫由 MCPTT 系统负责，LMR 主叫由 LMR 系统负责。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.2.1, introduction and preconditions 1–2"
+          ],
+          "printed_pages": [
+            89
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.2.1, step 6"
+          ],
+          "printed_pages": [
+            91
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.2.2, introduction, preconditions 1–3 and NOTE 1"
+          ],
+          "printed_pages": [
+            91
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.2.2, step 6"
+          ],
+          "printed_pages": [
+            92
+          ]
+        }
+      ],
+      "limitations": [
+        "不据互通端点点名实际仲裁设备或把互通组的宿主规则移入私呼；无话权控制时不应用该职责。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-media-lmr-interworking-group-floor-arbitration",
+    "r16-calls-private-server-admission-routing",
+    "r16-calls-partner-private-call-routing"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.4.2.1, introduction and preconditions 1–2"
+      ],
+      "printed_pages": [
+        89
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.4.2.1, Figure 10.4.2.1-1, steps 1–3 excluding the location items and NOTE"
+      ],
+      "printed_pages": [
+        90
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.4.2.1, steps 4–5"
+      ],
+      "printed_pages": [
+        90,
+        91
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.4.2.1, step 6"
+      ],
+      "printed_pages": [
+        91
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.4.2.2, introduction, preconditions 1–3 and NOTE 1"
+      ],
+      "printed_pages": [
+        91
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.4.2.2, Figure 10.4.2.2-1, steps 1–3 excluding the location items"
+      ],
+      "printed_pages": [
+        91,
+        92
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.4.2.2, steps 4–5 and NOTE 2"
+      ],
+      "printed_pages": [
+        92
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.4.2.2, step 6"
+      ],
+      "printed_pages": [
+        92
+      ]
+    }
+  ],
+  "limitations": [
+    "限 TS 23.283 V16.8.0 §§10.4.2.1–.2 的自动开始互通私呼。主叫和被叫权限、参数变更、话权职责与媒体证据分别读，不建立 SIP、LMR 无线侧或手动开始规则。",
+    "不收录位置传递条件或方向，也不将阶段 2 的媒体面建立等同于实际媒体流。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}

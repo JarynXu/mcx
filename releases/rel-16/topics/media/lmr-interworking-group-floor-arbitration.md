@@ -26,4 +26,4 @@
 
 步骤 7 后另有一条注：**若 IWF 已代表组内 LMR 用户归属该组，只向 IWF 发送一条 IWF Floor Taken**。这只说占用通知，既未把多个请求或拒绝合成一条，也没有取消上述“不由 IWF 代办归属”的示例前提。不能凭这条注把整段不过滤流程搬到代表归属场景，也不能据此断言代表归属和不过滤必然互斥。图里用 IWF 表示 LMR 一侧的参与者，这不等于 IWF 已替这些用户办理了组归属。归属是否成立见[MCPTT 定义组的 LMR 归属](../groups/mc-hosted-lmr-affiliation.md)。[§10.5.8 前提 3–5、步骤 1–3，印刷页 110](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/16.08.00_60/ts_123283v160800p.pdf#page=111)；[步骤 7 及其后的注，印刷页 111](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/16.08.00_60/ts_123283v160800p.pdf#page=112)。
 
-这里不规定私呼由谁控制、正在发言时怎样抢占、LMR 空口操作、Stage 3 报文和定时器，也不由这些话权记录判定实际媒体已送达。若两侧都是 MC 业务系统，先分清这不是本文的 LMR 互通；[跨两个 MC 系统的媒体复制](partner-group-media-replication.md)是另一个问题。
+查[自动开始互通私呼的话权](../calls/lmr-interworking-private-auto-setup.md)时，看发起系统，不用本页的组宿主规则。这里不规定私呼由谁控制、正在发言时怎样抢占、LMR 空口操作、Stage 3 报文和定时器，也不由这些话权记录判定实际媒体已送达。若两侧都是 MC 业务系统，先分清这不是本文的 LMR 互通；[跨两个 MC 系统的媒体复制](partner-group-media-replication.md)是另一个问题。
