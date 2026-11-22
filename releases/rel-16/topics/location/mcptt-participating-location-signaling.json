@@ -409,16 +409,116 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "mcptt-location-report-content",
+      "title": "有服务小区但没有经纬度，是缺坐标还是缺少必需的报告结构？",
+      "conditions": [
+        "检查 §13 的完整位置报告 MIME 体；先按 F.3.2 核对 Report，再按实际入口判断该报告应携哪些位置项。"
+      ],
+      "conclusion": "Report 的 CurrentLocation 必须有一个，ReportType 属性必须取 Emergency 或 NonEmergency；TriggerId 可为零到多个。CurrentLocation 允许省略 CurrentServingEcgi、NeighbouringEcgi、MbmsSaId、MbsfnArea 或 CurrentCoordinate，这五项中只有 NeighbouringEcgi 可重复。若有 CurrentCoordinate，其 longitude、latitude 依次必备。服务小区标识不是经纬度，缺 CurrentLocation 不等于只缺可选坐标。",
+      "normative_strength": "所列结构基数按 F.3.2，F.3.3 说明各项含义。§13.3.4.2 两个发送分支均要求填与实际触发条件对应的位置项。",
+      "limitations": [
+        "一般结构可选不意味着发送者报齐了本次应报内容。§6.2.9.1(2) 是携紧急告警请求的独立入口：终端先前通过 §13.3.2 收到含 EmergencyLocationInformation 的配置时，按该元素填写；先前未获此配置时，须含 CurrentCoordinate；仅凭 ReportType 不能判定进入该入口。",
+        "抓包不全，不能以未见某节点判定整个报告缺项。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.3.2: tReportType, tCurrentLocationType and tPointCoordinate; required container and axes, optional individual measurements"
+          ],
+          "printed_pages": [
+            559,
+            562,
+            563
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.3.3: ReportType and TriggerId; CurrentLocation measurement semantics and cardinalities"
+          ],
+          "printed_pages": [
+            568,
+            569
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "13.3.4.2: both sending branches include location reporting elements corresponding to fired triggers"
+          ],
+          "printed_pages": [
+            463
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.9.1(2)(c)–(d): emergency-alert location selection with or without prior EmergencyLocationInformation (comparison only)"
+          ],
+          "printed_pages": [
+            77
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mcptt-location-report-protected-values",
+      "title": "怎样区别没有上报坐标和上报了受保护的坐标分量？",
+      "conditions": [
+        "已辨认完整报告的 CurrentLocation 及实际存在的无线位置项或坐标分量；按是否需要保密保护对照 F.3.3，不从 ReportType 推定保护策略。"
+      ],
+      "conclusion": "type 位于 CurrentServingEcgi、NeighbouringEcgi、MbmsSaId、MbsfnArea 元素上；对坐标则分别位于 longitude 和 latitude。无需保密保护时 type 为 Normal，前两者用 Ecgi 承载明文，后两者分别用 SaId、MbsfnAreaId。明文坐标子元素在 F.3.2 的 XSD 为 threebytes，在 F.3.3 正文为 three-bytes。需要保密保护时 type 为 Encrypted，各已包含的无线位置项或坐标分量各自携带 xenc:EncryptedData（命名空间 http://www.w3.org/2001/04/xmlenc#），内含 CipherData/CipherValue；Type 属性、EncryptionMethod、KeyInfo 可选。",
+      "normative_strength": "字段取值和密文结构按 F.3.3 在对应条件下适用；F.3.2 的 type 属性声明本身未标 use=\"required\"。两层不能互代。",
+      "limitations": [
+        "不把两种明文拼写当作可互换的 XML 名称，不把坐标编码当作十进制度数。密文结构能表明包含受保护的值，不能从密文本身读出明文、验证真实位置或证明接收方成功解密。",
+        "PF 按收到的 MCPTT ID 核准报告，获准后按需使用。结构、标签或密文不等于核准、使用或发送方实际策略的证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.3.2: tLocationType, tCoordinateType, type attribute and threebytes; F.3.3: Normal versus Encrypted value wrappers and prose three-bytes"
+          ],
+          "printed_pages": [
+            562,
+            563,
+            569
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "13.2.4: recipient authorises on received MCPTT ID and uses authorised report as needed"
+          ],
+          "printed_pages": [
+            461
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "related": [
     "r16-location-event-reporting-configuration",
     "r16-location-user-subscription",
-    "r16-identity-shared-sip-registration"
+    "r16-identity-shared-sip-registration",
+    "r16-mcptt-standalone-group-alert-client"
   ],
   "limitations": [
     "不描述通用 Stage 2 LMS/LMC 订阅或其他 Release，也不论证 LMS 的 SIP PSI、SIP SUBSCRIBE、每次 IMS 注册后的配置或完整地理区域处理。",
-    "不补 XML 安全、字段别名或缺配置时的回送策略。Full/Update 只说明有效位置配置的替换与追加，不补缺省值、冲突合并或异常处理。"
+    "只说明位置项的明文和密文表示，不展开密钥处理、解密或其他 XML 安全程序、字段别名或缺配置时的回送策略。Full/Update 只说明有效位置配置的替换与追加，不补缺省值、冲突合并或异常处理。"
   ],
   "verification": {
     "original_clauses_checked": true,
@@ -606,6 +706,65 @@
       "printed_pages": [
         76,
         77
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "F.3.2: tReportType, tCurrentLocationType and tPointCoordinate; required container and axes, optional individual measurements"
+      ],
+      "printed_pages": [
+        559,
+        562,
+        563
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "F.3.3: ReportType and TriggerId; CurrentLocation measurement semantics and cardinalities"
+      ],
+      "printed_pages": [
+        568,
+        569
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "13.3.4.2: both sending branches include location reporting elements corresponding to fired triggers"
+      ],
+      "printed_pages": [
+        463
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.2.9.1(2)(c)–(d): emergency-alert location selection with or without prior EmergencyLocationInformation (comparison only)"
+      ],
+      "printed_pages": [
+        77
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "F.3.2: tLocationType, tCoordinateType, type attribute and threebytes; F.3.3: Normal versus Encrypted value wrappers and prose three-bytes"
+      ],
+      "printed_pages": [
+        562,
+        563,
+        569
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "13.2.4: recipient authorises on received MCPTT ID and uses authorised report as needed"
+      ],
+      "printed_pages": [
+        461
       ]
     }
   ]

@@ -72,4 +72,24 @@ PF 需要终端位置时，§13.1 把配置放在**MCPTT 业务授权成功**之
 
 PF 实际收到 Content-Type 匹配、位置体的 `<location-info>` 内有 `<Report>` 的 SIP 请求，须按**收到的 MCPTT ID** 核准这份报告，用户获准才按需使用；区域进出另有流程，不在本主题展开。这里不指定 MCPTT ID 必在某一字段，也没有给出专用的 SIP 成功或拒绝码。终端发出报告、见到任意 SIP 2xx，或能用回填值配对，都不能单独证明 PF 已核准并使用位置。看到 `Report` 元素也不能直接断定含坐标。[§13.2.4，印刷页 461](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=462)。
 
+<a id="report-location-content"></a>
+## 收到位置报告却读不到经纬度，包里到底有什么？
+
+先看 `Report/CurrentLocation`。**报告必须有这个容器，但一般的报告不一定有坐标。** 完整位置体里只有服务小区、没有坐标，和连 `CurrentLocation` 都没有，是两种情况：
+
+| 在完整的 `Report` 中看哪里 | 怎样判读 |
+| --- | --- |
+| `Report` 自身 | XSD 要求一个 `CurrentLocation` 和属性 `ReportType`（`Emergency` 或 `NonEmergency`）。`TriggerId` 可为零到多个；报告与显式请求的关联另按上节核对。 |
+| `CurrentLocation` 的子项 | 服务小区 `CurrentServingEcgi`、邻区 `NeighbouringEcgi`、MBMS 服务区 `MbmsSaId`、MBSFN 区 `MbsfnArea`、坐标 `CurrentCoordinate` 均可选。这五项里只有邻区可重复。服务小区标识不是经纬度。 |
+| `CurrentCoordinate` | 若出现，XSD 要求依次有 `longitude`、`latitude`。只有经度而没有纬度，不等同于合法省略整个可选坐标。 |
+
+这张表只判断报告结构。§13.3.4.2 要求填入与实际触发条件对应的位置项，不能用“坐标可选”证明具体终端报齐了该报的内容。另一个入口是[独立组紧急告警](../calls/standalone-group-alert-client.md)：在 §6.2.9.1 第 2 项的告警分支中，若终端先前没有通过 §13.3.2 收到含 `EmergencyLocationInformation` 的配置，就必须带 `CurrentCoordinate`。不能只凭 `ReportType=Emergency` 就套用这条告警规则。[F.3.2，印刷页 559](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=560)、[562–563](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=563)；[F.3.3，印刷页 568–569](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=569)；[§13.3.4.2，印刷页 463](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=464)；[§6.2.9.1，印刷页 76–77](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=77)。
+
+**坐标节点在，不等于坐标明文在。** F.3.3 把保护标记 `type` 放在四类无线位置项各自的元素上；对坐标则分别放在 `longitude` 和 `latitude` 上，不在外层 `CurrentCoordinate` 或 `CurrentLocation` 上。F.3.2 的属性声明未把 `type` 标为必填；实际报告仍要按 F.3.3 对应的保护条件核对取值。
+
+- **无需保密保护时**，相应的 `type` 为 `Normal`。服务小区和邻区的明文值在 `Ecgi`，MBMS 服务区在 `SaId`，MBSFN 区在 `MbsfnAreaId`。经纬度各自的明文子元素在 F.3.2 的 XSD 拼作 `threebytes`，F.3.3 正文写作 `three-bytes`。这是同一版本的拼写差异，不把两者注册成等价 XML 名称，也不把编码值直接读作十进制度数。
+- **需要保密保护时**，相应的 `type` 为 `Encrypted`，上述每个已包含的无线位置项或坐标分量各自带 `xenc:EncryptedData`（这里的 `xenc` 代表命名空间 `http://www.w3.org/2001/04/xmlenc#`），其中有 `CipherData/CipherValue`。`Type` 属性、`EncryptionMethod` 和 `KeyInfo` 是可选信息；不能仅因其中一项缺失就认定没有密文。
+
+例如，两条坐标轴都在，各自都有上述密文结构：这份包报告了受保护的坐标分量，**不是终端没报坐标**。观察者不能从这段密文读出明文经纬度，也不能据此还原发送方实际使用的配置，或断言 PF 已解密、已按 MCPTT ID 核准报告，或已取得终端的真实位置。若抓到的只是片段，更不能凭没看见某个节点判定完整报告缺项。[F.3.2，印刷页 562–563](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=563)；[F.3.3，印刷页 569](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=570)；[§13.2.4，印刷页 461](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=462)。
+
 若问的是 [LMS 如何在 Stage 2 配置事件上报](event-reporting-configuration.md)或[其他用户怎样订阅位置](user-subscription.md)，按 LMS 的角色读相应主题。若在排查 IMS 接入之后哪项 MC 业务获授权，见[共享 SIP 注册与业务授权](../identity/shared-sip-registration.md)。此处的 PSI 是位置配置 SIP MESSAGE 的 `P-Asserted-Identity` 所带的参与 MCPTT 功能标识，不是 LMS 有 SIP PSI 或 SIP SUBSCRIBE 的证据。
