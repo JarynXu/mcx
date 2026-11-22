@@ -1,0 +1,191 @@
+{
+  "topic_id": "r16-groups-preconfigured-regroup-removal",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "移除预配置重组：控制功能何时回 200，移除通知发给谁？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明继承共同条件，再叠加自己的触发与角色。",
+  "common_conditions": [
+    "Release 16，TS 24.379 V16.14.0，Stage 3，MCPTT 基于预配置组的组重组或用户重组的移除程序。"
+  ],
+  "claims": [
+    {
+      "id": "r16-regroup-removal-request-response",
+      "title": "受理请求时的 200 和两种 403",
+      "conditions": [
+        "用户请求移除一个基于预配置组的临时重组 T；分别核对 O-PF 与 CF 的入站事务。目标标识是 T，不是配置来源 P。"
+      ],
+      "conclusion": "O-PF 若查不到设为 true 的 allow-regroup，回 403/161 并停止。CF 若因资源或拥塞风险拒绝，可回 500，可带 Retry-After，并停止；若判定所请求的重组身份不存在，须回 403/163 并停止。正常时 CF 先对入站移除请求回 200，再向下游发送。O-PF 实收其出向 MESSAGE 的 2xx 后另向客户端回 200。",
+      "normative_strength": "资源不足无法处理或有拥塞风险时的拒绝及 Retry-After 为 MAY；无权、目标不存在时的拒绝以及正常分支的应答为 SHALL。",
+      "limitations": [
+        "161、163 是 Warning 文本码；仅凭 403 无法区分。CF 的响应不是 NCF、T-PF 或客户端已收到或处理的证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.1: regroup identity, preconfigured group identity and removal initiators"
+          ],
+          "printed_pages": [
+            494
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.2.3: initiating user authorization and 403/161; response to the originating client after receipt of a 2xx"
+          ],
+          "printed_pages": [
+            498,
+            499
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "Table 4.4.2-2: Warning text 161 and 163"
+          ],
+          "printed_pages": [
+            38
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.3.2(1–3): requested removal, optional congestion or resource rejection, nonexistent regroup and response before fan-out"
+          ],
+          "printed_pages": [
+            502
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.3.2(4–5): per-constituent NCF or per-terminating-participating-function affiliated-user list; inbound message content"
+          ],
+          "printed_pages": [
+            502,
+            503
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "r16-regroup-removal-recipient",
+      "title": "同一触发下依重组类型选择接收方",
+      "conditions": [
+        "CF 正按收到的有效请求或自己的决定分发，已知 T 是组重组还是用户重组。"
+      ],
+      "conclusion": "组重组按每个组成组找其 NCF，Request-URI 是该 NCF 的 PSI。用户重组按既属于 T 又已归属 T 的用户分组，为服务这些用户的各 T-PF 生成发往其 PSI 的 MESSAGE，并用各自的 MCPTT ID 名单填 users-for-regroup。",
+      "normative_strength": "两套程序分别要求逐组成组或逐适用 T-PF 构造并发送。用户重组的控制功能条款明确引用这两套程序。",
+      "limitations": [
+        "组重组不按去重后服务器数解释；用户重组不照抄全员名册，也不由控制功能按终端地址逐一发送。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.3.2(4–5): per-constituent NCF or per-terminating-participating-function affiliated-user list; inbound message content"
+          ],
+          "printed_pages": [
+            502,
+            503
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.3.3(1–2): controller decision and outgoing removal per constituent group or per terminating participating function"
+          ],
+          "printed_pages": [
+            503,
+            504
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.3.3.2 and 16.3.3.3: use clauses 16.2.3.2 and 16.2.3.3 for user regroup removal"
+          ],
+          "printed_pages": [
+            511
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "r16-regroup-removal-origin",
+      "title": "从入站请求复制与控制功能自建通知",
+      "conditions": [
+        "判断已知 T 的出向移除通知由什么触发；分别识别发送方构造与接收方分派。"
+      ],
+      "conclusion": "收到请求的 CF 复制来件的业务与重组 MIME 正文及 P-Asserted-Identity，并复制实际存在的 Accept-Contact、Reject-Contact 及特征标签、值与参数；用户分支还填接收 T-PF 的归属用户名单。自行决定时，CF 构造重组正文标出 T 和 remove；用户分支还填对应名单，没有入站移除事务须回 200。NCF 与 T-PF 的接收分类除路由、目标和动作外，还分别在重组正文、业务正文中查 preconfigured-group。",
+      "normative_strength": "构造与分发按各分支的 SHALL；未列的字段不因此成为禁用项。",
+      "limitations": [
+        "单个出站 remove 或抓包缺少来件不能判定是自主触发；发送条款不能证明接收分类匹配，不据此指定唯一补字段方式、拒绝结果、全员解除归属或存储清理。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.3.2(4–5): per-constituent NCF or per-terminating-participating-function affiliated-user list; inbound message content"
+          ],
+          "printed_pages": [
+            502,
+            503
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.2.3.3(1–2): controller decision and outgoing removal per constituent group or per terminating participating function"
+          ],
+          "printed_pages": [
+            503,
+            504
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "16.3.3.2 and 16.3.3.3: use clauses 16.2.3.2 and 16.2.3.3 for user regroup removal"
+          ],
+          "printed_pages": [
+            511
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.1.3: terminating participating and non-controlling function classification of remove requests"
+          ],
+          "printed_pages": [
+            82
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    }
+  ],
+  "related": [
+    "r16-groups-preconfigured-regroup-notification",
+    "r16-groups-preconfigured-group-regroup-creation",
+    "r16-groups-temporary-regroup-teardown"
+  ],
+  "limitations": [
+    "不覆盖创建、失败创建后的补偿、GMS 业务拆组、实现的事务日志或实际互通。"
+  ],
+  "verification": {
+    "original_clauses_checked": true
+  }
+}

@@ -29,4 +29,6 @@ A 组和 B 组为一项任务组成了临时组 T。任务结束，操作员要�
 
 如要判断哪些组可以合成 T，见[同系统临时重组建组](single-system-temporary-regroup.md)；如果操作对象其实是 A 的名册，见[组成员变动通知](group-membership-notification.md)。
 
+若要核对的是 MCPTT 控制功能（CF）的移除 MESSAGE，见[CF 的上游应答、下游通知对象与自行移除](preconfigured-regroup-removal.md)。
+
 来源：[3GPP TS 23.280 V16.7.0，Release 16，Stage 2（ETSI 正式 PDF）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/16.07.00_60/ts_123280v160700p.pdf#page=101)。页码为规范印刷页。

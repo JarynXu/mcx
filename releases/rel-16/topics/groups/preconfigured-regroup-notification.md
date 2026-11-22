@@ -26,3 +26,5 @@
 若要查单系统临时重组的组成条件与通知对象，见[单系统临时重组](single-system-temporary-regroup.md)；要查组管理服务器怎样拆除临时组，见[临时重组拆除](temporary-regroup-teardown.md)。两者是业务流程视角，不代替这里的客户端接收规则。
 
 若已有一项基于预配置组的组重组，组成组出现后续归属，见[后续归属如何触发补通知](preconfigured-regroup-late-affiliation.md)：NCF 的触发与名单规则不同于终端收到创建通知之后的处理。
+
+若要核对的是 MCPTT 控制功能（CF）的移除 MESSAGE，见[CF 的上游应答、下游通知对象与自行移除](preconfigured-regroup-removal.md)。
