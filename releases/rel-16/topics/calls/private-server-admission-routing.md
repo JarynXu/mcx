@@ -190,4 +190,4 @@ T-PF 设置 Confirmed，不等于 CF 的普通最终响应条款要求把它原�
 
 抓包时若同场私呼的两处初始 INVITE 200 分别写 `refresher=uac` 和 `refresher=uas`，按[各段 SIP 会话刷新](sip-session-refresh-by-leg.md)配对请求与响应，别把业务最大私呼时长当成 SIP 会话定时器。
 
-若抓包或验收按附录 H.3 的被叫字段排查，见[资料性路由表与私呼主程序的字段差异](private-routing-annex-identifiers.md)。绑定查询要分清 INVITE 和 200 的方向。
+若抓包或验收按附录 H.3 的被叫字段排查，见[资料性路由表与私呼主程序的字段差异](private-routing-annex-identifiers.md)。绑定查询要分清 INVITE 和 200 的方向。 若被叫的 200 带业务正文而主叫的 200 没带，查[CF 有没有复制义务、怎样核对 O-PF 的收发](private-routing-annex-identifiers.md#callee-id-in-final-response)。
