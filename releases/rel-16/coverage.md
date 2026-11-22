@@ -2507,6 +2507,16 @@ MCPTT、MCVideo 的伙伴复制例中，甲乙互联，A 由组主系统甲服�
 
 [读取主题](topics/media/partner-group-media-replication.md)
 
+## LMR 和 MCPTT 互通组里，谁最终定话权，谁只做本地筛选？
+
+区分 LMR 或 MCPTT 宿主与非宿主侧的本地筛选，判断哪一侧做最终话权决定。
+
+对照互通边界的请求和结果，区分本地拒绝、最终结果和转发；MCPTT 宿主的不过滤图例按个人归属，代表归属的注只管 IWF Floor Taken 数量。
+
+尚未建立：不据一条通知推定本地筛选、最终决定方或媒体送达；不覆盖两 MC 系统、私呼、抢占、LMR 空口或 Stage 3 报文。
+
+[读取主题](topics/media/lmr-interworking-group-floor-arbitration.md)
+
 ## 预建立会话里两次看到 Connect 和 Accepted，是两通 MCPTT 呼叫吗？
 
 在客户端已经使用的那条预建立会话上，再收到要求确认的 Connect，客户端须回 Accepted，这条会话保持在用，不能据此多记一通。受邀侧 PF 收到 CF 的 INVITE，在自动应答模式下用原未在用的预建立会话承接来呼；向受邀客户端发出 Connect 后，这条会话在 PF 侧就转为在用，不等于终端已答。 主叫 Connect 由发起侧 PF 在实际收到 CF 对业务 INVITE 的 200 后发送；身份值取那份响应的 Contact，不取 REFER 的 200。

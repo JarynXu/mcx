@@ -1,0 +1,225 @@
+{
+  "topic_id": "r16-media-lmr-interworking-group-floor-arbitration",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "LMR 和 MCPTT 互通组里，谁最终定话权，谁只做本地筛选？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v16.8.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "Release 16，LMR 与 MCPTT 经 IWF 互通。互通组呼已在进行，例中的参与者已归属该组、话权起初空闲。"
+  ],
+  "claims": [
+    {
+      "id": "host-and-filter",
+      "title": "宿主与本地筛选是两个判断",
+      "conditions": [
+        "已确认互通组定义在哪个系统。"
+      ],
+      "conclusion": "组宿主是 MCPTT 时，MCPTT 话权控制服务器做最终决定。组宿主是 LMR 时，IWF 代表话权控制服务器的角色；在下述 LMR 宿主流程中，IWF 和 LMR 系统共同仲裁。先筛选的一侧只能把选中的请求送去参与最终决定。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.5.3"
+          ],
+          "printed_pages": [
+            104
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.5.5"
+          ],
+          "printed_pages": [
+            106
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.5.7"
+          ],
+          "printed_pages": [
+            109
+          ]
+        }
+      ],
+      "source_detail": "只用该节互通组的宿主角色和筛选段落，LMR 与 IWF 共同仲裁的示例见 §10.5.5 步骤 5 和 §10.5.7 步骤 3。",
+      "limitations": [
+        "向终端转达授予不证明转达方是最终决定方。角色由 IWF 代表不证明 IWF 已代办归属。私呼与两个 MCPTT 系统的情况不适用此处结论。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-hosted-filtered",
+      "title": "LMR 宿主，MCPTT 本地先筛",
+      "conditions": [
+        "目标互通组定义在 LMR 系统。",
+        "MCPTT 服务器配置为先在本地筛选竞争请求；示例中两个 MCPTT 客户端同时竞争。"
+      ],
+      "conclusion": "MCPTT 服务器在本地选出一个，把另一个拒绝，再将选中的请求转给 IWF。IWF 与 LMR 系统一起做最终仲裁。例中 IWF 返回授予；MCPTT 服务器向获准客户端转达授予、给另一客户端发送谁取得话权的通知。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.5.5"
+          ],
+          "printed_pages": [
+            106,
+            107
+          ]
+        }
+      ],
+      "source_detail": "图 10.5.5-1；步骤 2–5（页 106）和 6–8（页 107）。",
+      "limitations": [
+        "本地选中不等于获准发言；落选的请求不必过 IWF 边界。优先级是示例，不是固定算法。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-hosted-unfiltered",
+      "title": "LMR 宿主，MCPTT 不筛",
+      "conditions": [
+        "目标互通组定义在 LMR 系统。",
+        "MCPTT 配置为不筛选而将竞争请求送往 LMR 系统；示例中有两个 MCPTT 请求。"
+      ],
+      "conclusion": "MCPTT 服务器把两个请求都送到 IWF；IWF 与 LMR 系统共同做最终决定。例中 IWF 为胜者返回授予、为落选者返回拒绝和话权占用通知；若还有其他已归属的 MCPTT 客户端，IWF 向 MCPTT 服务器为每个另发一条话权占用通知。MCPTT 服务器告知相应客户端结果。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.5.7"
+          ],
+          "printed_pages": [
+            108,
+            109
+          ]
+        }
+      ],
+      "source_detail": "前提（页 108）；图 10.5.7-1、步骤 2–7 和步骤 4 后的注（页 109）。",
+      "limitations": [
+        "终端侧的 Floor Rejected 外观不足以区分本地筛除或上游拒绝；查同一次争用的跨边界请求和返回。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcptt-hosted-filtered",
+      "title": "MCPTT 宿主，LMR 本地先筛",
+      "conditions": [
+        "目标互通组定义在 MCPTT 系统，已在 GMS 定义。",
+        "LMR 配置为本地筛选话权竞争请求。"
+      ],
+      "conclusion": "若多名 LMR 用户要发言，例中假定 LMR 侧按本地策略先仲裁，经 IWF 仅向 MCPTT 提送一个 LMR 请求。MCPTT 话权控制服务器做最终决定。例中它拒绝 IWF 的请求，向获准客户端授予，并向另一 MCPTT 客户端和 IWF 发送话权占用通知。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.5.6"
+          ],
+          "printed_pages": [
+            107,
+            108
+          ]
+        }
+      ],
+      "source_detail": "图 10.5.6-1 和前提（页 107）；步骤 2–7，特别是步骤 3 后的注（页 108）。",
+      "limitations": [
+        "单条 IWF 请求不能单独证明筛选配置；MCPTT 参与者获胜和按到达先后比较都是本例说明，不是固定规则。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcptt-hosted-unfiltered-individual",
+      "title": "MCPTT 宿主，LMR 不筛且逐人归属",
+      "conditions": [
+        "目标互通组定义在 MCPTT 系统。",
+        "LMR 配置为向 MCPTT 送出所有竞争话权请求。",
+        "IWF 不代表 LMR 用户归属，所有 LMR 组归属经 IWF 转到 MCPTT。"
+      ],
+      "conclusion": "每个请求话权的 LMR 用户各有一条 IWF 话权请求，带 IWF 转换的该用户 MCPTT ID。MCPTT 话权控制服务器做最终决定。该例向 IWF 按被拒绝的请求分别发送 IWF Floor Rejected，按已归属的 LMR 用户分别发送 IWF Floor Taken。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.5.8"
+          ],
+          "printed_pages": [
+            110,
+            111
+          ]
+        }
+      ],
+      "source_detail": "前提 3–5、图 10.5.8-1 和步骤 3（页 110）；步骤 4–7（页 111）。",
+      "limitations": [
+        "已归属且只听的 LMR 用户也计入 Taken，不计入 Reject。请求、拒绝、占用通知的计数依据不同。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "representative-taken-only",
+      "title": "代表已归属时给 IWF 的一条占用通知",
+      "conditions": [
+        "目标互通组定义在 MCPTT 系统。",
+        "IWF 已代表该组的 LMR 用户实际归属该组。",
+        "只解释 §10.5.8 步骤 7 后的通知数量注。"
+      ],
+      "conclusion": "向 IWF 只发送一条 IWF Floor Taken。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.5.8"
+          ],
+          "printed_pages": [
+            111
+          ]
+        }
+      ],
+      "source_detail": "步骤 7 及其后的注。",
+      "limitations": [
+        "这条注不变更请求或拒绝的数量，不撤销图示不过滤示例的逐人归属前提，不说明代表归属与不过滤的全部组合，也未规定混合模式的通知数量。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-groups-mc-hosted-lmr-affiliation",
+    "r16-media-partner-group-media-replication"
+  ],
+  "limitations": [
+    "只覆盖互通组话权角色和四个筛选示例。不覆盖私呼、建呼、抢占、LMR 空口、Stage 3 报文和定时器或部署。话权记录不证明语音已送达。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
