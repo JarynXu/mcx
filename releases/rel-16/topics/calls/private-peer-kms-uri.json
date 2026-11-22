@@ -1,0 +1,159 @@
+{
+  "topic_id": "r16-calls-private-peer-kms-uri",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 私呼查哪个人的 KMS URI？对端专用值和初始配置怎样取舍？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明按自身前提适用。先确认取值所用的 MCPTT ID，再分在网用户档文档、离网用户档管理对象。",
+  "common_conditions": [
+    "TS 24.379 V16.14.0，Release 16，Stage 3；MCPTT 客户端需要为一个已识别的 MCPTT 用户 ID 确定关联的 KMS URI。"
+  ],
+  "claims": [
+    {
+      "id": "peer-for-pck-preparation",
+      "title": "普通私呼和首接受邀客户端按密钥接收者选对端 MCPTT ID",
+      "conditions": [
+        "实际属于列举的普通按需 private、按需 first-to-answer 候选端或离网普通私呼发起步骤，且需要建立端到端安全上下文。"
+      ],
+      "conclusion": "普通在网按需一对一私呼、离网普通私呼初建，由发起客户端按受邀用户的 MCPTT ID 及其相应 KMS URI 为对端准备 PCK；在网按需首接的受邀客户端按实收该 INVITE 的发起用户 MCPTT ID 及其相应 KMS URI 为主叫准备。",
+      "normative_strength": "满足各自分支条件时，取相应身份与 URI 用于端到端密钥准备为 SHALL。",
+      "limitations": [
+        "不把接收密钥的 MCPTT ID 当成密钥消息发起者身份，也不据此断定首接候选端已应答、获选或实际媒体受保护。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.1 step 11: originating normal private call uses invited MCPTT user"
+          ],
+          "printed_pages": [
+            353,
+            354
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.2 step 5 and NOTE 4: first-to-answer candidate uses INVITE originator"
+          ],
+          "printed_pages": [
+            357
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.2.2.4.2.1 steps 1–6: off-network private call originating context and invited user"
+          ],
+          "printed_pages": [
+            423
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.8.3.9: on-network profile/default and off-network MO lookup"
+          ],
+          "printed_pages": [
+            76
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "on-network-peer-lookup",
+      "title": "在网从本端用户档取匹配的专用值，查无对端或空值才用本端初始配置",
+      "conditions": [
+        "本端需要为在网操作取得已识别的 MCPTT ID 所关联的 KMS URI。"
+      ],
+      "conclusion": "在 MCPTT 用户档的 Common / PrivateCallList 中，查 PrivateCallURI 的 entry 是否命中该 MCPTT ID；命中且该列表条目中的 anyExt / PrivateCallKMSURI / entry 非空，取该值。若未命中该 MCPTT ID 或该专用 entry 为空，则取本端 UE 初始配置文档的 on-network / App-Server-Info / kms。",
+      "normative_strength": "查找、非空时使用命中值、两个明列条件下使用初始配置均为 SHALL。",
+      "limitations": [
+        "缺少完整配置证据不能认定专用值为空或 ID 未命中。不为已命中而专用节点缺失、格式不合法、后续连接失败另定回退。本条不使用组成员的 KMSUri。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.8.3.9: on-network profile/default and off-network MO lookup"
+          ],
+          "printed_pages": [
+            76
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "off-network-peer-lookup",
+      "title": "离网按本端用户档管理对象查同一 Entry，回退仍读初始配置的 OnNetwork",
+      "conditions": [
+        "本端需要为离网操作取得已识别的 MCPTT ID 所关联的 KMS URI。"
+      ],
+      "conclusion": "查 /<x>/<x>/Common/PrivateCall/UserList/<x>/Entry/MCPTTID；命中时取同一 Entry 的 PrivateCallKMSURI 叶，并在非空时采用其值。若未命中该 MCPTT ID 或该叶为空，取初始配置管理对象 /<x>/OnNetwork/AppServerInfo/KMS。",
+      "normative_strength": "按所列条件检索、读取、采用命中值或取初始配置为 SHALL。",
+      "limitations": [
+        "此处虽然读初始配置的 OnNetwork 路径，但不改用在网用户档 XML 分支，不推断离网本次访问 KMS、取得密钥或加密成功。不为读取错误、配置不完整或连接失败编造回退。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.8.3.9: on-network profile/default and off-network MO lookup"
+          ],
+          "printed_pages": [
+            76
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "peer-domain-and-home-kms",
+      "title": "对端 KMS URI 识别安全域材料，不等同于本次要访问的服务器",
+      "conditions": [
+        "在网普通私呼或首接应答需要建立端到端安全上下文，对照 §4.7.1 媒体安全过程。"
+      ],
+      "conclusion": "对端 KMS URI 用于识别准备 PCK 所需对端安全域的材料。§4.7.1 描述在普通私呼由发起端、首接应答由终接端事先从各自归属 KMS 下载各域材料。",
+      "normative_strength": "§4.7.1 对材料来源及用途的过程描述；具体下载依赖 TS 33.180。",
+      "limitations": [
+        "读到 URI 不证明本次访问该地址、材料实际已下载、验签、密钥分享完成或实际媒体已使用 SRTP/SRTCP。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.7.1: home KMS advance provisioning and peer KMS URI identification of domain-specific material"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-private-fta-pck-authentication",
+    "r16-groups-member-kms-uri"
+  ],
+  "limitations": [
+    "URI 取值不能证明 KMS 可达、运行时向 KMS 发送请求、密钥安装成功、验签通过或实际媒体受保护。固定版回指 TS 24.483、TS 24.484、TS 33.180，不在本页复核这些依赖的语法或算法。",
+    "不把这些私呼调用扩展成所有呼叫、预建立会话、紧急或首接获选流程；不从 URI 值推定部署安全域。"
+  ],
+  "verification": {
+    "original_clauses_checked": true
+  }
+}

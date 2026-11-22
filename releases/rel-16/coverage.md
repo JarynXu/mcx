@@ -3557,6 +3557,16 @@ RTP 和话权使用各自守卫；对已进入活动 MBMS 分支的 Idle/Taken �
 
 [读取主题](topics/calls/private-fta-pck-authentication.md)
 
+## 私呼对端 KMS URI 的选取
+
+根据普通私呼主叫或首接受邀方确定查询的对端 MCPTT ID，按在网用户档或离网管理对象区分专用值和本端初始配置。
+
+条件是终端需要取得对应 MCPTT ID 的 KMS URI。在明确的密钥准备分支才按相应角色选对端；查无该 ID 或匹配项 URI 为空才按条款取初始配置。
+
+尚未建立：不从部分导出认定专用值为空，也不从取值或 SIP 200 推出实际访问 KMS、密钥成功或媒体保护。
+
+[读取主题](topics/calls/private-peer-kms-uri.md)
+
 ## 临时组呼的 conference NOTIFY 标识与跨组名单
 
 按 CF 与 NCF 的通知方向判读两个组 ID；对照 NCF 收到、保存和发给客户端的状态定位跨组名单缺失。

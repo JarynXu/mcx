@@ -24,3 +24,5 @@
 若要核对普通私呼是自动还是人工应答，见[被叫应答取证](private-client-answer-evidence.md)。若要判断首接应答候选如何被选中或被撤下，见[首接应答控制功能](first-to-answer-controlling.md)。若已有 BYE，要查哪一腿结束，见[普通按需私呼的释放信令](private-client-release.md)。
 
 来源：[3GPP TS 24.379 V16.14.0 / ETSI TS 124 379 V16.14.0，Release 16](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf)。
+
+若问题是给对端准备 PCK 时应取哪个人的 KMS URI，查[普通私呼和首接受邀端的查找身份，以及专用值与初始配置的优先顺序](private-peer-kms-uri.md)。

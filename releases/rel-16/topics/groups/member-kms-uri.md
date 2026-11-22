@@ -27,3 +27,5 @@
 若要查**谁可请求成员名单，如何区分成员和已归属成员**，见[主动查询组名单](group-list-query.md)。若材料是**GMS 发给已订阅客户端的更新通知**，要判断其中可带哪些组相关密钥材料或配置引用、何时保存，见[终端获取组配置与更新通知](client-group-configuration.md)。两页都不提供成员 KMSUri 的现场取值。
 
 依据：[3GPP TS 23.280 V16.7.0，Release 16，Stage 2，ETSI 2024-05](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/16.07.00_60/ts_123280v160700p.pdf)，附录 A。
+
+若终端是在为私呼对端取 KMS URI，查[私呼用户档与初始配置的取值规则](../calls/private-peer-kms-uri.md)；不能把组成员参数当成私呼用户档中的专用项。
