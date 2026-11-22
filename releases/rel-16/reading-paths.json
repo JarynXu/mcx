@@ -396,6 +396,10 @@
         {
           "condition": "若已经找到组呼释放事件，要区分移出一人与整场释放、按需腿与预建立腿，转离会主题。",
           "read": "topics/calls/prearranged-participant-refer-leave.md"
+        },
+        {
+          "condition": "如果是在 MCPTT 和 LMR 已进行的互通组呼内，查成功归属后跨 IWF 的 Stage 2 晚入。",
+          "read": "topics/calls/lmr-interworking-group-late-entry.md"
         }
       ],
       "boundary": "主动重入以initial INVITE的Request-URI携session identity，正文仍为group ID；CF晚入须实际新归属/回覆盖通知且有ongoing呼叫。PF PSI与session URI、各角色分别判断；4.5提供Contact/PF映射依据。不覆盖完整断线自动恢复、丢失会话身份发现、NCF、媒体重建或全组交付；主动重入和CF晚入为替代入口，SIP200不证明话权，媒体初始化回指差异不由普通Idle页修补。 ACK 小节只比较同一 MC 系统普通在网按需主动重入的同一终端腿。2xx 构造例不含匹配早期对话或分叉，不建立完整 IMS、NAT 或媒体可达性。"
@@ -1784,6 +1788,10 @@
         {
           "condition": "若组由伙伴 MC 提供方定义，请求者也是另一 MC 提供方的用户，两侧不是 LMR 与 MC。",
           "read": "topics/groups/partner-group-affiliation.md"
+        },
+        {
+          "condition": "若归属已成功，且要加入一通进行中的 LMR 互通组呼，查两种宿主的晚入触发。",
+          "read": "topics/calls/lmr-interworking-group-late-entry.md"
         }
       ],
       "boundary": "目标组定义在 MCPTT 系统，区分 IWF 的代表资格、实际归属和个人归属。归属响应只回到 IWF；此处不规定无线侧流程或具体报文。"
@@ -4208,6 +4216,10 @@
         {
           "condition": "若两端都是 MCPTT 服务系统，问题是组呼媒体如何在两端复制。",
           "read": "topics/media/partner-group-media-replication.md"
+        },
+        {
+          "condition": "若 Floor Taken 或 Floor Idle 出现在用户晚入后，而不是在响应竞争请求，查这条晚入流程中谁报告状态。",
+          "read": "topics/calls/lmr-interworking-group-late-entry.md"
         }
       ],
       "boundary": "已有互通组呼且话权初始空闲；按宿主和本地筛选判断。只对 §10.5.8 步骤 7 的 Floor Taken 使用代表归属的数量注。"
@@ -6791,6 +6803,26 @@
         }
       ],
       "boundary": "§5 的要求适用于在网和离网；§6 的要求专用于在网。§5.10 和 §6.11 不规定登录的具体协议、满额处理或新登录结果。"
+    },
+    {
+      "id": "r16-calls-lmr-interworking-group-late-entry",
+      "question": "MCPTT 和 LMR 的互通组呼已开始，另一侧的用户怎样晚入？",
+      "start": "topics/calls/lmr-interworking-group-late-entry.md",
+      "next_if": [
+        {
+          "condition": "如果问题是 MCPTT 系统定义的组，各电台怎样逐人归属或由 IWF 代为归属。",
+          "read": "topics/groups/mc-hosted-lmr-affiliation.md"
+        },
+        {
+          "condition": "如果出现竞争话权请求，需要区分本地筛选、最终仲裁与结果转发。",
+          "read": "topics/media/lmr-interworking-group-floor-arbitration.md"
+        },
+        {
+          "condition": "如果不是 LMR 互通，要看普通 MCPTT 预安排组重入或晚入的具体协议。",
+          "read": "topics/calls/rejoin-late-entry.md"
+        }
+      ],
+      "boundary": "限 TS 23.283 V16.8.0 §§10.3.3.7.1–.3 的 Stage 2 互通晚入。归属、组呼响应、加入与话权状态分别判断。两图不给出 SIP 映射、接管、媒体开始或送达的证据。"
     }
   ]
 }
