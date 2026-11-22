@@ -1,0 +1,211 @@
+{
+  "topic_id": "r16-identity-ue-key-persistence",
+  "release": 16,
+  "standard_stage": null,
+  "state": "draft",
+  "title": "终端重启、用户退出或访问令牌过期，哪些密钥和令牌要留，哪些要删？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v16.13.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "Release 16；所讨论的是 MC 终端（UE）本地的密钥、令牌和相关材料。"
+  ],
+  "claims": [
+    {
+      "id": "protected-storage",
+      "title": "未在使用的材料",
+      "conditions": [
+        "所考察的材料未在使用。",
+        "材料属于与 MC 域服务器建立安全通信所用的长期密钥和私有证书（如 TrK、InK、TLS 私有证书），或属于 CSK、GMK、MuSiK、基于身份的密钥材料（如 KMS Key Sets）、基于身份的令牌（如 ID、访问、刷新及安全令牌）。"
+      ],
+      "conclusion": "终端必须以受保护的状态存储这些材料。",
+      "normative_strength": "shall",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.11.1"
+          ],
+          "printed_pages": [
+            64
+          ]
+        }
+      ],
+      "source_detail": "印刷页 64，长期密钥和私有证书至基于身份的令牌四段。",
+      "limitations": [
+        "未规定保护方法；本条不是重启保留清单，也不是令牌有效性的证明。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "dynamic-storage-and-end-of-need",
+      "title": "动态密钥的存储与业务不再需要时的删除",
+      "conditions": [
+        "MCPTT、MCData 或 MCVideo 的动态信令或媒体保护密钥及其派生密钥。"
+      ],
+      "conclusion": "终端宜按业务运行需要安全存储；对已无业务运行需要的密钥，终端必须安全删除。",
+      "normative_strength": "should（存储）；shall（不再需要时删除）。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.11.1"
+          ],
+          "printed_pages": [
+            64
+          ]
+        }
+      ],
+      "source_detail": "印刷页 64，末段。",
+      "limitations": [
+        "动态密钥例如 MKFC、MSCCK、PCK；派生密钥例如 DPCK、SRTP 主密钥、XML 密钥、AES 密钥。两组均为示例。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "same-user-persistence",
+      "title": "正常电源周期和同一用户退出再登录",
+      "conditions": [
+        "终端经历正常电源周期，或同一用户正常退出并再次登录。",
+        "对象为静态、半静态密钥及材料；如另有适用的删除事件，须另按该事件处理。"
+      ],
+      "conclusion": "终端必须安全保存并维持这些材料，包括同一用户正常退出再登录的情形。例子有 CSK、GMK、TrK、InK、TLS 私有证书、IPsec 私有证书、KMS Key Sets、ID 令牌、访问令牌、刷新令牌和安全令牌。",
+      "normative_strength": "shall；所列材料为例。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.11.2"
+          ],
+          "printed_pages": [
+            65
+          ]
+        }
+      ],
+      "source_detail": "印刷页 65，第 1 段。",
+      "limitations": [
+        "在网转离网是保留这些材料的用途之一，尤其涉及身份密钥材料和 GMK。",
+        "MuSiK 未列在该段的示例中，不据此判定它重启必留或必删。保留令牌不证明有效、会话恢复或业务获准。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "different-user-isolation",
+      "title": "同一终端换人使用",
+      "conditions": [
+        "原用户退出，另一名用户登录同一终端。"
+      ],
+      "conclusion": "原用户关联的全部密钥及材料必须安全删除或与其他用户的材料安全隔离。跨登录周期或多人使用期间仍保留的材料必须安全存储，只有所属用户能访问。",
+      "normative_strength": "shall；可选择删除或安全隔离，保留时的访问限制是必需的。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.11.2"
+          ],
+          "printed_pages": [
+            65
+          ]
+        }
+      ],
+      "source_detail": "印刷页 65，第 2 段；动态密钥的独立删除规则见第 3 段。",
+      "limitations": [
+        "隔离方法不在本条范围。仅有账号标签或界面隐藏不证明已隔离；不能以隔离代替退出时必须执行的动态密钥删除。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "dynamic-deletion-triggers",
+      "title": "四个独立的动态密钥删除触发条件",
+      "conditions": [
+        "对象为 MCPTT、MCData 或 MCVideo 的动态信令或媒体保护密钥及其派生密钥。",
+        "以下任一事件成立：终端关机；当前用户退出；任一相关访问令牌因技术或认证原因到期；业务运行需要删除相关密钥。"
+      ],
+      "conclusion": "终端必须安全删除相应动态密钥（例如 MKFC、MSCCK、PCK）及任何派生密钥（例如 DPCK、SRTP 主密钥、XML 密钥和 AES 密钥）。在建立后续通信时可以重新协商动态密钥和令牌。",
+      "normative_strength": "shall（删除）；may（后续重新协商）。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.11.2"
+          ],
+          "printed_pages": [
+            65
+          ]
+        }
+      ],
+      "source_detail": "印刷页 65，第 3 段。",
+      "limitations": [
+        "不需要等待不同用户登录，也不以另行证明第 4 段的 IdMS 不能或不愿刷新为前提。单凭掉线、SIP 注册失败或刷新无答复，不证明相关访问令牌已到期。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "idms-nonrefresh-expiry-set",
+      "title": "IdMS 无法或不愿刷新而导致实际到期时的额外删除范围",
+      "conditions": [
+        "现有访问令牌确已到期。",
+        "到期原因是 IdMS 出于技术或认证原因不能或不愿刷新该令牌。"
+      ],
+      "conclusion": "终端必须安全删除明列的 CSK、GMK、MuSiK、MKFC、MSCCK、KFC、DPPK、PCK，以及访问令牌、刷新令牌和安全令牌。访问、刷新或安全令牌过期后，用户可能需要重新向身份管理服务及 MC 域认证。",
+      "normative_strength": "shall（删除明列的材料）；may require（重新认证）。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.11.2"
+          ],
+          "printed_pages": [
+            65
+          ]
+        }
+      ],
+      "source_detail": "印刷页 65，第 4 段。",
+      "limitations": [
+        "本段列 DPPK；第 3 段列 DPCK 为派生示例。两段适用时均须遵守，不互相替代。",
+        "第 4 段未列 ID 令牌、TrK、InK、KMS Key Sets、TLS 或 IPsec 私有证书。本段本身既不要求清除这些材料，也不保证在其他规则下保留。",
+        "刷新未收到答复不等于已到期；在原令牌到期前刷新成功，不触发本段。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-identity-home-system-authentication",
+    "r16-identity-user-profile-switch",
+    "r16-identity-mcptt-client-id-lifecycle",
+    "r16-groups-removed-member-gmk"
+  ],
+  "limitations": [
+    "不规定某种具体存储或隔离机制，不推定一次实际删除、服务器撤销或业务授权成功。不涉及恢复出厂、应用重装或 KMS 配置分发。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
