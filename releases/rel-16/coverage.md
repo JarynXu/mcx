@@ -534,7 +534,7 @@ MCPTT 或 MCVideo 跨系统私呼，双方在各自主系统接受服务，两�
 
 ## 普通私呼下游没有主叫别名：O-PF 何时保留，何时省略？
 
-普通按需私呼按被叫 MCPTT ID 寻址：查原 INVITE 是否带主叫 functional-alias-URI，O-PF 针对这名主叫的别名为 activated 才把原值写进下一 INVITE。
+普通私呼按被叫 MCPTT ID 寻址。按需时在初始 INVITE 中找主叫别名；使用预建立会话时，沿 REFER 的 cid 到唯一被叫条目，在其 URI 的 body 参数内查主叫别名。对照 O-PF 的本地状态与另发的业务 INVITE，区分带原值、按状态省略和入站未带。
 
 主叫 PAI 绑定、被叫资源列表与私呼 CF PSI 各有用途。若身份绑定找不到或过期，404/141 走早期拒绝，不是别名省略。
 

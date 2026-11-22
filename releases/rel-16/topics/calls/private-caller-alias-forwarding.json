@@ -6,10 +6,10 @@
   "title": "普通私呼下游没有主叫别名：O-PF 何时保留，何时省略？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
-  "condition_rule": "主叫按被叫 MCPTT ID 发起初始私呼，与主叫选择展示自己的功能别名分开。只有实际入站有别名，(19a) 按本 O-PF 的该主叫及该别名状态决定复制或省略。",
+  "condition_rule": "按需 INVITE 和预建立 REFER 的字段位置、生成出向 INVITE 的条款不同。对已确定的主叫及该别名，按所选分支的实际入站正文和 O-PF 状态判断。",
   "common_conditions": [
-    "固定 TS 24.379 V16.14.0（Rel-16，Stage 3），主系统普通在网按需一对一带话权私呼，直接拨被叫 MCPTT ID。",
-    "只核主叫初始 INVITE 的 O-PF 入站/出站及所需身份、别名状态；不含以别名寻被叫、首接、应急、预建立或终端显示。"
+    "固定 TS 24.379 V16.14.0（Rel-16，Stage 3），同一 MC 系统归属网内、在网、有话权控制的一对一普通私呼，按被叫的 MCPTT ID 寻址。",
+    "按主叫实际发出的初始 INVITE（按需）或 REFER（预建立）选择相应 claim；只处理主叫自己的功能别名，不含以别名寻找被叫、首接、应急或终端显示。"
   ],
   "claims": [
     {
@@ -110,6 +110,62 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "preestablished-private-caller-alias",
+      "title": "使用预建立会话时，主叫别名怎样从 REFER 进入另一笔 INVITE？",
+      "conditions": [
+        "以已有预建立会话发起普通私呼；核对客户端携带和 O-PF 收件时看 REFER，判断保留或省略还要求处理已到生成新业务 INVITE 的步骤。"
+      ],
+      "conclusion": "由 Refer-To 的 cid 找到对应资源列表的唯一被叫 entry；entry.uri 标识被叫。该 SIP URI headers 部分的 hname body 参数内，MCPTT 信息体的 session-type 为 private；主叫需要携带已启用别名时，functional-alias-URI 填所用别名 URI。O-PF 从实收 REFER 的 P-Asserted-Identity 识别主叫，对 REFER 发送 200 后另建发往该主叫私呼 CF PSI 的 INVITE。将内层信息体复制到 INVITE，写入主叫 MCPTT ID；若入站含别名且该别名对这名主叫为 activated，保留收到的原值，否则按相应守卫省略。",
+      "normative_strength": "客户端条件携带，O-PF 复制正文、移除非 active 别名及私呼 (19a) 对收到元素的保留或省略均为 SHALL。",
+      "limitations": [
+        "入站没有该元素时，(19a) 不要求补写。不要把主叫别名当成第二名被叫，或把它用于判断首接名单。构造项使用不带 +xml 的信息体名称，复制及专用检查项使用带 +xml 的名称；不据此要求两份正文。",
+        "REFER 的 200、出向缺字段、甲端显示已启用或两次发布返回 200，都不足以证明本次实际保留或过滤。出向带原值也不证明 CF 实收或被叫显示。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.2.1(1,7,8(c)(ii)) and Note 2: one called-user entry and caller alias inside its URI body parameter"
+          ],
+          "printed_pages": [
+            363
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.1.2 entry conditions and steps 2,3,6(b): incoming REFER, caller binding and single-entry private call"
+          ],
+          "printed_pages": [
+            370,
+            371
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.4(11,11A,12): nested MCPTT information body copied into new INVITE, inactive alias removed, caller ID added"
+          ],
+          "printed_pages": [
+            86
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.1.2(14–17,19a,20): REFER response and CF-bound INVITE are separate; received alias retained only if activated for the calling MCPTT ID"
+          ],
+          "printed_pages": [
+            373,
+            374
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
     }
   ],
   "source_references": [
@@ -161,12 +217,51 @@
         208,
         209
       ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.2.2.1(1,7,8(c)(ii)) and Note 2: one called-user entry and caller alias inside its URI body parameter"
+      ],
+      "printed_pages": [
+        363
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.3.1.2 entry conditions and steps 2,3,6(b): incoming REFER, caller binding and single-entry private call"
+      ],
+      "printed_pages": [
+        370,
+        371
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.1.4(11,11A,12): nested MCPTT information body copied into new INVITE, inactive alias removed, caller ID added"
+      ],
+      "printed_pages": [
+        86
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.3.1.2(14–17,19a,20): REFER response and CF-bound INVITE are separate; received alias retained only if activated for the calling MCPTT ID"
+      ],
+      "printed_pages": [
+        373,
+        374
+      ]
     }
   ],
   "related": [
     "r16-identity-mcptt-functional-alias-activation-servers",
     "r16-calls-private-server-admission-routing",
-    "r16-calls-first-to-answer-originating-admission"
+    "r16-calls-first-to-answer-originating-admission",
+    "r16-calls-private-preestablished-origination"
   ],
   "limitations": [
     "不可由两笔别名发布 200 或单份出向 INVITE 判定本机 activated、实际过滤、CF 实收、私呼状态或媒体。",
