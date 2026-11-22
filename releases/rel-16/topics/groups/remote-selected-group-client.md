@@ -37,3 +37,5 @@
 若要核对 G 的具体归属状态，见[显式归属与状态观察](explicit-affiliation-client.md)。参与和控制功能的转送、完整归属程序和组呼建立不在本页范围内。
 
 [固定版本原文：TS 24.379 V16.14.0，§§10.1.4.2.1–2](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=309)
+
+要区分发起侧的 403/155、两端不同的绑定 404，或核对每一跳的 SIP 响应，读[远程换组的参与功能](remote-selected-group-participating.md)。

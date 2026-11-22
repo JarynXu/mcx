@@ -2071,7 +2071,7 @@ MCVideo（TS 24.581 V16.9.0）的原因 7：Transmission Rejected 的原因清�
 
 归属成功不等于换组成功；不能把归属指示为 false 等同于该元素缺席。
 
-尚未建立：参与和控制功能的转送细节、完整归属程序及目标用户是否加入某次组呼。
+尚未建立：客户端条款不展开网络侧转送，也不能证明目标已加入某次组呼；网络侧分别见控制功能与参与功能主题。
 
 [读取主题](topics/groups/remote-selected-group-client.md)
 
@@ -2144,6 +2144,16 @@ MCVideo（TS 24.581 V16.9.0）的原因 7：Transmission Rejected 的原因清�
 尚未建立：仅凭对 MESSAGE 的 200，不能断定目标已换组或换组失败。本版也没有规定控制功能如何找到终接参与功能的地址。
 
 [读取主题](topics/groups/remote-selected-group-controlling.md)
+
+## 远程换组的 MESSAGE 在哪一跳被拒？发起与终接参与功能怎样转送？
+
+区分发送者绑定失效的 404/141、变更请求名单检查的 403/155、终接侧收件人无绑定的 404；按本条 MESSAGE 的方向确定转送目标和各跳 SIP 响应。
+
+客户端把组写在 mcptt-request-uri、目标用户写在资源列表，O-PF 的名单步骤却写用前者内的 MCPTT ID；该步骤只适用于变更请求，不能移到结果回程。
+
+尚未建立：这些条款没有裁定名单字段差异的互通处理，单凭最终 SIP 响应也不能定位拒绝源、证明乙已换组或判定返回结果丢失的原因。
+
+[读取主题](topics/groups/remote-selected-group-participating.md)
 
 ## 归属伙伴系统的组：主系统检查通过，还要谁准许？
 

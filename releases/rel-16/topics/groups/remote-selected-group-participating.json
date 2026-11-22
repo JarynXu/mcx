@@ -1,0 +1,196 @@
+{
+  "topic_id": "r16-groups-remote-selected-group-participating",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "远程换组的 MESSAGE 在哪一跳被拒？发起与终接参与功能怎样转送？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "common_conditions": [
+    "3GPP TS 24.379 V16.14.0，Release 16，Stage 3，在网 MCPTT 远程改变另一用户的所选组；变更请求与报告结果是两条不同的 SIP MESSAGE。"
+  ],
+  "condition_rule": "按本条消息的两端识别发起和终接角色；发起端拒绝、成功转送、终接端拒绝与下游响应不互为共同前提。",
+  "claims": [
+    {
+      "id": "sender-binding-and-request-only-list",
+      "title": "甲已获本机许可，为何网络侧仍回 403/155？发起参与功能按什么字段查名单？",
+      "conditions": [
+        "O-PF 收到远程选组的变更请求或业务结果 MESSAGE；名单检查只针对 request-type 为 group-selection-change-request 的请求。"
+      ],
+      "conclusion": "按 PAI 公共用户标识找发送者 MCPTT ID。找不到绑定或已过期，拒绝 404 / Warning 文本 141 并停止。变更请求的用户配置缺少含条目的 RemoteGroupSelectionURIList，或依第 3(a)(ii) 项不匹配，拒绝 403 / Warning 文本 155 并停止；业务结果仍查绑定，不做这项名单检查。",
+      "normative_strength": "查绑定、对应拒绝与停止为 SHALL；资源不足或有拥塞风险时的 500 及 Retry-After 为 MAY。",
+      "limitations": [
+        "客户端拿目标用户乙比名单，却发正文 mcptt-request-uri=组 G，乙在资源列表。O-PF 第 3 项指定用该正文元素中的 MCPTT ID，比对后第 4 项又按同一元素内的组标识选 CF。原文未给出如何统一这几处的处理；不能把部署应比乙或应将 G 加入名单写成规范要求。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.4.3.1, steps 1–4: resource option, sender identity binding, request-only list test and group routing"
+          ],
+          "printed_pages": [
+            310
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.4.2.1, steps 1–3 and outcome paragraph: target user, two outgoing bodies and independent result"
+          ],
+          "printed_pages": [
+            308
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "group-routing-and-recipient-binding",
+      "title": "远程换组的两个 404 各查谁的绑定？结果 MESSAGE 返回时怎样找收件人？",
+      "conditions": [
+        "按本条 MESSAGE 的发送者和收件人识别 O-PF、T-PF；向下游发送的分支以实际进入相应转送步骤为条件。"
+      ],
+      "conclusion": "O-PF 按入站 XML 的组标识选择 CF，用 CF 公共服务标识作 SIP 目标；复制两份正文，设置映射所得的发送者 MCPTT ID 为 mcptt-calling-user-id，出站 PAI 取入站的公共用户标识。CF 以本消息资源列表的收件人 ID 改写出站 mcptt-request-uri，组 ID 写入 mcptt-calling-group-id，SIP 目标为收件人的 T-PF。T-PF 按 XML 收件人 ID 查绑定；不存在则 404，存在则向其公共用户标识发 MESSAGE。结果消息上收发方对调。",
+      "normative_strength": "相应分支的查找、转送及 T-PF 无绑定时的 404 为 SHALL；T-PF 在资源或拥塞条件下的 500 和 Retry-After 为 MAY。",
+      "limitations": [
+        "T-PF 的 404 步骤未指定 Warning 141 或单列过期条件。O-PF 的 404/141 针对本条消息发送者，不是对端；只见客户端收到 404 不足以定位拒绝源。CF 403/120 针对归属资格，不是 O-PF 的 403/155。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.4.3.1, steps 1–4: resource option, sender identity binding, request-only list test and group routing"
+          ],
+          "printed_pages": [
+            310
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.4.3.1, steps 4–14 and response paragraphs: outgoing MESSAGE and SIP response"
+          ],
+          "printed_pages": [
+            310,
+            311
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.4.3.2: recipient binding, outgoing MESSAGE and response forwarding"
+          ],
+          "printed_pages": [
+            311
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.11 item 2: public user identity in terminating SIP Request-URI"
+          ],
+          "printed_pages": [
+            103
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.4.4, steps 2–3, 7–9 and response paragraphs: authorization, recipient rewrite, next hop, SIP responses"
+          ],
+          "printed_pages": [
+            312,
+            313
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.4.2.2 item 3: separate result MESSAGE, original requester, group and outcome"
+          ],
+          "printed_pages": [
+            309,
+            310
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "hop-responses-and-returned-outcome",
+      "title": "目标收到 MESSAGE 后回了非 200 的 2xx，哪一跳转送原响应，哪一跳生成 200？",
+      "conditions": [
+        "各节点实际收到对其出站 MESSAGE 的相应 SIP 响应；目标报告业务结果是另一条 MESSAGE。"
+      ],
+      "conclusion": "T-PF 把下游的 2xx 转给 CF；CF 收到 2xx 后生成 200 给 O-PF；O-PF 收到 2xx 后生成 200 给本次发送客户端。各自收到 4xx、5xx 或 6xx 则向各自上游转送该错误。甲从乙另发的结果 MESSAGE 中的 selected-group-change-outcome 判断本次操作成败。",
+      "normative_strength": "上述响应处理及甲收到结果后判断成败为 SHALL。",
+      "limitations": [
+        "T-PF 不把所有 2xx 归一为 200；SIP 事务成功不等于实际换组成功，结果 MESSAGE 在回程被拒也不能证明原变更失败。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.4.2.1, steps 1–3 and outcome paragraph: target user, two outgoing bodies and independent result"
+          ],
+          "printed_pages": [
+            308
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.4.3.1, steps 4–14 and response paragraphs: outgoing MESSAGE and SIP response"
+          ],
+          "printed_pages": [
+            310,
+            311
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.4.3.2: recipient binding, outgoing MESSAGE and response forwarding"
+          ],
+          "printed_pages": [
+            311
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.4.4, steps 2–3, 7–9 and response paragraphs: authorization, recipient rewrite, next hop, SIP responses"
+          ],
+          "printed_pages": [
+            312,
+            313
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.4.2.2 item 3: separate result MESSAGE, original requester, group and outcome"
+          ],
+          "printed_pages": [
+            309,
+            310
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    }
+  ],
+  "related": [
+    "r16-groups-remote-selected-group-client",
+    "r16-groups-remote-selected-group-controlling"
+  ],
+  "verification": {
+    "original_clauses_checked": true
+  }
+}

@@ -47,3 +47,5 @@
 依据：§10.1.4.4 步骤 12 后的两段，印刷页 313。若要判断乙是否真的换组，或查询甲能否发起变更，见[远程选组变更的两个客户端](remote-selected-group-client.md)。
 
 [固定版本原文：3GPP TS 24.379 V16.14.0，§10.1.4.4](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=313)
+
+要区分发起侧的 403/155、两端不同的绑定 404，或核对每一跳的 SIP 响应，读[远程换组的参与功能](remote-selected-group-participating.md)。
