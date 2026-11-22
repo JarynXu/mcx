@@ -2252,6 +2252,10 @@
         {
           "condition": "若是网络向业务服务器通报承载就绪、停止或部分小区故障，查网络承载事件。",
           "read": "topics/bearers/mbms-network-bearer-events.md"
+        },
+        {
+          "condition": "已有 MCPTT SIP MESSAGE，要按 XML 字段区分特定会话与通用子信道的监听状态。",
+          "read": "topics/bearers/mcptt-mbms-status-message-rejection.md"
         }
       ],
       "boundary": "质量检测限承载已激活并已通告、客户端位于广播区、终端满足相应系统信息和参考信号监测前提的情形。 表 10.7.2.2-1 用于客户端到 MC 业务服务器的监听报告；两种多服务器步骤 4 限服务同区、配置共享当地承载且已配置控制方联系信息。不同场可同种类或不同种类，可能参加同场并播同内容的例子须同种类。控制方须获准接收服务方用户的 MBMS 相关位置信息才可代办，只有实际代办时才据此要求报告双发。"
@@ -5100,6 +5104,10 @@
         {
           "condition": "若要从通告转到具体组的 Map，判断话权端口是否单列、语音端口在哪，或终端何时为该组建立或解除关联。",
           "read": "topics/bearers/mcptt-mbms-map-unmap-timers.md"
+        },
+        {
+          "condition": "已处理通告或撤告，要判这台终端是否须报监听，以及通用子信道停止监听影响哪些旧会话。",
+          "read": "topics/bearers/mcptt-mbms-status-message-rejection.md"
         }
       ],
       "boundary": "PF 生成初始通告时可核对 SDP 和 GPMS 所指的行，不以终端收到为前提。在网 MCPTT 客户端实收 SIP 承载通告时核关联、更新、撤告和相关安全检查；后来从通用子信道实收 Map 时另核上下文。不证实网络启停、报告或媒体实际到达。 不用目标 TMGI 或通告更新选择 Map 上下文，不把拒绝状态或通告证据当作安装密钥、回滚或媒体收达。"
@@ -5670,7 +5678,7 @@
     },
     {
       "id": "r16-bearers-mcptt-mbms-status-message-rejection",
-      "question": "MCPTT MBMS 状态 MESSAGE：怎样读即将暂停、撤回和各个 TMGI？PF 在哪些方向或身份条件下回 403？",
+      "question": "MCPTT 组播 SIP MESSAGE：哪些事件要报监听？怎么区分会话和通用子信道、即将暂停和撤回？PF 在何种条件下回 403？",
       "start": "topics/bearers/mcptt-mbms-status-message-rejection.md",
       "next_if": [
         {
@@ -5686,7 +5694,7 @@
           "read": "topics/bearers/anchored-session-transfer.md"
         }
       ],
-      "boundary": "先判角色、XML 信息及绑定；403 不唯一，服务范围和同一对用户绑定不同。 暂停报告说明 RAN 的决定，不证明承载真的停下或恢复；程序与本版 XSD 对多目标表示的差异保留。"
+      "boundary": "先判角色、XML 信息及绑定；403 不唯一，服务范围和同一对用户绑定不同。 暂停报告说明 RAN 的决定，不证明承载真的停下或恢复；程序与本版 XSD 对多目标表示的差异保留。 监听状态和实际媒体转发分开判断；注释与 XSD 对同正文混合监听状态的支持有差异。"
     },
     {
       "id": "r16-identity-mcptt-client-id-lifecycle",
@@ -5802,12 +5810,16 @@
           "read": "topics/bearers/mcptt-mbms-capacity-to-unicast.md"
         },
         {
-          "condition": "报文是 MBMS 承载通告或对应监听状态，不是组子信道 Map/Unmap。",
+          "condition": "实际拿到的是承载通告或撤告，需要核对终端存储和通用子信道，不是组子信道 Map/Unmap。",
           "read": "topics/bearers/mcptt-mbms-announcement-sdp.md"
         },
         {
           "condition": "正在排查 Floor Idle/Taken 的 PF 代发 ACK 或 RTP 去重，而不是 Map 的重发。",
           "read": "topics/media/mbms-floor-ack-and-rtp-duplicates.md"
+        },
+        {
+          "condition": "在通用信道见到 Map，要区分映射重发与参与该组的终端何时须报 listening。",
+          "read": "topics/bearers/mcptt-mbms-status-message-rejection.md"
         }
       ],
       "boundary": "Map 可按字段读出端口，但要定位相应媒体描述须取得其接收子信道关联的 SDP。重复 Map 是 T16 的可能现场证据，实际事件靠 PF 日志对证；T15/T17 和终端实收须另证。 终端应怎样处置来包，查它收包时的通话关联；不知道本端状态时不能判定忽略。"

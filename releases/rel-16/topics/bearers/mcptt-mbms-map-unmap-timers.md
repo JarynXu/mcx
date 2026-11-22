@@ -38,7 +38,7 @@ PF 侧一份完整的 Map 可以说明它为哪个组、哪条承载指明了什
 
 ## 通话仍活跃：T16 到期重发 Map
 
-支持子信道控制的 PF 在 Start-stop 收到 Floor Request 或 Floor Taken，决定为已有组会话中的这段通话使用 MBMS 子信道，且承载容量足够时，按 §10.2.2.2 建立实例、发送首份 Map，启动 T15 和 T16，进入 `M: A conversation is active`。此后若在活跃状态实际发生 **T16 到期**，PF 须在**通用 MBMS 子信道**再发 Map，携带 TMGI（临时移动组标识）、MBMS Subchannel 和 MCPTT Group ID，并重启 T16、保持活跃状态。这个到期分支没要求等终端确认，也没有再次分配子信道的步骤；只有抓到重复的 Map，尚不能断定就是 T16 到期。
+支持子信道控制的 PF 在 Start-stop 收到 Floor Request 或 Floor Taken，决定为已有组会话中的这段通话使用 MBMS 子信道，且承载容量足够时，按 §10.2.2.2 建立实例、发送首份 Map，启动 T15 和 T16，进入 `M: A conversation is active`。此后若在活跃状态实际发生 **T16 到期**，PF 须在**通用 MBMS 子信道**再发 Map，携带 TMGI（临时移动组标识）、MBMS Subchannel 和 MCPTT Group ID，并重启 T16、保持活跃状态。关于这台终端收到 Map 后是否另发 SIP MESSAGE，见[会话监听的上报条件](mcptt-mbms-status-message-rejection.md#listening-report)。这个到期分支没要求等终端确认，也没有再次分配子信道的步骤；只有抓到重复的 Map，尚不能断定就是 T16 到期。
 
 本版 §10.2.2.2 第 4 项把 T16 的括号名写成 Unmap；§10.2.3.1、§10.2.3.7 与定时器表却把 T16 用于 Map。按实际编号与到期动作对证，不按这处括号名对换 T16、T17。终端要另核 §10.3.1 的前提：该 MCPTT 客户端支持经 MBMS 收取话权控制消息和 RTP，且承载已激活并已通告。它**实际收到**通用子信道上的 Map 才按 §10.3.2 把 TMGI、音频和话权子信道与目标组关联。PF 已发送不能证明某台终端已收到、已建立关联或已收到媒体。
 

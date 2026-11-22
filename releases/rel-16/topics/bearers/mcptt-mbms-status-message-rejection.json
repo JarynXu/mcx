@@ -3,7 +3,7 @@
   "release": 16,
   "standard_stage": 3,
   "state": "draft",
-  "title": "MCPTT 组播状态报告：暂停预告与撤回怎么报，PF 何时回 403？",
+  "title": "MCPTT 组播状态报告：谁在监听，哪条承载将暂停，PF 何时回 403？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
   "condition_rule": "每条声明继承全部 common_conditions，再叠加本条 conditions；关联主题不是必经流程。",
@@ -247,6 +247,112 @@
           "printed_pages": [
             555,
             556
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "listening-status-client-event-guards",
+      "title": "Map、入区、撤告或无线变差：这台终端是否须报监听状态",
+      "conditions": [
+        "终端判断是否发送监听状态，而非报告承载的暂停决定。"
+      ],
+      "conclusion": "以下各分支独立。收到通用 MBMS 信道上的 Map，参与该 Map 指明的组会话且尚未报过相应 listening，须报 listening；收到 §14.3.2 通告、进入通用 MBMS 可用的服务区且无线条件好，也须报 listening。收到 §14.3.2 撤告，其 TMGI 与进行中通话的 Map 匹配且尚未报过相应 not-listening，须报 not-listening；没有进行中的通话，但此前因被撤通告项中的通用子信道可用才报过 listening 且未报过相应 not-listening，也须报 not-listening。承载无线条件差是独立的 not-listening 分支。",
+      "normative_strength": "§14.3.3.1 的两种 listening 和三种 not-listening 情形，每一情形的条件须同时成立。",
+      "limitations": [
+        "不能把 Map 分支的去重条件强加给入区分支，也不能把撤告分支的去重或历史条件强加给无线条件差分支。",
+        "§14.3.3.2 以 Unmap 举例说明会话字段，不是 §14.3.3.1 的无条件触发器；重发 Map 不等于逐包回 SIP 确认。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.3.3.1 opening listening and not-listening alternatives, before the bearer suspension conditions"
+          ],
+          "printed_pages": [
+            471,
+            472
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.3.3.2 listening report, items 1(e)–(h), 2 and notes 1–2: report scope and combined-state note"
+          ],
+          "printed_pages": [
+            473
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "listening-status-session-general-and-xsd",
+      "title": "按会话或通用子信道读监听状态，区分程序注释和 XSD 可表示的内容",
+      "conditions": [
+        "终端发送监听状态报告；讨论 PF 收件动作时，另须确实收到相应两个正文、其中 MCPTT ID 由该 PF 服务，且已核实请求 P-Asserted-Identity 的公共身份绑定该 ID。"
+      ],
+      "conclusion": "usage 根元素的必有子元素 version 在本程序为 1。外层 mbms-listening-status 容器内的同名子元素给出状态；随后是各自最多一个的可选 session-id（URI）、general-purpose（布尔值），以及一个或多个适用同一状态的 TMGI（xs:hexBinary）。会话级 listening 表示终端正在该会话的 MBMS 子信道接收 RTP 媒体包和话权控制消息；not-listening 表示已经停止监听该子信道。会话报告携 session-id；无 general-purpose 时必须有 session-id。按需建立时 F.2.3 引用建会时来自控制功能 Contact 的 URI，经预建立会话建成时引用参与功能 Connect 中的 URI。§4.5 另规定参与功能在面向终端的 Contact 中给出本侧分配的身份，并保留与控制侧身份的映射；不能假定两侧 URI 相同。general-purpose=true 与 listening 表示在听所列承载的通用子信道，且尚未为所参与的会话收到 Map。PF 按实有 session-id 指示对应会话的状态，按相应布尔值指示通用子信道的状态；not-listening 配 general-purpose=false 还隐含该终端此前报过 listening 的进行中通话均不再监听其 MBMS 子信道。not-listening 分支须按 TS 24.380 与媒体面交互。",
+      "normative_strength": "§14.3.3.2 第 1(f)–(g) 项、注 1–2，§14.2.3 收件动作及 §F.2.2/.3 的字段和状态语义。",
+      "limitations": [
+        "不能把已停止监听当会话结束或实际单播发送；不能把一个终端的历史套给其他终端。",
+        "没有 general-purpose 要求 session-id，不构成两者互斥的规则。发送条款写 TGMI，XSD 与语义写 TMGI。",
+        "注 1 允许同正文报告两种监听状态；固定 XSD 的常规监听容器最多一个，内含一个状态值，仅 TMGI 可重复。不能据此确定混合状态的互通编码；不把 XML 字符串类型等同于可以拼接状态。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.3.3.2 listening report, items 1(e)–(h), 2 and notes 1–2: report scope and combined-state note"
+          ],
+          "printed_pages": [
+            473
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.2.2 listening-status root child and same-named value: occurrences and TMGI spelling"
+          ],
+          "printed_pages": [
+            553
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.2.3(1)(a)–(d), Table F.2.3-1: status values, session identity provenance and general-purpose scope"
+          ],
+          "printed_pages": [
+            555
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.2.3 received listening report, item 1(a)–(b) and note 1: verified user, media-plane indication and implicit previously reported conversations"
+          ],
+          "printed_pages": [
+            468,
+            469
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.5, MCPTT session identity, Contact allocation, mapping and optional client caching"
+          ],
+          "printed_pages": [
+            39
           ]
         }
       ],

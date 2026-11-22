@@ -1,6 +1,33 @@
-# MCPTT 组播状态报告：暂停预告与撤回怎么报，PF 何时回 403？
+# MCPTT 组播状态报告：谁在监听，哪条承载将暂停，PF 何时回 403？
 
 先看**哪一端收到 MESSAGE**，再检查实际携带的 XML 正文。承载通告与终端的监听、暂停报告都可以使用 `application/vnd.3gpp.mcptt-mbms-usage-info+xml`。MIME 类型相同，不代表可以向同一端发送同一种内容。在正常回报路径上，终端从通告取 PF 的 MBMS 公共业务身份（MBMS PSI）；终端发监听或暂停报告时，把这项身份放在 `Request-URI`，在另一份 `mcptt-info` 正文的 `mcptt-request-uri` 中写自己的 MCPTT ID。[TS 24.379 V16.14.0，§14.3.2，印 470–471](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=471)；[§14.3.3.2，印 473](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=474)及[印 474](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=475)。
+
+<a id="listening-report"></a>
+## 收到 Map 就要报正在监听吗？撤告就要报不再监听吗？
+
+先看**这台终端**遇到的事件和它此前上报过的状态。以下每一行都是单独的上报条件；满足一行的全部条件，客户端就须发送该状态的 SIP MESSAGE。
+
+| 终端遇到的情况 | 还要核对什么 | 应报状态 |
+| --- | --- | --- |
+| 在通用 MBMS 信道收到 Map Group To Bearer | 终端正在参加 Map 指明的组会话，且尚未报过相应的 `listening`。例如，第一次 Map 后已报过该状态，第二次收到相同 Map，不因重发而再报。 | `listening` |
+| 收到符合 §14.3.2 的承载通告，进入有通用 MBMS 可用的服务区 | MBMS 承载无线条件良好。只知道终端入区还不够；本分支未列“尚未报过”的条件。 | `listening` |
+| 正在通话，收到符合 §14.3.2 的撤告 | 被撤通告的 TMGI 与该通话先前收到的 Map 中的标识一致，且尚未报过相应的 `not-listening`。 | `not-listening` |
+| 没有进行中的通话，收到符合 §14.3.2 的撤告 | 此前正是因为**被撤项**所列的通用子信道可用才报过 `listening`，且尚未报过相应的 `not-listening`。 | `not-listening` |
+| MBMS 承载无线条件差 | 这一项未附撤告、Map 或先前上报状态的条件。一次没抓到语音包不能代替无线条件判定。 | `not-listening` |
+
+[TS 24.379 V16.14.0 §14.3.3.1，印刷页 471–472](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=473)。[§14.3.3.2 第 1(g) 项，页 473](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=474) 以 Unmap 为例说明怎样填写会话身份；这不是 §14.3.3.1 另列的无条件上报触发器。Map 的重发和终端的监听报告不是一对请求与确认。
+
+<a id="listening-scope"></a>
+## 同一句“不再监听”，指一通会话还是整个通用子信道？
+
+先找 MBMS usage 命名空间 `urn:3gpp:ns:mcpttMbmsUsage:1.0` 的根元素 `mcptt-mbms-usage-info`。根下的 `version` 是必有的子元素，本程序填 1。根下的 `mbms-listening-status` 是容器，里面**同名的子元素**才是状态字符串。其后依次是可省的 `session-id`（URI，最多一个）、可省的 `general-purpose`（布尔值，最多一个），以及一个或多个 `TMGI`（十六进制二进制值）。这些都是子元素，不是属性。所列承载共用同一个监听状态。发送步骤把这个名字印作 `TGMI`；附录 F 的 XSD 和字段说明都是 `TMGI`。[§14.3.3.2 第 1(e)–(g) 项，页 473](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=474)；[§F.2.2，页 553](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=554)。
+
+- **报的是会话子信道**：用 `session-id` 标明进行中的那一通会话。`listening` 报的是终端正在该会话的 MBMS 子信道接收 RTP 媒体包和话权控制消息；`not-listening` 报的是终端已停止监听该子信道。状态说明并非某个指定 RTP 包的收条。没有 `general-purpose` 时，`session-id` 必须存在；不应反推两字段必然互斥。F.2.3 对按需建立的会话指向建会时控制功能 Contact 中的 URI，对经预建立会话建成的通话则指向参与功能在 Connect 中给出的 URI。[§4.5（页 39）](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=40) 另规定，参与功能收到控制侧的会话身份后，会在发给终端的 Contact 中填入自己分配的会话身份，并保留它与控制功能所给身份的映射。核对[建会两侧的 Contact](../calls/session-gruu-sensitive-identity.md)，不要用组 ID 顶替，也不要假定两侧 URI 字面相同。
+- **报的是通用子信道**：`listening` 配 `general-purpose=true` 表示终端在听所列承载的通用子信道，尚未为自己参与的任何会话收到 Map；不能据此把会话甲登记为已监听。`not-listening` 配 `general-purpose=false` 表示终端已不再听通用子信道。
+
+例如，甲、乙仍在通话，同一终端此前对两通都报过正在监听。参与功能收到该终端的报告，确认另一份 `mcptt-info` 正文指向自己服务的 MCPTT ID，并核实该 ID 与请求的 `P-Asserted-Identity` 公共用户身份绑定。若报告仅指名甲不再监听，参与功能向媒体面指明的就是甲。若报告的是通用子信道 `false`，参与功能须通知媒体面该终端不再听通用子信道。其含义也覆盖甲、乙两通此前报过的会话子信道，不用逐一重列；这不涵盖别的终端或未曾这样上报的通话。`not-listening` 还要求参与功能按 TS 24.380 与媒体面交互，不表示会话已释放或某个语音包已转成单播；后者要查该包的实际下行发送。[§14.2.3，印刷页 468–469](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=470)；[§14.3.3.2 注 2，页 473](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=474)；[§F.2.3(1) 及表 F.2.3-1，页 555](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=556)。
+
+**同一正文能否同时报告这两种监听状态？** §14.3.3.2 注 1 说可以，但所列 XSD 在根下最多允许一个监听状态容器，容器内只有一个状态值。可以重复的是 `TMGI`，不是状态；列两个 TMGI 只把同一状态用于两条承载。不能把重复容器、在字符串里拼两个值或用扩展字段当成本版已规定且互通的混合写法。[§14.3.3.2 注 1，页 473](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=474)；[§F.2.2，页 553](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=554)；[§F.2.3 表 F.2.3-1，页 555](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=556)。
 
 <a id="suspension-report"></a>
 ## 告知即将暂停和撤回暂停，各在什么时候报？
