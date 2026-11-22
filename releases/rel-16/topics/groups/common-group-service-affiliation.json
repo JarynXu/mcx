@@ -1,0 +1,316 @@
+{
+  "topic_id": "r16-groups-common-group-service-affiliation",
+  "release": 16,
+  "standard_stage": 1,
+  "state": "draft",
+  "title": "同一个组支持三项 MC 业务，用户选两项，可以只获准一项吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-22.280-v16.8.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "Release 16；讨论同一组用了多项 MC 业务时的 Stage 1 需求。用户操作、单项或合并请求、许可和实际状态以该条条件分别判断。"
+  ],
+  "claims": [
+    {
+      "id": "independent-or-combined-affiliation",
+      "title": "同一组可以组合业务，也支持子集逻辑归属或逐业务归属",
+      "conditions": [
+        "同一任务关键组使用多个 MC 业务；判断归属机制时，用户已获授权。"
+      ],
+      "conclusion": "组须能独立使用或组合使用多项 MC 业务。业务须提供机制，让用户一次逻辑组归属涵盖该组所用业务的任意子集，或逐业务归属。",
+      "normative_strength": "R-8.4.2-001、-002 为 SHALL；§8.4.1 的单次或多个归属示意不是消息要求。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "8.4.1",
+            "8.4.2 R-8.4.2-001",
+            "8.4.2 R-8.4.2-002"
+          ],
+          "printed_pages": [
+            59
+          ]
+        }
+      ],
+      "limitations": [
+        "一次用户操作不证明发了一条或多条 SIP 消息。不保证所选业务都获准、同时成功或失败后一同回滚。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "intended-coordination-and-geographic-restrictions",
+      "title": "按预期协同的范围判断交互和类似地理限制",
+      "conditions": [
+        "两种 MC 业务由同一个任务关键组使用；对类似地理限制要求，组合业务的运行原本就意在协调。"
+      ],
+      "conclusion": "在同组中，为支持协调运行，一项 MC 业务须能与该组使用的另一项 MC 业务交互；对预期协调的组合，各业务须能让一项业务的类似地理限制应用于协同业务。",
+      "normative_strength": "-003 为同组业务间的交互能力要求（SHALL）；-004 为预期协调的组合业务应用类似地理限制的能力要求（SHALL）。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "8.4.2 R-8.4.2-003",
+            "8.4.2 R-8.4.2-004"
+          ],
+          "printed_pages": [
+            59
+          ]
+        }
+      ],
+      "limitations": [
+        "不规定同步机制、完全相同的地理配置、共享状态或实际位置。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "per-service-withdrawal",
+      "title": "已归属多项业务时能逐项解除",
+      "conditions": [
+        "获授权的用户已在同一个组归属多项 MC 业务。"
+      ],
+      "conclusion": "业务须提供机制，让该用户独立解除每一项 MC 业务的归属。",
+      "normative_strength": "SHALL。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "8.4.2 R-8.4.2-005"
+          ],
+          "printed_pages": [
+            59
+          ]
+        }
+      ],
+      "limitations": [
+        "只显示某业务获准不证明另一项已经归属；不推定实际解除成功、当前会话结束或相关媒体停止。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "affiliation-limited-to-ue-supported-service",
+      "title": "终端能力限制可归属的业务",
+      "conditions": [
+        "MC 用户使用一台终端，拟在共用 MC 业务组归属某业务。"
+      ],
+      "conclusion": "MC 业务须提供机制，使用户只可归属终端能够支持的 MC 业务。",
+      "normative_strength": "R-8.4.3.1-001 为 SHALL。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "8.4.3.1 R-8.4.3.1-001"
+          ],
+          "printed_pages": [
+            59
+          ]
+        }
+      ],
+      "limitations": [
+        "组启用、终端能力与准许是不同证据；具备能力不等于已获准。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "service-advertises-participation-requirements",
+      "title": "业务公布参加要求供归属前核对",
+      "conditions": [
+        "判断的是 MC 业务公布加入该组所需能力的机制。"
+      ],
+      "conclusion": "MC 业务须有机制公布参加该组所需业务能力，例如所需的编解码格式，使用户可以事先核对终端兼容性。",
+      "normative_strength": "机制为 SHALL，不把示例字段视作每项业务的统一报文。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "8.4.3.1 R-8.4.3.1-002"
+          ],
+          "printed_pages": [
+            59
+          ]
+        }
+      ],
+      "limitations": [
+        "不据此将未实际公布等同于终端没有上报；后者有不同条件。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "ue-advertises-capability-and-limits",
+      "title": "归属时终端具备上报能力与限制的途径",
+      "conditions": [
+        "终端用户归属到组。"
+      ],
+      "conclusion": "MC 业务须有机制，让终端在归属时公布其能力和限制。",
+      "normative_strength": "机制为 SHALL；MCVideo 上报编解码与码率为 NOTE 示例。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "8.4.3.1 R-8.4.3.1-003",
+            "8.4.3.1 NOTE after R-8.4.3.1-003"
+          ],
+          "printed_pages": [
+            59
+          ]
+        }
+      ],
+      "limitations": [
+        "不要求所有业务均报相同字段，不把有机制当成本次一定上报。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "no-ue-advertisement-after-affiliation",
+      "title": "已归属而未收到终端能力时的假定",
+      "conditions": [
+        "用户已归属到组，但其终端未提供能力和限制信息。"
+      ],
+      "conclusion": "MC 业务须假定终端能够处理与该 MC 业务相关的内容。",
+      "normative_strength": "R-8.4.3.1-004 为 SHALL，动作是作出假定。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "8.4.3.1 R-8.4.3.1-004"
+          ],
+          "printed_pages": [
+            59
+          ]
+        }
+      ],
+      "limitations": [
+        "不是解码或上报真实状态的证据，不补授业务权限，也不等同于业务未公布参加要求。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "no-service-advertisement-and-codec-example",
+      "title": "业务不公布参加要求时采用业务能力假定",
+      "conditions": [
+        "MC 业务未公布参加该组所需的业务能力。"
+      ],
+      "conclusion": "假定具备该 MC 业务的能力就足以参加该组。条文示例是业务使用特定编解码、加入终端支持该业务但不支持该格式时，由业务为这类终端提供转码。",
+      "normative_strength": "R-8.4.3.2-001 表述假定并给出有条件的转码示例；不扩成通用 SHALL。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "8.4.3.2 R-8.4.3.2-001"
+          ],
+          "printed_pages": [
+            60
+          ]
+        }
+      ],
+      "limitations": [
+        "这不是任何编解码不匹配都要转码的命令，也不单独证明实际获准、媒体送达或有效解码。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "partial-permission-after-combined-request",
+      "title": "合并归属请求可以只获部分业务许可",
+      "conditions": [
+        "UE 对同一共用 MC 业务组作合并归属请求。"
+      ],
+      "conclusion": "MC 业务可以在适当情况下只准许为部分所请求 MC 业务访问该组。",
+      "normative_strength": "MAY；限合并请求与适当情况。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "8.4.4 R-8.4.4-001"
+          ],
+          "printed_pages": [
+            60
+          ]
+        }
+      ],
+      "limitations": [
+        "不强制所有请求按此处理；不定优先级、拒绝原因、线上字段或最终实际归属状态。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "identifying-information-across-coordinated-services",
+      "title": "为协调业务使用对方所用的用户识别信息",
+      "conditions": [
+        "组合业务的运行预期协调。"
+      ],
+      "conclusion": "须使一项 MC 业务能够访问协同业务使用的用户识别信息，并用这些信息通信。",
+      "normative_strength": "R-8.4.5-001 为 SHALL 能力要求。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "8.4.5 R-8.4.5-001"
+          ],
+          "printed_pages": [
+            60
+          ]
+        }
+      ],
+      "limitations": [
+        "不要求所有标识文字相同，也不从可访问识别信息推定准入或权限转移。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-groups-group-enabled-service-configuration",
+    "r16-groups-same-system-explicit-affiliation",
+    "r16-groups-client-group-deaffiliation",
+    "r16-mcdata-affiliation-configured-subservices",
+    "r16-mcvideo-onnetwork-capability-sharing",
+    "r16-identity-cross-service-user-mapping"
+  ],
+  "limitations": [
+    "限 TS 22.280 V16.8.0 §§8.4.1–8.4.5 的 Stage 1 要求。未收录 §8.4.6 位置消息、§8.5 业务优先规则、实际 SIP 数量或格式、跨业务原子性、现网兼容或当前会话处置。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
