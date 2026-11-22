@@ -17,4 +17,6 @@ MC 业务服务器可以只选广播区域内的一部分终端上报。选取�
 
 禁止改报的限制针对上述未获指示的客户端和这次暂停，并非永远不许发送监听报告。同一程序也**可**用于 MBMS 恢复或客户端能检测到的其他 MBMS 事件；条款没有要求每次恢复都走此程序。[§10.7.3.8.2 末两段，印刷页 136](https://www.etsi.org/deliver/etsi_ts/123200_123299/123280/16.07.00_60/ts_123280v160700p.pdf#page=137)
 
+若手里是 MCPTT 客户端的 SIP MESSAGE，读[即将暂停与撤回的报告条件、待暂停业务的 MCH 分报和 TMGI 计数](mcptt-mbms-status-message-rejection.md#suspension-report)。其中的 `not-suspending` 指撤回尚未生效的决定，不是本页所说的承载恢复。
+
 若要查的是 MCVideo 组内谁通过哪个子信道接收视频，见[组播子信道映射](../mcvideo/mbms-group-downlink.md)；若要判断何时可以释放一次视频传输的组播实例，见[组播转单播](../mcvideo/mbms-to-unicast.md)。这两项都不是判定本次暂停必须由谁上报的依据。

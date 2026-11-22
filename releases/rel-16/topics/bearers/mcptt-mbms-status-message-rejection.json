@@ -3,18 +3,19 @@
   "release": 16,
   "standard_stage": 3,
   "state": "draft",
-  "title": "MCPTT MBMS 的 SIP MESSAGE 返回 403：查通告方向，还是查上报者绑定？",
+  "title": "MCPTT 组播状态报告：暂停预告与撤回怎么报，PF 何时回 403？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
   "condition_rule": "每条声明继承全部 common_conditions，再叠加本条 conditions；关联主题不是必经流程。",
   "common_conditions": [
-    "固定 TS 24.379 V16.14.0，Rel-16 Stage 3；核对在网 MCPTT MBMS usage SIP MESSAGE，按实际收件角色和该分支所需证据判断。"
+    "固定 TS 24.379 V16.14.0，Rel-16 Stage 3；在网 MCPTT MBMS usage SIP MESSAGE。"
   ],
   "claims": [
     {
       "id": "mbms-status-message-separate-route-identity-and-user-identity",
       "title": "MBMS 通告的 PF PSI 用来寻址报告，正文的 MCPTT ID 用来核对用户",
       "conditions": [
+        "固定 TS 24.379 V16.14.0，Rel-16 Stage 3；核对在网 MCPTT MBMS usage SIP MESSAGE，按实际收件角色和该分支所需证据判断。",
         "终端按条款发送监听或暂停报告，并已收到有相应 MBMS PSI 的公告。"
       ],
       "conclusion": "终端在报告 Request-URI 写通告 P-Asserted-Identity 中收到的 PF MBMS PSI；另在 mcptt-info 正文的 mcptt-request-uri 写 MCPTT ID。PF 收到的 P-Asserted-Identity 则用于校验上报者公共用户身份。§4.2 假定的配置中，MBMS PSI 和服务用户的 PF PSI 是同一 URI；通告与报告可共用 MBMS usage MIME 类型。",
@@ -82,6 +83,7 @@
       "id": "pf-forbidden-mbms-either-unassociated-pai-or-served-target-with-announcement",
       "title": "PF 收到 MBMS usage MESSAGE 时按两个独立条件回 403",
       "conditions": [
+        "固定 TS 24.379 V16.14.0，Rel-16 Stage 3；核对在网 MCPTT MBMS usage SIP MESSAGE，按实际收件角色和该分支所需证据判断。",
         "PF 已收到含 application/vnd.3gpp.mcptt-mbms-usage-info+xml 正文的 SIP MESSAGE。"
       ],
       "conclusion": "P-Asserted-Identity 指出的公共用户身份未关联该 PF 服务的 MCPTT 用户，或同时有 mcptt-info 正文、mcptt-request-uri 指出该 PF 服务的 MCPTT 用户且 usage 正文有至少一个 announcement；任一成立 PF 须回 SIP 403。",
@@ -110,6 +112,7 @@
       "id": "mbms-status-pai-must-bind-to-the-reported-served-mcptt-id",
       "title": "正常组播监听或暂停报告要求头部身份绑定到正文指出的这名用户",
       "conditions": [
+        "固定 TS 24.379 V16.14.0，Rel-16 Stage 3；核对在网 MCPTT MBMS usage SIP MESSAGE，按实际收件角色和该分支所需证据判断。",
         "PF 收到 MBMS listening status update 分流下的实际监听或暂停状态，mcptt-request-uri 指明本 PF 服务的 MCPTT ID。"
       ],
       "conclusion": "PF 核验来件 P-Asserted-Identity 的公共用户身份与该 MCPTT ID 的绑定，成立才能执行 §14.2.3 中相应状态分支。若 PAI 关联另一名本 PF 用户、两者没绑定且无通告，两项 §14.2.4 条件均不成立；§14.2.3 不为该检查失败另列状态码。",
@@ -143,6 +146,115 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "client-suspension-decision-and-withdrawal",
+      "title": "终端已报监听的承载：即将暂停与撤回暂停的事件历史",
+      "conditions": [
+        "该承载最近一次已上报的监听状态为 listening，终端未收到 report-suspension=false 的承载通告。"
+      ],
+      "conclusion": "收到 RAN 的即将暂停通知，终端须上报 suspending。若终端先前已经上报这条承载即将暂停、尚未检测到实际暂停，此时收到 RAN 撤回通知，则须上报 not-suspending。前者指下一个 MCCH 修改周期开始时的暂停计划，后者指生效前撤回该计划。",
+      "normative_strength": "两组条件分别全部成立时须上报；没有收到显式 false 不等于必须收到显式 true。",
+      "limitations": [
+        "not-suspending 不是已暂停后的恢复。缺少终端过去的监听或暂停报告、无线通知或实际检测记录时，不能由一次流量变化还原必报事件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.3.3.1 final two paragraphs of conditions: impending suspension and withdrawal before detected suspension"
+          ],
+          "printed_pages": [
+            472,
+            473
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.3.3.2 suspension report, items 1(e)–(h), 2 and notes 3–4: per-MCH report, two states and two count rules"
+          ],
+          "printed_pages": [
+            474
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.2.3(2)(a)–(d), Table F.2.3-2: RAN decision timing, status strings, count and TMGI meanings"
+          ],
+          "printed_pages": [
+            555,
+            556
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "suspension-report-mch-count-and-schema",
+      "title": "逐份读暂停报告：MCH、受影响的 TMGI、其他 TMGI 与计数",
+      "conditions": [
+        "终端满足 §14.3.3.1 中相应暂停状态的上报条件，生成并发送该状态的 SIP MESSAGE。"
+      ],
+      "conclusion": "即将暂停与撤回分开发，MBMS usage 正文的 version 为 1。suspending 按 MCH 分报，程序要求对同一 MCH 上每个即将暂停的 MTCH 给出 suspended-TMGI；可补充已知的同 MCH 其他 MTCH 的 other-TMGI，总数为两类实含元素数之和。not-suspending 用 suspended-TMGI 指明撤回涉及的各 MTCH 的承载，计数只取实含 suspended-TMGI 个数。",
+      "normative_strength": "§14.3.3.2 暂停段第 1f、1g 项给出两种计数；other-TMGI 在即将暂停分支可选。注 3 针对跨 MCH 的待暂停 MTCH，注 4 分开两种状态。",
+      "limitations": [
+        "other-TMGI 并非这次计划暂停或撤回的对象；撤回分支未要求填此元素，不等于 XSD 禁止它。",
+        "同一 MCH 有多个受影响 MTCH 时，程序要求逐项给标识，§F.2.2 同一容器内 suspended-TMGI 的最大次数却为 1，只有 other-TMGI 可重复。将额外受影响目标改记为 other-TMGI 会改义，不凭该版单独制定兼容线格式或拆包算法。",
+        "XSD 将 number-of-reported-bearers 定为 xs:integer，§F.2.3(2b) 却以十六进制二进制数描述；按分支解释个数，不据此声称任意十六进制词形有效。",
+        "通过所列 XSD 的次数和类型检查，不证明计数等于实含元素数量、业务对应同一 MCH 或终端满足上报条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.3.3.1 final two paragraphs of conditions: impending suspension and withdrawal before detected suspension"
+          ],
+          "printed_pages": [
+            472,
+            473
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.3.3.2 suspension report, items 1(e)–(h), 2 and notes 3–4: per-MCH report, two states and two count rules"
+          ],
+          "printed_pages": [
+            474
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.2.2 MBMS suspension status container and child declarations: count datatype and TMGI occurrences"
+          ],
+          "printed_pages": [
+            553,
+            554
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.2.3(2)(a)–(d), Table F.2.3-2: RAN decision timing, status strings, count and TMGI meanings"
+          ],
+          "printed_pages": [
+            555,
+            556
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "related": [
@@ -151,7 +263,7 @@
     "r16-bearers-anchored-session-transfer"
   ],
   "limitations": [
-    "限在网 MCPTT 的 SIP MBMS usage；按每项条件读取，不把有效通告／状态报告结构当成异常规则的共同前提；不扩展到 MCVideo、MCData、MB2 或无线暂停状态判断，不生成额外拒绝码。"
+    "限在网 MCPTT SIP MBMS usage。按对应角色和条件区分通告、报告、身份绑定与两项 403 守卫，不从状态报告推定承载实际暂停、恢复或媒体切换；不扩展到其他 MC 业务、MB2 或未规定的拒绝码。"
   ],
   "verification": {
     "original_clauses_checked": true,

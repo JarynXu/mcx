@@ -3317,13 +3317,13 @@ Q1 接收同场取消仍应处理并确认；Q2 的 TFP8 到期按本端隐式�
 
 [读取主题](topics/calls/session-gruu-sensitive-identity.md)
 
-## Rel-16 MCPTT MBMS MESSAGE 的 403、方向和身份校验
+## 在网 MCPTT MBMS 状态报告：暂停预告、撤回、身份和 403
 
-可用正文与实际接收角色识别通告或报告，判断 PF 两项独立 403 守卫。
+可用正文与实际接收角色识别通告或报告，判断 PF 两项独立 403 守卫。 区分终端何时报告即将暂停或撤回；解释待暂停报告怎样按 MCH 分发，并分别核对两种状态的 TMGI 计数。
 
-把 Request-URI 的 PF 寻址、PAI 公共用户身份和正文 MCPTT ID 分开核对，保留状态报告绑定不成立时缺省响应未指定。
+把 Request-URI 的 PF 寻址、PAI 公共用户身份和正文 MCPTT ID 分开核对，保留状态报告绑定不成立时缺省响应未指定。 比对 §14.3.3.2 的逐项要求与附录 F.2 的 XSD 次数、计数字段类型。
 
-尚未建立：不由相同 MIME、报告应答或某个 403 独立判断起因、实际监听或承载切换。
+尚未建立：不由相同 MIME、报告应答或某个 403 独立判断起因、实际监听或承载切换。 不把撤回当作恢复，不用同一 MCH 的多目标条文推定唯一的互通 XML。
 
 [读取主题](topics/bearers/mcptt-mbms-status-message-rejection.md)
 
