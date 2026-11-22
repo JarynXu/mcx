@@ -27,4 +27,4 @@
 
 若已有一项基于预配置组的组重组，组成组出现后续归属，见[后续归属如何触发补通知](preconfigured-regroup-late-affiliation.md)：NCF 的触发与名单规则不同于终端收到创建通知之后的处理。
 
-若要核对的是 MCPTT 控制功能（CF）的移除 MESSAGE，见[CF 的上游应答、下游通知对象与自行移除](preconfigured-regroup-removal.md)。
+若移除通知到了终端却没有名单，或只看到服务器回 200，见[服务器按什么归属记录通知谁、终端这份 MESSAGE 为什么不复制名单](preconfigured-regroup-removal.md)。同页也区分 CF 受理请求与自行移除。
