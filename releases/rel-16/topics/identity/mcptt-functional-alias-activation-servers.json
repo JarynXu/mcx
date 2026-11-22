@@ -359,6 +359,83 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "alias-publish-interest-set",
+      "title": "新增一项时，PF 如何处理同一用户名下列出、漏列与已过期的别名？",
+      "conditions": [
+        "甲手动新启用一个别名，按用户发布启用意向；服务器查表以实际收到符合入口的 PUBLISH、通过身份和权限检查、候选有效期非零且 PIDF entity 与被服务用户匹配为前提。"
+      ],
+      "conclusion": "客户端的启用 PIDF 应列出该用户请求启用的全部别名，每个仍感兴趣的别名一项。PF 比对本用户的原列表：已列且未到期的旧项复制并将到期时间设为当前时刻加候选有效期；原为 deactivating 或 deactivated 的改为 activated 并重置启用跟踪标识，原为 activated 或 activating 的保留其状态。未到期却漏列的旧项复制；其中原为 activated 或 activating 的改为 deactivating，期限为当前时刻加两倍 Timer F。已列别名无旧项或旧项已过期则新建 activating 项，期限为当前时刻加候选有效期，重置 activating p-id-fa。",
+      "normative_strength": "§9A.2.1.2 和 §9A.2.2.2.3 第 12 项按对应条件要求构造与逐项处理。",
+      "limitations": [
+        "单笔启用发布漏列旧项的接收效果，不等于可同时发送显式启用和停用。200 早于 entity 核对，不能证明实际改表。",
+        "第 12(c) 项称 functionalAliasID 为元素，第 12(a–b) 项与按用户语法第 8 项写为属性；不规定兼容方式。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.1.2 steps 4–6(c), Note 3; 9A.3.1.2 per-user syntax items 7–8: activation request and per-user list of interested aliases"
+          ],
+          "printed_pages": [
+            200,
+            216
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.2.3 steps 6–12(c): nonzero candidate interval, response before entity check, copy of served user list and presence or omission of each alias"
+          ],
+          "printed_pages": [
+            203,
+            204
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "alias-owner-dispatch-by-state-pair",
+      "title": "两个旧项都变成 deactivating，为何不一定都向拥有方办理停用？",
+      "conditions": [
+        "同一用户手动新增一个别名，PF 已按非零有效期和匹配 entity 构造候选表。对照替换前的 served list 与 candidate list；旧项是否到期按处理时刻判定。"
+      ],
+      "conclusion": "PF 换入候选表。第 15(a–b) 项对无旧项或原已过期且候选为 activating 的别名调用拥有方程序。第 15(d) 项就原未到期的 activated 变为 deactivating 办停用；原未到期的 activating 漏列虽同样变为 deactivating，却不符合第 15(d) 项或其余三项。继续列出原为 activated 或 activating 的有效项，若状态未变，只更新期限也不命中第 15 项。第 15(c) 项另列未到期旧项从 deactivating 或 deactivated 到候选 activating，而第 12(a)(ii) 项对列出的这类旧项写作 activated，不可据此推定命中 15(c)。随后 PF 识别本次客户端 p-id-fa 并调用按用户的通知程序。",
+      "normative_strength": "第 14–17 项规定换表、按所列状态对调用另一个程序、识别标识和调用按用户的通知。",
+      "limitations": [
+        "不命中第 15 项只指本次旧表与候选表比较，并不排除另有独立发布原因。",
+        "本地正在启用或停用、启动拥有方程序、实际发出、拥有方处理以及客户端实收状态通知分别核对，不由首段 200 或候选表替代。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.2.3 steps 6–12(c): nonzero candidate interval, response before entity check, copy of served user list and presence or omission of each alias"
+          ],
+          "printed_pages": [
+            203,
+            204
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.2.3 steps 14–17: replace local list and compare previous and candidate status per alias before invoking owner procedure; 9A.2.2.2.5 steps 2–3 and 9A.2.2.2.6 steps 1–5: per-user notification and per-owner activation or deactivation"
+          ],
+          "printed_pages": [
+            205,
+            206,
+            207
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
     }
   ],
   "source_references": [
@@ -529,6 +606,37 @@
         209,
         210
       ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.1.2 steps 4–6(c), Note 3; 9A.3.1.2 per-user syntax items 7–8: activation request and per-user list of interested aliases"
+      ],
+      "printed_pages": [
+        200,
+        216
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.2.2.3 steps 6–12(c): nonzero candidate interval, response before entity check, copy of served user list and presence or omission of each alias"
+      ],
+      "printed_pages": [
+        203,
+        204
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.2.2.3 steps 14–17: replace local list and compare previous and candidate status per alias before invoking owner procedure; 9A.2.2.2.5 steps 2–3 and 9A.2.2.2.6 steps 1–5: per-user notification and per-owner activation or deactivation"
+      ],
+      "printed_pages": [
+        205,
+        206,
+        207
+      ]
     }
   ],
   "related": [
@@ -536,7 +644,7 @@
     "r16-identity-alias-owner-resolution-subscription"
   ],
   "limitations": [
-    "本例只讲一名用户手动新启用一个别名；不展开多用户、多别名、接管、自动启停、刷新及完整订退订流程。",
+    "限一名用户手动新启用一个别名；比较其既有别名在同一次非零候选有效期发布中列出或漏列的影响。不展开多用户、接管、自动启停、定期刷新及完整订退订流程。",
     "按条款区分应发、实际收到与应更新的本地记录；没有终端接收或服务器状态记录时，不据单段抓包认定已端到端生效。",
     "本版按别名 PIDF 的语法与接收步骤对用户标识的位置不一致，不给出唯一可互通的 XML 编码。"
   ],
