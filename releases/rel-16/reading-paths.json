@@ -5280,9 +5280,29 @@
         {
           "condition": "若实际收到的是预建立会话的 REFER 响应或媒体面释放，查各自的入口和当时的状态。",
           "read": "topics/calls/preestablished-emergency-private-confirmation.md"
+        },
+        {
+          "condition": "原普通按需私呼已经建立，要核对这次升级 re-INVITE 的状态与告警结果。",
+          "read": "topics/calls/emergency-private-upgrade.md"
         }
       ],
       "boundary": "重拨时对照用户 MES 与 CF 为两人保存的状态；主叫的授权、初始请求、响应及同对话反馈分别取证，不推出被叫收警或媒体结果。"
+    },
+    {
+      "id": "r16-calls-emergency-private-upgrade",
+      "question": "已有普通私呼请求升级，CF 何时缓存状态，200 / 149 表示哪项获准，查哪份 ACK 和 INFO？",
+      "start": "topics/calls/emergency-private-upgrade.md",
+      "next_if": [
+        {
+          "condition": "若是从无通话开始直接发起紧急私呼。",
+          "read": "topics/calls/emergency-private-call-alert.md"
+        },
+        {
+          "condition": "若实际发起的是取消紧急状态或撤警。",
+          "read": "topics/calls/emergency-private-downgrade.md"
+        }
+      ],
+      "boundary": "不从 CF 缓存或单份 200 推出对端收警、确认实际媒体，或修补固定版的组会话字样。"
     },
     {
       "id": "r16-media-preestablished-release-outcome",

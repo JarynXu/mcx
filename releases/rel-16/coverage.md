@@ -562,6 +562,16 @@ MCPTT 或 MCVideo 跨系统私呼，双方在各自主系统接受服务，两�
 
 [读取主题](topics/calls/emergency-private-call-alert.md)
 
+## 已有普通按需私呼升级为紧急
+
+区分本次升级的 SDP、指示组合和权限拒绝；查 CF 何时缓存、哪个 200 带 149、哪份 ACK 后再发同对话 INFO。
+
+只看已建立的普通按需私呼。按 CF 实收 re-INVITE、乙方向匹配 200、控制侧应答的 ACK 和终端实际状态分别判断。
+
+尚未建立：缓存不证明被叫接受，200 / 149 不证明告警获准或送达；不能以服务器发出 INFO 代替终端本次处理。
+
+[读取主题](topics/calls/emergency-private-upgrade.md)
+
 
 
 ## 普通私聊SDS控制面：发送资格、请求与接收证据

@@ -1,0 +1,258 @@
+{
+  "topic_id": "r16-calls-emergency-private-upgrade",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "普通私呼升为紧急：CF 已记状态，收到 200 / 149 又确认了什么？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "按实收的这次升级请求及各角色事件判断；各步骤的授权、应答和状态条件不互换。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0，Rel-16、Stage 3，同系统普通在网一对一按需私呼已在进行，终端要求升级为紧急私呼；不是初始建呼、已有紧急状态的取消、组呼、离网或预建立 REFER。"
+  ],
+  "claims": [
+    {
+      "id": "upgrade-request-validation",
+      "title": "已经建立的按需私呼：升级 re-INVITE 的媒体、业务指示与授权是三项检查",
+      "conditions": [
+        "用户请求升级；CF 的入站分支须实收带 emergency-ind=true 的升级 re-INVITE。"
+      ],
+      "conclusion": "客户端另发 re-INVITE，带 §6.2.8.3.2 的 MCPTT 信息正文、相应 Resource-Priority、目前建立的媒体参数作为 SDP offer。CF 实收的 offer 若没有至少一路媒体参数可接受且至少有一种可接受编解码或格式，则回 488 并停止。emergency-ind=true 时要求有 alert-ind、没有 imminentperil-ind；否则 403、Warning 文本 150。合法组合仍须查升级许可。未获准的升级在指定分支回 403，正文 emergency-ind=false、alert-ind=false 并停止。",
+      "normative_strength": "所列动作按各自的实收、状态及授权前提执行；指定要求为 SHALL。",
+      "limitations": [
+        "有 alert-ind=false 与缺该元素不同；带 imminentperil-ind=false 不满足缺该元素条件。组合校验子程序未另写停止措辞，不用它改写其他分支。Resource-Priority 不能代替授权。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.5: same-dialog emergency private upgrade and matched client response"
+          ],
+          "printed_pages": [
+            361,
+            362
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.3: in-progress private emergency upgrade at controlling function, response and ACK gates"
+          ],
+          "printed_pages": [
+            383,
+            384
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.17: emergency=true/alert present/imminent absent validation; 6.3.3.1.14: unauthorised emergency request indicators in 403"
+          ],
+          "printed_pages": [
+            116,
+            117,
+            118
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "emergency-pair-cache-before-downstream",
+      "title": "控制功能另发升级 re-INVITE；是否先写缓存，取决于原状态",
+      "conditions": [
+        "CF 实收带 emergency-ind=true 的升级 re-INVITE，并通过适用前序检查，进入第 5–6 项。"
+      ],
+      "conclusion": "只有甲与目标乙尚未处于进行中的紧急私呼状态时，第 5 项才要求 CF 先缓存两人之间的此状态；本项中只有入站 alert-ind=true 且告警获准时才另记录这次告警。第 6 项要求 CF 向收到的 re-INVITE 的资源列表中的用户另发升级 re-INVITE，不以第 5 项新增缓存为条件。",
+      "normative_strength": "所列动作按各自的实收、状态及授权前提执行；指定要求为 SHALL。",
+      "limitations": [
+        "不能从缓存写入认定乙已答复、已收告警或业务成功。这里不规定失败后自动回滚；终端步骤未明确列 resource-lists 的构造，不以某个旧 URI 补目标。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.5: same-dialog emergency private upgrade and matched client response"
+          ],
+          "printed_pages": [
+            361,
+            362
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.3: in-progress private emergency upgrade at controlling function, response and ACK gates"
+          ],
+          "printed_pages": [
+            383,
+            384
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.5: separate terminating-side upgrade re-INVITE and cache matched Contact"
+          ],
+          "printed_pages": [
+            386
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "downstream-upgrade-contact-cache",
+      "title": "匹配的乙方向升级 200 单独触发 CF 缓存 Contact",
+      "conditions": [
+        "CF 收到与它按 §11.1.1.4.5 向乙方向发出的升级 re-INVITE 匹配的 200。"
+      ],
+      "conclusion": "CF 须缓存这份响应 Contact 中收到的值。",
+      "normative_strength": "满足响应条件后为 SHALL。",
+      "limitations": [
+        "此步不要求为用户对新增紧急状态缓存，也不要求 CF 尚未给发起方向发本次应答。固定版没有规定 Contact 缓存与按 §11.1.1.4.3 给发起方发送 200 之间的相互顺序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.5: separate terminating-side upgrade re-INVITE and cache matched Contact"
+          ],
+          "printed_pages": [
+            386
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "matching-200-separate-upgrade-and-alert",
+      "title": "升级获准的 200 / 149 不等于告警获准",
+      "conditions": [
+        "CF 生成面向发起方的 200：实收对自己升级 re-INVITE 的匹配 200，且尚未发送本次入向请求的应答。",
+        "O-PF 处理收到的匹配 200；客户端处理实际收到的本次升级 2xx。各动作按自己的来件、角色和本地状态分别判断，不以其他角色记录替代。"
+      ],
+      "conclusion": "CF 对自己的来向 re-INVITE 生成另一份 200，反映入向 SDP offer 及当前媒体参数；来向明确请求告警但 CF 判其未获准，须带 Warning 文本 149。CF 与媒体面交互并发应答。O-PF 收到匹配的 200，须在给客户端生成的 200 中带收到的 Warning。甲实际收到本次 2xx 时先与用户面交互；在 MEPC 2 或 MEPC 3 时按规程使 MEPC 为 3、MEPP 为 2。若已有 MPEA 2 且该 2xx 不带 149，才按该项把 MPEA 改为 3。",
+      "normative_strength": "所列动作按各自的实收、状态及授权前提执行；指定要求为 SHALL。",
+      "limitations": [
+        "不能用原初始 INVITE 的 200、乙方向的 200 或不完整的 Warning 文本代替本次匹配应答。149 下不能用 2xx 宣布告警已发起；终端状态或服务器发送不证明被叫实收告警。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.3: in-progress private emergency upgrade at controlling function, response and ACK gates"
+          ],
+          "printed_pages": [
+            383,
+            384
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.5: separate terminating-side upgrade re-INVITE and cache matched Contact"
+          ],
+          "printed_pages": [
+            386
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.5: same-dialog emergency private upgrade and matched client response"
+          ],
+          "printed_pages": [
+            361,
+            362
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.8.3.4: affirmative private-call/priority states and conditional MPEA on 2xx"
+          ],
+          "printed_pages": [
+            73
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.1.3 response steps 1–6: originating participating function includes received Warning in separate client-facing 200"
+          ],
+          "printed_pages": [
+            376
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "ack-gates-alert-denial-info",
+      "title": "收到发起侧 200 / 149 的匹配 ACK，CF 才发本次拒绝告警的 INFO",
+      "conditions": [
+        "本次升级入向明确 alert-ind=true 且告警不获准；CF 自己回发起方向的 200 带 149 并实收对此响应的 ACK。"
+      ],
+      "conclusion": "CF 按 §6.3.3.1.18 向发起客户端方向在相应优先请求对话发送 SIP INFO，Info-Package 为 g.3gpp.mcptt-info，匹配 mcptt-info 正文 emergency-ind=true、alert-ind=false。按私呼 INFO helper，在相应对话实际收到且满足包和正文条件，若告警仍为 MPEA 2，alert-ind=false 使其回 MPEA 1。",
+      "normative_strength": "所列动作按各自的实收、状态及授权前提执行；指定要求为 SHALL。",
+      "limitations": [
+        "升级条款的终端 INFO 末段使用“进行中的组会话”却回指私呼 helper；不擅改该条件，也不从 CF 发包推定终端一定进入分支。与撤警失败、初建事务和乙方向 ACK 分开。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.4.3: in-progress private emergency upgrade at controlling function, response and ACK gates"
+          ],
+          "printed_pages": [
+            383,
+            384
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.1.18: INFO generation and denial of requested new alert; 6.2.8.3.7: client private INFO helper and MPEA transition"
+          ],
+          "printed_pages": [
+            75,
+            118
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.1.5: same-dialog emergency private upgrade and matched client response"
+          ],
+          "printed_pages": [
+            361,
+            362
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-emergency-private-call-alert",
+    "r16-calls-emergency-private-downgrade"
+  ],
+  "limitations": [
+    "固定版内的某些回指或方法名与所处步骤不完全一致，例如 CF 的 §11.1.1.4.3 第 4 项、§11.1.1.4.5 第 4 项均指向第 2 项，而第 2 项分别是组合校验和正文复制；这里不据此推导完整优先级准入规则。",
+    "不是撤警、重建会话或预建立 REFER 的结果，不确认实际告警或端到端媒体交付、缓存回滚或 SIP 路由。"
+  ],
+  "verification": {
+    "original_clauses_checked": true
+  }
+}

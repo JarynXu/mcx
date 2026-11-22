@@ -67,3 +67,5 @@
 若主叫通过预建立会话发起紧急私呼，查[REFER 2xx、同会话 re-INVITE 与释放前的紧急状态](preestablished-emergency-private-confirmation.md)，不套此处的按需 INVITE 应答规则。
 
 若同一通在网紧急私呼已经接通，现收到 `emergency-ind=false` 的 re-INVITE 或遇到取消后的 200/149，查[私呼降级及撤警结果](emergency-private-downgrade.md)，不要套这里发警的 MPEA 2 条件。
+
+若甲、乙已经在通话，甲现在要求把普通私呼升为紧急，见[升级 re-INVITE、控制侧缓存和 200 / 149](emergency-private-upgrade.md)，不要用初始 INVITE 的应答判这次升级。
