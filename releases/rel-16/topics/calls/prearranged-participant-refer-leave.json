@@ -3,10 +3,10 @@
   "release": 16,
   "standard_stage": 3,
   "state": "draft",
-  "title": "预安排组呼离会：为什么 REFER 的 200 早于控制侧 BYE？",
+  "title": "预安排组呼离会：终端发 BYE 还是 REFER，哪一腿先回 200？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
-  "condition_rule": "先识别要结束的对象与实际请求腿，再对照响应所答的方法及控制功能的整场释放决定。 以 r16-calls-prearranged-participant-refer-leave- 开头的三条声明只用于终端主动离会；以 r16-calls-prearranged-release- 开头的三条声明只用于控制功能主动移出成员或结束整场。控制侧释放须核对实际业务 BYE 的方向、目标和会话映射，不能拿其他腿的 200 替代。",
+  "condition_rule": "先识别要结束的对象与实际请求腿，再对照响应所答的方法及控制功能的整场释放决定。 以 r16-calls-prearranged-participant-refer-leave- 开头的三条声明只用于终端主动离会；以 r16-calls-prearranged-release- 开头的三条声明只用于控制功能主动移出成员或结束整场。控制侧释放须核对实际业务 BYE 的方向、目标和会话映射，不能拿其他腿的 200 替代。 on-demand-member-bye 同属终端主动离会，限按需组呼。",
   "common_conditions": [
     "普通在网、单系统、已经建立的预安排 MCPTT 组呼；是终端主动离会，还是控制功能主动移出成员或结束整场，按各声明的角色和事件区分。拆除预建立 SIP 会话只作对照。"
   ],
@@ -281,12 +281,71 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "on-demand-member-bye",
+      "title": "成员主动离开按需组呼：PF 的出站 BYE 从来件取目标，收到其 200 后再应答终端",
+      "conditions": [
+        "终端主动离开已用按需信令建立的会话。PF 处理请求以实收终端的这次 BYE 为前提。应答段以收到对发往 CF 的那份 BYE 的 200 为前提；先前可以是重入，也可以不是。"
+      ],
+      "conclusion": "终端与媒体面交互后向服务器发 BYE，Request-URI 放要离开的会话标识；实收这笔 BYE 的 200 后再与媒体面交互。预安排组呼 §10.1.1.3.3.1 指向 §6.3.2.1.6：PF 先与媒体面交互，生成新 BYE，用收到的 BYE 中的 MCPTT 会话标识作 Request-URI，复制入站 P-Asserted-Identity，有 mcptt-info MIME 正文时复制该正文，向 CF 发送。收到对新 BYE 的 200 后，原文所称的“终接 MCPTT 功能”须向终端转送 200，并与媒体面交互以释放同 CF 的这条 SIP 会话关联的媒体资源。条款未给转送和这次媒体交互排先后。",
+      "normative_strength": "各角色在所列收件或用户请求条件下执行 SHALL 步骤；正文复制仅在入站含该类型正文时适用。",
+      "limitations": [
+        "重入 INVITE §10.1.1.3.5.1 明写使用映射标识；BYE 条款没有把旧映射值规定为此步的输入。既不取消 §4.5 的映射职责，也不规定任意 SIP 代理的 ACK、BYE 下一跳、DNS 或多公网地址选择。",
+        "§6.3.2.1.6 请求段称参与功能，应答段称终接 MCPTT 功能；不据此虚设额外节点。单腿 200 不证明终端实收、其他组员离会或媒体资源已释放。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.3.1 and 6.2.4.1: client-initiated departure on demand, BYE target and client receipt of 200"
+          ],
+          "printed_pages": [
+            60,
+            229
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.3.1: originating participating function on receipt of client BYE for on-demand group call"
+          ],
+          "printed_pages": [
+            239
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.6 steps 1–6 and response paragraph: received BYE session identity, PAI and conditional MIME copy, new BYE toward CF, matched 200 and media resources"
+          ],
+          "printed_pages": [
+            87,
+            88
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.5 and 10.1.1.3.5.1: role-local session identities and mapped identity for the rejoin INVITE only in this comparison"
+          ],
+          "printed_pages": [
+            38,
+            39,
+            239
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
     }
   ],
   "related": [
     "r16-calls-preestablished-session-in-use-release",
     "r16-calls-chat-participant-or-session-release",
-    "r16-calls-conference-participant-status"
+    "r16-calls-conference-participant-status",
+    "r16-mcptt-rejoin-late-entry"
   ],
   "limitations": [
     "不处理紧急或迫近危险状态、临时组、跨系统、广播、建立中的取消或 REFER 缺头回退，不推定线上实现、跨腿响应次序或实收。"
