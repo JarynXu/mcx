@@ -3,19 +3,20 @@
   "release": 16,
   "standard_stage": 3,
   "state": "draft",
-  "title": "按需首接呼叫：主叫选了两人，为什么控制功能只收到一人？",
+  "title": "首接呼叫：主叫选了两人，为什么控制功能只收到一人？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
-  "condition_rule": "每条声明继承共同场景，再分别核实 O-PF 实收、出站准备和 CF 实收。不能用呼叫最终结果倒推名单。",
+  "condition_rule": "每条声明继承共同场景，再核对它自己的会话方式、请求、角色和所到达的步骤。按需 INVITE 的明确拒绝不可移用到有请求名歧义的 REFER 条文。",
   "common_conditions": [
-    "固定 TS 24.379 V16.14.0（Release 16，Stage 3）。同一 MCPTT 系统内的普通在网按需首接，有话权，直接指定目标用户。",
-    "不含紧急、功能别名、预建立或普通一对一。主叫配置档限本次 O-PF 处理实际使用的文档。"
+    "固定 TS 24.379 V16.14.0（Release 16，Stage 3）。同一 MCPTT 系统、普通在网、带话权、用 MCPTT ID 直接指定候选；不含紧急或功能别名。",
+    "按 O-PF 实收的请求方法和目标表示区分分支；涉及配置档时，使用 O-PF 当时用于处理主叫的文档。"
   ],
   "claims": [
     {
       "id": "first-to-answer-originating-profile-admission",
       "title": "按需首接 403：查主叫的哪项许可？",
       "conditions": [
+        "仅按需建立的首接，不含预建立 REFER 或普通一对一私呼。",
         "发起侧参与功能（O-PF）实际收到 session-type=first-to-answer 的初始 INVITE，辨认绑定到 P-Asserted-Identity 公共用户身份的主叫 MCPTT ID。初始公共身份、首接服务 CF PSI 与候选被叫三者分开。",
         "具体分支只在各自检查到达时适用；名单分支另需实际收到 resource-lists 正文。"
       ],
@@ -66,6 +67,7 @@
       "id": "first-to-answer-originating-resource-list",
       "title": "主叫给了两名用户，为什么 CF 实际可能只收到一项？",
       "conditions": [
+        "仅按需建立的首接，不含预建立 REFER 或普通一对一私呼。",
         "同一初始 INVITE 通过前置检查，O-PF 到达生成 CF 方向 INVITE 的步骤，主叫 PrivateCall 存在且含至少一项，比较收到的每个候选 entry 的 uri 与名单。",
         "CF 一侧另查实际收到的是直接目标 first-to-answer INVITE，并到达非别名的邀请分支。"
       ],
@@ -129,6 +131,102 @@
         "original_clauses_checked": true,
         "independent_source_review": true,
         "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "preestablished-first-to-answer-list-classification",
+      "title": "预建立 REFER 只有一项却标首接，403 是谁对什么请求回的？",
+      "conditions": [
+        "主叫要求在预建立会话上发起首接。客户端构造与 O-PF 实收分开取证；以下各接收分支以该 O-PF 实际到达对应检查为前提。"
+      ],
+      "conclusion": "客户端用对话外 REFER，Request-URI 为预建立 PSI，Target-Dialog 指原对话；Refer-To 的 cid 引用资源列表，每一目标 entry 的 URI 指向相应 MCPTT ID，URI 的 body 参数内标 first-to-answer。客户端发起首接至少两名。O-PF 从 REFER 的 P-Asserted-Identity 查主叫身份。缺引用的列表或只有一项且该项不是 private（例如标为 first-to-answer），对 REFER 回 403/Warning 145 并停止。若有多项且各项类型均不是 first-to-answer，也对 REFER 回 403/145 并停止。单项 private 识别为普通私呼；多项且每项为 first-to-answer，识别为首接并找与主叫关联的首接服务 CF PSI，无法识别 CF 则对 REFER 回 404/Warning 142 并停止。",
+      "normative_strength": "§11.1.1.1、§11.1.1.2.2.1 及 §11.1.1.3.1.2 分别规定客户端构造与 O-PF 处理；145 和 142 是 Warning 文本码。",
+      "limitations": [
+        "不以单项代表已经选出一人；不为类型混杂列表、遗漏日志或一般解析故障给出结果。 裸 403 不足以定位 145 或区分多个 145 原因。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.1: the originating MCPTT client starts first-to-answer to two or more users; not an O-PF survivor-count rule"
+          ],
+          "printed_pages": [
+            352
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.2.2.1 opening and steps 1, 7, 9, 12: out-of-dialog REFER, pre-established PSI and dialog, per-target URI and first-to-answer body in the referenced list"
+          ],
+          "printed_pages": [
+            362,
+            363,
+            364
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.1.2 opening and steps 2–8: calling identity, referenced resource list, per-entry count and type; explicit local REFER errors and first-to-answer service PSI"
+          ],
+          "printed_pages": [
+            370,
+            371
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "preestablished-first-to-answer-profile-and-invite",
+      "title": "预建立首接的 REFER 已获 200，给 CF 的 INVITE 为何仍可只列一人？",
+      "conditions": [
+        "O-PF 已从预建立 REFER 的 Refer-To 引用列表识别出多项、每项均为 first-to-answer 的首接。各项前置检查分别成立或允许继续时，才适用对应拒绝、应答或生成新请求的步骤。"
+      ],
+      "conclusion": "PrivateCall 非空、所有入站候选 URI 均不匹配且未配置名单外许可，第 11 项列 403/153；首接许可缺失或为 false，第 12 项列 403/156。两项要求停止，但在处理 REFER 的段落中将拒绝对象写作 INVITE。第 9 项通用私呼许可缺失或为 false 时列 403/107，同时写拒绝 REFER 和响应 INVITE，未明写停止。到达后续步骤时，O-PF 先发 REFER 200，再生成并向主叫的首接 CF PSI 发送新 INVITE。若本次主叫文档有非空 PrivateCall，新请求的资源列表只保留匹配项，MCPTT 信息正文标为 first-to-answer；即使只剩一项，起始名单的两人下限也不要求恢复候选。",
+      "normative_strength": "§11.1.1.3.1.2 各分支规定的动作；拒绝码不消除第 9、11、12 项的请求名差异。",
+      "limitations": [
+        "第 16(a) 项不因有名单外许可就保留未匹配项；不指定零匹配且允许名单外时的最终响应。",
+        "对上入站 REFER、实际使用的配置档和出站 INVITE 才能确认本次过滤；REFER 200 不证明业务 INVITE 已发，出站名单不证明 CF 已收、被叫已接或谁已获选。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.1.2 opening and steps 2–8: calling identity, referenced resource list, per-entry count and type; explicit local REFER errors and first-to-answer service PSI"
+          ],
+          "printed_pages": [
+            370,
+            371
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.1.2 steps 9, 11–12: private-call permission and first-to-answer policy; distinguish the conflicting REFER/INVITE method names and the two express stops"
+          ],
+          "printed_pages": [
+            371,
+            372,
+            373
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "11.1.1.3.1.2 steps 14–17 and 20: first send REFER 200, then construct and send a fresh INVITE with matching candidates and first-to-answer service PSI"
+          ],
+          "printed_pages": [
+            373,
+            374
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
       }
     }
   ],
@@ -199,6 +297,48 @@
         33,
         34
       ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.2.2.1 opening and steps 1, 7, 9, 12: out-of-dialog REFER, pre-established PSI and dialog, per-target URI and first-to-answer body in the referenced list"
+      ],
+      "printed_pages": [
+        362,
+        363,
+        364
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.3.1.2 opening and steps 2–8: calling identity, referenced resource list, per-entry count and type; explicit local REFER errors and first-to-answer service PSI"
+      ],
+      "printed_pages": [
+        370,
+        371
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.3.1.2 steps 9, 11–12: private-call permission and first-to-answer policy; distinguish the conflicting REFER/INVITE method names and the two express stops"
+      ],
+      "printed_pages": [
+        371,
+        372,
+        373
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "11.1.1.3.1.2 steps 14–17 and 20: first send REFER 200, then construct and send a fresh INVITE with matching candidates and first-to-answer service PSI"
+      ],
+      "printed_pages": [
+        373,
+        374
+      ]
     }
   ],
   "related": [
@@ -208,12 +348,10 @@
     "r16-identity-user-profile-switch"
   ],
   "limitations": [
-    "不定义外部配置格式或名单匹配算法；保留无匹配加名单外许可的两个步骤各自条件。",
-    "只区分两条初始 INVITE 与 CF 直接候选邀请，不定义实际收件、选中、接听、资源或媒体的验收。"
+    "不定义外部配置格式、候选 URI 比较算法或允许名单外时零匹配的互通裁决。",
+    "O-PF 生成或发出新 INVITE、CF 实收名单、被叫收到邀请、接听和获选是不同事实。"
   ],
   "verification": {
-    "original_clauses_checked": true,
-    "independent_source_review": true,
-    "independent_usage_acceptance": true
+    "original_clauses_checked": true
   }
 }
