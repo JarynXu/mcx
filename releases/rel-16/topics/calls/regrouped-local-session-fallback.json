@@ -3,18 +3,17 @@
   "release": 16,
   "standard_stage": 3,
   "state": "draft",
-  "title": "临时预安排组呼：转出 INVITE 收到非 2xx，本地还起呼吗？",
+  "title": "临时组转出 INVITE：预安排组怎样回退，聊天组怎样处理 2xx 和拒绝？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.379-v16.14.0",
-  "condition_rule": "每条声明继承全部 common_conditions，再叠加本条 conditions；两个最终响应分支互斥，关联主题不是必经顺序。",
-  "common_conditions": [
-    "固定 TS 24.379 V16.14.0，Rel-16 Stage 3。预安排组呼未在进行，组 NCF 实际执行 §10.1.1.5.5 的临时组会话启动程序；该节开头的入站事务和本地另发给 CF 的事务分开。"
-  ],
+  "condition_rule": "每条声明按自身 conditions 确定组类型和程序；预安排组与聊天组不能互套，两种最终响应也不能同时成立。",
+  "common_conditions": [],
   "claims": [
     {
       "id": "regrouped-ncf-onward-invite-separates-group-tgi-and-user-identities",
       "title": "向控制方发的新 INVITE 以 CF PSI 寻址，正文区分 TGI 与组成组 ID",
       "conditions": [
+        "固定 TS 24.379 V16.14.0，Rel-16 Stage 3。预安排组呼未在进行，组 NCF 实际执行 §10.1.1.5.5 的临时组会话启动程序；该节开头的入站事务和本地另发给 CF 的事务分开。",
         "实际进入临时组会话启动，NCF 完成该程序适用的入站检查后按 §6.3.4.1.4 生成发往 CF 的新 INVITE。"
       ],
       "conclusion": "Request-URI 是 CF PSI，P-Asserted-Identity 是 NCF PSI，Contact 带 isfocus；业务正文 session-type 为 prearranged、mcptt-request-uri 为组文档取得的 TGI、mcptt-calling-user-id 为组成组 ID。按该节上下文，第 7 项授权检查的是开头那笔入站请求的正文所指用户。",
@@ -82,6 +81,7 @@
       "id": "non2xx-onward-leg-starts-local-controlling-function",
       "title": "转出 INVITE 收到非 2xx 最终响应，本地改为 CF 并继续邀请",
       "conditions": [
+        "固定 TS 24.379 V16.14.0，Rel-16 Stage 3。预安排组呼未在进行，组 NCF 实际执行 §10.1.1.5.5 的临时组会话启动程序；该节开头的入站事务和本地另发给 CF 的事务分开。",
         "实际收到的是本地 NCF 向 CF 发出的那一笔 INVITE 的非 2xx 最终响应。"
       ],
       "conclusion": "向 CF 发 ACK，按 §10.1.1.4 开始充当控制功能，按 §6.3.4.1.2 邀请成员。注 4 限定本地继续邀请的范围：以这个 NCF 为宿主的组成员。",
@@ -120,6 +120,7 @@
       "id": "two-success-legs-distinguish-ncf-role-from-member-media-evidence",
       "title": "转出 INVITE 的 2xx 使本地开始作 NCF，不证明成员已接听",
       "conditions": [
+        "固定 TS 24.379 V16.14.0，Rel-16 Stage 3。预安排组呼未在进行，组 NCF 实际执行 §10.1.1.5.5 的临时组会话启动程序；该节开头的入站事务和本地另发给 CF 的事务分开。",
         "本地 NCF 实收本次发往 CF 的 INVITE 的 2xx；后续收到成员 INVITE 2xx 是另一事件。"
       ],
       "conclusion": "向 CF 发 ACK，按上下文读法，对开头的入站腿构造 200，含本地 NCF PSI、Warning 文本 148 和按指定规则生成的 SDP 应答。开始充当 NCF 并与媒体面交互，按 §6.3.5.5 从已归属成员中选受邀者并发邀请。成员腿实收 2xx 时，另按该腿发 ACK 并与媒体面交互；§10.1.1.5.1 也要求对受邀客户端的 3xx、4xx、5xx、6xx 发 ACK。",
@@ -164,6 +165,170 @@
           "printed_pages": [
             258,
             259
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "chat-regroup-incoming-admission-and-caller-106",
+      "title": "成员入站腿的准入与 403/106",
+      "conditions": [
+        "固定 TS 24.379 V16.14.0，Rel-16 Stage 3；本地聊天组会话未在进行，组成组 NCF 按 §10.1.2.5.1.8 收到给组 CF 的 INVITE。",
+        "查原入站事务的 offer、业务标签、正文组 ID 和调用用户，而非服务器间新事务。"
+      ],
+      "conclusion": "资源不足无法处理或有拥塞风险可回 500，可带 Retry-After；媒体参数或语音编码条件不满足回 488，两个指定业务标签任一缺失回 403 并停止。按组 ID 取文档且检查通过后缓存入站请求，查 Resource-Priority，可予优先处理；入站正文所指用户未获准加入，回 403，Warning 文本编号 106。",
+      "normative_strength": "入口与第 1–7 项：500、Retry-After、优先处理为 may；其余按适用条件执行。",
+      "limitations": [
+        "给组 CF 的请求 Contact 无 isfocus；反向给组 NCF 的请求不是此分支。第 7 项仍引 §6.3.5.2，该辅助条款在已通知文档或已有缓存时让 NCF 退出本条，不给这名 NCF 的用户鉴权算法。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.1.1 group INVITE classification"
+          ],
+          "printed_pages": [
+            78
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.5.2 steps 1–4(a)"
+          ],
+          "printed_pages": [
+            131
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.5.1.8 incoming request, steps 1–7 and notes 1–2"
+          ],
+          "printed_pages": [
+            299,
+            300
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "chat-regroup-new-cf-invite-addresses-and-group-identity",
+      "title": "向 CF 新发 INVITE 的服务器和组身份",
+      "conditions": [
+        "固定 TS 24.379 V16.14.0，Rel-16 Stage 3；本地聊天组会话未在进行，组成组 NCF 按 §10.1.2.5.1.8 收到给组 CF 的 INVITE。",
+        "入站检查已通过，按 §6.3.4.1.4 生成并发送另一笔 INVITE。"
+      ],
+      "conclusion": "请求行目标为 CF PSI，PAI 为 NCF PSI；Contact 带 isfocus 和两个 MCPTT 业务标签。正文 mcptt-request-uri 是从组文档 on-network-regrouped 取得的 TGI；mcptt-calling-user-id 是组成组 ID。即使组成组是聊天组，session-type 也写 prearranged。",
+      "normative_strength": "§10.1.2.5.1.8 第 8–9 项和 §6.3.4.1.4 的 shall；注 3 说明组成组类型。",
+      "limitations": [
+        "入站鉴权用户、出站正文组成组 ID、临时组 ID 和服务器 PSI 不互换；未规定查找 CF 地址的办法。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.5.1.8 steps 8–9"
+          ],
+          "printed_pages": [
+            300
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.4.1.4 steps 1–5 and notes 1, 3"
+          ],
+          "printed_pages": [
+            127,
+            128
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "chat-regroup-positive-onward-ack-original-answer",
+      "title": "收到控制腿 2xx：向 CF 发 ACK，为原入站腿生成 200",
+      "conditions": [
+        "固定 TS 24.379 V16.14.0，Rel-16 Stage 3；本地聊天组会话未在进行，组成组 NCF 按 §10.1.2.5.1.8 收到给组 CF 的 INVITE。",
+        "NCF 实收对发往 CF 的新 INVITE 的 2xx。"
+      ],
+      "conclusion": "向 CF 发 ACK，为入站 INVITE 生成 200：SDP 应答、NCF PSI 作 P-Asserted-Identity、Warning 文本 148。随后开始作 NCF 并与媒体面交互。",
+      "normative_strength": "§10.1.2.5.1.8 成功分支第 1–3 项的 shall。",
+      "limitations": [
+        "SDP 子项写作基于已收 200 的 SDP 应答，辅助条款写作改写 offer 中接受的媒体；不外推所有 2xx。该分支没有单列发送原腿 200 的步骤，不等于禁止发送或已经送达。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.5.1.8 2xx branch steps 1–3"
+          ],
+          "printed_pages": [
+            300
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.4.2.1 SDP answer generation"
+          ],
+          "printed_pages": [
+            128
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "chat-regroup-negative-onward-ack-split-and-note-boundary",
+      "title": "控制腿其他最终响应：按所引拆分条款处理，未规定原腿状态",
+      "conditions": [
+        "固定 TS 24.379 V16.14.0，Rel-16 Stage 3；本地聊天组会话未在进行，组成组 NCF 按 §10.1.2.5.1.8 收到给组 CF 的 INVITE。",
+        "NCF 实收上述新 INVITE 的非 2xx 最终响应；注 4 则同时谈及接受和拒绝。"
+      ],
+      "conclusion": "向 CF 发 ACK，执行 §10.1.1.5.2.4：按保留策略决定是否请求切到控制模式；只有 BYE 才回应 BYE 的 200；保留且至少有一名剩余客户端已订阅时，通知所有订阅者。此处分支未给原入站 INVITE 指定状态。",
+      "normative_strength": "§10.1.2.5.1.8 其他最终响应分支及指向的 §10.1.1.5.2.4；页 301 注 4 为说明。",
+      "limitations": [
+        "固定版此处称 SIP ACK response；不据此另造状态响应。注 4 明称预安排组和本 NCF 为宿主的组员；聊天组入口未列成员选择和逐人邀请，不等于已发邀请、成员已接受或收到媒体，也不能从超时推得实收拒绝。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.5.1.8 other final response, note 4"
+          ],
+          "printed_pages": [
+            300,
+            301
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.5.2.4 split steps 1–3 and notes"
+          ],
+          "printed_pages": [
+            262
           ]
         }
       ],
