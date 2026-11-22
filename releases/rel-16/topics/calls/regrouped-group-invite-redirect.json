@@ -157,6 +157,104 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "preestablished-chat-redirect-identities",
+      "title": "预建立聊天组：同一笔 302 怎样给出新 INVITE 的两个目标？",
+      "conditions": [
+        "同系统普通在网聊天组，原组 G 已重组，原控制功能不托管关联的 TGI。O-PF 实收终端的预建立 REFER，向该控制功能发了业务 INVITE，并实际收到对这条 INVITE 的 302。",
+        "该 302 的 Contact 含 SIP URI，application/vnd.3gpp.mcptt-info+xml 正文含 mcptt-request-uri。"
+      ],
+      "conclusion": "O-PF 用 302 Contact 中的宿主 PSI 作新 INVITE 的 Request-URI，用 302 正文的 TGI 作新正文 mcptt-request-uri；复制原 REFER 的 P-Asserted-Identity，mcptt-calling-user-id 用收到原 REFER 时确定的主叫 MCPTT ID。仅当 302 正文给出 session-type 时才以该响应设置它；缺失并不要求删除原有类型。REFER 200 与业务 INVITE 的 302 分属不同事务。",
+      "normative_strength": "匹配入口后按引用条款构造并转送新 INVITE；不从本端义务推断对端实收。",
+      "limitations": [
+        "§6.3.5.2(6b) 的 302 正文类型字面不带 +xml，§6.3.2.1.10 的接收条件带 +xml；两者不因此可互换。第 10 项以 REFER 的嵌套正文为条件，要求复制 MCPTT 信息正文，复制来源却写 INVITE，不补写未观察到的终端 INVITE。",
+        "缺字段不推定重试；收到或发出重定向不证明宿主接纳、组员加入或媒体传输。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.2.1 items 1–3(c)(i–ii); 10.1.2.3.2.1 items 11–17 and 19: pre-established chat REFER, the original group and the separate business INVITE"
+          ],
+          "printed_pages": [
+            273,
+            274,
+            283,
+            284
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.10 opening and items 1, 5, 10–13; 6.3.5.2(6b): required fields of the actually received 302, separate targets, PAI and calling user; MIME wording"
+          ],
+          "printed_pages": [
+            92,
+            93,
+            132
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.2.1, reception of the 302 to item 19, items 1–3: new INVITE and an SDP offer based on pre-established negotiation, subsequent modifications and the optional embedded offer"
+          ],
+          "printed_pages": [
+            285
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "preestablished-chat-redirect-offer",
+      "title": "REFER 没有 SDP 时，重定向的新 INVITE 还带 offer 吗？",
+      "conditions": [
+        "O-PF 在上述预建立聊天组的业务 INVITE 上收到符合 §6.3.2.1.10 的 302，现按 §10.1.2.3.2.1 构造给新目标的 INVITE。"
+      ],
+      "conclusion": "须包含 SDP offer，依据预建立会话建立时协商的 offer、后续该会话修改，以及原 REFER 中实际存在的嵌入 offer。这份可选 offer 位于 Refer-To 的 cid 引用的资源列表条目 SIP URI 的 body 头参数。没有嵌入 offer，不免除出向 offer；若会话改过，要结合这些修改。按需聊天组另按其发送条款，以客户端入站 INVITE 的 offer 为依据。",
+      "normative_strength": "匹配入口后按引用条款构造并转送新 INVITE；不从本端义务推断对端实收。",
+      "limitations": [
+        "这里未指定冲突字段的覆盖算法，也不要求逐字转抄。新的 offer 与宿主是否收到或接受该 offer 是不同事实。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.2.1 items 1–3(c)(i–ii); 10.1.2.3.2.1 items 11–17 and 19: pre-established chat REFER, the original group and the separate business INVITE"
+          ],
+          "printed_pages": [
+            273,
+            274,
+            283,
+            284
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.2.1, reception of the 302 to item 19, items 1–3: new INVITE and an SDP offer based on pre-established negotiation, subsequent modifications and the optional embedded offer"
+          ],
+          "printed_pages": [
+            285
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.1, reception of the 302 to the originating INVITE, items 1–3: on-demand chat SDP is based on the offer in the received client INVITE"
+          ],
+          "printed_pages": [
+            278
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
     }
   ],
   "source_references": [
@@ -210,20 +308,60 @@
         132,
         133
       ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.2.1 items 1–3(c)(i–ii); 10.1.2.3.2.1 items 11–17 and 19: pre-established chat REFER, the original group and the separate business INVITE"
+      ],
+      "printed_pages": [
+        273,
+        274,
+        283,
+        284
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.1.10 opening and items 1, 5, 10–13; 6.3.5.2(6b): required fields of the actually received 302, separate targets, PAI and calling user; MIME wording"
+      ],
+      "printed_pages": [
+        92,
+        93,
+        132
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.3.2.1, reception of the 302 to item 19, items 1–3: new INVITE and an SDP offer based on pre-established negotiation, subsequent modifications and the optional embedded offer"
+      ],
+      "printed_pages": [
+        285
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.3.1.1, reception of the 302 to the originating INVITE, items 1–3: on-demand chat SDP is based on the offer in the received client INVITE"
+      ],
+      "printed_pages": [
+        278
+      ]
     }
   ],
   "related": [
     "r16-groups-mcptt-server-group-document-cache",
     "r16-groups-single-system-temporary-regroup",
-    "r16-groups-preconfigured-regroup-notification"
+    "r16-groups-preconfigured-regroup-notification",
+    "r16-calls-chat-preestablished-refer-outcome"
   ],
   "limitations": [
     "不把每条 302 或本机宿主有/无呼叫当作统一响应，更不推其后续实际媒体或组范围结果。",
-    "不展开重组创建、跨系统路由、外部 XML 编码、所有临时组后续授权或预建立发起。"
+    "不展开重组创建、跨系统路由、外部 XML 编码、所有临时组后续授权或其他业务的预建立重定向。"
   ],
   "verification": {
-    "original_clauses_checked": true,
-    "independent_source_review": true,
-    "independent_usage_acceptance": true
+    "original_clauses_checked": true
   }
 }

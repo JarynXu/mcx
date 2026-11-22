@@ -5062,7 +5062,7 @@
     },
     {
       "id": "r16-calls-regrouped-group-invite-redirect",
-      "question": "原组 INVITE 的 302 及临时组宿主已有/无呼叫：怎么逐腿查宿主身份、业务组和本地状态？",
+      "question": "原组被重组后，302 把业务 INVITE 指向哪里？按需聊天和预建立 REFER 的新 offer 各依据哪次协商？宿主已有或还没有呼叫时怎样处理？",
       "start": "topics/calls/regrouped-group-invite-redirect.md",
       "next_if": [
         {
@@ -5080,6 +5080,10 @@
         {
           "condition": "若下一笔 INVITE 正文已经直接写 TGI 且该临时组文档已取得，按直接 TGI 查组成组与授权，不沿用原组分流。",
           "read": "topics/calls/direct-tgi-constituent-authorization.md"
+        },
+        {
+          "condition": "要核实聊天组原 REFER 的 200 或首次业务 INVITE 成败与隐式归属的关系。",
+          "read": "topics/calls/chat-preestablished-refer-outcome.md"
         }
       ],
       "boundary": "固定 Stage 3 原组实际 CF INVITE；另成一笔的直接 TGI INVITE、原组重组本身及最终参与/媒体均不可自动推出。"
@@ -6280,6 +6284,10 @@
         {
           "condition": "已在检查使用同一预建立会话的在网媒体控制状态，要判 Connect 和 Accepted 与终端或 PF 状态，而非仅看 SIP 成功码。",
           "read": "topics/media/preestablished-connect-outcome.md"
+        },
+        {
+          "condition": "本次预建立聊天组的业务 INVITE 遇到已重组原组的 302，要核对新路由、业务目标和出向 SDP。",
+          "read": "topics/calls/regrouped-group-invite-redirect.md"
         }
       ],
       "boundary": "主叫侧的普通聊天组预建立 REFER 与 O-PF 实收在网终端 re-INVITE 分开；后者对上另发的 CF 腿 403 或 2xx。终接 T-PF 的初始 INVITE 准入与既有会话 re-INVITE 分开；区分终端按需或预建立 SIP 对话、各自 SDP 和匹配应答。不定义 CF 何时邀请、整个优先组呼或实际媒体交付。"
