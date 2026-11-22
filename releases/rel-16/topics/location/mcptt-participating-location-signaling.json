@@ -508,13 +508,100 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "mcptt-location-geographic-crossing",
+      "title": "换小区、移动一定距离与跨越地理围栏怎样区分？",
+      "conditions": [
+        "以终端实际生效、适合当前普通或紧急状态的配置，以及所比较的区域和事件为准。"
+      ],
+      "conclusion": "CellChange 按小区变化，TravelledDistance 按配置的移动距离（米）；GeographicalAreaChange 的任意变化、进入特定区域或退出特定区域取决于所配条件。始终在同一多边形内的换小区不是进入该多边形；保持同一服务小区仍可从区外跨入。用报告中实际携带的 TriggerId 查生效配置中的条件。只有特定进入或退出项能据此对应一个方向和区域；AnyAreaChange 不能确定这两项。",
+      "normative_strength": "匹配已配置的触发条件；若 minimumReportInterval 在运行，按 §13.3.4.1 等到期，届时仍有上报条件为真才发送。",
+      "limitations": [
+        "一个坐标点不能单独确定方向，触发也不证明已发送。报告可随已有 SIP 请求发送；有报告不证明独立测得真实轨迹，也不证明 PF 已核准使用。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.3.3: geographic-area entry, exit and any-area change in ordinary and emergency criteria; distinguish cell changes, travelled distance in metres, and the reporting context"
+          ],
+          "printed_pages": [
+            564,
+            565,
+            566,
+            567,
+            568
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "13.3.4.1 and 13.3.4.2: fired conditions, timer expiry and actual reporting on a separate or already needed request"
+          ],
+          "printed_pages": [
+            463,
+            464
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "mcptt-location-specific-area-xml",
+      "title": "地理区域进入／退出的元素叫什么，怎样核对多边形与椭球弧？",
+      "conditions": [
+        "固定版附录 F.3.2 的 XSD 与 F.3.3 的普通和紧急触发语义分开核对，只看本版声明的普通字段。"
+      ],
+      "conclusion": "F.3.2 要求 TriggeringCriteriaType 含 GeographicalAreaChange；其 AnyAreaChange、EnterSpecificAreaType、ExitSpecificAreaType 直接子项各为 0..1，各触发项需 TriggerId，语义要求唯一字符串。两种特定方向的触发元素下都需一个 GeographicalArea。其 PolygonArea、EllipsoidArcArea 按序各为 0..1，并非强制二选一。多边形有 3–15 个 Corner，每点先 longitude 后 latitude；椭球弧依次需 Center（同样先经后纬）、Radius（非负整数）、OffsetAngle 和 IncludedAngle（均为无符号字节）。",
+      "normative_strength": "区分 XSD 的局部出现次数和 F.3.3 的语义文字，不从一处的约束替另一处裁决。",
+      "limitations": [
+        "F.3.3 把 GeographicalAreaChange 列作可选，进入元素写 EnterSpecificArea，称其 GeographicalArea 子项可选并带 TriggerId；XSD 将 TriggerId 声明于触发项，未在区域类型声明同名具名属性。退出名一致。不能把两种进入拼写当别名，或由 XSD 推出双形状的组合规则。",
+        "不规定实际终端兼容性、几何算法、半径或角度换算、边界点或定位误差；配置中的角点和中心不是报告中终端的当前位置。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.3.2: TriggeringCriteriaType and tGeographicalAreaChange occurrence limits, specific-area element names, required child and trigger attribute"
+          ],
+          "printed_pages": [
+            559,
+            560,
+            562,
+            563
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.3.2 and F.3.3: specific-area geometry and coordinate order; polygon corner bounds and ellipsoid arc field types; printed differences between schema and semantics"
+          ],
+          "printed_pages": [
+            563,
+            566,
+            568
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "related": [
     "r16-location-event-reporting-configuration",
     "r16-location-user-subscription",
     "r16-identity-shared-sip-registration",
-    "r16-mcptt-standalone-group-alert-client"
+    "r16-mcptt-standalone-group-alert-client",
+    "r16-mcptt-area-alert-notification",
+    "r16-groups-group-geographic-area-notification"
   ],
   "limitations": [
     "不描述通用 Stage 2 LMS/LMC 订阅或其他 Release，也不论证 LMS 的 SIP PSI、SIP SUBSCRIBE、每次 IMS 注册后的配置或完整地理区域处理。",
@@ -765,6 +852,52 @@
       ],
       "printed_pages": [
         461
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "F.3.3: geographic-area entry, exit and any-area change in ordinary and emergency criteria; distinguish cell changes, travelled distance in metres, and the reporting context"
+      ],
+      "printed_pages": [
+        564,
+        565,
+        566,
+        567,
+        568
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "13.3.4.1 and 13.3.4.2: fired conditions, timer expiry and actual reporting on a separate or already needed request"
+      ],
+      "printed_pages": [
+        463,
+        464
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "F.3.2: TriggeringCriteriaType and tGeographicalAreaChange occurrence limits, specific-area element names, required child and trigger attribute"
+      ],
+      "printed_pages": [
+        559,
+        560,
+        562,
+        563
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "F.3.2 and F.3.3: specific-area geometry and coordinate order; polygon corner bounds and ellipsoid arc field types; printed differences between schema and semantics"
+      ],
+      "printed_pages": [
+        563,
+        566,
+        568
       ]
     }
   ]

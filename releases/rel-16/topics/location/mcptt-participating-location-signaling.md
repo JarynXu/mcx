@@ -64,13 +64,29 @@ PF 需要终端位置时，§13.1 把配置放在**MCPTT 业务授权成功**之
 
 固定版有一处 XML 差异：F.3.3 要求在 `anyExt` 中包含必备的 `EmergencyTriggeringCriteria`，并称它未在 schema 声明；F.3.2 又为它列出全局声明，且把 `Configuration` 的 `anyExt` 声明为可选。可用上文判断条件的角色，不用这处差异指定终端必收的报文结构。[F.3.2，印刷页 559、563](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=560)（[全局声明](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=564)）；[F.3.3，印刷页 566](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=567)。
 
+<a id="geographic-crossing"></a>
+## 终端换了小区，算进入地理围栏吗？
+
+假设终端从小区甲切到小区乙，切换前后以及途中都在同一多边形内。**这次换小区不是进入该多边形。** 若生效配置要求“小区发生变化”或“进入小区乙”，这次事件可命中相应的 `CellChange` 条件。`TravelledDistance` 另按配置的米数判断；只知道小区变了，不能推出已经走够距离。后来终端从多边形外跨到里面，即使一直使用小区乙，也可命中**进入这个多边形**的条件；从里面出去才是退出。停在区域内的一次坐标读数不能区分“刚进入”和“始终在内”。
+
+判一份报告时，先找当时生效的普通或紧急触发配置。在 `GeographicalAreaChange` 下，`AnyAreaChange` 表示任一地理区域变化，不能据此指定某个区域及方向。特定进入和特定退出各有自己的条件和必填的唯一字符串属性 `TriggerId`。用报告中实际列出的触发 ID 查生效配置；若命中的是特定进入或退出，再核对**该项的方向和区域**，不能按报告标签、某个角点或当前经纬度猜原因。核对触发并不等于看到了出包：若最短间隔计时器仍在运行，须等到期，届时仍有上报条件为真才走事件报告程序；报告可以随别的 SIP 请求发送。报告记录的是终端认定已触发的条件，不是对真实轨迹的独立测量。[TS 24.379 V16.14.0，F.3.3，普通条件，印刷页 564–566](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=565)；[紧急条件和报告，页 566–568](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=567)；[§13.3.4.1–2，页 463–464](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=464)。
+
+**发送方写 `EnterSpecificArea`，接收方却查 `EnterSpecificAreaType`，差在哪里？** 本版 F.3.3 的语义说明用前一个名字；F.3.2 的 XSD（XML 结构定义）声明的**元素名**是后一个，并非仅在类型名里多了 `Type`。退出在两处都写 `ExitSpecificAreaType`。XSD 把“任意变化、特定进入、特定退出”三个直接子项各列为 0 或 1 次。特定进入与退出共用一套结构：在触发元素上填 `TriggerId`，内含一个必需的 `GeographicalArea`。语义文字却称进入项下的 `GeographicalArea` 可选并带 `TriggerId`；XSD 没在区域定义上声明这个具名属性。另有一处差异：语义将 `GeographicalAreaChange` 列为可选，XSD 的 `TriggeringCriteriaType` 却要求有这个容器。容器必需也不等于终端一定配置了进区触发。不能据此宣称两个进入元素是别名，或规定接收端必须兼容哪种拼写。[F.3.2，普通触发类型，页 559–560](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=560)、[区域元素及其类型，页 562–563](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=563)；[F.3.3，页 566](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=567)、[568](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=569)。
+
+| 核对配置中的区域形状 | F.3.2 给出的结构 |
+| --- | --- |
+| `PolygonArea`（多边形） | 3 至 15 个 `Corner`；每个点先 `longitude`，后 `latitude`。这些是所配置区域的角点，不是报告里终端所在的点。 |
+| `EllipsoidArcArea`（椭球弧） | 依次是 `Center`、`Radius`、`OffsetAngle`、`IncludedAngle`。中心点同样先经后纬；半径为非负整数，两种角度字段都是无符号字节。 |
+
+区域定义用的是顺序结构，两个形状子项各可省略、各最多出现一次，不是由 XSD 强制二选一。结构本身不能说明没有形状、或两种形状并存时终端如何判断越界。F.3.3 对形状的几何定义另引 TS 23.032；这里不从字段类型推导半径单位、角度换算、边界点归属或定位误差处理。[F.3.2，页 563](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=564)；[F.3.3，页 566](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=567)、[568](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=569)。
+
 ## Report 发到哪里？怎样证明它是对这次请求的报告？
 
 若终端正因别的理由需要发一个 SIP 请求，就把含 `<Report>` 的位置 MIME body 加进该请求；MBMS 监听报告只是原文举例。若没有另一个要发的请求，终端构造独立 SIP MESSAGE：Request-URI 取自此前**收到的位置配置 MESSAGE** 中 PAI 的 SIP URI，不是取自这次位置请求；Content-Type 是上述位置 MIME，`Accept-Contact` 用不同的 `g.3gpp.mcptt` 特征标签，也带 `require` 和 `explicit`。独立 MESSAGE 的目的地规则需要这份配置里的 URI，条款没有为缺少该 URI 指定后备目的地。两种发送分支都把 `minimumReportInterval` 设为规定时长并启动，重置全部触发条件。在独立 MESSAGE 分支，正文把实际发送列在这些动作之后；不把这一步骤排序套到显式请求程序另列的重置动作上。[§13.3.3–13.3.4.2，印刷页 462–464](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=463)。
 
 **只有由显式位置请求触发的报告才按该请求回填关联值。** 正文 §13.3.4.2 写 `RequestID` → `ReportID`；附录 F.3.2 的 XSD 把请求属性写作必需的 `RequestId`，把报告属性写作可选的 `ReportID`；F.3.3 的描述写 `RequestId` → `ReportId`。XSD 中的可选性并不抹掉显式请求分支的回填要求。对实际触发的事件，正文把来源属性写成 `Trigger-Id`，报告子元素写成 `TriggerId`；附录用 `TriggerId` 表述其关联属性。报告按已触发条件填对应内容，不以一个触发标识替代这次请求的回填值。这里保留定版中的拼写差异，不定义等价别名或可直接发送的 XML。[§13.3.4.2，印刷页 463–464](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=464)；[附录 F.3.2，印刷页 559](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=560)；[附录 F.3.3，印刷页 568](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=569)。
 
-PF 实际收到 Content-Type 匹配、位置体的 `<location-info>` 内有 `<Report>` 的 SIP 请求，须按**收到的 MCPTT ID** 核准这份报告，用户获准才按需使用；区域进出另有流程，不在本主题展开。这里不指定 MCPTT ID 必在某一字段，也没有给出专用的 SIP 成功或拒绝码。终端发出报告、见到任意 SIP 2xx，或能用回填值配对，都不能单独证明 PF 已核准并使用位置。看到 `Report` 元素也不能直接断定含坐标。[§13.2.4，印刷页 461](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=462)。
+PF 实际收到 Content-Type 匹配、位置体的 `<location-info>` 内有 `<Report>` 的 SIP 请求，须按**收到的 MCPTT ID** 核准这份报告。用户获准上报后，PF 按需使用位置信息，并检查以下两种情况：若 PF 判定终端进出紧急告警区，按[紧急告警区通知](../calls/area-alert-notification.md)处理；若 PF 判定终端进出组地理区域，按[组地理区域通知](../groups/group-geographic-area-notification.md)处理。这是 PF 收报后的步骤，与终端先前匹配围栏触发条件不同。这里不指定 MCPTT ID 必在某一字段，也没有给出专用的 SIP 成功或拒绝码。终端发出报告、见到任意 SIP 2xx，或能用回填值配对，都不能单独证明 PF 已核准并使用位置。看到 `Report` 元素也不能直接断定含坐标。[§13.2.4，印刷页 461](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=462)。
 
 <a id="report-location-content"></a>
 ## 收到位置报告却读不到经纬度，包里到底有什么？
