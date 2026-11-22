@@ -11,6 +11,23 @@
 
 依据：[TS 24.379 V16.14.0（Release 16，Stage 3）§§10.1.3.1–2，印刷页 301–302](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=302)。
 
+<a id="establishment-contact"></a>
+
+## 第一次查名单，用建呼 INVITE 的 Contact，还是用 200 的 Contact？
+
+看**本端是发起人还是受邀人，以及哪条消息是服务器发给本端的**。设甲发起、乙受邀，双方正在参加同一系统内 G 组的普通预安排组呼。两端这次建呼各自都走按需信令；乙没有复用预建立会话。组 ID 都是 G，甲和乙发起会议订阅时却各自使用本端收到的会话 URI：
+
+| 要找哪一端的地址 | 从本场建呼记录找哪一条 Contact | 什么时候可以订阅 |
+| --- | --- | --- |
+| 主叫甲 | 对甲的初始 INVITE，控制功能（CF）发给发起侧参与功能（O-PF）的 200，Contact 给出 CF 托管的会话 URI。O-PF 收到后另向甲发 200；**甲收到的这个 200 的 Contact** 给出与 CF 身份相映射、由 O-PF 托管的会话 URI。 | 甲收到对建呼 INVITE 的 2xx 后可以订阅。这里核对的是最终成功响应，不要求它是抓包中首次出现会话身份的报文。 |
+| 受邀乙 | CF 单独邀请乙时，在发给终接侧参与功能（T-PF）的 INVITE Contact 给出 CF 会话 URI。T-PF 给乙另发初始 INVITE；**乙收到的这条 INVITE 的 Contact** 给出与入向 Contact 相映射、由 T-PF 托管的会话 URI。按需的自动、手动应答都使用这条邀请构造规则。 | 乙对该邀请**发出** 200 时可以订阅。这个 200 是乙发的，不是向乙交付会话 URI 的那条消息。 |
+
+发起腿见 [§6.3.3.2.3.2 第 5 项，印 120](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=121)、[§10.1.1.3.1.1 的 2xx 处理，印 232](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=233)；受邀腿见 [§10.1.1.4.1.1，印 240](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=241)、[§6.3.3.1.2，印 106](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=107)、[§6.3.2.2.3 第 4 d 项，印 94](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=95)（由[自动，印 96](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=97)或[手动，印 99](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=100)分支调用）。两端何时可订阅分别见 [§10.1.1.2.1.1，印 221](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=222) 和 [§10.1.1.2.1.2 第 9 项，印 223](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=224)。
+
+核实一笔查询，先按呼叫、方法和方向把两条腿配上，再看终端实际发起的**新订阅对话**：SIP Request-URI 填本端会话 URI，MCPTT 信息正文的 `mcptt-request-uri` 填 G。PF 查到会话后才把映射的会话身份用作它向 CF 发出的 SUBSCRIBE 的目标。不是要求甲、乙抄 CF 侧的 URI，也不要求比较三个字符串来证明映射。**SUBSCRIBE 自己的 200 更晚才到，不能用来解释它的初始请求是如何寻址的。** [§4.5，印 38–39](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=39)；[§10.1.3.1–.3，印 301–302](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=302)。
+
+§4.5 说客户端**可以**缓存会话身份至不再需要。收到建呼 Contact 能说明本端得到过什么，不能证明软件何时写入、重启后还在，或 PF 至今仍能解析。符合本页入口的 SUBSCRIBE 若在 PF 返回 404 / Warning 文本 137，可确认的是 **PF 在这次查询时未能解析请求里的会话身份**。要区分用错旧会话、终端留存问题和 PF 侧状态，需要这次出向请求与对应 PF 的记录；不能只凭 404 倒推终端漏存，也不能靠 G 重造会话 URI。[§4.5，印 39](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=40)；[§10.1.3.3，印 302](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=303)。
+
 ## 同样是订阅失败，在哪一步被拒？
 
 服务甲的**参与功能（PF）**收到符合本条入口的请求，即带 MCPTT 服务标识、接受会议信息且正文含组 ID，会先用 Request-URI 查找现有会话。能找到时，PF 按映射后的会话标识转发，并带上甲的 MCPTT 用户 ID。**控制功能（CF）**处理普通参与者的请求时，核对的包括会话的组 ID、参与者的 MCPTT ID、MCPTT 服务标识和可接收的会议信息类型。已在会话里，也不代表获准查看会议信息。
@@ -25,7 +42,7 @@
 
 ## 从 PF 两侧对照：这次 SUBSCRIBE 和 NOTIFY 各把谁写进地址？
 
-设甲正在参加同一 MC 系统内的一场普通预安排或聊天组呼，想查这场通话的参加状态。甲发出 SUBSCRIBE 时，SIP 的 Request-URI 是已有组呼的会话标识。§10.1.3.2 没有说明甲最初从哪条建呼消息取得或在何时保存它；随后对 SUBSCRIBE 的 200 不能解释先前请求里的地址。
+设甲正在参加同一 MC 系统内的一场普通预安排或聊天组呼，想查这场通话的参加状态。甲发出 SUBSCRIBE 时，SIP 的 Request-URI 是已有组呼的会话标识。§10.1.3.2 规定订阅请求使用什么目标；普通按需预安排组呼两端从哪里收到该身份，见[建呼 Contact 对照](#establishment-contact)。
 
 PF 收到甲的 SUBSCRIBE 时，先认清入口：`P-Asserted-Service` 携带 MCPTT ICSI，`Accept` 含 `application/conference-info+xml`，`application/vnd.3gpp.mcptt-info+xml` 正文的 `<mcptt-request-uri>` 是组 ID。PF 要解析的是 **SIP 的 Request-URI**，不是这个 XML 元素。下面按请求种类对照两侧报文，不按两个 200 出现的先后判断：
 

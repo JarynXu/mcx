@@ -287,6 +287,86 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "conference-subscription-establishment-contact",
+      "title": "普通按需预安排组呼里，主叫和受邀终端第一次查参会名单，各用哪条建呼消息的 Contact？",
+      "conditions": [
+        "在网、同系统、非广播的普通预安排组呼；发起端及单独受邀端均采用按需建呼，客户端正在参加这场会话。两端是不同角色，分别核对本场、本方法的实收和实发。"
+      ],
+      "conclusion": "主叫用 O-PF 发给本端的初始 INVITE 200 的 Contact；O-PF 按 CF 发给自己的该 INVITE 200 Contact 映射。受邀端用 T-PF 发给本端的初始 INVITE Contact；T-PF 按 CF 发来的个别邀请 Contact 映射。两端各自发起新订阅对话时，SIP Request-URI 为本端所得会话 URI，MCPTT 信息正文的 mcptt-request-uri 为组 ID。PF 成功解析后向 CF 的 SUBSCRIBE 用对应映射身份。",
+      "normative_strength": "发起端实收建呼 2xx 后、受邀端对邀请发出 200 时，各自 MAY 订阅；两端不必都订阅。按相应程序构造 Contact 及选定订阅后的目标为 SHALL；客户端缓存身份是 can。",
+      "limitations": [
+        "不能把受邀端发出的 200 当成本端收到身份的报文，也不能把随后 SUBSCRIBE 的 200 倒用作同一初始请求的地址来源。此处选定成功建呼的可核对报文，不主张抓包中从无更早的身份。",
+        "建呼信令不证明写缓存的时间、丢失后的恢复或当前映射仍在；符合 §10.1.3.3 入口的 PF 404 / Warning 137 只定位该次请求的解析失败，不能据此判定失效原因。不推广到预建立、聊天、临时组或按组号推导会话 URI。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.5: session identity hosted per function, PF mapping, client cache option"
+          ],
+          "printed_pages": [
+            38,
+            39
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.2.3.2 item 5 and 10.1.1.3.1.1 received 2xx steps 2, 6 and 8: original group INVITE and the two successful response Contacts"
+          ],
+          "printed_pages": [
+            120,
+            232
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.4.1.1 step 1 and 6.3.3.1.2 step 1: individual invitation and CF Contact"
+          ],
+          "printed_pages": [
+            105,
+            106,
+            240
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.2.5.2 item 3 / 6.3.2.2.6.2 item 1 and 6.3.2.2.3 step 4 d: automatic or manual on-demand invitation and mapped terminating Contact"
+          ],
+          "printed_pages": [
+            94,
+            96,
+            99
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.1.1 received 2xx step 3 and 10.1.1.2.1.2 step 9: different client events permitting a conference subscription"
+          ],
+          "printed_pages": [
+            221,
+            223
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.3.1–3: participation, new subscription dialog, session URI versus group ID, PF resolution and subsequent response"
+          ],
+          "printed_pages": [
+            301,
+            302
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
     }
   ],
   "source_references": [
