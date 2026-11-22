@@ -28,3 +28,5 @@ Rel-16 在网、单一 MC 系统的事件上报流程中，**首次提供上报�
 若要判断收到的是哪位用户的配置档，查[用户配置档的下载范围](../identity/user-profile-download.md)；若要判断 MCVideo 或 MCData 用户离开告警区后谁决定取消告警，查[在网紧急告警的进区与离区](../calls/emergency-alert-area-entry-exit.md)。
 
 若问题是终端初始配置中给出的 [LMS Server URI 和 MCPTT Server URI](../identity/ue-configuration-retrieval.md)，查引导资料。它不是本页的位置上报规则。
+
+若问的是一条已发的位置消息适用于哪些业务或组，查 [Stage 1 的周期位置消息适用范围](periodic-message-scope.md)。

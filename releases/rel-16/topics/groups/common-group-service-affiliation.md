@@ -31,4 +31,4 @@
 
 在打算协同的组合中，一项业务须能访问并使用协同业务所用的用户识别信息通信。不要求身份字符串都相同，也不把一项业务的许可带给另一项业务。[§8.4.5 R-8.4.5-001，印刷页 60](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=61)。
 
-定位问题时，分开查[组配置的业务启用清单](group-enabled-service-configuration.md)、[单业务显式归属](same-system-explicit-affiliation.md)和[解除归属](client-group-deaffiliation.md)；再按实际情况查 [MCData 的已配置子业务](../mcdata/affiliation-configured-subservices.md)、[MCVideo 的能力上报](../mcvideo/onnetwork-capability-sharing.md)或[跨业务身份映射](../identity/cross-service-user-mapping.md)。这些相邻主题各有版本和条件，不能用来补写本条不存在的统一流程。本页未收录 §8.4.6 的位置消息或 §8.5 的业务优先规则。
+定位问题时，分开查[组配置的业务启用清单](group-enabled-service-configuration.md)、[单业务显式归属](same-system-explicit-affiliation.md)和[解除归属](client-group-deaffiliation.md)；再按实际情况查 [MCData 的已配置子业务](../mcdata/affiliation-configured-subservices.md)、[MCVideo 的能力上报](../mcvideo/onnetwork-capability-sharing.md)或[跨业务身份映射](../identity/cross-service-user-mapping.md)。这些相邻主题各有版本和条件，不能用来补写本条不存在的统一流程。终端已归属后，一条周期位置消息适用于哪些业务或组，见[§8.4.6 的位置消息适用范围](../location/periodic-message-scope.md)。本页不讨论 §8.5 的业务优先规则。
