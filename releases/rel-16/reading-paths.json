@@ -5426,7 +5426,7 @@
     },
     {
       "id": "r16-calls-trusted-regroup-refused-uri-list",
-      "question": "重组组呼遇到 403/128、P-Refused-URI-List，CF 按什么条件改发用户邀请？NCF 查名单成功或失败怎样区分？ 组成聊天组还没有本地会话，临时组 CF 的初始 INVITE 为什么回 488 或 403？Warning 128 看哪个系统的身份？ 组成组没有正在进行的聊天组呼，NCF 为什么先生成 200 再发送？两台服务器之间的 Contact 与手机收到语音有什么关系？",
+      "question": "重组组呼遇到 403/128、P-Refused-URI-List，CF 按什么条件改发用户邀请？NCF 查名单成功或失败怎样区分？ 组成聊天组还没有本地会话，临时组 CF 的初始 INVITE 为什么回 488 或 403？Warning 128 看哪个系统的身份？ 组成组没有正在进行的聊天组呼，NCF 为什么先生成 200 再发送？两台服务器之间的 Contact 与手机收到语音有什么关系？ 临时组 CF 的同一份 isfocus INVITE 到达组成聊天组：本地没有组呼和已有组呼，发送 200 前的媒体处理有何不同？ 组成聊天组已在通话，NCF 收到 ACK 后何时发讲话者 INFO、指示完成切换、向 CF 反向 SUBSCRIBE？",
       "start": "topics/calls/trusted-regroup-refused-uri-list.md",
       "next_if": [
         {
@@ -5436,9 +5436,17 @@
         {
           "condition": "若最初的请求已直接指向 TGI，查组成组文档及各角色准入。",
           "read": "topics/calls/direct-tgi-constituent-authorization.md"
+        },
+        {
+          "condition": "已有聊天组选择并接，若要看媒体面如何处理旧话权队列、何时开始承担新角色。",
+          "read": "topics/media/merge-floor-queue.md"
+        },
+        {
+          "condition": "收到并接 ACK 且本侧已有会议事件订阅者，要查 NCF 反向订阅 CF 的目标与接收条件。",
+          "read": "topics/calls/temporary-group-conference-notify.md"
         }
       ],
-      "boundary": "区分带列表的 403 与具备 CF 接收条件，名单/邀请/入会不是同一证据。 聊天组只看本地尚无在进行的聊天组呼、NCF 实收对应初始 INVITE 的这一腿；不把既有组并接、用户加入或预安排组名单条件带进来。"
+      "boundary": "区分带列表的 403 与具备 CF 接收条件，名单/邀请/入会不是同一证据。 聊天组仅看 CF 向组成组发出的初始 INVITE；区分本地未开会与已有组呼选择并接，不把成员入会或预安排组名单条件带进来。"
     },
     {
       "id": "r16-groups-group-geographic-area-notification",
