@@ -1,0 +1,227 @@
+{
+  "topic_id": "r16-groups-mc-hosted-lmr-affiliation",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "电台通过 IWF 呼叫 MCPTT 系统定义的组，必须逐人归属吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v16.8.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "Release 16，目标互通组定义在 MCPTT 系统；LMR 系统通过 IWF 与 MC 系统互通。"
+  ],
+  "claims": [
+    {
+      "id": "reporting-modes",
+      "title": "逐人上报、合并上报及并用",
+      "conditions": [
+        "LMR 系统通过 IWF 通报成员对目标组的归属。"
+      ],
+      "conclusion": "逐人时，每次归属带该成员经 IWF 转换的身份。合并时，第一名 LMR 成员归属 LMR 系统内与 MC 目标组对应的指定组，触发 IWF 代表组内 LMR 用户向 MCPTT 报目标组归属；最后一名 LMR 成员解除对同一 LMR 指定组的归属，触发向 MCPTT 报解除。两种方式可同时用于不同成员。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.1.2.1"
+          ],
+          "printed_pages": [
+            16
+          ]
+        }
+      ],
+      "source_detail": "开头的两种选项及并用说明；e(i)。",
+      "limitations": [
+        "首人和末人指 LMR 侧指定组的归属状态，不指个人先在 MCPTT 侧办理归属、组员名单增删或进出一通呼叫。仅使用合并方式时才无中间组归属信令。名单内成员即使已有 IWF 代表归属，仍可经 IWF 以个人身份归属。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "representative-eligibility-and-state",
+      "title": "代表资格与实际归属",
+      "conditions": [
+        "IWF 配置为代表关联 LMR 用户归属目标组。"
+      ],
+      "conclusion": "MCPTT 组员名单须包含 IWF 的 MCPTT ID，系统通过配置识别该 ID 有权代表与该 IWF 关联的 LMR 用户。IWF 以自己的 ID 归属目标组，系统识别这次归属来自 IWF 并代表其关联 LMR 用户。未把 IWF 的 ID 列为组员时，不允许它代表用户归属该组。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.1.2.1"
+          ],
+          "printed_pages": [
+            16,
+            17
+          ]
+        }
+      ],
+      "source_detail": "a–c（页 16）、g（页 17）。",
+      "limitations": [
+        "此配置承认代表权限；用户与 IWF 的关联另据两者的 MCPTT ID 属于同一系统识别。连接、映射、成员资格和代表资格均不等于已经代表用户归属目标组。另一组的归属不证明本组归属。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "represented-user-request",
+      "title": "代表已归属时，哪些用户被视为已归属",
+      "conditions": [
+        "IWF 已以代表身份实际归属目标组。",
+        "LMR 用户与该 IWF 相关联：此用户映射后的 MCPTT ID 与 IWF 属于同一系统。"
+      ],
+      "conclusion": "MCPTT 将关联 LMR 用户视为已归属该组，不要求预先逐人列入成员名单。它允许这些用户针对该组提出建呼、话权等请求。用户发起呼叫时，MCPTT 不为该人额外办理归属，也不因此向代表身份和行动用户重复发消息。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.1.2.1"
+          ],
+          "printed_pages": [
+            16
+          ]
+        }
+      ],
+      "source_detail": "d(i–iv)。",
+      "limitations": [
+        "不适用于关联不明的其他系统或其他目标组；不能据此证明建呼成功、话权获准、媒体送达或某台电台已入呼。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "request-identity",
+      "title": "用户自己的请求与 IWF 代组发起的请求",
+      "conditions": [
+        "采用配置 IWF 代表关联 LMR 用户的方式。"
+      ],
+      "conclusion": "来自 LMR 用户的请求以经 IWF 转换的个人 MCPTT ID 标识。IWF 自己代表组内 LMR 用户发起请求时，可用 IWF 的 MCPTT ID，例如请求加入聊天模式的组。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.1.2.1"
+          ],
+          "printed_pages": [
+            16
+          ]
+        }
+      ],
+      "source_detail": "e–f。",
+      "limitations": [
+        "身份规则不以代表已归属为前提，也不改变 IWF 未归属时个人呼叫须满足的 h 项条件。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "unaffiliated-iwf-call",
+      "title": "IWF 未归属该组时，个人呼叫必须满足什么",
+      "conditions": [
+        "该 IWF 尚未归属目标 MCPTT 组。",
+        "与该 IWF 关联的 LMR 系统中的用户向该组发起呼叫请求。"
+      ],
+      "conclusion": "只有用户映射后的个人 MCPTT ID 在目标组名单中，且该人已经归属目标组，这个呼叫请求才可能获接受。缺任一项都不满足此条。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.1.2.1"
+          ],
+          "printed_pages": [
+            17
+          ]
+        }
+      ],
+      "source_detail": "h。",
+      "limitations": [
+        "仅限这里的呼叫请求，不是不分操作的普遍准入规则。两项均满足不等于呼叫已经成功；缺少状态证据时不能视为其中一项为假。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "policy-and-authorization",
+      "title": "谁取组策略，谁检查归属许可",
+      "conditions": [
+        "IWF 已连接且获准与 MC 系统互通，持有互通组信息，并已配置两系统的组及用户身份映射。"
+      ],
+      "conclusion": "IWF 对经过它的信令做身份转换和协议翻译，代表 LMR 系统向 MC 业务服务器请求归属。MC 业务服务器本地未缓存组策略时才向 GMS 取得策略，依策略检查组未禁用，且 IWF 所给 MCPTT ID 标识的用户获准归属该组。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.1.2.2"
+          ],
+          "printed_pages": [
+            17
+          ]
+        }
+      ],
+      "source_detail": "前提 1–4、注 1、图 10.1.2.2-1 和步骤 1–3。",
+      "limitations": [
+        "IWF 的互通许可不能代替对所给身份和目标组的归属检查；此处不是线上的报文定义。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "storage-and-response",
+      "title": "按人或按组保存，响应回到哪一侧",
+      "conditions": [
+        "IWF 已向 MC 业务服务器请求归属，服务器已完成该组的策略与权限检查。"
+      ],
+      "conclusion": "MC 业务服务器按组策略和用户订阅，将 IWF 归属到目标组。要求逐人归属时，服务器以 IWF 所给、对应该 LMR 用户的 MC 业务 ID 保存个人归属状态。若不要求逐人归属，以 IWF 提供的 MC 业务 ID 保存组的归属状态。MCPTT 服务器向 GMS 发送组归属状态更新，GMS 存储并更新状态。步骤 6 的响应从 MC 业务服务器发给 IWF；该步骤未规定必须先收到 GMS 的存储确认。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.1.2.2"
+          ],
+          "printed_pages": [
+            17,
+            18
+          ]
+        }
+      ],
+      "source_detail": "图 10.1.2.2-1、步骤 4（页 17–18）、步骤 5–6 及注 2（页 18）。",
+      "limitations": [
+        "组状态不证明逐人建档；IWF 收到响应不证明电台收到无线侧确认。LMR 用户在本系统内如何归属不由这项规范规定。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-groups-partner-group-affiliation"
+  ],
+  "limitations": [
+    "仅收录 MC 定义组方向的归属。不是加入一通组呼；不覆盖反方向、LMR 空口过程、Stage 3 方法、报文字段或响应码。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
