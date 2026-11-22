@@ -36,6 +36,17 @@ O-PF 从 P-Asserted-Identity 的公共用户身份查主叫 MCPTT ID；绑定缺
 
 依据：3gpp-ts-24.379-v16.14.0 §6.3.1.1 originating/controlling group/terminating INVITE classifications，印刷页 77,78；3gpp-ts-24.379-v16.14.0 §10.1.1.3.1.1 opening and steps1–17; priority implicit-affiliation steps6–7 comparison only，印刷页 229,230,231,232；3gpp-ts-24.379-v16.14.0 §6.3.2.1.3 full;6.3.2.1.1.1 full，印刷页 83,84,85。
 
+<a id="originating-invite-location"></a>
+## 出站 INVITE 带位置，参与功能是复制来件还是另加的？
+
+**先对上同一个 O-PF（发起侧参与功能）的入站和出站 INVITE，再读用户档。** 范围是普通在网按需预安排组呼的初始 INVITE，已到达构造出站请求的步骤。查 MIME 正文里是否真的有 `application/vnd.3gpp.mcptt-location-info+xml`，其中的 `location-info` 根是否含 `Report`。不要用日志的一列经纬度代替两边的完整消息。判断是否有主叫隐式话权请求，要在入站 SDP 的话权控制 UDP 流上查 `mc_implicit_request`，依 §6.4 分类。它是请求，不是话权已获准。[TS 24.379 V16.14.0 §6.4，印 136–137](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=137)；[§6.3.2.1.3 第 9 项，印 85](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=86)。
+
+**入站已有这份位置体：查复制。** 第 9 项调用通用 INVITE 构造：没有隐式话权请求、入站有 `Report`，且按主叫 MCPTT ID 找到的用户档中 `ruleset/allow-location-info-when-talking=true`，就复制这份位置体。该通用步骤未复制时，第 14 项另要求把符合附录 F.3 的来向位置 MIME 内容复制进去，**这一项没列上面的开关或隐式请求为条件**。所以若来件已有符合条件的 `Report`，出站也有该体，不能仅从该开关为 `false` 认定 O-PF 另取了位置或违反这项复制规则。也不能由此宣布位置使用已获授权。[§10.1.1.3.1.1 第 9、14 项，印 231](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=232)；[§6.3.2.1.3 第 9 项，印 85](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=86)。
+
+**第 16 项才是这里核对本端可用位置的入口。** O-PF 把入站 INVITE 认作主叫的隐式话权请求后，才进入第 16 项。有来向 `Report`、且主叫用户档上述开关为 `true` 时，该项写的是复制这份来向位置体。否则，只有 O-PF 已有该发起客户端可用的位置，且开关为 `true`，才按该项在出站加入带 `Report` 的位置 MIME。比如，完整入站确定不带位置体，出站带了 `Report`，就核对分类、主叫用户档和 O-PF 当时有无这台终端的位置。看到了出站 `Report`，不等于已查明本端位置从哪里取得或何时测得。有来向 `Report` 时，第 14 项和第 16 项文字并未给出重复命中时要产生几个 MIME 部分，也不能据此推定覆盖了旧坐标。[§10.1.1.3.1.1 第 14–17 项，印 231–232](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=232)；[第 16 项条件续，印 232](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=233)。
+
+[PF 实收位置报告的授权与异常报文处理](../location/mcptt-participating-location-signaling.md)是另一组判断。§13.2.4 要按收到的 MCPTT ID 授权位置报告；§13.2.5 在指定身份、服务标记与正文条件下删的是含 `Request` 或 `Configuration` 的位置体，不是只含 `Report` 的体。没命中删除条件也不表示一定可以转发。判现场要分开查 O-PF 是否复制或加入、CF 是否实收，以及话权是否授予。拿一份出站位置体，不能确认后两件事。[§13.2.4–5，印 461–462](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=462)。
+
 ## O-PF 和 CF 合在一台服务器，为什么 IMS 看不到两者之间的 INVITE？
 
 普通按需预安排组呼仍分别执行发起侧参与功能（O-PF）和控制功能（CF）的处理。**两种功能由同一个 MCPTT 服务器承担时，它们之间传递请求不穿过底层 IMS SIP 核心网。** 同在一个 MCPTT 系统，不能替代这个部署条件：系统也可把两种功能放在不同服务器。因此，只看到终端发给 O-PF 的 INVITE，而核心网没抓到 O-PF 到 CF 的请求，不足以判定 CF 没有处理，也不需要据此补一条核心网路由。先确认本次呼叫的角色部署，再对同一请求查服务器里的 O-PF 分派与 CF 实收或处理记录。角色分工、目标组的 CF PSI 和本次请求的实际处理仍要各自确认；这些条款没有规定内部进程、IPC 或抓包形式。[§5.3.1–.2，印刷页 51–52](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=52)；[§10.1.1.3.1.1 第 8–13 项，印刷页 231](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=232)。

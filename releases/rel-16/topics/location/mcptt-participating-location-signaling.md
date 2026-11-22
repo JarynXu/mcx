@@ -109,3 +109,5 @@ PF 实际收到 Content-Type 匹配、位置体的 `<location-info>` 内有 `<Re
 例如，两条坐标轴都在，各自都有上述密文结构：这份包报告了受保护的坐标分量，**不是终端没报坐标**。观察者不能从这段密文读出明文经纬度，也不能据此还原发送方实际使用的配置，或断言 PF 已解密、已按 MCPTT ID 核准报告，或已取得终端的真实位置。若抓到的只是片段，更不能凭没看见某个节点判定完整报告缺项。[F.3.2，印刷页 562–563](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=563)；[F.3.3，印刷页 569](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=570)；[§13.2.4，印刷页 461](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=462)。
 
 若问的是 [LMS 如何在 Stage 2 配置事件上报](event-reporting-configuration.md)或[其他用户怎样订阅位置](user-subscription.md)，按 LMS 的角色读相应主题。若在排查 IMS 接入之后哪项 MC 业务获授权，见[共享 SIP 注册与业务授权](../identity/shared-sip-registration.md)。此处的 PSI 是位置配置 SIP MESSAGE 的 `P-Asserted-Identity` 所带的参与 MCPTT 功能标识，不是 LMS 有 SIP PSI 或 SIP SUBSCRIBE 的证据。
+
+若在组呼的出站 INVITE 看见位置，查[发起侧 PF 何时复制来件、何时用本端已有位置](../calls/prearranged-server-admission-routing.md#originating-invite-location)。本页的 Request/Configuration 删除条件不能替代那个 Report 构造程序。

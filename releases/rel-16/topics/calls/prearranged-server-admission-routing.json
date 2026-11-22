@@ -1149,6 +1149,100 @@
       "verification": {
         "original_clauses_checked": true
       }
+    },
+    {
+      "id": "originating-group-invite-received-location-copy",
+      "title": "普通按需预安排组呼：组呼复制条款不以话权位置开关为通用条件",
+      "conditions": [
+        "O-PF 实收本范围的初始 INVITE，并到达构造出站 INVITE 的相关步骤。入站实际含符合 F.3 的位置体；此处聚焦含 Report 的来件。"
+      ],
+      "conclusion": "第 9 项调用的通用构造在未识别隐式话权请求、入站含 Report 和发送者用户档的 allow-location-info-when-talking=true 时复制。随后第 14 项若实收符合 F.3 的位置体且尚未复制，要求复制其内容到出站；第 14 项未另列开关为 true 或是否隐式申请为前提。",
+      "normative_strength": "在各自所列范围和守卫成立时，复制或加入位置体是 SHALL；入站触发、出站行为和实收证据不能互代。",
+      "limitations": [
+        "单看出站 Report 与开关 false，不证明 O-PF 另取位置、复制违反这一项或位置使用已授权。第 14、16 项重合时不指定 MIME 部件数量或坐标覆盖顺序。",
+        "PF 实收位置报告的授权与 §13.2.5 指定的 Request/Configuration 删除是独立判断，不能当作只含 Report 的出站构造或许可。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.3 step 9: regular outgoing INVITE helper with no implicit floor, incoming location Report, and true caller profile"
+          ],
+          "printed_pages": [
+            85
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.1 steps 9 and 14–17: on-demand prearranged initial INVITE location copy and implicit floor local-location branch"
+          ],
+          "printed_pages": [
+            231,
+            232
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.4: initial speech INVITE implicit-floor classification in SDP floor stream"
+          ],
+          "printed_pages": [
+            136,
+            137
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "13.2.4–5: separate inbound report authorisation and limited removal rule for Request or Configuration"
+          ],
+          "printed_pages": [
+            461,
+            462
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "originating-group-invite-implicit-floor-location",
+      "title": "具有隐式话权请求且没有符合条件的来向报告时，位置可由 O-PF 在独立条件下加入",
+      "conditions": [
+        "O-PF 实收本范围的初始 INVITE，并到达第 16 项；按 §6.4 识别为给主叫的隐式话权请求。"
+      ],
+      "conclusion": "若实收 Report 且主叫 MCPTT ID 的用户档 ruleset/allow-location-info-when-talking=true，第 16 项要求复制该 MIME 体。否则，若 PF 有发起客户端可用位置，且上述开关为 true，须在出站加入根内有 Report 的位置 MIME 体。",
+      "normative_strength": "在各自所列范围和守卫成立时，复制或加入位置体是 SHALL；入站触发、出站行为和实收证据不能互代。",
+      "limitations": [
+        "不从出站 Report 倒推位置取得方式、测量时间、CF 实收或已获话权。开关不为 true 时不满足第 16 项两分支，不能把这个条件提升为第 14 项的通用过滤；无隐式请求时也不套此项。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.1 steps 9 and 14–17: on-demand prearranged initial INVITE location copy and implicit floor local-location branch"
+          ],
+          "printed_pages": [
+            231,
+            232
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.4: initial speech INVITE implicit-floor classification in SDP floor stream"
+          ],
+          "printed_pages": [
+            136,
+            137
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
     }
   ],
   "verification": {
@@ -1187,6 +1281,7 @@
     }
   ],
   "related": [
-    "r16-mcptt-rejoin-late-entry"
+    "r16-mcptt-rejoin-late-entry",
+    "r16-location-mcptt-participating-location-signaling"
   ]
 }
