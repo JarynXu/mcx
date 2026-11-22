@@ -368,11 +368,197 @@
       "verification": {
         "original_clauses_checked": true
       }
+    },
+    {
+      "id": "rejoin-ack-contact-by-leg",
+      "title": "终端检索本腿实收的 INVITE 200，不抄另一腿 Contact",
+      "conditions": [
+        "同一 MC 系统内的普通在网按需预安排组呼；终端主动发 initial INVITE 重入，无分叉。",
+        "对照 CF 与 O-PF 的成功响应，或定位终端实际收到的 INVITE 200。"
+      ],
+      "conclusion": "CF 返回的 200 Contact 含 CF 托管的业务会话身份；如果确有 CF 与 O-PF 间 SIP 腿，O-PF 收到下游 2xx 后另为终端生成本腿 200，按映射在 Contact 携 PF 托管的身份。终端按本腿的实收响应处理。",
+      "normative_strength": "相应角色进入成功响应程序后的生成、身份和发送动作为 SHALL。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.5",
+            "10.1.1.2.4.1",
+            "10.1.1.3.5.1",
+            "10.1.1.3.1.1",
+            "10.1.1.4.5.1",
+            "6.3.3.2.3.2"
+          ],
+          "printed_pages": [
+            38,
+            39,
+            120,
+            229,
+            232,
+            233,
+            239,
+            253
+          ]
+        }
+      ],
+      "source_detail": "§10.1.1.4.5.1 第 11 项回指 §6.3.3.2.3.2 第 5 项；§10.1.1.3.5.1 回指 §10.1.1.3.1.1 的 2xx 第 2、6、8 项，并与 §4.5 配合。",
+      "limitations": [
+        "不假定本次 URI 字符串与旧值不同；旧 Contact、另一 SIP 腿的 Contact、REFER 200 与 PRACK 200 均不能替代本腿 INVITE 的实收 200。",
+        "不从 URI 或节点名称判定物理分腿或代理角色。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "rejoin-ack-2xx-dialog",
+      "title": "新对话的 2xx ACK：以本腿 Contact 和反序 Record-Route 构造",
+      "conditions": [
+        "同一 MC 系统内的普通在网按需预安排组呼；终端主动发 initial INVITE 重入，无分叉。",
+        "终端实收到针对该 INVITE 的 2xx；没有与该 2xx 匹配的早期对话。"
+      ],
+      "conclusion": "UAC 核心构造 ACK。远端目标取本腿 2xx 的 Contact URI；路由集取该响应 Record-Route 的反序并保留 URI 参数，无该头时路由集为空。按本对话的 Call-ID、From 和 To 标识与标签；沿用被确认 INVITE 的 CSeq 数字，方法为 ACK。",
+      "normative_strength": "通用 SIP 新对话与 2xx ACK 构造的 MUST。",
+      "source_references": [
+        {
+          "source_id": "ietf-rfc3261",
+          "clauses": [
+            "12.1.2",
+            "13.2.2.4"
+          ],
+          "printed_pages": [
+            71,
+            72,
+            82
+          ]
+        }
+      ],
+      "source_detail": "印 72 的 UAC 目标和路由集、印 82 的 2xx ACK。",
+      "limitations": [
+        "不从历史对话、初始请求的 Route、响应 Via、别腿 200 或组 ID 构造此次路由集。不声称 IMS 的认证、SDP 或具体下一跳已经确定。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "rejoin-ack-2xx-uri-and-route",
+      "title": "按路由集是否为空及首项的 lr 分配 Request-URI 和 Route",
+      "conditions": [
+        "同一 MC 系统内的普通在网按需预安排组呼；终端主动发 initial INVITE 重入，无分叉。",
+        "终端针对 2xx 构造新对话 ACK，没有匹配早期对话；已从本腿响应取得远端目标和路由集。"
+      ],
+      "conclusion": "空路由集：Request-URI 为远端目标，不生成 Route。首项有 lr：Request-URI 为远端目标，Route 为完整路由集。首项无 lr：Request-URI 为首项，移除不允许出现在 Request-URI 的参数；Route 为其余路由项，末尾加远端目标。",
+      "normative_strength": "三种条件各有 MUST；空路由集不加 Route。",
+      "source_references": [
+        {
+          "source_id": "ietf-rfc3261",
+          "clauses": [
+            "12.2.1.1",
+            "13.2.2.4"
+          ],
+          "printed_pages": [
+            73,
+            74,
+            75,
+            82
+          ]
+        }
+      ],
+      "source_detail": "印 74–75 的构造及传输入口、印 82 的 ACK 对话规则。",
+      "limitations": [
+        "Request-URI 不等于第一物理跳；不能据此认定实际发送的地址、端口、协议、IMS 预置路由或 NAT/DNS 可达。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "rejoin-ack-early-dialog-boundary",
+      "title": "2xx 若匹配已有早期对话，只将路由集重算作为边界",
+      "conditions": [
+        "同一 MC 系统内的普通在网按需预安排组呼；终端主动发 initial INVITE 重入，无分叉。",
+        "终端的 2xx 匹配既有早期对话。"
+      ],
+      "conclusion": "确认该对话并根据 2xx 重算路由集；不能按没有匹配早期对话的示例重建全部对话状态。",
+      "normative_strength": "§13.2.2.4 重算路由集的 MUST；勘误只更正回指。",
+      "source_references": [
+        {
+          "source_id": "ietf-rfc3261",
+          "clauses": [
+            "13.2.2.4",
+            "12.2.1.1"
+          ],
+          "printed_pages": [
+            73,
+            74,
+            75,
+            82
+          ]
+        }
+      ],
+      "source_detail": "印 82 的既有对话分支和状态说明，RFC Editor verified EID 4084 将交叉引用从 §12.2.1.2 更为 §12.2.1.1。",
+      "limitations": [
+        "不借这条注释规定早期对话其他字段如何刷新；本节三种构造示例只适用于没有匹配早期对话。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "rejoin-ack-non2xx-transaction",
+      "title": "486 的 ACK 用原 INVITE 事务的信息",
+      "conditions": [
+        "同一 MC 系统内的普通在网按需预安排组呼；终端主动发 initial INVITE 重入，无分叉。",
+        "终端实收该 INVITE 的 486 最终响应；本例为 300–699 事务确认分支。"
+      ],
+      "conclusion": "客户端事务生成 ACK。Request-URI、Call-ID、From 及已有 Route 来自该事务实际发出的 INVITE；Via 只携同一顶部 Via（含 branch）；To 来自实际最终响应；CSeq 数字取原 INVITE、方法为 ACK。发往原 INVITE 的同一传输地址、端口和协议。2xx ACK 则由 UAC 核心处理。",
+      "normative_strength": "RFC 3261 §17.1.1.3 与 RFC 6026 §8.4 的 MUST；2xx 由 UAC 核心生成 ACK。",
+      "source_references": [
+        {
+          "source_id": "ietf-rfc3261",
+          "clauses": [
+            "17.1.1.3"
+          ],
+          "printed_pages": [
+            129,
+            130
+          ]
+        },
+        {
+          "source_id": "ietf-rfc6026",
+          "clauses": [
+            "8.4"
+          ],
+          "printed_pages": [
+            12,
+            13
+          ]
+        }
+      ],
+      "source_detail": "RFC 3261 事务 ACK 字段；RFC 6026 §8.4 替换 §17.1.1.2 部分内容，规定 300–699 原传输目的及 2xx 的处理职责。",
+      "limitations": [
+        "不用 486 的 Contact 或 Record-Route 构造新对话 ACK；不以 486 单独判定 MC 准入分支或实际到达。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
-    "§6.5多MIME封装和§6.6适用保护须按实际请求/响应执行；F.1普通URI/String包装与加密字段不同。本页不提供可直接发送的完整XML/SDP模板或外部TS24.229、配置、RFC和密码实现。",
-    "组身份、各段session identity、公共用户身份及client-id不能互换。归属不等于参加会话，参加会话不等于获话权，返回覆盖不等于服务器已获知。"
+    "§6.5多MIME封装和§6.6适用保护须按实际请求/响应执行；F.1普通URI/String包装与加密字段不同。本页不提供可直接发送的完整 XML/SDP 报文、TS 24.229 的 IMS 配置或密码实现。所列 RFC 只用于 ACK 小节的条件与字段。",
+    "组身份、各段session identity、公共用户身份及client-id不能互换。归属不等于参加会话，参加会话不等于获话权，返回覆盖不等于服务器已获知。",
+    "ACK 小节只比较同一 MC 系统普通在网按需主动重入的同一终端腿。2xx 构造例不含匹配早期对话或分叉，不建立完整 IMS、NAT 或媒体可达性。"
   ],
   "scope_references": [
     {
@@ -408,7 +594,8 @@
   ],
   "verification": {
     "original_clauses_checked": true,
-    "independent_source_review": true,
-    "independent_usage_acceptance": true
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "scope": "新增 ACK 声明的独立核验未登记；先前每条声明已记录的核验不变。"
   }
 }

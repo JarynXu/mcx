@@ -48,6 +48,33 @@ CF可因资源/拥塞拒绝500并可带Retry-After；若Request-URI所指组呼�
 
 依据：3gpp-ts-24.379-v16.14.0 §10.1.1.4.5.1 full；§6.3.5.3;6.3.6；§6.3.3.2.1–2;6.3.3.2.3.2；§6.3.3.4；§10.1.1.4.4.3;6.3.3.1.5；§10.1.1.4.2 steps9/14e (initial group-target comparison)，印刷页 106,119,120,121,124,134,135,136,244,245,251,252,253。
 
+<a id="rejoin-invite-ack-routing"></a>
+## 重入 INVITE 的 ACK：收到这条腿的 200 或 486 后，怎么写？
+
+**终端收到重入 INVITE 的 200，要先认它收到的那份响应。** 在本节的普通在网按需预安排组呼中，终端主动重入，发的是新的 initial INVITE。这里看同一个 MC 系统内的终端腿，不含分叉，也没有与 200 匹配的早期对话。组呼可以还是原来那场；本次 SIP INVITE 和它的 ACK 不能从旧对话复制。[TS 24.379 V16.14.0 §10.1.1.2.4.1，印 229](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=230)。
+
+**哪份 Contact 是终端的输入？** 若链上有发起侧参与功能（O-PF）与控制功能（CF）之间的 SIP 腿，CF 在自己返回的 200 的 Contact 写 CF 托管的会话身份。O-PF 收到下游 2xx 后，为终端生成这一侧的 200，按映射在发往终端的 Contact 写 PF 托管的会话身份。终端用**实际收到的本腿 200**，不抄 CF 那条腿的 Contact。这个 URI 可以与历史值相同；只有历史值不能还原本次响应。区分实际分腿与逻辑角色，不根据 URI 字符串或节点名称判定中间设备是代理还是独立对话端点。[TS 24.379 §10.1.1.4.5.1 第 11 项，印 253](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=254)回指[§6.3.3.2.3.2 第 5 项，印 120](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=121)；[§10.1.1.3.5.1，印 239](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=240)、[§10.1.1.3.1.1 收到 2xx 后第 2、6、8 项，印 232–233](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=233)与[§4.5，印 38–39](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=39)说明终端一侧。
+
+### 200：按新对话构造 ACK
+
+远端目标取终端实收 200 的 Contact **URI**。从这份 200 的 Record-Route 取 URI 值，**按相反顺序**建立路由集，保留 URI 参数。不把临时响应的 Via 列表、组 ID 或初次建呼的 Contact 当作路由集。ACK 用同一对话的 Call-ID、From 与 To 标识和标签；CSeq 数字沿用这份 INVITE，方法写 `ACK`。[RFC 3261 §12.1.2，印 71–72](https://www.rfc-editor.org/rfc/rfc3261.html#section-12.1.2)；[§12.2.1.1，印 73–75](https://www.rfc-editor.org/rfc/rfc3261.html#section-12.2.1.1)；[§13.2.2.4，印 82](https://www.rfc-editor.org/rfc/rfc3261.html#section-13.2.2.4)。
+
+以下只示意 Request-URI 和 Route。假设本腿 200 的 Contact URI 是 `sip:s1@pf.example.invalid;gr`。这些模拟值不是网络地址或完整 IMS 报文；认证和 SDP 按实际呼叫另判。
+
+| 这份 200 给出的 Record-Route | ACK 的 Request-URI | ACK 的 Route |
+| --- | --- | --- |
+| 无 | `sip:s1@pf.example.invalid;gr` | 不生成 Route。 |
+| 依次为 `<sip:edge-b.example.invalid;lr>, <sip:edge-a.example.invalid;lr>` | `sip:s1@pf.example.invalid;gr` | `<sip:edge-a.example.invalid;lr>, <sip:edge-b.example.invalid;lr>` |
+| 依次为 `<sip:edge-b.example.invalid;lr>, <sip:strict.example.invalid>` | `sip:strict.example.invalid` | `<sip:edge-b.example.invalid;lr>, <sip:s1@pf.example.invalid;gr>` |
+
+第三行的路由集首项没有 `lr`；按旧式严格路由兼容规则把首项放进 Request-URI，允许留在 Request-URI 的参数才保留，把远端目标放在 Route 末尾。**Request-URI 不是必然的第一物理跳。** URI 和路由集说明 SIP 请求如何组装，不能据此认定现场发送的 IP、端口、协议或 NAT 可达性。已有同标识早期对话时，§13.2.2.4 要求从 2xx 重算路由集，不是重建所有对话状态。其回指由 [RFC Editor 已验证勘误 4084](https://www.rfc-editor.org/errata/eid4084) 从 §12.2.1.2 更为 §12.2.1.1；不要把这里“新对话从 200 Contact 取远端目标”的示例机械套用到该早期对话。
+
+### 486：按原 INVITE 事务确认
+
+若同一笔 INVITE 改为收到最终 486，客户端事务生成 ACK。Request-URI、Call-ID、From 和已有的 Route 都取该事务实际送出那份 INVITE；Via **只放原 INVITE 最顶部的一项**，保留其中的 branch。To 按收到的 486，包括响应给出的标签。CSeq 仍用 INVITE 的数字，方法写 `ACK`；ACK 送到原 INVITE 所用的同一传输地址、端口与协议，不从失败响应另建 200 式目标和路由集。486 是这里选的对照，不凭状态码独断是哪条 MC 准入规则触发。[RFC 3261 §17.1.1.3，印 129–130](https://www.rfc-editor.org/rfc/rfc3261.html#section-17.1.1.3)；[RFC 6026 §8.4，印 12–13](https://www.rfc-editor.org/rfc/rfc6026.html#section-8.4)更新了 INVITE 客户端事务处理，2xx ACK 仍由 UAC 核心处理，不由该 INVITE 客户端事务生成。
+
+排查时先配对本腿 INVITE 和它的最终响应：**CSeq 方法为 REFER 或 PRACK 的 200 都不是这笔 INVITE 的 200**。只保存了旧 Contact、别腿响应或本次 REFER 200，不能填出本腿 INVITE 的 ACK。本节是特定条件下的通用 SIP 字段对照，不替代 TS 24.229 的 IMS 细则，也不判断已实际发送或媒体已建立。
+
 <a id="rejoin-sip-timer-vs-tng3"></a>
 ## 重入的 200 带了 Session-Expires，整场组呼会续时吗？
 
@@ -97,7 +124,7 @@ CF可因资源/拥塞拒绝500并可带Retry-After；若Request-URI所指组呼�
 
 ## 共同边界与关联
 
-- §6.5多MIME封装和§6.6适用保护须按实际请求/响应执行；F.1普通URI/String包装与加密字段不同。本页不提供可直接发送的完整XML/SDP模板或外部TS24.229、配置、RFC和密码实现。
+- §6.5多MIME封装和§6.6适用保护须按实际请求/响应执行；F.1普通URI/String包装与加密字段不同。本页不提供可直接发送的完整 XML/SDP 报文、TS 24.229 的 IMS 配置或密码实现。所列 RFC 只用于 ACK 小节的条件与字段。
 - 组身份、各段session identity、公共用户身份及client-id不能互换。归属不等于参加会话，参加会话不等于获话权，返回覆盖不等于服务器已获知。
 
 依据：3gpp-ts-24.379-v16.14.0 §6.2.1;6.4;6.5;6.6.1；§F.1.3 representation/items2–6；§4.5，印刷页 38,39,56,57,136,137,138,139,547,548。
