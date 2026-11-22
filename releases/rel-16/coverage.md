@@ -3877,6 +3877,16 @@ GMS 更新与客户端答复可以任意先后或并行；客户端列表与 GMS
 
 [读取主题](topics/media/user-media-forwarding.md)
 
+## LMR 互通组独立 SDS 的组寻址、信息流和处置（Stage 2）
+
+同一笔组 SDS 和向单个代理收件人转送的标识区别；两个方向和两种面的必备项；MCData 发起时的可选代理处置。
+
+整笔 SDS 仍寻址组 ID；MCData 服务器发给代理接收端的 IWF 的组独立 SDS 请求，还必须有本次收件人的 MCData ID。查 Payload 或 Standalone transaction 加 SDP offer 时，分别用对应方向与平面的表。不从收件侧 IWF 的归属推断发件侧 IWF 也归属该组。
+
+尚未建立：不规定线上格式或 LMR 无线动作；不从 offer 或系统阻止处置推定实际正文已达、送达或已读，或一律没有反向处置。
+
+[读取主题](topics/mcdata/lmr-group-standalone-sds.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

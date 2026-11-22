@@ -1,0 +1,368 @@
+{
+  "topic_id": "r16-mcdata-lmr-group-standalone-sds",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "LMR 参与组短数据：组地址和收件人 ID 怎么分？IWF 能回什么处置结果？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v16.8.0",
+  "condition_rule": "每条声明继承共同条件，再按请求方向、发起一侧和当前信息流判断。",
+  "common_conditions": [
+    "3GPP TS 23.283 V16.8.0，Release 16，Stage 2；组独立短数据（group standalone SDS）通过 IWF 在 MCData 与 LMR 间互通。"
+  ],
+  "claims": [
+    {
+      "id": "group-address-and-iwf-routing",
+      "title": "组独立 SDS 寻址组 ID；后方标识路由到相应的 IWF",
+      "conditions": [
+        "讨论 TS 23.283 §10.8.8 或 §10.8.9 的控制面或媒体面组独立 SDS。"
+      ],
+      "conclusion": "整笔 SDS 寻址到 MCData 组 ID。MCData 服务器必须把寻址到 IWF 后方 MCData 用户或组标识的 SDS 路由到相应 IWF。",
+      "normative_strength": "§10.8.5 的路由为 shall；§§10.8.8.1–.2、10.8.9.1–.2 指定组地址。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.8.5"
+          ],
+          "printed_pages": [
+            146
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.8.8.1"
+          ],
+          "printed_pages": [
+            147
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.8.8.2"
+          ],
+          "printed_pages": [
+            147
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.8.9.1"
+          ],
+          "printed_pages": [
+            147,
+            148
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.8.9.2"
+          ],
+          "printed_pages": [
+            148
+          ]
+        }
+      ],
+      "limitations": [
+        "不以逐收件人标识替换组地址，不推断组的所有客户端在同一 IWF 后方或请求已经送达。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "control-plane-request-address-and-payload",
+      "title": "控制面：两个方向都带 SDS 内容，只有服务器转送还列收件人",
+      "conditions": [
+        "已经确认是控制面的 IWF MCData 组独立 SDS 请求；区分 IWF→MCData 服务器，或服务器→代理接收客户端的 IWF。"
+      ],
+      "conclusion": "两张表均将发送用户的 MCData ID、目标 MCData 组 ID 及 Payload（SDS 内容）列为 M。服务器→代理 IWF 的表还把本次接收用户的 MCData ID 列为 M；IWF→服务器的表不另列该收件人行。",
+      "normative_strength": "表 10.8.2.4-1 与 10.8.2.5-1 的选定 M 项。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.8.2.4, Table 10.8.2.4-1, selected group request rows"
+          ],
+          "printed_pages": [
+            144
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.8.2.5, introduction and Table 10.8.2.5-1, selected group request rows"
+          ],
+          "printed_pages": [
+            144
+          ]
+        }
+      ],
+      "limitations": [
+        "逐收件人 ID 不替代组地址，也不能把它作为反方向的必备项。不包含表的其他字段规则，不据功能字段推出报文编码或实际收件。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "media-plane-request-address-and-offer",
+      "title": "媒体面：相同的两层寻址，Standalone transaction 和 SDP offer 都是 M",
+      "conditions": [
+        "已经确认是媒体面的 IWF MCData 组独立 SDS 请求；区分代表发起客户端的 IWF→MCData 服务器，或服务器→代理接收客户端的 IWF。"
+      ],
+      "conclusion": "两张表均将发送用户 MCData ID、目标组 ID、Standalone transaction 类型及 SDP offer 列为 M。服务器→代理 IWF 的表还列本次收件 MCData 用户 ID 为 M；IWF→服务器的表不另列该收件人行。",
+      "normative_strength": "表 10.8.2.7-1 与 10.8.2.8-1 的选定 M 项。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.8.2.7, introduction and Table 10.8.2.7-1, selected group request rows"
+          ],
+          "printed_pages": [
+            145
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.8.2.8, introduction and Table 10.8.2.8-1, selected group request rows"
+          ],
+          "printed_pages": [
+            145,
+            146
+          ]
+        }
+      ],
+      "limitations": [
+        "不以 SDP offer 判定媒体已经建立、SDS 正文已传送或实际到达。不要把控制面 Payload 行当成这两张请求表的字段。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcdata-origin-iwf-behind-affiliated-recipients",
+      "title": "MCData 发起：位于 IWF 后方的接收端由已归属该组的 IWF 代表",
+      "conditions": [
+        "MCData 用户向包含一个或多个 LMR 用户的 MCData 组发起组独立 SDS。"
+      ],
+      "conclusion": "控制面 §10.8.8.1 描述接收客户端 2 至 n 中一个或多个位于已归属该 MCData 组的 IWF 后方；媒体面 §10.8.8.2 说它们可以位于这些 IWF 后方。IWF 作为对等 MCData 服务器。",
+      "normative_strength": "§§10.8.8.1–.2 的两种平面端点角色；媒体面保留 can be 的表述。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.8.8.1"
+          ],
+          "printed_pages": [
+            147
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.8.8.2"
+          ],
+          "printed_pages": [
+            147
+          ]
+        }
+      ],
+      "limitations": [
+        "不要求所有收件人都在 IWF 后方，不将 MCPTT 定义组的程序代为推断本 MCData 组已归属。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-origin-iwf-role-is-separate",
+      "title": "LMR 发起：发送客户端在 IWF 后方，接收端的 IWF 归属另判",
+      "conditions": [
+        "IWF 代表 LMR 用户，向 MCData 组发起组独立 SDS。"
+      ],
+      "conclusion": "两种面中，发送客户端 1 位于 IWF 后方，由 IWF 代表 LMR 用户发组请求。接收客户端 2 至 n 中一个或多个可以位于已归属该组的 IWF 后方。IWF 对其他 MCData 服务器表现为对等服务器。",
+      "normative_strength": "§§10.8.9.1–.2 的端点角色与接收侧可能性。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.8.9.1"
+          ],
+          "printed_pages": [
+            147,
+            148
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.8.9.2"
+          ],
+          "printed_pages": [
+            148
+          ]
+        }
+      ],
+      "limitations": [
+        "不把接收侧归属要求延伸到发起侧，不据条文判定两侧 IWF 同一或不同。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "optional-system-prevented-disposition",
+      "title": "MCData 发起时，IWF 可以代后方客户端返回系统阻止处置",
+      "conditions": [
+        "MCData 用户向包含一个或多个 LMR 用户的 MCData 组发起组独立 SDS。",
+        "控制面或媒体面存在针对该接收客户端的处置请求；接收客户端位于其代理 IWF 后方，该 IWF 已归属目标 MCData 组。"
+      ],
+      "conclusion": "IWF 可以回 disposition prevented by system，供转发给原始 MCData 客户端。",
+      "normative_strength": "§§10.8.8.1–.2 的 can also，不是每次必须发送。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.8.8.1"
+          ],
+          "printed_pages": [
+            147
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.8.8.2"
+          ],
+          "printed_pages": [
+            147
+          ]
+        }
+      ],
+      "limitations": [
+        "这不是送达或已读回报，也不证明原始客户端收到。未定反向通知报文，不套用 §10.8.2.6 的 MCData 服务器→IWF 通知布局，也不根据 §§10.8.9.1–.2 没写这句就推断反向没有处置机制。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-mcdata-group-sds-control-fields",
+    "r16-mcdata-group-media-plane-sds-session",
+    "r16-groups-mc-hosted-lmr-affiliation"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.8.2.4, Table 10.8.2.4-1, selected group request rows"
+      ],
+      "printed_pages": [
+        144
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.8.2.5, introduction and Table 10.8.2.5-1, selected group request rows"
+      ],
+      "printed_pages": [
+        144
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.8.2.7, introduction and Table 10.8.2.7-1, selected group request rows"
+      ],
+      "printed_pages": [
+        145
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.8.2.8, introduction and Table 10.8.2.8-1, selected group request rows"
+      ],
+      "printed_pages": [
+        145,
+        146
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.8.5"
+      ],
+      "printed_pages": [
+        146
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.8.8.1"
+      ],
+      "printed_pages": [
+        147
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.8.8.2"
+      ],
+      "printed_pages": [
+        147
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.8.9.1"
+      ],
+      "printed_pages": [
+        147,
+        148
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.8.9.2"
+      ],
+      "printed_pages": [
+        148
+      ]
+    }
+  ],
+  "limitations": [
+    "限 TS 23.283 V16.8.0 的组独立 SDS 互通。先分整笔组寻址、当前段收件人、控制或媒体面、代理方向及实际处置证据。",
+    "不收录一对一 SDS、真正线上协议、空口流程、媒体建立或交付证据，也不从单系统 MCData 的处置表补写互通方向。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}

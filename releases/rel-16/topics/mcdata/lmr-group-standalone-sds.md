@@ -1,0 +1,29 @@
+# LMR 参与组短数据：组地址和收件人 ID 怎么分？IWF 能回什么处置结果？
+
+**一笔组独立短数据（group standalone SDS）仍发往 MCData 组 ID。** 互通功能（IWF）代理接收客户端时，MCData 服务器发给该 IWF 的组独立 SDS 请求还必须有本次收件人的 MCData ID。这两项回答不同问题：组 ID 说整笔 SDS 发往哪个组，收件人的 MCData ID 说这一段送给谁。服务器对寻址到 IWF 后方的 MCData 用户或组标识，须把 SDS 路由到相应的 IWF。这里按 Rel-16 Stage 2 读功能和信息流，不据此判定实际发送或送达。[3GPP TS 23.283 V16.8.0，§10.8.5，印刷页 146（PDF 第 147 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/16.08.00_60/ts_123283v160800p.pdf#page=147)；[§§10.8.8.1–.2，印刷页 147](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/16.08.00_60/ts_123283v160800p.pdf#page=148)；[§§10.8.9.1–.2，印刷页 147–148](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/16.08.00_60/ts_123283v160800p.pdf#page=149)。
+
+## 先分发送方和收件方的 IWF
+
+- **MCData 用户发给含 LMR 用户的组：** 控制面流程中，组内接收客户端 2 至 n 有一个或多个在已归属该 MCData 组的 IWF 后方。媒体面也允许这些接收端位于这类 IWF 后方。IWF 以对等 MCData 服务器的角色工作；这里的归属说的是**代理收件人的 IWF 对该 MCData 组**，不是断言所有接收端都由它代理。[§§10.8.8.1–.2，印刷页 147（PDF 第 148 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/16.08.00_60/ts_123283v160800p.pdf#page=148)。
+- **LMR 用户发给 MCData 组：** 两条流程中的发送客户端 1 在 IWF 后方，由 IWF 代表 LMR 用户发请求，IWF 对其他 MCData 服务器表现为对等服务器。接收客户端 2 至 n 也可能位于已归属该 MCData 组的 IWF 后方。不能从接收侧的归属描述倒推发送侧 IWF 也归属该组，更不能认定两侧是同一台 IWF。[§10.8.9.1 起，印刷页 147](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/16.08.00_60/ts_123283v160800p.pdf#page=148)；[§10.8.9.1 续、§10.8.9.2，印刷页 148（PDF 第 149 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/16.08.00_60/ts_123283v160800p.pdf#page=149)。
+
+这里沿用 TS 23.282 的组独立 SDS 控制面或媒体面流程，再按 IWF 所代表的角色读互通一段。若查的是 [MCPTT 定义组的 LMR 归属](../groups/mc-hosted-lmr-affiliation.md)，那是另一个主题，不能用它替代这两条 MCData 流程的条件。
+
+## 看控制面还是媒体面，再确认这段请求发往哪里
+
+两种面、两个方向都列**发送用户的 MCData ID 和目标 MCData 组 ID 为 M（必备）**。只有下表的 **MCData 服务器 → 作为接收端代理的 IWF** 两张请求表，还列了对应收件人的 MCData ID 为 M。下面只列判别这四张表所需的字段，不是完整报文。
+
+| 这段请求 | 组地址和收件人标识 | 区分控制面、媒体面的必备项 |
+| --- | --- | --- |
+| 控制面：IWF → MCData 服务器 | 有发送用户 ID 和目标组 ID；此表不另列收件人的 MCData ID。 | **Payload（SDS 内容）**。[表 10.8.2.4-1，印刷页 144（PDF 第 145 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/16.08.00_60/ts_123283v160800p.pdf#page=145)。 |
+| 控制面：MCData 服务器 → IWF | 除发送用户 ID、目标组 ID 外，还有本次转送所针对的收件人 ID。 | **Payload（SDS 内容）**。[表 10.8.2.5-1，印刷页 144](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/16.08.00_60/ts_123283v160800p.pdf#page=145)。 |
+| 媒体面：代表发起客户端的 IWF → MCData 服务器 | 有发送用户 ID 和目标组 ID；此表不另列收件人的 MCData ID。 | **Transaction type（Standalone transaction）和 SDP offer**。[表 10.8.2.7-1，印刷页 145（PDF 第 146 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/16.08.00_60/ts_123283v160800p.pdf#page=146)。 |
+| 媒体面：MCData 服务器 → IWF | 除发送用户 ID、目标组 ID 外，还有本次转送所针对的收件人 ID。 | **Transaction type（Standalone transaction）和 SDP offer**。[§10.8.2.8 引言，印刷页 145](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/16.08.00_60/ts_123283v160800p.pdf#page=146)；[表 10.8.2.8-1，印刷页 146](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/16.08.00_60/ts_123283v160800p.pdf#page=147)。 |
+
+例如，MCData 用户甲给 G 组发一条 SDS，服务器向 IWF 转送给组内的乙。乙的 ID 出现在这段请求，不会把 G 组地址改成甲对乙的独立私聊。媒体面请求里见到 SDP offer，只能说明提出了媒体参数，不能据此确认媒体已建立或 SDS 正文已发出。四张表也不定 SIP 方法、字段编码或 LMR 无线侧怎么送。
+
+## “系统阻止处置”不是送达或已读
+
+在 **MCData 用户发起**的组独立 SDS 中，无论控制面还是媒体面，若负责代理该接收客户端的 IWF 已归属目标 MCData 组，且有针对该客户端的处置请求，IWF **可以**代表这个位于其后方的接收客户端回 `disposition prevented by system`（系统阻止处置），供转发给原始 MCData 客户端。这不是要求每次都回，也不是被代理用户报告“已送达”或“已读”。即便看见 IWF 发了这种结果，也要另查它是否实际转发并到达发起客户端。这里不指定反向通知报文，也不据“LMR 发起”的两节没有这段文字就断言反向一定没有处置机制。[§§10.8.8.1–.2，印刷页 147](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/16.08.00_60/ts_123283v160800p.pdf#page=148)。
+
+若已确认是同一 MCData 系统且不涉及 IWF，查[同一 MCData 系统的组 SDS 控制面身份与处置](group-sds-control-fields.md)或[组独立 SDS 媒体面](group-media-plane-sds-session.md)，不要把它们的单系统条件或处理结果直接套到 LMR 一侧。
