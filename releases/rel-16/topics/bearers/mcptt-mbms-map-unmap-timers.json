@@ -3,18 +3,19 @@
   "release": 16,
   "standard_stage": 3,
   "state": "draft",
-  "title": "MCPTT 组播：Map 为什么反复发，Unmap 什么时候停止重发？",
+  "title": "MCPTT 组播：怎样读 Map 的端口，Map、Unmap 为什么重发？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.380-v16.9.0",
-  "condition_rule": "每条声明继承公共条件，按实际定时器事件和应用指示进入相应分支。关联主题不是执行步骤。",
+  "condition_rule": "按对象分别核对 Map 字段、PF 的实际定时器事件和应用指示，或终端实收记录。每条声明继承公共条件；读发包字段不要求先取得定时器日志。",
   "common_conditions": [
-    "固定 TS 24.380 V16.9.0，Rel-16 Stage 3。在网 MCPTT 组会话，参与功能支持 MBMS 子信道控制，已为这段通话建立该控制实例；本页讨论活跃状态内的计时与接收证据。"
+    "Rel-16，在网 MCPTT 组播的 Map／Unmap 子信道控制。"
   ],
   "claims": [
     {
       "id": "active-conversation-map-is-periodic-not-device-receipt",
       "title": "T16 到期重发 Map 并保持活跃，不需要借终端确认解释每次重发",
       "conditions": [
+        "固定 TS 24.380 V16.9.0，Rel-16 Stage 3。在网 MCPTT 组会话，参与功能支持 MBMS 子信道控制，已为这段通话建立该控制实例；本页讨论活跃状态内的计时与接收证据。",
         "同一段通话的控制实例处于 M: A conversation is active，实际发生 T16 到期。"
       ],
       "conclusion": "PF 在通用 MBMS 子信道发含 TMGI、MBMS Subchannel 和 MCPTT Group ID 的 Map，重启 T16，保持活跃。终端这部分另限支持经 MBMS 接收话权控制和 RTP、承载已激活并已通告；该客户端实收通用子信道上的 Map，才按 §10.3.2 关联 TMGI、音频及话权子信道与目标组。",
@@ -72,6 +73,7 @@
       "id": "conversation-expiry-branches-by-application-listener-evidence",
       "title": "T15 到期先看应用指示：无监听释放，有监听发 Unmap 并启动 T17",
       "conditions": [
+        "固定 TS 24.380 V16.9.0，Rel-16 Stage 3。在网 MCPTT 组会话，参与功能支持 MBMS 子信道控制，已为这段通话建立该控制实例；本页讨论活跃状态内的计时与接收证据。",
         "同一活跃通话的 T15 实际到期，且应用给出监听情况。"
       ],
       "conclusion": "应用指示无人监听时释放该通话的 MBMS 子信道管理实例并进入 Start-stop；有客户端仍监听时，经 MBMS 子信道发送带 MCPTT Group ID 的 Unmap，启动 T17，把 C17 设为 1，仍处于活跃状态。",
@@ -119,6 +121,7 @@
       "id": "unmap-t17-c17-retry-limit-is-per-conversation",
       "title": "达到 T17/C17 上限事件后按详细步骤发送 Unmap 再释放本段实例",
       "conditions": [
+        "固定 TS 24.380 V16.9.0，Rel-16 Stage 3。在网 MCPTT 组会话，参与功能支持 MBMS 子信道控制，已为这段通话建立该控制实例；本页讨论活跃状态内的计时与接收证据。",
         "T15 有监听者分支已启动 T17，今次实际发生 T17 到期。"
       ],
       "conclusion": "未到 C17 上限时，重发带组 ID 的 Unmap，重启 T17 并把 C17 加 1。达到 §10.2.3.9 的上限事件时，该编号条款列发送带组 ID 的 Unmap，随后释放本段子信道实例。T15/T16/T17 默认 30 秒/500 毫秒/200 毫秒，C17 默认上限 3，均可配置。",
@@ -161,6 +164,134 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "map-floor-number-selects-port-layout",
+      "title": "Map 里第一个端口给谁？",
+      "conditions": [
+        "读参与 MCPTT 功能发给客户端的 Map Group To Bearer。核对 RTCP APP 的 PT=204、Name=MCMC、subtype=00000，定位该消息中的 MBMS Subchannel 字段（ID 0）。"
+      ],
+      "conclusion": "前三个 32 位字之后，组 ID、TMGI、MBMS Subchannel 三个字段的顺序不限。MBMS Subchannel 内 Floor m-line Number 为 4 位：值为 0 表示媒体与话权共用子信道，不携带独立 Floor control Port Number；值大于 0 时先读 32 位话权端口。两种情形都接着读 32 位 Media Port Number，再读 IP Address。IP Version 为 0 时地址为 32 位 IPv4，为 1 时为 128 位 IPv6，其余编码保留。",
+      "normative_strength": "字段编码按 §8.4.3.3 表及其条件正文；外层字段可换序，字段内部端口不能互换。",
+      "limitations": [
+        "共享时没有话权端口槽，不等于没有话权。位宽是 Map 字段的编码宽度。截断时不重建缺失值；保留的 IP 版本不据余长猜测，未规定本情形的接收端错误动作。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.4.2 table 8.4.2-1; 8.4.3.1 table 8.4.3.1-2: Map direction, subtype and field ID"
+          ],
+          "printed_pages": [
+            183
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.4.4 and table 8.4.4-1: Map envelope, sibling fields and their order"
+          ],
+          "printed_pages": [
+            185,
+            186
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.4.3.3 and table 8.4.3.3-1: audio and floor selectors, conditional floor port, media port and IP address"
+          ],
+          "printed_pages": [
+            183,
+            184
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "map-line-references-need-announcement-context",
+      "title": "有 Map 端口但没有当时的 SDP，可以回答到哪里？",
+      "conditions": [
+        "已定位 Map 的 MBMS Subchannel 字段。读取端口和行号不要求终端收件；要解释某终端实收 Map 的媒体行，另须知道它经哪条通用子信道收到。"
+      ],
+      "conclusion": "4 位 Audio m-line Number 指向承载通告 SIP MESSAGE 的 m=audio；非零 4 位 Floor m-line Number 指向供话权使用的 m=application。终端按实收 Map 的通用子信道所关联的 SDP 解释这些编号。通告的 GPMS 标识通用信令应用行，两种行号不是 UDP 端口；该组的媒体地址和端口取自 Map，不取通告中的占位端口 9。",
+      "normative_strength": "TS 24.380 §8.4.3.3 定义字段，TS 24.379 §14.3.2 规定实收 Map 的解释上下文。",
+      "limitations": [
+        "相关 SDP 缺失时，完整且 IP 版本已定义的字段仍可给出端口、地址和共享或分离；不能确认编号实际对应的媒体段，不按目标 TMGI 或最新通告替选，也不按应用行单独计数或推断编号基数。",
+        "仅见 PF 出包不能证明具体终端接收、建立关联、解密或收到语音。终端的关联另以 §10.3.1–2 的前提和实收为据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.4.3.3 and table 8.4.3.3-1: audio and floor selectors, conditional floor port, media port and IP address"
+          ],
+          "printed_pages": [
+            183,
+            184
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.3.2 开头（同一通告的 SDP/密钥关联与后续 Map 上下文）"
+          ],
+          "printed_pages": [
+            470
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.2.2.2(5a,5d,6f)：render、通用子信道的有效组播端点和 GPMS 所指媒体行"
+          ],
+          "printed_pages": [
+            465,
+            467
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.2.2.2(5b,5c,5e) 及注 1、3：两类音频行、占位地址和端口、分离话权条件"
+          ],
+          "printed_pages": [
+            465,
+            466
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14.2.2.2 注 2 及 14.3.2 开头、1(f)–(h)：Map 中的媒体参数、实际接收子信道和监听条件"
+          ],
+          "printed_pages": [
+            466,
+            470,
+            471
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.3.1–.2/.4/.6 UE prerequisites, actual receipt, mapping, unmapping, separate bearer announcement"
+          ],
+          "printed_pages": [
+            209,
+            210
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": true,
+        "independent_usage_acceptance": true
+      }
     }
   ],
   "related": [
@@ -169,7 +300,7 @@
     "r16-media-mbms-floor-ack-and-rtp-duplicates"
   ],
   "limitations": [
-    "只讨论 MCPTT PF 在既有 MBMS 子信道的通话计时。无应用监听指示或消息不明时，不从包数断定分支。 终端侧另限客户端支持经 MBMS 接收话权消息和 RTP，且承载已激活并已通告。",
+    "计时分支只讨论 MCPTT PF 在既有 MBMS 子信道的通话计时。无应用监听指示或消息不明时，不从包数断定分支。 终端侧另限客户端支持经 MBMS 接收话权消息和 RTP，且承载已激活并已通告。",
     "不以 Map/Unmap 判断整条承载激活、独立 SIP 组会话结束、终端实收或收听；不静默修正 T16/T17 命名及 C17 表与正文的不同表述。"
   ],
   "verification": {

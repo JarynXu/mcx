@@ -1,4 +1,20 @@
-# MCPTT 组播：Map 为什么反复发，Unmap 什么时候停止重发？
+# MCPTT 组播：怎样读 Map 的端口，Map、Unmap 为什么重发？
+
+<a id="map-subchannel-ports"></a>
+## 抓到 Map：第一个端口是语音还是话权？
+
+看 `MBMS Subchannel` 字段里的 **Floor m-line Number**。它占 4 位，决定话权是否与语音共用子信道，也决定后面有没有单独的话权端口。先确认报文是参与 MCPTT 功能（PF）发给客户端的 Map Group To Bearer：RTCP APP 的 PT 为 204、Name 为 `MCMC`、subtype 为 `00000`。前三个 32 位字之后，组 ID、TMGI 和 MBMS Subchannel 是三个独立字段，次序不限；用字段 ID 找 MBMS Subchannel（ID 0），不能认定它总在最后。[TS 24.380 V16.9.0 表 8.4.2-1、8.4.3.1-2，印刷页 183](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=184)；[§8.4.4 及表 8.4.4-1，页 185–186](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=186)。
+
+| Floor m-line Number | MBMS Subchannel 字段内的端口和地址 |
+| --- | --- |
+| **0**：话权与语音共用子信道 | 没有 Floor control Port Number，也不为它留一个零值槽。直接读 **Media Port Number**，然后读 IP 地址。没有单独端口不表示没有话权。 |
+| **大于 0**：指向通告 SDP 中供话权使用的 `m=application` 行 | 先读 **Floor control Port Number**，再读 **Media Port Number**，最后读两者共用的 IP 地址。不能把第一个端口当成语音端口。 |
+
+这里每个端口值在 Map 字段中占 **32 位**，即 4 字节；Media Port Number 总在。地址宽度另由 IP Version 决定：编码 **0** 表示 IPv4，读 4 字节；编码 **1** 表示 IPv6，读 16 字节。其他编码保留，不按手边剩下的字节数猜地址族。比如 Floor 为 0、IP Version 为 1 时，两个选择值所在的首个 32 位字之后是 **4 字节媒体端口，接 16 字节 IPv6 地址**。若非零 Floor 的抓包没有保留两个完整端口，不能把孤立的端口当作完整映射。[§8.4.3.3、表 8.4.3.3-1，印刷页 183–184](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=185)。
+
+**行号选的是媒体描述，端口与地址读自这份 Map。** Audio m-line Number 也是 4 位，指向承载通告 SIP MESSAGE 的 `m=audio`。非零的 Floor 号指向话权应用行，例如值 3 表示引用编号 3 的话权应用行，不是 UDP 端口 3，也不是要找第三条应用行。通告中的 GPMS 则指通用子信道的应用行，用来接收包括 Map 在内的组播信令；初始通告的音频或独立话权占位端口 9 不是该组的工作端口。终端解释实收的 Map，要取**收到它的通用子信道所关联的那份 SDP**，不按目标 TMGI 任选一份通告。若 Map 字段完整、IP Version 为 0 或 1，只缺这份 SDP，仍可读出共享或分离、端口值和地址，但不能核实编号实际对应哪段媒体描述。这里不推断行号从 0 还是 1 起算。[TS 24.380 §8.4.3.3，页 184](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=185)；[TS 24.379 V16.14.0 §14.2.2.2(5、6f)、§14.3.2，页 465–467、470](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=471)。通告示例见[GPMS 与端口 9 的区别](mcptt-mbms-announcement-sdp.md#initial-announcement-sdp)。
+
+PF 侧一份完整的 Map 可以说明它为哪个组、哪条承载指明了什么端口，不能证明具体终端收到 Map、建立关联或收到了语音。反复出现同样的映射，再查下面的定时器和接收记录。
 
 在网 MCPTT 组呼已使用 MBMS（多媒体广播多播业务）。同一段通话反复出现 Map Group To Bearer，不一定在新分配承载，也不一定是某台终端没收到。先查参与 MCPTT 功能（PF）中，**本段通话的子信道控制实例处在哪个状态，哪个定时器实际到期**。
 
