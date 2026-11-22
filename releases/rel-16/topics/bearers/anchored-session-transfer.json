@@ -524,6 +524,45 @@
       "verification": {
         "original_clauses_checked": true
       }
+    },
+    {
+      "id": "scc-as-path-qualification",
+      "title": "如何分别核验注册、主叫和被叫路径上的 SCC AS？",
+      "standard_stage": 3,
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "conditions": [
+        "按 TS 24.379 §14A 判断端到网中继与 E-UTRAN 直连间的 PS–PS 接入转移条件，针对承载在网 MCPTT 私呼或组呼的既有 SIP 会话。",
+        "区分注册、发起会话和终接会话三条路径；核对首末顺序时只统计该方向的应用服务器。"
+      ],
+      "conclusion": "初始过滤准则须使 SCC AS 在注册路径上，在发起会话的路径上是第一个应用服务器，在终接会话的路径上是最后一个应用服务器。远端 UE 是支持 PS–PS 接入转移的连续性终端；会话在切换前后锚定于同一 SCC AS。",
+      "normative_strength": "§14A.1 明列锚定所需的 iFC 配置与终端条件；查看配置和实际跟踪是核实这些条件的办法。",
+      "limitations": [
+        "首末不是 SIP 代理排序，也不是规定 REGISTER 的第一或最后一跳。只见 SCC AS 出现在一条路径上不能证明另外两条。",
+        "即使三条路径配置与终端能力都符合，也不证明原会话在某次切换时实际转移、未断音或媒体到达。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14A.1, opening and items 1–3: SCC AS on the registration path and first/last application server by session direction, remote SC UE and STI"
+          ],
+          "printed_pages": [
+            476
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "14A.2.1 items 4–5, 14A.3.1 items 1–2: registering on the target access leg and initiating transfer of the existing session are distinct"
+          ],
+          "printed_pages": [
+            477
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
     }
   ],
   "related": [
@@ -532,7 +571,8 @@
     "r16-calls-preestablished-group-rejoin",
     "r16-calls-offnetwork-group-client",
     "r16-bearers-mbms-relay-media-continuity",
-    "r16-identity-registrar-selection"
+    "r16-identity-registrar-selection",
+    "r16-identity-shared-sip-registration"
   ],
   "limitations": [
     "正文 §10.5.2 的中继职能、§10.7.3.7.3 的 MBMS 覆盖边缘程序、资料性 B.1 的 MCPTT 会话转移示例各有适用条件。",
@@ -665,6 +705,24 @@
       "source_id": "3gpp-ts-24.379-v16.14.0",
       "clauses": [
         "14A.3.1, items 1–2 and Note: direct EPC target P-CSCF discovery per TS 24.229 clause L.2.2.1 option II, then reference to forward items 5–7"
+      ],
+      "printed_pages": [
+        477
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "14A.1, opening and items 1–3: SCC AS on the registration path and first/last application server by session direction, remote SC UE and STI"
+      ],
+      "printed_pages": [
+        476
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "14A.2.1 items 4–5, 14A.3.1 items 1–2: registering on the target access leg and initiating transfer of the existing session are distinct"
       ],
       "printed_pages": [
         477
