@@ -15,3 +15,12 @@
 **适用业务：** 表 A.1（MCPTT）、B.1（MCVideo）、C.1（MCData）的 §6.8.1 行均列这五项。[表 A.1，印刷页 67](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=68)；[表 B.1，印刷页 78](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=79)；[表 C.1，印刷页 89](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=90)。
 
 若查的是[组通信](../groups/onnetwork-group-communications-priority.md)或[私通信](../calls/onnetwork-private-communication-priority.md)的相对传输、呈现优先级，分别看 §6.4.7、§6.7.4。它们不替代此处的抢占触发条件。[§§6.8.2–6.8.5，印刷页 40](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=41) 的接入、准入和调度控制，以及[在网单话权的抢占与撤销](../media/on-network-preemption-revoke.md)，按各自范围查；不能据此给这五项指定承载参数、网络节点、标志或报文。
+
+## 收到优先级授予或 PCRF 确认，能证明已经抢占吗？
+
+不能。先查记录来自哪套程序：
+
+- 如果用的是[多服务器优先级仲裁](multi-server-priority-arbitration.md)，授予只说明申请方获准用较高级别请求资源。后续请求和实际拿到资源不是同一件事。
+- 如果用的是 [EPS 优先级共享](unicast-bearer-priority-sharing.md)，步骤 4 是 PCRF 确认请求，步骤 5 才是 PCC 更新承载优先级。用这套程序还要核对运营商策略、前序请求中的共享信息及 EPC、IMS 的支持。
+
+两套程序各有前提，不是必须串起来的流程。比如，同一份记录里有优先级授予和 PCRF 确认，即使另有证据表明承载优先级已更新，仍须核实较低优先级的通信是否被抢占、相应资源是否因此分给本次通信。建通信是否符合要求、媒体是否送达，要看各自的证据。
