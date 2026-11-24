@@ -6842,7 +6842,7 @@
           "read": "topics/mcvideo/multiple-device-authorization.md"
         }
       ],
-      "boundary": "§5 的要求适用于在网和离网；§6 的要求专用于在网。§5.10 和 §6.11 不规定登录的具体协议、满额处理或新登录结果。"
+      "boundary": "§5.1.1 -001 要求允许用户登录其同时使用的一台或多台终端，并在每台上接收业务；§5.10 的同时登录、限制数量和分别登录也属在网与离网共用要求。§6.11 的通知和远程退出专用于在网。未规定登录协议、满额处理、某次登录结果或每次业务的投递。"
     },
     {
       "id": "r16-calls-lmr-interworking-group-late-entry",
@@ -9003,6 +9003,190 @@
         }
       ],
       "boundary": "§6.7.2 -004 规定业务须让 MCX 用户按自己的当前位置与本地调度员进行私通信。不限定话权控制方式，不指定最近距离、定位来源或协议，不证明本次通信已经建立。"
+    },
+    {
+      "id": "r16-groups-ongoing-group-communication-status",
+      "question": "哪些组正在通信，终端和用户各能判断什么？",
+      "start": "topics/groups/ongoing-group-communication-status.md",
+      "next_if": [
+        {
+          "condition": "若要确定的是哪些已定义的组对本人或本机授权，而非组内是否正在通信。",
+          "read": "topics/groups/group-membership-affiliation-and-selection.md"
+        },
+        {
+          "condition": "若问在网时哪些组有其他已归属用户或有活跃接收成员。",
+          "read": "topics/groups/onnetwork-group-status-information.md"
+        },
+        {
+          "condition": "若要用 Stage 2 组管理流程取得某个组的成员或已归属成员名单。",
+          "read": "topics/groups/group-list-query.md"
+        }
+      ],
+      "boundary": "只回答 MCPTT、MCVideo 的在网/离网组通信进行状态及判断主体。组内有成员或有人归属不证明正在通信；本节不回答谁在收发，也不规定协议。"
+    },
+    {
+      "id": "r16-groups-group-membership-affiliation-and-selection",
+      "question": "一个用户能归属几个组？同属多组和选定发送组是一回事吗？",
+      "start": "topics/groups/group-membership-affiliation-and-selection.md",
+      "next_if": [
+        {
+          "condition": "若是同一组使用多项业务，需判断可否按业务分别归属或部分获准。",
+          "read": "topics/groups/common-group-service-affiliation.md"
+        },
+        {
+          "condition": "若要判断的是哪些组正有组通信。",
+          "read": "topics/groups/ongoing-group-communication-status.md"
+        },
+        {
+          "condition": "若要查给定组的成员名单或已归属成员名单。",
+          "read": "topics/groups/group-list-query.md"
+        },
+        {
+          "condition": "若追查同一系统中的 Stage 2 显式归属功能流程，而非参加前提。",
+          "read": "topics/groups/same-system-explicit-affiliation.md"
+        },
+        {
+          "condition": "若问在网时谁能按请求得到指定组的当前成员名单，而非一个用户可同时归属哪些组。",
+          "read": "topics/groups/onnetwork-group-member-list.md"
+        },
+        {
+          "condition": "若数的是在网某一组能有多少成员（Nc6），而非某一用户能同时归属多少个组（Nc2）。",
+          "read": "topics/groups/onnetwork-group-limits-and-state.md"
+        }
+      ],
+      "boundary": "只回答在网/离网同一项业务中用户或终端的授权组、成员资格、归属、所选组及参加前提。各编号单独判断适用业务；不能用归属证明已参加，不把组数量规则用作跨业务归属或报文要求。"
+    },
+    {
+      "id": "r16-calls-common-group-transmission-and-setup",
+      "question": "组传输能发往哪些组？何时提示成员，谁能配置内容源？",
+      "start": "topics/calls/common-group-transmission-and-setup.md",
+      "next_if": [
+        {
+          "condition": "如果通信已经进行，要区分原已归属者恢复可用和此时新归属的人。",
+          "read": "topics/calls/common-group-late-entry.md"
+        },
+        {
+          "condition": "如果在查在网组通信是否获预先确认、谁收到收件或缺席通知。",
+          "read": "topics/calls/onnetwork-group-acknowledgement.md"
+        }
+      ],
+      "boundary": "限 §5.1.1 的 -002 至 -006，不涵盖其他编号或具体信令。按业务与编号检查规范性附录。"
+    },
+    {
+      "id": "r16-calls-common-group-late-entry",
+      "question": "组通信开始后，已归属但缺席的人与刚归属的人怎样加入？",
+      "start": "topics/calls/common-group-late-entry.md",
+      "next_if": [
+        {
+          "condition": "若查在网 MCVideo 预安排组呼在服务器邀请、终端主动重入时各有什么前提（Stage 2）。",
+          "read": "topics/mcvideo/prearranged-late-entry-rejoin.md"
+        },
+        {
+          "condition": "若查在网 MCPTT 预安排组呼的定向重入或服务器晚入信令（Stage 3）。",
+          "read": "topics/calls/rejoin-late-entry.md"
+        },
+        {
+          "condition": "若查通信建立时怎样提示已归属成员，或正常通信的提示能否关闭。",
+          "read": "topics/calls/common-group-transmission-and-setup.md"
+        }
+      ],
+      "boundary": "限 §5.3；MCPTT、MCVideo 在网与离网共用的迟入业务要求，不是某一业务的邀请或重入消息流程。"
+    },
+    {
+      "id": "r16-location-ue-position-acquisition-and-supply",
+      "question": "终端位置必须有多准？由谁控制供应，传送时用哪一次取得的位置？",
+      "start": "topics/location/ue-position-acquisition-and-supply.md",
+      "next_if": [
+        {
+          "condition": "要查何时触发一次位置更新，以及在网时能否改触发条件。",
+          "read": "topics/location/update-triggers-and-predefined-areas.md"
+        },
+        {
+          "condition": "要查在网时谁可限制本人位置传播、谁能启停位置报告。",
+          "read": "topics/location/onnetwork-location-sharing-and-report-control.md"
+        }
+      ],
+      "boundary": "以最近已取得的位置为准不等于每次重新测位；本节没有规定固定精度、位置年龄、历史留存或具体定位协议。"
+    },
+    {
+      "id": "r16-location-update-triggers-and-predefined-areas",
+      "question": "什么条件会触发终端的位置更新？用户在网或终端在预设区域内时有什么不同？",
+      "start": "topics/location/update-triggers-and-predefined-areas.md",
+      "next_if": [
+        {
+          "condition": "要查一次更新携带的位置必须是哪一次取得的。",
+          "read": "topics/location/ue-position-acquisition-and-supply.md"
+        },
+        {
+          "condition": "要查用户发起紧急告警、紧急组通信或处于紧急状态时的发送条件。",
+          "read": "topics/location/emergency-update-conditions.md"
+        },
+        {
+          "condition": "要查在网单系统的 Stage 2 事件上报配置由谁提供、终端何时向 LMS 上报。",
+          "read": "topics/location/event-reporting-configuration.md"
+        }
+      ],
+      "boundary": "只有 R-5.11-008 明列用户在网这一修改条件。触发示例不是默认策略；终端在预设区域内不等于生效配置档的触发条件已满足。"
+    },
+    {
+      "id": "r16-location-emergency-update-conditions",
+      "question": "发起紧急告警、紧急组通信或处于紧急状态时，终端何时能发位置更新？",
+      "start": "topics/location/emergency-update-conditions.md",
+      "next_if": [
+        {
+          "condition": "要查一般触发条件、在网时修改规则及预设区域。",
+          "read": "topics/location/update-triggers-and-predefined-areas.md"
+        },
+        {
+          "condition": "要查在网单系统中怎样分别给出紧急和非紧急上报配置。",
+          "read": "topics/location/event-reporting-configuration.md"
+        },
+        {
+          "condition": "要查在网 MCVideo、MCData 的组紧急告警中，提供给组员的位置从哪里来。",
+          "read": "topics/calls/onnetwork-group-alert-location.md"
+        }
+      ],
+      "boundary": "发起紧急业务、处于紧急状态和达到配置时长是不同条件。不能凭本条推定位置已送达、已测得新坐标或告警一定携带坐标；未列 -012 不等于禁止 MCPTT 支持类似能力。"
+    },
+    {
+      "id": "r16-identity-user-id-aliases-and-display",
+      "question": "谁能创建用户别名？用户 ID 可关联什么别名，终端要能显示什么？",
+      "start": "topics/identity/user-id-aliases-and-display.md",
+      "next_if": [
+        {
+          "condition": "若查在网永久或临时分配、唯一性、管理员配置及接收端能取得哪些标识。",
+          "read": "topics/identity/onnetwork-id-and-alias-management.md"
+        },
+        {
+          "condition": "若查在网组通信实际发送时要向接收端提供的身份。",
+          "read": "topics/identity/onnetwork-group-sender-identification.md"
+        },
+        {
+          "condition": "若要区分业务用户 ID 和认证、路由身份。",
+          "read": "topics/identity/cross-service-user-mapping.md"
+        }
+      ],
+      "boundary": "§5.7 的三项均是在网、离网共用要求；区分别名增删、字母数字标识的关联和终端的可配置显示。这里不规定 Nc3 的数值、功能别名的启停程序或身份投递。"
+    },
+    {
+      "id": "r16-identity-ue-provisioning-and-user-profiles",
+      "question": "用户至少关联几份配置档？谁管用户档，谁能配置终端？",
+      "start": "topics/identity/ue-provisioning-and-user-profiles.md",
+      "next_if": [
+        {
+          "condition": "若查在网修改使用中的档、管理员指定安装，或业务与终端间传送用户档时的保护。",
+          "read": "topics/identity/user-profile-management-requirements.md"
+        },
+        {
+          "condition": "若要判定终端收到的是设备配置还是用户档。",
+          "read": "topics/identity/ue-configuration-retrieval.md"
+        },
+        {
+          "condition": "若查客户端从多份可用档中切换当前档的过程。",
+          "read": "topics/identity/user-profile-switch.md"
+        }
+      ],
+      "boundary": "§5.8 和 §5.9 的四项适用于在网和离网。用户与档的关联、终端对档的支持、终端配置与管辖范围内的用户档管理不是同一操作。未由此确定具体安装或生效结果。"
     }
   ]
 }
