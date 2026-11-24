@@ -1,0 +1,236 @@
+{
+  "topic_id": "r16-groups-gmk-security-context-revocation",
+  "release": 16,
+  "standard_stage": null,
+  "state": "draft",
+  "title": "GMS 撤销组安全上下文：收到 GMK 的终端还能用它吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v16.13.0",
+  "condition_rule": "先认发信方和用途，再核对 GMK 关联参数中的 Status 及其对应的密钥与标识。每条声明继承共同条件。",
+  "common_conditions": [
+    "适用于 3GPP TS 33.180 V16.13.0（Release 16）中 GMS 用组配置通知撤销一项 GMK 安全上下文。"
+  ],
+  "claims": [
+    {
+      "id": "gms-repeats-notify-for-revocation",
+      "title": "GMS 复用组配置通知，以 GMK 的关联参数标明撤销",
+      "conditions": [
+        "MC 客户端和 GMS 已取得各自的身份密钥材料；GMS 要撤销一项组安全上下文。"
+      ],
+      "conclusion": "GMS 重复图 5.7.2-1 的组配置通知流程，将撤销标记放在 GMK 关联参数的 Status。GMS 向组内终端发送 Notify group configuration request；MIKEY 载荷封装 GMK，为对应的 MC 业务用户身份加密，由 GMS 签名，消息另提供 GUK-ID。GMK 的关联参数用 GMK 加密。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.7.2, Figure 5.7.2-1, steps 0–1 and the revocation paragraph: GMS delivery and withdrawal by GMK status"
+          ],
+          "printed_pages": [
+            60,
+            61
+          ]
+        }
+      ],
+      "limitations": [
+        "这不是 CMS 用户配置档的成员移出通知。发出组配置请求不证明终端收到、通过核验或完成停用。",
+        "不由撤销动作推断是否另生成新 GMK，或怎样选择、复用 GMK-ID。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "bit-zero-zero-is-revoked",
+      "title": "Status 的最低有效位为 0 表示密钥已撤销",
+      "conditions": [
+        "检查的是 GMK 关联参数中的 Status，而不是密钥标识或 SIP 状态码。"
+      ],
+      "conclusion": "表 E.6.9-1 的 Status 长 4 个八位组，按最低有效位编号。位 0 的值为 0 表示已撤销，值为 1 表示未撤销。位 1 单独表示是否与安全网关共享密钥。未定义的位必须忽略。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex E.6.9 and Table E.6.9-1: four-octet Status, LSB-first revocation bit and separate Security Gateway bit"
+          ],
+          "printed_pages": [
+            168
+          ]
+        }
+      ],
+      "limitations": [
+        "不能把置 1 解释为撤销，也不能用安全网关位反推撤销。状态位未标撤销不证明验签、组身份或其他检查已通过。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "receiver-checks-mikey-and-associated-parameters",
+      "title": "终端核对签名、密钥标识和组服务器；关联参数解密失败须拒绝",
+      "conditions": [
+        "终端收到本次组配置通知中的 MIKEY 载荷。"
+      ],
+      "conclusion": "终端检查签名，取出 GMK、GUK-ID 和 GMK-ID，并检查 GMK-ID 是否与现有 GMK 的标识重复。终端用 GMK 解出关联参数，从中取出组 ID，再到配置档查该组的 Server URI，核对 GMS 身份。任一检查失败时，§5.7.2 步骤 2 要求向 GMS 返回错误。§5.2.4 规定关联参数解密失败时拒绝密钥。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.7.2, Figure 5.7.2-1 and step 2: GMS identity, signature, duplicate check and error"
+          ],
+          "printed_pages": [
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.2.4, Figures 5.2.4-1 and 5.2.4-2 and receiver text: associated parameters and decryption failure"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ]
+        }
+      ],
+      "limitations": [
+        "撤销段没有给重复 GMK-ID 定义不同的处理规则，不能以撤销为由跳过验签或重复检查。所引条款不规定具体错误码。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "revoked-key-and-id-must-not-be-used",
+      "title": "关联参数标为撤销时，分发密钥和标识均不得使用",
+      "conditions": [
+        "终端对本次分发完成相关核验、解出了 GMK 关联参数，并确认 Status 指示已撤销。"
+      ],
+      "conclusion": "终端不得使用这个分发的密钥 K 和标识 K-ID。在这项组流程中，K 是 GMK，K-ID 是 GMK-ID；GUK-ID 是面向收件端的另一个标识。图示流程的成功处理会有 Notify group configuration response。该响应不能把撤销状态读成可用，也不证明任一其他终端已完成处理。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.2.4, receiver paragraph and Figure 5.2.4-2: do not use K or K-ID when associated Status is revoked"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.7.1, identifier-role paragraph only: K is GMK, K-ID is GMK-ID, UK-ID is GUK-ID"
+          ],
+          "printed_pages": [
+            60
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.7.2, Figure 5.7.2-1, successful response in step 2 and the revocation paragraph"
+          ],
+          "printed_pages": [
+            61
+          ]
+        }
+      ],
+      "limitations": [
+        "禁止使用不同于立即安全删除、不表示收到替代 GMK，也不证明一台现场终端实际完成停用。",
+        "不把成员移出后的删除条件或 GMS 可选择换钥的规则移入这条撤销流程。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-groups-removed-member-gmk",
+    "r16-groups-partner-regroup-gmk",
+    "r16-identity-ue-key-persistence"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "5.7.2, Figure 5.7.2-1, steps 0–1 and the revocation paragraph: GMS delivery and withdrawal by GMK status"
+      ],
+      "printed_pages": [
+        60,
+        61
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "Annex E.6.9 and Table E.6.9-1: four-octet Status, LSB-first revocation bit and separate Security Gateway bit"
+      ],
+      "printed_pages": [
+        168
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "5.7.2, Figure 5.7.2-1 and step 2: GMS identity, signature, duplicate check and error"
+      ],
+      "printed_pages": [
+        61
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "5.2.4, Figures 5.2.4-1 and 5.2.4-2 and receiver text: associated parameters and decryption failure"
+      ],
+      "printed_pages": [
+        43,
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "5.2.4, receiver paragraph and Figure 5.2.4-2: do not use K or K-ID when associated Status is revoked"
+      ],
+      "printed_pages": [
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "5.7.1, identifier-role paragraph only: K is GMK, K-ID is GMK-ID, UK-ID is GUK-ID"
+      ],
+      "printed_pages": [
+        60
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "5.7.2, Figure 5.7.2-1, successful response in step 2 and the revocation paragraph"
+      ],
+      "printed_pages": [
+        61
+      ]
+    }
+  ],
+  "limitations": [
+    "不收录成员移出、根证书或 KMS 信任撤回、替代 GMK 生成、UE 存储清除、错误码或撤销专用重试。",
+    "不把收到组配置通知、回配置响应或观察到字段当成设备已经停用、删除或实际停止通信的证据。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
