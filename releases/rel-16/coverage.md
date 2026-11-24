@@ -4347,6 +4347,16 @@ TS 22.280 V16.8.0（Release 16，Stage 1）第 6 章的在网要求。规范性�
 
 [读取主题](topics/security/cryptographic-protocol-requirements.md)
 
+## 终端要求认证在网 MCX 业务（Stage 1）
+
+区分终端要求验证业务身份与系统验证用户或客户端身份。
+
+在网 MCPTT、MCVideo、MCData 均适用。MCX 业务必须提供一种方式，让 MCX 终端能够要求验证该业务本身的身份。
+
+尚未建立：§6.13.3 未要求每次接入或双向认证，未指定协议、凭据、交互端点、时机和失败处理。
+
+[读取主题](topics/security/service-authentication-requirements.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。
