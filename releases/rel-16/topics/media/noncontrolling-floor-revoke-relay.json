@@ -1,0 +1,143 @@
+{
+  "topic_id": "r16-media-noncontrolling-floor-revoke-relay",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "控制侧发来的 Floor Revoke，非控制侧怎样转发？",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "source_catalog": "../../sources.json",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "Release 16；TS 24.380 V16.9.0 的非控制 MCPTT 功能，核对接收来的 Floor Revoke 在实际接口间的传递。两次接收分别判断，不能以一端的记录代替另一端。"
+  ],
+  "claims": [
+    {
+      "id": "identify-associated-participant-interface-and-forward",
+      "title": "用末尾参与者引用值选接口，并把收到的撤权转过去",
+      "conditions": [
+        "非控制 MCPTT 功能的话权控制服务器接口，实际收到控制 MCPTT 功能发来的 Floor Revoke。"
+      ],
+      "conclusion": "话权控制服务器接口须用 Track Info 末尾的 Participant Reference 确定对应的话权参与者接口，并向该接口转发 Floor Revoke。转发时的 Track Info 删减按本节步骤 2 执行。",
+      "normative_strength": "shall；先由该引用值确定目标，然后按规定转发。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.10, opening and steps 1 and 3 on interface association and forwarding"
+          ],
+          "printed_pages": [
+            111
+          ]
+        }
+      ],
+      "limitations": [
+        "选的是本次引用值对应的接口，不是凭用户名称、组 ID 或 P 状态推定。只知道服务器侧处理了报文，不证明参与者接口实际收到。",
+        "本节没有规定引用缺失、无效或未能对应接口时的处置。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "strip-track-info-by-participant-reference-count",
+      "title": "一个引用去掉整个字段；多个只删末项",
+      "conditions": [
+        "非控制 MCPTT 功能的话权控制服务器接口，实际收到控制 MCPTT 功能发来的 Floor Revoke。",
+        "已按本次 Track Info 的末项确定话权参与者接口；准备发出对应的 Floor Revoke。"
+      ],
+      "conclusion": "Track Info 只有一个 Participant Reference 值，须从发出的 Floor Revoke 移除整个 Track Info 字段；若有多个引用值，须仅在 Track Info 中移除最后一个 Participant Reference 值。",
+      "normative_strength": "两条均为 shall，各自以该字段中参与者引用值的数量为条件。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.10, step 2(a)–(b): remove whole Track Info or only last Participant Reference"
+          ],
+          "printed_pages": [
+            111
+          ]
+        }
+      ],
+      "limitations": [
+        "不按其他字段计数，不把多个引用值的场景处理成删除整个字段。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "permitted-interface-forwards-and-retains-p-state",
+      "title": "已许可的参与者接口发给参与者后保持本地 P 状态",
+      "conditions": [
+        "非控制侧的话权参与者接口已处于 P: has permission。该接口实际收到话权控制服务器接口发来的 Floor Revoke。"
+      ],
+      "conclusion": "话权参与者接口须把 Floor Revoke 发给所对应的话权参与者，并保持 P: has permission。",
+      "normative_strength": "发送与保持状态均为 shall；保持状态不取决于是否要求确认。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.4.7, opening and steps 1 and 3: participant delivery and P state retention"
+          ],
+          "printed_pages": [
+            117
+          ]
+        }
+      ],
+      "limitations": [
+        "P 是该参与者接口的本地状态，不代表终端或全局状态。不能从它判断实际撤权完成、仍可发媒体或已收到确认。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "store-revoke-ack-expectation-only-when-indicated",
+      "title": "subtype 第一位为 1 才由本步记录预期待收 Floor Ack",
+      "conditions": [
+        "非控制侧的话权参与者接口已处于 P: has permission。该接口实际收到话权控制服务器接口发来的 Floor Revoke。",
+        "这份 Floor Revoke 的 subtype 第一位为 1。"
+      ],
+      "conclusion": "该话权参与者接口须记下预期收到针对 Floor Revoke 的 Floor Ack。",
+      "normative_strength": "shall；本步只在 subtype 第一位为 1 时要求记录。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.4.7, step 2: expected Floor Ack to Floor Revoke when subtype first bit is set"
+          ],
+          "printed_pages": [
+            117
+          ]
+        }
+      ],
+      "limitations": [
+        "本步没有要求在别的比特值下创建或清除记录。记录不证明实际 Ack 已生成、发出、返回或收到；本节不规定等待时长、重传或缺确认的处理。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-mcptt-onnetwork-preemption-revoke",
+    "r16-media-on-network-noncontrolling-floor-rtp"
+  ],
+  "limitations": [
+    "不包括本地生成 Revoke、控制侧仲裁状态、终端状态、其他消息类型的 ACK、确认回送或重传、媒体撤权和 SIP 动作。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}

@@ -6543,6 +6543,38 @@
               ]
             }
           ]
+        },
+        {
+          "domain": "media",
+          "title": "在网呼叫升级与 Idle 隐式话权（Stage 3）",
+          "can_answer": "已有在网组呼升紧急，话权空闲。后续 SDP 有 mc_implicit_request，U 收到哪项指示后才上报？ G 在 Floor Idle 实收升级隐式话权请求，通话只有一台 MCPTT 客户端会怎样？ 为什么两台或更多客户端也不代表必授予？实际获准时，G 何时停止 T4/T7 和保存获准者 SSRC？",
+          "conditional_or_interface_only": "在网进行中的呼叫升级时分别判断两层。U 已处于 U: not permitted and Floor Idle，且会话升级为紧急组呼、应用与信令面指示后续 SDP offer 含 mc_implicit_request 时，须上报仲裁并保持原态。G 已处于 G: Floor Idle 且实际收到因升级为紧急组呼或迫近危险呼叫产生的隐式请求时，通话只有一个 MCPTT 客户端须拒绝；拒绝后发 Floor Deny #3 并留在原态。只在实际授予时停 T4/T7、保存获准者 SSRC 并进入 G: Floor Taken。该 SSRC 留到本次话权释放。两个或更多客户端不是必授条件。",
+          "not_established": "不补迫近危险升级的 U 入口、不把两台及以上写成强制授予，也不以 SIP 200、后续 SDP、上报或 G 状态判终端实收授权或 RTP 交付。不扩为初始会话、普通显式请求、Taken 或完整仲裁。",
+          "read": [
+            {
+              "title": "在网 MCPTT 呼叫升级时话权空闲，谁处理隐式话权请求？",
+              "path": "topics/media/on-network-idle-floor-implicit-upgrade.md",
+              "source_ids": [
+                "3gpp-ts-24.380-v16.9.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "media",
+          "title": "非控制侧转发控制侧 Floor Revoke（Stage 3）",
+          "can_answer": "按 Track Info 末项找本次关联的参与者接口，分别判单引用与多引用，以及该接口实收后发送、期待确认和保持状态。",
+          "conditional_or_interface_only": "服务器接口实收控制侧消息后，按末项选择目标，单项删整个 Track Info，多项仅删末项。P 接口原处于 has permission 且从服务器接口实收时，发给对应参与者，只有 subtype 首位为 1 才由本步记录待收相应 Floor Ack，仍保持 P。",
+          "not_established": "本节没有规定缺失 Track Info 时的处置、Ack 生成和收回、重传、实际撤权、控制侧仲裁或 SIP。",
+          "read": [
+            {
+              "title": "控制侧发来的 Floor Revoke，非控制侧怎样转发？",
+              "path": "topics/media/noncontrolling-floor-revoke-relay.md",
+              "source_ids": [
+                "3gpp-ts-24.380-v16.9.0"
+              ]
+            }
+          ]
         }
       ]
     },

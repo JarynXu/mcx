@@ -1,0 +1,148 @@
+{
+  "topic_id": "r16-media-on-network-idle-floor-implicit-upgrade",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "在网 MCPTT 呼叫升级时话权空闲，谁处理隐式话权请求？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "每项继承版本和已有在网呼叫范围，再判断该项对应的实际角色、状态与输入。相关页面不是必经动作。",
+  "common_conditions": [
+    "TS 24.380 V16.9.0（Release 16，Stage 3），已有在网 MCPTT 呼叫升级引出的隐式话权处理。",
+    "话权服务器里，U 是面向所关联 MCPTT 参与者的接口，G 是整场话权的仲裁逻辑。各项只继承本范围，再按对应角色的实际前态与收件条件适用。不能把 U 和 G 两套条件拼成每次都要经过的共同入口。"
+  ],
+  "claims": [
+    {
+      "id": "idle-u-dispatches-emergency-upgrade-implicit-request-without-permission",
+      "title": "空闲时，U 转交紧急组呼升级产生的隐式请求，仍未获许可",
+      "conditions": [
+        "话权服务器面向关联 MCPTT 客户端的接口处于 U: not permitted and Floor Idle。",
+        "已有会话升级为紧急组呼，且应用与信令面实际指示本次后续 SDP offer 含 mc_implicit_request fmtp 属性。"
+      ],
+      "conclusion": "U 须向话权服务器的仲裁逻辑报告收到因紧急组呼升级产生的隐式话权请求，仍保持 U: not permitted and Floor Idle。",
+      "normative_strength": "报告和保持原状态均为 shall。",
+      "limitations": [
+        "不将 SDP 中看见属性当成此接口已收到指示或获得许可。此条未写迫近危险升级的 U 入口，不代替 G 实收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.3.9, opening and steps 1–2"
+          ],
+          "printed_pages": [
+            77
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "idle-g-upgrade-request-one-client-forces-denial",
+      "title": "G 实收升级隐式请求；通话只有一个 MCPTT 客户端时必须拒绝",
+      "conditions": [
+        "话权服务器的仲裁逻辑处于 G: Floor Idle。",
+        "G 实际收到因已有会话升级为紧急组呼或迫近危险呼叫产生的隐式话权请求。"
+      ],
+      "conclusion": "通话只有一个 MCPTT 客户端时须拒绝。拒绝时须发 Floor Deny，Reject Cause 取 #3（Only one participant），可附 Reject Phrase，并保持 G: Floor Idle。",
+      "normative_strength": "单客户端时拒绝、拒绝后发送及保留状态为 shall。附说明为 may。",
+      "limitations": [
+        "保留源文区分：单客户端是文中给出的强制拒绝条件，请求实际被拒才应用拒绝动作。不要把 Floor Deny #3 用作 Floor Revoke 的语义，也不照搬普通显式请求的准入规则。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.3.6, opening and steps 1–2"
+          ],
+          "printed_pages": [
+            58
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "idle-g-actual-grant-stops-t4-t7-and-retains-ssrc",
+      "title": "只有实际授予分支才停空闲计时器、保存 SSRC 并转入 Taken",
+      "conditions": [
+        "话权服务器的仲裁逻辑处于 G: Floor Idle。",
+        "G 实收因紧急组呼或迫近危险升级产生的隐式话权请求，且这笔请求实际获准。"
+      ],
+      "conclusion": "G 须停 T4（Inactivity）和 T7（Floor Idle），保存获准参与者的 SSRC，并调用 §6.3.4.4.2 进入 G: Floor Taken。保存的 SSRC 保留到该请求对应的话权释放。",
+      "normative_strength": "在 if granted 条件内，停止两计时器、保存 SSRC 和进入 Taken 均为 shall。",
+      "limitations": [
+        "未写两台或更多客户端则必然授予。仅记录被调的 Taken 入口，不展开这个入口里的其他行为；不由 SIP 200 或 G 状态推断终端已实收授予或 RTP 已送达。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.3.6, step 3 (if granted)"
+          ],
+          "printed_pages": [
+            58
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-mcptt-onnetwork-idle-floor-server",
+    "r16-media-subsequent-floor-control-sdp",
+    "r16-mcptt-implicit-floor-early-media",
+    "r16-media-floor-deny-revoke-cause"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.5.3.9, opening and steps 1–2"
+      ],
+      "printed_pages": [
+        77
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.4.3.6, opening and steps 1–2"
+      ],
+      "printed_pages": [
+        58
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.4.3.6, step 3 (if granted)"
+      ],
+      "printed_pages": [
+        58
+      ]
+    }
+  ],
+  "limitations": [
+    "不将 SIP re-INVITE、其 200、单独看见 SDP 属性或 U 上报当成 G 已收请求或终端已获权的证据。",
+    "U 的条款只写紧急组呼升级；不能因为 G 的条款也写迫近危险，就给 U 补一个入口。两台或更多 MCPTT 客户端也不能替代授予条件。",
+    "不扩为初始 SIP 会话、普通显式 Floor Request、已被占用的 U、完整仲裁策略、接收端授权证明或媒体已交付。§6.3.4.4.2 只作实际授予后的入态回指。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  }
+}

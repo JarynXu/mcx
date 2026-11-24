@@ -10531,6 +10531,46 @@
         }
       ],
       "boundary": "限 MC 业务方管理 SIP 核心且与 PLMN 运营方管理的 EPS 分开的管理场景；不据可选隐藏要求假定实际保护，也不引入登录或承载协议。"
+    },
+    {
+      "id": "r16-media-on-network-idle-floor-implicit-upgrade",
+      "question": "已有在网组呼升紧急，话权空闲。后续 SDP 有 mc_implicit_request，U 收到哪项指示后才上报？ G 在 Floor Idle 实收升级隐式话权请求，通话只有一台 MCPTT 客户端会怎样？ 为什么两台或更多客户端也不代表必授予？实际获准时，G 何时停止 T4/T7 和保存获准者 SSRC？",
+      "start": "topics/media/on-network-idle-floor-implicit-upgrade.md",
+      "next_if": [
+        {
+          "condition": "若 G 的实际输入是普通显式 Floor Request，查已成立 Idle 下的显式请求与条件授予。",
+          "read": "topics/media/on-network-idle-floor-server.md"
+        },
+        {
+          "condition": "若 U 处于 U: not permitted and Floor Taken，或要核对后续 offer 字段，查已占用及 SDP 规则，不套用本页 Idle。",
+          "read": "topics/media/subsequent-floor-control-sdp.md"
+        },
+        {
+          "condition": "若是建立新 SIP 会话时的隐式请求而非会中升级，另读初始路径。",
+          "read": "topics/media/implicit-floor-early-media.md"
+        },
+        {
+          "condition": "若日志给的是 Floor Revoke 或原因码 #3，按实际消息类型解释，勿与本文的 Floor Deny #3 混用。",
+          "read": "topics/media/floor-deny-revoke-cause.md"
+        }
+      ],
+      "boundary": "不补迫近危险升级的 U 入口、不把两台及以上写成强制授予，也不以 SIP 200、后续 SDP、上报或 G 状态判终端实收授权或 RTP 交付。不扩为初始会话、普通显式请求、Taken 或完整仲裁。"
+    },
+    {
+      "id": "r16-media-noncontrolling-floor-revoke-relay",
+      "question": "非控制侧实收控制侧的 Floor Revoke 时，怎样选参与者接口，何时要记录待收 Floor Ack？",
+      "start": "topics/media/noncontrolling-floor-revoke-relay.md",
+      "next_if": [
+        {
+          "condition": "若是控制端本地抢占撤权或仲裁等待计时，而非非控制侧实际收到 CF Revoke。",
+          "read": "topics/media/on-network-preemption-revoke.md"
+        },
+        {
+          "condition": "若非控制侧因检查 RTP 本地发起撤权，未由服务器接口收到这笔 Revoke。",
+          "read": "topics/media/on-network-noncontrolling-floor-rtp.md"
+        }
+      ],
+      "boundary": "分别确认控制侧→服务器接口和服务器接口→已经许可的对应参与者接口实际收到 Revoke。既不据 Ack 期待判断确认已到，也不据 P 状态判断实际撤权或媒体。"
     }
   ]
 }
