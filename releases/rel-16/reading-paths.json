@@ -10827,6 +10827,42 @@
         }
       ],
       "boundary": "P 处于 Start-stop，并从同一 NCF 的话权控制服务器接口实际收到对应受邀 MCPTT 客户端已接受本次会话邀请的指示。该接受对应按 TS 24.379 收到该次初始 SIP INVITE 的 200 (OK) 响应；P 须进入 P: has no permission。 只适用这个服务器侧 P。别腿未配对的 200 (OK)、re-INVITE 应答或缺少 P 实收指示的抓包不能代证该转换。该条不授予话权，不证明 RTP 已开始，也不确定终端 U、控制侧 U 或全局话权状态。"
+    },
+    {
+      "id": "r16-security-kms-root-certificate",
+      "question": "需要更新 KMS 自己的根证书时，能沿用旧 KMS URI 吗？ 收到相同 CertUri 的证书时，客户端替换记录是否说明 KMS 根证书更新、必须切换服务器？",
+      "start": "topics/security/kms-root-certificate.md",
+      "next_if": [
+        {
+          "condition": "若要查证书缓存和单张证书请求的用途，以及经过代理与直连的供应流程。",
+          "read": "topics/security/kms-provisioning.md"
+        },
+        {
+          "condition": "若要辨认 Home、Migration 和 External KMS，或查外部证书向谁取得。",
+          "read": "topics/security/kms-domain-roles.md"
+        }
+      ],
+      "boundary": "附录 D.3.2.1 的根证书角色与更新建议。§5.3.5 对照不扩展到实际续期、撤销或切换。"
+    },
+    {
+      "id": "r16-groups-lmr-group-configuration-subscription",
+      "question": "LMR 定义组，MC GMS 已从 IWF 收到组信息。还要核对哪几个前提，谁订阅，谁回应订阅成功或失败？ IWF 有该组的新信息，什么条件下要通知 MC GMS？哪个角色回通知成功或失败？ MC GMS 的通知响应说成功，能证明 GMS 已写入、终端已收到，或者有固定刷新间隔吗？",
+      "start": "topics/groups/lmr-group-configuration-subscription.md",
+      "next_if": [
+        {
+          "condition": "若是 IWF 定义组而 MC GMS 尚无配置，按缺配置拉取的四项前提另查。",
+          "read": "topics/groups/iwf-defined-group-configuration-pull.md"
+        },
+        {
+          "condition": "若查 MC 用户是否归属 LMR 定义组或缺少对应组映射，走归属请求。",
+          "read": "topics/groups/lmr-hosted-mc-affiliation.md"
+        },
+        {
+          "condition": "若查已在进行的 LMR 归属聊天组里恢复无线覆盖后的媒体或话权状态，按返回场景另查。",
+          "read": "topics/calls/lmr-chat-return-to-coverage.md"
+        }
+      ],
+      "boundary": "订阅：组定义在 LMR 系统，至少一名组成员定义在 MC 系统，且 MC GMS 已从 IWF 收到该组信息。MC GMS 向 IWF 发 IWF group information subscribe request，订阅 IWF 保存的该组配置。IWF 向该 GMS 返回 IWF group information subscribe response，报告订阅请求成功或失败。 通知：MC GMS 已在 IWF 订阅该组配置，且 IWF 有该组的新信息。IWF 向该 GMS 发 IWF group information notify request；该 GMS 向 IWF 返回 IWF group information notify response（图 10.2.3.9-1 的名称），报告本次通知成功或失败。 第 10.2.3.9 条步骤 2 的正文名称多一个 notify，图中没有；方向和通知成败含义一致，不用该处拼写区分两类响应或决定线上编码。 第 10.2.3.8 条没有规定必经或只能通过第 10.2.3.5 条取得组信息，收到组信息也不证明 GMS 会自动订阅。订阅和通知的两次响应不可互代。未规定刷新间隔、通知时点、版本机制、失败重试、GMS 本地写入或具体编码；不据此判断终端实收、用户归属或聊天组媒体恢复。"
     }
   ]
 }

@@ -1,0 +1,113 @@
+{
+  "topic_id": "r16-groups-lmr-group-configuration-subscription",
+  "title": "LMR 定义组：MC GMS 怎样订阅配置，IWF 何时通知更新？",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v16.8.0",
+  "condition_rule": "只将适用的 MC GMS 与 IWF 角色带到两个流程。订阅和通知各按对应 claim 的原文前提判定；不把订阅请求、订阅响应和通知响应视为同一结果。",
+  "common_conditions": [
+    "TS 23.283 V16.8.0 Release 16 Stage 2：核对 MC 系统组管理服务器（MC GMS）和 IWF 之间的组配置信息交互，不套用反向的 MC 定义组流程。"
+  ],
+  "claims": [
+    {
+      "id": "lmr-group-config-mc-gms-subscribes-to-iwf",
+      "title": "MC GMS 有来自 IWF 的组信息后，按三个前提向 IWF 订阅 LMR 定义组的配置",
+      "conditions": [
+        "组定义在 LMR 系统。",
+        "至少一名组成员定义在 MC 系统。",
+        "MC GMS 已从 IWF 收到该组信息。"
+      ],
+      "conclusion": "1. MC GMS 向 IWF 发送 IWF group information subscribe request，订阅保存在 IWF 的该组配置。2. IWF 向该 MC GMS 返回 IWF group information subscribe response，报告订阅请求成功或失败。",
+      "normative_strength": "§10.2.3.8 列出三项前提和两个步骤；图 10.2.3.8-1 标明请求与响应的名称和方向。",
+      "limitations": [
+        "已从 IWF 收到组信息不是已订阅或自动启动订阅的证明。§10.2.3.5 的缺配置拉取可另查，不是本条规定的必经或唯一入口。",
+        "收到组信息不等于本地 GMS 已保存配置；这里不规定本地写入或订阅失败后怎样处理。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.2.3.8, opening, preconditions 1–3, Figure 10.2.3.8-1 and steps 1–2: MC GMS subscribes to IWF and IWF reports the subscription result"
+          ],
+          "printed_pages": [
+            31,
+            32
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-group-config-iwf-notifies-subscribed-mc-gms",
+      "title": "IWF 有新组信息时通知已订阅的 MC GMS，由 GMS 返回通知结果",
+      "conditions": [
+        "MC GMS 已在 IWF 订阅该组的组配置信息。",
+        "IWF 有该组的新信息。"
+      ],
+      "conclusion": "1. IWF 向该 MC GMS 发送 IWF group information notify request。2. MC GMS 向 IWF 返回图 10.2.3.9-1 中的 IWF group information notify response，报告本次通知成功或失败。",
+      "normative_strength": "§10.2.3.9 列出两项前提和两个步骤；通知响应不代替第 10.2.3.8 条的订阅响应。",
+      "limitations": [
+        "步骤 2 的正文将响应写作 IWF notify group information notify response，图 10.2.3.9-1 写作 IWF group information notify response。方向及通知结果的含义一致；不据此区分两类响应或确定线上编码。",
+        "未指定配置刷新间隔、通知时点、版本机制、失败重试或 GMS 写入；不从通知响应推定终端收到配置、用户已归属或聊天组媒体得以恢复。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.2.3.9, opening, preconditions 1–2, Figure 10.2.3.9-1 and steps 1–2: IWF notifies subscribed MC GMS and MC GMS reports the notification result"
+          ],
+          "printed_pages": [
+            32
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.2.3.8, opening, preconditions 1–3, Figure 10.2.3.8-1 and steps 1–2: MC GMS subscribes to IWF and IWF reports the subscription result"
+      ],
+      "printed_pages": [
+        31,
+        32
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.2.3.9, opening, preconditions 1–2, Figure 10.2.3.9-1 and steps 1–2: IWF notifies subscribed MC GMS and MC GMS reports the notification result"
+      ],
+      "printed_pages": [
+        32
+      ]
+    }
+  ],
+  "related": [
+    "r16-groups-iwf-defined-group-configuration-pull",
+    "r16-groups-lmr-hosted-mc-affiliation",
+    "r16-calls-lmr-chat-return-to-coverage"
+  ],
+  "limitations": [
+    "只收录 MC GMS 从 IWF 订阅组配置及 IWF 有新信息后向已订阅 GMS 发通知的 Stage 2 流程，不把取配置当作自动订阅或唯一前提。",
+    "这两次交互均在服务器之间；不据此确定刷新间隔、本地写入、具体消息编码、终端实际收件、归属状态或媒体恢复。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}

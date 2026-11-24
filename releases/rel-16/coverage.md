@@ -5647,6 +5647,28 @@ P 处于 Start-stop，并从同一 NCF 的话权控制服务器接口实际收�
 
 [读取主题](topics/media/on-network-noncontrolling-floor-invitation-acceptance.md)
 
+## KMS 根证书更新与 KMS URI
+
+区分同一 KMS 的一张根证书与它提供的外部证书；判断根更新时设立新逻辑 KMS、使用新 KMS URI 和新根的建议。
+
+只有确定需要更新根证书，才是该建议的前提；同 CertUri 的客户端记录替换只是正文对照。
+
+尚未建立：不规定更新时机、续期周期、撤销、退役或流量切换；逻辑 KMS 不是物理服务器数量。
+
+[读取主题](topics/security/kms-root-certificate.md)
+
+## LMR 定义组的配置订阅与通知（Stage 2）
+
+LMR 定义组，MC GMS 已从 IWF 收到组信息。还要核对哪几个前提，谁订阅，谁回应订阅成功或失败？ IWF 有该组的新信息，什么条件下要通知 MC GMS？哪个角色回通知成功或失败？ MC GMS 的通知响应说成功，能证明 GMS 已写入、终端已收到，或者有固定刷新间隔吗？
+
+订阅：组定义在 LMR 系统，至少一名组成员定义在 MC 系统，且 MC GMS 已从 IWF 收到该组信息。MC GMS 向 IWF 发 IWF group information subscribe request，订阅 IWF 保存的该组配置。IWF 向该 GMS 返回 IWF group information subscribe response，报告订阅请求成功或失败。
+
+通知：MC GMS 已在 IWF 订阅该组配置，且 IWF 有该组的新信息。IWF 向该 GMS 发 IWF group information notify request；该 GMS 向 IWF 返回 IWF group information notify response（图 10.2.3.9-1 的名称），报告本次通知成功或失败。 第 10.2.3.9 条步骤 2 的正文名称多一个 notify，图中没有；方向和通知成败含义一致，不用该处拼写区分两类响应或决定线上编码。
+
+尚未建立：第 10.2.3.8 条没有规定必经或只能通过第 10.2.3.5 条取得组信息，收到组信息也不证明 GMS 会自动订阅。订阅和通知的两次响应不可互代。未规定刷新间隔、通知时点、版本机制、失败重试、GMS 本地写入或具体编码；不据此判断终端实收、用户归属或聊天组媒体恢复。
+
+[读取主题](topics/groups/lmr-group-configuration-subscription.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

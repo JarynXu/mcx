@@ -1,0 +1,105 @@
+{
+  "topic_id": "r16-security-kms-root-certificate",
+  "release": 16,
+  "standard_stage": null,
+  "state": "draft",
+  "title": "KMS 根证书更新时，需要换 KMS URI 吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v16.13.0",
+  "condition_rule": "每条声明继承 common_conditions。先区分 KMS 自己的根证书、它供应的外部证书，以及客户端已有的证书记录。",
+  "common_conditions": [
+    "TS 33.180 V16.13.0，Release 16，附录 D.3.2.1。",
+    "根证书和 KMS URI 以所指的逻辑 KMS 为对象，不按服务器实例计数。"
+  ],
+  "claims": [
+    {
+      "id": "one-root-certificate-per-kms",
+      "title": "一个 KMS 在任一时刻只有一张自己的根证书",
+      "conditions": [
+        "判断的是同一个 KMS 自己的根证书，不把它供应的外部证书算作它的根。"
+      ],
+      "conclusion": "KMS 证书面向一个域的用户，包含给该域用户加密消息和核验签名所需的信息。一个 KMS 在任一时刻有且只有一张根证书，其中含它使用的公钥。在它供应的 KMS 证书中，只有自己的根证书对应由它持有的私钥。它可据此签发与用户身份关联的密钥材料。",
+      "normative_strength": "原文把一个 KMS 同时只有一张根证书写作该模型的约束；持有私钥和签发用户材料只涉及其自身根证书。",
+      "limitations": [
+        "不以物理服务器数量计算根证书，也不把能供应外部证书解释为持有外部根的私钥。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex D.3.2.1: KMS root certificate and root-update identity"
+          ],
+          "printed_pages": [
+            147
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "root-update-recommends-new-kms-uri",
+      "title": "更新根证书时，建议使用新逻辑 KMS、新 KMS URI 和新根",
+      "conditions": [
+        "已经确定需要更新的是这个 KMS 自己的根证书。"
+      ],
+      "conclusion": "附录 D.3.2.1 建议设立新的 KMS，并给它新的 KMS URI 和新的根证书。",
+      "normative_strength": "SHOULD，不是 SHALL。前提是需要更新根证书，不能以常规收取或替换一张证书代替这一前提。",
+      "limitations": [
+        "这不要求更换物理服务器，不规定更新触发点、切换或新旧证书处理顺序。",
+        "不把此项建议与 §5.3.5 的客户端现有证书记录替换混用。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex D.3.2.1: KMS root certificate and root-update identity"
+          ],
+          "printed_pages": [
+            147
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "managing-kms-root-and-external-certificate-boundary",
+      "title": "管理方的根证书用于本域用户安全处理，也可供应外部证书",
+      "conditions": [
+        "按附录 D.3.2.1 在这段所作的假设，该用户由一个 KMS 管理。"
+      ],
+      "conclusion": "给该用户加密消息或核验其签名，需要管理该用户的 KMS 的根证书。KMS 还可供应外部 KMS 的证书，用于跨域通信。",
+      "normative_strength": "本段给出单一管理 KMS 的假设和根证书前提。供应外部证书是 MAY。",
+      "limitations": [
+        "不把本段的假设扩成对迁移角色的禁令；供应外部证书不更改根证书归属、不证明跨域通信已建立。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex D.3.2.1: KMS root certificate and root-update identity"
+          ],
+          "printed_pages": [
+            147
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    }
+  ],
+  "related": [
+    "r16-security-kms-provisioning",
+    "r16-security-kms-domain-roles"
+  ],
+  "limitations": [
+    "只覆盖附录 D.3.2.1。正文的 CertUri 对照是 §5.3.5 的客户端替换规则，不扩展本主题的结构化范围。这里不规定续期、撤销、切换或其他版本行为。"
+  ],
+  "verification": {
+    "original_clauses_checked": true
+  }
+}
