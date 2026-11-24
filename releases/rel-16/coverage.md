@@ -5587,6 +5587,36 @@ SIP-3 用于建立支持 MC 业务的会话，两端是两个 SIP 核心。该�
 
 [读取主题](topics/identity/sip3-reference-point.md)
 
+## 双话权覆盖者开始退场后的服务器处理（Stage 3）
+
+双话权时覆盖话权持有者开始脱离这次 MCPTT 呼叫，控制侧 D 怎么停这路 RTP、发 Idle、清资源？ 覆盖者退场的 Floor Idle 发给哪些 NCF 或 CF 控制的参与者，G 位和序列号写什么？ 退场和覆盖者发 Floor Release、D 收到 Terminate 或计时器到期能混用吗？发过 Idle 就代表一般话权空闲或全场结束吗？
+
+D: Floor Taken 时，控制侧话权服务器从面向已获准覆盖的客户端的话权控制接口实际收到该客户端开始断开呼叫的指示，D 请求媒体分发器停止向其他 MCPTT 客户端分发该客户端的覆盖 RTP。向本场 NCF 及由 CF 控制且接收这路覆盖 RTP 的话权参与者发 Floor Idle，G=1、消息序列号加 1，广播组呼、系统呼叫、紧急呼叫、迫近危险呼叫或临时组会话还须在 Floor Indicator 中带相应指示。只清理双话权资源、实例和关联的运行中计时器，D 进 Start-stop。
+
+尚未建立：只适用于 D: Floor Taken 的获准覆盖客户端已开始断开的实收接口指示。不把 SIP BYE、Floor Release、D 的计时器到期或 Terminate 当作这项触发；不由停转请求、通知发送或 D 退出推出媒体执行、终端实收、一般话权 G 的状态或全场呼叫释放。
+
+[读取主题](topics/media/on-network-dual-floor-overrider-departure.md)
+
+## LMR 归属聊天组呼的回覆盖与媒体重建（Stage 2）
+
+MCPTT 用户中途离开无线覆盖，回到覆盖时 LMR 归属聊天组呼还在进行，恢复哪一段媒体？客户端和服务器谁能检测返回？ 当前有人持有话权，哪个角色发 IWF Floor Taken，哪个角色通知返回的客户端？无人持有时能推断一定发 Floor Idle 吗？ 回覆盖是新的组归属吗？能从此流程判断返回用户拿到了话权，或该聊天组的 SIP ACK、Contact 和路由怎么写吗？
+
+TS 23.283 V16.8.0 Release 16 Stage 2 §10.3.5.10；MCPTT 用户离开无线覆盖前已在 LMR 归属的聊天组呼中，回到覆盖时这场呼叫仍在进行。由 MCPTT 客户端或 MCPTT 服务器检测该客户端回到无线覆盖；如何检测不在本节范围。通过媒体面控制信令，重建 MCPTT 客户端与 IWF 之间的媒体面。仅在当前有人持有话权时，IWF 向 MCPTT 服务器发送 IWF Floor Taken，MCPTT 服务器向返回覆盖的客户端转发 Floor Taken。步骤 4 另写话权参与方继续使用话权控制。
+
+尚未建立：不等同于新办理组归属、由归属触发的普通晚入或普通预安排组 SIP 重入。不能据本节确定 SIP ACK、Contact、Route 或检测机制，也不能把 Floor Taken 解释为向返回者授予话权。无人持有话权时，本节没有规定 Floor Idle 或其他替代消息。
+
+[读取主题](topics/calls/lmr-chat-return-to-coverage.md)
+
+## MC 系统从 IWF 取已定义组的配置（Stage 2）
+
+用户档里能看到 IWF 定义的组，但 MC 侧没有这组的配置。MC 组管理服务器在什么条件下向谁取？ 图题写 primary MC system，实际哪一边发请求、哪一边回配置？配置给哪些组成员，由谁负责？ 收到 IWF 的配置响应，能确认已向终端交付、用户已归属，或者临时重组建立了吗？
+
+组定义在 IWF，至少一名 MC 业务用户是组成员，MC 侧 GMS 没有保存该组配置，MC 系统已配置 IWF 组管理功能的寻址信息。MC 系统的 GMS 向 IWF 的组管理功能请求组配置。IWF 返回所请求的配置。该 MC 系统的 GMS 负责向以这个 MC 系统为服务系统的该组成员提供配置。原文示例是由该 MC 系统服务的用户在用户档中配置了该组；这是例子，不是唯一触发条件。
+
+尚未建立：只答 IWF 定义组的取配置，不是组成员资格办理、组归属、临时重组、订阅或通知更新。IWF 返回配置不证明本地 GMS 已保存或终端已收到；本节不定义字段、协议、交付时机或失败处理。
+
+[读取主题](topics/groups/iwf-defined-group-configuration-pull.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

@@ -10711,6 +10711,70 @@
         }
       ],
       "boundary": "只描述 SIP-3 的功能端点、参考点和明确列出的用途。不能凭双核心或 SIP-3 判定为 CSC-21、证明业务已授权或媒体已送达。跨信任域使用是否要修改仍待研究，不据此规定路由、SIP 消息、安全配置或某种部署。"
+    },
+    {
+      "id": "r16-media-on-network-dual-floor-overrider-departure",
+      "question": "双话权时覆盖话权持有者开始脱离这次 MCPTT 呼叫，控制侧 D 怎么停这路 RTP、发 Idle、清资源？ 覆盖者退场的 Floor Idle 发给哪些 NCF 或 CF 控制的参与者，G 位和序列号写什么？ 退场和覆盖者发 Floor Release、D 收到 Terminate 或计时器到期能混用吗？发过 Idle 就代表一般话权空闲或全场结束吗？",
+      "start": "topics/media/on-network-dual-floor-overrider-departure.md",
+      "next_if": [
+        {
+          "condition": "若要判断一台仍有许可的终端实际收到 Floor Idle 后是否清除覆盖标记，查终端自己的实收和标记条件。",
+          "read": "topics/media/on-network-dual-floor-client-idle.md"
+        },
+        {
+          "condition": "若离开的是普通单话权的持有者，查一般仲裁和逐参与者接口程序。",
+          "read": "topics/media/on-network-holder-departure.md"
+        },
+        {
+          "condition": "若 D 实收的是覆盖者 Floor Release 或 Terminate，或要查一般持有者放权对双话权的交接，读不同的触发程序。",
+          "read": "topics/media/on-network-dual-floor-handover.md"
+        },
+        {
+          "condition": "若触发是覆盖话权 T11 或 T12 实际到期，转查对应到期处理。",
+          "read": "topics/media/on-network-dual-floor-timeouts.md"
+        }
+      ],
+      "boundary": "只适用于 D: Floor Taken 的获准覆盖客户端已开始断开的实收接口指示。不把 SIP BYE、Floor Release、D 的计时器到期或 Terminate 当作这项触发；不由停转请求、通知发送或 D 退出推出媒体执行、终端实收、一般话权 G 的状态或全场呼叫释放。"
+    },
+    {
+      "id": "r16-calls-lmr-chat-return-to-coverage",
+      "question": "MCPTT 用户中途离开无线覆盖，回到覆盖时 LMR 归属聊天组呼还在进行，恢复哪一段媒体？客户端和服务器谁能检测返回？ 当前有人持有话权，哪个角色发 IWF Floor Taken，哪个角色通知返回的客户端？无人持有时能推断一定发 Floor Idle 吗？ 回覆盖是新的组归属吗？能从此流程判断返回用户拿到了话权，或该聊天组的 SIP ACK、Contact 和路由怎么写吗？",
+      "start": "topics/calls/lmr-chat-return-to-coverage.md",
+      "next_if": [
+        {
+          "condition": "若用户是新归属后加入正在进行的互通组呼，查由组归属触发的晚入；不是本节的已在通话中而回覆盖。",
+          "read": "topics/calls/lmr-interworking-group-late-entry.md"
+        },
+        {
+          "condition": "若需核对实际是否办理 LMR 定义组的归属，读该归属流程；本节不规定或证明新归属。",
+          "read": "topics/groups/lmr-hosted-mc-affiliation.md"
+        },
+        {
+          "condition": "只有实际场景另为普通预安排组时，才读该 Stage 3 SIP 重入主题。它不能替代 LMR 归属聊天组的 ACK、Contact 或 Route 证据。",
+          "read": "topics/calls/rejoin-late-entry.md"
+        }
+      ],
+      "boundary": "不等同于新办理组归属、由归属触发的普通晚入或普通预安排组 SIP 重入。不能据本节确定 SIP ACK、Contact、Route 或检测机制，也不能把 Floor Taken 解释为向返回者授予话权。无人持有话权时，本节没有规定 Floor Idle 或其他替代消息。"
+    },
+    {
+      "id": "r16-groups-iwf-defined-group-configuration-pull",
+      "question": "用户档里能看到 IWF 定义的组，但 MC 侧没有这组的配置。MC 组管理服务器在什么条件下向谁取？ 图题写 primary MC system，实际哪一边发请求、哪一边回配置？配置给哪些组成员，由谁负责？ 收到 IWF 的配置响应，能确认已向终端交付、用户已归属，或者临时重组建立了吗？",
+      "start": "topics/groups/iwf-defined-group-configuration-pull.md",
+      "next_if": [
+        {
+          "condition": "若实际在查组归属请求、允许或拒绝，查 LMR 定义组的归属；取得组配置不能替代归属结果。",
+          "read": "topics/groups/lmr-hosted-mc-affiliation.md"
+        },
+        {
+          "condition": "若问题是如何创建临时重组或由谁持有新组，查动态重组流程，不用本节取配置代替。",
+          "read": "topics/groups/lmr-interworking-dynamic-regroup.md"
+        },
+        {
+          "condition": "若明确是两个 MC 系统之间的配置交换而不是 MC GMS 向 IWF 取配置，查伙伴 MC 系统流程。",
+          "read": "topics/groups/partner-group-configuration.md"
+        }
+      ],
+      "boundary": "只答 IWF 定义组的取配置，不是组成员资格办理、组归属、临时重组、订阅或通知更新。IWF 返回配置不证明本地 GMS 已保存或终端已收到；本节不定义字段、协议、交付时机或失败处理。"
     }
   ]
 }

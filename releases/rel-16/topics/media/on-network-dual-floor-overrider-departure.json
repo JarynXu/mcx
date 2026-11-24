@@ -1,0 +1,123 @@
+{
+  "topic_id": "r16-media-on-network-dual-floor-overrider-departure",
+  "title": "双话权：覆盖话权持有者退场，服务器停哪路语音？",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "各条继承 D: Floor Taken 和服务器实际收到覆盖客户端开始断开的接口指示。其他客户端状态、一般话权仲裁和 SIP 对话的消息不是同一触发。",
+  "common_conditions": [
+    "TS 24.380 V16.9.0，Release 16，Stage 3 §6.3.6.3.8。话权控制服务器的双话权仲裁处于 D: Floor Taken，有一名获准发送覆盖媒体的 MCPTT 客户端。服务器从面向该客户端的话权控制接口实际收到指示：该客户端已开始断开本次 MCPTT 呼叫。"
+  ],
+  "claims": [
+    {
+      "id": "dual-floor-overrider-departure-stop-own-rtp-distribution",
+      "title": "D 实收覆盖者开始断开指示，请求停止分发该路 RTP",
+      "conditions": [],
+      "conclusion": "D 仲裁请求 MCPTT 服务器的媒体分发器停止向其他 MCPTT 客户端分发来自退出的覆盖客户端的 RTP。",
+      "normative_strength": "条首的接口实收条件成立时，第 1 项为 shall。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.6.3.8, opening and steps 1–4: actual start-disconnect indication for the permitted overriding client"
+          ],
+          "printed_pages": [
+            100
+          ]
+        }
+      ],
+      "limitations": [
+        "停止分发的对象是退出者送来的覆盖 RTP，不是整场语音；请求停转不等于媒体分发器实际执行。SIP BYE 或它的应答不能替代内部实收证据。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "dual-floor-overrider-departure-idle-recipient-set-and-fields",
+      "title": "D 向非控制功能和接收覆盖流的控制侧参与者发双话权 Idle",
+      "conditions": [
+        "核对本次 D 发送的通知和相应收件人。"
+      ],
+      "conclusion": "D 仲裁向本次呼叫中的非控制 MCPTT 功能（NCF）和由控制 MCPTT 功能（CF）控制、接收该覆盖客户端 RTP 的话权参与者发送 Floor Idle。Floor Indicator 中 G=1（Dual Floor），消息序列号增加 1；广播组呼、系统呼叫、紧急呼叫、迫近危险呼叫或临时组会话还须在 Floor Indicator 中带上相应指示。",
+      "normative_strength": "第 2 项及 2(a)–(c) 为 shall；列出的呼叫类型决定额外指示，不代替 G=1。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.6.3.8, opening and steps 1–4: actual start-disconnect indication for the permitted overriding client"
+          ],
+          "printed_pages": [
+            100
+          ]
+        }
+      ],
+      "limitations": [
+        "控制侧话权参与者须接收该覆盖流，不要求只接收这一源；不能扩大为所有用户，或把服务器发出当作 NCF 转发、终端实收或 G 已空闲。G 位是这份消息的 Floor Indicator 字段位，不是一般话权仲裁状态。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "dual-floor-overrider-departure-cleanup-d-only",
+      "title": "释放双话权资源和关联计时器，D 回 Start-stop",
+      "conditions": [
+        "核对本次退场触发的双话权资源清理和状态变化。"
+      ],
+      "conclusion": "D 仲裁释放为双话权操作预留的媒体面资源，包括 D 实例及其关联的运行中计时器，并进入 Start-stop。",
+      "normative_strength": "第 3–4 项为 shall。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.6.3.8, opening and steps 1–4: actual start-disconnect indication for the permitted overriding client"
+          ],
+          "printed_pages": [
+            100
+          ]
+        }
+      ],
+      "limitations": [
+        "不要求结束整个组呼、终止一般仲裁实例或改变一般话权 G 的状态；不把 Terminate 的计时器移交或单话权持有者退场的流程搬入本项。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.6.3.8, opening and steps 1–4: actual start-disconnect indication for the permitted overriding client"
+      ],
+      "printed_pages": [
+        100
+      ]
+    }
+  ],
+  "related": [
+    "r16-media-on-network-dual-floor-client-idle",
+    "r16-media-on-network-holder-departure",
+    "r16-media-on-network-dual-floor-handover",
+    "r16-media-on-network-dual-floor-timeouts"
+  ],
+  "limitations": [
+    "只适用于 D: Floor Taken 的获准覆盖客户端已开始断开的实收接口指示。不把 SIP BYE、Floor Release、D 的计时器到期或 Terminate 当作这项触发；不由停转请求、通知发送或 D 退出推出媒体执行、终端实收、一般话权 G 的状态或全场呼叫释放。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
