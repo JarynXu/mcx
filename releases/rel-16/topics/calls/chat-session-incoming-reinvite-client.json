@@ -1,0 +1,233 @@
+{
+  "topic_id": "r16-calls-chat-session-incoming-reinvite-client",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 聊天组收到 re-INVITE，什么时候清组状态或本地告警？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明继承本主题的角色、消息和会话范围，再叠加该条自身的条件。对照主题不自动增加流程步骤。",
+  "common_conditions": [
+    "TS 24.379 V16.14.0（Release 16，Stage 3）§10.1.2.2.1.2。限制型聊天组中实际收到 SIP re-INVITE 的客户端。条款明示同时覆盖按需和预建立，不是发送方的响应处理、初始 INVITE、参与功能或控制功能。"
+  ],
+  "claims": [
+    {
+      "id": "incoming-emergency-true-and-optional-alert-display",
+      "title": "紧急指示明确为 true 时改组状态，有告警指示才显示告警",
+      "conditions": [
+        "本次收到的 re-INVITE 含 application/vnd.3gpp.mcptt-info+xml，且 <mcpttinfo> 下 <mcptt-Params> 的 emergency-ind=true。"
+      ],
+      "conclusion": "须设该组 MEG 2: in-progress、MIG 1: no-imminent-peril 和 MIGC 1: imminent-peril-gc-capable。宜显示紧急组呼及其发起用户的 MCPTT ID；同层 alert-ind=true 时，宜显示紧急告警及相关信息。",
+      "normative_strength": "三项状态赋值为 shall；用户显示为 should，告警显示另受 alert-ind=true 限制。",
+      "limitations": [
+        "不因显示告警而推断 MEA 已变化。本步骤没有新增 MEGC 赋值或替其他客户端判状态。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.2 opening and receiving-client step 1"
+          ],
+          "printed_pages": [
+            267
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "incoming-imminent-peril-explicit-true-versus-false",
+      "title": "迫近危险按同一字段的明确 true 或 false 分别执行",
+      "conditions": [
+        "本次收到的 re-INVITE 含 application/vnd.3gpp.mcptt-info+xml；读 <mcpttinfo> 下 <mcptt-Params> 的 imminentperil-ind。"
+      ],
+      "conclusion": "明确为 true 须设 MIG 2: in-progress，宜显示迫近危险组呼及其发起者 MCPTT ID。明确为 false 须设 MIG 1: no-imminent-peril 和 MIGC 1: imminent-peril-gc-capable，宜显示取消者 MCPTT ID 与迫近危险组呼指示。",
+      "normative_strength": "匹配条件的组状态赋值为 shall；用户显示为 should。",
+      "limitations": [
+        "缺字段不能触发 false 分支。两项条件单独列出，不改写成初始邀请 §10.1.2.2.1.6 的 otherwise，也不推导超出原文的冲突处理。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.2 receiving-client step 2"
+          ],
+          "printed_pages": [
+            267
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.2 receiving-client step 4"
+          ],
+          "printed_pages": [
+            268
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "incoming-emergency-false-and-receiving-alert-originator-match",
+      "title": "组紧急取消不等于清本地 MEA，须核对告警原发起者",
+      "conditions": [
+        "本次收到的 re-INVITE 含 application/vnd.3gpp.mcptt-info+xml，且 <mcpttinfo> 下 <mcptt-Params> 的 emergency-ind=false。"
+      ],
+      "conclusion": "须设组 MEG 1: no-emergency；仅当该组原为 MEGC 3: emergency-call-granted 时，须改为 MEGC 1: emergency-gc-capable。宜显示取消紧急组呼的用户 MCPTT ID。同层另有 alert-ind=false 时，宜显示撤警和撤警者 MCPTT ID；如果入向正文还含 originated-by，宜显示它指向的告警发起者。它等于接收用户自己的 MCPTT ID 时，才由这个分支把本地告警设为 MEA 1: no-alert。",
+      "normative_strength": "MEG、匹配原 MEGC 的转移和匹配本人的 MEA 赋值为 shall；显示为 should。",
+      "limitations": [
+        "明确 false 不能用缺字段替代。清 MEA 所比较的是原告警发起者和接收用户，不是撤警者或组 ID；本节没有定义缺少 originated-by 时用哪个 ID 替代。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.2 receiving-client step 3(a)–(d), including 3(b)(ii)(B)"
+          ],
+          "printed_pages": [
+            267
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "incoming-reinvite-priority-inspection-is-optional-and-answer-mandatory",
+      "title": "是否检查优先级头可选，接受和发送 200 不可省",
+      "conditions": [
+        "当前是本节收到的 in-session re-INVITE；下述 Contact 和发回应答适用于这笔请求。"
+      ],
+      "conclusion": "客户端可检查来向 Resource-Priority 是否存在；存在时可按 TS 24.229 采取本规范之外的后续动作。须按 TS 24.229 接受并向 MCPTT 服务器发 SIP 200 (OK)；200 的 Contact 须有 g.3gpp.mcptt 和值为 urn:urn-7:3gpp-service.ims.icsi.mcptt 的 g.3gpp.icsi-ref。",
+      "normative_strength": "检查 Resource-Priority 和实施进一步动作各是 may；接受、Contact 标签和发送 200 是 shall。",
+      "limitations": [
+        "不把本地状态分支、RP 存在或显示作为应答门槛，不新增优先级值、拒绝码、200 计时器或其他对话腿的动作。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.2 receiving-client steps 5–8 and 11"
+          ],
+          "printed_pages": [
+            268
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "incoming-reinvite-sdp-answer-by-existing-session-mode",
+      "title": "两种会话按各自参数在 200 中应答来向 SDP offer",
+      "conditions": [
+        "对本次来向 re-INVITE 的 SDP offer 回应，分别看实际承载是按需还是预建立。"
+      ],
+      "conclusion": "按需会话的 200 内须按 TS 24.229 和本规范 §6.2.2 放 SDP answer；预建立会话也须按 TS 24.229 在 200 内放 answer，以先前协商的参数为基础。注释对预建立会话的语音和媒体话权控制媒体段写的是预期同原协商一致。",
+      "normative_strength": "两种模式的 SDP answer 为 shall；NOTE 中的两个预建立媒体段是 expected，适用范围不同于整份 SDP。",
+      "limitations": [
+        "不把预建立 answer 当成新 SDP offer，也不要求整份 SDP 逐字不变。本节不以 200 证明实际话权、RTP 或别的成员状态。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.2 receiving-client steps 9–10 and NOTE"
+          ],
+          "printed_pages": [
+            268
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-chat-priority-incoming-invite-client",
+    "r16-mcptt-emergency-group-client",
+    "r16-calls-chat-preestablished-refer-outcome"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.2 opening and receiving-client step 1"
+      ],
+      "printed_pages": [
+        267
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.2 receiving-client step 2"
+      ],
+      "printed_pages": [
+        267
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.2 receiving-client step 4"
+      ],
+      "printed_pages": [
+        268
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.2 receiving-client step 3(a)–(d), including 3(b)(ii)(B)"
+      ],
+      "printed_pages": [
+        267
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.2 receiving-client steps 5–8 and 11"
+      ],
+      "printed_pages": [
+        268
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.2 receiving-client steps 9–10 and NOTE"
+      ],
+      "printed_pages": [
+        268
+      ]
+    }
+  ],
+  "limitations": [
+    "本节不把缺字段当作 false、不把告警显示当作 MEA 赋值，不为缺少 originated-by 设替代身份。不移植初始 INVITE 的 otherwise 或计时器，不推断全组状态、释放或控制、参与功能的动作。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  }
+}

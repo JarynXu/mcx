@@ -1,0 +1,223 @@
+{
+  "topic_id": "r16-calls-chat-session-priority-upgrade-client",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 聊天组怎样升级紧急或迫近危险？什么时候才补位置？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每项声明继承本主题父层级和会话范围，再叠加该项的请求、响应或 INFO 条件。相邻主题及辅助规范不自动扩为本页要求。",
+  "common_conditions": [
+    "TS 24.379 V16.14.0（Release 16，Stage 3）§10.1.2.2.1 的 MCPTT 客户端、限制型聊天组（chat group）。父标题写 On-demand chat group call，但这两个子条款都明确适用于按需和预建立会话。本页是发起操作的客户端，不是接收入向 re-INVITE 的对端客户端、控制功能或参与功能。"
+  ],
+  "claims": [
+    {
+      "id": "local-authorization-for-requested-priority-kind",
+      "title": "按请求的紧急或迫近危险类型分别判授权",
+      "conditions": [
+        "依据 §10.1.2.2.1.4 的本端分支。",
+        "MCPTT 用户请求把既有聊天组会话升级为进行中紧急或进行中迫近危险。"
+      ],
+      "conclusion": "发起客户端按 §6.2.8.1.8 判用户是否可作这一类升级。该类型不获准时，宜提示用户，且须跳过本节其余步骤；继续时准备 SIP re-INVITE。",
+      "normative_strength": "两种无授权分支各写 should indicate 与 shall skip。",
+      "limitations": [
+        "两类权限不能相互替换，不以其他节点的结果回填本地检查；本节不指定通用拒绝响应码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.4 opening and originating client steps 1–2"
+          ],
+          "printed_pages": [
+            269,
+            270
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "select-priority-kind-mime-and-keep-both-priority-references",
+      "title": "按升级类型选正文并保留优先级的两处回指",
+      "conditions": [
+        "依据 §10.1.2.2.1.4 的本端分支。",
+        "已获准继续，已确定升级的类型。"
+      ],
+      "conclusion": "紧急升级的 application/vnd.3gpp.mcptt-info+xml 正文按 §6.2.8.1.1，步骤 3(b) 的 Resource-Priority 按 §6.2.8.1.2。迫近危险升级的 MCPTT 信息正文按 §6.2.8.1.9，步骤 4(b) 的 Resource-Priority 按 §6.2.8.1.12。共同步骤 8 还写携带 Resource-Priority 并遵守 §6.2.8.1.2。",
+      "normative_strength": "各自适用的正文、优先级分支及共同步骤 8 为 shall。",
+      "limitations": [
+        "不删去两处原文回指，不据重复指示要发两个同名头，不擅定覆盖顺序或优先级值。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.4 originating client steps 3–4 and 8"
+          ],
+          "printed_pages": [
+            270
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "offer-per-session-mode-and-send-upgrade",
+      "title": "按会话模式构造升级 offer 并发送",
+      "conditions": [
+        "依据 §10.1.2.2.1.4 的本端分支。",
+        "升级请求将发在按需或预建立会话内。"
+      ],
+      "conclusion": "按需分支按 TS 24.229 与 §6.2.1 准备 SDP offer；预建立分支依据已协商参数。客户端按 TS 24.229 发送本次 SIP re-INVITE。",
+      "normative_strength": "适用的 SDP offer 和发送为 shall；预建立 NOTE 期望语音、话权控制媒体段沿用原协商。",
+      "limitations": [
+        "不要求整份 SDP 一样；不把已发送当成升级完成、已获话权或媒体成功。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.4 originating client steps 5–6, NOTE and step 9"
+          ],
+          "printed_pages": [
+            270
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "implicit-floor-request-and-conditional-location-body",
+      "title": "隐式话权、主叫档案和已有位置决定是否补位置",
+      "conditions": [
+        "依据 §10.1.2.2.1.4 的本端分支。",
+        "需要隐式话权；按主叫 MCPTT 用户的 MCPTT ID 查用户档案；分开判断档案及本次请求。"
+      ],
+      "conclusion": "需要隐式话权请求时须按 §6.4 指示。在此条件下，若用户档案 ruleset 的 allow-location-info-when-talking 为 true，且本次 re-INVITE 尚未包含位置，须补 application/vnd.3gpp.mcptt-location-info+xml 正文，根 <location-info> 内有 <Report>。",
+      "normative_strength": "指示隐式话权为 shall；补位置是三项条件同时成立时的 shall。",
+      "limitations": [
+        "档案标识不是被叫或组 ID；本步骤不规定一般位置披露或取消流程。已有位置时不要求重加，也不能据此删掉原来的位置。隐式请求不是话权已被授予。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.4 step 7, conditions (a)/(b), and the required location MIME structure"
+          ],
+          "printed_pages": [
+            270
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "matching-responses-dispatch-user-plane-and-priority-state-helpers",
+      "title": "用同一笔升级事务的响应选择用户面和辅助处理",
+      "conditions": [
+        "依据 §10.1.2.2.1.4 的本端分支。",
+        "本端收到这笔升级 re-INVITE 的 2xx 或 4xx、5xx、6xx。"
+      ],
+      "conclusion": "匹配 2xx 时按 TS 24.380 与用户面交互，并执行 §6.2.8.1.4；匹配 4xx、5xx 或 6xx 时执行 §6.2.8.1.5。",
+      "normative_strength": "匹配 2xx 的两项动作和负响应分派为 shall。",
+      "limitations": [
+        "本节不把辅助处理的状态判断扁平化为“2xx 就成功”；不将取消的 MEG/MEGC/MEA 赋值用于升级，也不用其它节点的一腿响应推定本端结果。带进行中组会话 ID 的 INFO 另走独立入口。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.4 matched SIP 2xx items 1–2 and 4xx/5xx/6xx response paragraph"
+          ],
+          "printed_pages": [
+            270
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-chat-session-emergency-cancellation-client",
+    "r16-mcptt-chat-establish-join",
+    "r16-mcptt-emergency-group-client",
+    "r16-media-implicit-floor-sdp-ssrc"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.4 opening and originating client steps 1–2"
+      ],
+      "printed_pages": [
+        269,
+        270
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.4 originating client steps 3–4 and 8"
+      ],
+      "printed_pages": [
+        270
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.4 originating client steps 5–6, NOTE and step 9"
+      ],
+      "printed_pages": [
+        270
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.4 step 7, conditions (a)/(b), and the required location MIME structure"
+      ],
+      "printed_pages": [
+        270
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.4 matched SIP 2xx items 1–2 and 4xx/5xx/6xx response paragraph"
+      ],
+      "printed_pages": [
+        270
+      ]
+    }
+  ],
+  "limitations": [
+    "不以已发送、2xx 或含位置认定升级、获得话权或已交付。保留迫近危险步骤 4(b) 与共同步骤 8 的两个原文回指，不自定两个优先级头、覆盖顺序或其他角色的行为。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  }
+}

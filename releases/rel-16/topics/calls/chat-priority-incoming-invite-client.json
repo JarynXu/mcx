@@ -1,0 +1,217 @@
+{
+  "topic_id": "r16-calls-chat-priority-incoming-invite-client",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "已归属未入会：终端怎样处理聊天组的紧急或迫近危险 INVITE？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明继承本主题的角色、消息和会话范围，再叠加该条自身的条件。对照主题不自动增加流程步骤。",
+  "common_conditions": [
+    "TS 24.379 V16.14.0（Release 16，Stage 3）§10.1.2.2.1.6。已归属但未入会的限制型按需聊天组受邀客户端，收到紧急或迫近危险组呼的初始 SIP INVITE。不是用户主动加入、会中 re-INVITE、参与功能转发或控制功能分发。"
+  ],
+  "claims": [
+    {
+      "id": "incoming-priority-invite-optional-rejection-and-authorized-reason-hiding",
+      "title": "终端可以拒绝；不带警告文本的 480 要另看授权",
+      "conditions": [
+        "受邀客户端实际收到初始 SIP INVITE；判断是否走本条的拒绝分支。"
+      ],
+      "conclusion": "客户端资源不足、特定主叫功能别名的 MCPTT 紧急组呼并发数达到用户档案 FunctionalAliasList 中 MaxSimultaneousEmergencyGroupCalls，或有本规范范围外的其他原因，可以拒绝。若决定拒绝，须向参与 MCPTT 功能返回 TS 24.229 的适当拒绝码与 §4.4.2 的警告文本；用户获准隐藏失败原因时，可选择发不含警告文本的 SIP 480。走拒绝路径后须跳过后续步骤。",
+      "normative_strength": "拒绝是 may；决定拒绝则响应和跳过为 shall。没有把获准隐藏写成必须使用 480。NOTE 1 将带紧急或迫近危险指示时的选择接受方式留在本规范之外。",
+      "limitations": [
+        "TS 24.484 用户档案的这项上限系于特定主叫功能别名，不是本地接收用户的全局上限，也未定义无别名或缺配置的取值。只说可拒，不说有指示就必须接受或达到上限必拒。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.6 opening, indication definitions, receiving-client steps 1–2 and NOTE 1"
+          ],
+          "printed_pages": [
+            272
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "incoming-priority-invite-emergency-true-otherwise-imminent-true",
+      "title": "初始邀请先识别紧急 true，再按 otherwise 检查迫近危险 true",
+      "conditions": [
+        "未在前一步拒绝。本次初始 INVITE 的 application/vnd.3gpp.mcptt-info+xml 正文中，从 <mcpttinfo> 下的 <mcptt-Params> 读取 emergency-ind 或 imminentperil-ind。"
+      ],
+      "conclusion": "emergency-ind=true 时须设 MEG 2: in-progress、MIG 1: no-imminent-peril 和 MIGC 1: imminent-peril-gc-capable。宜显示紧急组呼邀请，显示 mcptt-calling-user-id 指定的发起用户 MCPTT ID 和 mcptt-calling-group-id 指定的组；若 alert-ind=true，也宜显示紧急告警及相关信息。否则若 imminentperil-ind=true，须设 MIG 2: in-progress，并宜从相同两个字段显示迫近危险的发起用户和组及该类组呼邀请。",
+      "normative_strength": "匹配分支的状态赋值为 shall；可用信息的显示为 should。步骤 3 末 otherwise 决定是否接着匹配步骤 4。",
+      "limitations": [
+        "不把任一指示缺失当明示 false。本步骤没有 false 清除动作，也不改写会中 re-INVITE 的分别匹配条件。不把 UI 显示当作 MEA 已改。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.6 receiving-client steps 3–4"
+          ],
+          "printed_pages": [
+            272,
+            273
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "initial-priority-invite-checks-header-and-answers-to-server",
+      "title": "未拒绝的终端须查 RP 是否存在，并回带 Contact 标签的 200",
+      "conditions": [
+        "初始 INVITE 继续到本节步骤 5–6 和应答构造，未由步骤 2 停止。"
+      ],
+      "conclusion": "须检查来向 INVITE 是否含 Resource-Priority；含头时可按 TS 24.229 采取本规范之外的进一步动作。须按 TS 24.229 接受并向 MCPTT 服务器发 200 (OK)。Contact 须含 g.3gpp.mcptt 和值 urn:urn-7:3gpp-service.ims.icsi.mcptt 的 g.3gpp.icsi-ref；须在 200 中按 TS 24.229 和本规范 §6.2.2 回来向 SDP offer 的 answer。",
+      "normative_strength": "查有无头、接受、组成 Contact 与 SDP answer 并发送都是 shall；含 RP 后的进一步动作是 may。",
+      "limitations": [
+        "缺 RP 未被写为这一步的拒绝条件；不据此发明字段值、认证流程或参与功能的事务。不要把同节 mandatory check 搬到来向 re-INVITE。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.6 receiving-client steps 5–6, 8–9 and 11–12"
+          ],
+          "printed_pages": [
+            273
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "initial-priority-invite-session-timer-refresher",
+      "title": "初始邀请 200 的会话计时器按来向 refresher 取值",
+      "conditions": [
+        "未拒绝，正为这笔初始 INVITE 构造接收端 SIP 200 (OK)。"
+      ],
+      "conclusion": "200 须带 Require 头的 timer option tag 和 Session-Expires 头；客户端须按 RFC 4028 启动 SIP 会话计时器。来向 INVITE 没有 refresher 参数时，200 的 Session-Expires 指定 refresher=uas；来向已有时，取收到的 Session-Expires 中原 refresher 值。",
+      "normative_strength": "头字段、会话计时器和适用的 refresher 取值为 shall。",
+      "limitations": [
+        "不发明刷新间隔或重试规则，不把缺失 refresher 写成拒绝理由，也不把这个初始邀请的 timer 处理套到来向 re-INVITE。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.6 receiving-client steps 7 and 10"
+          ],
+          "printed_pages": [
+            273
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "initial-priority-invite-media-and-optional-functional-alias-presentation",
+      "title": "接受后须与媒体面交互，符合条件时可显示邀请者别名",
+      "conditions": [
+        "初始邀请继续到接收客户端的接受分支；别名展示另查来向 application/vnd.3gpp.mcptt-info+xml 的 <mcpttinfo> 下 <mcptt-Params> 是否含 functional-alias-URI。"
+      ],
+      "conclusion": "发送 200 后按 TS 24.380 与媒体面交互。含该元素时，客户端可显示邀请用户的功能别名。",
+      "normative_strength": "媒体面交互为 shall；有符合条件的别名元素时显示为 may。",
+      "limitations": [
+        "字段表示功能别名，不替代邀请者 MCPTT ID，也不证明别名已获分配、全组入会、话权成功或 RTP 已通。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.6 receiving-client steps 13–14"
+          ],
+          "printed_pages": [
+            273
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-chat-session-incoming-reinvite-client",
+    "r16-mcptt-chat-establish-join",
+    "r16-calls-chat-preestablished-refer-outcome"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.6 opening, indication definitions, receiving-client steps 1–2 and NOTE 1"
+      ],
+      "printed_pages": [
+        272
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.6 receiving-client steps 3–4"
+      ],
+      "printed_pages": [
+        272,
+        273
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.6 receiving-client steps 5–6, 8–9 and 11–12"
+      ],
+      "printed_pages": [
+        273
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.6 receiving-client steps 7 and 10"
+      ],
+      "printed_pages": [
+        273
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.6 receiving-client steps 13–14"
+      ],
+      "printed_pages": [
+        273
+      ]
+    }
+  ],
+  "limitations": [
+    "不把已归属当作已入会，不以别名决定接收用户的全局权限或取代 MCPTT ID。不发明无别名或缺配置的拒绝规则、普遍优先级覆盖、ACK、计时器数值、已获话权或媒体结果。不套用到来向 re-INVITE、CF/PF 或普通主动重入。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  }
+}

@@ -1,0 +1,257 @@
+{
+  "topic_id": "r16-calls-chat-session-emergency-cancellation-client",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 聊天组取消紧急状态：组状态和告警分别读哪项响应？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每项声明继承本主题父层级和会话范围，再叠加该项的请求、响应或 INFO 条件。相邻主题及辅助规范不自动扩为本页要求。",
+  "common_conditions": [
+    "TS 24.379 V16.14.0（Release 16，Stage 3）§10.1.2.2.1 的 MCPTT 客户端、限制型聊天组（chat group）。父标题写 On-demand chat group call，但这两个子条款都明确适用于按需和预建立会话。本页是发起操作的客户端，不是接收入向 re-INVITE 的对端客户端、控制功能或参与功能。"
+  ],
+  "claims": [
+    {
+      "id": "local-check-and-select-cancellation-info-body",
+      "title": "先判本组状态取消的授权，再按告警来源选正文",
+      "conditions": [
+        "依据 §10.1.2.2.1.3 的本端分支。",
+        "用户请求取消聊天组的进行中紧急条件；若附带撤警，分清告警发起者。"
+      ],
+      "conclusion": "客户端按 §6.2.8.1.7 判断本组的取消授权。未授权时宜告知用户无取消权限，并须跳过余下步骤。继续处理时，本人发出的告警按 §6.2.8.1.3 的分支；另一用户发出的告警按 §6.2.8.1.14 的分支。两分支都取消组紧急条件，可以附带撤警，由对应辅助条款组装 application/vnd.3gpp.mcptt-info+xml。组状态取消获准不等于获准撤警。若还要取消同组另一位用户发起的告警，须另按 §6.2.8.1.6 获准。满足这两个条件时，客户端须在发出的 re-INVITE 的 application/vnd.3gpp.mcptt-info+xml 正文中放入 alert-ind=false，并把 originated-by 设为原告警发起者的 MCPTT ID，不填取消请求者的 ID 或组 ID。",
+      "normative_strength": "提示是 should；跳过后续与适用分支的正文包含和组装为 shall。 对另获授权且确实代撤的分支，§6.2.8.1.14 步骤 3(a)–(b) 的两个元素均为 shall。",
+      "limitations": [
+        "已归属或拥有告警权限不能代替本组状态取消授权。",
+        "仅取消组状态时，不能用这个分支要求两个告警字段。originated-by 用于标识要取消的告警，不是权限凭证；这里不规定缺少原发起者 ID 时的处理。 不能凭发出的正文认定告警已撤。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.3 opening and originating client steps 1–3"
+          ],
+          "printed_pages": [
+            268
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.3 step 3 dependency only: 6.2.8.1.14 step 3(a)–(b) and NOTE"
+          ],
+          "printed_pages": [
+            69
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "offer-mode-priority-and-send-on-cancellation",
+      "title": "按会话模式准备取消请求的 SDP offer",
+      "conditions": [
+        "依据 §10.1.2.2.1.3 的本端分支。",
+        "本节的取消请求继续处理；会话是按需或预建立。"
+      ],
+      "conclusion": "按需会话的 SDP offer 按 TS 24.229、并参考本规范 §6.2.1；预建立会话的 SDP offer 依据已有协商结果。客户端须携 Resource-Priority，按 §6.2.8.1.2 处理，按 TS 24.229 发送 SIP re-INVITE。",
+      "normative_strength": "各适用分支的 offer、优先头和发送为 shall。NOTE 1 对预建立的语音、话权控制媒体段写的是 expected to be the same。",
+      "limitations": [
+        "预建立分支不要求整份 SDP 逐字相同；本节不推导优先级值、会话 ID 的取法或服务端结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.3 originating client steps 4–7 and NOTE 1"
+          ],
+          "printed_pages": [
+            269
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "matched-success-group-clear-with-local-alert-conditions",
+      "title": "匹配 2xx 清本地组紧急，告警另核三项条件",
+      "conditions": [
+        "依据 §10.1.2.2.1.3 的本端分支。",
+        "客户端收到对本次取消 re-INVITE 的 2xx；告警要套用附加条件。"
+      ],
+      "conclusion": "该组状态设 MEG 1: no-emergency，该组紧急组呼状态设 MEGC 1: emergency-gc-capable。仅当本地是 MEA 4: Emergency-alert-cancel-pending、发出的 MCPTT 信息正文无 originated-by、匹配响应没有 §4.4 所述 Warning（文本含 mcptt-warn-code=149）时，才在此分支把告警设为 MEA 1: no-alert。",
+      "normative_strength": "前两项为 shall；MEA 1 的 shall 还须同时满足这三项。",
+      "limitations": [
+        "149 是 Warning 文本中的 MCPTT 警告码，不是 SIP 响应状态。任一条件不满足不援引这一项清告警；本条不证明 BYE、别的成员或服务端状态。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.3 matched 2xx response steps 1–3"
+          ],
+          "printed_pages": [
+            269
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "matched-negative-group-retained-and-alert-field-subjects",
+      "title": "负响应保留组紧急，分别读请求与响应的字段",
+      "conditions": [
+        "依据 §10.1.2.2.1.3 的本端分支。",
+        "客户端收到与本次取消 re-INVITE 匹配的 4xx、5xx 或 6xx。"
+      ],
+      "conclusion": "组状态设 MEG 2: in-progress。响应的 MCPTT 信息正文含 alert-ind=true，且已发请求的该正文无 originated-by，才把告警设为 MEA 3: emergency-alert-initiated。若实际负响应没有带 alert-ind 元素的该 MIME 正文、也未带 originated-by，MEA 恢复到进入本过程前的值。后一项的两项缺失在原文中都谓述该负响应，不从发送请求推回。",
+      "normative_strength": "MEG 2 与成立的 MEA 分支为 shall。NOTE 3 说明取消被拒后会话继续以紧急组呼级优先级运行。",
+      "limitations": [
+        "alert-ind=false 不是元素缺失。本节不为两条条件都不满足的形态增添 MEA 赋值，也不另列负响应的 MEGC 赋值。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.3 matched 4xx/5xx/6xx response steps 1–3 and NOTE 3"
+          ],
+          "printed_pages": [
+            269
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "ongoing-session-id-info-dispatch-on-client",
+      "title": "收到带进行中组会话 ID 的 INFO，另走辅助动作",
+      "conditions": [
+        "适用于 §10.1.2.2.1.3 或 §10.1.2.2.1.4 的本地发起客户端。",
+        "收到 SIP INFO；Request-URI 含标识进行中 MCPTT 组会话的 MCPTT session ID。"
+      ],
+      "conclusion": "客户端须执行 §6.2.8.1.13 指定的动作，区别于本次 re-INVITE 的应答分支。",
+      "normative_strength": "满足 INFO 的 URI 条件时分派为 shall。",
+      "limitations": [
+        "不把任意 INFO 或单凭 2xx 当作这条 INFO 已收到；两个子条款只给分派入口，不展开辅助动作或承诺一定收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.3 last paragraph: SIP INFO with ongoing group session ID"
+          ],
+          "printed_pages": [
+            269
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.4 last paragraph: SIP INFO with ongoing group session ID"
+          ],
+          "printed_pages": [
+            270
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-chat-session-priority-upgrade-client",
+    "r16-mcptt-chat-establish-join",
+    "r16-mcptt-emergency-group-client"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.3 opening and originating client steps 1–3"
+      ],
+      "printed_pages": [
+        268
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.3 step 3 dependency only: 6.2.8.1.14 step 3(a)–(b) and NOTE"
+      ],
+      "printed_pages": [
+        69
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.3 originating client steps 4–7 and NOTE 1"
+      ],
+      "printed_pages": [
+        269
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.3 matched 2xx response steps 1–3"
+      ],
+      "printed_pages": [
+        269
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.3 matched 4xx/5xx/6xx response steps 1–3 and NOTE 3"
+      ],
+      "printed_pages": [
+        269
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.3 last paragraph: SIP INFO with ongoing group session ID"
+      ],
+      "printed_pages": [
+        269
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.4 last paragraph: SIP INFO with ongoing group session ID"
+      ],
+      "printed_pages": [
+        270
+      ]
+    }
+  ],
+  "limitations": [
+    "不把组状态取消等同于撤警、会话释放或其他终端已更新；不补明确 false 等原文未列的 MEA 分支，也不套用相邻迫近危险取消或控制功能、参与功能的行为。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  }
+}

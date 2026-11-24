@@ -10335,6 +10335,90 @@
         }
       ],
       "boundary": "不把 HTTP-3 当成 HTTP/3 协议，不据支持要求推定实际会话、业务授权或跨信任域转交许可；不说明 HTTP-2、SIP、令牌或网络域安全规则。 这里按 TS 33.180 的参考点、端点和条件判断，不套用 TS 22.280 规范性附录的业务适用性。"
+    },
+    {
+      "id": "r16-calls-chat-session-emergency-cancellation-client",
+      "question": "MCPTT 聊天组取消紧急状态：组状态和告警分别读哪项响应？ 替同组另一位用户撤警时，还需什么授权？发出的正文如何标识要撤的告警？",
+      "start": "topics/calls/chat-session-emergency-cancellation-client.md",
+      "next_if": [
+        {
+          "condition": "若请求实际上是升级而非取消，或要查隐式话权和补位置的条件。",
+          "read": "topics/calls/chat-session-priority-upgrade-client.md"
+        },
+        {
+          "condition": "若仍在初始 INVITE、处理成员，或问相邻子条款的迫近危险取消。",
+          "read": "topics/calls/chat-establish-join.md"
+        },
+        {
+          "condition": "若组类型是预安排而非聊天组，另查其客户端程序。",
+          "read": "topics/calls/emergency-group-client.md"
+        }
+      ],
+      "boundary": "不把组状态取消等同于撤警、会话释放或其他终端已更新；不补明确 false 等原文未列的 MEA 分支，也不套用相邻迫近危险取消或控制功能、参与功能的行为。 只有另获撤警授权且代撤同组他人告警时，才从步骤 3 的所引规则要求 alert-ind=false 和 originated-by=原告警发起者的 MCPTT ID。"
+    },
+    {
+      "id": "r16-calls-chat-session-priority-upgrade-client",
+      "question": "MCPTT 聊天组怎样升级紧急或迫近危险？什么时候才补位置？",
+      "start": "topics/calls/chat-session-priority-upgrade-client.md",
+      "next_if": [
+        {
+          "condition": "若请求是取消，或要核对带进行中组会话 ID 的 SIP INFO 分派。",
+          "read": "topics/calls/chat-session-emergency-cancellation-client.md"
+        },
+        {
+          "condition": "若会话还未建立，问题涉及控制功能，或问相邻的迫近危险取消而不是升级。",
+          "read": "topics/calls/chat-establish-join.md"
+        },
+        {
+          "condition": "若组类型是预安排，使用该类型对应的客户端程序。",
+          "read": "topics/calls/emergency-group-client.md"
+        },
+        {
+          "condition": "若只作初始 INVITE 的 SDP/SSRC 对照，可读该媒体主题；该页不定义本次聊天组 re-INVITE 的处理。",
+          "read": "topics/media/implicit-floor-sdp-ssrc.md"
+        }
+      ],
+      "boundary": "不以已发送、2xx 或含位置认定升级、获得话权或已交付。保留迫近危险步骤 4(b) 与共同步骤 8 的两个原文回指，不自定两个优先级头、覆盖顺序或其他角色的行为。"
+    },
+    {
+      "id": "r16-calls-chat-session-incoming-reinvite-client",
+      "question": "已有聊天组收到 re-INVITE 明确携带紧急或迫近危险指示时，本客户端改哪个状态？ 收到组紧急取消时，怎样区分撤警者、告警发起者和实际接收用户？ 收到 re-INVITE 时检查优先级头是不是必做？按需和预建立怎样回 200 和 SDP answer？",
+      "start": "topics/calls/chat-session-incoming-reinvite-client.md",
+      "next_if": [
+        {
+          "condition": "若来向是初始 INVITE，且终端对该聊天组已归属未入会，另查紧急或迫近危险邀请。",
+          "read": "topics/calls/chat-priority-incoming-invite-client.md"
+        },
+        {
+          "condition": "若组类型实际是预安排，查该类型的客户端程序；不要套此处的聊天组规则。",
+          "read": "topics/calls/emergency-group-client.md"
+        },
+        {
+          "condition": "若实际收件的是终接参与功能，另查该功能接收 re-INVITE 和转发的程序。",
+          "read": "topics/calls/chat-preestablished-refer-outcome.md"
+        }
+      ],
+      "boundary": "本节不把缺字段当作 false、不把告警显示当作 MEA 赋值，不为缺少 originated-by 设替代身份。不移植初始 INVITE 的 otherwise 或计时器，不推断全组状态、释放或控制、参与功能的动作。"
+    },
+    {
+      "id": "r16-calls-chat-priority-incoming-invite-client",
+      "question": "已归属未入会的聊天组终端，什么时候可以拒绝优先组呼初始 INVITE？何时可以隐藏失败原因？ 紧急和迫近危险指示同时出现时，先读哪个分支？ 接受初始 INVITE 时哪一种 Resource-Priority 检查是必做？200 的 refresher 怎么填？",
+      "start": "topics/calls/chat-priority-incoming-invite-client.md",
+      "next_if": [
+        {
+          "condition": "若来向是组会话内 re-INVITE，区分指示字段、接收端告警与 200。",
+          "read": "topics/calls/chat-session-incoming-reinvite-client.md"
+        },
+        {
+          "condition": "若其实是回到覆盖后用户主动按组 ID 加入普通聊天组，查另外的初始 INVITE 路径。",
+          "read": "topics/calls/chat-establish-join.md"
+        },
+        {
+          "condition": "若问题涉及预建立 REFER 或参与功能检查 isfocus 与媒体复用，不以本页终端规则代替。",
+          "read": "topics/calls/chat-preestablished-refer-outcome.md"
+        }
+      ],
+      "boundary": "不把已归属当作已入会，不以别名决定接收用户的全局权限或取代 MCPTT ID。不发明无别名或缺配置的拒绝规则、普遍优先级覆盖、ACK、计时器数值、已获话权或媒体结果。不套用到来向 re-INVITE、CF/PF 或普通主动重入。"
     }
   ]
 }
