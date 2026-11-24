@@ -1,0 +1,199 @@
+{
+  "topic_id": "r16-groups-lmr-hosted-mc-deaffiliation",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MC 用户怎样解除对 LMR 定义组的归属？IWF 已回应等于解除了吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v16.8.0",
+  "condition_rule": "继承共同条件。区分 MC 侧请求和授权、是否经 IWF、IWF 返回、MC 对个人状态的移除及客户端响应。",
+  "common_conditions": [
+    "3GPP TS 23.283 V16.8.0（Release 16，Stage 2）§10.1.2.5 与图 10.1.2.5-1；解除的是 MC 用户对 LMR 系统定义互通组的归属，方向是 MC 客户端发起。"
+  ],
+  "claims": [
+    {
+      "id": "deaffiliation-previous-procedure-and-initiating-service-id",
+      "title": "MC 侧按个人解除；客户端须带发起业务 ID 和要解除的组 ID",
+      "conditions": [
+        "此前办理过 §10.1.2.4 的归属流程，在 IWF 已配置两侧组和用户标识映射。"
+      ],
+      "conclusion": "MC 系统管理 MC 用户的个人解除请求。MC 业务客户端向 MC 业务服务器发组解除归属请求，须提供发起的 MC 业务 ID 和所请求解除的一个或多个 MC 业务组 ID。经过 IWF 的跨系统信令继续由 IWF 转换标识与翻译协议。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.1.2.5, introduction, preconditions 1–2 and NOTE"
+          ],
+          "printed_pages": [
+            20
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.1.2.5, Figure 10.1.2.5-1, step 1"
+          ],
+          "printed_pages": [
+            20
+          ]
+        }
+      ],
+      "source_detail": "执行过上一次归属是前提，当前归属仍要检查。第 1 步的 shall 只约束 MC 客户端所提供的两个业务标识对象。",
+      "limitations": [
+        "不要填 IWF 的代表身份以替代发起人的业务 ID，也不要把一名用户的解除改写为整套 LMR 系统或整组都解除。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mc-server-affiliation-and-interworking-checks-before-deaffiliation",
+      "title": "MC 服务器检查该用户是否已归属，以及所请求的组是否为互通组",
+      "conditions": [
+        "MC 业务服务器收到个人组解除归属请求，要检查请求中的目标组。"
+      ],
+      "conclusion": "按用户订阅和已存组策略，MC 业务服务器检查客户端用户是否已归属所请求的组，并核对组是否为互通组。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.1.2.5, Figure 10.1.2.5-1, step 2"
+          ],
+          "printed_pages": [
+            20
+          ]
+        }
+      ],
+      "source_detail": "图内第 2 步概括为按组策略和用户订阅做授权检查；正文另明确归属状态及互通组判断。",
+      "limitations": [
+        "组是互通组不等于用户已归属或获准解除。曾执行归属流程也不能代替这次对当前用户和组的检查。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "interworking-group-only-iwf-deaffiliation-round-trip",
+      "title": "在互通组分支，MC 服务器和 IWF 交换解除请求与响应",
+      "conditions": [
+        "请求中的 MC 业务组为互通组，进入图示第 3a、3b 步。"
+      ],
+      "conclusion": "MC 业务服务器发送 IWF 组解除归属请求，IWF 返回 IWF 组解除归属响应给该服务器。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.1.2.5, Figure 10.1.2.5-1, steps 3a–3b"
+          ],
+          "printed_pages": [
+            20
+          ]
+        }
+      ],
+      "source_detail": "第 3a 步是条件分支；第 3b 步未在本节给出成功、失败或原因字段。",
+      "limitations": [
+        "非互通组不走第 3a 步，不用本节补写它的其他处理。收到 IWF 响应不能单独证明解除成功、用户获准或 MC 服务器已移除状态，不规定失败时如何继续。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "authorized-removal-of-mc-user-affiliation-and-client-result",
+      "title": "第 4 步只有用户获准解除时才移除其对应组归属，客户端响应另取证",
+      "conditions": [
+        "判断第 4 步能否移除某名客户端用户对所请求 MC 业务组的归属状态。"
+      ],
+      "conclusion": "用户获准从所请求的组解除时，MC 业务服务器移除这名用户对这些组的归属状态。图示第 5 步由 MC 业务服务器向客户端返回 MC 业务组解除归属响应。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.1.2.5, Figure 10.1.2.5-1, steps 4–5"
+          ],
+          "printed_pages": [
+            20,
+            21
+          ]
+        }
+      ],
+      "source_detail": "第 4 步图框写更新组归属，正文限定为获授权时移除这名用户的状态；第 5 步响应发往客户端。",
+      "limitations": [
+        "本节没有规定未获授权时也删除、IWF 任意回应后立即删除、失败回滚、无线侧解除方式或客户端成功码。只见请求或响应消息不能证明这次已移除状态；解除归属也不等于某场组呼已经释放。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-groups-lmr-hosted-mc-affiliation",
+    "r16-groups-mc-hosted-lmr-affiliation",
+    "r16-calls-lmr-interworking-group-late-entry"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.1.2.5, introduction, preconditions 1–2 and NOTE"
+      ],
+      "printed_pages": [
+        20
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.1.2.5, Figure 10.1.2.5-1, step 1"
+      ],
+      "printed_pages": [
+        20
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.1.2.5, Figure 10.1.2.5-1, step 2"
+      ],
+      "printed_pages": [
+        20
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.1.2.5, Figure 10.1.2.5-1, steps 3a–3b"
+      ],
+      "printed_pages": [
+        20
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.1.2.5, Figure 10.1.2.5-1, steps 4–5"
+      ],
+      "printed_pages": [
+        20,
+        21
+      ]
+    }
+  ],
+  "limitations": [
+    "本页不规定 LMR 内部如何解除、失败处理、消息格式或呼叫释放。组宿主反转时不能套用 MC 定义组的 IWF 代表解除。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}

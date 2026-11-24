@@ -1,0 +1,197 @@
+{
+  "topic_id": "r16-groups-lmr-hosted-mc-affiliation",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MC 用户怎样归属 LMR 定义的组？查不到组映射时，谁可以拒绝？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v16.8.0",
+  "condition_rule": "继承共同条件。分别检查组宿主、IWF 对标识的认识和映射、IWF 响应中的结果及 MC 侧保存状态。",
+  "common_conditions": [
+    "3GPP TS 23.283 V16.8.0（Release 16，Stage 2）§10.1.2.4 与图 10.1.2.4-1；用户在 MC 侧，目标互通组定义在 LMR 系统，经 IWF 办理归属。"
+  ],
+  "claims": [
+    {
+      "id": "lmr-hosted-target-iwf-link-and-identity-mapping",
+      "title": "先确认 LMR 定义组、IWF 对 MC 侧的互通条件与标识映射",
+      "conditions": [
+        "MC 系统经 IWF 为其成员归属 LMR 系统定义的互通组。"
+      ],
+      "conclusion": "目标组定义在 LMR 系统。IWF 已连上 MC 系统并获准与它互通，已配置这两侧的组标识和用户标识映射。对于经 IWF 在两侧传递的信令，由 IWF 做标识转换和协议翻译。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.1.2.4, introduction, preconditions 1–3 and NOTE 1"
+          ],
+          "printed_pages": [
+            19
+          ]
+        }
+      ],
+      "source_detail": "三项前提与跨系统信令的翻译责任；不涉及单一用户的归属授权。",
+      "limitations": [
+        "IWF 的连接及互通许可不证明某名用户有权归属，也不能用组标识猜测无线侧实际标识。协商组宿主或私有 LMR 协议不在这两节范围。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mc-client-group-ids-and-mc-server-lmr-group-check",
+      "title": "客户端交给 MC 服务器的是 MC 业务组 ID，由服务器判断组定义在哪一侧",
+      "conditions": [
+        "发起的是图 10.1.2.4-1 的 MC 侧归属请求。"
+      ],
+      "conclusion": "MC 业务客户端向 MC 业务服务器发送组归属请求，并带 MC 业务组 ID。服务器核对这些 ID 是否对应 LMR 系统定义的互通组，在图示流程中再向 IWF 发出 IWF 组归属请求。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.1.2.4, Figure 10.1.2.4-1, steps 1–3"
+          ],
+          "printed_pages": [
+            19
+          ]
+        }
+      ],
+      "source_detail": "1 客户端到 MC 服务器；2 在 MC 服务器判定组；3 MC 服务器到 IWF。",
+      "limitations": [
+        "不是客户端直接发给电台或 IWF，也不要求客户端提供原生 LMR 组标识。此处没有规定非 LMR 定义组的处理或 IWF 请求的报文编码。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-optional-forwarding-and-unavailable-target-rejection",
+      "title": "IWF 可以转交 LMR 检查授权，也可以拒绝未知或未映射的组 ID",
+      "conditions": [
+        "MC 业务服务器已向 IWF 提出归属 LMR 互通组的请求。"
+      ],
+      "conclusion": "IWF 可以把请求转给 LMR 系统。LMR 系统可以检查该 MC 业务客户端是否获准归属。若 IWF 不认识给定的 MC 业务组 ID，或其配置未把该 ID 映射到 LMR 组标识，IWF 可以拒绝这次归属。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.1.2.4, NOTEs 2–3 after step 3"
+          ],
+          "printed_pages": [
+            19
+          ]
+        }
+      ],
+      "source_detail": "注 2 是可转发及可检查；注 3 的两个拒绝原因是可选处置，不是图内另画的失败流程。",
+      "limitations": [
+        "不能从一般 LMR 互通许可推定客户端已获准。原文没有把未知或缺映射写成固定失败码，也没规定无线侧拒绝原因、转发必做或自动重试。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "record-the-client-affiliation-after-the-success-indication",
+      "title": "IWF 告知归属成功后，MC 服务器保存该客户端的组归属状态再回客户端",
+      "conditions": [
+        "按图示成功路径，IWF 对同一次请求返回的结果明确说明已归属 LMR 组。"
+      ],
+      "conclusion": "IWF 把成功的 IWF 组归属响应返回给 MC 业务服务器。该服务器保存这名 MC 业务客户端对所请求互通组的归属状态，随后向客户端发送 MC 业务组归属响应。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.1.2.4, Figure 10.1.2.4-1 and step 4"
+          ],
+          "printed_pages": [
+            19
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.1.2.4, steps 5–6 and NOTE 4"
+          ],
+          "printed_pages": [
+            20
+          ]
+        }
+      ],
+      "source_detail": "图内第 4 至 6 步；第 4 步正文明确给成功结果，第 5 至 6 步正文在后一页。",
+      "limitations": [
+        "看到 IWF 有回包、或只看到 MC 客户端收到业务响应，不能跳过结果判定。未给出拒绝时怎样保存、回复或重试；MC 侧的归属记录不是 LMR 内部办理记录、呼叫加入或已获得媒体的证据。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-groups-lmr-hosted-mc-deaffiliation",
+    "r16-groups-mc-hosted-lmr-affiliation",
+    "r16-calls-lmr-interworking-group-late-entry"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.1.2.4, introduction, preconditions 1–3 and NOTE 1"
+      ],
+      "printed_pages": [
+        19
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.1.2.4, Figure 10.1.2.4-1, steps 1–3"
+      ],
+      "printed_pages": [
+        19
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.1.2.4, NOTEs 2–3 after step 3"
+      ],
+      "printed_pages": [
+        19
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.1.2.4, Figure 10.1.2.4-1 and step 4"
+      ],
+      "printed_pages": [
+        19
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.1.2.4, steps 5–6 and NOTE 4"
+      ],
+      "printed_pages": [
+        20
+      ]
+    }
+  ],
+  "limitations": [
+    "本页不说明 LMR 内部如何办理归属、错误码或消息格式。不要移用 MC 定义组下的代表归属、GMS 更新或伙伴 MC 系统流程。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
