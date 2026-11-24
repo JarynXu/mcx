@@ -1,6 +1,8 @@
 # 在网用户重组：怎样按条件建组、更新成员和配置归属？
 
-用户重组（User Regroup）把多个 MCX 用户编成一个新的临时组，输入是用户，不是组成组。**按参数建组、自动建组、自动维护成员名单**是三项不同的业务能力。这里限 3GPP TS 22.280 V16.8.0（Release 16）的在网 Stage 1 要求。[第 6 章，印刷页 29](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=30)；[§6.6.4，印刷页 35](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=36)；[§6.6.4.2，印刷页 36（PDF 第 37 页）](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=37)。
+MCX 业务须能把多个 MCX 用户编成一个新的临时组，这项操作称为用户重组（User Regroup）。输入是用户；若输入是多个组，查[组重组](onnetwork-group-regroup-input-eligibility.md)。[R-6.6.4.2-001，印刷页 36](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=37)。
+
+**按参数建组、自动建组、自动维护成员名单**是三项不同的业务能力。这里限 3GPP TS 22.280 V16.8.0（Release 16）的在网 Stage 1 要求。[第 6 章，印刷页 29](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=30)；[§6.6.4，印刷页 35](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=36)；[§6.6.4.2，印刷页 36（PDF 第 37 页）](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=37)。
 
 | 要解决的问题 | MCX 业务须提供什么 |
 | --- | --- |
@@ -10,6 +12,10 @@
 
 -002a、-002b 列举的条件包括用户功能别名的特定元素或组合、用户位置（含速度和航向）、MCX 业务管理员指定的位置或地理区域、业务配置。这些是示例，不是必选清单或计算规则。业务必须具备前述能力，即使尚未发生一次自动建组或名单变化；这不说明服务何时启动某次操作、怎样判断位置或多久完成更新。
 
+## 谁能激活预先配置的用户重组？
+
+MCX 业务须提供机制，预先配置特定一次用户重组的参数。获授权的 MCX 用户可以激活这项预配置重组，并以尽可能短的时延与该临时组通信。条文指定了谁激活，没有指定谁预先配置参数，也没有给出时延上限。预先配好参数，不等于已经激活或已接通通信。[R-6.6.4.2-003，印刷页 36](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=37)。
+
 ## 受影响要通知，入名单不等于自动归属
 
 - **通知。** MCX 用户受到一次用户重组操作影响时，业务须通知这些受影响用户。-004 未给出固定收件人名单，也未规定通知报文或送达证据。[R-6.6.4.2-004，印刷页 36](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=37)。
@@ -17,6 +23,6 @@
 
 例如，某在网用户重组用区域作为成员条件。临时组存在时，甲开始满足条件，乙不再满足条件：-002b 要求具备自动把甲加进成员名单、把乙移出名单的能力。它不凭名单变化证明甲已归属、乙已撤销归属或有人入呼；自动归属的管理员设置另看 -005，通知义务按 -004 的受影响条件判断。
 
-**适用业务：** 表 A.1（MCPTT）、B.1（MCVideo）、C.1（MCData）都在 §6.6.4.2 的要求行列上述五项。[表 A.1，印刷页 66](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=67)；[表 B.1，印刷页 77](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=78)；[表 C.1，印刷页 88](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=89)。
+**适用业务：** 表 A.1（MCPTT）、B.1（MCVideo）、C.1（MCData）都在 §6.6.4.2 的要求行列出上述七项。[表 A.1，印刷页 66](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=67)；[表 B.1，印刷页 77](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=78)；[表 C.1，印刷页 88](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=89)。
 
-另查[重组授权和临时组存续](onnetwork-dynamic-regrouping-basics.md)，或核对[当前已归属成员名单](onnetwork-affiliated-member-list.md)与[Stage 2 成员名单变更通知](group-membership-notification.md)的各自对象。若拿到的是[按用户名单创建 MCPTT 预配置组重组的响应](user-regroup-response.md)，按其 Stage 3 流程解释，不拿响应证明这五项业务能力已实现。本页只用 -001 界定对象，不展开 -003 的预配置激活。
+另查[重组授权和临时组存续](onnetwork-dynamic-regrouping-basics.md)，或核对[当前已归属成员名单](onnetwork-affiliated-member-list.md)与[Stage 2 成员名单变更通知](group-membership-notification.md)的各自对象。若拿到的是[按用户名单创建 MCPTT 预配置组重组的响应](user-regroup-response.md)，按其 Stage 3 流程解释，不能用一份响应证明上述业务要求已实现。

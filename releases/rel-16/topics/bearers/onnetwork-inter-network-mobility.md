@@ -1,4 +1,10 @@
-# 同一次 MCX 通信换网时，中断要减到什么程度？移动需要哪两方授权？
+# 组通信参与者跨区时，中断要减到什么程度？终端换网由谁授权？
+
+## 组通信参与者从一个区域移到另一区域
+
+**须将这次 MCX 业务组通信的中断降到最低。** 即便没有换网，参与者跨区也属于这项要求。它没有把“区域”限定为某个小区或 PLMN，也未承诺零中断或给出允许停顿的毫秒数。见在网组通信的 [TS 22.280 V16.8.0（Release 16，Stage 1）R-6.4.1-001，印刷页 30](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=31)。[表 A.1（MCPTT），印刷页 65](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=66)、[表 B.1（MCVideo），印刷页 76](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=77)、[表 C.1（MCData），印刷页 87](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=88) 均列出该项。
+
+## 终端把同一次通信的连接转到另一网络
 
 一场 MCVideo 通信还在进行，终端要把这场通信的连接从甲网转到乙网。[TS 22.280 V16.8.0（Release 16，Stage 1）第 6 章，印刷页 29](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=30) 的在网要求把两个问题分开：换网时怎样对待原通信，以及谁有权同意这次移动。规范性表 [A.1（MCPTT），印刷页 67](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=68)、[B.1（MCVideo），印刷页 78](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=79)、[C.1（MCData），印刷页 89](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=90) 均列出这两项。
 

@@ -1,17 +1,20 @@
 # 在网组重组：哪些组可以作为输入？
 
-广播组是组重组可以纳入的一类组；普通组也可能因已经编入另一项重组而不能纳入。若组本身处于紧急状态，还须分清业务配置是禁止还是允许。这里讨论 3GPP TS 22.280 V16.8.0（Release 16）在网组重组（Group Regroup）的 Stage 1 要求，不是用户重组（User Regroup）。[第 6 章，印刷页 29](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=30)；[§6.6.2，印刷页 34](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=35)；[§6.6.2.2，印刷页 35（PDF 第 36 页）](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=36)。
+MCX 业务须能把多个组动态合成一个新的临时组，这项操作称为组重组（Group Regroup）。[R-6.6.2.2-001，印刷页 34](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=35)。
+
+广播组是组重组可以纳入的一类组；普通组也可能因已经编入另一项重组而不能纳入。若组本身处于紧急状态，还须分清业务配置是禁止还是允许。这里讨论 3GPP TS 22.280 V16.8.0（Release 16）在网组重组的 Stage 1 要求，不是用户重组（User Regroup）。[第 6 章，印刷页 29](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=30)；[§6.6.2，印刷页 34](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=35)；[§6.6.2.2，印刷页 35（PDF 第 36 页）](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=36)。
 
 | 要核对的条件 | 业务要求 |
 | --- | --- |
 | 候选组是广播组 | 业务须支持把广播组纳入组重组。这里说的是输入组的类型，不是把输出设为广播重组，也不免除其他准入检查。[R-6.6.2.2-007，印刷页 35](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=36)。 |
+| 候选组本身是临时组 | 即使 MCX 用户已获授权，业务也须阻止其把临时组纳入组重组。不论这个临时组由组重组还是用户重组形成，-011 都没有给它例外。[R-6.6.2.2-011，印刷页 35](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=36)。 |
 | 候选 MCX 组已编入一项现有组重组，获授权用户拟把它纳入另一项组重组 | 业务须阻止该用户把这个组纳入另一项操作。候选组本身可以是普通组；“已编入重组”不等于“这个组本身是重组产生的临时组”。[R-6.6.2.2-012，印刷页 35](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=36)。 |
 | 针对处于紧急状态的 MCX 组的准入配置 | 业务须支持两种配置：禁止所有获授权的 MCX 用户把这类组纳入组重组，或允许所有获授权的 MCX 用户这么做。“允许”不等于这次准入通过，其他要求仍适用。[R-6.6.2.2-013，印刷页 35](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=36)。 |
 
-例如，普通组 A 已编入现有组重组 X。获授权用户要把 A 加入另一项组重组 Y，即使 A 处于紧急状态且业务配置允许纳入这类组，也须按 -012 阻止。若还在处理 X 本身，不能用 -012 推出同一项操作重试、更新或纳入必定成功。若候选组**自身是临时组**，另查[动态重组通用要求所引的 -011](onnetwork-dynamic-regrouping-basics.md)：那个限制不按临时组的来源区分。
+例如，普通组 A 已编入现有组重组 X。获授权用户要把 A 加入另一项组重组 Y，即使 A 处于紧急状态且业务配置允许纳入这类组，也须按 -012 阻止。若还在处理 X 本身，不能用 -012 推出同一项操作重试、更新或纳入必定成功。若用户要纳入的是 X 形成的临时组本身，起作用的是 -011：不能把它再用作组重组的输入。
 
 即使当前没有组处于紧急状态，业务也须提供 -013 的两种配置。组处于紧急状态才是这项配置作用于候选组的条件，不能仅凭组内发生紧急呼叫或告警来判断。条文未规定怎样判定这一状态、谁配置、配置范围或默认设置。也不规定具体拒绝消息、检查顺序或一次操作的结果。
 
-**适用业务：** MCPTT 的表 A.1、MCVideo 的表 B.1、MCData 的表 C.1 都在 §6.6.2.2 的要求行列出 -007、-012 和 -013。[MCPTT，表 A.1，印刷页 66](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=67)；[MCVideo，表 B.1，印刷页 77](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=78)；[MCData，表 C.1，印刷页 88](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=89)。
+**适用业务：** MCPTT 的表 A.1、MCVideo 的表 B.1、MCData 的表 C.1 都在 §6.6.2.2 的要求行列出 -001、-007、-011、-012 和 -013。[MCPTT，表 A.1，印刷页 66](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=67)；[MCVideo，表 B.1，印刷页 77](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=78)；[MCData，表 C.1，印刷页 88](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=89)。
 
-若要查[临时组怎样取得运行设置](onnetwork-group-regroup-operating-settings.md)，另看对应的 Stage 1 条款。查[同系统](single-system-temporary-regroup.md)或[伙伴系统](partner-system-regroup.md)怎样处理一次重组请求，按各自的 Stage 2 前提和步骤核对；那些步骤不代替本页对 Stage 1 配置能力的判断。
+两类重组都形成临时组。输入若是多个用户，另看[用户重组](onnetwork-user-regroup-membership.md)；要查谁能管理重组、临时组何时拆除，看[通用动态重组要求](onnetwork-dynamic-regrouping-basics.md)。若要查[临时组怎样取得运行设置](onnetwork-group-regroup-operating-settings.md)，另看对应的 Stage 1 条款。查[同系统](single-system-temporary-regroup.md)或[伙伴系统](partner-system-regroup.md)怎样处理一次重组请求，按各自的 Stage 2 前提和步骤核对；那些步骤不代替本页对 Stage 1 配置能力的判断。
