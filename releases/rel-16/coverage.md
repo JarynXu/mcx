@@ -5507,6 +5507,26 @@ MC 发起时，组管理服务器查授权和临时组，IWF 可拒绝且不提�
 
 [读取主题](topics/media/noncontrolling-floor-revoke-relay.md)
 
+## CF 的 INVITE 非 100 临时应答（Stage 3）
+
+CF 对收到的 INVITE 发送非 100 临时应答时，PAI 放哪个身份，Contact 放哪个会话标识？ CF 临时应答的 Contact 要带哪些标记？100 Trying 适用吗？能凭这份临时应答判断重入成功或已获话权吗？
+
+CF 对收到的 SIP INVITE 实际发出非 100 临时应答时，须生成该应答。PAI 带本 CF 的公共业务标识。Contact 带 MCPTT 会话标识及三项媒体特征标记：g.3gpp.mcptt、值为 urn:urn-7:3gpp-service.ims.icsi.mcptt 的 g.3gpp.icsi-ref，以及 isfocus。
+
+尚未建立：只判断 CF 实际发送的非 100 临时应答及其字段；不要求总要发临时应答，不使用 SIP 100 或相邻最终应答的规则。不能用这份应答判对话另一腿的实际字段、最终接受、ACK/Route、归属、重入或话权结果。
+
+[读取主题](topics/calls/cf-invite-provisional-response-identity.md)
+
+## NCF 终接 INVITE 后发出的 SIP 183（Stage 3）
+
+NCF 对自己终接的 INVITE 发出 183 时，PAI 用哪个 PSI？Contact 和 Supported 要带什么？ NCF 发出 183 与收到客户端的 183 有什么区别？没有 183 或只看到 tdialog，能判断 PRACK、话权或最终接受吗？
+
+MCPTT 组的 NCF 对自己终接的 SIP INVITE 实际发出 183 时，须按 TS 24.229 生成应答。PAI 带本 NCF 的 PSI。Contact 带 g.3gpp.mcptt 和值为 urn:urn-7:3gpp-service.ims.icsi.mcptt 的 g.3gpp.icsi-ref 两项媒体特征标记。Supported 须按 RFC 4538 带 tdialog 选项标记。
+
+尚未建立：只适用于终接该 INVITE 的 NCF 实际发送 183。本条不规定一定要发 183、何时发或其他 1xx 的格式。Contact 不移植 CF 的会话标识或 isfocus 要求，本条未规定这两项，也没有禁止它们。仅凭 183 状态码或 tdialog 不能断定需要 100rel、PRACK 或 SDP，也不能认定已获话权或 INVITE 已获最终接受。
+
+[读取主题](topics/calls/ncf-invite-183-response.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

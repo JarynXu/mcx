@@ -1,0 +1,121 @@
+{
+  "topic_id": "r16-calls-ncf-invite-183-response",
+  "title": "NCF 发出的 INVITE 183：PAI、Contact 和 Supported 写什么？",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明都继承 NCF 终接 INVITE 并实际发送 183 的条件。其他来向的 183、CF 发送的响应和最终应答不套用这些字段。",
+  "common_conditions": [
+    "Release 16，Stage 3，TS 24.379 V16.14.0 §6.3.4.2.2.1。MCPTT 组的非控制功能（NCF）终接该 SIP INVITE，并正在针对这一笔 INVITE 发送 SIP 183（Session Progress）。"
+  ],
+  "claims": [
+    {
+      "id": "ncf-183-generation-and-own-psi",
+      "title": "应答按 TS 24.229 生成，PAI 带发送方 NCF 的 PSI",
+      "conditions": [],
+      "conclusion": "NCF 须按 TS 24.229 生成 SIP 183；P-Asserted-Identity（PAI）须带发送该应答的 NCF 自己的公共业务标识（PSI）。",
+      "normative_strength": "开头发出 183 的条件成立时，第 1、3 项为 shall。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.4.2.2.1, opening and steps 1–4: NCF 183 (Session Progress) response"
+          ],
+          "printed_pages": [
+            129
+          ]
+        }
+      ],
+      "limitations": [
+        "不以收到 INVITE 断定必发 183。这里不是其他功能发出的 183，也不是 NCF 收到别人的响应。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "ncf-183-contact-media-feature-tags",
+      "title": "Contact 带 MCPTT 及指定 ICSI 值的媒体特征标记",
+      "conditions": [
+        "核对同一份 NCF 发出的 183 的 Contact。"
+      ],
+      "conclusion": "Contact 须带两个媒体特征标记：g.3gpp.mcptt 和 g.3gpp.icsi-ref；g.3gpp.icsi-ref 的值为 urn:urn-7:3gpp-service.ims.icsi.mcptt。",
+      "normative_strength": "第 2 项为 shall，具体两项列于 2(a)、2(b)。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.4.2.2.1, opening and steps 1–4: NCF 183 (Session Progress) response"
+          ],
+          "printed_pages": [
+            129
+          ]
+        }
+      ],
+      "limitations": [
+        "本条没有给 Contact 增加 CF 的会话标识或 isfocus 要求，也不据此禁止它们。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "ncf-183-supported-tdialog",
+      "title": "Supported 带 tdialog",
+      "conditions": [
+        "核对同一份 NCF 发出的 183 的 Supported。"
+      ],
+      "conclusion": "NCF 须按 RFC 4538 的规则在 Supported 头字段加入 tdialog。",
+      "normative_strength": "第 4 项为 shall；tdialog 按所引 RFC 4538 规则写入。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.4.2.2.1, opening and steps 1–4: NCF 183 (Session Progress) response"
+          ],
+          "printed_pages": [
+            129
+          ]
+        }
+      ],
+      "limitations": [
+        "第 4 项指定 Supported；不从这条推出 Require 的要求，或 100rel、PRACK、SDP、话权和最终结果。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.4.2.2.1, opening and steps 1–4: NCF 183 (Session Progress) response"
+      ],
+      "printed_pages": [
+        129
+      ]
+    }
+  ],
+  "related": [
+    "r16-calls-noncontrolling-prearranged-rejoin",
+    "r16-calls-trusted-regroup-refused-uri-list"
+  ],
+  "limitations": [
+    "只适用于终接该 INVITE 的 NCF 实际发送 183。本条不规定一定要发 183、何时发或其他 1xx 的格式。Contact 不移植 CF 的会话标识或 isfocus 要求，本条未规定这两项，也没有禁止它们。仅凭 183 状态码或 tdialog 不能断定需要 100rel、PRACK 或 SDP，也不能认定已获话权或 INVITE 已获最终接受。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}

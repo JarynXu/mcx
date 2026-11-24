@@ -1,0 +1,104 @@
+{
+  "topic_id": "r16-calls-cf-invite-provisional-response-identity",
+  "title": "CF 的 INVITE 临时应答：PAI 和 Contact 分别标识什么？",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条继承本节的 CF、方向和非 100 临时应答条件；另一路和最终应答的条件不能混读。",
+  "common_conditions": [
+    "Release 16，Stage 3；TS 24.379 V16.14.0 §6.3.3.2.3.1。控制 MCPTT 功能（CF）正在对收到的 SIP INVITE 发送非 100 临时应答。"
+  ],
+  "claims": [
+    {
+      "id": "cf-non100-provisional-response-and-own-service-identity",
+      "title": "非 100 临时应答的 PAI 标识 CF 自己",
+      "conditions": [
+        "所查的是 CF 发送的这一笔临时应答，并与收到的 INVITE 配对。"
+      ],
+      "conclusion": "CF 须生成这份临时应答，并在 P-Asserted-Identity 中带上 CF 自己的公共业务标识（PSI）。",
+      "normative_strength": "正文在发送非 100 临时应答的前提下用 shall，约束第 1、2 项。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.2.3.1, opening and steps 1–2 (non-100 provisional response and CF public service identity)"
+          ],
+          "printed_pages": [
+            120
+          ]
+        }
+      ],
+      "limitations": [
+        "不套用 SIP 100，不要求对每个 INVITE 都发送非 100 临时应答；不拿用户身份或另一路响应解释这里的 PAI。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "cf-provisional-contact-session-identity-and-feature-tags",
+      "title": "非 100 临时应答的 Contact 带 MCPTT 会话标识和三个标记",
+      "conditions": [
+        "所查字段是这份 CF 临时应答的 Contact。"
+      ],
+      "conclusion": "Contact 须包括 MCPTT 会话标识，及 g.3gpp.mcptt、g.3gpp.icsi-ref（值为 urn:urn-7:3gpp-service.ims.icsi.mcptt）和 isfocus。",
+      "normative_strength": "正文第 3、4 项用 shall；第 4 项列出三项 Contact 标记。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.3.2.3.1, steps 3–4(a–c) (Contact session identity and feature tags)"
+          ],
+          "printed_pages": [
+            120
+          ]
+        }
+      ],
+      "limitations": [
+        "这不是最终应答的字段规则，也不规定依据临时应答如何构造 ACK 或选路；标记不能证明最终接受、重入、归属、话权获准或其他腿收到同一值。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.3.2.3.1, opening and steps 1–2 (non-100 provisional response and CF public service identity)"
+      ],
+      "printed_pages": [
+        120
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.3.2.3.1, steps 3–4(a–c) (Contact session identity and feature tags)"
+      ],
+      "printed_pages": [
+        120
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcptt-rejoin-late-entry",
+    "r16-mcptt-chat-establish-join"
+  ],
+  "limitations": [
+    "只判断 CF 实际发送的非 100 临时应答及其字段；不要求总要发临时应答，不使用 SIP 100 或相邻最终应答的规则。不能用这份应答判对话另一腿的实际字段、最终接受、ACK/Route、归属、重入或话权结果。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}

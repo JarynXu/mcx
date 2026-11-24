@@ -10571,6 +10571,38 @@
         }
       ],
       "boundary": "分别确认控制侧→服务器接口和服务器接口→已经许可的对应参与者接口实际收到 Revoke。既不据 Ack 期待判断确认已到，也不据 P 状态判断实际撤权或媒体。"
+    },
+    {
+      "id": "r16-calls-cf-invite-provisional-response-identity",
+      "question": "CF 对收到的 INVITE 发送非 100 临时应答时，PAI 放哪个身份，Contact 放哪个会话标识？ CF 临时应答的 Contact 要带哪些标记？100 Trying 适用吗？能凭这份临时应答判断重入成功或已获话权吗？",
+      "start": "topics/calls/cf-invite-provisional-response-identity.md",
+      "next_if": [
+        {
+          "condition": "若需判断具体重入时的最终应答、会话标识和 ACK，核对实际分腿和最终交换；本页的非 100 临时应答不能代用。",
+          "read": "topics/calls/rejoin-late-entry.md"
+        },
+        {
+          "condition": "若查特定聊天组里的 183、PRACK 和最终 INVITE 应答，先辨明事务和来向；不要把该流程当所有 CF 临时应答的一般触发。",
+          "read": "topics/calls/chat-establish-join.md"
+        }
+      ],
+      "boundary": "只判断 CF 实际发送的非 100 临时应答及其字段；不要求总要发临时应答，不使用 SIP 100 或相邻最终应答的规则。不能用这份应答判对话另一腿的实际字段、最终接受、ACK/Route、归属、重入或话权结果。"
+    },
+    {
+      "id": "r16-calls-ncf-invite-183-response",
+      "question": "NCF 对自己终接的 INVITE 发出 183 时，PAI 用哪个 PSI？Contact 和 Supported 要带什么？ NCF 发出 183 与收到客户端的 183 有什么区别？没有 183 或只看到 tdialog，能判断 PRACK、话权或最终接受吗？",
+      "start": "topics/calls/ncf-invite-183-response.md",
+      "next_if": [
+        {
+          "condition": "若 NCF 先发预安排组晚入 INVITE、后来收到客户端的 183，查接收和有 100rel 时的处理。",
+          "read": "topics/calls/noncontrolling-prearranged-rejoin.md"
+        },
+        {
+          "condition": "若收到的是组成聊天组初始组邀请并到了最终 200 分支，查该笔终接应答和 SDP，别套用 183。",
+          "read": "topics/calls/trusted-regroup-refused-uri-list.md"
+        }
+      ],
+      "boundary": "只适用于终接该 INVITE 的 NCF 实际发送 183。本条不规定一定要发 183、何时发或其他 1xx 的格式。Contact 不移植 CF 的会话标识或 isfocus 要求，本条未规定这两项，也没有禁止它们。仅凭 183 状态码或 tdialog 不能断定需要 100rel、PRACK 或 SDP，也不能认定已获话权或 INVITE 已获最终接受。"
     }
   ]
 }
