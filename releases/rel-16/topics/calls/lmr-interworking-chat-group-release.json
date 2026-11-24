@@ -1,0 +1,303 @@
+{
+  "topic_id": "r16-calls-lmr-interworking-chat-group-release",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCPTT–LMR 聊天组整场释放：谁发请求，哪些回执可选？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v16.8.0",
+  "condition_rule": "每条结论继承共同条件。先看组定义侧，再识别当前参与者、IWF 的加入方式和回执对应的请求。整场释放、用户退出和组归属是不同状态。",
+  "common_conditions": [
+    "这里处理已在进行的 MCPTT–LMR 互通聊天组呼，由定义组的一侧发起整场释放，涉及这场呼叫的全部参与者。不是一人退出、解除组归属或加入新呼叫。"
+  ],
+  "claims": [
+    {
+      "id": "whole-chat-call-release-decision-by-defining-system",
+      "title": "整场释放由定义组的一侧发起；MCPTT 设有释放条件",
+      "conditions": [
+        "已有涉及 MCPTT 客户端和 IWF 的聊天组呼。该组由 MCPTT 或 LMR 系统定义。"
+      ],
+      "conclusion": "组定义在 LMR 时，所述场景以 LMR 系统发起整场释放为前提。组定义在 MCPTT 时，服务器因满足至少一项释放条件而决定释放。条款举例：等待时限（hang time）到期、最后一名参与者离开、倒数第二名参与者离开、发起人离开，或已归属 MCPTT 组员数低于允许下限。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.5.4, introduction and precondition 1: group defined by LMR, ongoing chat and whole-call scope"
+          ],
+          "printed_pages": [
+            63
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.5.4, precondition 2, Figure 10.3.5.4-1 and steps 1–3: LMR-initiated release, per-current-MCPTT-user forwarding and notification"
+          ],
+          "printed_pages": [
+            64
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.5.5, introduction and precondition 1: MCPTT-defined group, release conditions and ongoing chat"
+          ],
+          "printed_pages": [
+            64
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.5.5, Figure 10.3.5.5-1 and step 1: server release decision and illustrative conditions"
+          ],
+          "printed_pages": [
+            65
+          ]
+        }
+      ],
+      "limitations": [
+        "这是条件举例，不是规定任何用户离开都结束组呼，也不代表每次都应用全部条件。人数下限看已归属的 MCPTT 组员，不用这时在呼人数替代。条款未给出 LMR 决定释放的条件、计时器取值或人数下限。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-defined-release-per-in-call-mc-user-optional-client-reply",
+      "title": "LMR 定义组：按本次呼叫的 MCPTT 用户发请求，客户端回应可选",
+      "conditions": [
+        "组定义在 LMR，LMR 系统已启动整场释放。"
+      ],
+      "conclusion": "IWF 为本次呼叫中的每名 MCPTT 用户向 MCPTT 服务器各发一条 IWF 组呼释放请求。服务器向相应 MCPTT 用户转发，用户获通知。步骤 4 可由收到步骤 2 请求的客户端回组呼释放响应。步骤 5 是服务器把这份客户端响应转给 IWF，使用 IWF 组呼释放响应。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.5.4, precondition 2, Figure 10.3.5.4-1 and steps 1–3: LMR-initiated release, per-current-MCPTT-user forwarding and notification"
+          ],
+          "printed_pages": [
+            64
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.5.4, steps 4–5 in Figure 10.3.5.4-1: optional client response and server forwarding of that response"
+          ],
+          "printed_pages": [
+            64
+          ]
+        }
+      ],
+      "limitations": [
+        "按在本次呼叫中的 MCPTT 用户计数，不按所有已归属组员计数。步骤 4 和 5 在图中是虚线；不把客户端确认变成必选。若没有步骤 4 的响应，本节没有规定服务器主动生成另一种回执或怎样处理缺失响应。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mc-defined-release-iwf-count-by-prior-joins",
+      "title": "MCPTT 定义组：已有的 IWF 代表加入或逐人加入决定请求条数",
+      "conditions": [
+        "组定义在 MCPTT，MCPTT 服务器已决定整场释放。"
+      ],
+      "conclusion": "服务器在步骤 2 向 IWF 发组呼释放请求。若 IWF 已代表组内全部 LMR 用户加入，只向 IWF 发一条；若服务器收到组内 LMR 用户的逐人加入记录，则每名已加入的 LMR 用户各有一条发给 IWF 的请求。步骤 3 另向本次组呼每个 MCPTT 参与者发释放请求，步骤 4 通知用户。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.5.5, Figure 10.3.5.5-1 and step 1: server release decision and illustrative conditions"
+          ],
+          "printed_pages": [
+            65
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.5.5, steps 2–4: IWF request count by prior joins, per-MCPTT-participant request and notification"
+          ],
+          "printed_pages": [
+            65
+          ]
+        }
+      ],
+      "limitations": [
+        "不把 IWF 侧的既有加入记录换成所有配置或已归属的 LMR 用户。MCPTT 侧请求面向本次呼叫的参与者，不用 IWF 侧的一条或逐人规则替代。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mc-defined-release-iwf-response-is-distinct-from-optional-client-reply",
+      "title": "MCPTT 定义组：IWF 回应自己的请求，客户端回执仍可选",
+      "conditions": [
+        "正在判断 §10.3.5.5 中服务器发给 IWF 与发给 MCPTT 参与者的两条请求链。"
+      ],
+      "conclusion": "步骤 5 由 IWF 向 MCPTT 服务器回 IWF 组呼释放响应，确认收到的步骤 2 请求。步骤 6 由收到组呼释放请求的 MCPTT 客户端选择是否向服务器回组呼释放响应。IWF 确认没有被标为可选，不能从客户端可选推到 IWF 可选。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.5.5, steps 5–6 in Figure 10.3.5.5-1: IWF response to step 2 and optional client response"
+          ],
+          "printed_pages": [
+            65
+          ]
+        }
+      ],
+      "limitations": [
+        "步骤 5 不依赖把同一份客户端响应转发给 IWF。条款未将全部 MCPTT 客户端响应设为必等项；不要据此推定 IWF 未应答时的处理或自行改写图示顺序。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "whole-chat-release-resources-not-affiliation",
+      "title": "释放该聊天组呼的媒体和话权资源，不改变组归属",
+      "conditions": [
+        "正在查 §§10.3.5.4/.5 所述整场聊天组呼释放成功后的状态。"
+      ],
+      "conclusion": "相应的 MCPTT 客户端和 IWF 释放与这场被终止的聊天组呼关联的媒体面和话权控制资源。两节均指出，成功释放聊天组呼不改变任何参与客户端的组归属状态。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.5.4, step 6: release associated floor and media resources without changing affiliation"
+          ],
+          "printed_pages": [
+            64
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.5.5, step 7: release associated floor and media resources without changing affiliation"
+          ],
+          "printed_pages": [
+            65
+          ]
+        }
+      ],
+      "limitations": [
+        "不把挂断写成解除归属，不把先前一个人离开写成其他用户已被移除。不据一条响应推定其他终端或所有资源已经完成设备端清理。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-lmr-interworking-chat-group-setup",
+    "r16-calls-lmr-interworking-group-release",
+    "r16-calls-lmr-interworking-group-exit-after-deaffiliation",
+    "r16-calls-chat-participant-or-session-release"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.5.4, introduction and precondition 1: group defined by LMR, ongoing chat and whole-call scope"
+      ],
+      "printed_pages": [
+        63
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.5.4, precondition 2, Figure 10.3.5.4-1 and steps 1–3: LMR-initiated release, per-current-MCPTT-user forwarding and notification"
+      ],
+      "printed_pages": [
+        64
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.5.4, steps 4–5 in Figure 10.3.5.4-1: optional client response and server forwarding of that response"
+      ],
+      "printed_pages": [
+        64
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.5.4, step 6: release associated floor and media resources without changing affiliation"
+      ],
+      "printed_pages": [
+        64
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.5.5, introduction and precondition 1: MCPTT-defined group, release conditions and ongoing chat"
+      ],
+      "printed_pages": [
+        64
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.5.5, Figure 10.3.5.5-1 and step 1: server release decision and illustrative conditions"
+      ],
+      "printed_pages": [
+        65
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.5.5, steps 2–4: IWF request count by prior joins, per-MCPTT-participant request and notification"
+      ],
+      "printed_pages": [
+        65
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.5.5, steps 5–6 in Figure 10.3.5.5-1: IWF response to step 2 and optional client response"
+      ],
+      "printed_pages": [
+        65
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.5.5, step 7: release associated floor and media resources without changing affiliation"
+      ],
+      "printed_pages": [
+        65
+      ]
+    }
+  ],
+  "limitations": [
+    "不规定 LMR 决定释放的条件、MCPTT 计时器和人数阈值的取值，也不规定 LMR 定义组未收到可选客户端响应时的替代确认、错误处理或 SIP 表达。不从单条确认推断所有终端已释放，不把预安排组呼释放、个人解除归属后的退呼或聊天组的晚入与恢复覆盖套进来。",
+    "§10.3.5.6/.7 为空条款，§10.3.5.8/.9 是已有组呼的晚入；本页不从相邻节补写异常、个人退呼或恢复流程。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
