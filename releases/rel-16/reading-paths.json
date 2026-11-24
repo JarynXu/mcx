@@ -8731,6 +8731,110 @@
         }
       ],
       "boundary": "MCPTT、MCVideo、MCData 均适用。并用是终端必须具备的能力。手动或自动切到离网时宜尝试通知 MCX 业务；只有自动离网前，-003 才建议尝试利用附近合适的 ProSe 终端到网络中继。 并发不定义为中继。两项建议不保证通知送达、中继接通或原会话转移成功；本节也没有规定通知报文。"
+    },
+    {
+      "id": "r16-bearers-prose-relay-streaming",
+      "question": "在网与离网终端之间如何收发、转发实时数据？两台离网终端改用中继或直连时，怎样判断哪一场通信须尽量少中断？",
+      "start": "topics/bearers/prose-relay-streaming.md",
+      "next_if": [
+        {
+          "condition": "如果两个端点路径是在网与对端离网直连之间转换，要查谁能手动或自动切换。",
+          "read": "topics/bearers/offnetwork-direct-path-switching.md"
+        },
+        {
+          "condition": "要查按业务组寻找可用的 UE 到网络中继，核对通告或征询双方如何匹配服务码。",
+          "read": "topics/bearers/relay-discovery-by-group.md"
+        },
+        {
+          "condition": "问题是已收到的媒体可转给哪个用户或组，而非经 UE 到网络中继在用户间转发实时数据。",
+          "read": "topics/media/user-media-forwarding.md"
+        },
+        {
+          "condition": "原 MCPTT 通话改经另一终端接入同一网络侧业务，要查锚定会话的 Stage 2 示例或 Stage 3 接入转移程序。",
+          "read": "topics/bearers/anchored-session-transfer.md"
+        }
+      ],
+      "boundary": "§§7.12.1–7.12.3 的 Stage 1 需求均列入 MCPTT、MCVideo、MCData 的适用表。区分 UE 到网络中继、两台离网终端间的 UE 到 UE 中继以及与对端直连；收发能力、转发授权、中继选择和一次通信实际延续不是同一件事。"
+    },
+    {
+      "id": "r16-bearers-offnetwork-direct-path-switching",
+      "question": "何时须能自动切到离网直连？覆盖内和覆盖外的手动切换分别要核对谁的资格？一场原通信切回在网，是否须自动回切且全程无中断？",
+      "start": "topics/bearers/offnetwork-direct-path-switching.md",
+      "next_if": [
+        {
+          "condition": "若离网一侧使用 UE 到 UE 中继，或者离网直连与 UE 到 UE 中继互换，查相应的路径对。",
+          "read": "topics/bearers/prose-relay-streaming.md"
+        },
+        {
+          "condition": "原通信从一个网络换到另一个网络，两侧都在网，要查归属网络与受访网络的授权。",
+          "read": "topics/bearers/onnetwork-inter-network-mobility.md"
+        },
+        {
+          "condition": "终端改经 UE 到网络中继而继续使用网络侧 MCPTT 服务器，要核实原锚定会话的接入转移。",
+          "read": "topics/bearers/anchored-session-transfer.md"
+        }
+      ],
+      "boundary": "限 §7.13 的自动能力、手动手段和原通信在在网与对端离网 ProSe 直连间双向切换时的中断。没有规定每次出覆盖必然切成、覆盖外能接入网络、自动回网或零中断。"
+    },
+    {
+      "id": "r16-security-offnetwork-audit-metadata-retrieval",
+      "question": "离网时收集哪些审计元数据，恢复在网后能取回什么？",
+      "start": "topics/security/offnetwork-audit-metadata-retrieval.md",
+      "next_if": [
+        {
+          "condition": "问题涉及在网组通信或私通信的元数据和传输内容。",
+          "read": "topics/security/onnetwork-communication-recording-and-audit.md"
+        },
+        {
+          "condition": "问题涉及在网非通信活动的日志、授权失败或网络接入事件。",
+          "read": "topics/security/onnetwork-activity-audit.md"
+        }
+      ],
+      "boundary": "§7.14 对 MCPTT、MCVideo、MCData 均适用。离网收集同时覆盖组通信、私通信与非通信活动；通信须记录发送参与者和接收参与者的元数据。恢复在网后，MCX 业务须能从离网时已经收集元数据的那台终端取回通信与非通信活动元数据。"
+    },
+    {
+      "id": "r16-bearers-offnetwork-private-ue-to-ue-relay",
+      "question": "离网私通信：对端不能直达时，终端须能判断什么？",
+      "start": "topics/bearers/offnetwork-private-ue-to-ue-relay.md",
+      "next_if": [
+        {
+          "condition": "所问是同一离网中继为指定业务组转发，或组接收端两路均收到，即收到了原始和中继传输。",
+          "read": "topics/bearers/offnetwork-group-ue-to-ue-relay.md"
+        },
+        {
+          "condition": "要判断具体的一场普通离网 MCPTT 手动应答私呼是否已建立，而不是判断中继业务能力。",
+          "read": "topics/calls/offnetwork-private-manual-client.md"
+        }
+      ],
+      "boundary": "§7.15.1 的三项要求分别适用于离网 MCPTT、MCVideo、MCData。-003 要求终端先能判断目标终端是否在源终端直通范围内；若不在，须能判断目标是否在某台中继的通信范围内，且该中继须在源终端直通范围内。-001 的私通信能力和 -002 的用户查询机制各自成立。"
+    },
+    {
+      "id": "r16-bearers-offnetwork-group-ue-to-ue-relay",
+      "question": "离网组通信：谁能配置终端间中继，接收端怎样处理原始和中继传输？",
+      "start": "topics/bearers/offnetwork-group-ue-to-ue-relay.md",
+      "next_if": [
+        {
+          "condition": "要查源用户与指定对端私通信以及直达、经中继可达两种情况。",
+          "read": "topics/bearers/offnetwork-private-ue-to-ue-relay.md"
+        },
+        {
+          "condition": "目标是按业务组寻找接入网络的中继，而非离网终端间的转发。",
+          "read": "topics/bearers/relay-discovery-by-group.md"
+        }
+      ],
+      "boundary": "§7.15.2 对离网 MCPTT、MCVideo、MCData 均适用。管理员或获授权用户须能配置具备 ProSe 能力且已获准充当 UE-to-UE 中继的终端，为一个或多个指定组转发收到的任何该组业务传输。若接收终端两路均收到（原始组传输与经中继的传输），须能关联两者、正确排序直收和间接收到的混合数据包，并识别重复包。"
+    },
+    {
+      "id": "r16-bearers-air-ground-air-service-capability",
+      "question": "地面与机上用户通信时，MCX 业务须支持的飞行高度和速度是多少？",
+      "start": "topics/bearers/air-ground-air-service-capability.md",
+      "next_if": [
+        {
+          "condition": "问题变为同一场在网通信从一个网络转到另一个网络时，中断应如何处理；飞行本身不能证明发生了换网。",
+          "read": "topics/bearers/onnetwork-inter-network-mobility.md"
+        }
+      ],
+      "boundary": "至少一名地面 MCX 用户与一名或多名乘坐正在飞行的直升机或飞机的 MCX 用户，可点对点或组通信。MCPTT、MCVideo、MCData 均列 R-9.2-001。高度可达 15.000 ft（一万五千英尺），速度可达 [450]km/h。 §9.2 未指定高度基准、无线接入或切换程序；不证明飞行器认证、航线实际部署、覆盖或每次通信无中断。"
     }
   ]
 }
