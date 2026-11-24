@@ -10939,6 +10939,30 @@
         }
       ],
       "boundary": "预期逐人解除时，MC 业务服务器可按组策略和用户订阅解除该成员，也可保存所请求组上的用户归属状态。不预期逐人解除时，信令解除 IWF 对该组的归属，因而解除它所代表的整个 LMR 系统对该组的归属。 MC 业务服务器向组管理服务器（GMS）发解除归属状态更新，GMS 保存并更新组归属状态；向 IWF 回解除归属响应的是 MC 业务服务器。 本节不规定电台在 LMR 内部如何解除，也未给出具体报文字段、失败处理或终端实收证据。组归属状态不能代替通话退出或整场释放的证据。"
+    },
+    {
+      "id": "r16-calls-lmr-interworking-private-release",
+      "question": "MCPTT 终端主动挂断与 LMR 经 IWF 请求结束时，MCPTT 服务器分别等谁回应，再回给谁？ 服务器因时长上限或收发空闲主动结束互通私呼时，能用 IWF 的回执代替 MCPTT 终端的回执吗？ 没建立话权控制的互通私呼也释放媒体资源吗？看到一条结束响应，能否判断两端资源已释放？",
+      "start": "topics/calls/lmr-interworking-private-release.md",
+      "next_if": [
+        {
+          "condition": "若在追自动开始的互通私呼怎样获得准入、重试或建立媒体，查建立流程。",
+          "read": "topics/calls/lmr-interworking-private-auto-setup.md"
+        },
+        {
+          "condition": "若结束的是一整场互通组呼，先确认组宿主，再查对应的释放流程。",
+          "read": "topics/calls/lmr-interworking-group-release.md"
+        },
+        {
+          "condition": "若查的是普通在网 MCPTT 私呼由客户端结束的 Stage 3 行为，查 TS 24.379 的独立流程。",
+          "read": "topics/calls/private-client-release.md"
+        },
+        {
+          "condition": "若查的是普通在网 MCPTT 私呼由服务器触发结束的 Stage 3 条件，查 TS 24.379，不把它套到这三种互通流程。",
+          "read": "topics/calls/server-private-call-release.md"
+        }
+      ],
+      "boundary": "MCPTT 用户已为接收业务完成登记，正经 IWF 与 LMR 用户通话。私呼可用自动或手动方式开始，也可不启用话权控制。 MCPTT 终端发起时，服务器收到 IWF 确认后再回终端。LMR 经 IWF 发起时，服务器收到终端确认后再回 IWF。服务器发起时，MCPTT 终端和 IWF 各自确认服务器发给自己的请求。 三种流程均由 MCPTT 终端和 IWF 释放本次通话的全部媒体面资源；已建立话权控制时还释放话权资源，MCPTT 终端不能再为本次通话请求话权或发送媒体。 只收录正在进行的互通私呼。结束响应不是资源实已释放的证据。这里不定义 SIP 方法、字段或状态码、未收到响应时的处理、LMR 侧通知办法或组呼流程。"
     }
   ]
 }

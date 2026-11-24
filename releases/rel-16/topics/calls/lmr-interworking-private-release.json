@@ -1,0 +1,229 @@
+{
+  "topic_id": "r16-calls-lmr-interworking-private-release",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCPTT–LMR 互通私呼挂断：服务器要等谁回应？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v16.8.0",
+  "condition_rule": "各声明继承共同条件。按本次结束请求的发起方区分流程，不以原通话的主叫或被叫判定。",
+  "common_conditions": [
+    "Release 16。MCPTT 终端上的用户已登记接收 MCPTT 业务，且正经 IWF 与 LMR 用户进行一场已建立的私呼。",
+    "该私呼可通过手动或自动方式开始；本页覆盖有话权控制和无话权控制的情形。"
+  ],
+  "claims": [
+    {
+      "id": "client-initiated-server-replies-after-iwf-response",
+      "title": "MCPTT 终端发起：服务器收 IWF 确认后才响应终端",
+      "conditions": [
+        "MCPTT 用户在终端上请求结束这场互通私呼。"
+      ],
+      "conclusion": "MCPTT 终端经 SIP 核心网向 MCPTT 服务器发私呼结束请求。服务器向 IWF 发对应的结束请求，按原请求指定的 MCPTT 客户端 ID 寻址。IWF 向服务器回结束响应；服务器收到后，为终端的原请求生成响应。LMR 用户也会收到结束通知。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.4.1, opening, precondition, Figure 10.4.4.1-1, steps 1–5 and NOTE (terminal-originated signalling and server acknowledgement)"
+          ],
+          "printed_pages": [
+            96,
+            97
+          ]
+        }
+      ],
+      "limitations": [
+        "IWF 给服务器的回应与服务器为终端生成的回应属于两段信令。服务器发给 IWF 的请求并不表示已收到 IWF 的确认。",
+        "原文没有规定 LMR 内部通知办法，也未给出这里的 SIP 方法、身份字段或响应码。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "server-initiated-client-and-iwf-acknowledge-their-own-requests",
+      "title": "服务器发起：MCPTT 终端和 IWF 各回服务器",
+      "conditions": [
+        "MCPTT 服务器判定这场私呼满足结束条件。"
+      ],
+      "conclusion": "管理员配置的最长私呼时长到期，或通话无收发达到允许时限，都是触发例子。服务器经 SIP 核心网向 MCPTT 终端发结束请求，也向 IWF 发对应请求；第 2b 步的寻址使用与 LMR 用户关联的 MCPTT 客户端身份。MCPTT 用户和 LMR 用户会收到结束通知。MCPTT 终端和 IWF 各向服务器确认自己收到的请求。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.4.2, opening, precondition, Figure 10.4.4.2-1, steps 1–4 and NOTE (server trigger and two request/response legs)"
+          ],
+          "printed_pages": [
+            97,
+            98
+          ]
+        }
+      ],
+      "limitations": [
+        "触发例子不是完整条件清单，也没有指定具体定时器或取值。",
+        "一侧回应不能替代另一侧的回应；第 4 步没有规定两个回应中何者必须先到。LMR 侧的通知办法未定义。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-initiated-server-replies-to-iwf-after-client-response",
+      "title": "LMR 侧发起：服务器收 MCPTT 终端确认后才响应 IWF",
+      "conditions": [
+        "LMR 用户或 LMR 系统请求结束这场互通私呼。"
+      ],
+      "conclusion": "IWF 向 MCPTT 服务器发结束请求。服务器向原 IWF 请求指定的 MCPTT 终端发对应的私呼结束请求，MCPTT 用户收到结束通知。终端向服务器确认，服务器收到后，为 IWF 的请求生成响应。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.4.3, opening, precondition, Figure 10.4.4.3-1, steps 1–6 (LMR-originated signalling and server acknowledgement)"
+          ],
+          "printed_pages": [
+            98,
+            99
+          ]
+        }
+      ],
+      "limitations": [
+        "图中 IWF 的请求发给 MCPTT 服务器，终端收到的是该服务器另发的请求。这里不定义 LMR 用户如何向本系统表达结束意图，也不以看到服务端响应判定终端在现场已释放资源。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "client-and-iwf-release-media-and-conditional-floor-resources",
+      "title": "媒体资源由终端与 IWF 释放；话权资源看原通话是否有话权控制",
+      "conditions": [
+        "三种发起方式中的任一种执行到本流程的资源释放步骤。"
+      ],
+      "conclusion": "三种流程均由 MCPTT 终端和 IWF 释放本次通话的全部媒体面资源；已建立话权控制时还释放话权资源，MCPTT 终端不能再为本次通话请求话权或发送媒体。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.4.1, Figure 10.4.4.1-1 and step 6 (media and conditional floor resource release)"
+          ],
+          "printed_pages": [
+            96,
+            97
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.4.2, Figure 10.4.4.2-1 and step 5 (media and conditional floor resource release)"
+          ],
+          "printed_pages": [
+            97,
+            98
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.4.3, Figure 10.4.4.3-1 and step 7 (media and conditional floor resource release)"
+          ],
+          "printed_pages": [
+            98,
+            99
+          ]
+        }
+      ],
+      "limitations": [
+        "无话权控制不影响本次媒体面资源的释放。话权控制分支不应外推到无话权控制的场景。",
+        "图示给出成功流程的资源动作，不用一条控制面响应证明两端资源在现场均已释放；本节未定义无响应、超时恢复或重试。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-lmr-interworking-private-auto-setup",
+    "r16-calls-lmr-interworking-group-release",
+    "r16-calls-private-client-release",
+    "r16-calls-server-private-call-release"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.4.4.1, opening, precondition, Figure 10.4.4.1-1, steps 1–5 and NOTE (terminal-originated signalling and server acknowledgement)"
+      ],
+      "printed_pages": [
+        96,
+        97
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.4.4.2, opening, precondition, Figure 10.4.4.2-1, steps 1–4 and NOTE (server trigger and two request/response legs)"
+      ],
+      "printed_pages": [
+        97,
+        98
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.4.4.3, opening, precondition, Figure 10.4.4.3-1, steps 1–6 (LMR-originated signalling and server acknowledgement)"
+      ],
+      "printed_pages": [
+        98,
+        99
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.4.4.1, Figure 10.4.4.1-1 and step 6 (media and conditional floor resource release)"
+      ],
+      "printed_pages": [
+        96,
+        97
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.4.4.2, Figure 10.4.4.2-1 and step 5 (media and conditional floor resource release)"
+      ],
+      "printed_pages": [
+        97,
+        98
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.4.4.3, Figure 10.4.4.3-1 and step 7 (media and conditional floor resource release)"
+      ],
+      "printed_pages": [
+        98,
+        99
+      ]
+    }
+  ],
+  "limitations": [
+    "只收录正在进行的互通私呼。结束响应不是资源实已释放的证据。这里不定义 SIP 方法、字段或状态码、未收到响应时的处理、LMR 侧通知办法或组呼流程。",
+    "本页不展开回指的 TS 23.379 条款，也不从普通私呼或整场组呼推定本流程的信令细节。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
