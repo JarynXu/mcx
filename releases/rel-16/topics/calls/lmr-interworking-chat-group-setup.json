@@ -1,0 +1,312 @@
+{
+  "topic_id": "r16-calls-lmr-interworking-chat-group-setup",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCPTT–LMR 聊天组呼：加入时谁核什么，什么时候建媒体面？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v16.8.0",
+  "condition_rule": "每条结论继承共同条件。区分哪一方发起、组由哪一侧定义、请求是否携带位置，以及是否请求发话且媒体尚未建立。",
+  "common_conditions": [
+    "这里是 MCPTT 用户加入 LMR 定义的聊天组，或 LMR 用户加入 MCPTT 定义的聊天组。IWF 已配置两系统的组和用户身份映射；跨系统且经 IWF 的信令由 IWF 转换身份和协议。"
+  ],
+  "claims": [
+    {
+      "id": "chat-model-adaptation-is-possible",
+      "title": "LMR 不原生支持聊天组时，IWF 仍可能做适配",
+      "conditions": [
+        "LMR 系统不支持聊天组概念。"
+      ],
+      "conclusion": "IWF 仍可能把其 LMR 呼叫适配到 MCPTT 聊天组模型。§10.3.5.1 以 TS 23.379 §10.6.2.3.1.2 为基础。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.5.1, sole paragraph: TS 23.379 dependency and optional IWF chat-model adaptation"
+          ],
+          "printed_pages": [
+            61
+          ]
+        }
+      ],
+      "limitations": [
+        "不要求每个 IWF 都支持适配；条款未说明如何适配。回指不替代本页的 IWF 互通流程。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mc-origin-lmr-defined-privacy-gates-location-forwarding",
+      "title": "MCPTT 用户加入 LMR 定义组：有位置才核隐私，再决定是否转给 IWF",
+      "conditions": [
+        "互通组定义在 LMR 系统，组信息已由配置或创建让 MCPTT 服务器和 IWF 知道；MCPTT 用户表示加入通信。"
+      ],
+      "conclusion": "客户端向 MCPTT 服务器发组加入请求。若请求发话，请求带隐式话权请求指示和按需携带的加入方位置。服务器检查请求是否含位置；含位置时，核对请求用户在通话中发言时可否分享位置的隐私策略。服务器按检查结果向 IWF 转 IWF 组加入请求，转发可以带位置或不带位置。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.5.2, introduction, preconditions 1–2 and NOTE: LMR-defined group, known group and IWF identity mapping"
+          ],
+          "printed_pages": [
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.5.2, Figure 10.3.5.2-1 and steps 1–3: client join, optional location, server privacy decision and forwarding"
+          ],
+          "printed_pages": [
+            62
+          ]
+        }
+      ],
+      "limitations": [
+        "该策略对应 TS 23.379 附录 A.3，决定位置能否给本次通话的其他 MCPTT 用户和 IWF。不把位置隐私判断写成组归属核权或加入拒绝，也不推断位置如何取得。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-origin-mc-defined-authorize-id-and-affiliate-if-missing",
+      "title": "LMR 用户加入 MCPTT 定义组：核对 MCPTT ID，获准但未归属时才补隐式归属",
+      "conditions": [
+        "互通组定义在 MCPTT，IWF 已从配置获知组信息，图中的两个 MCPTT 用户此前已归属该组；LMR 用户发起加入。"
+      ],
+      "conclusion": "IWF 向 MCPTT 服务器发 IWF 组加入请求。条款先说明加入请求可含发言方位置，另写明有发话请求时要带隐式话权请求指示和所需的加入方位置。服务器核对 MCPTT ID 是否获准归属该组。在本条的成功流程中，若该 ID 尚未归属才生成隐式归属；已归属不重复生成。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.5.3, introduction and precondition 1: MCPTT-defined group known at the IWF"
+          ],
+          "printed_pages": [
+            62
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.5.3, preconditions 2–4 and NOTE, Figure 10.3.5.3-1: previously affiliated MCPTT users, mapping and LMR join"
+          ],
+          "printed_pages": [
+            63
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.5.3, step 1: IWF join, optional transmitting-party location, and implicit floor when requesting transmission"
+          ],
+          "printed_pages": [
+            63
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.5.3, steps 2–3: affiliation authorization, implicit affiliation if missing, server media choice and response"
+          ],
+          "printed_pages": [
+            63
+          ]
+        }
+      ],
+      "limitations": [
+        "不把位置的两句合并成“只有带隐式话权指示才准有位置”，也不由此判断未请求发话时可传哪类位置，或认定该方向无需隐私保护。本节没有说明 MCPTT ID 从哪种模式选择或核权未通过时返回什么。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "chat-join-response-parameter-selection-owner",
+      "title": "加入响应中的媒体参数：LMR 定义组由 IWF 选，MCPTT 定义组由服务器选",
+      "conditions": [
+        "正在查这两个相反方向的加入请求已获接受的流程。"
+      ],
+      "conclusion": "MCPTT 用户加入 LMR 定义组时，IWF 选择媒体参数，把接受和所选参数放入 IWF 组加入响应。MCPTT 服务器把该响应转为组加入响应给 MCPTT 客户端。LMR 用户加入 MCPTT 定义组时，MCPTT 服务器选择媒体参数，在 IWF 组加入响应中把接受结果和所选参数回复 IWF。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.5.2, steps 4–5: IWF acceptance and media choice, server forwarding"
+          ],
+          "printed_pages": [
+            62
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.5.3, steps 2–3: affiliation authorization, implicit affiliation if missing, server media choice and response"
+          ],
+          "printed_pages": [
+            63
+          ]
+        }
+      ],
+      "limitations": [
+        "不把转发响应的服务器当成本例参数选择者。响应承载加入结果和所选参数，不证明媒体面已经建立、终端已获话权或 LMR 无线侧的结果。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "transmit-gates-media-and-affiliation-keeps-floor-signalling",
+      "title": "发话请求触发媒体建立；后续话权信令仍看是否有人归属",
+      "conditions": [
+        "正在按图 10.3.5.2-1 步骤 6–7 或图 10.3.5.3-1 步骤 4–5 判断媒体和话权。"
+      ],
+      "conclusion": "在 §10.3.5.2 由 MCPTT 客户端、在 §10.3.5.3 由 IWF 请求发话。收到这个发话请求时，若媒体面还未建立，由 MCPTT 服务器建立；不会仅因加入获接受就触发建立。在本次呼叫期间，各自的话权参与者继续使用话权控制。至少还有一人归属时，后续本组呼叫仍使用话权控制方式的媒体面信令。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.5.2, steps 6–7: transmission request, existing media guard and continued floor signalling"
+          ],
+          "printed_pages": [
+            62
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.5.3, steps 4–5: transmission request, existing media guard and continued floor signalling"
+          ],
+          "printed_pages": [
+            63
+          ]
+        }
+      ],
+      "limitations": [
+        "没看到发话请求不能证明先前不存在媒体面；请求发话不证明已获发言权。条款未要求额外发送一条独立的发话请求消息。后续话权信令的归属条件不是媒体资源永远不释放的规则。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-lmr-chat-return-to-coverage",
+    "r16-calls-lmr-interworking-prearranged-group-setup",
+    "r16-mcptt-chat-establish-join",
+    "r16-groups-mc-hosted-lmr-affiliation"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.5.1, sole paragraph: TS 23.379 dependency and optional IWF chat-model adaptation"
+      ],
+      "printed_pages": [
+        61
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.5.2, introduction, preconditions 1–2 and NOTE: LMR-defined group, known group and IWF identity mapping"
+      ],
+      "printed_pages": [
+        61
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.5.2, Figure 10.3.5.2-1 and steps 1–3: client join, optional location, server privacy decision and forwarding"
+      ],
+      "printed_pages": [
+        62
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.5.2, steps 4–5: IWF acceptance and media choice, server forwarding"
+      ],
+      "printed_pages": [
+        62
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.5.2, steps 6–7: transmission request, existing media guard and continued floor signalling"
+      ],
+      "printed_pages": [
+        62
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.5.3, introduction and precondition 1: MCPTT-defined group known at the IWF"
+      ],
+      "printed_pages": [
+        62
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.5.3, preconditions 2–4 and NOTE, Figure 10.3.5.3-1: previously affiliated MCPTT users, mapping and LMR join"
+      ],
+      "printed_pages": [
+        63
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.5.3, step 1: IWF join, optional transmitting-party location, and implicit floor when requesting transmission"
+      ],
+      "printed_pages": [
+        63
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.5.3, steps 2–3: affiliation authorization, implicit affiliation if missing, server media choice and response"
+      ],
+      "printed_pages": [
+        63
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.5.3, steps 4–5: transmission request, existing media guard and continued floor signalling"
+      ],
+      "printed_pages": [
+        63
+      ]
+    }
+  ],
+  "limitations": [
+    "仅覆盖这两条聊天组加入及其成功流程。不把位置隐私检查等同于归属核权，不拿加入响应推定话权授予、媒体可用或其他端状态。未规定 IWF 本地适配方法、无线侧处理、SIP 字段或拒绝流程。不覆盖已有组呼晚入、恢复覆盖或整场释放，也不照搬预安排组呼的组员分发。",
+    "§10.3.5.8/.9 的前提是已有组呼。本页不把它们的晚入标识、话权占用通知和媒体处理套给 §§10.3.5.2/.3，也不给后两节额外加“绝无进行中的组呼”前提。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
