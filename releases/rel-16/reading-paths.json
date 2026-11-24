@@ -8575,6 +8575,162 @@
         }
       ],
       "boundary": "TS 22.280 V16.8.0 §7.5（离网 Stage 1）。组成员与通信范围须同时满足，且限同一 MCX 业务。A.1/B.1 列两项，C.1 同一行标 NA；不把交付义务当作某台终端的收件回执。"
+    },
+    {
+      "id": "r16-bearers-offnetwork-communication-priority",
+      "question": "离网 MCX 的优先级属性分给谁？应用优先级怎样映射到 ProSe？",
+      "start": "topics/bearers/offnetwork-communication-priority.md",
+      "next_if": [
+        {
+          "condition": "若要判断离网组有哪些抢占权限、资源不足时何时必须抢占较低优先级的通信。",
+          "read": "topics/bearers/offnetwork-service-preemption.md"
+        },
+        {
+          "condition": "若通信实际在网，要查按事件分配、通信属性和可配置等级的优选数量。",
+          "read": "topics/bearers/onnetwork-application-priority-assignment.md"
+        },
+        {
+          "condition": "若比较在网管理员对组传输、业务组和组子集的配置能力。",
+          "read": "topics/groups/onnetwork-group-priority-administration.md"
+        },
+        {
+          "condition": "若需分别检查在网通信、传输使用哪些属性。",
+          "read": "topics/bearers/onnetwork-priority-attributes.md"
+        }
+      ],
+      "boundary": "条文没有要求为同一业务组的每次组通信重新分配三个属性，也没有规定语音与数据用相同还是不同的优先级。8 不是固定总数或 ProSe 等级数；没有给出固定映射、权重和计算公式，也不要求两方面的排序相同。组的传输排序、单个应用优先级值或映射结果不能作为一次通信已被呈现、抢占或分到资源的证据。"
+    },
+    {
+      "id": "r16-bearers-offnetwork-service-preemption",
+      "question": "离网 MCX 通信何时必须通过抢占取得资源？",
+      "start": "topics/bearers/offnetwork-service-preemption.md",
+      "next_if": [
+        {
+          "condition": "若要查 MCX 业务组或私通信须获配的三项属性、组间排序、最低等级数或 ProSe 映射。",
+          "read": "topics/bearers/offnetwork-communication-priority.md"
+        },
+        {
+          "condition": "若实际问题是第 6 章的在网业务抢占或按优先级排队、保留。",
+          "read": "topics/bearers/onnetwork-service-preemption.md"
+        },
+        {
+          "condition": "若只查已建离网 MCPTT 组呼内的在讲话权如何交接（Stage 3）。",
+          "read": "topics/calls/offnetwork-floor-preemption.md"
+        },
+        {
+          "condition": "若只查已建离网 MCVideo 组通信中，单仲裁且发送人数达上限时如何替换发送者（Stage 2）。",
+          "read": "topics/mcvideo/offnetwork-sender-override.md"
+        }
+      ],
+      "boundary": "目标组的权限不能用发起用户的高优先级代替。支持抢占不表示已经抢占；能取得话权或视频发送许可也不证明有其他通信被抢占、资源因此转给本次通信。条文未规定如何选取被抢占的通信或裁决同优先级，获得资源不等于通信已经完成。"
+    },
+    {
+      "id": "r16-calls-offnetwork-emergency-group-communication",
+      "question": "离网紧急组通信：谁能把正在进行的通信转为紧急？发起和取消分别通知谁？",
+      "start": "topics/calls/offnetwork-emergency-group-communication.md",
+      "next_if": [
+        {
+          "condition": "若所指为离网 MCVideo 或 MCData 紧急告警的发起、取消或回执，而不是一场紧急组通信。",
+          "read": "topics/calls/offnetwork-group-emergency-alert.md"
+        },
+        {
+          "condition": "若所问为离网 MCPTT 普通组呼转为紧急时，一台终端的呼叫类型是否实际变更。",
+          "read": "topics/calls/offnetwork-group-emergency-upgrade.md"
+        },
+        {
+          "condition": "若要查离网 MCVideo 的组紧急状态和客户端本地紧急状态。",
+          "read": "topics/mcvideo/offnetwork-emergency-group-states.md"
+        }
+      ],
+      "boundary": "仅限离网 MCPTT、MCVideo 的 Stage 1 紧急组通信要求。发起时须能向通信中的所有其他用户发送；取消时须把指示和取消者身份发给已归属成员。未规定取消权限、取消者标识类型或回执。MCData 的离网组紧急告警是另一程序。"
+    },
+    {
+      "id": "r16-calls-offnetwork-imminent-peril-group-communication",
+      "question": "离网迫近危险组通信：谁设状态、谁获知变化？他人取消时须能清除哪台终端的状态记录？",
+      "start": "topics/calls/offnetwork-imminent-peril-group-communication.md",
+      "next_if": [
+        {
+          "condition": "若要查离网 MCVideo 中组状态、客户端状态及具体取消消息，而非共用业务要求。",
+          "read": "topics/mcvideo/offnetwork-emergency-group-states.md"
+        },
+        {
+          "condition": "若所问为 MCVideo、MCData 离网组紧急告警发起和撤警，而非迫近危险组通信。",
+          "read": "topics/calls/offnetwork-group-emergency-alert.md"
+        },
+        {
+          "condition": "若属在网迫近危险组通信，要查在网优先级请求或组状态的起点。",
+          "read": "topics/calls/onnetwork-imminent-peril-group-communication.md"
+        }
+      ],
+      "boundary": "离网 MCPTT、MCVideo 的 Stage 1 要求。状态更新面向其他参与者，取消指示和取消者的业务用户 ID 面向已归属成员。只有他人已取消这个状态，才触发本条针对状态发起人终端的清除机制要求；本条没有列出哪些人有代取消权限。MCData 对两个子条款均为 NA。"
+    },
+    {
+      "id": "r16-location-offnetwork-ue-location-and-distance",
+      "question": "离网时，发送本机位置和获取终端间的距离各有什么条件？",
+      "start": "topics/location/offnetwork-ue-location-and-distance.md",
+      "next_if": [
+        {
+          "condition": "要判断离网终端交换位置和身份信息时如何区分机密性与发送者认证。",
+          "read": "topics/security/offnetwork-location-and-identity-protection.md"
+        },
+        {
+          "condition": "若问在网时谁能限制位置传播、启动或停用报告。",
+          "read": "topics/location/onnetwork-location-sharing-and-report-control.md"
+        }
+      ],
+      "boundary": "规范性表 A.1（MCPTT）、B.1（MCVideo）、C.1（MCData）的 §7.8 行都列出 R-7.8-001 和 R-7.8-002。R-7.8-001 限于发送本机已知位置且受隐私限制；R-7.8-002 要求提供获取本机与通信范围内其他 MCX 终端间距离的方式，不等于获得对端坐标。两项没有把 LMS 注册、订阅或上报列为步骤。"
+    },
+    {
+      "id": "r16-security-offnetwork-location-and-identity-protection",
+      "question": "离网终端交换位置和身份信息时，哪些信息要保密，要认证的是谁？",
+      "start": "topics/security/offnetwork-location-and-identity-protection.md",
+      "next_if": [
+        {
+          "condition": "要查离网终端能向谁发送自己的位置，或什么时候可以获取与对端的距离。",
+          "read": "topics/location/offnetwork-ue-location-and-distance.md"
+        },
+        {
+          "condition": "若问在网终端能否要求认证 MCX 业务本身。",
+          "read": "topics/security/service-authentication-requirements.md"
+        }
+      ],
+      "boundary": "规范性表 A.1（MCPTT）、B.1（MCVideo）、C.1（MCData）的 §7.9 行都列出 R-7.9-001 和 R-7.9-002。R-7.9-001 针对两个方向上的位置和身份信息，R-7.9-002 针对携带位置和身份信息的消息的发送者。§7.9 没有指定算法、密钥分发方式或认证报文。保护机密性不能证明已认证发送者；认证了发送者也不能证实位置准确或仍是当前位置。"
+    },
+    {
+      "id": "r16-security-offnetwork-service-availability-and-authorization",
+      "question": "没有任何固定基础设施时，谁能使用离网 MCX 业务？",
+      "start": "topics/security/offnetwork-service-availability-and-authorization.md",
+      "next_if": [
+        {
+          "condition": "这次通信仍通过回传已中断的 LTE 站点接入，要判断孤立网提供的本地 MCPTT 能力；终端仍在覆盖内不足以判定。",
+          "read": "topics/bearers/iops-local-mcptt-service.md"
+        },
+        {
+          "condition": "要核对离网终端的配置管理、组管理职责，而不是给用户授予离网业务资格。",
+          "read": "topics/groups/offnetwork-configuration-roles.md"
+        },
+        {
+          "condition": "已有普通离网 MCPTT 组呼记录，要查客户端怎样探测或加入。",
+          "read": "topics/calls/offnetwork-group-client.md"
+        }
+      ],
+      "boundary": "MCPTT、MCVideo、MCData 均适用。完全无固定设施是运行能力的考察条件；离网使用者仍须获授权；MCX 业务须为业务管理员提供授权机制。 未规定凭据、授权时点或检查程序。终端互通、业务已配置或出现一次组呼公告，不能单独证明这名用户已获授权。"
+    },
+    {
+      "id": "r16-bearers-offnetwork-ue-concurrent-use-and-departure",
+      "question": "终端能同时用在网和离网业务吗？切到离网时，该通知谁、何时该试中继？",
+      "start": "topics/bearers/offnetwork-ue-concurrent-use-and-departure.md",
+      "next_if": [
+        {
+          "condition": "要判断远端终端和中继按业务组怎样通告或征询，查 Stage 2 的发现程序。",
+          "read": "topics/bearers/relay-discovery-by-group.md"
+        },
+        {
+          "condition": "已有 MCPTT 锚定会话，想核对直连接入改经中继时的协议程序，查该页的 TS 24.379 §14A 部分。",
+          "read": "topics/bearers/anchored-session-transfer.md"
+        }
+      ],
+      "boundary": "MCPTT、MCVideo、MCData 均适用。并用是终端必须具备的能力。手动或自动切到离网时宜尝试通知 MCX 业务；只有自动离网前，-003 才建议尝试利用附近合适的 ProSe 终端到网络中继。 并发不定义为中继。两项建议不保证通知送达、中继接通或原会话转移成功；本节也没有规定通知报文。"
     }
   ]
 }
