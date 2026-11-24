@@ -5637,6 +5637,16 @@ KM 客户端不连接外部 KMS。迁移 KMS 角色允许提供 KRR，不改变 
 
 [读取主题](topics/security/kms-domain-roles.md)
 
+## 受邀终端接受会话时的非控制侧 P（Stage 3）
+
+非控制侧的受邀 MCPTT 终端接了组呼，NCF 这个终端对应的 P 从 Start-stop 进入什么状态？ 初始 SIP INVITE 收到 200 (OK) 就能说非控制侧 P 进入无许可吗？要查哪条内部接受指示？
+
+P 处于 Start-stop，并从同一 NCF 的话权控制服务器接口实际收到对应受邀 MCPTT 客户端已接受本次会话邀请的指示。该接受对应按 TS 24.379 收到该次初始 SIP INVITE 的 200 (OK) 响应；P 须进入 P: has no permission。
+
+尚未建立：只适用这个服务器侧 P。别腿未配对的 200 (OK)、re-INVITE 应答或缺少 P 实收指示的抓包不能代证该转换。该条不授予话权，不证明 RTP 已开始，也不确定终端 U、控制侧 U 或全局话权状态。
+
+[读取主题](topics/media/on-network-noncontrolling-floor-invitation-acceptance.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。
