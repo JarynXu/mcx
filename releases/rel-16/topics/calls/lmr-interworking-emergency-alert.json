@@ -1,0 +1,338 @@
+{
+  "topic_id": "r16-calls-lmr-interworking-emergency-alert",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "LMR 与 MC 业务互通：谁发紧急告警，谁回响应？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v16.8.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "Release 16；TS 23.283 V16.8.0 §§10.6.4.1–.2 的互通紧急告警发起和投递。发起者是 LMR 用户或 MC 业务用户。",
+    "MC 业务组已在组管理服务器（GMS）定义，图中的 MC 业务客户端 1 和 2 已归属到该组。",
+    "IWF 已接入 MC 业务系统并获准互通；IWF 已知该组是互通组（可由 LMR 或 MC 系统定义），且已配置两系统间的组与用户身份映射。"
+  ],
+  "related": [
+    "r16-groups-mc-hosted-lmr-affiliation",
+    "r16-calls-onnetwork-group-alert-location",
+    "r16-calls-common-emergency-alert-distribution"
+  ],
+  "limitations": [
+    "本页是两条互通紧急告警的功能过程。权限检查对应指定组和 MC 业务用户 ID，未给出判定准则、不通过时的响应或其他系统的准入处理。",
+    "不规定 IWF 怎样识别 LMR 侧的紧急情况、LMR 无线侧投递与回执、紧急呼叫建立或撤警、SIP 或无线侧报文。",
+    "只在各自的 IWF 请求中记录位置不可用的条件，不能推成收警 MC 业务客户端的通用兜底，也不能把任一功能响应当成其他请求的确认。",
+    "步骤 8 和 10 的隐式归属有各自前提和顺序，条款未定义归属有效期。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  },
+  "claims": [
+    {
+      "id": "interworking-alert-scenario-and-conversion",
+      "title": "互通告警的共同前提与 IWF 转换",
+      "conditions": [],
+      "conclusion": "两条过程使用已定义、有客户端归属的 MC 业务组。已接入且获准互通的 IWF 已知组的互通属性并配置两系统间的组和用户身份映射。穿过 IWF 的跨系统信令由 IWF 做身份转换和协议转换。",
+      "normative_strength": "Stage 2 场景前提与注释。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.4.1, opening, preconditions 1–4 and NOTE 1"
+          ],
+          "printed_pages": [
+            135
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.4.2, opening, preconditions 1–4 and NOTE 1"
+          ],
+          "printed_pages": [
+            136
+          ]
+        }
+      ],
+      "limitations": [
+        "获准互通不等于发起用户已获准对指定组发告警。两小节未给出转换规则或具体报文。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-origin-iwf-alert-request",
+      "title": "LMR 发起：IWF 向指定服务器请求",
+      "conditions": [
+        "告警已在 LMR 侧被请求，由 LMR 用户发起。该 IWF 可以已完成、也可以尚未办理该组的显式归属。"
+      ],
+      "conclusion": "IWF 向指定的 MC 业务服务器发送 IWF 紧急告警请求。若 IWF 拿不到 LMR 用户的位置，IWF 请求必须指示位置不可用。",
+      "normative_strength": "Stage 2 功能步骤；位置不可用时含明确 shall。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.4.1, preconditions 5–6, Figure 10.6.4.1-1 and step 1"
+          ],
+          "printed_pages": [
+            135
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.4.1, step 2 and NOTE 2"
+          ],
+          "printed_pages": [
+            136
+          ]
+        }
+      ],
+      "limitations": [
+        "不规定 IWF 如何识别 LMR 侧的紧急情况。位置不可用的指示指本腿的 IWF 请求。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-origin-group-authorization-and-iwf-confirmation",
+      "title": "LMR 发起：查代表身份的组权限，先确认 IWF 请求",
+      "conditions": [
+        "告警由 LMR 用户发起，IWF 已把告警请求送到指定的 MC 业务服务器。"
+      ],
+      "conclusion": "MC 业务服务器检查代表发起 LMR 用户的 MC 业务用户 ID 是否有权对指定组发起紧急告警，确定组员的归属状态。图示路径上，服务器回 IWF 确认该 IWF 请求。这与收警 MC 业务客户端向服务器发的回执不同。",
+      "normative_strength": "Stage 2 功能步骤。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.4.1, steps 3–4"
+          ],
+          "printed_pages": [
+            136
+          ]
+        }
+      ],
+      "limitations": [
+        "条款未定义未获准时的响应，也未把确认 IWF 请求等同于成员已收警。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mc-origin-group-authorization-and-client-confirmation",
+      "title": "MC 发起：查组和权限，确认客户端 1 的请求",
+      "conditions": [
+        "MC 业务用户 1 发起告警，使用 MC 业务客户端 1。"
+      ],
+      "conclusion": "客户端 1 向 MC 业务服务器发告警请求。服务器解析组 ID，确定组员归属，检查是否要通知 IWF。图中有已归属、由 IWF 服务的组员，所以在这个场景须通知 IWF。服务器还检查发起者的 MC 业务用户 ID 对指定组有无告警权限，然后在图示路径里回客户端 1 确认其请求。",
+      "normative_strength": "Stage 2 功能步骤；图示有已归属、由 IWF 服务的成员时，IWF 参与是 shall。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.4.2, Figure 10.6.4.2-1 and steps 1–4"
+          ],
+          "printed_pages": [
+            137
+          ]
+        }
+      ],
+      "limitations": [
+        "不以这张图补全其他场景的 IWF 参与规则或权限不通过的处理。向客户端 1 回的是发起请求的确认，不是收警端回执。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mc-origin-iwf-requests-and-confirmation",
+      "title": "MC 发起：代表归属只发一条，逐人归属按组员发",
+      "conditions": [
+        "告警由 MC 业务客户端 1 发起；本场景有已归属、由 IWF 服务的组员，步骤 3 已确定须通知 IWF。"
+      ],
+      "conclusion": "MC 业务服务器向 IWF 发告警请求。若客户端 1 的位置不可用，IWF 请求必须注明。IWF 已代表该组的 LMR 用户办理归属时，服务器只向 IWF 发一条。IWF 为 LMR 用户逐人办理归属时，服务器经 IWF 向每名已归属的 LMR 组员各发一条。IWF 回服务器确认 IWF 请求。",
+      "normative_strength": "Stage 2 功能步骤；位置不可用时含明确 shall，请求数量取决于图示的两种已办理归属方式。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.4.2, Figure 10.6.4.2-1 and steps 1–4"
+          ],
+          "printed_pages": [
+            137
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.4.2, steps 5–6"
+          ],
+          "printed_pages": [
+            137
+          ]
+        }
+      ],
+      "limitations": [
+        "不是按所有 LMR 组员发；逐人分支限定已归属组员。IWF 响应不证明每名电台用户收到或看到告警。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "affiliated-mc-client-delivery-and-confirmation",
+      "title": "已归属 MC 组员的客户端收到告警并另回执",
+      "conditions": [
+        "适用于图示任一发起方向的 MC 业务客户端投递。接收方是已归属的 MC 业务组员的客户端。"
+      ],
+      "conclusion": "MC 业务服务器将告警发给这些客户端。请求必须包含位置、MC 业务 ID、MC 业务组 ID 和发起用户的任务关键组织名称。组 ID 按组配置取用户选组或专用紧急组。MC 业务用户得到提示，收警客户端向服务器发告警响应。",
+      "normative_strength": "Stage 2 功能分发；收警请求的内容为 shall。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.4.1, steps 5–7"
+          ],
+          "printed_pages": [
+            136
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.4.2, steps 7–9"
+          ],
+          "printed_pages": [
+            137
+          ]
+        }
+      ],
+      "limitations": [
+        "发起确认或 IWF 回应不能代替本腿的客户端回执。这两个收警步骤没有把 IWF 请求的位置不可用指示指定为本腿的兜底规则。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-origin-implicit-affiliation",
+      "title": "LMR 发起：MC 定义组才办理图示的隐式归属",
+      "conditions": [
+        "告警由 LMR 用户发起。互通组在 MC 系统定义。"
+      ],
+      "conclusion": "步骤 8 中，尚未归属时，MC 业务服务器将该 LMR 用户的个人 MC 业务 ID 隐式归属到紧急组。若 IWF 配置为一次代表其所有组员办理归属，改用 IWF ID。步骤 8 可在步骤 3 后执行，最晚紧接步骤 7。",
+      "normative_strength": "Stage 2 有条件的功能步骤和顺序注释。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.4.1, step 8 and NOTE 4"
+          ],
+          "printed_pages": [
+            136
+          ]
+        }
+      ],
+      "limitations": [
+        "不适用于 LMR 系统定义的互通组。条款未给出隐式归属有效期。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mc-origin-implicit-affiliation-and-delivery-order",
+      "title": "MC 发起：投递顺序可互换，隐式归属另有条件",
+      "conditions": [
+        "告警由 MC 业务用户 1 发起，采用图示有已归属 IWF 侧组员的场景。"
+      ],
+      "conclusion": "向 IWF 投递（步骤 5）和向 MC 业务客户端投递（步骤 7）可以任一顺序进行。若发起客户端 1 尚未归属到紧急组，MC 业务服务器在步骤 10 为它隐式办理归属；步骤 10 可在步骤 3 后执行。",
+      "normative_strength": "Stage 2 有条件的功能步骤和顺序注释。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.4.2, step 10 and NOTE 3"
+          ],
+          "printed_pages": [
+            138
+          ]
+        }
+      ],
+      "limitations": [
+        "不把步骤 10 读成每次必做，也不套用 LMR 发起时“最晚紧接步骤 7”的限制。条款未给出隐式归属有效期。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "alert-only-and-emergency-state",
+      "title": "只发告警不建立持续紧急状态",
+      "conditions": [
+        "只用这两条告警过程，不把另行请求建立紧急呼叫当作告警的一步。"
+      ],
+      "conclusion": "只发送告警而未另行请求发起紧急呼叫，不会将组置于持续紧急状态。发送告警也不会让组内其他终端进入紧急状态。规范另说明，若组已处于持续紧急状态，向该组发起的业务组呼按紧急呼叫建立。",
+      "normative_strength": "Stage 2 注释界定告警与其他状态或呼叫的关系。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.4.1, NOTEs 3 and 5–6"
+          ],
+          "printed_pages": [
+            136
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.4.2, NOTE 2"
+          ],
+          "printed_pages": [
+            137
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.4.2, NOTEs 4–5"
+          ],
+          "printed_pages": [
+            138
+          ]
+        }
+      ],
+      "limitations": [
+        "不是“告警回执证明组状态或紧急呼叫已建立”，也不规定紧急呼叫建立、状态取消或撤警过程。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ]
+}

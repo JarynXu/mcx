@@ -10603,6 +10603,58 @@
         }
       ],
       "boundary": "只适用于终接该 INVITE 的 NCF 实际发送 183。本条不规定一定要发 183、何时发或其他 1xx 的格式。Contact 不移植 CF 的会话标识或 isfocus 要求，本条未规定这两项，也没有禁止它们。仅凭 183 状态码或 tdialog 不能断定需要 100rel、PRACK 或 SDP，也不能认定已获话权或 INVITE 已获最终接受。"
+    },
+    {
+      "id": "r16-calls-lmr-interworking-emergency-alert",
+      "question": "LMR 或 MC 业务用户发起互通紧急告警，谁核查组权限，哪一端确认哪一条请求？",
+      "start": "topics/calls/lmr-interworking-emergency-alert.md",
+      "next_if": [
+        {
+          "condition": "要查 MCPTT 定义组的 IWF 代表归属、逐人归属本身的条件和处理。",
+          "read": "topics/groups/mc-hosted-lmr-affiliation.md"
+        },
+        {
+          "condition": "要对照同一 MC 系统内在网 MCVideo、MCData 的发起确认、位置和组员回执。",
+          "read": "topics/calls/onnetwork-group-alert-location.md"
+        },
+        {
+          "condition": "要查组、紧急私通信和按区域通知的 Stage 1 收件要求。",
+          "read": "topics/calls/common-emergency-alert-distribution.md"
+        }
+      ],
+      "boundary": "只解释 TS 23.283 V16.8.0 两条互通紧急告警功能过程。发起确认、IWF 响应和收警客户端回执分开；不以任一腿的响应推定其他腿实际收件、建呼、组状态或无线侧动作。"
+    },
+    {
+      "id": "r16-calls-lmr-interworking-mc-user-emergency-alert-cancellation",
+      "question": "MC 用户撤销互通紧急告警，哪条确认关联本机状态，哪条响应来自 IWF？两次发送有固定顺序吗？ 为什么 IWF 有时收到一条撤警请求，有时按已归属 LMR 用户分别收到？组播场景免的是哪一类回执？ 撤警请求里带取消组状态的指示，是否证明参加方收到通知或组紧急状态已经取消？",
+      "start": "topics/calls/lmr-interworking-mc-user-emergency-alert-cancellation.md",
+      "next_if": [
+        {
+          "condition": "若需核对 MCPTT 定义组内两种归属怎样建立，查归属的专门流程；本页的撤警并不限于 MC 定义组。",
+          "read": "topics/groups/mc-hosted-lmr-affiliation.md"
+        },
+        {
+          "condition": "若查的是整场互通组呼结束，而不是撤销一位 MC 用户发出的告警，转查组呼释放。",
+          "read": "topics/calls/lmr-interworking-group-release.md"
+        }
+      ],
+      "boundary": "仅限 MC 用户发起的互通撤警，不是 LMR 发起的反向撤警、告警发起、组紧急状态取消过程或整场组呼释放。一条响应不证明另一侧收件、本机实际状态、组紧急状态取消或 LMR 无线侧处理；本节未定义 SIP 报文、失败或重试。"
+    },
+    {
+      "id": "r16-calls-lmr-origin-emergency-alert-cancellation",
+      "question": "LMR 用户撤销原先经 IWF 发出的紧急告警时，请求对准哪个组，哪些响应由谁发？",
+      "start": "topics/calls/lmr-origin-emergency-alert-cancellation.md",
+      "next_if": [
+        {
+          "condition": "对照同一 MC 系统内在网 MCVideo、MCData 撤警时发起者、响应者与证据；不拿本 IWF 流程补其条件。",
+          "read": "topics/calls/onnetwork-group-alert-cancel.md"
+        },
+        {
+          "condition": "查 MCX 撤警对象的 Stage 1 要求，不作 IWF 功能步骤。",
+          "read": "topics/calls/common-emergency-alert-cancellation.md"
+        }
+      ],
+      "boundary": "只收录 LMR 用户经 IWF 撤销自己先前成功发起的告警。分开 IWF 确认与 MC 组员回执；组播只略客户端回执。可附带状态取消请求，不证明取消组状态。"
     }
   ]
 }

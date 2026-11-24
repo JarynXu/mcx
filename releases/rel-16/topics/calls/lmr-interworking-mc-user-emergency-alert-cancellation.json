@@ -1,0 +1,261 @@
+{
+  "topic_id": "r16-calls-lmr-interworking-mc-user-emergency-alert-cancellation",
+  "title": "MC 用户撤销互通紧急告警：本机、IWF 和组内客户端分别确认什么？",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v16.8.0",
+  "common_conditions": [
+    "限 TS 23.283 V16.8.0 Release 16 Stage 2 §10.6.5.2。发起方是先前已成功发出告警请求且仍处于紧急状态的 MC 业务客户端 1；本节不适用于 LMR 用户发起的反向撤警。",
+    "IWF 已掌握该组是互通组的信息，并配置 MC 与 LMR 两侧的组和用户身份映射；该组可由 LMR 或 MC 系统定义。该场景中 MC 业务客户端 2 已归属该组。MC 业务服务器可能已为 LMR 用户执行显式或隐式组归属。"
+  ],
+  "condition_rule": "先辨明发起用户和原组，再按发起端、IWF、接收 MC 客户端三条消息腿分别核对。",
+  "claims": [
+    {
+      "id": "lmr-mc-origin-alert-cancel-preconditions-and-translation",
+      "title": "先前告警、互通组、归属与 IWF 身份转换",
+      "conditions": [
+        "在核对图 10.6.5.2-1 的六项前提及经 IWF 的两系统间信令。"
+      ],
+      "conclusion": "限 TS 23.283 V16.8.0 Release 16 Stage 2 §10.6.5.2。发起方是先前已成功发出告警请求且仍处于紧急状态的 MC 业务客户端 1；本节不适用于 LMR 用户发起的反向撤警。IWF 已掌握该组是互通组的信息，并配置 MC 与 LMR 两侧的组和用户身份映射；该组可由 LMR 或 MC 系统定义。该场景中 MC 业务客户端 2 已归属该组。MC 业务服务器可能已为 LMR 用户执行显式或隐式组归属。 两系统间经 IWF 的所有信令由 IWF 做身份转换和协议转换。",
+      "normative_strength": "编号前提和注 1；第 5 项是可能先前执行，不是要求本次重做。",
+      "limitations": [
+        "原文引用 TS 23.379 §10.6.2.6.3.2，不能用它补写本节或引入具体 SIP/无线侧程序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.5.2, opening, preconditions 1–6 and NOTE 1 (prior successful alert, still emergency, group, affiliation and IWF translation)"
+          ],
+          "printed_pages": [
+            139
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-mc-origin-alert-cancel-trigger-group-and-iwf-guard",
+      "title": "MC 用户对原组发起撤警，服务器检查 IWF 是否参与",
+      "conditions": [
+        "客户端 1 的用户发起撤警，所查的是步骤 1–2。"
+      ],
+      "conclusion": "客户端 1 请 MC 业务服务器对先前已发告警请求的同一 MC 业务组发送撤警。服务器解析组 ID、判断成员的组归属。服务器检查是否要通知 IWF；本例有已归属该组且以 IWF 为归属端的成员，因此 IWF 必须参与。撤警请求可以带取消该组进行中紧急状态的指示。指示是请求，不证明组状态取消。",
+      "normative_strength": "步骤 2 在本例规定 IWF 必须参与；注 2 的组状态指示是可选。",
+      "limitations": [
+        "不能把本例写成所有撤警无条件经过 IWF。可选组状态指示既不是已经执行，也不是组状态已取消。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.5.2, Figure 10.6.5.2-1 and steps 1–2 (MC originator, same group and IWF-affiliation guard)"
+          ],
+          "printed_pages": [
+            140
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.5.2, NOTE 2 after step 1 (optional request to cancel the group in-progress emergency state)"
+          ],
+          "printed_pages": [
+            140
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-mc-origin-alert-cancel-initiator-response-and-own-reset",
+      "title": "服务器确认发起请求，客户端 1 清除自己的紧急状态",
+      "conditions": [
+        "核对服务器回复发起客户端 1 的撤警请求。"
+      ],
+      "conclusion": "MC 业务服务器回复客户端 1，确认客户端 1 的撤警请求；客户端 1 清除自己的紧急状态。步骤 3 的发起端确认与步骤 4 的 IWF 撤警请求可以任一先后。",
+      "normative_strength": "步骤 3 描述发起端响应及本机操作。注 3 允许步骤 3 和 4 任一先后。",
+      "limitations": [
+        "不能凭一条应答断言客户端实际已改状态，或把本机清除当作步骤 5 的 IWF 回执或其他客户端已通知。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.5.2, Figure 10.6.5.2-1 and step 3 (server response to originator and client 1 resets own state)"
+          ],
+          "printed_pages": [
+            140
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.5.2, NOTE 3 after step 8 (steps 3 and 4 may be done in either order)"
+          ],
+          "printed_pages": [
+            140
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-mc-origin-alert-cancel-iwf-count-and-acknowledgement",
+      "title": "IWF 代表归属一条，逐人归属按每位已归属 LMR 用户各一条",
+      "conditions": [
+        "本例中 IWF 参与，核对服务器向 IWF 发的撤警请求及 IWF 回执。"
+      ],
+      "conclusion": "IWF 代表该组的 LMR 用户归属时，服务器只向 IWF 发一条撤警请求。若 MCPTT 服务器收到该组 LMR 用户的逐人归属，则为每位已归属的 LMR 用户向 IWF 各发一条撤警请求。IWF 向 MC 业务服务器发撤警响应，确认对应的 IWF 撤警请求。步骤 3 的发起端确认与步骤 4 的 IWF 撤警请求可以任一先后。",
+      "normative_strength": "步骤 4 按两种归属方式分别计数。步骤 5 是对 IWF 撤警请求的响应，不是 MC 用户回执。",
+      "limitations": [
+        "不按组成员总数或 MC 接收客户端数计数。IWF 回执不证明 LMR 无线侧执行，也不把任一回执当所有目标的收件证明。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.5.2, Figure 10.6.5.2-1 and steps 4–5 (IWF request counts by affiliation basis and reverse acknowledgement)"
+          ],
+          "printed_pages": [
+            140
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.5.2, NOTE 3 after step 8 (steps 3 and 4 may be done in either order)"
+          ],
+          "printed_pages": [
+            140
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-mc-origin-alert-cancel-affiliate-notification-and-ack-exception",
+      "title": "给已归属 MC 客户端撤警通知；组播场景不回这些接收客户端回执",
+      "conditions": [
+        "核对步骤 6–8 向已归属 MC 组成员客户端的分发与回执。"
+      ],
+      "conclusion": "服务器向已归属的 MC 组成员客户端发送撤警请求，客户端通知用户的是客户端 1 的告警已撤销。接收客户端向服务器回执；组播呼叫场景不发送这些接收客户端的回执。这个例外不适用于 IWF 回执。",
+      "normative_strength": "步骤 8 只给出组播呼叫场景的接收 MC 客户端回执例外。",
+      "limitations": [
+        "不把组播例外套给 IWF 回执或发起端的服务器确认；收到取消通知不证明接收者进入或退出其自己的紧急状态。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.5.2, Figure 10.6.5.2-1 and steps 6–8 (affiliated MC members, user notification and MC client multicast acknowledgement exception)"
+          ],
+          "printed_pages": [
+            140
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.6.5.2, opening, preconditions 1–6 and NOTE 1 (prior successful alert, still emergency, group, affiliation and IWF translation)"
+      ],
+      "printed_pages": [
+        139
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.6.5.2, Figure 10.6.5.2-1 and steps 1–2 (MC originator, same group and IWF-affiliation guard)"
+      ],
+      "printed_pages": [
+        140
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.6.5.2, NOTE 2 after step 1 (optional request to cancel the group in-progress emergency state)"
+      ],
+      "printed_pages": [
+        140
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.6.5.2, Figure 10.6.5.2-1 and step 3 (server response to originator and client 1 resets own state)"
+      ],
+      "printed_pages": [
+        140
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.6.5.2, Figure 10.6.5.2-1 and steps 4–5 (IWF request counts by affiliation basis and reverse acknowledgement)"
+      ],
+      "printed_pages": [
+        140
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.6.5.2, Figure 10.6.5.2-1 and steps 6–8 (affiliated MC members, user notification and MC client multicast acknowledgement exception)"
+      ],
+      "printed_pages": [
+        140
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.6.5.2, NOTE 3 after step 8 (steps 3 and 4 may be done in either order)"
+      ],
+      "printed_pages": [
+        140
+      ]
+    }
+  ],
+  "related": [
+    "r16-groups-mc-hosted-lmr-affiliation",
+    "r16-calls-lmr-interworking-group-release"
+  ],
+  "limitations": [
+    "仅限 MC 用户发起的互通撤警，不是 LMR 发起的反向撤警、告警发起、组紧急状态取消过程或整场组呼释放。一条响应不证明另一侧收件、本机实际状态、组紧急状态取消或 LMR 无线侧处理；本节未定义 SIP 报文、失败或重试。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
