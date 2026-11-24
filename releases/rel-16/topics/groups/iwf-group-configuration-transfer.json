@@ -1,0 +1,153 @@
+{
+  "topic_id": "r16-groups-iwf-group-configuration-transfer",
+  "title": "MC 与 IWF 交换组配置：谁提供、谁补取，哪种响应确认保存？",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v16.8.0",
+  "condition_rule": "先判组由谁定义、谁发起提供或请求，再按对应 claim 的步骤判断响应含义。三条前提各自适用，不能互借。",
+  "common_conditions": [
+    "TS 23.283 V16.8.0 Release 16 Stage 2：本主题核对 MC 组管理服务器（GMS）与互通功能（IWF）之间的三条组配置提供或补取流程，不是订阅和通知流程。"
+  ],
+  "claims": [
+    {
+      "id": "iwf-config-transfer-mc-gms-provides",
+      "title": "主 MC GMS 主动提供 MC 定义组配置，IWF 报告正确收存",
+      "conditions": [
+        "MC 业务组定义在该 MC 系统。",
+        "至少一名 LMR 用户是组成员。",
+        "该 MC 系统已配置 IWF 组管理功能的寻址信息。",
+        "该 MC 系统获准向 IWF 提供组配置。"
+      ],
+      "conclusion": "1. 该组所属 MC 系统的组管理服务器向 IWF 提供该组配置。2. IWF 向该 GMS 回应，报告已收到并正确保存配置。",
+      "normative_strength": "§10.2.3.2 列四项前提和两个步骤。图 10.2.3.2-1 为 provision 请求与响应；注允许所配 IWF 地址是代理地址。",
+      "limitations": [
+        "管理员操作或部分组成员以 IWF 为主系统是例子，不增加必经触发，也不要求接收端缺配置。未规定如何授权、代理如何处理消息或失败分支。",
+        "GMS 发送不能代证 IWF 实收、保存或终端收件；步骤 2 的报告对象是 IWF 自己收存的组配置。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.2.3.2, opening, preconditions 1–4, NOTE, Figure 10.2.3.2-1 and steps 1–2: primary MC GMS provides configuration and IWF reports correct receipt and storage"
+          ],
+          "printed_pages": [
+            28
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-config-transfer-iwf-requests-from-mc-gms",
+      "title": "IWF 没有保存 MC 定义组配置，从该组主 MC GMS 补取",
+      "conditions": [
+        "MC 业务组定义在 MC 系统。",
+        "至少一名 LMR 用户是组成员。",
+        "IWF 没有保存该组配置。"
+      ],
+      "conclusion": "1. IWF 向该组主 MC 系统的组管理服务器请求配置。2. 该 GMS 返回所请求的配置。",
+      "normative_strength": "§10.2.3.3 列三个前提和两个步骤。图为 information 请求与响应；图题泛称伙伴 MC 系统，但发起方以图中 IWF 和编号正文为准。",
+      "limitations": [
+        "不引入 §10.2.3.2 的 IWF 寻址和提供授权作为本条门槛。该响应返回配置，不是 IWF 对实收或正确保存的报告。未规定 IWF 保存、发送成功实证或终端交付。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.2.3.3, opening, preconditions 1–3, Figure 10.2.3.3-1 and steps 1–2: IWF requests missing configuration and the primary MC GMS provides it"
+          ],
+          "printed_pages": [
+            28,
+            29
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-config-transfer-iwf-provides",
+      "title": "IWF 主动提供其定义组的配置，MC GMS 报告正确收存",
+      "conditions": [
+        "组定义在 IWF。",
+        "至少一名 MC 业务用户是组成员。"
+      ],
+      "conclusion": "1. IWF 向 MC 系统的组管理服务器提供该组配置。2. 该 GMS 向 IWF 回应，报告已收到并正确保存配置。注将向组成员供配的职责交给这些成员的服务 MC 系统的 GMS。",
+      "normative_strength": "§10.2.3.4 列两个前提和两个步骤。图中箭头与正文一致，都是 IWF→MC GMS 提供、MC GMS→IWF 回应；图题反写为 MC 系统提供给 IWF。",
+      "limitations": [
+        "管理员操作或部分组员以 MC 系统为归属系统是例子，不是附加前提。这里没列出缺配置、寻址配置或授权门槛，不能从别条搬入。",
+        "GMS 的成员供配职责只及本系统服务的组成员，不等于规定终端交付步骤、时间或实收。规范报告不能代证一次现场消息或终端交付已发生。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.2.3.4, opening, preconditions 1–2, NOTE, Figure 10.2.3.4-1 and steps 1–2: IWF provides configuration and MC GMS reports correct receipt and storage; reversed figure caption"
+          ],
+          "printed_pages": [
+            29
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.2.3.2, opening, preconditions 1–4, NOTE, Figure 10.2.3.2-1 and steps 1–2: primary MC GMS provides configuration and IWF reports correct receipt and storage"
+      ],
+      "printed_pages": [
+        28
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.2.3.3, opening, preconditions 1–3, Figure 10.2.3.3-1 and steps 1–2: IWF requests missing configuration and the primary MC GMS provides it"
+      ],
+      "printed_pages": [
+        28,
+        29
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.2.3.4, opening, preconditions 1–2, NOTE, Figure 10.2.3.4-1 and steps 1–2: IWF provides configuration and MC GMS reports correct receipt and storage; reversed figure caption"
+      ],
+      "printed_pages": [
+        29
+      ]
+    }
+  ],
+  "related": [
+    "r16-groups-iwf-defined-group-configuration-pull",
+    "r16-groups-mc-group-configuration-subscription",
+    "r16-groups-lmr-group-configuration-subscription"
+  ],
+  "limitations": [
+    "图中 provision 字样不足以证明是在主动提供：已经收录的 §10.2.3.5 也是补取。先看组定义、发起方和实际动作。比较条款不并入主流程。",
+    "不以配置交换代证自动订阅、组归属、终端实收或业务媒体。没有规定具体传输、失败处置或通用缓存覆盖规则；不从另一标准的 MC 系统间程序补字段或角色。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
