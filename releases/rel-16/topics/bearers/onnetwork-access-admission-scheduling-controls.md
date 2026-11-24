@@ -13,4 +13,4 @@
 
 例如，某区域的 MCX 业务能影响网络接入参数的修改，但该终端当次没有接入成功。接入结果不等于系统没有提供 §6.8.2 要求的手段，也不能用该手段反推终端已获准接入。若另有一条已经分配给 MCX UE 的承载，仅证实业务能影响它的调度控制，还不能把它算作准入与保留控制也已具备。即使管理员的配置允许终端临时修改某个接入参数，也不能据此认定终端已完成修改，或能永久修改其他参数。
 
-[哪些属性用于确定通信和传输的优先级](onnetwork-priority-attributes.md)、[何时须通过抢占供给资源](onnetwork-service-preemption.md)各有适用条件。应用优先级映射另查 §6.8.1 -001。若要核对[在网单播资源建立或修改的 Stage 2 流程](unicast-resource-establishment-modification.md)，按流程取证，不能把本页的控制能力当成网络授予资源、建立承载或实际执行调度的证明。
+[哪些属性用于确定通信和传输的优先级](onnetwork-priority-attributes.md)、[何时须通过抢占供给资源](onnetwork-service-preemption.md)各有适用条件。应用优先级映射另查 [§6.8.1 -001](onnetwork-application-priority-assignment.md)。若要核对[在网单播资源建立或修改的 Stage 2 流程](unicast-resource-establishment-modification.md)，按流程取证，不能把本页的控制能力当成网络授予资源、建立承载或实际执行调度的证明。
