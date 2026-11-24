@@ -1,0 +1,451 @@
+{
+  "topic_id": "r16-bearers-onnetwork-communication-priority-request",
+  "release": 16,
+  "standard_stage": 1,
+  "state": "draft",
+  "title": "在网 MCX 用户为一次通信请求优先级，系统在建立时如何处理？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-22.280-v16.8.0",
+  "condition_rule": "五项均继承在网业务范围。建立时的核验不以用户请求为前提；未请求与请求超限各自触发一项分配规则。",
+  "common_conditions": [
+    "TS 22.280 V16.8.0（Release 16，Stage 1）第 6 章的在网要求，适用于 MCPTT、MCVideo、MCData。"
+  ],
+  "claims": [
+    {
+      "id": "enable-user-priority-request-for-each-communication",
+      "title": "业务须支持用户按次请求通信优先级",
+      "conditions": [
+        "TS 22.280 V16.8.0（Release 16，Stage 1）第 6 章的在网要求，适用于 MCPTT、MCVideo、MCData。"
+      ],
+      "conclusion": "在网 MCX 业务须让 MCX 用户能为每一次通信单独请求优先级。“每一次”说的是请求按通信区分，不限于一对一私通信，也不要求用户每次都提出请求。",
+      "normative_strength": "R-6.8.7.2-006 用 shall 要求业务提供逐次请求的能力，不是要求用户逐次请求。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6.8.7.2 R-6.8.7.2-006"
+          ],
+          "printed_pages": [
+            41
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6 (scope heading)"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 6.8.7.2 requirements 006–010 applicability"
+          ],
+          "printed_pages": [
+            68
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 6.8.7.2 requirement 006 applicability"
+          ],
+          "printed_pages": [
+            78
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 6.8.7.2 requirements 006–010 applicability"
+          ],
+          "printed_pages": [
+            89
+          ]
+        }
+      ],
+      "limitations": [
+        "“每一次”说的是请求按通信区分，不限于一对一私通信，也不要求用户每次都提出请求。",
+        "不据此推断通信已获准或用户请求的等级已分配。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "enable-any-requested-level-through-authorised-level",
+      "title": "系统须支持用户请求授权范围内的任一等级",
+      "conditions": [
+        "TS 22.280 V16.8.0（Release 16，Stage 1）第 6 章的在网要求，适用于 MCPTT、MCVideo、MCData。"
+      ],
+      "conclusion": "在网 MCX 业务系统须提供机制，让 MCX 用户能请求授权等级以内的任一优先级，包括授权等级本身。能请求某个等级，不等于系统须按请求值分配。",
+      "normative_strength": "R-6.8.7.2-007 用 shall 要求业务系统提供指定请求范围的机制，不承诺分配所请求的等级。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6.8.7.2 R-6.8.7.2-007"
+          ],
+          "printed_pages": [
+            41
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6 (scope heading)"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 6.8.7.2 requirements 006–010 applicability"
+          ],
+          "printed_pages": [
+            68
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 6.8.7.2 requirements 007–010 applicability"
+          ],
+          "printed_pages": [
+            79
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 6.8.7.2 requirements 006–010 applicability"
+          ],
+          "printed_pages": [
+            89
+          ]
+        }
+      ],
+      "limitations": [
+        "能请求某个等级，不等于系统须按请求值分配。",
+        "此条没有要求客户端必须阻止超限请求，也没有指定请求消息的编码。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "verify-priority-at-setup-against-authorised-maximum",
+      "title": "系统在通信建立时须对照授权上限核验优先级",
+      "conditions": [
+        "TS 22.280 V16.8.0（Release 16，Stage 1）第 6 章的在网要求，适用于 MCPTT、MCVideo、MCData。",
+        "通信正处于建立阶段。"
+      ],
+      "conclusion": "建立通信时，在网 MCX 业务系统须对照最高授权等级核验这次通信的优先级。这项核验不以用户显式请求等级为前提；没有请求时也须核验。",
+      "normative_strength": "R-6.8.7.2-008 用 shall 要求业务系统在建立时核验等级。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6.8.7.2 R-6.8.7.2-008"
+          ],
+          "printed_pages": [
+            41
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6 (scope heading)"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 6.8.7.2 requirements 006–010 applicability"
+          ],
+          "printed_pages": [
+            68
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 6.8.7.2 requirements 007–010 applicability"
+          ],
+          "printed_pages": [
+            79
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 6.8.7.2 requirements 006–010 applicability"
+          ],
+          "printed_pages": [
+            89
+          ]
+        }
+      ],
+      "limitations": [
+        "这项核验不以用户显式请求等级为前提；没有请求时也须核验。",
+        "核验本身不证明已分配某一等级、通信已建立或已取得网络资源。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "assign-defined-level-when-no-priority-requested",
+      "title": "没有请求时须分配已定义的优先级",
+      "conditions": [
+        "TS 22.280 V16.8.0（Release 16，Stage 1）第 6 章的在网要求，适用于 MCPTT、MCVideo、MCData。",
+        "MCX 用户在通信建立时没有请求优先级。"
+      ],
+      "conclusion": "若 MCX 用户在建立通信时没有请求优先级，在网 MCX 业务系统须给这次通信分配已定义的优先级。条文没有给出这个已定义等级的值，也没有指定由谁定义或从哪里取得；不能假定它就是最低等级或最高授权等级。",
+      "normative_strength": "R-6.8.7.2-009 用 shall 要求业务系统在用户未请求等级的条件下为通信分配已定义的等级。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6.8.7.2 R-6.8.7.2-009"
+          ],
+          "printed_pages": [
+            41
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6 (scope heading)"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 6.8.7.2 requirements 006–010 applicability"
+          ],
+          "printed_pages": [
+            68
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 6.8.7.2 requirements 007–010 applicability"
+          ],
+          "printed_pages": [
+            79
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 6.8.7.2 requirements 006–010 applicability"
+          ],
+          "printed_pages": [
+            89
+          ]
+        }
+      ],
+      "limitations": [
+        "条文没有给出这个已定义等级的值，也没有指定由谁定义或从哪里取得；不能假定它就是最低等级或最高授权等级。",
+        "已定义等级是否与上限相同，要看实际定义，不能由无请求推出。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "assign-authorised-maximum-for-above-limit-request",
+      "title": "请求超限时须给通信分配最高授权等级",
+      "conditions": [
+        "TS 22.280 V16.8.0（Release 16，Stage 1）第 6 章的在网要求，适用于 MCPTT、MCVideo、MCData。",
+        "MCX 用户在通信建立时提出了优先级请求，所请求等级高于最高授权等级。"
+      ],
+      "conclusion": "若 MCX 用户在建立通信时请求的优先级高于最高授权等级，在网 MCX 业务系统须给这次通信分配最高授权等级。超限时须分配上限，不能用拒绝代替这项分配。请求恰等于上限不触发本条；这五项未规定范围内的请求一律原样分配。",
+      "normative_strength": "R-6.8.7.2-010 用 shall 要求业务系统在建立时的请求超限条件下为通信分配最高授权等级。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6.8.7.2 R-6.8.7.2-010"
+          ],
+          "printed_pages": [
+            41
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6 (scope heading)"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 6.8.7.2 requirements 006–010 applicability"
+          ],
+          "printed_pages": [
+            68
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 6.8.7.2 requirements 007–010 applicability"
+          ],
+          "printed_pages": [
+            79
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 6.8.7.2 requirements 006–010 applicability"
+          ],
+          "printed_pages": [
+            89
+          ]
+        }
+      ],
+      "limitations": [
+        "超限时须分配上限，不能用拒绝代替这项分配。请求恰等于上限不触发本条；这五项未规定范围内的请求一律原样分配。",
+        "这里比较的是优先级高低，没有规定整数编码或数字越大、优先级就越高。等级分配不能证明通信建立成功或网络已分配资源。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-bearers-onnetwork-application-priority-assignment",
+    "r16-calls-onnetwork-private-communication-priority",
+    "r16-bearers-multi-server-priority-arbitration",
+    "r16-bearers-unicast-resource-establishment-modification"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "6 (scope heading)"
+      ],
+      "printed_pages": [
+        29
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "6.8.7.2 R-6.8.7.2-006"
+      ],
+      "printed_pages": [
+        41
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "6.8.7.2 R-6.8.7.2-007"
+      ],
+      "printed_pages": [
+        41
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "6.8.7.2 R-6.8.7.2-008"
+      ],
+      "printed_pages": [
+        41
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "6.8.7.2 R-6.8.7.2-009"
+      ],
+      "printed_pages": [
+        41
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "6.8.7.2 R-6.8.7.2-010"
+      ],
+      "printed_pages": [
+        41
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "Annex A, Table A.1: 6.8.7.2 requirements 006–010 applicability"
+      ],
+      "printed_pages": [
+        68
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "Annex B, Table B.1: 6.8.7.2 requirement 006 applicability"
+      ],
+      "printed_pages": [
+        78
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "Annex B, Table B.1: 6.8.7.2 requirements 007–010 applicability"
+      ],
+      "printed_pages": [
+        79
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "Annex C, Table C.1: 6.8.7.2 requirements 006–010 applicability"
+      ],
+      "printed_pages": [
+        89
+      ]
+    }
+  ],
+  "limitations": [
+    "这里比较的是优先级高低，没有规定整数编码或数字越大、优先级就越高。等级分配不能证明通信建立成功或网络已分配资源。",
+    "这五项未规定每个请求的分配结果，也不定义 SIP 字段、承载参数或话权授予。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
