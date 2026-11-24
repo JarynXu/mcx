@@ -1,0 +1,193 @@
+{
+  "topic_id": "r16-security-kms-provisioning",
+  "release": 16,
+  "standard_stage": null,
+  "state": "draft",
+  "title": "KMS 初始化、取新密钥和取证书：直连与经代理有什么区别？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v16.13.0",
+  "condition_rule": "每条声明继承 common_conditions。按这次实际使用的连接路径和请求类型查对应分支。",
+  "common_conditions": [
+    "3GPP TS 33.180 V16.13.0，Release 16，§5.3.3 的身份密钥材料供应范围。",
+    "密钥管理客户端可以位于 MC 终端、MCX 服务器或组管理服务器。发给 KMS 的请求用于该程序；所列证书、查询和上传是不同请求类型。"
+  ],
+  "claims": [
+    {
+      "id": "key-provisioning-through-http-proxy",
+      "title": "经 HTTP 代理：令牌与两个标识各有哪些条件",
+      "conditions": [
+        "本次 §5.3.3 供应程序经过 HTTP 代理。"
+      ],
+      "conclusion": "客户端经代理建立安全连接。请求含用于用户认证的访问令牌，须带 TrK-ID，可带 InK-ID。KMS 按已认证用户和请求应答；公共安全用途的密钥材料须用 256 位 TrK 加密。响应可用 TrK 或 InK 签名。TrK、InK 和各自的 32 位标识最初带外分发。",
+      "normative_strength": "公共安全用途的密钥材料加密及代理路径请求的 TrK-ID 是 SHALL；InK-ID 和响应签名是 MAY。",
+      "limitations": [
+        "标识不是把实际密钥放进请求。KMS 与代理间的连接保护见原文注所引 §6.1；本声明不改写该参考点或 TLS 规则。",
+        "读到要求不能确认本次部署用了代理、连接已经建立或应答已经交付。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.3.3, Figure 5.3.3-1, steps 0–2 and NOTE: key provisioning through the HTTP proxy"
+          ],
+          "printed_pages": [
+            56,
+            57
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "direct-https-key-provisioning",
+      "title": "直连 KMS：HTTPS 与可选材料保护",
+      "conditions": [
+        "本次 §5.3.3 供应程序不经过 HTTP 代理。"
+      ],
+      "conclusion": "客户端直接与 KMS 建立 HTTPS，并可发送代理路径定义的同类请求。此处的请求步骤对 TrK-ID、InK-ID 都用可带的表述。KMS 按已认证用户和请求应答；可用 256 位 TrK 加密材料，也可用 TrK 或 InK 签名。 TrK、InK 和各自的 32 位标识最初带外分发。",
+      "normative_strength": "直连用 HTTPS。此处的可选措辞针对直接路径所列标识和材料保护；不把代理路径的条件搬到直接路径。",
+      "limitations": [
+        "不把直连解释成无需认证；该步没有单列新的用户认证协议。",
+        "若实际使用 TrK 保护材料传输，另查 §5.3.2 的 TrK-ID 条件；此处不取消该条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.3.3, Figure 5.3.3-2, steps 0–2: direct HTTPS key provisioning"
+          ],
+          "printed_pages": [
+            57
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "init-versus-new-identity-key-material",
+      "title": "KMSInit 和 KMSKeyProv 都可发给归属或迁移 KMS",
+      "conditions": [
+        "客户端在 §5.3.3 程序中初始化该用户，或请求新的身份密钥材料。"
+      ],
+      "conclusion": "KMSInit 是给该 KMS 的首笔用户初始化请求，应答提供域参数。取新密钥材料用 KMSKeyProv，可带所需身份、所需时间或两者，应答提供新密钥材料。两种请求都可发给归属或迁移 KMS；两种应答均可另带新的 TrK、InK 或两者。",
+      "normative_strength": "两类请求的接收方按原文列举的许可范围；KMSKeyProv 的所需身份和时间、应答中的新 TrK 和 InK 都不是必带项。",
+      "limitations": [
+        "不把 KMSInit 当成获取用户的新密钥集、SIP 注册或 MC 业务授权完成。",
+        "可请求所需时间不规定轮询、续期或撤销时机；不从应答类型推定客户端已收到可用材料。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.3.3, Figure 5.3.3-1, steps 1(a–b) and 2(a–b): KMSInit and KMSKeyProv"
+          ],
+          "printed_pages": [
+            56,
+            57
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "certificate-cache-versus-single-certificate",
+      "title": "证书缓存与按 KMS URI 取单份证书分开",
+      "conditions": [
+        "客户端请求外部域所需的证书缓存，或给定一个 KMS URI 请求单份证书。"
+      ],
+      "conclusion": "KMSCertCache 只能发给归属 KMS，可以带客户端已收到的最新缓存版本；响应包含外部域通信所需的新或更新证书，可能是归属 KMS、外部 KMS 或两类。KMS Cert 按 KMS URI 取单份证书；复用 KMSCertCache 响应，返回一份证书或错误。",
+      "normative_strength": "KMSCertCache 的归属 KMS 限制是 SHALL only，缓存版本为可带。KMS Cert 的请求描述没有另列接收方角色。",
+      "limitations": [
+        "不用响应复用来继承 KMSCertCache 请求的归属 KMS 条件，也不据此推断可以直连外部 KMS。",
+        "不规定证书到期、更新或撤销策略。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.3.3, Figure 5.3.3-1, steps 1(c,e) and 2(c–d): certificate cache and single certificate"
+          ],
+          "printed_pages": [
+            56,
+            57
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "lookup-external-kms-by-sip-uri",
+      "title": "KMS Lookup 的 SIP URI 是输入，KMS URI 或许可是应答",
+      "conditions": [
+        "客户端按给定的 SIP URI 查所用的外部 KMS。"
+      ],
+      "conclusion": "KMS Lookup 的应答给出该用户应使用的 KMS URI，或者给出使用特定外部 KMS 的许可。",
+      "normative_strength": "原文说明该请求的用途和两种应答，不把查 KMS 列为取新用户密钥材料的请求。",
+      "limitations": [
+        "SIP URI 作为查找输入不表示改用 SIP 承载，不是业务授权或材料交付证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.3.3, Figure 5.3.3-1, steps 1(f) and 2(e): KMS Lookup"
+          ],
+          "printed_pages": [
+            56,
+            57
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "krr-upload-versus-discovery-audit-upload",
+      "title": "收到的 KRR 和收到的发现请求应答使用不同上传",
+      "conditions": [
+        "客户端已经收到 KRR，或已经收到发现请求的应答并要上传供审计。"
+      ],
+      "conclusion": "KMS Redirect Response (KRR) upload 把收到的 KRR 发给归属 KMS；本步骤只允许发给归属 KMS。另列的 KMS Redirect Upload 把收到的发现请求应答发给 KMS 作审计，原文此项未另指定接收方角色。这两项在该段没有另列应答。",
+      "normative_strength": "所列 KRR upload 的归属 KMS 限制是 SHALL only；审计上传保留原文所述目的，不添加应答或处理结果。",
+      "limitations": [
+        "这是 §5.3.3 所列上传的范围；不覆盖所有场景的 KRR 提供，也不改写 KRR 的生成、域策略或选择。",
+        "不由上传推出 KRR 生效、发现结果已采用或审计已完成。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.3.3, Figure 5.3.3-1, steps 1(d,g): KRR upload and discovery-response audit upload"
+          ],
+          "printed_pages": [
+            56,
+            57
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    }
+  ],
+  "related": [
+    "r16-identity-kms-redirect-response",
+    "r16-security-http-reference-point-security",
+    "r16-identity-ue-key-persistence"
+  ],
+  "limitations": [
+    "只覆盖 TS 33.180 V16.13.0 §5.3.3 的两条路径及列出的请求和应答。未覆盖定时续期、撤销流程、报文格式、业务授权、部署拓扑或其他版本。"
+  ],
+  "verification": {
+    "original_clauses_checked": true
+  }
+}
