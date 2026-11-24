@@ -1,0 +1,232 @@
+{
+  "topic_id": "r16-security-http-reference-point-security",
+  "release": 16,
+  "standard_stage": null,
+  "state": "draft",
+  "title": "HTTP-1 怎样认证，HTTP-1 和 HTTP-3 对 TLS 各有什么要求？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v16.13.0",
+  "condition_rule": "继承共同条件。先区分 HTTP-1 认证、HTTP-1 TLS 支持与 HTTP-3 代理间 TLS，保留 PSK 和采用 TLS 时的条件。",
+  "common_conditions": [
+    "3GPP TS 33.180 V16.13.0（Release 16）§§6.1.1–6.1.3；按各条标明的 HTTP 参考点、端点和条件判断。"
+  ],
+  "claims": [
+    {
+      "id": "http-1-endpoints-and-authentication-options",
+      "title": "HTTP-1 客户端和服务端点须执行一种列出的认证机制",
+      "conditions": [
+        "正在判断 HTTP-1 参考点的认证。"
+      ],
+      "conclusion": "认证在 MC UE 内的 HTTP 客户端与 HTTP 服务端点之间进行。服务端点可以是 HTTP 代理、IdM server 或 KMS。须采用所列的一种机制：用服务端证书单向认证服务端点、用客户端和服务端证书双向认证，或用预共享密钥（PSK）双向认证。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "6.1.1, first paragraph and three listed authentication mechanisms"
+          ],
+          "printed_pages": [
+            65
+          ]
+        }
+      ],
+      "source_detail": "§6.1.1 首段的认证双方及三个所列机制。",
+      "limitations": [
+        "不要求三种都执行，不指定默认选项或部署拓扑。单向选项认证的是服务端点，不是同时认证客户端；这不是业务授权。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "http-1-certificate-profiles-and-psk-cipher-suite-reference",
+      "title": "证书认证须遵循指定配置规范；双向认证指南与 PSK 套件另有引用",
+      "conditions": [
+        "已选 §6.1.1 列出的 HTTP-1 认证机制，需要核对相应的外部引用。"
+      ],
+      "conclusion": "证书认证须遵循 TS 33.310 §§6.1.3a、6.1.4a。证书使用的 PKI 结构在 TS 33.180 本文范围之外；TS 33.222 附录 B 提供双向证书认证指导。TLS 预共享密钥密码套件的使用由 TS 33.310 附录 E 规定。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "6.1.1, certificate profiles, PKI scope and mutual-authentication guidance"
+          ],
+          "printed_pages": [
+            65
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "6.1.1, final paragraph on TLS-PSK cipher suite usage"
+          ],
+          "printed_pages": [
+            65
+          ]
+        }
+      ],
+      "source_detail": "§6.1.1 后两段分别引用证书配置规范和 PSK 密码套件的使用。",
+      "limitations": [
+        "TS 33.222 的指导不是新增强制项；引用预共享密钥密码套件不是第四种认证机制。本条不规定 PKI 部署、密码套件具体参数或选择默认项。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "http-1-tls-support-and-profile-mandatory",
+      "title": "HTTP-1 须支持 TLS，实现和使用须遵循指定配置规范",
+      "conditions": [
+        "正在判断 HTTP-1 参考点是否须支持 TLS。"
+      ],
+      "conclusion": "HTTP-1 必须支持 TLS。TLS 实现和使用的配置规范须遵循 TS 33.310 附录 E。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "6.1.2, first paragraph on mandatory TLS support and profile"
+          ],
+          "printed_pages": [
+            65
+          ]
+        }
+      ],
+      "source_detail": "§6.1.2 首段同时规定支持义务及所用配置规范。",
+      "limitations": [
+        "仅适用于这里的 HTTP-1。支持要求不能证明某次通信使用了 TLS，不能用来推断代理后链路的保护或用户获准访问业务。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "http-1-psk-support-duty-if-mechanism-supported",
+      "title": "支持基于 TLS 的 PSK 认证时，MC UE 的 HTTP 客户端和 HTTP 代理另有能力要求",
+      "conditions": [
+        "HTTP-1 支持基于 TLS 的预共享密钥（PSK）认证机制。"
+      ],
+      "conclusion": "MC UE 内的 HTTP 客户端和 HTTP 代理都须支持 TS 33.310 附录 E 指定的 TLS 版本、PSK 密码套件和 TLS 扩展。PSK 密码套件的使用也由该附录规定。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "6.1.2, second paragraph on the conditional TLS-PSK support duty"
+          ],
+          "printed_pages": [
+            65
+          ]
+        }
+      ],
+      "source_detail": "§6.1.2 第二段以支持 TLS PSK 认证为前提，明确列出两个承担支持义务的实体。",
+      "limitations": [
+        "不据此要求普遍支持 PSK，不把所列角色扩大到 §6.1.1 的全部服务端点，也不据此要求所有部署都有代理。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "http-3-proxy-tls-recommended-profile-required-if-used",
+      "title": "代理之间的 HTTP-3 建议支持 TLS，使用时须遵循指定配置规范",
+      "conditions": [
+        "正在判断两个 HTTP 代理之间的 HTTP-3 参考点，不是 HTTP/3 协议。"
+      ],
+      "conclusion": "HTTP-3 建议支持 TLS。采用 TLS 时，TLS 实现和使用的配置规范须遵循 TS 33.310 附录 E。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "6.1.3, inter-proxy TLS recommendation and profile where used"
+          ],
+          "printed_pages": [
+            66
+          ]
+        }
+      ],
+      "source_detail": "§6.1.3 将代理之间的 TLS 支持写为推荐，将采用时遵循配置规范写为强制。",
+      "limitations": [
+        "这不是 HTTP-1 的强制支持规则，也不说明 HTTP/3 或 QUIC、信任域转发授权、某次交互实际采用的保护，或 HTTP-2、SIP 和其他网络域安全规则。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-identity-csc-http-proxy"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "6.1.1, first paragraph and three listed authentication mechanisms"
+      ],
+      "printed_pages": [
+        65
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "6.1.1, certificate profiles, PKI scope and mutual-authentication guidance"
+      ],
+      "printed_pages": [
+        65
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "6.1.1, final paragraph on TLS-PSK cipher suite usage"
+      ],
+      "printed_pages": [
+        65
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "6.1.2, first paragraph on mandatory TLS support and profile"
+      ],
+      "printed_pages": [
+        65
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "6.1.2, second paragraph on the conditional TLS-PSK support duty"
+      ],
+      "printed_pages": [
+        65
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "6.1.3, inter-proxy TLS recommendation and profile where used"
+      ],
+      "printed_pages": [
+        66
+      ]
+    }
+  ],
+  "limitations": [
+    "不把 HTTP-3 当成 HTTP/3 协议，不据支持要求推定实际会话、业务授权或跨信任域转交许可；不说明 HTTP-2、SIP、令牌或网络域安全规则。 TS 33.310、TS 33.222 只作本节指向的引用，不在此展开参数或配置。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}

@@ -7270,6 +7270,22 @@
               ]
             }
           ]
+        },
+        {
+          "domain": "identity",
+          "title": "初次 SIP 注册与 MCX 业务访问令牌（安全过程）",
+          "can_answer": "初次 SIP 注册不等令牌。区分 REGISTER 转交和授权用 PUBLISH，定位到 MCX 服务器的令牌验证以及 IMPU 与相应业务 ID 的绑定。",
+          "conditional_or_interface_only": "REGISTER 或 PUBLISH 取决于实现，特定请求是否带令牌为可选。初次缺令牌时先注册，再按所引步骤提交。访问令牌有效时才按这两条路径绑定；IMPU 或业务 ID 变更时可以重绑。",
+          "not_established": "SIP 注册、提交令牌或未对应事务的 200 不能证明业务授权。不把一种业务的授权套给另一业务，也不规定消息字段、失效令牌的失败码或外部验证成效。",
+          "read": [
+            {
+              "title": "初次 SIP 注册没有访问令牌，要等 MCX 业务授权吗？",
+              "path": "topics/identity/mcx-sip-service-authorization.md",
+              "source_ids": [
+                "3gpp-ts-33.180-v16.13.0"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -8702,6 +8718,22 @@
               "path": "topics/security/cryptographic-key-provisioning-requirements.md",
               "source_ids": [
                 "3gpp-ts-22.280-v16.8.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "security",
+          "title": "HTTP-1 认证与 TLS；HTTP-3 代理间 TLS（TS 33.180 V16.13.0）",
+          "can_answer": "区分 HTTP-1 认证两端、三个机制和引用的配置规范；判断 HTTP-1 的 TLS 支持义务、PSK 条件和代理间 HTTP-3 的 TLS 建议。",
+          "conditional_or_interface_only": "HTTP-1 上 MC UE 的 HTTP 客户端与 HTTP 代理、IdM server 或 KMS 中的一个服务端点执行所列一种认证：服务端证书单向、双方证书双向、或预共享密钥双向。HTTP-1 须支持 TLS；仅在支持基于 TLS 的 PSK 认证时，MC UE HTTP 客户端和 HTTP 代理另须支持指定 TLS 版本、PSK 密码套件和 TLS 扩展。HTTP-3 是代理间参考点，建议支持 TLS。HTTP-1 的 TLS 实现和使用及 HTTP-3 实际采用 TLS 时，都须遵循 TS 33.310 附录 E。",
+          "not_established": "不把 HTTP-3 当成 HTTP/3 协议，不据支持要求推定实际会话、业务授权或跨信任域转交许可；不说明 HTTP-2、SIP、令牌或网络域安全规则。 这里按 TS 33.180 的参考点、端点和条件判断，不套用 TS 22.280 规范性附录的业务适用性。",
+          "read": [
+            {
+              "title": "HTTP-1 怎样认证，HTTP-1 和 HTTP-3 对 TLS 各有什么要求？",
+              "path": "topics/security/http-reference-point-security.md",
+              "source_ids": [
+                "3gpp-ts-33.180-v16.13.0"
               ]
             }
           ]
