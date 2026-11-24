@@ -1,0 +1,597 @@
+{
+  "topic_id": "r16-calls-offnetwork-communication-admission",
+  "release": 16,
+  "standard_stage": 1,
+  "state": "draft",
+  "title": "离网发起通信，谁决定能不能发，什么结果必须通知请求人？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-22.280-v16.8.0",
+  "condition_rule": "各项继承离网业务范围；选定组、已归属且获准的条件仅限发送许可指示；未获准发起通信另按结果通知与请求处置两条判断。",
+  "common_conditions": [
+    "TS 22.280 V16.8.0（Release 16，Stage 1）第 7 章，离网业务。表 A.1、B.1、C.1 均将 §7.3.1 三项及 §7.3.2 五项列为 MCPTT、MCVideo、MCData 的适用要求；§7.3 父行标 NA，没有独立编号要求。"
+  ],
+  "claims": [
+    {
+      "id": "authorize-communication-start",
+      "title": "准入控制负责发起通信的授权",
+      "conditions": [
+        "离网参与者要开始一次通信。"
+      ],
+      "conclusion": "准入控制功能负责授权参与者开始通信。",
+      "normative_strength": "R-7.3.1-001 用 shall authorize，约束准入控制的职责。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "7.3.1 R-7.3.1-001"
+          ],
+          "printed_pages": [
+            53
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "7 (scope heading)"
+          ],
+          "printed_pages": [
+            50
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 7.3.1 requirements 001–003 applicability"
+          ],
+          "printed_pages": [
+            70
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 7.3.1 requirements 001–003 applicability"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 7.3.1 requirements 001–003 applicability"
+          ],
+          "printed_pages": [
+            92
+          ]
+        }
+      ],
+      "limitations": [
+        "这不是给所有参与者无条件放行；提出请求不证明已获准。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "share-admission-across-services",
+      "title": "跨业务共享资源，发起新通信须考虑各业务通信的优先级和资源",
+      "conditions": [
+        "离网 MCX 业务的准入控制（MCPTT、MCVideo、MCData）。"
+      ],
+      "conclusion": "所有 MCX 业务共用准入控制功能，资源按优先级在各业务间共享。开始一项新通信时，MCX 业务须考虑所有 MCX 业务通信的优先级，以及它们占用或需要的资源。",
+      "normative_strength": "R-7.3.1-002 用 shall be common、shall take into account；既看优先级，也看资源。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "7.3.1 R-7.3.1-002"
+          ],
+          "printed_pages": [
+            53
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "7 (scope heading)"
+          ],
+          "printed_pages": [
+            50
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 7.3.1 requirements 001–003 applicability"
+          ],
+          "printed_pages": [
+            70
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 7.3.1 requirements 001–003 applicability"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 7.3.1 requirements 001–003 applicability"
+          ],
+          "printed_pages": [
+            92
+          ]
+        }
+      ],
+      "limitations": [
+        "共用是功能要求，不等于须有中央节点、单一物理队列或指定算法。本项没有规定 MCPTT、MCVideo、MCData 的固定先后。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "determine-receiver-presentation",
+      "title": "离网话权控制决定向接收者呈现哪些已收传输",
+      "conditions": [
+        "已有来自离网参与者的传输被收到；须确定某时刻向离网接收参与者呈现的内容。"
+      ],
+      "conclusion": "该 MCX 业务的离网话权控制功能须决定，在该时刻应向离网接收参与者呈现所收传输中的哪一路或哪些路。",
+      "normative_strength": "R-7.3.1-003 用 shall determine，约束话权控制决定呈现对象。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "7.3.1 R-7.3.1-003"
+          ],
+          "printed_pages": [
+            53
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "7 (scope heading)"
+          ],
+          "printed_pages": [
+            50
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 7.3.1 requirements 001–003 applicability"
+          ],
+          "printed_pages": [
+            70
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 7.3.1 requirements 001–003 applicability"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 7.3.1 requirements 001–003 applicability"
+          ],
+          "printed_pages": [
+            92
+          ]
+        }
+      ],
+      "limitations": [
+        "对象是已收到的传输，不是待发起通信的请求。授予发送许可不证明对端收到或实际呈现；本项没有规定同时只能呈现一路。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "allow-authorized-start-request",
+      "title": "授权参与者须能请求发起通信",
+      "conditions": [
+        "参与者已获授权，想要开始离网通信。"
+      ],
+      "conclusion": "这名参与者须能提出开始通信的请求。",
+      "normative_strength": "R-7.3.2-001 用 shall be able to request，保障请求能力。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "7.3.2 R-7.3.2-001"
+          ],
+          "printed_pages": [
+            53
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "7 (scope heading)"
+          ],
+          "printed_pages": [
+            50
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 7.3.2 requirements 001–005 applicability"
+          ],
+          "printed_pages": [
+            70
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 7.3.2 requirements 001–005 applicability"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 7.3.2 requirements 001–005 applicability"
+          ],
+          "printed_pages": [
+            92
+          ]
+        }
+      ],
+      "limitations": [
+        "能提出请求不证明该次请求已获准，也不是让所有未授权参与者都能起呼。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "decide-start-and-transmit-by-resource-management",
+      "title": "能否开始通信并发送由准入控制按资源管理判定",
+      "conditions": [
+        "需要决定离网 MCX 用户是否获准开始通信并发送。"
+      ],
+      "conclusion": "准入控制须按照资源管理作出该决定。",
+      "normative_strength": "R-7.3.2-002 用 shall determine if；判定不等于一律允许。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "7.3.2 R-7.3.2-002"
+          ],
+          "printed_pages": [
+            53
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "7 (scope heading)"
+          ],
+          "printed_pages": [
+            50
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 7.3.2 requirements 001–005 applicability"
+          ],
+          "printed_pages": [
+            70
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 7.3.2 requirements 001–005 applicability"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 7.3.2 requirements 001–005 applicability"
+          ],
+          "printed_pages": [
+            92
+          ]
+        }
+      ],
+      "limitations": [
+        "未指定资源阈值、实现位置或消息，不可单凭提出请求断定能发送。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "indicate-grant-to-affiliated-requester",
+      "title": "向选定组上提出请求且获准的已归属成员指示发送许可",
+      "conditions": [
+        "离网 MCX 业务中，已归属的组成员在选定的 MCX 组请求发送，且其请求已获准。"
+      ],
+      "conclusion": "须向提出该请求并已获准的这名成员指示：其已获发送许可。",
+      "normative_strength": "R-7.3.2-003 用 shall be given an indication；须已归属、是在选定组请求发送，且请求获准。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "7.3.2 R-7.3.2-003"
+          ],
+          "printed_pages": [
+            53
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "7 (scope heading)"
+          ],
+          "printed_pages": [
+            50
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 7.3.2 requirements 001–005 applicability"
+          ],
+          "printed_pages": [
+            70
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 7.3.2 requirements 001–005 applicability"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 7.3.2 requirements 001–005 applicability"
+          ],
+          "printed_pages": [
+            92
+          ]
+        }
+      ],
+      "limitations": [
+        "这不是要求全组收到同一指示，也不证明发送开始、对端收到媒体或已呈现。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "notify-user-of-queued-or-rejected-outcome",
+      "title": "业务须通知未获准发起通信的用户",
+      "conditions": [
+        "一名 MCX 用户没有获准开始其请求的离网通信。"
+      ],
+      "conclusion": "MCX 业务必须通知该用户：其通信已排队还是已被拒绝。",
+      "normative_strength": "R-7.3.2-004 用 shall notify；不能借 -005 中的 may 把结果通知降为可选。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "7.3.2 R-7.3.2-004"
+          ],
+          "printed_pages": [
+            53
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "7 (scope heading)"
+          ],
+          "printed_pages": [
+            50
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 7.3.2 requirements 001–005 applicability"
+          ],
+          "printed_pages": [
+            70
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 7.3.2 requirements 001–005 applicability"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 7.3.2 requirements 001–005 applicability"
+          ],
+          "printed_pages": [
+            92
+          ]
+        }
+      ],
+      "limitations": [
+        "本项不要求把结果通知所有成员；未指定通知形式、等待时限或队列名次。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "permit-queue-or-rejection",
+      "title": "发起请求可以排队或拒绝",
+      "conditions": [
+        "一名 MCX 用户没有获准开始离网通信。"
+      ],
+      "conclusion": "该请求可以排队，也可以拒绝。",
+      "normative_strength": "R-7.3.2-005 用 may，不指定两种处置的先后或一律采取某一种。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "7.3.2 R-7.3.2-005"
+          ],
+          "printed_pages": [
+            53
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "7 (scope heading)"
+          ],
+          "printed_pages": [
+            50
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 7.3.2 requirements 001–005 applicability"
+          ],
+          "printed_pages": [
+            70
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 7.3.2 requirements 001–005 applicability"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 7.3.2 requirements 001–005 applicability"
+          ],
+          "printed_pages": [
+            92
+          ]
+        }
+      ],
+      "limitations": [
+        "不要求先排队再拒绝，不保证稍后能获准；-004 对告知该用户排队或拒绝结果另有强制要求。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-offnetwork-floor-participant",
+    "r16-media-offnetwork-receiver-playback"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "7 (scope heading)"
+      ],
+      "printed_pages": [
+        50
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "7.3.1 R-7.3.1-001",
+        "7.3.1 R-7.3.1-002",
+        "7.3.1 R-7.3.1-003",
+        "7.3.2 R-7.3.2-001",
+        "7.3.2 R-7.3.2-002",
+        "7.3.2 R-7.3.2-003",
+        "7.3.2 R-7.3.2-004",
+        "7.3.2 R-7.3.2-005"
+      ],
+      "printed_pages": [
+        53
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "Annex A, Table A.1: 7.3 parent row NA; individual requirements listed under 7.3.1 and 7.3.2",
+        "Annex A, Table A.1: 7.3.1 requirements 001–003 applicability",
+        "Annex A, Table A.1: 7.3.2 requirements 001–005 applicability"
+      ],
+      "printed_pages": [
+        70
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "Annex B, Table B.1: 7.3 parent row NA; individual requirements listed under 7.3.1 and 7.3.2",
+        "Annex B, Table B.1: 7.3.1 requirements 001–003 applicability",
+        "Annex B, Table B.1: 7.3.2 requirements 001–005 applicability"
+      ],
+      "printed_pages": [
+        81
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "Annex C, Table C.1: 7.3 parent row NA; individual requirements listed under 7.3.1 and 7.3.2",
+        "Annex C, Table C.1: 7.3.1 requirements 001–003 applicability",
+        "Annex C, Table C.1: 7.3.2 requirements 001–005 applicability"
+      ],
+      "printed_pages": [
+        92
+      ]
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
