@@ -1,0 +1,209 @@
+{
+  "topic_id": "r16-calls-lmr-interworking-group-exit-after-deaffiliation",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "互通组呼还在进行，有人解除归属后，谁通知他退呼？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v16.8.0",
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "common_conditions": [
+    "Release 16；TS 23.283 V16.8.0 §10.3.6。预安排互通组呼或聊天互通组呼仍在进行，退呼目标是已解除组归属的一名参与者。",
+    "组已定义并有 MCPTT 用户归属；至少有一名 LMR 用户以 MCPTT ID 表示。",
+    "使用 MCPTT 客户端的一名用户和经 IWF 的一名 LMR 用户正在该组呼中。"
+  ],
+  "claims": [
+    {
+      "id": "applies-to-prearranged-and-chat",
+      "title": "预安排组呼和聊天组呼都适用",
+      "conditions": [],
+      "conclusion": "下文两条解除归属后退出正在进行的互通组呼的过程，都适用于预安排组呼和聊天组呼。",
+      "normative_strength": "Stage 2 适用范围。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.6.1, General and call-type applicability"
+          ],
+          "printed_pages": [
+            68
+          ]
+        }
+      ],
+      "limitations": [
+        "不以此扩大到其他组呼类型、整场释放，或归属状态变更。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-host-iwf-requests-client-exit",
+      "title": "LMR 宿主组中，IWF 经服务器向 MCPTT 客户端请求退呼",
+      "conditions": [
+        "组定义在 LMR 系统，且已在 IWF 定义。",
+        "目标是刚解除组归属的 MCPTT 客户端。"
+      ],
+      "conclusion": "目标 MCPTT 客户端已解除组归属。IWF 向 MCPTT 服务器发 IWF group call leave request。服务器发 group call leave request 给该客户端。客户端上的用户得到退呼通知。",
+      "normative_strength": "Stage 2 适用说明和功能步骤；按各自前提、图和所列步骤使用。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.6.2, opening and preconditions 1–2"
+          ],
+          "printed_pages": [
+            68
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.6.2, Figure 10.3.6.2-1 and steps 1–4"
+          ],
+          "printed_pages": [
+            69
+          ]
+        }
+      ],
+      "limitations": [
+        "只针对这一客户端，收到退呼请求不证明已退出。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-host-separates-client-and-iwf-responses",
+      "title": "LMR 宿主组的客户端响应与 IWF 响应分两段",
+      "conditions": [
+        "组定义在 LMR 系统，且已在 IWF 定义。",
+        "目标是刚解除组归属的 MCPTT 客户端。"
+      ],
+      "conclusion": "目标 MCPTT 客户端向 MCPTT 服务器发 group call leave response 并退出。服务器向 IWF 转回 IWF group call leave response。图的结果是该客户端被移出正在进行的组呼。",
+      "normative_strength": "Stage 2 适用说明和功能步骤；按各自前提、图和所列步骤使用。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.6.2, opening and preconditions 1–2"
+          ],
+          "printed_pages": [
+            68
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.6.2, Figure 10.3.6.2-1 and steps 5–7"
+          ],
+          "printed_pages": [
+            69
+          ]
+        }
+      ],
+      "limitations": [
+        "只有客户端发出的响应不能证明服务器已把响应转回 IWF。也不能由任一响应认定其他用户已离开。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcptt-host-server-requests-lmr-user-exit",
+      "title": "MCPTT 宿主组中，服务器经 IWF 向 LMR 用户请求退呼",
+      "conditions": [
+        "组定义在 MCPTT 系统，且已在组管理服务器（GMS）定义。",
+        "目标是 IWF 代表的、刚解除组归属的 LMR 用户。"
+      ],
+      "conclusion": "目标 LMR 用户已解除组归属。MCPTT 服务器向 IWF 发 IWF group call leave request，请该 LMR 用户退出这场组呼。",
+      "normative_strength": "Stage 2 适用说明和功能步骤；按各自前提、图和所列步骤使用。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.6.3, opening and preconditions 1–2"
+          ],
+          "printed_pages": [
+            69
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.6.3, Figure 10.3.6.3-1 and steps 1–2"
+          ],
+          "printed_pages": [
+            70
+          ]
+        }
+      ],
+      "limitations": [
+        "图示没有要求旁边的 MCPTT 客户端退呼；没有规定 IWF 到电台的无线侧消息。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcptt-host-iwf-responds-for-lmr-user-exit",
+      "title": "MCPTT 宿主组的 IWF 响应和目标用户退出",
+      "conditions": [
+        "组定义在 MCPTT 系统，且已在组管理服务器（GMS）定义。",
+        "目标是 IWF 代表的、刚解除组归属的 LMR 用户。"
+      ],
+      "conclusion": "IWF 向 MCPTT 服务器发 IWF group call leave response 并退出图示的组呼。图的结果是该 IWF 代表的目标 LMR 用户被移出正在进行的组呼。",
+      "normative_strength": "Stage 2 适用说明和功能步骤；按各自前提、图和所列步骤使用。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.6.3, opening and preconditions 1–2"
+          ],
+          "printed_pages": [
+            69
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.6.3, Figure 10.3.6.3-1 and steps 3–4"
+          ],
+          "printed_pages": [
+            70
+          ]
+        }
+      ],
+      "limitations": [
+        "不能推定该 IWF 代表的其他 LMR 用户都退出、整场组呼释放，或无线侧执行了某项动作。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-groups-mc-hosted-lmr-affiliation",
+    "r16-calls-lmr-interworking-group-late-entry"
+  ],
+  "limitations": [
+    "不是解除归属流程、组成员变更、整场组呼释放，也不是晚入。",
+    "源文是信令控制平面的功能过程，不给出 SIP 报文、无线侧消息或媒体资源释放细节。单有退呼请求不证明退出完成。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
