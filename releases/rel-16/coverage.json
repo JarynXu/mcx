@@ -10,7 +10,7 @@
   "domains": [
     {
       "id": "calls",
-      "title": "共用组通信的发送、建立提示与迟入；MCPTT 呼叫与设置、MCPTT/MCVideo 跨系统私呼、MCVideo/MCData 在网区域告警、在网组告警位置与取消与离网组紧急告警",
+      "title": "共用组通信的发送、建立提示与迟入；MCPTT 呼叫与设置、MCPTT/MCVideo 跨系统私呼、MCVideo/MCData 位置触发的紧急告警及在网处理、在网组告警位置与取消与离网组紧急告警",
       "index": "topics-calls.json",
       "areas": [
         {
@@ -1806,6 +1806,22 @@
             {
               "title": "谁能接收并录制多场并发私通信？终端的权限针对哪些来源用户？",
               "path": "topics/calls/concurrent-private-reception-and-recording.md",
+              "source_ids": [
+                "3gpp-ts-22.280-v16.8.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "calls",
+          "title": "预设区域进出触发、取消或保留紧急告警（Stage 1）",
+          "can_answer": "识别触发和取消的地理条件，以及 MCPTT、MCVideo、MCData 三表的不同结论。",
+          "conditional_or_interface_only": "§5.1.9 -001/-002：进区可触发，离区可取消或保留到 MCX 用户取消。MCVideo、MCData 表 B.1、C.1 逐号列出；MCPTT 表 A.1 的该节明确为 NA。",
+          "not_established": "不规定谁检测越界、使用何种通知、由谁选择分支或组成员是否收警；离区不能单独证明告警已经取消，MCPTT 的协议通知不改变本行 NA。",
+          "read": [
+            {
+              "title": "终端进出预设区域，哪些业务须支持触发或取消紧急告警？",
+              "path": "topics/calls/location-triggered-emergency-alert-requirements.md",
               "source_ids": [
                 "3gpp-ts-22.280-v16.8.0"
               ]
@@ -5336,12 +5352,92 @@
               ]
             }
           ]
+        },
+        {
+          "domain": "groups",
+          "title": "业务组的成员组成、组标识与成员变动通知（Stage 1）",
+          "can_answer": "判断管理员能管理哪些组信息、怎样确定某类角色的用户，以及谁应获知成员资格变化。",
+          "conditional_or_interface_only": "管理员能建立和界定组的成员组成、确定组中具有某种参与者类型角色的用户，并能指定或修改组标识信息。成员变动通知面向被加入或移出的用户；加入时须包括使用该组所需配置，移出时须移除相关配置。",
+          "not_established": "不能据此断定管理员有权分配角色，也不能把成员资格当作已归属、已参会或已有发送权；未规定通知字段和送达时刻。",
+          "read": [
+            {
+              "title": "谁是业务组成员，谁具有某类角色？成员增减时要通知谁？",
+              "path": "topics/groups/group-membership-administration.md",
+              "source_ids": [
+                "3gpp-ts-22.280-v16.8.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "groups",
+          "title": "请求组通信与选择向组发送的两种授权（Stage 1）",
+          "can_answer": "区分用户对一个或多个组提出通信请求的权限、组成员选择向某个目标组发送的权限。",
+          "conditional_or_interface_only": "业务须让管理员能授权用户提出组通信请求，目标可为一个或多个组；也须让管理员能配置哪些组成员获准选择向某个目标组发送。",
+          "not_established": "两项管理能力不证明某人同时获得两种权限，不规定审批先后、凭据或默认权限，也不证明一次通信已经建立或发送已获准。",
+          "read": [
+            {
+              "title": "谁能请求面向一个或多个组的通信？哪些成员能选择向组发送？",
+              "path": "topics/groups/group-communication-permissions.md",
+              "source_ids": [
+                "3gpp-ts-22.280-v16.8.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "groups",
+          "title": "特定组的成员限制与 UE 在网补充日后离网所需参数（Stage 1）",
+          "can_answer": "区分限制谁能入组与在网补收参数；辨认 -002 正文、附注与三张表的不同拼写。",
+          "conditional_or_interface_only": "§5.1.3 -001 三表按正文编号列明。-002 要求已妥善配置、获授权的 UE 在网时须能接收日后离网发起和参加所选业务组通信及私通信所需的应用层参数；三表该行第二格均印 R5.1.3-002，正文为 R-5.1.3-002。",
+          "not_established": "权限例子不等于一律排除调度员或主管；组 ID、组密钥是参数例子，不规定协议或已通信。三表有 -002 的同号异写项，不是 NA、空白或按正文拼法逐字列明。",
+          "read": [
+            {
+              "title": "特定业务组怎样限制成员？已配置的终端怎样为日后离网通信补参数？",
+              "path": "topics/groups/common-group-configuration.md",
+              "source_ids": [
+                "3gpp-ts-22.280-v16.8.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "groups",
+          "title": "管理员对权限内用户的组通信最长时长（Stage 1）",
+          "can_answer": "区分管理员权限内的用户、组通信的最长时长与其他条文的到时处理。",
+          "conditional_or_interface_only": "§5.1.6 -001 适用于 MCPTT 和 MCVideo，要求管理员能为权限内的 MCX 用户配置组通信最长时长；表 C.1 §5.1.6 明确为 NA。",
+          "not_established": "不指定数值、计时起点、是否提示、释放流程或私通信时限。",
+          "read": [
+            {
+              "title": "管理员能为哪些用户的组通信设置最长时长？",
+              "path": "topics/groups/common-group-communication-duration.md",
+              "source_ids": [
+                "3gpp-ts-22.280-v16.8.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "groups",
+          "title": "业务组的层级与组通信按要素区分优先级（Stage 1）",
+          "can_answer": "区分组织业务组的层级和按通信要素关联优先级给组通信排序。",
+          "conditional_or_interface_only": "§5.1.7 -001 要求支持一个或多个组层级；-002 按通信要素关联的优先级对组通信排序，业务类型、请求方身份、目标方身份为例。三业务表均列两项。",
+          "not_established": "不规定层数、继承、合成公式、固定权重或某次通信的抢占结果。",
+          "read": [
+            {
+              "title": "业务组的层级决定某次组通信的优先级吗？",
+              "path": "topics/groups/group-hierarchies-and-communication-priority.md",
+              "source_ids": [
+                "3gpp-ts-22.280-v16.8.0"
+              ]
+            }
+          ]
         }
       ]
     },
     {
       "id": "media",
-      "title": "多路通信的接收与呈现；MCPTT 话权与预建立会话的 Connect 应答、MCPTT/MCVideo 跨系统组呼媒体",
+      "title": "音视频编解码、多路通信的接收与呈现；MCPTT 话权与预建立会话的 Connect 应答、MCPTT/MCVideo 跨系统组呼媒体",
       "index": "topics-media.json",
       "areas": [
         {
@@ -5994,6 +6090,22 @@
             {
               "title": "多路组通信和私通信怎样排呈现顺序？紧急组通信何时自动呈现？",
               "path": "topics/media/communication-presentation-order.md",
+              "source_ids": [
+                "3gpp-ts-22.280-v16.8.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "media",
+          "title": "音视频编解码能力与 MCData 的适用界限（Stage 1）",
+          "can_answer": "区分业务须能使用不同编解码器、终端实际支持的格式和某次通信使用的编码。",
+          "conditional_or_interface_only": "MCPTT、MCVideo 须能灵活使用不同的音频或视频编解码器；MCData 表 C.1 把 §5.13 整行标为 NA。",
+          "not_established": "未给出必选清单、码率、协商或转码方法。MCData 不适用此项，不等于禁止处理含音视频的数据。",
+          "read": [
+            {
+              "title": "MCPTT 和 MCVideo 必须使用固定的编解码器吗？MCData 也适用吗？",
+              "path": "topics/media/audio-video-codec-flexibility.md",
               "source_ids": [
                 "3gpp-ts-22.280-v16.8.0"
               ]
@@ -6721,6 +6833,54 @@
             {
               "title": "功能别名怎样标识组内参与者？用户迁到伙伴系统后，从哪里仍须能找到他？",
               "path": "topics/identity/functional-alias-group-use-and-reachability.md",
+              "source_ids": [
+                "3gpp-ts-22.280-v16.8.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "identity",
+          "title": "用户配置档的标识信息与档本身的管理（Stage 1）",
+          "can_answer": "区分管理员给用户配置档指定或修改标识，以及创建、修改、删除、暂停配置档。",
+          "conditional_or_interface_only": "业务须提供这些管理手段。名称、标识符、别名是配置档标识信息的例子；暂停和删除是分别列出的操作。",
+          "not_established": "没有规定标识字段的必填组合、暂停后如何恢复、是否停用账号或另一份档，以及当前通信和终端安装的结果。",
+          "read": [
+            {
+              "title": "管理员怎样给用户配置档命名？暂停配置档和删除配置档是一回事吗？",
+              "path": "topics/identity/user-profile-administration.md",
+              "source_ids": [
+                "3gpp-ts-22.280-v16.8.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "identity",
+          "title": "外部应用的开放接口、访问权限和用户认证（Stage 1）",
+          "can_answer": "外部应用可以通过接口怎样使用 MCVideo、MCData，谁限制访问，通信优先级须支持哪些操作，业务要能认证谁。",
+          "conditional_or_interface_only": "第 5 章为在网和离网共用要求。§5.18.2 -001 至 -004 要求业务能供外部应用安全访问、按 MCX 业务权限和授权限制外部访问；开放接口须支持通信优先级的控制和指示，业务须能认证经此接口连接的 MCX 用户。规范性表 B.1 和 C.1 列四项，A.1 对 MCPTT 标 NA。",
+          "not_established": "不规定所有应用均可使用附注所举的全部功能。只显示优先级不证明可控制；确认应用身份不证明用户已通过认证。MCPTT 的 NA 不等于禁止类似接口。",
+          "read": [
+            {
+              "title": "外部应用能通过开放接口做什么？MCVideo、MCData 按什么限制访问、认证谁？",
+              "path": "topics/identity/external-application-open-interface.md",
+              "source_ids": [
+                "3gpp-ts-22.280-v16.8.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "identity",
+          "title": "标识符使用配置指定的国际语言字符集（Stage 1）",
+          "can_answer": "识别条文要求支持的标识符和字符集，区别于界面语言或 ID 的分配。",
+          "conditional_or_interface_only": "§5.1.4 -001 要求支持使用配置指定的国际语言字符集的标识符；A.1、B.1、C.1 均列该项。",
+          "not_established": "本项不指定具体编码、配置者或每类标识符的语法，不要求每个 ID 都接受任意文字。",
+          "read": [
+            {
+              "title": "MCX 标识符能用哪些语言字符？",
+              "path": "topics/identity/configured-identifier-character-sets.md",
               "source_ids": [
                 "3gpp-ts-22.280-v16.8.0"
               ]
@@ -7614,6 +7774,38 @@
             {
               "title": "一个 PLMN 能支持几个 MCX 业务系统？一个系统能服务不同 PLMN 中的用户吗？",
               "path": "topics/bearers/onnetwork-plmn-and-service-systems.md",
+              "source_ids": [
+                "3gpp-ts-22.280-v16.8.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "bearers",
+          "title": "UE 到网络中继与离网 UE 到 UE 中继的共用要求（Stage 1）",
+          "can_answer": "判断不能从网络取得服务的终端宜尝试什么、离网终端间须支持什么，机器人中的终端能扮演哪种角色。",
+          "conditional_or_interface_only": "三项业务均须能使用 TS 22.278 与 TS 22.468 所定义的 ProSe 中继能力。无法从 3GPP 网络取得服务时，终端宜尝试利用附近一个或多个合适的 UE 到网络中继；离网终端间须支持 UE 到 UE 中继。业务还须能让机器人中的终端具备 UE 到网络中继能力。",
+          "not_established": "未指定发现、选择或切换算法；具备能力、尝试利用或发现某台中继，均不能证明已成功转发。",
+          "read": [
+            {
+              "title": "终端无法从网络取得服务时，宜尝试哪种 ProSe 中继？离网终端之间又用哪种？",
+              "path": "topics/bearers/common-prose-relay-capabilities.md",
+              "source_ids": [
+                "3gpp-ts-22.280-v16.8.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "bearers",
+          "title": "网关终端接入、通信内容与逐用户流量属性（Stage 1）",
+          "can_answer": "判断经网关访问的对象、哪两方之间的通信内容须保持不变，以及同一网关如何处理同时接入的用户。",
+          "conditional_or_interface_only": "三项业务均须可由 MCX 用户经网关型终端访问。网关须保持系统与接入用户之间的通信内容不变，并独立处理同时接入该网关的各个用户的流量属性，例如优先级和 QoS。",
+          "not_established": "不规定网关的协议、加密做法、按用户专用承载或 QoS 数值；网关型终端不是系统间网关的同义词。",
+          "read": [
+            {
+              "title": "用户怎样经网关终端接入 MCX？多人共用一台网关时，哪些内容不能改？",
+              "path": "topics/bearers/gateway-ue-access-and-traffic.md",
               "source_ids": [
                 "3gpp-ts-22.280-v16.8.0"
               ]

@@ -9399,6 +9399,266 @@
         }
       ],
       "boundary": "两种方式都须支持，不表示每把密钥须用两种方式各发一次。空口交付的保护对象是密钥，不能用用户登录替代，也不能据此推出协议、拓扑或离网时在线服务一定可达。"
+    },
+    {
+      "id": "r16-media-audio-video-codec-flexibility",
+      "question": "MCPTT 和 MCVideo 必须使用固定的编解码器吗？MCData 也适用吗？",
+      "start": "topics/media/audio-video-codec-flexibility.md",
+      "next_if": [
+        {
+          "condition": "如果问的是管理员怎样给一个在网组设置首选编解码。",
+          "read": "topics/groups/onnetwork-administrative-group-settings.md"
+        },
+        {
+          "condition": "如果要核对 MCPTT 组呼怎样把首选语音编码写入 SDP。",
+          "read": "topics/calls/group-speech-codec-preference.md"
+        }
+      ],
+      "boundary": "按 MCPTT、MCVideo、MCData 的规范性附录判断适用性。区分业务层的编解码能力、在网组首选设置和 MCPTT 的 SDP 程序。"
+    },
+    {
+      "id": "r16-bearers-common-prose-relay-capabilities",
+      "question": "终端无法从网络取得服务时，宜尝试哪种 ProSe 中继？离网终端之间又用哪种？",
+      "start": "topics/bearers/common-prose-relay-capabilities.md",
+      "next_if": [
+        {
+          "condition": "若终端需要按用户已归属的业务组搜索能提供在网业务的中继。",
+          "read": "topics/bearers/prose-ue-to-network-coverage-extension.md"
+        },
+        {
+          "condition": "若要判断离网私通信的对端能否直达，或能否经过终端间中继。",
+          "read": "topics/bearers/offnetwork-private-ue-to-ue-relay.md"
+        },
+        {
+          "condition": "若问离网组通信中谁能配置中继，接收端如何处理两路传输。",
+          "read": "topics/bearers/offnetwork-group-ue-to-ue-relay.md"
+        },
+        {
+          "condition": "若要查已有实时通信经中继收发或换路时的要求。",
+          "read": "topics/bearers/prose-relay-streaming.md"
+        },
+        {
+          "condition": "若要判断是否自动或手动切到离网直连，而非经中继入网。",
+          "read": "topics/bearers/offnetwork-direct-path-switching.md"
+        },
+        {
+          "condition": "若要查离网活动元数据记录和返回网络后的取回。",
+          "read": "topics/security/offnetwork-audit-metadata-retrieval.md"
+        },
+        {
+          "condition": "若需按业务组核对 Stage 2 的中继发现过程。",
+          "read": "topics/bearers/relay-discovery-by-group.md"
+        },
+        {
+          "condition": "若要核对已有 MCPTT 通话改经中继时的会话转移。",
+          "read": "topics/bearers/anchored-session-transfer.md"
+        }
+      ],
+      "boundary": "无法取得服务时宜尝试附近一个或多个合适的 UE 到网络中继；离网终端间须支持 UE 到 UE 中继。区分尝试、搜索、具备能力与已转发。"
+    },
+    {
+      "id": "r16-bearers-gateway-ue-access-and-traffic",
+      "question": "用户怎样经网关终端接入 MCX？多人共用一台网关时，哪些内容不能改？",
+      "start": "topics/bearers/gateway-ue-access-and-traffic.md",
+      "next_if": [
+        {
+          "condition": "若问题是终端无法从网络取得服务时是否宜尝试附近中继，而非网关如何对待所接入的用户。",
+          "read": "topics/bearers/common-prose-relay-capabilities.md"
+        },
+        {
+          "condition": "若对象是两个 MC 系统之间为隐藏拓扑而使用的网关，而非接入用户的网关终端。",
+          "read": "topics/groups/partner-affiliation-gateway-path.md"
+        }
+      ],
+      "boundary": "网关使系统可访问，但接入能力不等于已获准接入。区分通信内容与协议封装、流量属性独立处理与每用户专用承载。"
+    },
+    {
+      "id": "r16-groups-group-membership-administration",
+      "question": "管理员能建立业务组的成员组成、修改组名称或组别名吗？",
+      "start": "topics/groups/group-membership-administration.md",
+      "next_if": [
+        {
+          "condition": "要分清请求组通信与成员选择向组发送的授权。",
+          "read": "topics/groups/group-communication-permissions.md"
+        },
+        {
+          "condition": "要改的是用户配置档的标识，而不是组的标识。",
+          "read": "topics/identity/user-profile-administration.md"
+        },
+        {
+          "condition": "要查在网单组人数上限、禁用或移除整个组。",
+          "read": "topics/groups/onnetwork-group-limits-and-state.md"
+        },
+        {
+          "condition": "要查同系统多个组织怎样设管理员、隔离或共享管理参数。",
+          "read": "topics/identity/shared-system-organization-management.md"
+        },
+        {
+          "condition": "已知是同一 MC 系统的成员变动流程，要分清服务器、客户端收到什么；按 Stage 2 条件查。",
+          "read": "topics/groups/group-membership-notification.md"
+        }
+      ],
+      "boundary": "不能据此断定管理员有权分配角色，也不能把成员资格当作已归属、已参会或已有发送权；未规定通知字段和送达时刻。"
+    },
+    {
+      "id": "r16-groups-group-communication-permissions",
+      "question": "用户获准请求面向一个或多个组的组通信，是否已经建立了通信？",
+      "start": "topics/groups/group-communication-permissions.md",
+      "next_if": [
+        {
+          "condition": "要查业务组的成员组成、特定参与者类型和成员变动通知。",
+          "read": "topics/groups/group-membership-administration.md"
+        },
+        {
+          "condition": "要查在网时怎样把组对指定成员配置为只收。",
+          "read": "topics/groups/onnetwork-administrative-group-settings.md"
+        },
+        {
+          "condition": "只在同系统普通在网单话权 MCPTT 组呼中，要判读只收配置、SDP 与具体话权拒绝，转 Stage 3。",
+          "read": "topics/media/on-network-receive-only-priority.md"
+        }
+      ],
+      "boundary": "两项管理能力不证明某人同时获得两种权限，不规定审批先后、凭据或默认权限，也不证明一次通信已经建立或发送已获准。"
+    },
+    {
+      "id": "r16-identity-user-profile-administration",
+      "question": "管理员能否给用户配置档指定或修改名称、标识符、别名？这会改用户的业务 ID 吗？",
+      "start": "topics/identity/user-profile-administration.md",
+      "next_if": [
+        {
+          "condition": "要改的是业务组自身的名称或别名，而非用户配置档的标识。",
+          "read": "topics/groups/group-membership-administration.md"
+        },
+        {
+          "condition": "要查管理员权限范围、在用档的内容能否改，以及谁指定安装时机。",
+          "read": "topics/identity/user-profile-management-requirements.md"
+        },
+        {
+          "condition": "要查任务关键组织如何设立管理员、不同组织的参数由谁看或改。",
+          "read": "topics/identity/shared-system-organization-management.md"
+        },
+        {
+          "condition": "要查在网管理员活动日志及变更生效时点。",
+          "read": "topics/identity/onnetwork-administrator-activities-and-change-timing.md"
+        },
+        {
+          "condition": "已知是终端取到配置变更或客户端向配置管理服务器写回数据，要按 Stage 2 查。",
+          "read": "topics/identity/user-profile-data-update.md"
+        }
+      ],
+      "boundary": "没有规定标识字段的必填组合、暂停后如何恢复、是否停用账号或另一份档，以及当前通信和终端安装的结果。"
+    },
+    {
+      "id": "r16-identity-external-application-open-interface",
+      "question": "外部应用能通过开放接口做什么？MCVideo、MCData 按什么限制访问、认证谁？",
+      "start": "topics/identity/external-application-open-interface.md",
+      "next_if": [
+        {
+          "condition": "若要区分对外部应用本身的认证和授权，或查 Stage 2 对接入实现的范围。",
+          "read": "topics/identity/external-application-access.md"
+        },
+        {
+          "condition": "若问在网终端能否要求认证 MCX 业务本身，而非业务认证经开放接口连接的用户。",
+          "read": "topics/security/service-authentication-requirements.md"
+        }
+      ],
+      "boundary": "第 5 章为在网、离网共用要求；§5.18.2 的四项适用于 MCVideo、MCData，MCPTT 为 NA。接口能力不等于应用获权，用户认证能力不等于本次认证结果。"
+    },
+    {
+      "id": "r16-groups-common-group-configuration",
+      "question": "特定业务组怎样限制成员？已配置的终端怎样为日后离网通信补参数？",
+      "start": "topics/groups/common-group-configuration.md",
+      "next_if": [
+        {
+          "condition": "要区分限制哪些人可入组，与限制整个组的成员人数。",
+          "read": "topics/groups/onnetwork-group-limits-and-state.md"
+        },
+        {
+          "condition": "要查离网直连 UE 的预配置项目，而非已配置 UE 在网时的运行时补配。",
+          "read": "topics/bearers/offnetwork-direct-ue-preparation.md"
+        },
+        {
+          "condition": "要查客户端取得、订阅组配置的 Stage 2 流程。",
+          "read": "topics/groups/client-group-configuration.md"
+        }
+      ],
+      "boundary": "权限例子不等于一律排除调度员或主管；组 ID、组密钥是参数例子，不规定协议或已通信。三表有 -002 的同号异写项，不是 NA、空白或按正文拼法逐字列明。"
+    },
+    {
+      "id": "r16-identity-configured-identifier-character-sets",
+      "question": "MCX 标识符能用哪些语言字符？",
+      "start": "topics/identity/configured-identifier-character-sets.md",
+      "next_if": [
+        {
+          "condition": "要查在网 ID 与别名的分配、唯一性或管理员配置。",
+          "read": "topics/identity/onnetwork-id-and-alias-management.md"
+        },
+        {
+          "condition": "要查在网组通信接收端取得或呈现哪些标识。",
+          "read": "topics/identity/onnetwork-group-sender-identification.md"
+        }
+      ],
+      "boundary": "本项不指定具体编码、配置者或每类标识符的语法，不要求每个 ID 都接受任意文字。"
+    },
+    {
+      "id": "r16-groups-common-group-communication-duration",
+      "question": "管理员能为哪些用户的组通信设置最长时长？",
+      "start": "topics/groups/common-group-communication-duration.md",
+      "next_if": [
+        {
+          "condition": "要查在网组通信保持活动的最长时间、终止条件和最少参与人数。",
+          "read": "topics/groups/onnetwork-administrative-lifecycle.md"
+        },
+        {
+          "condition": "要查离网组通信和私通信各自的时限、提示与释放。",
+          "read": "topics/calls/offnetwork-communication-duration-limit.md"
+        },
+        {
+          "condition": "对象是在网私通信，不是组通信。",
+          "read": "topics/calls/onnetwork-private-termination-and-duration.md"
+        }
+      ],
+      "boundary": "不指定数值、计时起点、是否提示、释放流程或私通信时限。"
+    },
+    {
+      "id": "r16-groups-group-hierarchies-and-communication-priority",
+      "question": "业务组的层级决定某次组通信的优先级吗？",
+      "start": "topics/groups/group-hierarchies-and-communication-priority.md",
+      "next_if": [
+        {
+          "condition": "要查在网管理员建立组传输优先级层级和特性，而非组织业务组本身。",
+          "read": "topics/groups/onnetwork-group-priority-administration.md"
+        },
+        {
+          "condition": "要查在网组通信相对其他通信或流量的传输、呈现优先级。",
+          "read": "topics/groups/onnetwork-group-communications-priority.md"
+        },
+        {
+          "condition": "要查离网通信的应用层属性与 ProSe 映射。",
+          "read": "topics/bearers/offnetwork-communication-priority.md"
+        }
+      ],
+      "boundary": "不规定层数、继承、合成公式、固定权重或某次通信的抢占结果。"
+    },
+    {
+      "id": "r16-calls-location-triggered-emergency-alert-requirements",
+      "question": "终端进出预设区域，哪些业务须支持触发或取消紧急告警？",
+      "start": "topics/calls/location-triggered-emergency-alert-requirements.md",
+      "next_if": [
+        {
+          "condition": "要查同系统在网时服务器、客户端分别处理什么，读公共 Stage 2 流程。",
+          "read": "topics/calls/emergency-alert-area-entry-exit.md"
+        },
+        {
+          "condition": "手里是 MCPTT 协议区域通知或应答，读该业务自己的 Stage 3 程序。",
+          "read": "topics/calls/area-alert-notification.md"
+        },
+        {
+          "condition": "问题是管理员定义与调度员关联的地理区域以路由告警，而非进出区域触发或取消。",
+          "read": "topics/calls/onnetwork-location-dependent-dispatch-areas.md"
+        }
+      ],
+      "boundary": "不规定谁检测越界、使用何种通知、由谁选择分支或组成员是否收警；离区不能单独证明告警已经取消，MCPTT 的协议通知不改变本行 NA。"
     }
   ]
 }
