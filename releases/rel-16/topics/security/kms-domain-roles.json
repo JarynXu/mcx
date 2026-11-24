@@ -1,0 +1,161 @@
+{
+  "topic_id": "r16-security-kms-domain-roles",
+  "release": 16,
+  "standard_stage": null,
+  "state": "draft",
+  "title": "归属、迁移和外部 KMS：客户端能连谁，证书从哪来？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v16.13.0",
+  "condition_rule": "每条声明继承 common_conditions。先从同一 KM 客户端判定 KMS 的角色，再按该角色的条件读职责或许可。",
+  "common_conditions": [
+    "TS 33.180 V16.13.0，Release 16，§5.3.1 的密钥管理角色。",
+    "归属、迁移和外部角色都以同一个用户（KM 客户端）为参照。角色说明不是指定请求的承载或部署拓扑。"
+  ],
+  "claims": [
+    {
+      "id": "one-home-kms-per-km-client",
+      "title": "每个 KM 客户端有一个归属 KMS，迁移和外部 KMS 都可为零",
+      "conditions": [
+        "按照一个用户（KM 客户端）的关系判定角色数量。"
+      ],
+      "conclusion": "用户有且只有一个归属 KMS，有零个或多个迁移 KMS，也有零个或多个外部 KMS。MC 用户参与端到端通信安全需要归属 KMS 供应的密钥材料，设置或控制通信的管理实体也需要供应密钥材料。用户还可以是组管理服务器、MCX 服务器、信令代理或其他含 KM 客户端的实体。",
+      "normative_strength": "按原文的角色数量和材料需求表述；不因有迁移或外部角色就增加归属 KMS 数量。",
+      "limitations": [
+        "数量是客户端视角的角色关系，不统计后台进程或服务器。原文注说明 MC KMS 与 TS 33.328 的 MIKEY-TICKET KMS 功能不同；此处不覆盖后者。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.3.1.1, NOTE and Figure 5.3.1.1-1: KM client perspective and KMS role counts"
+          ],
+          "printed_pages": [
+            53,
+            54
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "home-kms-required-provisioning",
+      "title": "归属 KMS 管理主安全域，须提供五类材料和清单",
+      "conditions": [
+        "该 KMS 是 KM 客户端信任的归属 KMS，管理它的主安全域。"
+      ],
+      "conclusion": "归属 KMS 控制主安全域中 KM 客户端的媒体安全使用，并为客户端提供归属在伙伴 MC 域的用户或组对应的 KMS 证书。归属 KMS 须提供自己的证书、所供密钥材料的使用策略、已认证用户身份的密钥材料、允许使用的迁移 KMS 及地址，以及允许使用的外部 KMS 及证书。",
+      "normative_strength": "五类材料和清单为 SHALL；用户密钥材料对应已认证用户的身份。",
+      "limitations": [
+        "允许使用的地址和证书不证明已连接、已加入某域、已通信或获得 MC 业务授权。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.3.1.2: Home KMS trust and media security, five required provisioning items"
+          ],
+          "printed_pages": [
+            54
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "migration-kms-material-while-member",
+      "title": "迁移成员的媒体安全与迁移 KMS 可提供的材料",
+      "conditions": [
+        "所讨论的是该用户迁入的 MC 域及其迁移 KMS。"
+      ],
+      "conclusion": "迁移 KMS 在用户获授权成为该迁移 MC 域成员期间控制其媒体安全。迁移 KMS 可提供自己的证书，在用户是该域成员时可提供已认证用户身份的密钥材料。注 1 说明归属 KMS 在迁移期间仍能提供归属证书和密钥材料；注 2 说明迁移 KMS 也可能支持撤销归属 KMS 签发的材料，同时允许用它供应的未受损材料通信。",
+      "normative_strength": "媒体安全控制按授权成员范围；所列材料为 MAY，注 1 和注 2 说的是能力，不是必须执行的动作。",
+      "limitations": [
+        "迁移不会把归属职责改作迁移职责。条款未规定撤销步骤、期限，也不证明成员资格、材料发放或实际撤销。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.3.1.3 and NOTES 1–2: Migration KMS media control and optional material provisioning"
+          ],
+          "printed_pages": [
+            54,
+            55
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "external-kms-certificate-via-home-no-connection",
+      "title": "外部证书由归属 KMS 提供，KM 客户端不连外部 KMS",
+      "conditions": [
+        "该外部 KMS 服务于用户可通信的伙伴安全域。"
+      ],
+      "conclusion": "用户（KM 客户端）不连接外部 KMS。归属 KMS 向它提供该外部 KMS 的证书；图中外部证书带外送到归属 KMS。缺少该证书，客户端不能与归属在对应伙伴安全域的用户或组进行安全通信。",
+      "normative_strength": "条款对客户端连接外部 KMS 用 never；注 1 把外部证书列为安全通信前提。",
+      "limitations": [
+        "知道 KMS URI、持有证书或能与伙伴安全域通信，都不构成连接外部 KMS 的例外。持有证书不证明实际通信、信任决定或业务授权。",
+        "图表示证书来自哪里，不规定带外传送机制。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.3.1.4, NOTE 1 and Figure 5.3.1.1-1: external KMS certificate via Home and no client connection"
+          ],
+          "printed_pages": [
+            54,
+            55
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    },
+    {
+      "id": "krr-provision-role-not-home-only-upload-procedure",
+      "title": "KRR 的角色许可不改写指定上传的归属 KMS 限制",
+      "conditions": [
+        "核对 §5.3.1 所列 KM 客户端向自己的归属 KMS 或迁移 KMS 提供 KRR 的角色许可。"
+      ],
+      "conclusion": "客户端可向归属 KMS 提供收到的 KRR，也可向自己的迁移 KMS 提供 KRR。后者是迁移 KMS 角色的许可，不为 §5.3.3 另列的、只发归属 KMS 的 KRR upload 增加目的地。",
+      "normative_strength": "两处角色条文均为 MAY。指定的 §5.3.3 上传是既有的独立程序，不从这些角色许可改写。",
+      "limitations": [
+        "不规定向迁移 KMS 提供 KRR 的消息、传输、触发或应答。已提供 KRR 不证明域已被接受，不替代跨域交换的 KRR 生成和选择规则。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.3.1.2 and 5.3.1.3: client permission to provide KRRs to Home or Migration KMS"
+          ],
+          "printed_pages": [
+            54,
+            55
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true
+      }
+    }
+  ],
+  "related": [
+    "r16-security-kms-provisioning",
+    "r16-identity-kms-redirect-response"
+  ],
+  "limitations": [
+    "只覆盖这版 §5.3.1 的角色和证书来源。不另规定 §5.3.3 请求路径、报文格式、密钥续期或撤销过程、部署选型和实际业务结果。"
+  ],
+  "verification": {
+    "original_clauses_checked": true
+  }
+}
