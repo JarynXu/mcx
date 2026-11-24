@@ -1,0 +1,110 @@
+{
+  "topic_id": "r16-groups-mc-group-configuration-subscription",
+  "title": "MC 定义组：IWF 怎样订阅配置，主 MC GMS 何时发更新？",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v16.8.0",
+  "condition_rule": "先核对该组的定义系统和主 MC GMS。按各条原文前提分别判断订阅和通知；同名消息不标明请求发送方，两类响应不能互代。",
+  "common_conditions": [
+    "TS 23.283 V16.8.0 Release 16 Stage 2：本主题是 IWF 与该 MC 业务组的主 MC 系统的组管理服务器（主 MC GMS）之间的组配置流程；不套用 LMR 定义组的反向流程。"
+  ],
+  "claims": [
+    {
+      "id": "mc-group-config-iwf-subscribes-to-primary-gms",
+      "title": "IWF 已收到本组信息且符合三个前提时，向该组主 MC GMS 订阅",
+      "conditions": [
+        "MC 业务组定义在其 MC 系统。",
+        "至少一名组成员定义在 LMR 系统。",
+        "IWF 已从该组的主 MC GMS 收到该组信息。"
+      ],
+      "conclusion": "1. IWF 向该组主 MC GMS 发送 IWF group information subscribe request，订阅保存在该 GMS 的组配置。2. 主 MC GMS 向 IWF 返回 IWF group information subscribe response，报告订阅请求成功或失败。",
+      "normative_strength": "§10.2.3.6 列出三个前提及两步交互，图 10.2.3.6-1 给出消息名和方向。",
+      "limitations": [
+        "以前收到该组信息不等于已订阅成功，也不能从本条推出自动订阅或必须用某一条取配置流程取得先前信息。其他 MC 服务器并非本条所指的该组主 MC GMS。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.2.3.6, opening, preconditions 1–3, Figure 10.2.3.6-1 and steps 1–2: IWF subscribes to the primary MC GMS and the GMS reports the subscription result"
+          ],
+          "printed_pages": [
+            30,
+            31
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mc-group-config-primary-gms-notifies-subscribed-iwf",
+      "title": "本组主 MC GMS 收到并保存新配置后，向已订阅的 IWF 发通知",
+      "conditions": [
+        "IWF 已在该组的主 MC GMS 订阅该组配置。",
+        "该主 MC GMS 已收到并保存该组的新配置。"
+      ],
+      "conclusion": "1. 该组主 MC GMS 向 IWF 发送 IWF group information notify request。2. IWF 向该主 MC GMS 返回 IWF group information notify response，报告本次通知成功或失败。",
+      "normative_strength": "§10.2.3.7 列出两个前提及两步交互，图 10.2.3.7-1 给出消息名和方向。通知成败不等于订阅成败。",
+      "limitations": [
+        "主 MC GMS 收到但尚未保存新配置，不满足第二项前提。不能只用主 MC GMS 发出通知的记录代证 IWF 实收。",
+        "通知响应不证明 IWF 已保存配置、终端已收到配置、归属有变、订阅已终止或通话结束。本条未说明刷新间隔、重试或具体线上协议。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.2.3.7, opening, preconditions 1–2, Figure 10.2.3.7-1 and steps 1–2: primary MC GMS notifies the subscribed IWF after receiving and storing new configuration"
+          ],
+          "printed_pages": [
+            31
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.2.3.6, opening, preconditions 1–3, Figure 10.2.3.6-1 and steps 1–2: IWF subscribes to the primary MC GMS and the GMS reports the subscription result"
+      ],
+      "printed_pages": [
+        30,
+        31
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.2.3.7, opening, preconditions 1–2, Figure 10.2.3.7-1 and steps 1–2: primary MC GMS notifies the subscribed IWF after receiving and storing new configuration"
+      ],
+      "printed_pages": [
+        31
+      ]
+    }
+  ],
+  "related": [
+    "r16-groups-lmr-group-configuration-subscription"
+  ],
+  "limitations": [
+    "只收录 MC 定义组的两个 Stage 2 过程。若组定义方不明，先确认，或分别说明 MC 定义与 LMR 定义的两条路径；不能仅凭同名消息判断方向。",
+    "不补写指定取配置入口、自动订阅、时序间隔、重试、失效或解绑规则。响应不代证 IWF 本地写入、终端收件、归属或通话状态。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}

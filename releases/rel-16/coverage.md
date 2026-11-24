@@ -5669,6 +5669,20 @@ LMR 定义组，MC GMS 已从 IWF 收到组信息。还要核对哪几个前提�
 
 [读取主题](topics/groups/lmr-group-configuration-subscription.md)
 
+## MC 定义组的配置订阅与通知（Stage 2）
+
+MC 定义组，主 MC GMS 只收到新配置还没保存，还是收到并保存了？什么时候发通知？ 只看到 IWF group information subscribe request 或 IWF group information notify request，谁发请求？
+
+MC 定义组，至少一名组成员定义在 LMR 系统，且 IWF 已从该组的主 MC GMS 收到组信息。IWF 向该主 MC GMS 发订阅请求，主 MC GMS 回订阅成败。
+
+IWF 已在该组的主 MC GMS 订阅该组配置，且主 MC GMS 已收到并保存该组的新配置时，由该主 MC GMS 向 IWF 发通知，IWF 回本次通知成败。
+
+LMR 定义组另查 §10.2.3.8–.9。至少一名组成员定义在 MC 系统，且 MC GMS 已从 IWF 收到组信息时，由 MC GMS 向 IWF 订阅；MC GMS 已在 IWF 订阅该组配置，且 IWF 有该组的新信息时，由 IWF 向该 MC GMS 发通知。
+
+尚未建立：仅凭同名请求不能判断发送方。先查组定义在哪个系统，定义方未知时须保留两条有条件的方向。 主 MC GMS 只收到、尚未保存新配置，未满足 MC 定义组的通知条件。发出通知不代证对端实收。订阅与通知各有成败；响应不证明本地写入、终端交付、组归属或呼叫状态。这里不规定刷新间隔、重试或线上编码。
+
+[读取主题](topics/groups/mc-group-configuration-subscription.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。
