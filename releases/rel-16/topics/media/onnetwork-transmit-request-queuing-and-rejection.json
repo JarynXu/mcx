@@ -1,0 +1,685 @@
+{
+  "topic_id": "r16-media-onnetwork-transmit-request-queuing-and-rejection",
+  "release": 16,
+  "standard_stage": 1,
+  "state": "draft",
+  "title": "在网 MCX 发送请求被拒、入队或撤回时，谁须收到通知？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-22.280-v16.8.0",
+  "condition_rule": "每项声明继承共同范围。§6.19.1 的无编号描述另列；通知对象和触发事件各按对应编号要求读取。",
+  "common_conditions": [
+    "TS 22.280 V16.8.0（Release 16，Stage 1）第 6 章限在网使用。表 A.1（MCPTT）、B.1（MCVideo）、C.1（MCData）均列 §6.19.1.1 的 R-6.19.1.1-001 至 -007；对象是 MCX 发送请求，不限于 MCPTT 话权或 MCVideo 的视频发送许可。"
+  ],
+  "claims": [
+    {
+      "id": "request-to-transmit-lifecycle-context",
+      "title": "发送请求到达后的三种处理是业务说明，不是另加的编号要求",
+      "conditions": [
+        "解释 §6.19.1 所述在网发送请求的生命周期。"
+      ],
+      "conclusion": "相互竞争的发送请求通常携带优先级信息，供分配传输资源时仲裁。请求到达时即获准、被拒或入队。排队条件解除后通常会获准；请求也可能因多种原因自动丢弃，或由获授权的用户取消，后者通常是请求发起者。被拒后可以由用户手动再请求，也可以自动再请求。",
+      "normative_strength": "§6.19 是标题，§6.19.1 是无编号的业务说明。三张适用表在这两行标 NA；七项编号要求列在 §6.19.1.1。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6.19 (heading); 6.19.1 (unnumbered description of requests to transmit)"
+          ],
+          "printed_pages": [
+            50
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6 (scope heading)"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 6.19 and 6.19.1 headings (NA)"
+          ],
+          "printed_pages": [
+            69
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 6.19 and 6.19.1 headings (NA)"
+          ],
+          "printed_pages": [
+            80
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 6.19 and 6.19.1 headings (NA)"
+          ],
+          "printed_pages": [
+            91
+          ]
+        }
+      ],
+      "limitations": [
+        "没有规定每个请求都要携带优先级、排队就一定获准、拒绝后一律自动重试，或一个固定的重试时刻。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "queue-any-request",
+      "title": "系统须能让任何 MCX 发送请求排队",
+      "conditions": [
+        "所问的是 MCX 业务接受发送请求入队的能力。"
+      ],
+      "conclusion": "MCX 业务须提供一种机制，能让任何 MCX 发送请求排队。",
+      "normative_strength": "R-6.19.1.1-001 要求提供能力，不要求所有请求实际入队。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6.19.1.1 R-6.19.1.1-001"
+          ],
+          "printed_pages": [
+            50
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6 (scope heading)"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 6.19.1.1 requirements 001–006 applicability"
+          ],
+          "printed_pages": [
+            69
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 6.19.1.1 requirements 001–007 applicability"
+          ],
+          "printed_pages": [
+            80
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 6.19.1.1 requirements 001–007 applicability"
+          ],
+          "printed_pages": [
+            91
+          ]
+        }
+      ],
+      "limitations": [
+        "本项没有规定何时选入队而非准许或拒绝，也没有规定队位、容量或排序算法。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "reject-with-cause",
+      "title": "业务须能拒绝发送请求并给出原因指示",
+      "conditions": [
+        "所问的是 MCX 业务拒绝发送请求的能力。"
+      ],
+      "conclusion": "MCX 业务须提供一种能拒绝 MCX 发送请求并给出原因指示的机制。",
+      "normative_strength": "R-6.19.1.1-002 用 shall 约束带原因指示的拒绝机制。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6.19.1.1 R-6.19.1.1-002"
+          ],
+          "printed_pages": [
+            50
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6 (scope heading)"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 6.19.1.1 requirements 001–006 applicability"
+          ],
+          "printed_pages": [
+            69
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 6.19.1.1 requirements 001–007 applicability"
+          ],
+          "printed_pages": [
+            80
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 6.19.1.1 requirements 001–007 applicability"
+          ],
+          "printed_pages": [
+            91
+          ]
+        }
+      ],
+      "limitations": [
+        "本项未定义原因码、协议或附加文字。拒绝发送请求不等于结束整场通信或撤销已授予的发送权。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "who-is-notified-for-three-communication-events",
+      "title": "三种事件须通知请求参与者，获授权用户则可选",
+      "conditions": [
+        "通信入队、通信被拒，或通信出队后已经开始。三者分别触发此项。"
+      ],
+      "conclusion": "MCX 业务须通知提出请求的 MCX 参与者；也可以通知一名或多名获授权用户。",
+      "normative_strength": "R-6.19.1.1-003 对请求参与者用 shall；对一名或多名获授权用户用 may。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6.19.1.1 R-6.19.1.1-003"
+          ],
+          "printed_pages": [
+            50
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6 (scope heading)"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 6.19.1.1 requirements 001–006 applicability"
+          ],
+          "printed_pages": [
+            69
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 6.19.1.1 requirements 001–007 applicability"
+          ],
+          "printed_pages": [
+            80
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 6.19.1.1 requirements 001–007 applicability"
+          ],
+          "printed_pages": [
+            91
+          ]
+        }
+      ],
+      "limitations": [
+        "第三种事件是出队后通信已经开始，不能把单纯移出队列当成开传。这里未要求提醒所有用户，也未规定通知的协议或是否须回执。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "user-removes-own-request",
+      "title": "用户须能撤回本人的排队发送请求",
+      "conditions": [
+        "MCX 用户本人的发送请求已在 MCX 请求队列中。"
+      ],
+      "conclusion": "MCX 业务须提供一种方式，让该用户从队列中移除自己的发送请求。",
+      "normative_strength": "R-6.19.1.1-004 用 shall 约束业务提供自撤手段。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6.19.1.1 R-6.19.1.1-004"
+          ],
+          "printed_pages": [
+            50
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6 (scope heading)"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 6.19.1.1 requirements 001–006 applicability"
+          ],
+          "printed_pages": [
+            69
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 6.19.1.1 requirements 001–007 applicability"
+          ],
+          "printed_pages": [
+            80
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 6.19.1.1 requirements 001–007 applicability"
+          ],
+          "printed_pages": [
+            91
+          ]
+        }
+      ],
+      "limitations": [
+        "发起自撤不等于请求已经移除，不是撤销正在发送者的权限。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "authorized-user-removes-another-request",
+      "title": "获授权的用户须能代撤另一用户的排队发送请求",
+      "conditions": [
+        "一名用户已获代撤授权；另一名用户的 MCX 发送请求已在队列中。"
+      ],
+      "conclusion": "MCX 业务须提供一种方式，让获授权的用户从队列中移除另一用户的发送请求。",
+      "normative_strength": "R-6.19.1.1-005 用 shall 约束业务提供代撤手段。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6.19.1.1 R-6.19.1.1-005"
+          ],
+          "printed_pages": [
+            50
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6 (scope heading)"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 6.19.1.1 requirements 001–006 applicability"
+          ],
+          "printed_pages": [
+            69
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 6.19.1.1 requirements 001–007 applicability"
+          ],
+          "printed_pages": [
+            80
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 6.19.1.1 requirements 001–007 applicability"
+          ],
+          "printed_pages": [
+            91
+          ]
+        }
+      ],
+      "limitations": [
+        "不能把代撤权扩大到任意用户，也不能将获授权用户限定为管理员。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "notify-owner-when-request-removed",
+      "title": "请求移出队列时必须通知请求所属用户",
+      "conditions": [
+        "一名 MCX 业务用户的发送请求已从请求队列中移除。"
+      ],
+      "conclusion": "该请求所属的 MCX 业务用户须收到移除通知。",
+      "normative_strength": "R-6.19.1.1-006 用 shall；不以某一指定的移除者为条件。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6.19.1.1 R-6.19.1.1-006"
+          ],
+          "printed_pages": [
+            50
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6 (scope heading)"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 6.19.1.1 requirements 001–006 applicability"
+          ],
+          "printed_pages": [
+            69
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 6.19.1.1 requirements 001–007 applicability"
+          ],
+          "printed_pages": [
+            80
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 6.19.1.1 requirements 001–007 applicability"
+          ],
+          "printed_pages": [
+            91
+          ]
+        }
+      ],
+      "limitations": [
+        "只发出了撤回请求尚不能证明已经移除；只通知代撤人不能替代通知请求所属用户。条文没有指定是否另发一条独立消息。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "administrator-configures-automatic-removal",
+      "title": "管理员须能为自动移除设置业务参数",
+      "conditions": [
+        "所问的是由 MCX 管理员配置自动移除 MCX 发送请求的条件。"
+      ],
+      "conclusion": "MCX 业务须提供机制，使 MCX 管理员能配置一个或多个业务参数，用于从任一 MCX 请求队列自动移除发送请求。",
+      "normative_strength": "R-6.19.1.1-007 用 shall 规定配置能力；定时器只是参数示例。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6.19.1.1 R-6.19.1.1-007"
+          ],
+          "printed_pages": [
+            50
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6 (scope heading)"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 6.19.1.1 requirement 007 applicability"
+          ],
+          "printed_pages": [
+            70
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 6.19.1.1 requirements 001–007 applicability"
+          ],
+          "printed_pages": [
+            80
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 6.19.1.1 requirements 001–007 applicability"
+          ],
+          "printed_pages": [
+            91
+          ]
+        }
+      ],
+      "limitations": [
+        "未规定必须采用定时器或某个超时值，也不要求所有排队请求最终都被自动移除。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-bearers-onnetwork-service-preemption",
+    "r16-bearers-onnetwork-setup-failure-and-exceptional-termination",
+    "r16-mcvideo-queued-request-cancellation",
+    "r16-media-floor-deny-revoke-cause"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "6 (scope heading)"
+      ],
+      "printed_pages": [
+        29
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "6.19 (heading); 6.19.1 (unnumbered description of requests to transmit)"
+      ],
+      "printed_pages": [
+        50
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "6.19.1.1 R-6.19.1.1-001"
+      ],
+      "printed_pages": [
+        50
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "6.19.1.1 R-6.19.1.1-002"
+      ],
+      "printed_pages": [
+        50
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "6.19.1.1 R-6.19.1.1-003"
+      ],
+      "printed_pages": [
+        50
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "6.19.1.1 R-6.19.1.1-004"
+      ],
+      "printed_pages": [
+        50
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "6.19.1.1 R-6.19.1.1-005"
+      ],
+      "printed_pages": [
+        50
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "6.19.1.1 R-6.19.1.1-006"
+      ],
+      "printed_pages": [
+        50
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "6.19.1.1 R-6.19.1.1-007"
+      ],
+      "printed_pages": [
+        50
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "Annex A, Table A.1: 6.19 and 6.19.1 headings (NA)"
+      ],
+      "printed_pages": [
+        69
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "Annex B, Table B.1: 6.19 and 6.19.1 headings (NA)"
+      ],
+      "printed_pages": [
+        80
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "Annex C, Table C.1: 6.19 and 6.19.1 headings (NA)"
+      ],
+      "printed_pages": [
+        91
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "Annex A, Table A.1: 6.19.1.1 requirements 001–006 applicability"
+      ],
+      "printed_pages": [
+        69
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "Annex A, Table A.1: 6.19.1.1 requirement 007 applicability"
+      ],
+      "printed_pages": [
+        70
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "Annex B, Table B.1: 6.19.1.1 requirements 001–007 applicability"
+      ],
+      "printed_pages": [
+        80
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "Annex C, Table C.1: 6.19.1.1 requirements 001–007 applicability"
+      ],
+      "printed_pages": [
+        91
+      ]
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
