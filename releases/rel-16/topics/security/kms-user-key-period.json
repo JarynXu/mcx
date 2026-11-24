@@ -1,0 +1,379 @@
+{
+  "topic_id": "r16-security-kms-user-key-period",
+  "release": 16,
+  "standard_stage": null,
+  "state": "draft",
+  "title": "KMS 用户密钥换周期：同一个 MC 业务 ID 怎样对上 UID 和密钥集？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v16.13.0",
+  "condition_rule": "每条声明继承共同条件。先区分证书的周期参数、计算出的 UID、密钥集的标识和各自的可选有效期。",
+  "common_conditions": [
+    "适用于 3GPP TS 33.180 V16.13.0（Release 16）中 MC 业务用户的 KMS 证书、用户密钥集及 MIKEY-SAKKE UID。"
+  ],
+  "claims": [
+    {
+      "id": "certificate-uid-format-and-period-parameters",
+      "title": "相关 KMS 证书给出 UID 格式、周期长度和偏移",
+      "conditions": [
+        "要为某个 MC 业务用户构造 MIKEY-SAKKE UID，已识别该用户对应的 KMS 证书。"
+      ],
+      "conclusion": "表 D.3.2.2-1 的 UserIDFormat 须取值 2，指向 F.2.1 的 UID 生成方法；D.3.5.1 中 XML 元素拼作 UserIdFormat。证书的 UserKeyPeriod 是周期长度（秒），UserKeyOffset 是第一周期起点相对 1900 年 1 月 1 日 00:00 的偏移（秒）。F.2.1.1 分别用 P3 和 P4 表示它们，P4 必须小于 P3。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex D.3.2.2, Table D.3.2.2-1: UID format, UserKeyPeriod and UserKeyOffset",
+            "Annex D.3.2.3: value 2 points to F.2.1"
+          ],
+          "printed_pages": [
+            147,
+            148
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex D.3.5.1, KmsCertificateType: UserIdFormat spelling and integer period fields"
+          ],
+          "printed_pages": [
+            155,
+            156
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex F.2.1.1, P3 and P4: period length, epoch offset and offset bound"
+          ],
+          "printed_pages": [
+            171,
+            172
+          ]
+        }
+      ],
+      "limitations": [
+        "字段表和 schema 的大小写差异不构成两种 UID 格式，也不许可在 XML 中拼写任意混用。",
+        "不从示例读取统一周期、默认偏移或证书选择、根更新策略。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "time-selects-period-number-and-full-sha256-uid",
+      "title": "NTP 时间与证书参数给出周期号；周期号参加 UID 计算",
+      "conditions": [
+        "已知 MC 业务用户标识、相关 KMS 标识、证书的周期参数和本次要用的 NTP 时间。"
+      ],
+      "conclusion": "NTP 时间以 1900 年 1 月 1 日 00:00 为起点计秒；周期号 P5 可用 floor((TIME - P4) / P3) 计算。散列输入为 FC=0x00，后接 P0 至 P5 各参数及各自的字节长度，顺序为固定字符串 MIKEY-SAKKE-UID、MC 业务用户标识、KMS 标识、周期长度、偏移及周期号。按 F.2.1.1 回指的 TS 33.220 §B.2 编码，不调用该节的 KDF；使用 SHA-256 的完整 256 位结果并作 Base64 编码。注 2、注 3 所述 MIKEY 常见取值按加密的收方、签名的发方分别读取，时间通常取载荷中的 NTP 时间。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.3.5, final UID-conversion paragraphs (period-specific UID)"
+          ],
+          "printed_pages": [
+            58
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex F.2.1.1, formal parameters and NOTES 1–3 (encoded hash input, period calculation and usual MIKEY input sources)"
+          ],
+          "printed_pages": [
+            171,
+            172
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex F.2.1.2, encoded sample input and full UID output (test vector only)"
+          ],
+          "printed_pages": [
+            172,
+            173
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex D.3.5.1, KmsCertificateType and KmsKeySetType: XML period fields are xsd:integer"
+          ],
+          "printed_pages": [
+            155,
+            156
+          ]
+        }
+      ],
+      "limitations": [
+        "同一业务 ID 跨周期时，周期号变化使散列输入变化；不能以业务 ID 相同代替核对相关 UID。",
+        "XML 整数字面值不等于 F.2.1.1 的散列输入。示例不规定周期长度、默认偏移或整数通用字节宽度。",
+        "不把注 2、注 3 的典型取值写成任何场景都成立的字段绑定。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "provisioned-key-set-user-kms-and-period",
+      "title": "把密钥集对到用户、KMS、UID 和周期号",
+      "conditions": [
+        "已拿到至少一份要核对的 KmsKeySet。"
+      ],
+      "conclusion": "KmsUri 表示签发密钥集的 KMS；UserUri 表示用户的 URI；UserID 是密钥集对应的 Base64 UID；KeyPeriodNo 是周期号。UserDecryptKey 是 SAKKE 接收方秘密密钥 RSK；UserSigningKeySSK 是 ECCSI 私有签名密钥，UserPubTokenPVT 是 ECCSI 的公开验证令牌。核对该集是否对应本次所需的用户和周期时，只比较 UserUri 不够。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.3.6: per-UID signing and decryption material and key period"
+          ],
+          "printed_pages": [
+            59
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex D.3.3.1 and D.3.3.2, Table D.3.3.2-1: KmsKeySet identity, key period and key fields"
+          ],
+          "printed_pages": [
+            148
+          ]
+        }
+      ],
+      "limitations": [
+        "该结构不建立 KMS 请求成功、密钥安装、具体接收校验算法或通信成功。",
+        "不需要读取、复制或记录任何私钥值来比较这些标识。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "certificate-and-set-validity-metadata-remain-optional",
+      "title": "证书与密钥集各有自己的可选有效期和撤销信息",
+      "conditions": [
+        "读到 KmsCertificate 或 KmsKeySet 的附带元数据，要判断它指向哪个对象。"
+      ],
+      "conclusion": "两种对象各自的 CertUri、Issuer、ValidFrom、ValidTo 和 Revoked 都是可选项；D.3.5.1 对这些元素均标 minOccurs=0，未给缺省值。证书的 CertUri 标识证书对象；密钥集的 CertUri 指向可用于验证该集的证书。有效期和撤销状态以载有该字段的对象为准，KeyPeriodNo 不代替这些元数据。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex D.3.2.2, Table D.3.2.2-1: certificate scope and optional fields"
+          ],
+          "printed_pages": [
+            147
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex D.3.3.2, Table D.3.3.2-1: key-set scope and optional fields"
+          ],
+          "printed_pages": [
+            148
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex D.3.5.1, KmsCertificateType and KmsKeySetType: occurrence constraints, no defaults for the selected fields"
+          ],
+          "printed_pages": [
+            155,
+            156
+          ]
+        }
+      ],
+      "limitations": [
+        "未出现的字段不说明有效期无限，也不证明未撤销；本处不规定字段缺失时的接受、拒绝或默认值。",
+        "不把签发者描述、证书 URI 和签发密钥集的 KMS URI 当成同一个标识。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "old-message-decryption-note-not-retention-policy",
+      "title": "旧密钥可能解密旧消息；表后注不规定保留或重用",
+      "conditions": [
+        "在某份密钥所定义的使用周期之外，需要解密以前发给该用户的消息。"
+      ],
+      "conclusion": "D.3.3.2 表后注说明，密钥可能在定义的使用周期之外仍有效，以便解密以前加密给该用户的消息。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex D.3.3.2, NOTE after Table D.3.3.2-1: possible validity outside use period for decrypting old messages"
+          ],
+          "printed_pages": [
+            148
+          ]
+        }
+      ],
+      "limitations": [
+        "这是一项可能性，不是额外的签名授权、忽略到期或撤销的依据，也不规定必须保留旧密钥或保留多久。",
+        "不从注推断旧消息一定能解密，也不由此推出轮询、撤销、密钥缓存淘汰或根证书切换流程。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-security-kms-provisioning",
+    "r16-security-kms-domain-roles",
+    "r16-security-kms-root-certificate",
+    "r16-identity-ue-key-persistence"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "Annex D.3.2.2, Table D.3.2.2-1: UID format, UserKeyPeriod and UserKeyOffset",
+        "Annex D.3.2.3: value 2 points to F.2.1"
+      ],
+      "printed_pages": [
+        147,
+        148
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "Annex D.3.5.1, KmsCertificateType: UserIdFormat spelling and integer period fields"
+      ],
+      "printed_pages": [
+        155,
+        156
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "Annex F.2.1.1, P3 and P4: period length, epoch offset and offset bound"
+      ],
+      "printed_pages": [
+        171,
+        172
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "5.3.5, final UID-conversion paragraphs (period-specific UID)"
+      ],
+      "printed_pages": [
+        58
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "Annex F.2.1.1, formal parameters and NOTES 1–3 (encoded hash input, period calculation and usual MIKEY input sources)"
+      ],
+      "printed_pages": [
+        171,
+        172
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "Annex F.2.1.2, encoded sample input and full UID output (test vector only)"
+      ],
+      "printed_pages": [
+        172,
+        173
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "Annex D.3.5.1, KmsCertificateType and KmsKeySetType: XML period fields are xsd:integer"
+      ],
+      "printed_pages": [
+        155,
+        156
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "5.3.6: per-UID signing and decryption material and key period"
+      ],
+      "printed_pages": [
+        59
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "Annex D.3.3.1 and D.3.3.2, Table D.3.3.2-1: KmsKeySet identity, key period and key fields"
+      ],
+      "printed_pages": [
+        148
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "Annex D.3.2.2, Table D.3.2.2-1: certificate scope and optional fields"
+      ],
+      "printed_pages": [
+        147
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "Annex D.3.3.2, Table D.3.3.2-1: key-set scope and optional fields"
+      ],
+      "printed_pages": [
+        148
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "Annex D.3.5.1, KmsCertificateType and KmsKeySetType: occurrence constraints, no defaults for the selected fields"
+      ],
+      "printed_pages": [
+        155,
+        156
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "Annex D.3.3.2, NOTE after Table D.3.3.2-1: possible validity outside use period for decrypting old messages"
+      ],
+      "printed_pages": [
+        148
+      ]
+    }
+  ],
+  "limitations": [
+    "不收录 KMSKeyProv 请求路径、返回集数量、替换 TrK、证书根更新、拉取计划、字段级错误或客户端安装结果。",
+    "不从 TS 33.180 对 TS 33.220 的编码引用补入未核实的长度、字节序、URI 归一化或兼容策略。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}

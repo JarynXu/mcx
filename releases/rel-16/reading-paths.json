@@ -11007,6 +11007,30 @@
         }
       ],
       "boundary": "互通组已处于进行中的紧急状态，组内有已归属的 MCPTT 客户端。IWF 已连接且获准与 MCPTT 系统互通，也已配置两侧的组和用户标识映射。 紧急组呼结束不会清除组紧急状态，须由有权限的用户显式请求取消。MCPTT 定义组由 MCPTT 服务器核验发起人的权限，获准后取消组状态。LMR 发起时，服务器可在取消组状态后回 IWF；MCPTT 发起时，可在取消组状态后回发起客户端，时间取决于继续通话的条件，不必先收到 IWF 确认。LMR 定义组由 LMR 用户发起时，服务器对 IWF 的确认可在收到请求之后发生；MCPTT 用户发起时，回发起客户端可在 IWF 响应之后发生。这两种时点也取决于继续通话的条件。 四种图示路径中，MCPTT 服务器调整底层承载优先级，并向已归属的 MCPTT 客户端处理取消通知。确认本次请求不等于所有客户端已获通知，也不证明承载调整已完成。 挂断、个人撤警以及未核对分支和结果的 IWF 确认，都不能证明组状态已取消。LMR 系统可以拒绝 MCPTT 用户对 LMR 定义组的取消请求；本节不规定拒绝后的处理、IWF 或 LMR 内部核权、具体报文或承载配置值。"
+    },
+    {
+      "id": "r16-security-kms-user-key-period",
+      "question": "同一个 MC 业务 ID 到下个密钥周期，UID 为什么要按新周期计算，周期长度与偏移从哪取？ 证书表里的 UserIDFormat 和 XML 的 UserIdFormat 是两种格式吗？ KmsKeySet 的 KmsUri、UserUri、UserID、KeyPeriodNo 分别说明什么，没带有效期或撤销字段能断定什么？ 旧密钥超出定义的使用周期，还能解密以前的消息吗？是否可以继续签名或要求长期留存？",
+      "start": "topics/security/kms-user-key-period.md",
+      "next_if": [
+        {
+          "condition": "若要查 KMSKeyProv 怎样请求、可返回几份 KmsKeySet 或响应是否可带用于替换的 TrK，查供应流程。",
+          "read": "topics/security/kms-provisioning.md"
+        },
+        {
+          "condition": "若问题是外部、归属和迁移安全域分别由谁管理，查 KMS 角色。",
+          "read": "topics/security/kms-domain-roles.md"
+        },
+        {
+          "condition": "若需要更新的是 KMS 自己的根证书，或要区分同 CertUri 的记录替换，查根证书。",
+          "read": "topics/security/kms-root-certificate.md"
+        },
+        {
+          "condition": "若发生终端重启、退出、换用户或令牌到期，查不同材料的保留与删除。",
+          "read": "topics/identity/ue-key-persistence.md"
+        }
+      ],
+      "boundary": "Release 16。相关 KMS 证书给出 UID 格式、周期长度和偏移。按证书参数和 NTP 时间可计算周期编号 P5，它是 MIKEY-SAKKE UID 散列输入的一项。 KmsKeySet 分开记录签发 KMS、用户 URI、Base64 UID 和周期号。证书和密钥集各自的有效期及撤销字段可选，不能用周期号代替这些元数据。 附录 D.3.3.2 的注说，旧密钥可能在定义的使用周期之外仍用于解密原先加密给该用户的消息。 这条注不授权继续签名，不规定保留旧密钥或保留多久，也不保证这些消息可解密。字段缺失不证明有效或未撤销。这里不规定拉取频率、根证书轮换、接收校验和缓存淘汰。"
     }
   ]
 }
