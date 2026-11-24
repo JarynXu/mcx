@@ -1,0 +1,223 @@
+{
+  "topic_id": "r16-calls-lmr-interworking-imminent-peril-state-cancel",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCPTT–LMR 互通组取消迫近危险状态：发起端回执等哪一步？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v16.8.0",
+  "condition_rule": "每条结论继承共同条件。分别核对发起端、MCPTT 服务器、IWF 和组员端，不把一个回应当成其他链路的处理结果。",
+  "common_conditions": [
+    "Release 16。互通组已经在组管理服务器定义，两个 MCPTT 客户端和图中由 IWF 代表的 LMR 用户已归属。IWF 已连接 MCPTT 系统并获准与其互通，已获知组信息，并配置两侧组和用户标识映射。MCPTT 系统内的组已处于进行中的迫近危险状态，底层承载有优先支持；客户端 1 此前发起过这场迫近危险组呼。"
+  ],
+  "claims": [
+    {
+      "id": "explicit-imminent-peril-state-cancel-not-call-end",
+      "title": "结束组呼不取消组的迫近危险状态",
+      "conditions": [
+        "需要判断该互通组的进行中迫近危险状态是否已取消。"
+      ],
+      "conclusion": "结束迫近危险组呼不会取消该状态。由有权限的用户显式发起取消；本节图示由此前发起该呼叫的客户端 1 上的用户提出。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.3.4, opening, preconditions 1–6 and NOTEs 1–4 (authorized MCPTT requester and no cancellation on call end)"
+          ],
+          "printed_pages": [
+            133
+          ]
+        }
+      ],
+      "limitations": [
+        "此前发起过呼叫不能代替权限检查，也不是说只有原主叫才能在其他场景取消。两个 MCPTT 服务器角色合画是图示简化，不要求实际合设。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcptt-server-authorization-state-and-bearer-adjustment",
+      "title": "服务器核权后清组状态，再调整底层承载优先级",
+      "conditions": [
+        "客户端 1 的用户发起取消，并向 MCPTT 服务器发组状态取消请求。"
+      ],
+      "conclusion": "MCPTT 服务器检查发起用户有无取消权限。获准后，服务器在步骤 4 取消或重置组的进行中迫近危险状态，在步骤 5 调整底层承载的优先级，原优先待遇不再需要。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.3.4, Figure 10.6.3.4-1 and steps 1–5 (authorization, local reset and bearer priority adjustment)"
+          ],
+          "printed_pages": [
+            134
+          ]
+        }
+      ],
+      "limitations": [
+        "IWF 获准互通不是用户获准取消。条款未规定拒绝后的处理、优先级取值或释放承载。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-dispatch-count-and-response-even-without-call-support",
+      "title": "看归属方式决定几条 IWF 请求；不支持迫近危险组呼也要回应",
+      "conditions": [
+        "服务器已完成步骤 5，准备向 IWF 发组状态取消请求。"
+      ],
+      "conclusion": "若 IWF 代表该组的 LMR 用户完成了归属，服务器只向 IWF 发一条请求；若服务器收到了 LMR 用户的逐人归属，则服务器为每名已归属的 LMR 用户各向 IWF 发一条。IWF 向服务器回相应的取消响应，即使 IWF 不支持迫近危险组呼也要回应。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.3.4, Figure 10.6.3.4-1, steps 6–7 and NOTE 5 (IWF request counts and response even without imminent-peril group-call support)"
+          ],
+          "printed_pages": [
+            134
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.3.4, opening, preconditions 1–6 and NOTEs 1–4 (authorized MCPTT requester and no cancellation on call end)"
+          ],
+          "printed_pages": [
+            133
+          ]
+        }
+      ],
+      "limitations": [
+        "两系统之间经过 IWF 的信令由 IWF 转换身份和协议。请求发给 IWF，不是 MCPTT 服务器直接给 LMR 电台。回应不证明支持此类组呼、LMR 端已更改状态或 IWF 已执行优先级调整；IWF 优先级动作不在本节范围内。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "two-dispatch-legs-unordered-and-multicast-member-exception",
+      "title": "组员和 IWF 两路可任一先发；组播只免组员端回执",
+      "conditions": [
+        "服务器已完成步骤 5，需要向 IWF 和 MCPTT 组员发送取消请求。"
+      ],
+      "conclusion": "服务器在步骤 8 向 MCPTT 组员发请求，组员随后获通知。步骤 6 和 8 均在步骤 5 完成后，先发哪条都可以。客户端 2 向服务器确认收到的组员请求；组播时不发这条确认。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.3.4, Figure 10.6.3.4-1, steps 6, 8–10 and NOTE 6 (dispatch order after step 5; member-side multicast acknowledgement exception)"
+          ],
+          "printed_pages": [
+            134
+          ]
+        }
+      ],
+      "limitations": [
+        "组播例外只限步骤 10，不省步骤 7 的 IWF 回应或步骤 11 对客户端 1 的响应。步骤 8 不以先收到 IWF 响应为前提。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "initiator-response-after-step-five-not-after-peer-acks",
+      "title": "给发起端的响应门槛是步骤 5，不等对端回执",
+      "conditions": [
+        "MCPTT 服务器确认客户端 1 发起的这次组状态取消请求。"
+      ],
+      "conclusion": "服务器在步骤 11 向客户端 1 回响应。按照注 7，响应可以在步骤 5 的底层承载优先级调整完成后的任意时点发送。步骤 4 刚清组状态还不满足本节的回执门槛。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.3.4, Figure 10.6.3.4-1, step 5, step 11 and NOTE 7 (initiator response may follow bearer priority adjustment)"
+          ],
+          "printed_pages": [
+            134,
+            135
+          ]
+        }
+      ],
+      "limitations": [
+        "不把 IWF 响应、组员收到通知或客户端 2 回执设为步骤 11 的固定前提。发起端收到确认不能证明其他链路已全部处理。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-lmr-interworking-emergency-group-state-cancel",
+    "r16-calls-onnetwork-imminent-peril-cancellation",
+    "r16-groups-mc-hosted-lmr-affiliation"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.6.3.4, opening, preconditions 1–6 and NOTEs 1–4 (authorized MCPTT requester and no cancellation on call end)"
+      ],
+      "printed_pages": [
+        133
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.6.3.4, Figure 10.6.3.4-1 and steps 1–5 (authorization, local reset and bearer priority adjustment)"
+      ],
+      "printed_pages": [
+        134
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.6.3.4, Figure 10.6.3.4-1, steps 6–7 and NOTE 5 (IWF request counts and response even without imminent-peril group-call support)"
+      ],
+      "printed_pages": [
+        134
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.6.3.4, Figure 10.6.3.4-1, steps 6, 8–10 and NOTE 6 (dispatch order after step 5; member-side multicast acknowledgement exception)"
+      ],
+      "printed_pages": [
+        134
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.6.3.4, Figure 10.6.3.4-1, step 5, step 11 and NOTE 7 (initiator response may follow bearer priority adjustment)"
+      ],
+      "printed_pages": [
+        134,
+        135
+      ]
+    }
+  ],
+  "limitations": [
+    "只收录 §10.6.3.4 的授权 MCPTT 用户发起场景。IWF 的回应不证明 LMR 侧撤状态、支持迫近危险组呼或已调整优先级；步骤 11 不证明其他端已处理。承载调整不等于释放承载。本节不规定 IWF 或 LMR 本地优先级处置、SIP 方法与字段或失败处理。",
+    "复用 TS 23.379 的信息流是本节回指，不据此规定其他段、空口、SDP 或 SIP 的实现。本页不收录其他发起方或组归属流程。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
