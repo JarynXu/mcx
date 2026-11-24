@@ -1,0 +1,172 @@
+{
+  "topic_id": "r16-identity-functional-alias-automatic-deactivation",
+  "title": "用户没申请停用：服务器自动停用功能别名时通知谁？",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "先区分自动停用和主动停用，再按受影响客户端、别名状态及共享用户核对服务器动作。",
+  "common_conditions": [
+    "TS 23.280 V16.7.0 Release 16 Stage 2 §10.13.9，MC 系统内的服务端自动停用。",
+    "MC 业务服务器已经从配置（功能别名）管理服务器取得相关信息，并保存了该 MC 业务用户已启用的相关功能别名数据。"
+  ],
+  "claims": [
+    {
+      "id": "alias-server-auto-deactivation-context-and-trigger",
+      "title": "自动停用的前提与触发方",
+      "conditions": [
+        "所问的是 MC 系统内服务器自动停用功能别名。"
+      ],
+      "conclusion": "MC 业务服务器已经从配置（功能别名）管理服务器取得相关信息，并保存了该 MC 业务用户已启用的相关功能别名数据。自动停用条件已满足，例如定时器或该用户的当前位置。停用可由 MC 系统触发，也可由接入该 MC 系统且获授权的外部系统触发。",
+      "normative_strength": "本节给出一个前提和触发条件示例，允许两类触发方；没有规定具体策略。",
+      "limitations": [
+        "本版 §10.13.9 开头首句原文为 “can automatically activate”，但标题、图 10.13.9-1 与步骤 1–4 描述的是停用。保留用词出入，按图和编号正文界定停用过程，不据首句增设启用步骤。",
+        "定时器和用户当前位置只是示例，没有规定具体定时值、位置判定规则或客户端先发请求。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.9, heading, opening and sole precondition (literal activate mismatch, prior alias data and client notification)"
+          ],
+          "printed_pages": [
+            202
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.9, Figure 10.13.9-1 and step 1 (condition and trigger sources)"
+          ],
+          "printed_pages": [
+            203
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "alias-server-auto-deactivation-notice-and-status-storage",
+      "title": "通知受影响的客户端，保存别名状态及对应业务 ID",
+      "conditions": [
+        "自动停用条件已满足，MC 业务服务器执行此自动停用流程。"
+      ],
+      "conclusion": "MC 业务服务器向受影响的 MC 业务客户端发送功能别名停用通知。MC 业务服务器保存涉及的功能别名状态（例如已停用）及对应的 MC 业务 ID。",
+      "normative_strength": "图和编号步骤描述的是服务器发出通知，以及保存状态和对应 MC 业务 ID；没有确认终端动作。",
+      "limitations": [
+        "通知发出不证明客户端已收到、确认或改变本地状态，也不能据示意顺序推定事务提交、重试或 SIP 消息。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.9, heading, opening and sole precondition (literal activate mismatch, prior alias data and client notification)"
+          ],
+          "printed_pages": [
+            202
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.9, Figure 10.13.9-1 and steps 2–3 (notification to affected client and storage of alias status with MC service IDs)"
+          ],
+          "printed_pages": [
+            203
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "alias-server-auto-deactivation-status-notice-to-other-sharing-users",
+      "title": "另行通知所有共享同一别名的其他用户",
+      "conditions": [
+        "自动停用条件已满足，该功能别名还有其他共享用户。"
+      ],
+      "conclusion": "MC 业务服务器向共享同一功能别名的所有其他 MC 业务用户发送状态通知；图 10.13.9-1 的箭头指向这些用户的客户端。",
+      "normative_strength": "步骤 4 的通知对象是共享同一功能别名的所有其他 MC 业务用户。",
+      "limitations": [
+        "不是向全系统广播，也不是对步骤 2 的客户端停用通知重新命名。本节不定义订阅者范围或客户端收件状态。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.9, Figure 10.13.9-1 and step 4 (notification to all other MC service users sharing the same alias)"
+          ],
+          "printed_pages": [
+            203
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.9, heading, opening and sole precondition (literal activate mismatch, prior alias data and client notification)"
+      ],
+      "printed_pages": [
+        202
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.9, Figure 10.13.9-1 and step 1 (condition and trigger sources)"
+      ],
+      "printed_pages": [
+        203
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.9, Figure 10.13.9-1 and steps 2–3 (notification to affected client and storage of alias status with MC service IDs)"
+      ],
+      "printed_pages": [
+        203
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.9, Figure 10.13.9-1 and step 4 (notification to all other MC service users sharing the same alias)"
+      ],
+      "printed_pages": [
+        203
+      ]
+    }
+  ],
+  "related": [
+    "r16-identity-functional-alias-client-deactivation",
+    "r16-identity-functional-alias-automatic-activation",
+    "r16-identity-owner-alias-auto-deactivation"
+  ],
+  "limitations": [
+    "这是 MC 系统内 §10.13.9 的服务器自动停用流程。通知发出不证明客户端实际收到、确认或改变本地状态；不推定全系统广播、SIP 消息、设备接替、会话迁移或具体触发策略。",
+    "本版 §10.13.9 开头首句原文为 “can automatically activate”，但标题、图 10.13.9-1 与步骤 1–4 描述的是停用。保留用词出入，按图和编号正文界定停用过程，不据首句增设启用步骤。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
