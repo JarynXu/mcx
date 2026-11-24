@@ -5793,6 +5793,16 @@ Release 16。GMS 撤销一项组安全上下文时复用组配置通知。终端
 
 [读取主题](topics/mcdata/lmr-one-to-one-standalone-sds.md)
 
+## 互通密钥管理：InterKMRec 的记录选择和传送保护
+
+判断 KMS 何时须给互通终端提供 InterKMRec、多个记录时如何查客户端关联，以及加密和签名各用哪个密钥。
+
+互通密钥归属非 3GPP 系统时，InterSD 承载互通安全数据。IWF 或互通 MC 终端均可生成 InterSD。该消息可按第 9 章应用信令保护。为安全交换这类消息，终端可能需要 InterKMRec。 一份已提供的 InterKMRec 有三个必备字段，长度均可变：Primary InterKMRec ID、Secondary InterKMRec ID 用 TLV，InterKMRec Payload 用 LV-E。字段必备不表示每台终端都需要记录。Primary ID 与 MC 业务 ID 关联，不要求两者值相同。Secondary ID 区分同一业务 ID 下的不同客户端。 密钥管理授权中，KMS 验证访问令牌后，须检查令牌中的 MC 业务 ID 是否有关联记录。有关联记录时，KMS 须在本次授权中提供给该互通 MC 终端。只有同一业务 ID 有多份关联记录时，KMS 才须查请求客户端是否已关联其中一份记录的 Secondary ID。没有匹配时，须从该业务 ID 的关联记录中选一份，把请求客户端 ID 与所选记录的 Secondary ID 关联，再向终端提供所选记录。 MC 系统要求加密时，须用该互通 MC 终端的 TrK 加密传送这份记录。签名可选。若签名，有 InK 就须用 InK，没有才用 TrK。
+
+尚未建立：本节不定义非 3GPP 载荷的内部格式或内容，也不规定没有关联记录时的替代记录或错误码、记录录入、选取算法、关联实现或解绑。拿到记录不证明 InterSD 已交换或互通密钥已安装。SIP 业务授权通过、看到组配置密钥材料或通用取钥响应，都不能证明终端拿到了这份记录。
+
+[读取主题](topics/security/interworking-key-management-record.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

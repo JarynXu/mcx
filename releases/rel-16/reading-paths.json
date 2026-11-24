@@ -11091,6 +11091,26 @@
         }
       ],
       "boundary": "这里是一名 MCData 用户与一名 LMR 用户经 IWF 交换一对一独立短数据（standalone SDS）。LMR 用户在 MCData 一侧用分配给他的 MCData ID 表示。 MCData 发往 LMR 时，该 ID 是目的地址，接收客户端 2 在 IWF 后方；LMR 发往 MCData 时，IWF 代发，该 ID 是源地址，发起客户端 1 在 IWF 后方。IWF 两向都以对等 MCData 服务器工作。信令控制面与媒体面分别回指 TS 23.282 §7.4.2.2 与 §7.4.2.3。 IWF-2 请求表的两个必备 MCData ID 分别代表发送用户和目标用户；会话、事务标识也是必备信息元素，各有表示发送方不支持的相应预留值。应用标识可选，只能在目的类型指向应用消费时带。两向处置通知用 Disposition association 关联原事务；“系统阻止处置”不是送达或已读。 仅凭处置枚举不能判断 IWF 何时能或须代一对一收件端回报；不能套用组 SDS 的代答规则。本节未规定 IWF 与 LMR 的具体转换方法。表用于 IWF-2，不规定其他参考点或 SIP、SDP、媒体封装，不从字段或通知推定实际送达。"
+    },
+    {
+      "id": "r16-security-interworking-key-management-record",
+      "question": "互通 MC 终端什么时候可能需要 InterKMRec？它和传送安全数据的 InterSD 有什么区别？ KMS 验证访问令牌后查哪个 ID？同一 MC 业务 ID 有多份记录时先查什么，匹配不到时要关联哪两个 ID？ 一份 InterKMRec 里哪些字段必带，Primary、Secondary ID 和载荷各用什么编码？ InterKMRec 何时须用终端的 TrK 加密？如果签名，该用 InK 还是 TrK？",
+      "start": "topics/security/interworking-key-management-record.md",
+      "next_if": [
+        {
+          "condition": "若要查通用 KMS 取密钥或证书的请求和响应，查通用密钥供给。普通取钥响应不能证明互通记录已交付。",
+          "read": "topics/security/kms-provisioning.md"
+        },
+        {
+          "condition": "若看到 SIP REGISTER 或 PUBLISH，查 MCX 业务授权的令牌提交和业务身份绑定。该流程不证明 KMS 已提供 InterKMRec。",
+          "read": "topics/identity/mcx-sip-service-authorization.md"
+        },
+        {
+          "condition": "若查 IWF 与 GMS 交换组配置时的字段，查组配置消息。组级密钥材料不同于发给互通终端的 InterKMRec。",
+          "read": "topics/groups/iwf-group-configuration-message-fields.md"
+        }
+      ],
+      "boundary": "互通密钥归属非 3GPP 系统时，InterSD 承载互通安全数据。IWF 或互通 MC 终端均可生成 InterSD。该消息可按第 9 章应用信令保护。为安全交换这类消息，终端可能需要 InterKMRec。 一份已提供的 InterKMRec 有三个必备字段，长度均可变：Primary InterKMRec ID、Secondary InterKMRec ID 用 TLV，InterKMRec Payload 用 LV-E。字段必备不表示每台终端都需要记录。Primary ID 与 MC 业务 ID 关联，不要求两者值相同。Secondary ID 区分同一业务 ID 下的不同客户端。 密钥管理授权中，KMS 验证访问令牌后，须检查令牌中的 MC 业务 ID 是否有关联记录。有关联记录时，KMS 须在本次授权中提供给该互通 MC 终端。只有同一业务 ID 有多份关联记录时，KMS 才须查请求客户端是否已关联其中一份记录的 Secondary ID。没有匹配时，须从该业务 ID 的关联记录中选一份，把请求客户端 ID 与所选记录的 Secondary ID 关联，再向终端提供所选记录。 MC 系统要求加密时，须用该互通 MC 终端的 TrK 加密传送这份记录。签名可选。若签名，有 InK 就须用 InK，没有才用 TrK。 本节不定义非 3GPP 载荷的内部格式或内容，也不规定没有关联记录时的替代记录或错误码、记录录入、选取算法、关联实现或解绑。拿到记录不证明 InterSD 已交换或互通密钥已安装。SIP 业务授权通过、看到组配置密钥材料或通用取钥响应，都不能证明终端拿到了这份记录。"
     }
   ]
 }
