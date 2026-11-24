@@ -1,0 +1,248 @@
+{
+  "topic_id": "r16-identity-mcx-access-token-expiry-refresh",
+  "release": 16,
+  "standard_stage": null,
+  "state": "draft",
+  "title": "MCX 访问令牌到期：谁按哪个字段停用？刷新能续多大权限？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v16.13.0",
+  "condition_rule": "各声明继承共同条件。分开判断授权服务器与 UE 的到期检查、刷新请求、IdMS 响应、以及原业务授权和终端材料的状态。",
+  "common_conditions": [
+    "适用 3GPP TS 33.180 V16.13.0（Release 16）的 MCX 令牌到期与刷新。附录 B.12 的到期段直接回指 B.5。"
+  ],
+  "claims": [
+    {
+      "id": "authorizing-server-exp-and-ue-expires-in",
+      "title": "授权服务器查 exp，终端按 expires_in 停用",
+      "conditions": [
+        "判断 MCX 访问令牌或安全令牌是否已到期，正在区分授权服务器与 UE 的检查。"
+      ],
+      "conclusion": "授权服务器须用访问令牌或安全令牌声明中的 exp 判断有效性，超过指定时间须拒绝使用该令牌的请求。UE 须用访问令牌响应、令牌交换响应或令牌响应中的 expires_in 判断对应令牌是否仍有效，到期后不得再用它发请求。客户端可以按 B.5 以刷新令牌取得新的访问令牌。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex B.12, heading Token revocation only, three paragraphs: exp at the authorising server, expires_in at UE, and reference to refresh"
+          ],
+          "printed_pages": [
+            137
+          ]
+        }
+      ],
+      "limitations": [
+        "只用标题为 Token revocation 的 B.12。相邻的同编号 IdMS interface security 不在这里。到期停用不等于主动撤销接口、端点拒绝的一般原因或已发生的密钥删除。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "refresh-token-availability-follows-authorization-grant",
+      "title": "按授权模式判断是否可能获发刷新令牌",
+      "conditions": [
+        "要判断 MCX 客户端是否属于可获发刷新令牌的类型。"
+      ],
+      "conclusion": "B.5.1 将刷新令牌限于采用授权码授权的客户端类型；采用隐式授权的客户端不取得刷新令牌。访问令牌通常较短，但有效期按业务提供方的安全策略和配置决定。收到刷新令牌的客户端可借它取得新的访问令牌，避免仅因访问令牌到期就再次提示用户认证。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex B.5.1, sole paragraph: operator-selected lifetimes and refresh-token availability by grant type"
+          ],
+          "printed_pages": [
+            130
+          ]
+        }
+      ],
+      "limitations": [
+        "不能仅凭采用授权码授权就认定客户端已经拿到刷新令牌；不能仅从浏览器界面判断授权模式。没有固定时长或刷新必然成功的保证。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "refresh-request-no-scope-expansion-and-conditional-client-auth",
+      "title": "刷新请求不扩原范围；已获发客户端凭据时须认证",
+      "conditions": [
+        "MCX 客户端已取得刷新令牌，正向 IdMS 令牌端点取得新访问令牌。"
+      ],
+      "conclusion": "HTTP 请求体用 UTF-8 的 application/x-www-form-urlencoded。grant_type 必带且取 refresh_token；表列 scope 为用空格分隔的权限范围，须等于或小于原授权请求中的范围。若 IdMS 已为客户端提供注册阶段建立的客户端凭据，客户端须用该凭据向令牌端点认证。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex B.5.1, Figure B.5.1-1: access token request and response between MCX UE and IdMS"
+          ],
+          "printed_pages": [
+            131
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex B.5.2, opening and Table B.5.2-1: token endpoint, form encoding, grant type and original scope bound"
+          ],
+          "printed_pages": [
+            131
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex B.5.2, closing paragraph after the example: conditional client authentication with a provisioned registration credential"
+          ],
+          "printed_pages": [
+            131
+          ]
+        }
+      ],
+      "limitations": [
+        "只摘取本节的要点，不仿造一份完整请求。scope 的上界是原授权请求，不是扩大、改绑或新办另一项业务授权的依据。条件性客户端认证不等同于用户再次登录。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "new-access-token-and-optional-renewal-fields",
+      "title": "成功响应给新访问令牌，ID 和刷新令牌可以不回",
+      "conditions": [
+        "IdMS 的令牌端点已成功处理该次刷新请求。"
+      ],
+      "conclusion": "表 B.5.3-1 将 access_token、Bearer 类型的 token_type 和以秒为单位的 expires_in 列为必带。ID 令牌和新的刷新令牌在表里可选。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex B.5.3, opening and Table B.5.3-1: access token response fields and optional replacement refresh token"
+          ],
+          "printed_pages": [
+            131
+          ]
+        }
+      ],
+      "limitations": [
+        "未带新的刷新令牌不能单独用来判定刷新失败。不从示例时间或字段拼写推出固定期限、大小写校验、刷新令牌轮换或旧令牌保留策略。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "refresh-time-account-check-recommended",
+      "title": "每次刷新核账户有效性并撤无效刷新令牌是建议",
+      "conditions": [
+        "IdMS 收到客户端提交的刷新令牌。"
+      ],
+      "conclusion": "建议把 IdMS 配置为每次收到刷新令牌都检查用户账户是否仍有效；账户已无效则撤销刷新令牌。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex B.5.3, closing paragraph before Annex B.6: recommended account check and refresh-token revocation if invalid"
+          ],
+          "printed_pages": [
+            132
+          ]
+        }
+      ],
+      "limitations": [
+        "这是 RECOMMENDED，不是普遍强制条款。未规定早前签发的访问令牌是否同时失效，也不规定刷新失败的通用状态码和 UE 的密钥删除。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-identity-ue-key-persistence",
+    "r16-identity-mcx-sip-service-authorization",
+    "r16-location-lmc-lms-access-token"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "Annex B.12, heading Token revocation only, three paragraphs: exp at the authorising server, expires_in at UE, and reference to refresh"
+      ],
+      "printed_pages": [
+        137
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "Annex B.5.1, sole paragraph: operator-selected lifetimes and refresh-token availability by grant type"
+      ],
+      "printed_pages": [
+        130
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "Annex B.5.1, Figure B.5.1-1: access token request and response between MCX UE and IdMS"
+      ],
+      "printed_pages": [
+        131
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "Annex B.5.2, opening and Table B.5.2-1: token endpoint, form encoding, grant type and original scope bound"
+      ],
+      "printed_pages": [
+        131
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "Annex B.5.2, closing paragraph after the example: conditional client authentication with a provisioned registration credential"
+      ],
+      "printed_pages": [
+        131
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "Annex B.5.3, opening and Table B.5.3-1: access token response fields and optional replacement refresh token"
+      ],
+      "printed_pages": [
+        131
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "Annex B.5.3, closing paragraph before Annex B.6: recommended account check and refresh-token revocation if invalid"
+      ],
+      "printed_pages": [
+        132
+      ]
+    }
+  ],
+  "limitations": [
+    "不收录同编号 B.12 的 IdMS 接口安全段、首次授权码换令牌、伙伴域令牌交换流程、业务服务器的 HTTP/SIP 错误映射、终端材料删除或 KMS 密钥期限。",
+    "不依据刷新成功证明其他业务已授权，不定义固定周期、全局撤销或令牌值、签发样例。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
