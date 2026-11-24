@@ -7795,6 +7795,34 @@
         }
       ],
       "boundary": "能请求某个等级，不等于系统须按请求值分配。超限时须分配上限，不能用拒绝代替这项分配。请求恰等于上限不触发本条；这五项未规定范围内的请求一律原样分配。这里比较的是优先级高低，没有规定整数编码或数字越大、优先级就越高。等级分配不能证明通信建立成功或网络已分配资源。"
+    },
+    {
+      "id": "r16-bearers-onnetwork-setup-failure-and-exceptional-termination",
+      "question": "在网 MCX 新通信无法建立时须通知谁？何时可以终止标为不可抢占的通信？",
+      "start": "topics/bearers/onnetwork-setup-failure-and-exceptional-termination.md",
+      "next_if": [
+        {
+          "condition": "资源不足且通信面向有抢占权限的组，要查是否须抢占较低优先级的通信以分配资源。",
+          "read": "topics/bearers/onnetwork-service-preemption.md"
+        },
+        {
+          "condition": "要查业务能否建议请求抢占其他正在进行且可被抢占的通信。",
+          "read": "topics/bearers/onnetwork-load-management-options.md"
+        },
+        {
+          "condition": "要查网络无法提供所请求的 QoS 时，业务须具备何种用户通知能力。",
+          "read": "topics/bearers/onnetwork-load-management-notifications.md"
+        },
+        {
+          "condition": "要查抢占能力、可被抢占能力与应用层优先级值如何分配。",
+          "read": "topics/bearers/onnetwork-application-priority-assignment.md"
+        },
+        {
+          "condition": "要查用户请求优先级、建立时核验及未请求或超限时分配什么。",
+          "read": "topics/bearers/onnetwork-communication-priority-request.md"
+        }
+      ],
+      "boundary": "接收方是 MCX 业务系统；本条不要求通知用户，也不规定无法建立的原因或通知使用的协议。这是许可，不是必须终止。条文没有指定谁执行终止、终止几条，或最低优先级并列时如何选择。它也未划定按小区、组、单项业务或全系统来选取通信的范围。新通信无法建立或已发出通知，都不能单独触发这项终止许可。该许可不要求先发生建立失败、先发通知或另行证明资源不足，也不保证重试或建立成功。"
     }
   ]
 }
