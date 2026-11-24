@@ -1,0 +1,319 @@
+{
+  "topic_id": "r16-calls-lmr-interworking-private-manual-setup",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCPTT–LMR 手动开始私呼：回铃算接通吗，失败后谁能重试？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v16.8.0",
+  "condition_rule": "每条结论继承共同条件，并按谁发起、收到了什么结果及流程所在步骤判断。",
+  "common_conditions": [
+    "Release 16。主叫已为本次私呼选择手动开始，MCPTT 客户端已登记到 MCPTT 业务，MCPTT 用户与 LMR 用户经 IWF 互通。手动开始不要求必须启用话权控制。"
+  ],
+  "claims": [
+    {
+      "id": "mcptt-origin-request-authorization-and-location",
+      "title": "MCPTT 主叫：服务器分别查私呼发起和手动开始权限",
+      "conditions": [
+        "主叫是 MCPTT 用户，被叫是 LMR 用户。"
+      ],
+      "conclusion": "MCPTT 客户端向服务器发私呼请求，带主被叫对应的 MCPTT ID、含一项或多项媒体的 SDP offer、加密算法及模式、话权请求指示、手动开始与全双工或半双工选择。客户端请求话权时可以附上主叫位置；收到带位置的请求时，服务器核对主叫隐私策略，决定位置是否可向通话中的其他 MCPTT 用户和 IWF 提供。服务器分别核对能否发起私呼、能否用手动方式发起。获准时，服务器向 IWF 发送请求，媒体可为初始请求中的全部或子集，位置是否包含取决于隐私检查。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.3.1, opening, preconditions, Figure 10.4.3.1-1, steps 1–3 and NOTE (MCPTT-originated setup, authorization and location privacy)"
+          ],
+          "printed_pages": [
+            92,
+            93
+          ]
+        }
+      ],
+      "limitations": [
+        "业务登记不能代替两项权限核对；位置可提供，不是手动开始的必备项。IWF 怎样把请求转给 LMR 系统不在本节范围内。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-origin-request-and-mcptt-receiving-authorization",
+      "title": "LMR 主叫：服务器查 MCPTT 被叫能否接收及手动接收权限",
+      "conditions": [
+        "主叫是 LMR 用户，已在 LMR 系统中发起面向 MCPTT 用户的私呼。"
+      ],
+      "conclusion": "IWF 向 MCPTT 服务器发请求，带双方对应的 MCPTT ID、含一项或多项媒体的 SDP offer、加密算法及模式、LMR 用户是否请求话权、手动开始与全双工或半双工选择。服务器检查 MCPTT 被叫是否有权且能接收私呼，再检查是否获准接收手动开始的呼叫。获准时，服务器向 MCPTT 客户端发送请求，媒体可为初始请求中的全部或子集；步骤 3 允许请求带或不带主叫位置。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.3.2, opening, preconditions, NOTEs 1–2 and Figure 10.4.3.2-1, steps 1–3 (LMR-originated setup, receiving authorization and location wording)"
+          ],
+          "printed_pages": [
+            94,
+            95
+          ]
+        }
+      ],
+      "limitations": [
+        "步骤 1 同一项先写 LMR 用户请求话权，再写 MCPTT 客户端请求话权和主叫 MCPTT 客户端位置，与该分支的 LMR 主叫前提不一致。不能据此确定 LMR 主叫位置的提供者或条件，也不套用反方向的隐私策略。",
+        "LMR 用户与 IWF 之间的办理和 LMR 本地信令不在本节范围内。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcptt-origin-failure-and-optional-new-client-request",
+      "title": "IWF 可报失败；可接受替代参数时由 MCPTT 客户端另发",
+      "conditions": [
+        "主叫是 MCPTT 用户，服务器已向 IWF 发请求。"
+      ],
+      "conclusion": "IWF 可向服务器报告失败，并可给出一个或多个替代参数；服务器把响应转给 MCPTT 客户端。客户端可以放弃；替代参数可接受时，客户端可以用新参数发一份新的请求并按新参数处理。主叫可能获知参数更改，例如取消话权控制，也可选择结束。IWF 未报告失败时，流程进入步骤 6。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.3.1, Figure 10.4.3.1-1, steps 4–5 (optional IWF failure and new MCPTT client request)"
+          ],
+          "printed_pages": [
+            93,
+            94
+          ]
+        }
+      ],
+      "limitations": [
+        "替代参数不是新请求已经发送的证明。不能把没抓到失败包判成已核实没有失败，也不能把本段失败响应当作被叫接受后的响应。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-origin-failure-and-optional-new-iwf-request",
+      "title": "MCPTT 客户端可报失败；可接受替代参数时由 IWF 另发",
+      "conditions": [
+        "主叫是 LMR 用户，服务器已向 MCPTT 被叫客户端发请求。"
+      ],
+      "conclusion": "MCPTT 客户端可向服务器报告失败，并可给出一个或多个替代参数；服务器把结果送给 IWF。IWF 可以放弃；替代参数可接受时，IWF 可以用新参数发一份新的 IWF 请求并按新参数处理，也可选择结束。MCPTT 客户端未报告失败时，流程进入步骤 6。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.3.2, Figure 10.4.3.2-1, steps 4–5 (optional MCPTT client failure and new IWF request; response label)"
+          ],
+          "printed_pages": [
+            95
+          ]
+        }
+      ],
+      "limitations": [
+        "步骤 5 图中 MCPTT 服务器到 IWF 的箭头标为 IWF 私呼响应；正文首句称转发 MCPTT 私呼响应，后文以 IWF 收到的参数为判据。保留两段信令和判断角色，不从两种用词推出同一个线上报文。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcptt-origin-waiting-iwf-ringing-and-lmr-acceptance",
+      "title": "MCPTT 主叫：IWF 先转达等待，LMR 被叫接受后另回私呼响应",
+      "conditions": [
+        "主叫是 MCPTT 用户，流程未走报告失败分支，已进入步骤 6。"
+      ],
+      "conclusion": "等 LMR 被叫接受时，IWF 向 MCPTT 服务器发 IWF Ringing，服务器向 MCPTT 客户端发 MCPTT Ringing。客户端可用回铃音提示对端已获通知。被叫接受后，IWF 另向服务器发私呼响应，表明 IWF 支持请求中的一种媒体类型；服务器转给 MCPTT 客户端。终端可用停止回铃音提示接通。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.3.1, Figure 10.4.3.1-1, steps 6–9 (IWF ringing while waiting, LMR acceptance and separate response)"
+          ],
+          "printed_pages": [
+            93,
+            94
+          ]
+        }
+      ],
+      "limitations": [
+        "回铃和停铃都是可选提示。Ringing 不等于对端已接受；可选用户提示和报告支持何种媒体也不证明媒体已可用。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-origin-waiting-client-ringing-and-mcptt-acceptance",
+      "title": "LMR 主叫：MCPTT 被叫客户端先发等待，再在用户接受后发私呼响应",
+      "conditions": [
+        "主叫是 LMR 用户，流程未走报告失败分支，已进入步骤 6。"
+      ],
+      "conclusion": "等 MCPTT 被叫用户接受时，客户端向服务器发 MCPTT Ringing，服务器向 IWF 发 IWF Ringing。被叫用户接受后，MCPTT 客户端向服务器发私呼响应；图中步骤 9 为服务器向 IWF 发对应响应。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.3.2, Figure 10.4.3.2-1, steps 6–9 (client ringing while waiting, MCPTT acceptance and separate response)"
+          ],
+          "printed_pages": [
+            95,
+            96
+          ]
+        }
+      ],
+      "limitations": [
+        "步骤 8 第二句写 IWF 支持一种请求的媒体类型；首句和图所示响应发送方都是 MCPTT 客户端，IWF 不因此变成步骤 8 的发送方。本节不据这个差异确定被叫端的媒体能力字段。",
+        "看到 IWF Ringing 不能判定被叫已接受或 LMR 本地已播放回铃音。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "media-establishment-and-originating-system-floor-duty",
+      "title": "媒体面建到 IWF；启用话权控制时由发起系统管话权",
+      "conditions": [
+        "任一方向送完接受后的响应，执行到成功建立媒体面的步骤 10。"
+      ],
+      "conclusion": "步骤 10 才明确 MCPTT 客户端已建立到 IWF 的媒体面。启用话权控制时，发起呼叫的系统授予话权、处理竞争并负责话权撤销指示：MCPTT 主叫时是 MCPTT 系统，LMR 主叫时是 LMR 系统。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.3.1, Figure 10.4.3.1-1 and step 10 (media plane and originating MCPTT floor responsibility)"
+          ],
+          "printed_pages": [
+            93,
+            94
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.4.3.2, Figure 10.4.3.2-1 and step 10 (media plane and originating LMR floor responsibility)"
+          ],
+          "printed_pages": [
+            95,
+            96
+          ]
+        }
+      ],
+      "limitations": [
+        "不从步骤 6–9 或一条抓包确认真实媒体已经收发，不把媒体面建立等同于话权已经授予。无话权控制时不套用这里的话权职责。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-lmr-interworking-private-auto-setup",
+    "r16-calls-lmr-interworking-private-release",
+    "r16-calls-private-client-answer-evidence",
+    "r16-calls-private-server-admission-routing"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.4.3.1, opening, preconditions, Figure 10.4.3.1-1, steps 1–3 and NOTE (MCPTT-originated setup, authorization and location privacy)"
+      ],
+      "printed_pages": [
+        92,
+        93
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.4.3.2, opening, preconditions, NOTEs 1–2 and Figure 10.4.3.2-1, steps 1–3 (LMR-originated setup, receiving authorization and location wording)"
+      ],
+      "printed_pages": [
+        94,
+        95
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.4.3.1, Figure 10.4.3.1-1, steps 4–5 (optional IWF failure and new MCPTT client request)"
+      ],
+      "printed_pages": [
+        93,
+        94
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.4.3.2, Figure 10.4.3.2-1, steps 4–5 (optional MCPTT client failure and new IWF request; response label)"
+      ],
+      "printed_pages": [
+        95
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.4.3.1, Figure 10.4.3.1-1, steps 6–9 (IWF ringing while waiting, LMR acceptance and separate response)"
+      ],
+      "printed_pages": [
+        93,
+        94
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.4.3.2, Figure 10.4.3.2-1, steps 6–9 (client ringing while waiting, MCPTT acceptance and separate response)"
+      ],
+      "printed_pages": [
+        95,
+        96
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.4.3.1, Figure 10.4.3.1-1 and step 10 (media plane and originating MCPTT floor responsibility)"
+      ],
+      "printed_pages": [
+        93,
+        94
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.4.3.2, Figure 10.4.3.2-1 and step 10 (media plane and originating LMR floor responsibility)"
+      ],
+      "printed_pages": [
+        95,
+        96
+      ]
+    }
+  ],
+  "limitations": [
+    "不从 Ringing 推断被叫已接听、媒体已通或对应的 SIP 状态码。LMR 主叫方向步骤 1 的位置主体和步骤 8 的媒体支持表述不能用来改写流程角色或规定字段。不涉及无线侧、线上报文构造、计时器或完整端到端实现。",
+    "只覆盖 TS 23.283 V16.8.0 的手动开始互通功能流程。TS 23.379 回指、自动开始、通话释放和普通私呼各有自己的适用范围。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
