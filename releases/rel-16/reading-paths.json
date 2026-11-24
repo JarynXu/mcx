@@ -11071,6 +11071,26 @@
         }
       ],
       "boundary": "Release 16。GMS 撤销一项组安全上下文时复用组配置通知。终端验签、检查 GMK-ID 是否重复，用 GMK 解出关联参数，再按其中的组 ID 核对配置档里的 GMS 身份。能解出这一份参数不等于可以用这把密钥通信。 在已核验的 GMK 关联参数中，Status 的位 0（最低有效位）为 0 表示已撤销，值为 1 表示未撤销；位 1 另表安全网关共享。撤销时不得使用本次分发的 GMK 和 GMK-ID。 终端成功处理后回组配置响应。所选发起或接收 KMS 不获接受时，可向 GMS 回 KRR，GMS 可再试。 Status 缺失不等于某个位值。只见请求或一台终端的回应，不能证明现场已停用或安全删除密钥，也不能证明其他终端已处理。停用不等于成员移出或自动换钥；撤销段没有给出重复 GMK-ID 的例外、撤销专用重试条件或具体错误码。"
+    },
+    {
+      "id": "r16-mcdata-lmr-one-to-one-standalone-sds",
+      "question": "MCData 发给单个 LMR 用户，目的地址是什么？反向发送时谁代发、源地址是谁？ 一对一互通走信令控制面或媒体面时，客户端 1 和 2 分别是谁，IWF 扮演什么角色？ IWF-2 的请求必须带哪些 ID？不支持会话或事务标识能省略字段吗？什么时候才能带应用标识？ IWF-2 的处置通知用什么关联原事务？“系统阻止处置”能否当作已读、送达或 IWF 代答的证据？",
+      "start": "topics/mcdata/lmr-one-to-one-standalone-sds.md",
+      "next_if": [
+        {
+          "condition": "若要展开 TS 23.282 §7.4.2.2/.3 的在网单系统基础流程，查同一 MCData 系统的一对一独立 SDS。该主题不含 IWF；回到本页判断 LMR 方的身份和 IWF-2 条件。",
+          "read": "topics/mcdata/one-to-one-standalone-sds.md"
+        },
+        {
+          "condition": "若目的地址是 MCData 组 ID，或要核对组接收代理能否回“系统阻止处置”，改查 LMR 参与的组独立 SDS。不要把组条件套到单用户请求。",
+          "read": "topics/mcdata/lmr-group-standalone-sds.md"
+        },
+        {
+          "condition": "若要查普通一对一 SDS 控制面的服务器准入和协议响应，按 TS 24.282 Stage 3 主题的条件另查，不把它当作 IWF-2 报文定义。",
+          "read": "topics/mcdata/sds-control-server.md"
+        }
+      ],
+      "boundary": "这里是一名 MCData 用户与一名 LMR 用户经 IWF 交换一对一独立短数据（standalone SDS）。LMR 用户在 MCData 一侧用分配给他的 MCData ID 表示。 MCData 发往 LMR 时，该 ID 是目的地址，接收客户端 2 在 IWF 后方；LMR 发往 MCData 时，IWF 代发，该 ID 是源地址，发起客户端 1 在 IWF 后方。IWF 两向都以对等 MCData 服务器工作。信令控制面与媒体面分别回指 TS 23.282 §7.4.2.2 与 §7.4.2.3。 IWF-2 请求表的两个必备 MCData ID 分别代表发送用户和目标用户；会话、事务标识也是必备信息元素，各有表示发送方不支持的相应预留值。应用标识可选，只能在目的类型指向应用消费时带。两向处置通知用 Disposition association 关联原事务；“系统阻止处置”不是送达或已读。 仅凭处置枚举不能判断 IWF 何时能或须代一对一收件端回报；不能套用组 SDS 的代答规则。本节未规定 IWF 与 LMR 的具体转换方法。表用于 IWF-2，不规定其他参考点或 SIP、SDP、媒体封装，不从字段或通知推定实际送达。"
     }
   ]
 }

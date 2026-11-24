@@ -1,0 +1,304 @@
+{
+  "topic_id": "r16-mcdata-lmr-one-to-one-standalone-sds",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCData 与 LMR 的一对一独立短数据：LMR 用户 ID 放哪边，处置通知关联哪一笔？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v16.8.0",
+  "condition_rule": "每条结论继承共同条件。先定发送方向和所问传送面。读处置通知时，按通知自己的发送方、接收方和关联事务解读，不能沿用请求字段的角色。",
+  "common_conditions": [
+    "这里是一名 MCData 用户与一名 LMR 用户经 IWF 交换一对一独立短数据（standalone SDS）。LMR 用户在 MCData 一侧用分配给他的 MCData ID 表示。"
+  ],
+  "claims": [
+    {
+      "id": "mcdata-origin-lmr-destination",
+      "title": "MCData 发给 LMR：LMR 用户 ID 是目的地址",
+      "conditions": [
+        "发起者是 MCData 用户，接收者是单个 LMR 用户。"
+      ],
+      "conclusion": "SDS 的目的地址是分配给 LMR 用户的 MCData ID。接收客户端 2 在 IWF 后方，IWF 对 MCData 服务器以对等服务器的角色工作。信令控制面沿 TS 23.282 §7.4.2.2，媒体面沿 §7.4.2.3；相对于各自基础流程，两条互通流程都把接收客户端 2 放在 IWF 后方。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.8.6.1, sole paragraph spanning two pages: MCData to LMR, signalling control plane, client 2 and destination MCData ID"
+          ],
+          "printed_pages": [
+            146,
+            147
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.8.6.2, sole paragraph: MCData to LMR, media plane, client 2 and destination MCData ID"
+          ],
+          "printed_pages": [
+            147
+          ]
+        }
+      ],
+      "limitations": [
+        "这里是单用户目的地址，不是组 ID。哪些条件选择哪一个传送面以及其他参考点的基础步骤，不由这两段新增规定。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-origin-iwf-uses-user-source-id",
+      "title": "LMR 发给 MCData：IWF 代发，LMR 用户 ID 是源地址",
+      "conditions": [
+        "发起者是 LMR 用户，目标是单个 MCData 用户。"
+      ],
+      "conclusion": "IWF 代表 LMR 用户发请求。发起客户端 1 在 IWF 后方，SDS 源地址是分配给 LMR 用户的 MCData ID，不改成 IWF 自己的地址。IWF 以对等 MCData 服务器工作。信令控制面沿 TS 23.282 §7.4.2.2，媒体面沿 §7.4.2.3。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.8.7.1, sole paragraph: IWF acts for LMR, signalling control plane, client 1 and source MCData ID"
+          ],
+          "printed_pages": [
+            147
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.8.7.2, sole paragraph: IWF acts for LMR, media plane, client 1 and source MCData ID"
+          ],
+          "printed_pages": [
+            147
+          ]
+        }
+      ],
+      "limitations": [
+        "规范给出的是 MCData 侧源地址角色，不规定 IWF 如何分配、查询用户 ID，或如何在 LMR 空口上表示它。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf2-request-roles-and-mandatory-identifiers",
+      "title": "请求的两项 MCData ID 分别标发送和目标用户",
+      "conditions": [
+        "正在读 IWF 与 MCData 服务器之间任一方向的表 10.8.2.2-1 standalone data request。"
+      ],
+      "conclusion": "两项 MCData ID 都必备，分别标识发送用户和目标用户。Conversation Identifier、Transaction Identifier、Payload Destination Type 和 Payload 都列为 M。针对会话与事务标识，注 1 要求定义相应预留值表示发送方不支持该信息元素；不支持不等于可省略 M 字段。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.8.2.2, introduction and Table 10.8.2.2-1: both directions, mandatory fields and NOTE 1 reserved values"
+          ],
+          "printed_pages": [
+            143
+          ]
+        }
+      ],
+      "limitations": [
+        "不规定字段的位级编码或预留值的具体数值，也不根据 Payload 字段推定媒体面正文的实际传送方式。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf2-request-optional-identifiers-and-disposition-type",
+      "title": "Reply Identifier、处置请求和应用标识是不同字段",
+      "conditions": [
+        "正在判断表 10.8.2.2-1 的可选字段或负载去向。"
+      ],
+      "conclusion": "Reply Identifier 可选，指向本次事务回复的原事务。Disposition Type 可选，表示期望接收方回告送达、已读或两者。Payload Destination Type 区分由应用消费还是由 MCData 客户端消费；Application identifier 列 O，只有目的类型指向应用消费时才可带。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.8.2.2, Table 10.8.2.2-1: Reply Identifier, Disposition Type, Payload Destination Type and Application identifier with NOTE 2"
+          ],
+          "printed_pages": [
+            143
+          ]
+        }
+      ],
+      "limitations": [
+        "注 2 的“只有……才”不等于应用消费时必带。Disposition Type 只描述请求的处置类型，不是处置结果。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf2-notification-associates-original-transaction",
+      "title": "两向处置通知关联原事务，不拿系统阻止当送达",
+      "conditions": [
+        "正在读 IWF 与 MCData 服务器之间任一方向的表 10.8.2.3-1 data disposition notification。"
+      ],
+      "conclusion": "通知必须带通知接收用户与通知发送用户的 MCData ID、Conversation Identifier、Disposition association 和 Disposition。Conversation Identifier 的注要求定义发送方不支持时使用的预留值。Disposition association 标识原 MCData 事务。Disposition 可表示送达、已读、送达且已读或系统阻止处置。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.8.2.3, introduction and Table 10.8.2.3-1: both directions, all five mandatory fields and the Conversation Identifier NOTE"
+          ],
+          "printed_pages": [
+            143
+          ]
+        }
+      ],
+      "limitations": [
+        "关联项不是请求表的 Reply Identifier，也不能只拿会话标识认定哪笔事务有回告。“系统阻止处置”不表示送达或已读，也不等于证明数据本身被阻止。表中列该值不等于规定 IWF 在一对一场景何时可以或必须代收件端回报。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf2-stage2-and-lmr-conversion-boundary",
+      "title": "IWF 转换两向请求，具体转换办法不在本规范",
+      "conditions": [
+        "需要区分 IWF-2 的 Stage 2 信息流、其他参考点和 LMR 一侧。"
+      ],
+      "conclusion": "IWF 把发往 MCData 的 LMR 消息转换为发送 SDS 的请求；反向把 SDS 请求转换为一个或多个 LMR 消息。两向的具体转换方法不在 TS 23.283 的范围内。这里的信息流表适用 IWF-2；其他参考点上的 SDS 信息流回指 TS 23.282 §7.4.2.1。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.8.1, three introductory paragraphs: standalone SDS scope, peer server and bidirectional conversion boundary"
+          ],
+          "printed_pages": [
+            142
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.8.2.1, sole paragraph: IWF-2 information flows and reference to other MCData SDS reference points"
+          ],
+          "printed_pages": [
+            143
+          ]
+        }
+      ],
+      "limitations": [
+        "不从本页推定实际发出的 LMR 消息数、SIP 或 SDP 编码、无线侧传送行为，或任一端已收到正文。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-mcdata-one-to-one-standalone-sds",
+    "r16-mcdata-lmr-group-standalone-sds",
+    "r16-mcdata-sds-control-server"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.8.1, three introductory paragraphs: standalone SDS scope, peer server and bidirectional conversion boundary"
+      ],
+      "printed_pages": [
+        142
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.8.2.1, sole paragraph: IWF-2 information flows and reference to other MCData SDS reference points"
+      ],
+      "printed_pages": [
+        143
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.8.6.1, sole paragraph spanning two pages: MCData to LMR, signalling control plane, client 2 and destination MCData ID"
+      ],
+      "printed_pages": [
+        146,
+        147
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.8.6.2, sole paragraph: MCData to LMR, media plane, client 2 and destination MCData ID"
+      ],
+      "printed_pages": [
+        147
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.8.7.1, sole paragraph: IWF acts for LMR, signalling control plane, client 1 and source MCData ID"
+      ],
+      "printed_pages": [
+        147
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.8.7.2, sole paragraph: IWF acts for LMR, media plane, client 1 and source MCData ID"
+      ],
+      "printed_pages": [
+        147
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.8.2.2, introduction and Table 10.8.2.2-1: both directions, mandatory fields and NOTE 1 reserved values"
+      ],
+      "printed_pages": [
+        143
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.8.2.2, Table 10.8.2.2-1: Reply Identifier, Disposition Type, Payload Destination Type and Application identifier with NOTE 2"
+      ],
+      "printed_pages": [
+        143
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.8.2.3, introduction and Table 10.8.2.3-1: both directions, all five mandatory fields and the Conversation Identifier NOTE"
+      ],
+      "printed_pages": [
+        143
+      ]
+    }
+  ],
+  "limitations": [
+    "仅凭处置枚举不能判断 IWF 何时能或须代一对一收件端回报；不能套用组 SDS 的代答规则。本节未规定 IWF 与 LMR 的具体转换方法。表用于 IWF-2，不规定其他参考点或 SIP、SDP、媒体封装，不从字段或通知推定实际送达。",
+    "只收录一对一 standalone，不覆盖 SDS 会话、组独立 SDS 或实际部署。TS 23.282 是规范回指；本主题不重建非 IWF 的基础流程。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
