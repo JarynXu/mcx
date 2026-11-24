@@ -8175,6 +8175,158 @@
         }
       ],
       "boundary": "在网 MCVideo 和 MCData 必须为 MCX 终端上的媒体存储提供所有相关的安全保护；表 A.1 的 §6.13.6 行对 MCPTT 标 NA。 媒体和措施都是举例，未指定算法或固定措施清单；本项未规定必须录制、媒体保留期或服务器存储方式，也不能据 NA 推断 MCPTT 终端没有其他存储保护要求。"
+    },
+    {
+      "id": "r16-calls-onnetwork-private-concurrent-reception",
+      "question": "在网无话权控制私通信期间，终端还能同时接收哪些传输？",
+      "start": "topics/calls/onnetwork-private-concurrent-reception.md",
+      "next_if": [
+        {
+          "condition": "问题是同一业务的私通信怎样与组通信或其他私通信比较传输、呈现优先级。",
+          "read": "topics/calls/onnetwork-private-communication-priority.md"
+        },
+        {
+          "condition": "问题是不同 MC 业务在同一台终端上并用，包括争用扬声器或显示器。",
+          "read": "topics/media/concurrent-services-ue-resources.md"
+        }
+      ],
+      "boundary": "不要求向其他通信发送，也没有规定两类来源必须一起接收、实际播放或显示、并发上限或媒体路由。不能套用跨业务并行场景。"
+    },
+    {
+      "id": "r16-calls-onnetwork-telephony-call-controls",
+      "question": "在网用户能否拨打或接听电话，由谁配置？谁能屏蔽来电？",
+      "start": "topics/calls/onnetwork-telephony-call-controls.md",
+      "next_if": [
+        {
+          "condition": "需要区分普通电话权限和管理员对 MCX 无话权控制私通信配置的发起权限及通信对象。",
+          "read": "topics/calls/onnetwork-no-floor-private-authorization.md"
+        },
+        {
+          "condition": "所问的紧急呼叫是进行中的 MCX 私通信转为紧急，不是公共紧急电话。",
+          "read": "topics/calls/onnetwork-emergency-private-communication.md"
+        }
+      ],
+      "boundary": "不能由配置能力推断默认权限、特定号码或紧急回拨的处理结果，也不能由屏蔽来电推出禁止呼出或 MCX 私通信被拦截。未规定电话网关、信令或路由。"
+    },
+    {
+      "id": "r16-calls-onnetwork-discreet-listening",
+      "question": "在网隐蔽监听：授权针对用户还是业务组，对方的传输也算吗？",
+      "start": "topics/calls/onnetwork-discreet-listening.md",
+      "next_if": [
+        {
+          "condition": "若问的是环境监听中的单向私通信，而非指定用户或业务组的业务传输。",
+          "read": "topics/calls/onnetwork-ambient-listening.md"
+        }
+      ],
+      "boundary": "不规定默认排除、实际监听授权或操作程序；业务组授权不能推及组员的私通信。"
+    },
+    {
+      "id": "r16-calls-onnetwork-ambient-listening",
+      "question": "在网环境监听：谁在发送，终端的关机外观能证明什么？",
+      "start": "topics/calls/onnetwork-ambient-listening.md",
+      "next_if": [
+        {
+          "condition": "要查远端发起时的角色边界。",
+          "read": "topics/calls/onnetwork-remotely-initiated-ambient-listening.md"
+        },
+        {
+          "condition": "要查从被听方发起时的角色边界。",
+          "read": "topics/calls/onnetwork-locally-initiated-ambient-listening.md"
+        },
+        {
+          "condition": "问题是一次已建立的在网按需 MCPTT 环境监听能否判定释放。",
+          "read": "topics/calls/ambient-call-release-evidence.md"
+        }
+      ],
+      "boundary": "关机外观不证明终止，不代表真实断电后仍能传输，也不能据此确定信令、实现方式或授权。"
+    },
+    {
+      "id": "r16-calls-onnetwork-remotely-initiated-ambient-listening",
+      "question": "远端发起的在网环境监听：谁有权发起，谁有权结束？",
+      "start": "topics/calls/onnetwork-remotely-initiated-ambient-listening.md",
+      "next_if": [
+        {
+          "condition": "要区分谁发起、谁发送或如何解释终端外观。",
+          "read": "topics/calls/onnetwork-ambient-listening.md"
+        },
+        {
+          "condition": "问题是一次已建立的在网按需 MCPTT 环境监听能否判定释放。",
+          "read": "topics/calls/ambient-call-release-evidence.md"
+        }
+      ],
+      "boundary": "不能以管理员身份或被听方的发送角色推定终止权。本项不规定操作方式，也不证明某场通信已结束。"
+    },
+    {
+      "id": "r16-calls-onnetwork-locally-initiated-ambient-listening",
+      "question": "本地发起的在网环境监听：被听用户和远端听方谁能结束？",
+      "start": "topics/calls/onnetwork-locally-initiated-ambient-listening.md",
+      "next_if": [
+        {
+          "condition": "需要区分不是从被听方发起的情形。",
+          "read": "topics/calls/onnetwork-remotely-initiated-ambient-listening.md"
+        },
+        {
+          "condition": "要查与发起方向无关的发送方和证据边界。",
+          "read": "topics/calls/onnetwork-ambient-listening.md"
+        },
+        {
+          "condition": "问题是一次已建立的在网按需 MCPTT 环境监听能否判定释放。",
+          "read": "topics/calls/ambient-call-release-evidence.md"
+        }
+      ],
+      "boundary": "本地不表示离网。管理员身份不能代替本场听方条件；可终止不等于已终止。"
+    },
+    {
+      "id": "r16-calls-onnetwork-remote-initiation-and-notification",
+      "question": "远端终端发起在网通信时，向谁发送、能通知谁？",
+      "start": "topics/calls/onnetwork-remote-initiation-and-notification.md",
+      "next_if": [
+        {
+          "condition": "要查通用要求中的组访问、下行拉取或远程终止。",
+          "read": "topics/calls/remote-communication-control.md"
+        },
+        {
+          "condition": "要区分 MCPTT 私呼的 Stage 3 请求与发起结果。",
+          "read": "topics/calls/remotely-initiated-private-call.md"
+        },
+        {
+          "condition": "要区分 MCPTT 组呼的 Stage 3 请求与发起结果。",
+          "read": "topics/calls/remotely-initiated-group-call.md"
+        },
+        {
+          "condition": "要分清结束一路 MCVideo 视频传输和终止整次通信。",
+          "read": "topics/mcvideo/end-transmission-sender-server.md"
+        }
+      ],
+      "boundary": "§6.15.3.2 限在网。MCPTT、MCVideo 均列 -001 至 -004；MCData 只列私通信的 -001、-002。通知能力不等于每次自动通知、用户同意或实际收到；本节不规定终止通信的程序。"
+    },
+    {
+      "id": "r16-security-onnetwork-communication-recording-and-audit",
+      "question": "在网组通信或私通信：参与者日志、传输内容和机密性各有什么要求？",
+      "start": "topics/security/onnetwork-communication-recording-and-audit.md",
+      "next_if": [
+        {
+          "condition": "要查通信之外的用户活动、所有失败授权尝试或网络接入事件。",
+          "read": "topics/security/onnetwork-activity-audit.md"
+        },
+        {
+          "condition": "要判断 MCVideo 服务器给出文件地址和实际写入之间的区别。",
+          "read": "topics/mcvideo/push-to-server-recording.md"
+        }
+      ],
+      "boundary": "§6.15.4-001 至 -005 适用于三项在网业务。区分传输内容和双方参与者元数据；通信字段视业务而定。-005 以原通信已采用端到端机密性为前提。未指定录制格式、回放权限或保留期。"
+    },
+    {
+      "id": "r16-security-onnetwork-activity-audit",
+      "question": "没有发生通话，在网业务还须支持哪些审计记录？",
+      "start": "topics/security/onnetwork-activity-audit.md",
+      "next_if": [
+        {
+          "condition": "要查组通信或私通信的参与者、传输内容及端到端机密性。",
+          "read": "topics/security/onnetwork-communication-recording-and-audit.md"
+        }
+      ],
+      "boundary": "§6.15.4-006 至 -010 适用于三项在网业务。非通信活动的四项最低记录字段与五项适用时建议的字段不能混用，也不能照搬到所有授权失败或接入事件。-009 是组织可记录，-010 是业务可收集。"
     }
   ]
 }
