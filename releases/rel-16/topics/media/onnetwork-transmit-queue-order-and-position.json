@@ -1,0 +1,503 @@
+{
+  "topic_id": "r16-media-onnetwork-transmit-queue-order-and-position",
+  "release": 16,
+  "standard_stage": 1,
+  "state": "draft",
+  "title": "在网 MCPTT、MCVideo 的发送队列怎样排序，组通信排队后如何查队位？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-22.280-v16.8.0",
+  "condition_rule": "每项声明继承共同适用范围；通信类型、排序时已知的信息、请求是否入队、是否有人查队位及接收人按该项判断。各项不是一套必经的状态转换。",
+  "common_conditions": [
+    "3GPP TS 22.280 V16.8.0（Release 16，Stage 1）第 6 章限定在网使用。规范性表 A.1（MCPTT）和 B.1（MCVideo）的 §6.2.2 行均列出 R-6.2.2-001 至 -006；表 C.1（MCData）的该行明确为 NA。"
+  ],
+  "claims": [
+    {
+      "id": "mandatory-transmit-queue-priority-inputs",
+      "title": "排列发送请求须看哪些因素",
+      "conditions": [
+        "MCX 业务为发送请求队列排定优先级。"
+      ],
+      "conclusion": "须按通信类型、通信的紧急程度、请求用户的属性排列发送请求；如果是组通信，还须考虑业务组的属性。组或私是通信类型的例子；普通组通信、MCX 紧急通信、迫近危险通信是紧急程度的例子；优先级是组属性和请求用户属性的例子。",
+      "normative_strength": "R-6.2.2-001 用 shall，规定业务排定优先级所依据的因素。仅组属性一项带有“若是组通信”的条件。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6.2.2 R-6.2.2-001"
+          ],
+          "printed_pages": [
+            30
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6 (scope heading)"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 6.2.2 applicability row, R-6.2.2-001 through R-6.2.2-006 listed"
+          ],
+          "printed_pages": [
+            65
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 6.2.2 applicability row, R-6.2.2-001 through R-6.2.2-006 listed"
+          ],
+          "printed_pages": [
+            76
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 6.2.2 applicability row NA"
+          ],
+          "printed_pages": [
+            87
+          ]
+        }
+      ],
+      "limitations": [
+        "未给出各因素的权重、优先级计算公式、同级排序规则或任何两项请求的实际先后次序。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "known-jurisdiction-may-raise-priority",
+      "title": "在各自辖区内活动可以成为提级依据",
+      "conditions": [
+        "在排定发送队列优先级时，已知相应 MCX 业务组和 MCX 用户在各自辖区内活动。"
+      ],
+      "conclusion": "业务可以给这些业务组和用户的通信较高优先级。",
+      "normative_strength": "R-6.2.2-002 用 may；即使情况已知，提级也不是义务。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6.2.2 R-6.2.2-002"
+          ],
+          "printed_pages": [
+            30
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6 (scope heading)"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 6.2.2 applicability row, R-6.2.2-001 through R-6.2.2-006 listed"
+          ],
+          "printed_pages": [
+            65
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 6.2.2 applicability row, R-6.2.2-001 through R-6.2.2-006 listed"
+          ],
+          "printed_pages": [
+            76
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 6.2.2 applicability row NA"
+          ],
+          "printed_pages": [
+            87
+          ]
+        }
+      ],
+      "limitations": [
+        "不要求业务取得位置或判定辖区的方法；不能只凭辖区内活动推断某请求的名次。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "known-operating-hours-or-duty-may-raise-priority",
+      "title": "工作时段或值勤可以成为提级依据",
+      "conditions": [
+        "在排定发送队列优先级时，已知相应 MCX 业务组和 MCX 用户处于工作时段或正在值勤。"
+      ],
+      "conclusion": "业务可以给这些业务组和用户的通信较高优先级。",
+      "normative_strength": "R-6.2.2-003 用 may；工作时段与值勤用“或”连接。已知该情况不等于必须提级。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6.2.2 R-6.2.2-003"
+          ],
+          "printed_pages": [
+            30
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6 (scope heading)"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 6.2.2 applicability row, R-6.2.2-001 through R-6.2.2-006 listed"
+          ],
+          "printed_pages": [
+            65
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 6.2.2 applicability row, R-6.2.2-001 through R-6.2.2-006 listed"
+          ],
+          "printed_pages": [
+            76
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 6.2.2 applicability row NA"
+          ],
+          "printed_pages": [
+            87
+          ]
+        }
+      ],
+      "limitations": [
+        "没有规定按什么日历或值勤记录判断，也没有规定这项因素优先于辖区或其他排序因素。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "user-cancels-own-queued-permission-request",
+      "title": "发送许可请求已入队的用户可取消自己的请求",
+      "conditions": [
+        "一名 MCX 用户的发送许可请求已入队。"
+      ],
+      "conclusion": "业务须允许该用户取消其本人的请求。",
+      "normative_strength": "R-6.2.2-004 用 shall，义务主体是业务；不要求用户实际取消。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6.2.2 R-6.2.2-004"
+          ],
+          "printed_pages": [
+            30
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6 (scope heading)"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 6.2.2 applicability row, R-6.2.2-001 through R-6.2.2-006 listed"
+          ],
+          "printed_pages": [
+            65
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 6.2.2 applicability row, R-6.2.2-001 through R-6.2.2-006 listed"
+          ],
+          "printed_pages": [
+            76
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 6.2.2 applicability row NA"
+          ],
+          "printed_pages": [
+            87
+          ]
+        }
+      ],
+      "limitations": [
+        "本项不授予代撤他人请求的权限，也不是撤销已经授予的发送许可。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "queued-group-transmit-request-current-position-on-request",
+      "title": "组通信的发送请求已入队，业务须应请求提供该用户的当前队位",
+      "conditions": [
+        "一笔 MCX 业务组通信的发送请求已入队，且业务收到了队位查询。"
+      ],
+      "conclusion": "业务须应请求提供该 MCX 用户当前在队列中的位置。",
+      "normative_strength": "R-6.2.2-005 用 shall，触发条件包括发送请求已经排队以及业务收到队位查询。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6.2.2 R-6.2.2-005"
+          ],
+          "printed_pages": [
+            30
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6 (scope heading)"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 6.2.2 applicability row, R-6.2.2-001 through R-6.2.2-006 listed"
+          ],
+          "printed_pages": [
+            65
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 6.2.2 applicability row, R-6.2.2-001 through R-6.2.2-006 listed"
+          ],
+          "printed_pages": [
+            76
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 6.2.2 applicability row NA"
+          ],
+          "printed_pages": [
+            87
+          ]
+        }
+      ],
+      "limitations": [
+        "这不是其他用户的队位、队列名单、等待时间或发送许可；本项未要求名次变化就推送，也未定义第三方查询授权。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "queued-group-communication-continues-indicate-to-requester",
+      "title": "已排队的组通信继续时须向请求人指示",
+      "conditions": [
+        "一笔 MCX 业务组通信请求进入队列，此后该通信继续。"
+      ],
+      "conclusion": "通信继续时，业务须向该组通信的请求人发出指示。",
+      "normative_strength": "R-6.2.2-006 用 shall；触发点是通信继续，接收者是请求人。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6.2.2 R-6.2.2-006"
+          ],
+          "printed_pages": [
+            30
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "6 (scope heading)"
+          ],
+          "printed_pages": [
+            29
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex A, Table A.1: 6.2.2 applicability row, R-6.2.2-001 through R-6.2.2-006 listed"
+          ],
+          "printed_pages": [
+            65
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex B, Table B.1: 6.2.2 applicability row, R-6.2.2-001 through R-6.2.2-006 listed"
+          ],
+          "printed_pages": [
+            76
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.280-v16.8.0",
+          "clauses": [
+            "Annex C, Table C.1: 6.2.2 applicability row NA"
+          ],
+          "printed_pages": [
+            87
+          ]
+        }
+      ],
+      "limitations": [
+        "不以请求刚入队、名次变化或收到队位查询作为本项指示的触发点。未指定该指示必须用授予发送许可的消息，也未要求另发一条独立消息。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-media-onnetwork-transmit-request-queuing-and-rejection",
+    "r16-bearers-onnetwork-service-preemption",
+    "r16-media-on-network-floor-client",
+    "r16-mcvideo-prearranged-group-queue-position"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "6 (scope heading)"
+      ],
+      "printed_pages": [
+        29
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "6.2.2 R-6.2.2-001"
+      ],
+      "printed_pages": [
+        30
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "6.2.2 R-6.2.2-002"
+      ],
+      "printed_pages": [
+        30
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "6.2.2 R-6.2.2-003"
+      ],
+      "printed_pages": [
+        30
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "6.2.2 R-6.2.2-004"
+      ],
+      "printed_pages": [
+        30
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "6.2.2 R-6.2.2-005"
+      ],
+      "printed_pages": [
+        30
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "6.2.2 R-6.2.2-006"
+      ],
+      "printed_pages": [
+        30
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "Annex A, Table A.1: 6.2.2 applicability row, R-6.2.2-001 through R-6.2.2-006 listed"
+      ],
+      "printed_pages": [
+        65
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "Annex B, Table B.1: 6.2.2 applicability row, R-6.2.2-001 through R-6.2.2-006 listed"
+      ],
+      "printed_pages": [
+        76
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.280-v16.8.0",
+      "clauses": [
+        "Annex C, Table C.1: 6.2.2 applicability row NA"
+      ],
+      "printed_pages": [
+        87
+      ]
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}

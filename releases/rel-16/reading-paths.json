@@ -8835,6 +8835,146 @@
         }
       ],
       "boundary": "至少一名地面 MCX 用户与一名或多名乘坐正在飞行的直升机或飞机的 MCX 用户，可点对点或组通信。MCPTT、MCVideo、MCData 均列 R-9.2-001。高度可达 15.000 ft（一万五千英尺），速度可达 [450]km/h。 §9.2 未指定高度基准、无线接入或切换程序；不证明飞行器认证、航线实际部署、覆盖或每次通信无中断。"
+    },
+    {
+      "id": "r16-media-onnetwork-transmit-queue-order-and-position",
+      "question": "在网 MCPTT、MCVideo 的发送队列怎样排序，组通信排队后如何查队位？",
+      "start": "topics/media/onnetwork-transmit-queue-order-and-position.md",
+      "next_if": [
+        {
+          "condition": "若要查发送请求入队或被拒、出队后已经开始、代撤和移除通知，转查三项业务均适用的 §6.19.1.1。",
+          "read": "topics/media/onnetwork-transmit-request-queuing-and-rejection.md"
+        },
+        {
+          "condition": "若问是否须支持按优先级排队及保留，另查 §6.8.1 的 -006；它不是本节的排序因素清单。",
+          "read": "topics/bearers/onnetwork-service-preemption.md"
+        },
+        {
+          "condition": "若需查普通在网 MCPTT 有话权控制时客户端怎样处理实际队位、授予或撤回，另查 Stage 3 的客户端状态。",
+          "read": "topics/media/on-network-floor-client.md"
+        },
+        {
+          "condition": "若需查普通在网预安排 MCVideo 组呼已经协商排队后怎样查询队位和处理授予，另查该场景的 Stage 3。",
+          "read": "topics/mcvideo/prearranged-group-queue-position.md"
+        }
+      ],
+      "boundary": "限在网 MCPTT 和 MCVideo 的 §6.2.2 六项要求。排序的组属性、按需提供队位、组通信继续的指示各有前提；MCData 在本节明确为 NA。队位既不是发送许可，也不规定某种协议报文。"
+    },
+    {
+      "id": "r16-groups-onnetwork-broadcast-delivery-area",
+      "question": "在网广播须发给哪些组成员？业务能否向动态划定的区域广播？",
+      "start": "topics/groups/onnetwork-broadcast-delivery-area.md",
+      "next_if": [
+        {
+          "condition": "若是离网广播，要判断哪些组员处于通信范围。",
+          "read": "topics/groups/offnetwork-broadcast-delivery.md"
+        },
+        {
+          "condition": "若问在网广播发起时，业务可选择支持终止哪些其他组通信。",
+          "read": "topics/groups/onnetwork-broadcast-optional-termination.md"
+        },
+        {
+          "condition": "若查在网 MCPTT 预安排组中的广播请求或该呼叫的释放，读 Stage 3 程序。",
+          "read": "topics/calls/onnetwork-prearranged-broadcast-origin.md"
+        },
+        {
+          "condition": "若查在网 MCVideo 广播组呼如何建立、谁能发视频或何时释放，读 Stage 2 程序。",
+          "read": "topics/mcvideo/onnetwork-broadcast-group-call.md"
+        }
+      ],
+      "boundary": "限 TS 22.280 V16.8.0 §6.5.1 的在网 Stage 1 要求。-001 限本业务的在网组成员；-002 是向动态定义的地理区域提供广播组通信的能力。不以地理位置代替组成员身份，也不从交付义务推定实际收件。"
+    },
+    {
+      "id": "r16-groups-onnetwork-group-limits-and-state",
+      "question": "管理员能限制单个业务组的成员总数吗？移除组和禁用组有什么区别？",
+      "start": "topics/groups/onnetwork-group-limits-and-state.md",
+      "next_if": [
+        {
+          "condition": "若问题转为用户能否归属或选定这个组，要核对组的访问条件。",
+          "read": "topics/security/access-eligibility-requirements.md"
+        },
+        {
+          "condition": "若要判断有几位接收者在场，而非该组允许多少个成员。",
+          "read": "topics/groups/onnetwork-group-status-information.md"
+        },
+        {
+          "condition": "若要查管理员所作变更可以何时生效。",
+          "read": "topics/identity/onnetwork-administrator-activities-and-change-timing.md"
+        }
+      ],
+      "boundary": "§6.1 -001 至 -003 的在网管理能力。Nc6 限单组成员总数；重新启用不等于自动归属、选定或恢复已移除的组。"
+    },
+    {
+      "id": "r16-identity-onnetwork-administrator-activities-and-change-timing",
+      "question": "管理员的哪些活动能记入日志？管理员所作的变更何时生效？",
+      "start": "topics/identity/onnetwork-administrator-activities-and-change-timing.md",
+      "next_if": [
+        {
+          "condition": "若记录对象是用户的非通信活动、失败授权尝试或网络接入事件。",
+          "read": "topics/security/onnetwork-activity-audit.md"
+        },
+        {
+          "condition": "若要判断新档或更新档在终端的安装要求。",
+          "read": "topics/identity/user-profile-management-requirements.md"
+        },
+        {
+          "condition": "若要区分移除组、禁用组和重新启用组。",
+          "read": "topics/groups/onnetwork-group-limits-and-state.md"
+        }
+      ],
+      "boundary": "§6.1 -004 与 §6.3 -003、-004。前者要求业务能记录管理员活动，后两项规定两种生效手段；操作日志、指定时点和实际生效分别判断。"
+    },
+    {
+      "id": "r16-calls-onnetwork-location-dependent-dispatch-areas",
+      "question": "按用户当前位置选接收方，管理员要能怎样划分调度区域？",
+      "start": "topics/calls/onnetwork-location-dependent-dispatch-areas.md",
+      "next_if": [
+        {
+          "condition": "若要确定谁能发起、停用位置报告，而非怎样使用已有位置。",
+          "read": "topics/location/onnetwork-location-sharing-and-report-control.md"
+        },
+        {
+          "condition": "若问的是限制地理区域内的成员使用某个组。",
+          "read": "topics/groups/onnetwork-administrative-group-settings.md"
+        }
+      ],
+      "boundary": "§6.1 -005 规定管理员定义可关联调度员的区域；不定义位置采集、进区告警或某次通信怎样逐跳路由。"
+    },
+    {
+      "id": "r16-bearers-onnetwork-plmn-and-service-systems",
+      "question": "一个 PLMN 能支持几个 MCX 业务系统？一个系统能服务不同 PLMN 中的用户吗？",
+      "start": "topics/bearers/onnetwork-plmn-and-service-systems.md",
+      "next_if": [
+        {
+          "condition": "若用户要在伙伴 MCX 系统开展业务，须核对的是业务系统授权。",
+          "read": "topics/identity/partner-service-access-and-authentication.md"
+        },
+        {
+          "condition": "若讨论进行中的同一次通信已经换网，而非部署能否跨多个 PLMN 提供业务。",
+          "read": "topics/bearers/onnetwork-inter-network-mobility.md"
+        }
+      ],
+      "boundary": "§6.3 -001、-002 分别约束单个 PLMN 和单个业务系统；能力不是用户业务许可、在线或可达证据，也不证明一次通信在换网中延续。"
+    },
+    {
+      "id": "r16-groups-onnetwork-group-member-list",
+      "question": "在网业务须向谁提供当前组成员名单？名单怎样标识每名成员？",
+      "start": "topics/groups/onnetwork-group-member-list.md",
+      "next_if": [
+        {
+          "condition": "若关心当前谁已归属该组、谁可以自动收到已归属名单的变动。",
+          "read": "topics/groups/onnetwork-affiliated-member-list.md"
+        },
+        {
+          "condition": "若查 Stage 2 中如何指定查询类型、组管理服务器查什么权限并回给谁。",
+          "read": "topics/groups/group-list-query.md"
+        },
+        {
+          "condition": "若查 Stage 2 中某人被加入或移出时通知谁，或通知里有什么。",
+          "read": "topics/groups/group-membership-notification.md"
+        }
+      ],
+      "boundary": "限 TS 22.280 V16.8.0 §6.4.5 在网组通信的成员名单；-005、-006 说当前名单，-007 说完整名单，-008 规定提供名单时的逐成员标识。"
     }
   ]
 }
