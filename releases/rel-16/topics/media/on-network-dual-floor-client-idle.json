@@ -1,0 +1,124 @@
+{
+  "topic_id": "r16-media-on-network-dual-floor-client-idle",
+  "title": "双话权：有发送许可的 MCPTT 终端收到 Floor Idle，要放权吗？",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "各条继承终端已获许可及实际收到同一 Floor Idle 的条件。覆盖方和被覆盖方各查自己的标记；来向 G 位为 1 只在第 2 项有要求。",
+  "common_conditions": [
+    "TS 24.380 V16.9.0，Release 16，Stage 3，§6.2.4.5.7。终端侧话权参与者已处于 U: has permission，并实际收到话权控制服务器发来的 Floor Idle。"
+  ],
+  "claims": [
+    {
+      "id": "dual-floor-idle-clears-client-overriding-flag",
+      "title": "本端作为覆盖方，清除覆盖标记并保持许可",
+      "conditions": [
+        "本端已存自己覆盖对方且未撤销对方话权（overriding without revoke）的标记。"
+      ],
+      "conclusion": "终端话权参与者清除本端覆盖对方且未撤销对方话权的标记，保持 U: has permission。第 1 项没有另设 G 位为 1 的条件。",
+      "normative_strength": "第 1(b)–(c) 项为 shall，清除和保持许可不以 subtype 首位请求 ACK 为条件。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.5.7, opening and items 1–2: permitted floor participant receives Floor Idle and clears the applicable without-revoke indication"
+          ],
+          "printed_pages": [
+            44
+          ]
+        }
+      ],
+      "limitations": [
+        "不把被覆盖方的标记当成同一项，也不判断服务器仲裁是否空闲。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "dual-floor-idle-clears-client-overridden-flag-with-g-bit",
+      "title": "本端被覆盖且实收 G=1，清除被覆盖标记并保持许可",
+      "conditions": [
+        "本端已存自己被覆盖但未被撤权（overridden without revoke）的标记，且这份来向 Floor Idle 的 Floor Indicator 中 G 位实际为 1（Dual Floor）。"
+      ],
+      "conclusion": "终端话权参与者清除本端被覆盖但未被撤权的标记，保持 U: has permission。",
+      "normative_strength": "第 2(b)–(c) 项为 shall，清除和保持许可不以 subtype 首位请求 ACK 为条件。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.5.7, opening and items 1–2: permitted floor participant receives Floor Idle and clears the applicable without-revoke indication"
+          ],
+          "printed_pages": [
+            44
+          ]
+        }
+      ],
+      "limitations": [
+        "来向 Floor Indicator 缺失或 G 不为 1 时，不能用本项判定已清除被覆盖标记；G 位不是服务器 G 状态。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "dual-floor-idle-client-ack-condition-and-encoding-discrepancy",
+      "title": "本分支要求确认才回 Ack，程序与通用 Message Type 编码有差异",
+      "conditions": [
+        "已满足第 1 项的本端覆盖标记，或已同时满足第 2 项的本端被覆盖标记和来向 Floor Indicator G=1，并且这份 Floor Idle 的 subtype 首位为 1。"
+      ],
+      "conclusion": "终端话权参与者须发送 Floor Ack。两项流程对 ACK 写的都是 Message Type=1 (Floor Idle)，Source=0（话权参与者）。这一写法与同版通用 subtype 编码不一致，不能用这页给实际 ACK 选定编码。",
+      "normative_strength": "第 1(a)、2(a) 项中的发送和字段写法为 shall；保留原条的字面值及对照差异，不作编码裁决。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.5.7, opening and items 1–2: permitted floor participant receives Floor Idle and clears the applicable without-revoke indication"
+          ],
+          "printed_pages": [
+            44
+          ]
+        }
+      ],
+      "limitations": [
+        "同版 §8.2.3.14（印刷页 155）把 Message Type 定义为前置 000 加上被确认消息的五位 subtype（含首位）；表 8.2.2.1-1（印刷页 148）中的 Floor Idle 是 x0101，Floor Granted 是 x0001。它们与 §6.2.4.5.7 两处字面 1 (Floor Idle) 不一致，本页不据此选择实际编码值，也不凭单个值判断报文是否合法。",
+        "仅 subtype 首位为 1 不足以触发本条；不能从一条 ACK 或观察到的数值倒推出本端此前是哪类角色、是否已清标记或保持许可。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.2.4.5.7, opening and items 1–2: permitted floor participant receives Floor Idle and clears the applicable without-revoke indication"
+      ],
+      "printed_pages": [
+        44
+      ]
+    }
+  ],
+  "related": [
+    "r16-media-on-network-dual-floor-handover",
+    "r16-mcptt-onnetwork-holder-release"
+  ],
+  "limitations": [
+    "仅限仍有许可的终端实收服务器 Floor Idle，并判断对应标记分支。不能单凭 Idle 判定清了哪项标记、许可丢失或组呼空闲。未命中这两项时，本条未规定处理；不据此判断全组仲裁、RTP、计时器、队列或实际 ACK 取值。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}

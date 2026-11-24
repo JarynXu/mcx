@@ -6655,6 +6655,22 @@
               ]
             }
           ]
+        },
+        {
+          "domain": "media",
+          "title": "已获许可终端收到双话权相关 Floor Idle（Stage 3）",
+          "can_answer": "已经有发送许可的 MCPTT 终端收到 Floor Idle，双话权下什么时候只清覆盖标记而不用放权？ 覆盖方与被覆盖方分别要看哪个标记，谁还要查 Floor Indicator 的 G 位？Subtype 首位为 1 就一定要回 ACK 吗？ 这条程序把 Floor Ack 的 Message Type 写成 1，和同版通用 Floor Idle 编码不同，能决定线上该填哪个值吗？",
+          "conditional_or_interface_only": "终端话权参与者已在 U: has permission 并实际收到服务器 Floor Idle：若已存本端覆盖且未撤销对方话权的标记，清除覆盖标记并保持许可，第 1 项没有另设 G=1；若已存本端被覆盖且未被撤权的标记，还须这份 Floor Idle 的 Floor Indicator 中 G=1，才清除被覆盖标记并保持许可。满足相应标记分支后，来向 subtype 首位为 1 才按该项回 Floor Ack，清标记不以 ACK 为条件。程序字面 Message Type=1 (Floor Idle) 与同版通用 subtype 编码不一致；另写 Source=0，不据此选定实际 Message Type。",
+          "not_established": "仅限仍有许可的终端实收服务器 Floor Idle，并判断对应标记分支。不能单凭 Idle 判定清了哪项标记、许可丢失或组呼空闲。未命中这两项时，本条未规定处理；不据此判断全组仲裁、RTP、计时器、队列或实际 ACK 取值。",
+          "read": [
+            {
+              "title": "双话权：有发送许可的 MCPTT 终端收到 Floor Idle，要放权吗？",
+              "path": "topics/media/on-network-dual-floor-client-idle.md",
+              "source_ids": [
+                "3gpp-ts-24.380-v16.9.0"
+              ]
+            }
+          ]
         }
       ]
     },
