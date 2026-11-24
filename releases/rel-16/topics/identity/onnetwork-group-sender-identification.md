@@ -15,3 +15,5 @@
 **适用业务：** 本版表 A.1、B.1、C.1 对在网 MCPTT、MCVideo 和 MCData 都列出这两项。这里只规定业务要求，不指定 SIP 头、XML 字段或其他线上承载。[MCPTT，表 A.1，印刷页 65](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=66)；[MCVideo，表 B.1，印刷页 76](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=77)；[MCData，表 C.1，印刷页 87](https://www.etsi.org/deliver/etsi_ts/122200_122299/122280/16.08.00_60/ts_122280v160800p.pdf#page=88)。
 
 要区分认证、业务和路由身份，查[跨业务用户标识](cross-service-user-mapping.md)；[普通 MCPTT 私呼的主叫功能别名](../calls/private-caller-alias-forwarding.md)是另一项信令规则，不能直接当成这里的用户 ID 别名。[MCPTT 会话 GRUU 的敏感身份限制](../calls/session-gruu-sensitive-identity.md)也只按它自己的适用条件判断，不由这里决定会话 URI 的内容。
+
+若查永久或临时分配，或要判断“所选组的标识”和“用户 ID 和/或关联别名”指什么，见[在网 ID 和别名管理](onnetwork-id-and-alias-management.md)。§6.9 的表述不取代本页的身份受限条件。
