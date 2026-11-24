@@ -1,0 +1,335 @@
+{
+  "topic_id": "r16-media-on-network-idle-floor-timers",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "在网 MCPTT：Floor Idle 不再重发，呼叫就结束了吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "各项继承本版和一般仲裁实例的范围，再按本项所列前态、实际计时器事件或上层输入处理。三个 T4 项对应同一到期程序中的报告与替代分支，不是两条先后发起释放的路径；第 2 步释放请求不继承 Idle 或 T4 到期条件。相关主题不是必经步骤。",
+  "common_conditions": [
+    "3GPP TS 24.380 V16.9.0（Release 16，Stage 3），在网 MCPTT 控制服务器的一般话权仲裁。每通呼叫有一个一般话权仲裁实例 G。",
+    "G: Floor Idle 表示当前没有 MCPTT 用户获准发送媒体。T4 和 T7 在 Idle 中都可能运行，看到状态不证明任一计时器已启动或到期。"
+  ],
+  "claims": [
+    {
+      "id": "g-idle-t7-expiry-restart-and-resend-guards",
+      "title": "T7 到期：分别判断重启、增加 C7 与重发",
+      "conditions": [
+        "同一场呼叫的 G 处于 G: Floor Idle，此时 T7（Floor Idle）实际到期。",
+        "第 1 项和第 2 项各以 C7 未达上限为条件。"
+      ],
+      "conclusion": "第 1 项的条件满足时，G 须重启 T7 并把 C7 加 1。第 2 项的条件满足时，G 须向本呼叫的所有话权参与者发 Floor Idle，消息序列号加 1。第 3 项要求 G 留在 G: Floor Idle。C7 上限可配置，未配置时用默认值 10；达到上限后不再重发。T7 的值随无线接入网络特性和配置而定。",
+      "normative_strength": "第 1、2 项各在自身条件下为 SHALL；第 3 项保持 Idle 为 SHALL。计数表表注要求未配置时使用默认值。",
+      "limitations": [
+        "表 11.1.3-1 的 T7 到期栏仅概括服务器再发 Floor Idle，不能覆盖 §6.3.4.3.4 的 C7 发送条件。不能用第 1 项成立代证第 2 项成立，不承诺固定次数或哪一个序号一定被发出或收到。",
+        "不由 T7 到期、C7 到限或停止重发推定 T4 到期、呼叫释放或参与者实际收妥。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.3.4, opening and steps 1–3: independent C7 conditions, Floor Idle sequence increase and retained G state"
+          ],
+          "printed_pages": [
+            57
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "11.1.3, Table 11.1.3-1, T7 row: configurable value and simplified on-expiry entry"
+          ],
+          "printed_pages": [
+            219
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "11.2.3, Table 11.2.3-1, C7 row and table NOTE: upper limit, default and no resend at the limit"
+          ],
+          "printed_pages": [
+            224
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "g-idle-t4-expiry-indicates-upward",
+      "title": "T4 实际到期后，G 须通知应用与信令面",
+      "conditions": [
+        "同一场呼叫的 G 处于 G: Floor Idle，此时 T4（Inactivity）实际到期。",
+        "按可配置的服务提供商策略处理到期。"
+      ],
+      "conclusion": "G 须向应用与信令面指示本场 T4 已到期。T4 可配置，默认 30 秒。",
+      "normative_strength": "向应用与信令面指示到期为 SHALL；30 秒是表列默认值。",
+      "limitations": [
+        "一段静音、T7 停止重发或配置中写了 30 秒，不能代证本场 T4 实际到期或 G 已发出指示。到期指示本身不证明应用与信令面已发起释放。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.3.5, opening and step 1: actual T4 expiry, configurable policy and indication to the application and signalling plane"
+          ],
+          "printed_pages": [
+            58
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "11.1.3, Table 11.1.3-1, T4 row: configurable 30-second default and abbreviated on-expiry outcome"
+          ],
+          "printed_pages": [
+            219
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "g-idle-t4-release-initiated-enters-releasing",
+      "title": "应用与信令面发起释放时，G 进入 Releasing",
+      "conditions": [
+        "同一场呼叫的 G 处于 G: Floor Idle，此时 T4（Inactivity）实际到期。",
+        "应用与信令面发起本场 MCPTT 呼叫释放。"
+      ],
+      "conclusion": "G 须进入 Releasing，等待应用与信令面完成断开。",
+      "normative_strength": "在上层实际发起本场释放的条件下，进入 Releasing 为 SHALL。",
+      "limitations": [
+        "T4 到期或向上层发出指示不能代证本条件。进入 Releasing 不能代证收到释放第 2 步、资源已释放或对端收到 SIP 释放消息。上层按呼叫类型作何决定另查。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.3.5, step 2: entry to Releasing if the application and signalling plane initiates call release"
+          ],
+          "printed_pages": [
+            58
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.7.1, Releasing state waits for disconnection finalization"
+          ],
+          "printed_pages": [
+            67
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "g-idle-t4-no-release-stays-idle-restart-recommended",
+      "title": "应用与信令面未发起释放时，G 留在 Idle",
+      "conditions": [
+        "同一场呼叫的 G 处于 G: Floor Idle，此时 T4（Inactivity）实际到期。",
+        "应用与信令面未发起本场 MCPTT 呼叫释放。"
+      ],
+      "conclusion": "G 须留在 G: Floor Idle，并宜重启 T4。",
+      "normative_strength": "保持 Idle 为 SHALL；重启 T4 为 SHOULD。",
+      "limitations": [
+        "表 11.1.3-1 的 T4 到期栏把结果概括为呼叫释放，未列本分支，不能据此省去上层是否发起释放的检查。本文不规定各种呼叫的上层释放策略。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.3.5, step 3(a)–(b): restart recommendation and retained Idle if release is not initiated"
+          ],
+          "printed_pages": [
+            58
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "11.1.3, Table 11.1.3-1, T4 row: configurable 30-second default and abbreviated on-expiry outcome"
+          ],
+          "printed_pages": [
+            219
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "g-releasing-step-two-cleans-media-plane",
+      "title": "第 2 步释放请求触发媒体面清理",
+      "conditions": [
+        "同一场呼叫的 G 已处于 Releasing。",
+        "G 从应用与信令面实际收到本场 MCPTT 呼叫的第 2 步释放请求。"
+      ],
+      "conclusion": "G 须释放为本场保留的媒体面资源，包括本场一般话权实例、面向参与者的基本话权实例及这些实例仍在运行的计时器，并回到 Start-stop。",
+      "normative_strength": "实际收到第 2 步请求后的清理与回到 Start-stop 均为 SHALL。",
+      "limitations": [
+        "此条不限于 T4 导致的释放。不将第 2 步请求、规范所要求的动作和设备的实际完成记录混为一件事；不从本地清理推出任何远端的 SIP 或媒体状态。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.7.1–.2, Releasing state and actual step-2 request: media resource release and return to Start-stop"
+          ],
+          "printed_pages": [
+            67,
+            68
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.4.1, Figure 6.3.4.1-1 and text below: the per-call general arbitration instance"
+      ],
+      "printed_pages": [
+        54
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.4.3.1, G: Floor Idle and timers that can be running"
+      ],
+      "printed_pages": [
+        55
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.4.3.2, first entry paragraph and step 2: ordinary empty-queue entry comparison only"
+      ],
+      "printed_pages": [
+        56
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.4.3.4, opening and steps 1–3: independent C7 conditions, Floor Idle sequence increase and retained G state"
+      ],
+      "printed_pages": [
+        57
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "11.1.3, Table 11.1.3-1, T7 row: configurable value and simplified on-expiry entry"
+      ],
+      "printed_pages": [
+        219
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "11.2.3, Table 11.2.3-1, C7 row and table NOTE: upper limit, default and no resend at the limit"
+      ],
+      "printed_pages": [
+        224
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.4.3.5, opening and step 1: actual T4 expiry, configurable policy and indication to the application and signalling plane"
+      ],
+      "printed_pages": [
+        58
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "11.1.3, Table 11.1.3-1, T4 row: configurable 30-second default and abbreviated on-expiry outcome"
+      ],
+      "printed_pages": [
+        219
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.4.3.5, step 2: entry to Releasing if the application and signalling plane initiates call release"
+      ],
+      "printed_pages": [
+        58
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.4.7.1, Releasing state waits for disconnection finalization"
+      ],
+      "printed_pages": [
+        67
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.4.3.5, step 3(a)–(b): restart recommendation and retained Idle if release is not initiated"
+      ],
+      "printed_pages": [
+        58
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.4.7.1–.2, Releasing state and actual step-2 request: media resource release and return to Start-stop"
+      ],
+      "printed_pages": [
+        67,
+        68
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcptt-onnetwork-holder-release",
+    "r16-mcptt-onnetwork-idle-floor-server",
+    "r16-calls-chat-participant-or-session-release",
+    "r16-calls-server-private-call-release"
+  ],
+  "limitations": [
+    "作为对照，§6.3.4.3.2 首个入口的空队列分支从非 Start-stop 进入、无人协商请求排队、不存在双话权状态机且活动队列为空，才按本段群发 Floor Idle、序列号加 1、启动 T7/C7=1 和 T4、设置 G Idle。这些是该入态分支的守卫，不是到期事件的共同条件。",
+    "不以终端、参与功能或非控制功能的状态代替 G；不外推到离网 MCPTT、其他业务的同名计时器或整场 SIP 释放是否结束。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
