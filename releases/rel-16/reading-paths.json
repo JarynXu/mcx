@@ -10987,6 +10987,26 @@
         }
       ],
       "boundary": "主叫已选择手动开始。MCPTT 客户端已登记到 MCPTT 业务，双方通过 IWF 互通。流程适用于有话权控制和无话权控制。 MCPTT 主叫时，服务器检查发起私呼和以手动方式发起的权限。LMR 主叫时，服务器检查 MCPTT 被叫有权且能接收私呼，再检查手动接收权限。收到失败响应后，发起侧可以放弃；接受替代参数并选择重试时，MCPTT 主叫由 MCPTT 客户端另发请求，LMR 主叫由 IWF 另发请求。两向均区分等待被叫接受时的 Ringing、接受后的响应与媒体面建立。 步骤 10 才明确 MCPTT 客户端已建立到 IWF 的媒体面。启用话权控制时，发起呼叫的系统授予话权、处理竞争并负责话权撤销指示：MCPTT 主叫时是 MCPTT 系统，LMR 主叫时是 LMR 系统。 不从 Ringing 推断被叫已接听、媒体已通或对应的 SIP 状态码。LMR 主叫方向步骤 1 的位置主体和步骤 8 的媒体支持表述不能用来改写流程角色或规定字段。不涉及无线侧、线上报文构造、计时器或完整端到端实现。"
+    },
+    {
+      "id": "r16-calls-lmr-interworking-emergency-group-state-cancel",
+      "question": "互通紧急组呼结束，或者已经收到个人撤警回执，能判定进行中的组紧急状态已取消吗？ MCPTT 定义组里，LMR 用户经 IWF 发起或 MCPTT 用户发起时，谁查发起权限、谁取消组状态，什么时候可回执？ LMR 定义组里，LMR 用户发起和 MCPTT 用户发起分别等哪条消息？IWF 回了响应就证明 LMR 接受了吗？",
+      "start": "topics/calls/lmr-interworking-emergency-group-state-cancel.md",
+      "next_if": [
+        {
+          "condition": "若取消的是 LMR 用户原先发出的个人紧急告警，而不是组紧急状态，查 LMR 撤警。",
+          "read": "topics/calls/lmr-origin-emergency-alert-cancellation.md"
+        },
+        {
+          "condition": "若取消的是 MC 用户原先发出的个人紧急告警，查 MC 撤警；请求内可选的组状态指示不等于组状态取消结果。",
+          "read": "topics/calls/lmr-interworking-mc-user-emergency-alert-cancellation.md"
+        },
+        {
+          "condition": "若目标是结束整场互通组呼而不是清除组紧急状态，查宿主发起的组呼释放。",
+          "read": "topics/calls/lmr-interworking-group-release.md"
+        }
+      ],
+      "boundary": "互通组已处于进行中的紧急状态，组内有已归属的 MCPTT 客户端。IWF 已连接且获准与 MCPTT 系统互通，也已配置两侧的组和用户标识映射。 紧急组呼结束不会清除组紧急状态，须由有权限的用户显式请求取消。MCPTT 定义组由 MCPTT 服务器核验发起人的权限，获准后取消组状态。LMR 发起时，服务器可在取消组状态后回 IWF；MCPTT 发起时，可在取消组状态后回发起客户端，时间取决于继续通话的条件，不必先收到 IWF 确认。LMR 定义组由 LMR 用户发起时，服务器对 IWF 的确认可在收到请求之后发生；MCPTT 用户发起时，回发起客户端可在 IWF 响应之后发生。这两种时点也取决于继续通话的条件。 四种图示路径中，MCPTT 服务器调整底层承载优先级，并向已归属的 MCPTT 客户端处理取消通知。确认本次请求不等于所有客户端已获通知，也不证明承载调整已完成。 挂断、个人撤警以及未核对分支和结果的 IWF 确认，都不能证明组状态已取消。LMR 系统可以拒绝 MCPTT 用户对 LMR 定义组的取消请求；本节不规定拒绝后的处理、IWF 或 LMR 内部核权、具体报文或承载配置值。"
     }
   ]
 }
