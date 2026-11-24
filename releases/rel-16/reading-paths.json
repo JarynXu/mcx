@@ -11111,6 +11111,34 @@
         }
       ],
       "boundary": "互通密钥归属非 3GPP 系统时，InterSD 承载互通安全数据。IWF 或互通 MC 终端均可生成 InterSD。该消息可按第 9 章应用信令保护。为安全交换这类消息，终端可能需要 InterKMRec。 一份已提供的 InterKMRec 有三个必备字段，长度均可变：Primary InterKMRec ID、Secondary InterKMRec ID 用 TLV，InterKMRec Payload 用 LV-E。字段必备不表示每台终端都需要记录。Primary ID 与 MC 业务 ID 关联，不要求两者值相同。Secondary ID 区分同一业务 ID 下的不同客户端。 密钥管理授权中，KMS 验证访问令牌后，须检查令牌中的 MC 业务 ID 是否有关联记录。有关联记录时，KMS 须在本次授权中提供给该互通 MC 终端。只有同一业务 ID 有多份关联记录时，KMS 才须查请求客户端是否已关联其中一份记录的 Secondary ID。没有匹配时，须从该业务 ID 的关联记录中选一份，把请求客户端 ID 与所选记录的 Secondary ID 关联，再向终端提供所选记录。 MC 系统要求加密时，须用该互通 MC 终端的 TrK 加密传送这份记录。签名可选。若签名，有 InK 就须用 InK，没有才用 TrK。 本节不定义非 3GPP 载荷的内部格式或内容，也不规定没有关联记录时的替代记录或错误码、记录录入、选取算法、关联实现或解绑。拿到记录不证明 InterSD 已交换或互通密钥已安装。SIP 业务授权通过、看到组配置密钥材料或通用取钥响应，都不能证明终端拿到了这份记录。"
+    },
+    {
+      "id": "r16-calls-lmr-interworking-prearranged-group-setup",
+      "question": "组定义在 MCPTT，MCPTT 用户发起时谁核权，给 IWF 发一条还是逐人发？ 组定义在 MCPTT，LMR 用户发起时什么时候还要经 IWF 邀请其他 LMR 用户？服务器确认谁的请求？ 组定义在 LMR，为什么 MCPTT 用户发起后 IWF 又逐人向服务器发请求？LMR 用户发起有什么不同？ 谁控制建立后的组呼？LMR 主叫的隐式话权请求何时可带位置？什么时候需 IWF 转码？",
+      "start": "topics/calls/lmr-interworking-prearranged-group-setup.md",
+      "next_if": [
+        {
+          "condition": "若不知道 IWF 先前代表归属还是逐人转达 LMR 用户归属，先查 MCPTT 定义组的归属条件；建呼请求的条数不代替归属记录。",
+          "read": "topics/groups/mc-hosted-lmr-affiliation.md"
+        },
+        {
+          "condition": "若互通组呼已建立，且要确定最终话权仲裁与另一侧本地筛选怎么分，查互通组话权，不从谁发建呼响应推断。",
+          "read": "topics/media/lmr-interworking-group-floor-arbitration.md"
+        },
+        {
+          "condition": "若组呼已在进行，新用户现在才成功归属，查晚入；这里的初始建呼流程不承担晚入。",
+          "read": "topics/calls/lmr-interworking-group-late-entry.md"
+        },
+        {
+          "condition": "若处理宿主结束整场组呼，另查组呼释放，不沿用建呼响应的发起方向。",
+          "read": "topics/calls/lmr-interworking-group-release.md"
+        },
+        {
+          "condition": "若查普通在网按需组呼的客户端协议字段，按 TS 24.379 Stage 3 页的适用条件读取；该页不是 IWF 报文字段定义。",
+          "read": "topics/calls/prearranged-client-establishment.md"
+        }
+      ],
+      "boundary": "这里是 MCPTT 与 LMR 的预安排互通组呼建立。MCPTT 服务器与 IWF 已知互通组，流程中的组用户已归属。图中的 MCPTT 客户端已注册，用户已认证并获准使用 MCPTT 服务；IWF 已配置两侧组和用户 ID 映射，负责跨系统信令的身份转换和协议翻译。 组定义在 MCPTT：MCPTT 用户发起时，服务器核对所选组的发起权限，向 MCPTT 侧组员和 IWF 的两路请求先后不限；IWF 代表归属时向 IWF 发一条，收到逐人归属时按已归属的 LMR 用户发。由 LMR 用户发起时，IWF 先发建呼请求；还有非主叫 LMR 用户且服务器收到他们的逐人归属，才按该分支经 IWF 逐人补发。 组定义在 LMR：MCPTT 主叫时服务器先向 IWF 发请求，再由 IWF 按已归属的 MCPTT 用户向服务器逐人发请求；LMR 主叫时直接从 IWF 的逐人请求开始。控制组呼和管理话权的是定义组的系统，不由主叫侧决定。LMR 主叫要话权时，IWF 请求带隐式话权请求指示；带该指示时可附位置信息。指定 E2EE 时两侧须用同一编解码器；未指定 E2EE 时可以不同，实际不同才需 IWF 转码。 只覆盖这四条预安排组呼的建立和成功分支。没有给出具体 SIP 或媒体协议、LMR 怎么呼叫电台或给主叫转回响应、其他三个流程是否另有一项同样的选组核权、或失败后的处理。不要当作紧急、迫近危险、聊天或广播流程，也不要用建呼响应证明其他终端已加入或已经取得话权。晚入、整场释放和重组管理另查。"
     }
   ]
 }
