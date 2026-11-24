@@ -1,0 +1,257 @@
+{
+  "topic_id": "r16-groups-iwf-group-configuration-message-fields",
+  "title": "IWF 组配置：四类消息各带哪些信息，Result 说明什么？",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "source_id": "3gpp-ts-23.283-v16.8.0",
+  "source_catalog": "../../sources.json",
+  "condition_rule": "先核对实际信息流是 information、provision、subscribe 或 notify，再看请求还是响应；带注释的 O 项须按条判。过程与字段表互相参照，不从一条图标签推定线上映射。",
+  "common_conditions": [
+    "TS 23.283 V16.8.0 Release 16 Stage 2 的 IWF 和组管理服务器之间的八张信息流表。每张表都要求 MC service group ID；M 表示必带，O 仍受该表注释约束。"
+  ],
+  "claims": [
+    {
+      "id": "iwf-information-query-conditionally-required-config-or-failure",
+      "title": "取配置响应按能否满足请求判必带项",
+      "conditions": [
+        "已把核对对象识别为 IWF group information request 或其 response，而不是只凭图中的 provision 标签。"
+      ],
+      "conclusion": "请求表的 MC service group ID 为 M；响应也有 M 的组 ID。响应的 MC service group provisioning information 为 O（注 1），请求能满足时必须出现；Result 为 O（注 2），请求不能满足时必须出现，表示无法提供组配置的原因。",
+      "normative_strength": "表 10.2.1.8-1 至 .9-1：M 必带，O 项仍须满足各表注释的必带条件。",
+      "limitations": [
+        "两个注释没有规定相反条件下禁止携带另一项，不把条件写成互斥字段规则。这里的 Result 不是存储确认，也不推出具体结果码或线路表示。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.2.1.8, Table 10.2.1.8-1: mandatory MC service group ID on request"
+          ],
+          "printed_pages": [
+            22
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.2.1.9, Table 10.2.1.9-1: Group ID; optional-marked provisioning information and failure Result with notes 1–2"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-provision-required-config-and-reception-modification-storage-result",
+      "title": "主动提供必须带配置，响应报告接收、修改和存储的成败",
+      "conditions": [
+        "核对的是 IWF group information provision request/response 表，而不是根据另一流程图题猜消息映射。"
+      ],
+      "conclusion": "请求的 MC service group ID 与 MCPTT group configuration information 都是 M。响应的 MC service group ID 与 Result 都是 M；Result 表示 MC 业务组配置的接收、修改和存储成功或失败。",
+      "normative_strength": "表 10.2.1.10-1 与 .11-1 的这四项均为 M。Result 是所列操作的成败报告，不是由字段出现直接推出成功。",
+      "limitations": [
+        "不能按 §10.2.3.5 图中的 provision 标签，把其编号正文中 IWF 返回请求配置改读为 MC GMS 的收存回应或判定套用此表。与接收、修改及存储有关的 MC 系统或 IWF 报告不代证终端实收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.2.1.10, Table 10.2.1.10-1: mandatory MC service group ID and MCPTT group configuration information"
+          ],
+          "printed_pages": [
+            23
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.2.1.11, Table 10.2.1.11-1: mandatory Result denotes reception, modification and storage success or failure"
+          ],
+          "printed_pages": [
+            23
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-subscribe-optional-services-and-own-result",
+      "title": "订阅业务项可省略，订阅成败用这次请求的 Result",
+      "conditions": [
+        "核对的是 IWF group information subscribe request/response。实际方向还取决于组主系统。"
+      ],
+      "conclusion": "请求的 MC service group ID 为 M，MC services requested 为 O；若出现则指 MCPTT、MCData 中的一项或两项。响应必须有 MC service group ID 与 Result，Result 表示这次订阅请求的成功或失败。",
+      "normative_strength": "表 10.2.1.12-1 的业务项是 O；表 10.2.1.13-1 的 Result 是 M。",
+      "limitations": [
+        "没有为省略业务项规定默认值，不从此表加 MCVideo。订阅结果不代证通知成功、配置写入、终端接收或组归属。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.2.1.12, Table 10.2.1.12-1: optional MC services requested, one or more of MCPTT and MCData"
+          ],
+          "printed_pages": [
+            23
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.2.1.13, Table 10.2.1.13-1: mandatory Result of the subscribe request"
+          ],
+          "printed_pages": [
+            23,
+            24
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-notify-reference-or-key-material-and-own-result",
+      "title": "通知需要组 ID，加信息引用或组相关密钥材料至少一项",
+      "conditions": [
+        "核对的是 IWF group information notify request/response。这里只验表的字段或结果语义，不判整条请求在某个会话是否有效。"
+      ],
+      "conclusion": "请求的 MC service group ID 为 M；MC service group information reference 和 Group related key material 各为 O，但共同的注释要求至少有一项。引用指向已存的组相关信息，材料供该组使用。只带两项中的一项可满足共同条件，两项都有不违反该条件，两项都没有不满足。响应必须带 MC service group ID 和 Result；Result 表示通知请求成功或失败。",
+      "normative_strength": "表 10.2.1.14-1 的 O/O 须连同 at least one 注释判定，不是各自可无限制省略，也不是二选一。表 10.2.1.15-1 的结果是 M。",
+      "limitations": [
+        "满足共同条件不代证其余有效性条件、真实送达、配置持久化、密钥安装或使用、订阅成功、客户端收件等。没有从字段含义推定引用格式、序列化或线上密钥机制。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.2.1.14, Table 10.2.1.14-1: mandatory Group ID and joint at-least-one note for stored-information reference or group-related key material"
+          ],
+          "printed_pages": [
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.2.1.15, Table 10.2.1.15-1: mandatory Result of the notification request"
+          ],
+          "printed_pages": [
+            24
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.2.1.8, Table 10.2.1.8-1: mandatory MC service group ID on request"
+      ],
+      "printed_pages": [
+        22
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.2.1.9, Table 10.2.1.9-1: Group ID; optional-marked provisioning information and failure Result with notes 1–2"
+      ],
+      "printed_pages": [
+        22,
+        23
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.2.1.10, Table 10.2.1.10-1: mandatory MC service group ID and MCPTT group configuration information"
+      ],
+      "printed_pages": [
+        23
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.2.1.11, Table 10.2.1.11-1: mandatory Result denotes reception, modification and storage success or failure"
+      ],
+      "printed_pages": [
+        23
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.2.1.12, Table 10.2.1.12-1: optional MC services requested, one or more of MCPTT and MCData"
+      ],
+      "printed_pages": [
+        23
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.2.1.13, Table 10.2.1.13-1: mandatory Result of the subscribe request"
+      ],
+      "printed_pages": [
+        23,
+        24
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.2.1.14, Table 10.2.1.14-1: mandatory Group ID and joint at-least-one note for stored-information reference or group-related key material"
+      ],
+      "printed_pages": [
+        24
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.2.1.15, Table 10.2.1.15-1: mandatory Result of the notification request"
+      ],
+      "printed_pages": [
+        24
+      ]
+    }
+  ],
+  "related": [
+    "r16-groups-iwf-group-configuration-transfer",
+    "r16-groups-iwf-defined-group-configuration-pull",
+    "r16-groups-mc-group-configuration-subscription",
+    "r16-groups-lmr-group-configuration-subscription"
+  ],
+  "limitations": [
+    "只覆盖 §§10.2.1.8–.15 的字段、注释及响应含义。各组配置提供、补取、订阅和通知流程另有主要维护位置，工作流不是看到标签就确定。",
+    "不从 Stage 2 表推定协议、方法、编码、实际生效或终端交付；Result 的范围由对应的消息表决定。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}

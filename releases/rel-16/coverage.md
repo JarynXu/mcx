@@ -5697,6 +5697,22 @@ MC 定义组，主 MC GMS 主动向 IWF 提供配置和 IWF 本地未保存时�
 
 [读取主题](topics/groups/iwf-group-configuration-transfer.md)
 
+## IWF 四对组配置消息的 Stage 2 字段和结果
+
+IWF 的取配置响应能满足与不能满足时，O 标记的组配置和 Result 各在哪种条件下必带？ Provision 响应的 Result 是否报告修改和存储，能否凭 §10.2.3.5 的图标签判定收存？ Subscribe 请求忘带 MC services requested，表是否规定默认业务？哪个 Result 只报告订阅成败？ Notify 有组 ID、没有组信息引用，但有组相关密钥材料，满足哪条条件？通知成败能证明密钥安装吗？
+
+每个请求/响应均有 M 的 MC service group ID。Information 请求表只列组 ID；响应的 provisioning information 与 Result 各标 O。注 1 要求请求能满足时必带配置，注 2 要求不能满足时必带表示失败原因的 Result，未规定另一项在相反条件下禁止。
+
+Provision 请求的 MCPTT group configuration information 为 M；回应的 Result 为 M，报告接收、修改和存储的成败。仅知 Result 存在不知它的结果，不能把 §10.2.3.5 的图标签套作本表的收存回执。
+
+Subscribe 请求的 MC services requested 为 O；如果出现只列 MCPTT、MCData 中的一项或两项。没有省略默认值。响应 M 的 Result 仅报告订阅请求的成败。
+
+Notify 请求的已存组信息引用或组相关密钥材料各标 O，共同注要求至少一项。有任一项或两项都满足该存在条件，两项全无不满足；M 的 Result 仅报告通知请求的成败。
+
+尚未建立：凭字段存在条件不判整条通知有效，也不确认现场消息到达、持久化、终端实收、密钥安装、归属或线上协议。§10.2.3.5 编号正文是从 IWF 返回所请求配置，图中 provision 不建立表 .11 的消息映射或保存回应。
+
+[读取主题](topics/groups/iwf-group-configuration-message-fields.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。
