@@ -1,0 +1,264 @@
+{
+  "topic_id": "r16-media-preestablished-origination-failure",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "主叫收到 REFER 200，后面为什么还会收到 Disconnect？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "common_conditions": [
+    "固定 TS 24.380 V16.9.0，Release 16，Stage 3。普通在网、带话权控制的 MCPTT 私呼，主叫经已建立的预建立会话发起本次业务；只查发起侧参与功能 O-PF 的建立失败出口。",
+    "主叫↔O-PF 的 REFER、O-PF↔CF 的业务 INVITE 及本次媒体面控制按各自事务和实际事件对应。不要假定两腿必须同 Call-ID，或把 O-PF 局部会话状态代为终端或 CF 的状态。"
+  ],
+  "condition_rule": "先分本地 REFER 和独立的业务 INVITE，再确认 O-PF 的角色、外层在用状态和这次实际建立失败指示。身份字段、确认收件及是否保持预建立会话分别核查。",
+  "claims": [
+    {
+      "id": "preestablished-origination-failed-cf-setup-disconnect",
+      "title": "发起侧 PF 在用，实际收到 CF 的建立失败指示：须发 MCPC Disconnect 并进入正在释放",
+      "conditions": [
+        "本次所用的预建立会话在 O-PF 一侧处于 G: Pre-established session in use。",
+        "O-PF 实际收到 CF 对这次呼叫的建立失败指示；不是主叫 REFER 自己被拒，不是终端对 MCPC Connect 的负确认，也不是已接通后 CF 另发的释放指示。"
+      ],
+      "conclusion": "O-PF 须向发起端发 MCPC Disconnect，启动 T56，令 C56 初值为 1，终止这次呼叫并进入 G: Call releasing。Disconnect 的 subtype 首位宜设为 1 请求确认。",
+      "normative_strength": "§9.3.2.4.11 第 1 项及第 2–5 项为 SHALL；第 1(b) 项置确认位为 SHOULD。启动 T56 没有另列确认位置 1 的前提。",
+      "limitations": [
+        "REFER 的 200、另一腿收到的 4xx 和实际媒体面失败指示不是同一个证据；附录 A.5.2.2 的 4xx 是配到独立业务 INVITE 的例子，不建立一切失败码或所有本地接口回调的映射。",
+        "仅见发出的 Disconnect，不判断这次是 CF 建立失败、CF 已接通后指示释放或终端负确认。不把终止本业务写成终端实收、整条预建立会话拆除或全部媒体资源已回收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.1, existing pre-established session and use for this call are separate"
+          ],
+          "printed_pages": [
+            193
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.4.1 and 9.3.2.4.11 (opening and items 1–5), in-use PF actually receives failed setup from the controlling function"
+          ],
+          "printed_pages": [
+            200,
+            202,
+            203
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "A.5.2.2 Figure A.5.2.2-1 and steps 2–7 (informative), originating REFER 200, separate CF SIP 4xx, Disconnect and Acknowledge"
+          ],
+          "printed_pages": [
+            255
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "preestablished-origination-failed-cf-setup-identity-boundary",
+      "title": "固定版要求沿用本次 Connect 的完整身份字段；失败图不提供缺件时的取值",
+      "conditions": [
+        "已确认这份 Disconnect 属于 §9.3.2.4.11 的建立失败入口，且已对上所属呼叫。"
+      ],
+      "conclusion": "第 1(a) 项要求把这次呼叫建立时 Connect 的 MCPTT Session Identity 字段内容带入 Disconnect，包含 Session Type 与会话身份值。资料性失败图没有画出这次 Connect，不能从图推导字段的值或补取路径。",
+      "normative_strength": "字段沿用为 SHALL；图 A.5.2.2-1 是示意例而非缺件时的编码规定。",
+      "limitations": [
+        "如果本次 Connect 未证实或无法取证，不能用 REFER 200、失败答复 Contact、预建立会话身份或上一通 Connect 补值。图上没画不是线上没发的证明。",
+        "同值要求在原文仍成立；既不把字段省略、填空或兼容算法当规范，也不因欠缺比对证据取消发送 Disconnect 的义务。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.4.1 and 9.3.2.4.11 (opening and items 1–5), in-use PF actually receives failed setup from the controlling function"
+          ],
+          "printed_pages": [
+            200,
+            202,
+            203
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.4.11 item 1(a), failed-setup Disconnect takes the complete identity field content from this call Connect"
+          ],
+          "printed_pages": [
+            202
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.3.3.3 and Table 8.3.3.3-1, identity field contains the session type and MCPTT session identity"
+          ],
+          "printed_pages": [
+            176
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "A.5.2.2 Figure A.5.2.2-1 and steps 2–7 (informative), originating REFER 200, separate CF SIP 4xx, Disconnect and Acknowledge"
+          ],
+          "printed_pages": [
+            255
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "preestablished-origination-failed-cf-setup-release-evidence",
+      "title": "本次业务进入释放，不等于两端的预建立会话已拆，或 PF 收到确认",
+      "conditions": [
+        "已知 O-PF 因本次业务失败进入 G: Call releasing，正在查该失败出口的两边记录。"
+      ],
+      "conclusion": "按 §9.3.2.5.1，Call releasing 是保留预建立会话释放本次呼叫的过渡。区分 PF 发出、终端实收和实际确认位、终端发出确认、PF 本次实际收件。要证明两端的后态，各查自己的记录。",
+      "normative_strength": "状态作用域按 §9.3.2.5.1；§9.2.2.4.5 和 §9.3.2.5 的常规收件或到期分支另按各自实际守卫。示意图只画实际收到确认的路径。",
+      "limitations": [
+        "仅有 SIP 200、PF 的 Disconnect 发送或本地“未在用”记录，不证明对端已收或确认曾到达。",
+        "这里不重复正常私呼释放的触发或确认与到期的具体步骤；到限可以产生相同本地后态，查旧释放主题。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.4.1 and 9.3.2.4.11 (opening and items 1–5), in-use PF actually receives failed setup from the controlling function"
+          ],
+          "printed_pages": [
+            200,
+            202,
+            203
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.5.1–.4, releasing the call while keeping the pre-established session; acknowledgment or retry-limit outcome"
+          ],
+          "printed_pages": [
+            203
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.2.2.4.5, receiving the Disconnect in use, acknowledgment bit and local state"
+          ],
+          "printed_pages": [
+            196
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "A.5.2.2 Figure A.5.2.2-1 and steps 2–7 (informative), originating REFER 200, separate CF SIP 4xx, Disconnect and Acknowledge"
+          ],
+          "printed_pages": [
+            255
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-private-preestablished-origination",
+    "r16-media-preestablished-connect-outcome",
+    "r16-media-preestablished-release-outcome"
+  ],
+  "limitations": [
+    "不从一个响应码推定失败是否跨腿传递、MCPC 消息是否已发、终端提示或媒体是否已停。不决定未见本次 Connect 时的字段取值或其它失败类型、实现兼容及资源回收策略。",
+    "示意图用于核对角色；图中步骤不改变正文的 MAY/SHOULD/SHALL，也不能确定并发事件的处理顺序。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.1, existing pre-established session and use for this call are separate"
+      ],
+      "printed_pages": [
+        193
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.3.2.4.1 and 9.3.2.4.11 (opening and items 1–5), in-use PF actually receives failed setup from the controlling function"
+      ],
+      "printed_pages": [
+        200,
+        202,
+        203
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "A.5.2.2 Figure A.5.2.2-1 and steps 2–7 (informative), originating REFER 200, separate CF SIP 4xx, Disconnect and Acknowledge"
+      ],
+      "printed_pages": [
+        255
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.3.2.4.11 item 1(a), failed-setup Disconnect takes the complete identity field content from this call Connect"
+      ],
+      "printed_pages": [
+        202
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "8.3.3.3 and Table 8.3.3.3-1, identity field contains the session type and MCPTT session identity"
+      ],
+      "printed_pages": [
+        176
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.3.2.5.1–.4, releasing the call while keeping the pre-established session; acknowledgment or retry-limit outcome"
+      ],
+      "printed_pages": [
+        203
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.2.2.4.5, receiving the Disconnect in use, acknowledgment bit and local state"
+      ],
+      "printed_pages": [
+        196
+      ]
+    }
+  ]
+}

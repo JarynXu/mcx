@@ -5072,6 +5072,10 @@
         {
           "condition": "若查的是主叫别名而不是事务结果，读 REFER 内层正文和 O-PF 出向 INVITE 的保留条件。",
           "read": "topics/calls/private-caller-alias-forwarding.md"
+        },
+        {
+          "condition": "本次是使用预建立会话的普通在网有话权私呼；发起侧 O-PF 已在用、实收 CF 对独立业务 INVITE 的失败响应，且该次建立失败指示实际到媒体面，查 Disconnect 的处理；不拿 REFER 本身被拒或仅成功答复代替。",
+          "read": "topics/media/preestablished-origination-failure.md"
         }
       ],
       "boundary": "仅同系统普通在网有话权控制的预建立私呼发起侧；REFER 的最终 200、业务 INVITE 的响应和实际媒体分别判断。"
@@ -11551,6 +11555,26 @@
         }
       ],
       "boundary": "只查普通在网单话权组呼拟用或实际用的这条已建预建立会话，按 PF 和终端各自的收包前状态。未在用的丢弃结论只用于实际收到且无适用处理的 RTP，不推广成一律丢弃业务话权。"
+    },
+    {
+      "id": "r16-media-preestablished-origination-failure",
+      "question": "普通在网预建立私呼，主叫 REFER 成功但 CF 拒绝独立业务 INVITE：发起侧 PF 的何种实际失败指示触发 Disconnect，怎样认本次身份和确认？",
+      "start": "topics/media/preestablished-origination-failure.md",
+      "next_if": [
+        {
+          "condition": "只见 REFER 被本地拒绝或只见 REFER 200，尚未配到 O-PF 自发的业务 INVITE 与 CF 的实际回复，先按两笔 SIP 事务查。",
+          "read": "topics/calls/private-preestablished-origination.md"
+        },
+        {
+          "condition": "CF 实际回业务 INVITE 200，查主叫 Connect；若实际触发为终端对本次 Connect 发来的负确认，也按该页相应入口查，不套 CF 建立失败。",
+          "read": "topics/media/preestablished-connect-outcome.md"
+        },
+        {
+          "condition": "若另查已经接通的普通在网预建立私呼实际收到 CF 的释放指示，或已确认本侧 Call releasing 后只问相应的确认收件与到限规则，查私呼旧释放主题；不借它推断本次失败原因。",
+          "read": "topics/media/preestablished-release-outcome.md"
+        }
+      ],
+      "boundary": "只限发起侧 O-PF 的这次普通在网预建立有话权私呼，核对实际失败指示与本侧在用；不把资料性 4xx 图的无 Connect 箭头当上线否定或缺字段编码。"
     }
   ]
 }

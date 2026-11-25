@@ -44,4 +44,6 @@ O-PF 按预建立会话 REFER 的入口处理。它从收到的 REFER 的 `P-Ass
 
 若只抓到 REFER 的 200，缺的是 O-PF 侧这份业务 INVITE 及其响应；若只抓到 INVITE 的临时响应，还缺最终响应。抓包缺项不能判成功或失败。上述媒体接口没有给出本次具体发了哪种媒体控制消息、用户看到了什么、话权是否已授或 RTP 是否已到；也不能据此要求普通私呼一定再发 re-INVITE。本页不为 3xx 或超时推定结果。[§11.1.1.3.1.2，项 20 后临时响应与 200、4xx/5xx/6xx 各段，印 374–375](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=375)
 
+若这通普通在网有话权控制的私呼用了预建立会话，本次 O-PF 已在用、实际收到 CF 对另发业务 INVITE 的失败答复，且媒体面实际收到对应的建立失败指示，读[业务建立失败为何发 Disconnect](../media/preestablished-origination-failure.md)。只见 REFER 200 或 REFER 本身被拒，不能套用这个媒体面入口。
+
 若是在核对更早的建会 INVITE，查[预建立会话本身的建立](preestablished-session-lifecycle.md)。若另有实际收发的 MCPC Connect 或 Accepted，要判断是哪条会话得到确认，查[预建立会话的媒体控制应答](../media/preestablished-connect-outcome.md)。

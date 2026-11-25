@@ -5963,6 +5963,16 @@ NCF 与 PF/CF 各段的 RTCP APP 话权、RTCP 媒体控制分别核对这一段
 
 [读取主题](topics/media/preestablished-in-use-media-legs.md)
 
+## 预建立私呼发起失败：REFER 受理与控制侧拒绝是两笔事务（Stage 3）
+
+发起侧 PF 已在用且实收 CF 的本次业务建立失败指示，须向主叫发 MCPC Disconnect、启动 T56、将 C56 初始化为 1、终止本次呼叫并进入 Call releasing；确认位宜置 1。
+
+核对 Disconnect 要沿用同次 Connect 的整个 MCPTT Session Identity 字段。资料性 4xx 图能对照两笔事务，但未画 Connect；若缺本次 Connect，字段取值没有可用比对依据。
+
+尚未建立：不由 REFER 200 推业务建成，也不把本地 REFER 被拒当作这一入口。同名 Disconnect 不区分 CF 建立失败、终端负确认或已经接通后的释放。不用图缺消息补字段、定处理顺序或判断远端实收和预建立会话拆除。
+
+[读取主题](topics/media/preestablished-origination-failure.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。
