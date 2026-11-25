@@ -51,4 +51,12 @@ Taken 和 Idle 入态时清理的是已存的 Track Info。不能据此认定转
 
 三条都允许 U 把出向消息的 subtype 首位设为 1 来请求 Floor Ack。收到 Ack 后怎样处理，没收到时做什么，由实现决定。**第 3 项要求进入对应状态，没有写成收到 Ack 才进入。** 首位为 1 只表示要求确认；发送记录或 Ack 不能充当现场 U 已入态、相关终端已收到通知、终端已改变状态或 RTP 已到达的证据。[表 8.2.2.1-1，页 148](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=149)。
 
+## 收到 Floor Release Multi Talker，U 会结束初始化吗？
+
+不会。控制侧这个逐参与者 U 仍处于 `U: not permitted and initiating`，且已收到**本场 MCPTT 服务器话权仲裁逻辑**交给它的 `Floor Release Multi Talker`。U 须把该通知转发给**自己的关联话权参与者**，并保持初始化。消息是因谁放权而发，不改变这个 U 的转发对象。[TS 24.380 V16.9.0 §6.3.5.10.8，印刷页 94](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=95)。
+
+这条通知不走前面 Taken、Idle、Granted 的入态分支。它也不同于关联参与者发给 U 的普通 `Floor Release`：这里没有撤回队列请求或等待 Ack 的步骤。同版 [Subtype 表 8.2.2.1-1，页 148](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=149) 把这种通知列为 `01111`，首位不是可设的 `x`，不能搬用前面三种结果的可选确认位。
+
+只有仲裁侧的发出记录，不能证明这个 U 收到了通知；U 的转发记录，也不能证明关联方收到了、终端改变了状态或全组话权已空闲。
+
 [结构化条件与声明](temporary-group-participant-floor-initialization.json)。
