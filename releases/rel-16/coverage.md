@@ -2054,6 +2054,16 @@ TS 24.581 V16.9.0：在网 MCVideo 参与功能收到应用与信令平面的已
 
 [读取主题](topics/mcvideo/participating-session-release.md)
 
+## MCVideo 环境查看：收到 INFO 的 200，预建立会话还在吗？
+
+限已经进行的在网 MCVideo 环境查看呼叫，目标方用与该参与功能（PF）对应的预建立会话。PF 实收控制功能（CF）为本场发来的 BYE，会话标识对上该目标用户，且来报带指定 MCVideo 信息 MIME，才按本条向目标终端的既有预建立对话发 INFO 并复制正文，本条不向它转发原 BYE。终端实际收到指定 MIME 内含 release-reason 的 INFO，才须按本节回本份 INFO 的 200。PF 实收自己所发 INFO 的匹配 2xx 只到未定义的 X3，不是对 CF 原 BYE 的应答。
+
+即使本场 CF BYE 已到 PF、会话标识也对上该 PF 的目标预建立会话，缺指定 MIME 也不能认定 PF 应发 INFO。PF 的正文条件只要求指定 MIME 类型，不要求含 release-reason；终端这条另须实际收到指定 MIME 的 INFO，且正文含 release-reason。只见任一头的发送不等于另一头实际收到。另查终端实际收到的媒体面指示，须同时指明本场环境查看呼叫释放和对应预建立会话保留；仅有 INFO 或 200 不够。对于本场预建立环境查看由终端用户主动释放，须在本场实收 INVITE 或给本场 INVITE／REFER 的匹配 200 实收释放能力指示，才走对话外 REFER；确认未收到则跳过，截断记录不能判定缺失。发起侧 PF 收到 BYE 方法参数的 REFER 只回指未定义的 X1。按需环境查看 CF BYE 另查 §15.3.2.2。
+
+尚未建立：终端 INFO 200 不证明 PF 收到、CF 的 BYE 已得应答、业务已释放或预建立会话已保留。媒体面保留指示也不保证下一通能复用。本版的 X1/X3 和预建立媒体流程编者注不能据此补齐；不建立现场媒体命令、具体 SIP 路由、整项预建立会话拆除、普通私呼、组呼或跨系统流程。
+
+[读取主题](topics/mcvideo/ambient-preestablished-sip-release.md)
+
 ## 在网 MCVideo 聊天组呼：为何先见发送授予却没见单独的 Map？Unmap 后呼叫还在吗？
 
 在网 MCVideo 聊天组呼经 MBMS 接通时，发起兼发送端可在服务区外，经单播发初次请求、收发送授予。组会话先建、参呼用户已归属且已加入、承载已激活通告；服务器须先向相应接收者发送本场与承载的关联，再经 MBMS 发送本场媒体。

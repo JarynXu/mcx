@@ -2703,6 +2703,10 @@
         {
           "condition": "若要判定结束一通 MCPTT 私呼时是否保留预建立会话，查服务器释放私呼。",
           "read": "topics/calls/server-private-call-release.md"
+        },
+        {
+          "condition": "若对象不是整项预建立会话，而是已在进行、使用它的在网 MCVideo 环境查看呼叫，且要区分终端 INFO 应答和预建立会话保留，查这项业务的 Stage 3。",
+          "read": "topics/mcvideo/ambient-preestablished-sip-release.md"
         }
       ],
       "boundary": "限 MC 业务客户端和服务器间既有预建立会话的 Stage 2 修改与释放。修改的七个步骤以客户端发起为例；释放分别描述客户端和服务器发起。"
@@ -3831,6 +3835,10 @@
         {
           "condition": "MC 业务客户端和服务器之间已有预建立会话时，查公共 Stage 2 怎样区分修改媒体和释放整项会话；不据此改写 TS 24.581 V16.9.0 §6.4.4 对在网 MCVideo 预建会话分支所作的 §9.3.2 回指。",
           "read": "topics/bearers/common-preestablished-media-change-release.md"
+        },
+        {
+          "condition": "若这场是已在进行的在网 MCVideo 环境查看，目标终端用同一 PF 的预建立会话，且问题是 CF 业务 BYE 到 PF 后的终端 INFO 与应答，查 SIP 侧；仍问参与功能收到释放指示时怎样处理，留在本页。",
+          "read": "topics/mcvideo/ambient-preestablished-sip-release.md"
         }
       ],
       "boundary": "Release 16，在网 MCVideo 参与功能的传输控制：按需会话已建立或预建会话正在使用。两个触发都以参与功能收到应用与信令平面的相应指示为准，不能用外部结束请求代替。"
@@ -12070,6 +12078,26 @@
         }
       ],
       "boundary": "TS 23.281 V16.4.0 + TS 23.280 V16.7.0，Rel-16 Stage 2。分别判呼叫控制、视频路由、MCVideo 逻辑参考点。通用控制先限 §5.2.10.1 两个分属不同信任域的服务系统，再分别看私呼实际互连或组伙伴实际参呼；TS 23.281 §5.1 的媒体去向不以这两个通用分支的适用条件为前提。不补跨域全流程或 Stage 3 报文、去重、收件。"
+    },
+    {
+      "id": "r16-mcvideo-ambient-preestablished-sip-release",
+      "question": "已经进行的在网环境查看呼叫用目标方的预建立会话，CF 发来的 BYE 到了 PF，何时由 PF 在现有终端对话内发 INFO？ 目标终端回 INFO 的 200、PF 实收这份应答和媒体面确认本场释放且保留会话，各能说明什么？ 若改由终端用户主动结束，本次收到哪条能力指示才用对话外 REFER，能不能从 REFER 的 2xx 推出上游已结束？",
+      "start": "topics/mcvideo/ambient-preestablished-sip-release.md",
+      "next_if": [
+        {
+          "condition": "在网 MCVideo 传输控制中，若按需会话已建立或预建立会话正在使用，且参与功能（PF）对这项会话实际收到应用与信令平面的开始释放或会话已释放指示，查参与功能媒体面的处理。发送方日志、终端的 INFO 或媒体面保留指示都不能替代 PF 实收；不替本节补 X1/X3。",
+          "read": "topics/mcvideo/participating-session-release.md"
+        },
+        {
+          "condition": "若实际请求针对整项预建立会话的释放或修改媒体，不是使用它的这场业务呼叫，查通用 Stage 2。",
+          "read": "topics/bearers/common-preestablished-media-change-release.md"
+        },
+        {
+          "condition": "若实际是普通在网预安排组呼已按需建立，且控制功能实收其中一名参与者的业务 BYE，查该组呼的单腿及整场判定；不是环境查看或预建立。",
+          "read": "topics/mcvideo/prearranged-group-sip-bye-policy.md"
+        }
+      ],
+      "boundary": "TS 24.281 V16.12.0，Release 16 Stage 3。只查已在进行的在网 MCVideo 环境查看呼叫使用目标端预建立会话的释放判据。CF BYE 在 PF 实收、INFO 在终端实收、匹配 INFO 2xx 在 PF 实收和终端实际媒体面指示分别判定；用户发起 REFER 另有本场实际能力条件。不代替按需环境查看、普通私呼、组呼、跨系统、设备媒体实现或整项预建立会话生命周期。"
     }
   ]
 }

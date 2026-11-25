@@ -1,0 +1,337 @@
+{
+  "topic_id": "r16-mcvideo-ambient-preestablished-sip-release",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCVideo 环境查看：收到 INFO 的 200，预建立会话还在吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.281-v16.12.0",
+  "common_conditions": [
+    "TS 24.281 V16.12.0，Release 16 Stage 3。主场景是已在进行的在网 MCVideo 环境查看呼叫，且涉及与相关 PF 对应的目标终端预建立会话。"
+  ],
+  "condition_rule": "逐条核对事件发生在谁、对应本场哪项请求或会话，不用邻接的实际发送证明本地收悉。用户主动释放与 CF 发起的参与端请求不是同一个前置条件；媒体面保留指示独立核对。",
+  "claims": [
+    {
+      "id": "pf-received-bye-to-info-in-existing-dialog",
+      "title": "参与功能实收控制功能的业务 BYE，何时向终端的预建立对话发 INFO",
+      "conditions": [
+        "参与 MCVideo 功能（PF）实际收到控制 MCVideo 功能（CF）为这场正在进行的在网环境查看呼叫发出的 SIP BYE。会话标识指向与这个 PF 有对应预建立会话的目标用户；收到的 BYE 含 application/vnd.3gpp.mcvideo-info+xml 正文。"
+      ],
+      "conclusion": "PF 须生成 SIP INFO，设置 MCVideo 信息包，复制收到的指定 MIME 正文，并在目标终端的既有预建立对话内发送 INFO。本条给终端的请求是 INFO，不是原 BYE 的转发。",
+      "normative_strength": "§15.3.2.3 对满足所列条件时的生成、填充、复制、发送均是 SHALL。",
+      "limitations": [
+        "仅见 CF 发出而无 PF 实收、会话与目标预建立对话没有对上，均不能认定到达此分支；无指定 MIME 时本节没有规定替代动作。",
+        "PF 的正文条件只检查 MIME 类型，不要求其中必有 release-reason。发送 INFO 不能证明终端已收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v16.12.0",
+          "clauses": [
+            "15.3.2.3 首段及第 1(a)–(d) 项：环境查看 CF BYE、目标用户在同一 PF 的预建立会话、指定 MIME 与既有对话内 INFO"
+          ],
+          "printed_pages": [
+            348
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "ue-received-info-with-reason-sends-own-200",
+      "title": "终端实收带释放原因的 INFO 后，答的是本次 INFO",
+      "conditions": [
+        "目标 MCVideo 终端实际收到 SIP INFO，且其中的 application/vnd.3gpp.mcvideo-info+xml 正文含 release-reason 元素。"
+      ],
+      "conclusion": "终端须针对这份 INFO 生成并发送 SIP 200 OK，按 §15.2.2.5 处理。§15.2.2.5 有自己的实际媒体面事件条件。",
+      "normative_strength": "§15.2.2.4 第 3、4 项为 SHALL。",
+      "limitations": [
+        "仅有指定 MIME，缺 release-reason，不建立本条适用性；不猜测其他 INFO 的通用处理。",
+        "终端发应答不证明 PF 已收到，不是 CF 原 BYE 的应答，也不证明媒体清理、业务结束或预建立会话已保留。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v16.12.0",
+          "clauses": [
+            "15.2.2.4 开头及第 3、4 项：带 release-reason 的 INFO 实收、对本请求 200 与交由 15.2.2.5"
+          ],
+          "printed_pages": [
+            343
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.281-v16.12.0",
+          "clauses": [
+            "15.2.2.5 开头、编者注及第 3 项：实际媒体面指示业务释放且保留预建立会话、清理当前呼叫缓存"
+          ],
+          "printed_pages": [
+            343
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "pf-received-matching-info-2xx-x3-unresolved",
+      "title": "PF 实收自己所发 INFO 的 2xx：后续字面回指 X3",
+      "conditions": [
+        "在 §15.3.2.3 所列分支，PF 实际收到匹配自己所发那份 SIP INFO 的 SIP 2xx 响应。"
+      ],
+      "conclusion": "本版字面要求执行 X3，未定义 X3；紧随其后的编者注说流程以后定义。",
+      "normative_strength": "匹配的实收是 SHALL 所指的入口，字面后续留空。",
+      "limitations": [
+        "另一事务的 2xx、终端的发出记录都不是 PF 实收本份应答。",
+        "不补写对 CF 原 BYE 的 200、备用步骤、两端都已释放、资源的最终去留或可复用结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v16.12.0",
+          "clauses": [
+            "15.3.2.3 末段及编者注：PF 实收所发 INFO 的匹配 2xx，字面回指 X3"
+          ],
+          "printed_pages": [
+            348
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "ue-media-release-and-preestablished-preserved",
+      "title": "媒体面实际指示业务结束且预建立会话保留，终端才按本条处理",
+      "conditions": [
+        "终端实际收到媒体面交互的指示，指出这场环境查看呼叫已释放，同时对应的预建立会话保留。"
+      ],
+      "conclusion": "该指示给出本端业务呼叫结束而保留预建立会话的证据。终端须清除本次呼叫缓存中的环境查看客户端角色与类型。",
+      "normative_strength": "§15.2.2.5 以实际媒体面指示为前提，第 3 项清缓存为 SHALL。",
+      "limitations": [
+        "正文仍保留编者注，预建立情形的媒体呼叫建立、释放有待在 TS 24.581 定义；不由此补造媒体命令。",
+        "仅见 INFO 或其 200、只有停流记录或只有业务结束而未确认预建立会话保留，均不等于本条件；不保证下一次能复用。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v16.12.0",
+          "clauses": [
+            "15.2.2.5 开头、编者注及第 3 项：实际媒体面指示业务释放且保留预建立会话、清理当前呼叫缓存"
+          ],
+          "printed_pages": [
+            343
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.281-v16.12.0",
+          "clauses": [
+            "15.2.2.4 开头及第 3、4 项：带 release-reason 的 INFO 实收、对本请求 200 与交由 15.2.2.5"
+          ],
+          "printed_pages": [
+            343
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "user-release-requires-same-call-capability",
+      "title": "终端用户主动结束：先查本次呼叫实际收到的释放能力",
+      "conditions": [
+        "使用预建立 MCVideo 会话的环境查看呼叫中，终端收到用户要求结束本场呼叫。核对这场呼叫的实收 SIP INVITE，或终端发出本场 SIP INVITE／REFER 后实际收到的匹配 SIP 200 OK。"
+      ],
+      "conclusion": "若未在上述任一路的 Feature-Caps 收到环境查看呼叫释放能力指示，终端须跳过其余步骤；确认已收到该指示，才按 §6.2.5.2。",
+      "normative_strength": "§15.2.2.3 第 1–2 项为 SHALL，二选一的实收可用于查该指示。",
+      "limitations": [
+        "截断或缺段的记录不能证明未收到；不把别场或另一个事务的能力指示拿来替代，不把本检查加到 CF 发来 BYE 的分支。",
+        "能力指示不是本次 REFER 已发送、已确认或已完成业务释放的证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v16.12.0",
+          "clauses": [
+            "15.2.2.3 第 1–2 项及后段：终端用户主动释放，同场收到的能力指示及 6.2.5.2 入口"
+          ],
+          "printed_pages": [
+            342,
+            343
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "user-refer-carries-business-and-preestablished-context-separately",
+      "title": "用户释放用的是对话外 REFER，业务呼叫标识和预建立对话各有位置",
+      "conditions": [
+        "此处限前一项：终端用户主动结束同场环境查看呼叫，且满足 §15.2.2.3 的实际能力指示条件，进入 §6.2.5.2。"
+      ],
+      "conclusion": "初始请求是对话外 SIP REFER。Request-URI 标识预建立会话在服务 MCVideo 服务器上的公共业务身份；Refer-To 指向待结束的 MCVideo 业务会话，URI 方法参数写 BYE；Target-Dialog 标识预建立会话。终端实际收到匹配该 REFER 的 2xx 后，须与媒体面交互。",
+      "normative_strength": "§6.2.5.2 所列动作及实际收到 2xx 后的交互为 SHALL。",
+      "limitations": [
+        "请求本身不是 SIP BYE；不把三个标识混用。REFER 的应答不是 PF 所发 INFO 的应答，也不证明 CF 侧应答、资源清理或预建立会话可以复用。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v16.12.0",
+          "clauses": [
+            "15.2.2.3 第 1–2 项及后段：终端用户主动释放，同场收到的能力指示及 6.2.5.2 入口"
+          ],
+          "printed_pages": [
+            342,
+            343
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.281-v16.12.0",
+          "clauses": [
+            "6.2.5.2 第 1–9 项及末段：业务释放的对话外初始 REFER、预建立会话与业务会话标识及实收匹配 2xx"
+          ],
+          "printed_pages": [
+            46,
+            47
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "opf-received-user-refer-literal-x1-unresolved",
+      "title": "发起侧 PF 收到带 BYE 方法参数的 REFER：X1 仍未定义",
+      "conditions": [
+        "第 15 章发起侧 PF 在预建立情形下实际收到终端 REFER，Refer-To 中的方法参数为 BYE。"
+      ],
+      "conclusion": "§15.3.1.3 的正文回指 X1，紧随的编者注说流程以后定义。该小节置于环境查看章，标题却写 private call。",
+      "normative_strength": "保留本版标题和字面回指，不用相邻条款补写。",
+      "limitations": [
+        "不据此认定 PF 应发往 CF 的具体 BYE、应返回的 2xx 或其他事务是否发生；不将此条推广为普通私呼的释放规则。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.281-v16.12.0",
+          "clauses": [
+            "15.3.1.3 标题、正文及编者注：PF 收到 method=BYE 的 REFER，字面回指 X1"
+          ],
+          "printed_pages": [
+            345
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.281-v16.12.0",
+      "clauses": [
+        "15.3.2.3 首段及第 1(a)–(d) 项：环境查看 CF BYE、目标用户在同一 PF 的预建立会话、指定 MIME 与既有对话内 INFO"
+      ],
+      "printed_pages": [
+        348
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.281-v16.12.0",
+      "clauses": [
+        "15.2.2.4 开头及第 3、4 项：带 release-reason 的 INFO 实收、对本请求 200 与交由 15.2.2.5"
+      ],
+      "printed_pages": [
+        343
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.281-v16.12.0",
+      "clauses": [
+        "15.3.2.3 末段及编者注：PF 实收所发 INFO 的匹配 2xx，字面回指 X3"
+      ],
+      "printed_pages": [
+        348
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.281-v16.12.0",
+      "clauses": [
+        "15.2.2.5 开头、编者注及第 3 项：实际媒体面指示业务释放且保留预建立会话、清理当前呼叫缓存"
+      ],
+      "printed_pages": [
+        343
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.281-v16.12.0",
+      "clauses": [
+        "15.2.2.3 第 1–2 项及后段：终端用户主动释放，同场收到的能力指示及 6.2.5.2 入口"
+      ],
+      "printed_pages": [
+        342,
+        343
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.281-v16.12.0",
+      "clauses": [
+        "6.2.5.2 第 1–9 项及末段：业务释放的对话外初始 REFER、预建立会话与业务会话标识及实收匹配 2xx"
+      ],
+      "printed_pages": [
+        46,
+        47
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.281-v16.12.0",
+      "clauses": [
+        "15.3.1.3 标题、正文及编者注：PF 收到 method=BYE 的 REFER，字面回指 X1"
+      ],
+      "printed_pages": [
+        345
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.281-v16.12.0",
+      "clauses": [
+        "15.3.2.2 标题与正文（仅按需环境查看 CF BYE 的不同入口）：明确回指 10.2.4.2.2.1"
+      ],
+      "printed_pages": [
+        348
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcvideo-participating-session-release",
+    "r16-bearers-common-preestablished-media-change-release",
+    "r16-mcvideo-prearranged-group-sip-bye-policy"
+  ],
+  "limitations": [
+    "原文 §15.3.2.2 在印刷页 348 单列按需环境查看：PF 实收 CF BYE 时回指 §10.2.4.2.2.1。这不是本条预建立 INFO 路径。",
+    "对照其他业务或媒体面时用其实际条件，不把 MCPTT 环境监听、普通私呼、组呼、跨系统、整项预建立会话拆除或不同媒体协议合并进来。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
