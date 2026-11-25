@@ -1,0 +1,564 @@
+{
+  "topic_id": "r16-bearers-iops-topology-and-join",
+  "release": 16,
+  "standard_stage": 1,
+  "state": "draft",
+  "title": "IOPS 联合运行：站点能联系、已入网、离开或分网，怎么区分？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-22.346-v16.0.0",
+  "common_conditions": [
+    "TS 22.346 V16.0.0（Rel-16，Stage 1）。涉及面向公共安全的孤立 LTE 接入网运行，区分已启动站点、站与孤立网关系及接入 UE。各声明按自身对象和条件适用。"
+  ],
+  "condition_rule": "区分尝试联系、已参与同网联合的交换能力、单站加入/离开、两个网合并和一网分开。不要由任一条件推断下一步实际达成。单凭站点到 EPC 的回传状态，不能判断联合结果或剩余网本地业务是否中断。若一个站恢复 EPC 后离开，分别查该站的退出与剩余网内的本地业务。",
+  "claims": [
+    {
+      "id": "known-peer-contact-attempt",
+      "title": "已启动 IOPS 的基站须尝试联系已知同伴",
+      "conditions": [
+        "该 (N)eNB 支持且已启动孤立 E-UTRAN 运行；目标是已知同伴 (N)eNB。"
+      ],
+      "conclusion": "该站须尝试与已知同伴通信，目的是开始 IOPS 联合运行。",
+      "normative_strength": "已启动且同伴已知时是 SHALL attempt。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.3.2, penultimate paragraph on printed page 9 (initiated IOPS and known peers for joint operation)"
+          ],
+          "printed_pages": [
+            9
+          ]
+        }
+      ],
+      "limitations": [
+        "可达或尝试本身不证明联合已建立；没有从本款确定发现未知同伴的方式、握手或时限。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "same-isolated-network-exchange",
+      "title": "已联合运行的站点须能与同网其他站交换用户流量和信令",
+      "conditions": [
+        "(N)eNB 已参与联合运行；对端是同一孤立 E-UTRAN 的另一 (N)eNB。"
+      ],
+      "conclusion": "参与联合运行的基站须能与同一孤立网内的其他 (N)eNB 交换用户流量和信令。",
+      "normative_strength": "两种交换均为 SHALL be able。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.3.2, final paragraph on printed page 9 (joint operation and same-network exchange)"
+          ],
+          "printed_pages": [
+            9
+          ]
+        }
+      ],
+      "limitations": [
+        "不是与 EPC 交换的规定；仅可达、仅观测信令或仅同厂/同地址，不证明同网联合或两种能力均已验证。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "add-node-with-sole-limited-backhaul",
+      "title": "孤立网可增加普通或可移动站，加入者可以独有有限回传",
+      "conditions": [
+        "孤立 E-UTRAN 正在运行，要将一个 (N)eNB 纳入这个孤立网。"
+      ],
+      "conclusion": "孤立网须具备增加 (N)eNB 的能力；被加入的站点可以带有限回传，并可成为该孤立网唯一有有限回传的站点。",
+      "normative_strength": "增加站点是 SHALL possess the ability；有限回传及唯一性是随后 NOTE 描述的可能构成。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "4.1, first and third paragraphs (fixed and nomadic eNBs and single/multiple or mixed deployments)"
+          ],
+          "printed_pages": [
+            7
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.4.2, add-(N)eNB paragraph and following note (a joining node with the only limited backhaul)"
+          ],
+          "printed_pages": [
+            10
+          ]
+        }
+      ],
+      "limitations": [
+        "不保证有回传的站点自动加入、其他站获得同一回传、实际已开业务或已恢复正常 EPC。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "combine-isolated-networks",
+      "title": "孤立网须支持与另一孤立网合成更大的孤立网",
+      "conditions": [
+        "已经存在两个孤立 E-UTRAN；讨论将它们合成一个更大的孤立 E-UTRAN 的能力。"
+      ],
+      "conclusion": "孤立 E-UTRAN 须支持与另一孤立 E-UTRAN 合成更大的孤立网。",
+      "normative_strength": "SHALL support the ability。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.4.2, combination paragraph (another isolated E-UTRAN and larger combined network)"
+          ],
+          "printed_pages": [
+            10
+          ]
+        }
+      ],
+      "limitations": [
+        "两网可达不强制自动合并，也不能据认证成功断言合并已完成；本段没有指定合并触发算法或全会话无缝承诺。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "leave-survivor-local-services",
+      "title": "站点离开时，留下的孤立网内本地业务不得被这次动作打断",
+      "conditions": [
+        "(N)eNB 离开一个仍有剩余孤立 E-UTRAN 的网络；关注该剩余网络内的本地业务。"
+      ],
+      "conclusion": "本地业务不得因站点离开而中断；离开的站点可以是网内唯一有有限回传的站点。",
+      "normative_strength": "No disruption SHALL be caused；唯一有限回传是原文 NOTE 所列的情形。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.4.2, leaving paragraph and following note (remaining local services and only limited backhaul)"
+          ],
+          "printed_pages": [
+            10
+          ]
+        }
+      ],
+      "limitations": [
+        "不保证离开站点自身服务、依赖它的外部回传或 EPC 业务；不要从初次进入 IOPS 的尽量减小中断条款借入运营方策略条件。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "split-survivor-local-services",
+      "title": "分成多个孤立网后，每个留下的孤立网内本地业务不得被分网打断",
+      "conditions": [
+        "一个孤立 E-UTRAN 被分成多个孤立 E-UTRAN；讨论留在其中某个孤立网内的本地业务。"
+      ],
+      "conclusion": "留下的各孤立 E-UTRAN 内，本地业务不得因分网而中断。",
+      "normative_strength": "No disruption SHALL be caused。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.4.2, final paragraph (local services in remaining isolated E-UTRANs after subdivision)"
+          ],
+          "printed_pages": [
+            10
+          ]
+        }
+      ],
+      "limitations": [
+        "不保证原来跨越新分界的流量仍可通，也不指定分网算法、分配步骤、会话标识或实际切换证据。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "operator-authorizes-isolated-mode",
+      "title": "使用孤立运行须获运营方授权，资源使用由网络控制",
+      "conditions": [
+        "要使用孤立 E-UTRAN 运行，并使用相应的 E-UTRAN 资源。"
+      ],
+      "conclusion": "使用孤立运行须由运营方授权；网络控制所用 E-UTRAN 资源。",
+      "normative_strength": "使用模式授权是 SHALL；资源控制责任明文归网络。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.1, second paragraph (operator authorization and network control of E-UTRAN resources)"
+          ],
+          "printed_pages": [
+            8
+          ]
+        }
+      ],
+      "limitations": [
+        "这不是 MCX 用户获准使用业务，也不同于加入或接入时的认证机制；未规定每次加入时必须人工批准。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mutual-auth-joining-node-or-isolated-network",
+      "title": "加入的站点或另一孤立网，与被加入的孤立网双向认证",
+      "conditions": [
+        "处于表 4.1-1 的前三种 IOPS 回传情形之一；有 (N)eNB 或另一个孤立 E-UTRAN 加入。不要求同时有 UE 接入。"
+      ],
+      "conclusion": "被加入的孤立 E-UTRAN 须提供机制，保证它与加入的 (N)eNB，或与加入的另一个孤立 E-UTRAN 双向认证。",
+      "normative_strength": "对加入者和被加入孤立网，SHALL provide mechanism(s) to ensure mutual authentication。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "4.1, Table 4.1-1, four scenarios and signalling/user data backhaul status columns"
+          ],
+          "printed_pages": [
+            7
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.6.2, first paragraph (security, authorization and privacy for the three IOPS backhaul scenarios)"
+          ],
+          "printed_pages": [
+            11
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.6.2, fifth paragraph (isolated E-UTRAN with joining node or joining isolated E-UTRAN)"
+          ],
+          "printed_pages": [
+            12
+          ]
+        }
+      ],
+      "limitations": [
+        "不等于任意物理站点须直接两两认证。不从运营方授权、实际入网结果或 MCX 业务鉴权推定本次双向认证；不规定所用消息、时序或组件部署。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mutual-auth-connecting-ue",
+      "title": "接入的 UE 与它接入的孤立网双向认证",
+      "conditions": [
+        "处于表 4.1-1 的前三种 IOPS 回传情形之一；有 UE 接入该孤立 E-UTRAN。不要求同时有新站或新网加入。"
+      ],
+      "conclusion": "孤立 E-UTRAN 须提供机制，保证它与接入它的 UE 双向认证。",
+      "normative_strength": "对接入 UE 和其孤立网，SHALL provide mechanism(s) to ensure mutual authentication。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "4.1, Table 4.1-1, four scenarios and signalling/user data backhaul status columns"
+          ],
+          "printed_pages": [
+            7
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.6.2, first paragraph (security, authorization and privacy for the three IOPS backhaul scenarios)"
+          ],
+          "printed_pages": [
+            11
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.6.2, sixth paragraph (isolated E-UTRAN with connecting UEs)"
+          ],
+          "printed_pages": [
+            12
+          ]
+        }
+      ],
+      "limitations": [
+        "不要求 UE 对 UE 直接互相认证。不从运营方授权、实际入网结果或 MCX 业务鉴权推定本次双向认证；不规定消息、时序或凭据格式。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "comparable-confidentiality-and-integrity-for-listed-flows",
+      "title": "所列两类公共安全通信须提供可比强度的机密性和完整性",
+      "conditions": [
+        "处于表 4.1-1 的前三种 IOPS 回传情形之一，且是两台公共安全 UE 经孤立网通信，或提供本地连接服务的 (N)eNB 与接入该网的公共安全 UE 通信。"
+      ],
+      "conclusion": "这些通信的用户数据和网络信令须具有机密性和完整性，并达到与现有 3GPP 系统相当的水平。",
+      "normative_strength": "两类列举通信的可比水平是 SHALL ensure；两类通信不必同时存在才适用。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "4.1, Table 4.1-1, four scenarios and signalling/user data backhaul status columns"
+          ],
+          "printed_pages": [
+            7
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.6.2, first paragraph (security, authorization and privacy for the three IOPS backhaul scenarios)"
+          ],
+          "printed_pages": [
+            11
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.6.2, second paragraph (comparable confidentiality and integrity for the stated UE and local-service paths)"
+          ],
+          "printed_pages": [
+            11
+          ]
+        }
+      ],
+      "limitations": [
+        "仅凭印刷页 11 第二段，不能把可比水平扩到所有站间路径，也不能推出任何 UE 应用层端到端安全；站间和无线通信路径的机制另查印刷页 12。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "protect-radio-and-inter-site-paths",
+      "title": "无线及任一孤立网内站间路径须保护用户数据和信令",
+      "conditions": [
+        "处于表 4.1-1 的前三种 IOPS 回传情形之一，涉及孤立网的无线通信路径或网内任一站间通信路径；不以印刷页 11 第二段所列 UE 通信出现为条件。"
+      ],
+      "conclusion": "无线通信路径和孤立网内任一站间通信路径须有机制，保障用户数据与信令的机密性和完整性。可行且适当时须复用既有 3GPP 安全机制，包括但不限于 ProSe。机制须适应动态孤立网，解决方案不得损害凭据安全。",
+      "normative_strength": "路径上的机密性和完整性机制、符合两条件时的复用及动态适配/凭据安全均为 SHALL；ProSe 不是唯一选项。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "4.1, Table 4.1-1, four scenarios and signalling/user data backhaul status columns"
+          ],
+          "printed_pages": [
+            7
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.6.2, first paragraph (security, authorization and privacy for the three IOPS backhaul scenarios)"
+          ],
+          "printed_pages": [
+            11
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.6.2, third and fourth paragraphs (radio and any inter-(N)eNB paths; reuse when possible and appropriate)"
+          ],
+          "printed_pages": [
+            12
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.6.2, final paragraph (dynamic topology compatibility and protection of credentials)"
+          ],
+          "printed_pages": [
+            12
+          ]
+        }
+      ],
+      "limitations": [
+        "双向认证或监测链路可用性不能替代路径保护；只加密用户数据而没有完整性和信令保护也不够。此段不把可比强度扩到任意站间路径，不指定算法、凭据格式、分发或迁移序列。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-22.346-v16.0.0",
+      "clauses": [
+        "4.1, first and third paragraphs (fixed and nomadic eNBs and single/multiple or mixed deployments)"
+      ],
+      "printed_pages": [
+        7
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.346-v16.0.0",
+      "clauses": [
+        "5.1, second paragraph (operator authorization and network control of E-UTRAN resources)"
+      ],
+      "printed_pages": [
+        8
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.346-v16.0.0",
+      "clauses": [
+        "5.3.2, penultimate paragraph on printed page 9 (initiated IOPS and known peers for joint operation)"
+      ],
+      "printed_pages": [
+        9
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.346-v16.0.0",
+      "clauses": [
+        "5.3.2, final paragraph on printed page 9 (joint operation and same-network exchange)"
+      ],
+      "printed_pages": [
+        9
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.346-v16.0.0",
+      "clauses": [
+        "5.4.2, add-(N)eNB paragraph and following note (a joining node with the only limited backhaul)"
+      ],
+      "printed_pages": [
+        10
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.346-v16.0.0",
+      "clauses": [
+        "5.4.2, combination paragraph (another isolated E-UTRAN and larger combined network)"
+      ],
+      "printed_pages": [
+        10
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.346-v16.0.0",
+      "clauses": [
+        "5.4.2, leaving paragraph and following note (remaining local services and only limited backhaul)"
+      ],
+      "printed_pages": [
+        10
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.346-v16.0.0",
+      "clauses": [
+        "5.4.2, final paragraph (local services in remaining isolated E-UTRANs after subdivision)"
+      ],
+      "printed_pages": [
+        10
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.346-v16.0.0",
+      "clauses": [
+        "4.1, Table 4.1-1, four scenarios and signalling/user data backhaul status columns"
+      ],
+      "printed_pages": [
+        7
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.346-v16.0.0",
+      "clauses": [
+        "5.6.2, first paragraph (security, authorization and privacy for the three IOPS backhaul scenarios)"
+      ],
+      "printed_pages": [
+        11
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.346-v16.0.0",
+      "clauses": [
+        "5.6.2, second paragraph (comparable confidentiality and integrity for the stated UE and local-service paths)"
+      ],
+      "printed_pages": [
+        11
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.346-v16.0.0",
+      "clauses": [
+        "5.6.2, third and fourth paragraphs (radio and any inter-(N)eNB paths; reuse when possible and appropriate)"
+      ],
+      "printed_pages": [
+        12
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.346-v16.0.0",
+      "clauses": [
+        "5.6.2, fifth paragraph (isolated E-UTRAN with joining node or joining isolated E-UTRAN)"
+      ],
+      "printed_pages": [
+        12
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.346-v16.0.0",
+      "clauses": [
+        "5.6.2, sixth paragraph (isolated E-UTRAN with connecting UEs)"
+      ],
+      "printed_pages": [
+        12
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.346-v16.0.0",
+      "clauses": [
+        "5.6.2, final paragraph (dynamic topology compatibility and protection of credentials)"
+      ],
+      "printed_pages": [
+        12
+      ]
+    }
+  ],
+  "related": [
+    "r16-bearers-iops-local-mcptt-service",
+    "r16-bearers-iops-backhaul-restoration"
+  ],
+  "limitations": [
+    "限孤立网拓扑与相关授权、安全要求。初次启动时的既有业务处置、孤立网最低本地 MCPTT 能力，以及 EPC 回传复原和网侧/用户提示分别有其他主题。",
+    "这里不定义运行时发现、认证与转发消息、阶段时序、合并或分网算法，也不证明一次观测中的实际联合、实际服务转移或协议实现一致。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
