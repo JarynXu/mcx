@@ -3144,6 +3144,10 @@
         {
           "condition": "若要查普通离网组的终接或晚加入端怎样等待、核验许可和结束，读单仲裁参与者的 Stage 3 状态处理。",
           "read": "topics/mcvideo/offnetwork-single-participant.md"
+        },
+        {
+          "condition": "如果只需查单端怎样启动，或要区分单仲裁的未闻响应、有已发现的现任和自仲裁本端检查，读启动发送。这里的同时请求例不替代单端判断。",
+          "read": "topics/mcvideo/offnetwork-transmission-arbitration-start.md"
         }
       ],
       "boundary": "仅限组通信已建立、两端同时请求发送且一方发送优先级较高的离网 MCVideo 示例。适用自仲裁，或当前无人仲裁的单仲裁者方式。"
@@ -11767,6 +11771,26 @@
         }
       ],
       "boundary": "限 TS 23.282 V16.8.0 §5.8.3 的在网 MCData EPS 单播。区分媒体专用承载的 QCI、策略下的 ARP 调整与抢占、MCData 通信类型内部的优先级；不把规范分支和实际承载处理结果混用。"
+    },
+    {
+      "id": "r16-mcvideo-offnetwork-transmission-arbitration-start",
+      "question": "离网 MCVideo 组已建立，单仲裁与自仲裁开始发视频时，谁检查同时发送数上限 N9？ 没有听到仲裁端的响应，或只收到 Transmission Arbitration Taken，能判断仲裁方式或确认全组只有一名仲裁者吗？ 现任拒绝发送或自仲裁满额时，用户可选择什么？自仲裁能不能套用单仲裁的替换步骤？",
+      "start": "topics/mcvideo/offnetwork-transmission-arbitration-start.md",
+      "next_if": [
+        {
+          "condition": "已建立的离网组内，两端同时请求发送；若采用自仲裁或采用单仲裁且当前无人仲裁，查两端怎样比较优先级，不把对方请求当自己的响应。",
+          "read": "topics/mcvideo/offnetwork-simultaneous-transmission-requests.md"
+        },
+        {
+          "condition": "离网单仲裁组已发现现任且发送数达上限；另一端请求发送，现任查替换授权。若获准替换，查撤别人的许可与现任自己让位、交接仲裁的区别。",
+          "read": "topics/mcvideo/offnetwork-sender-override.md"
+        },
+        {
+          "condition": "需要判断普通离网 single 组呼的终接或晚加入端，在实际状态和输入下怎样处理请求、许可、媒体或结束，查 Stage 3 参与端。不要用于 self。",
+          "read": "topics/mcvideo/offnetwork-single-participant.md"
+        }
+      ],
+      "boundary": "限已经建立的离网 MCVideo 组中一端想开始发送的 Stage 2 示例。单仲裁有无已发现的现任、自仲裁本端观察、组配置与媒体证据分别判断；不作为两端同时请求、整组建呼、Stage 3 计时或线编码的答案。"
     }
   ]
 }

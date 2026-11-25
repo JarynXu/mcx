@@ -1,0 +1,419 @@
+{
+  "topic_id": "r16-mcvideo-offnetwork-transmission-arbitration-start",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "离网 MCVideo 开始发视频：单仲裁与自仲裁怎样判断能否发送？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.281-v16.4.0",
+  "common_conditions": [
+    "固定 TS 23.281 V16.4.0（Release 16，Stage 2），限已建立的离网 MCVideo 组通信；比较终端开始一路视频传输及其对应的仲裁控制证据，不包括本场组呼的建立。"
+  ],
+  "condition_rule": "各声明继承已建立的离网组条件；单仲裁与自仲裁、是否已发现现任和是否实际收到、已到或未到上限都是分支，不要要求同时发生。",
+  "claims": [
+    {
+      "id": "group-mode-and-transmission-limit",
+      "title": "仲裁方式与同时发送数上限 N9 是两个离网组配置项",
+      "conditions": [
+        "判断同一离网 MCVideo 组的仲裁方式、发送上限或这两个参数分别要求配置给哪些功能实体。"
+      ],
+      "conclusion": "单仲裁依靠指定的组内终端为其可达范围内的成员处理请求；自仲裁由各端依据自身看到的拓扑决定。表 A.4-3 以终端、MCVideo 业务服务器、组管理服务器为列：方式为 Y/N/Y（N 表示不要求配置给该功能实体），N9 为 Y/Y/Y。",
+      "normative_strength": "§7.7.2.1 的功能分工与规范性附录的配置对象；不由表的 Y/N 选择运行方式。",
+      "limitations": [
+        "N9 数同时发送，与终端的同时接收流数不同。配置要求不证明具体取值、参数分发成功、服务器在线参与或全组观测一致。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.2.1, paragraphs on the two approaches, within-range arbitration, local capacity and direct override possibilities"
+          ],
+          "printed_pages": [
+            143
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "A.1, meanings of Y and N in functional entity columns"
+          ],
+          "printed_pages": [
+            169
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "A.4, Table A.4-3, first two rows (single or self arbitration indication and N9)"
+          ],
+          "printed_pages": [
+            181
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "single-start-when-no-response-detected",
+      "title": "单仲裁的无响应启动例：先请求探测，再宣告承担仲裁，视频另发",
+      "conditions": [
+        "采用单仲裁；甲想发视频并已判断未到组的预配置发送上限；甲向组发请求后实际未检测到对该请求的响应。"
+      ],
+      "conclusion": "甲向组发 Taken 并开始担任传输仲裁端，可以提示本端用户，随后向组发视频。未检测到响应时，组可能尚未选择现任，也可能仍有现任在甲的可达范围外。",
+      "normative_strength": "信息流示例的条件步骤，步骤 3b 的用户提示为可选。",
+      "limitations": [
+        "本端未检测到响应不等于没有现任或现任明确拒绝。单凭这次宣告不确认全组唯一仲裁、谁收到或播放视频。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.2.1, paragraphs on the two approaches, within-range arbitration, local capacity and direct override possibilities"
+          ],
+          "printed_pages": [
+            143
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.2.3, introductory paragraphs, preconditions 1–2, Figure 7.7.2.3-1 and steps 1–4"
+          ],
+          "printed_pages": [
+            145,
+            146
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "known-single-arbitrator-grants-or-rejects",
+      "title": "已发现现任的单仲裁：现任检查发送上限，点名授予或拒绝申请端",
+      "conditions": [
+        "采用单仲裁，甲已检测到一名传输仲裁端，组里至少一个参与端正在发视频；甲向组发发送请求并等答复。"
+      ],
+      "conclusion": "由现任检查当时是否达到配置的同时发送数上限。未到上限时现任向组发 Granted，点名获准者甲；甲实际收到授予后可以发送。到达上限时现任向组发 Rejected，点名被拒者甲，可附已到上限的原因。两例都可以提示用户。",
+      "normative_strength": "两个单仲裁示例的替代条件路径；提示与拒绝原因是可选项。",
+      "limitations": [
+        "发往组不等于全组收到，点名甲不等于另有一条只向甲发送的消息。发送许可不能替代实际媒体证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.2.4, introductory paragraphs, preconditions 1–2, Figure 7.7.2.4-1 and steps 1–5"
+          ],
+          "printed_pages": [
+            147,
+            148
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.2.5, introductory paragraphs, preconditions 1–2, Figure 7.7.2.5-1 and steps 1–4"
+          ],
+          "printed_pages": [
+            148,
+            149
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "single-optional-choice-after-capacity-rejection",
+      "title": "单仲裁满额拒绝后，用户可以决定继续；拒绝不会自动变成许可",
+      "conditions": [
+        "前述已发现现任的单仲裁拒绝分支已发生；讨论 §7.7.2.5 步骤 4 后是否还可能发送。"
+      ],
+      "conclusion": "用户可以决定仍要发送；原文指向 §7.7.2.3。后者仍列有甲端判断未到上限，再探测且未检测到响应的场景；现任的满额判断与甲端的观察是两个事实。",
+      "normative_strength": "用户的可选决定；保留两个条款的各自适用条件及原文转引。",
+      "limitations": [
+        "不假定两端计数必相同或必不同，不把现任拒绝写成自动授予，不补写两端协调、重置计数或放宽上限的规则；用户作出决定也不是已发视频的证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.2.5, paragraph following step 4 and reference back to 7.7.2.3"
+          ],
+          "printed_pages": [
+            149
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.2.3, introductory paragraphs, preconditions 1–2, Figure 7.7.2.3-1 and steps 1–4"
+          ],
+          "printed_pages": [
+            145,
+            146
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "self-start-uses-local-observation",
+      "title": "自仲裁由发起端检查上限；满额时用户有三种选择",
+      "conditions": [
+        "采用自仲裁；甲想发视频；分别看甲端是否判断已到同时发送的预配置上限、用户怎样决定。"
+      ],
+      "conclusion": "甲检查并告知用户，没有单仲裁无响应例的探测前提。满额时用户可以推迟、请求替换或决定继续；决定继续则接受可能有干扰。图示继续发送时，甲向组发 Taken，再发送视频。",
+      "normative_strength": "示例中的本端检查和实际继续发送步骤；满额后的三项为用户可选，不要求必发。",
+      "limitations": [
+        "用户决定推迟不适用图示的继续发送步骤；本例没有禁止组中其他请求，未规定任何统一的无线容量判断或组内一致性。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.2.1, paragraphs on the two approaches, within-range arbitration, local capacity and direct override possibilities"
+          ],
+          "printed_pages": [
+            143
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.2.3A, introductory paragraphs, preconditions 1–2, Figure 7.7.2.3a-1, steps 1–3 and note"
+          ],
+          "printed_pages": [
+            146,
+            147
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "self-override-general-model-not-single-procedure",
+      "title": "自仲裁仅给替换的一般关系，不借用单仲裁的撤权与接任程序",
+      "conditions": [
+        "采用自仲裁；从甲的视角同时发送已满、某个正在发送的端优先级较低，甲考虑请求替换。"
+      ],
+      "conclusion": "一般模型允许甲直接向那一正在发送的端提出请求，由那一端接受并让位或拒绝。§7.7.2.3A 步骤 1 虽指向 §7.7.2.8，后者限定单仲裁，并把自仲裁的替换细节留待研究。",
+      "normative_strength": "一般模型的可选请求；详细自仲裁替换程序仍未在所引条款确定。",
+      "limitations": [
+        "满额和有较低优先级不证明实际发出请求、收到同意或被替换端已停发。不能用单仲裁的撤权、授予、接任步骤补足。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.2.1, paragraphs on the two approaches, within-range arbitration, local capacity and direct override possibilities"
+          ],
+          "printed_pages": [
+            143
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.2.3A, introductory paragraphs, preconditions 1–2, Figure 7.7.2.3a-1, steps 1–3 and note"
+          ],
+          "printed_pages": [
+            146,
+            147
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.2.8, scope sentence and editor’s note on self arbitration override"
+          ],
+          "printed_pages": [
+            151
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "taken-assertion-does-not-establish-observation-or-delivery",
+      "title": "实际收到 Taken 只证明这一端收到了承担仲裁的宣告",
+      "conditions": [
+        "同一组的一端实际收到 Taken；若只有另一端的发出记录，不满足本端已收到的条件。"
+      ],
+      "conclusion": "Taken 的信息流表示一名参与端宣告承担仲裁责任，M 的 MCVideo ID 指承担仲裁的用户。单仲裁未闻响应和自仲裁继续发送两例均会发 Taken，视频发送在图示是下一步。",
+      "normative_strength": "Stage 2 信息流语义与两个示例的步骤对照；本端收件只证明本端观察。",
+      "limitations": [
+        "单靠 Taken 不确定其前序、组配置、是否只有一个仲裁端、其他成员是否收到了 Taken，或视频是否已发出、送达、呈现；不把 Stage 2 表当作线编码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.2.2.6, descriptive paragraph and Table 7.7.2.2.6-1, mandatory user identity row"
+          ],
+          "printed_pages": [
+            145
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.2.3, introductory paragraphs, preconditions 1–2, Figure 7.7.2.3-1 and steps 1–4"
+          ],
+          "printed_pages": [
+            145,
+            146
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.7.2.3A, introductory paragraphs, preconditions 1–2, Figure 7.7.2.3a-1, steps 1–3 and note"
+          ],
+          "printed_pages": [
+            146,
+            147
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.7.2.1, paragraphs on the two approaches, within-range arbitration, local capacity and direct override possibilities"
+      ],
+      "printed_pages": [
+        143
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "A.1, meanings of Y and N in functional entity columns"
+      ],
+      "printed_pages": [
+        169
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "A.4, Table A.4-3, first two rows (single or self arbitration indication and N9)"
+      ],
+      "printed_pages": [
+        181
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.7.2.2.6, descriptive paragraph and Table 7.7.2.2.6-1, mandatory user identity row"
+      ],
+      "printed_pages": [
+        145
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.7.2.3, introductory paragraphs, preconditions 1–2, Figure 7.7.2.3-1 and steps 1–4"
+      ],
+      "printed_pages": [
+        145,
+        146
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.7.2.3A, introductory paragraphs, preconditions 1–2, Figure 7.7.2.3a-1, steps 1–3 and note"
+      ],
+      "printed_pages": [
+        146,
+        147
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.7.2.4, introductory paragraphs, preconditions 1–2, Figure 7.7.2.4-1 and steps 1–5"
+      ],
+      "printed_pages": [
+        147,
+        148
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.7.2.5, introductory paragraphs, preconditions 1–2, Figure 7.7.2.5-1 and steps 1–4"
+      ],
+      "printed_pages": [
+        148,
+        149
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.7.2.5, paragraph following step 4 and reference back to 7.7.2.3"
+      ],
+      "printed_pages": [
+        149
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.7.2.8, scope sentence and editor’s note on self arbitration override"
+      ],
+      "printed_pages": [
+        151
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcvideo-offnetwork-simultaneous-transmission-requests",
+    "r16-mcvideo-offnetwork-sender-override",
+    "r16-mcvideo-offnetwork-single-participant"
+  ],
+  "limitations": [
+    "没检测到响应不证明组里没有现任；只见 Taken 不能区分仲裁方式、确认唯一仲裁端或证明其他成员收到、播放视频。本例不规定等待时长、线编码或自仲裁替换细节。",
+    "所列条款不说明整场组呼建立、多个发送端竞争的完整状态机或与 ProSe 功能的交互。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  }
+}
