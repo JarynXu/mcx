@@ -908,6 +908,10 @@
         {
           "condition": "若已收到整场释放指示，查参与侧如何清理本次传输的组播实例。",
           "read": "topics/mcvideo/mbms-to-unicast.md"
+        },
+        {
+          "condition": "若已经是普通在网按需预安排 MCVideo 组呼，问题是参与者主动发 SIP BYE、CF 实收该 BYE 后怎样区分本腿 200 和整场策略，或某一端匹配 BYE 200 的状态，读 Stage 3。不是把解除归属或单路媒体停发当作此 SIP 请求。",
+          "read": "topics/mcvideo/prearranged-group-sip-bye-policy.md"
         }
       ],
       "boundary": "限同一 MC 系统内已定义的组和正在通话的参与者。个人离开与整场释放分别判断；单路视频停收不能证明人员退出。"
@@ -2661,6 +2665,10 @@
         {
           "condition": "若要判断分别申请的控制与媒体资源怎样处理，查公共资源管理程序及其适用条件。",
           "read": "topics/bearers/separate-control-media-resources.md"
+        },
+        {
+          "condition": "若已确认是普通在网按需预安排 MCVideo 组呼并且 CF 实收一名参与端的 SIP BYE，要查本腿应答、整场策略以及仍在场订阅者的通知，读 Stage 3；不是聊天、预建或仅由 CF 自行发起。",
+          "read": "topics/mcvideo/prearranged-group-sip-bye-policy.md"
         }
       ],
       "boundary": "限同一 MC 系统内正在进行的预安排或聊天组呼，且至少一个适用终止条件已满足。个人离开当前呼叫是另一程序。 预安排组的按需资源释放与预建立会话解关联，不推及聊天组；解除关联也不保证下次复用。"
@@ -11845,6 +11853,10 @@
         {
           "condition": "若要查控制服务器腿上的发送许可、实际 RTP 或 End，按该页的传输控制状态和范围读，不从重入的 200 或 NOTIFY 推许可。",
           "read": "topics/mcvideo/prearranged-group-transmission-server.md"
+        },
+        {
+          "condition": "若手里的同类按需预安排组呼其实是参与端离开的 SIP BYE、CF 收件及对应 200，或该角色发出的一段 BYE 回执，不是初始 INVITE，查 BYE 分支。",
+          "read": "topics/mcvideo/prearranged-group-sip-bye-policy.md"
         }
       ],
       "boundary": "固定 TS 24.281 V16.12.0，Stage 3；限普通在网按需预安排 MCVideo 组呼，按终端主动重入、各角色处理或服务器主动迟入的实际事件读。非首建、对话内 re-INVITE、紧急／迫近危险、广播、聊天组、离网或媒体许可实现。"
@@ -11916,6 +11928,30 @@
         }
       ],
       "boundary": "Rel-16 Stage 3，TS 24.582 V16.3.0，在网独立 SDS 媒体面；一对一 O-PF/CF 和 CF 的组独立门槛，实际角色事件。非 SIP 控制面、已建 SDS 会话、文件、MBMS、完整部署/运输或实收。"
+    },
+    {
+      "id": "r16-mcvideo-prearranged-group-sip-bye-policy",
+      "question": "Rel-16 普通按需 MCVideo 预安排组呼中，CF 实收某参与者 SIP BYE 后先给哪个 200？这是全场结束的证据吗？ 何时释放所有参与者，何时只给仍在场的会议状态订阅者发 NOTIFY？没有订阅者还要回 BYE 200 吗？ T4、TNG3、只有一人、在场已归属人数不足和发起人离开分别怎样判断？ 终端主动离开时 BYE 用哪个会话身份？CF 或 T-PF 实收某端匹配 BYE 200 能说明什么？",
+      "start": "topics/mcvideo/prearranged-group-sip-bye-policy.md",
+      "next_if": [
+        {
+          "condition": "若问同一 MC 系统内已定义且当前仍在通话的组，成员本人离场或服务器因解除归属要求退出的 Stage 2 业务流程，查一人离开，不用它修正 SIP 回指。",
+          "read": "topics/mcvideo/group-call-leave.md"
+        },
+        {
+          "condition": "若同一 MC 系统内正在进行的预安排或聊天组呼已经满足至少一项适用终止条件，要查 Stage 2 整场释放的业务动作与范围，读整场流程，不拿它代替按需 SIP 程序。",
+          "read": "topics/mcvideo/server-group-call-release.md"
+        },
+        {
+          "condition": "若同类普通按需预安排组呼的实际问题是终端新发初始 INVITE 重入或服务器迟入邀请，查相应收件分支；这不是 BYE 事务。",
+          "read": "topics/mcvideo/prearranged-group-sip-rejoin.md"
+        },
+        {
+          "condition": "若是在网 MCVideo 组的非控制功能 NCF，当前问题是 P 角色的媒体控制 Transmission Release／Ack、实际媒体指示或服务器接口来件，查该页相应状态与收件；不是 SIP 关呼。",
+          "read": "topics/mcvideo/noncontrolling-participant-rtp-release.md"
+        }
+      ],
+      "boundary": "只读 TS 24.281 V16.12.0 已按需建立的普通在网预安排 MCVideo 组呼。客户端主动离开或收到 BYE、CF 实收参与端 BYE 或匹配外发 BYE 的响应、T-PF 各腿实收分别适用。错误字面回指保留；非完整 O-PF、独立 CF 发起、跨部署 SIP 路由、预建、私呼、聊天／临时组、离网、紧急／迫近危险、MBMS 和媒体清理实现。"
     }
   ]
 }
