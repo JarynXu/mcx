@@ -1,0 +1,185 @@
+{
+  "topic_id": "r16-calls-mcptt-server-function-connectivity",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 组呼：组的控制方一定是某个组员的主系统吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "各图是独立功能模型；依各图的系统、角色与组员主系统说明判断。不合并各图的互助、组类型或部署条件，不把图中的功能框当作报文步骤。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0（Release 16，Stage 3），在网 MCPTT 组呼的逻辑角色与连接模型。",
+    "图例只说明图中模型，实际组归谁所有、用户以何系统为主系统、何处承担功能须分开判断。"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": ["5.3.1：参与、控制与非控制角色；发起、终接侧与同一组呼的服务器兼任"],
+      "printed_pages": [51, 52]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": ["5.3.2 开头及注：功能框非物理服务器；同一服务器功能间请求不经底层 IMS SIP 核心"],
+      "printed_pages": [52]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": ["5.3.2 图 5.3.2-1 至 -4 及配文：主系统内角色与两系统的 CF 位置对照"],
+      "printed_pages": [52, 53]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": ["5.3.2 图 5.3.2-5 及跨页配文：伙伴组成组 NCF 与两种互助情形"],
+      "printed_pages": [53, 54]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": ["5.3.2 图 5.3.2-6、图前段落及节末句：三系统、无组员以组主伙伴为主系统、模型不穷尽"],
+      "printed_pages": [54]
+    }
+  ],
+  "claims": [
+    {
+      "id": "function-box-and-server-placement",
+      "title": "PF 的发起端与终接端角色、CF、NCF 和物理服务器分别判断",
+      "conditions": [
+        "按 §5.3.1–.2 解释 MCPTT 服务器在同一组呼中的角色、功能框和部署。"
+      ],
+      "conclusion": "PF 可服务发起端或终接端，CF 承担组呼控制，NCF 可用于临时组呼。同一服务器在同一组呼中可以兼任 PF 与 CF 或 PF 与 NCF。同一系统也可把功能分开放置；同一台 MCPTT 服务器承担的功能之间传递请求不经过底层 IMS SIP 核心。",
+      "normative_strength": "§5.3.1 对角色兼任使用 can；§5.3.2 的注说明合设时的 IMS 边界，不强制物理部署。",
+      "limitations": [
+        "功能框的数量不是物理服务器、进程或网关的数量。同一 MCPTT 系统不等于同一服务器；没有观测到 IMS 报文也不能反推出合设。",
+        "不据此规定服务器内部实现、会话路由、报文格式或已处理某次请求。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": ["5.3.1 角色说明和兼任段落", "5.3.2 开头注"],
+          "printed_pages": [51, 52]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "same-system-constituent-ncf",
+      "title": "同一主系统内重组也可以有组成组 NCF",
+      "conditions": [
+        "比较主系统内基本模型图 5.3.2-1 和同一系统的重组模型图 5.3.2-2。"
+      ],
+      "conclusion": "图 -1 画出同一系统内的发起、控制和终接角色，未画 NCF。一个或多个组成组的服务器不由临时组的 CF 控制时，图 -2 是同一系统内也可用 NCF 的例子；此 NCF 可向临时组 CF 提供该组用户的身份，也可代表 CF 邀请该组用户。",
+      "normative_strength": "§5.3.1 允许只涉及主系统内各组的临时组呼存在 NCF；§5.3.2 图 -2 及配文展示可能的情形，不规定出现 NCF 的充分必要条件。",
+      "limitations": [
+        "仅识别到 NCF 不能认定发生跨系统互助、角色分设在不同服务器、身份已披露或邀请已发生。图 -1 未画 NCF 不是禁止在主系统内使用 NCF。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": ["5.3.1 非控制角色可以涉及主系统内各组", "5.3.2 图 5.3.2-1、图 5.3.2-2 及配文"],
+          "printed_pages": [51, 52, 53]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "two-system-terminating-side-not-controller-selector",
+      "title": "终接侧在伙伴系统，CF 的位置仍可不同",
+      "conditions": [
+        "比较主系统与一个伙伴系统互助的连接模型图 5.3.2-3 与图 5.3.2-4；两图的终接角色和客户端均画在伙伴系统。"
+      ],
+      "conclusion": "图 -3 的 X、O-PF、CF 在主系统，被叫以伙伴系统为主系统，T-PF、Y 在伙伴系统。图 -4 的 X、O-PF 画在主系统，CF 与 T-PF、Y 画在伙伴系统。仅知道终接侧在伙伴系统，不能据此选定 CF。",
+      "normative_strength": "§5.3.2 的两图为不同连接模型，不是由一通呼叫的某个事件触发的 CF 迁移、选举或切换程序。",
+      "limitations": [
+        "不从两图的相同字母确认某次实际用户身份、用户主系统变化、呼叫类型、许可或业务是否已建立。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": ["5.3.2 图 5.3.2-3、图 5.3.2-4 及各自配文"],
+          "printed_pages": [53]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "partner-constituent-ncf-mutual-aid-distinction",
+      "title": "伙伴组成组的 NCF 在两种互助关系中的分工",
+      "conditions": [
+        "按图 5.3.2-5，图示主系统承担 CF，伙伴系统承担组成组 NCF 和终接 PF；一个或多个组成组的服务器在伙伴系统是重组中可出现此模式的情形。",
+        "依实际给定的是受信任互助或非受信任互助，分别判断。两者都有互助关系。"
+      ],
+      "conclusion": "受信任互助中，伙伴 NCF 可以向临时组 CF 提供该组用户身份；非受信任互助的模型中，伙伴 NCF 代表 CF 邀请该组用户。",
+      "normative_strength": "图 -5 配文对受信任一支写 can，对非受信任一支描述 NCF 代邀；没有规定每次必须转交身份，也没有在此定义身份转交或邀请的协议入口。",
+      "limitations": [
+        "NCF 代邀不反证互助不受信任，图 -2 的同系统 NCF 也可代邀。没有互助关系不能当作非受信任互助。",
+        "不由图推出身份或别名字段、披露权限、具体邀请许可、响应状态码、名单已发送或 CF 已收到。实际的预安排组成组 403 名单另按其发送和接收条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": ["5.3.2 图 5.3.2-5 及跨页配文：伙伴 NCF、受信任与非受信任互助"],
+          "printed_pages": [53, 54]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "group-owner-without-homed-members",
+      "title": "组主伙伴承担 CF，不要求有任何组员以该伙伴为主系统",
+      "conditions": [
+        "按图 5.3.2-6 及其前一段判断多个伙伴系统的组呼功能模型。"
+      ],
+      "conclusion": "X 和 O-PF 在图示主系统，组主伙伴 1 承担 CF，T-PF 和 Y 在伙伴 2。原文明确组主伙伴没有任何组员以它为主系统。组所有权和控制功能可与组员的主系统分开，图 -6 也未画 NCF。",
+      "normative_strength": "§5.3.2 图 -6 是连接模型示例，节末明示可以有其他模型；不要求所有多伙伴组呼采取这个模型。",
+      "limitations": [
+        "组主伙伴不是任何组员的主系统，不等于组内没有成员、所有组员以伙伴 2 为主系统，或没有人已归属该组。主系统不等于当前服务系统，图也不证明注册、参会、许可、信令路径或媒体到达。",
+        "图中未画 NCF 不建立对其他跨系统模型的禁止，也不能用系统数反推这场通话实际使用或未使用 NCF。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": ["5.3.2 图 5.3.2-6、图前段落及节末句"],
+          "printed_pages": [54]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-identity-interconnection-authorization",
+    "r16-groups-partner-system-regroup",
+    "r16-groups-partner-group-call-admission",
+    "r16-calls-trusted-regroup-refused-uri-list",
+    "r16-calls-prearranged-server-admission-routing",
+    "r16-calls-failure-response-source"
+  ],
+  "limitations": [
+    "不把 Stage 3 图例改写为 Stage 2 跨系统控制方判定、临时组控制资格或逐通来话准入。各类用户、组、系统、服务器和会话的授权须看相应规则。",
+    "不规定部署拓扑、SIP 路由或字段、用户注册或 ID 映射、身份披露或别名规则、端到端接收、参会或媒体结果。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}

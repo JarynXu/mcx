@@ -177,6 +177,10 @@
         {
           "condition": "若实际要查 PF 实收 Report 的授权，或 Request/Configuration 在转发时的删除条件。",
           "read": "topics/location/mcptt-participating-location-signaling.md"
+        },
+        {
+          "condition": "若要比较同系统与跨系统的 PF、CF、NCF 功能模型，查功能连接图例；本页 O-PF 与 CF 合设的情形不能用来反推组主、组员主系统或物理部署。",
+          "read": "topics/calls/mcptt-server-function-connectivity.md"
         }
       ],
       "boundary": "不覆盖完整响应聚合、会议事件、组呼释放或媒体/安全实现；分别看普通请求和迫近危险初始准入。 同一系统未重组、非临时的普通在网按需预安排组呼新建，可按已归属必需成员的实际邀请响应和 TNG1 事件，区分邀请前 480/112、提前失败和到期；查到期放弃的 BYE/CANCEL 要看 CF 的受邀对话状态。 同一系统未重组、非临时的普通在网按需预安排组呼新建，TNG1 未运行时，区分 CF 从受邀腿收到 183/P-Answer-State: Unconfirmed 或 200 后的媒体缓冲分支；主叫的 SIP 200 不等于 RTP 发送许可。 同一系统未重组、非临时的普通在网按需预安排组呼新建，TNG1 未运行且实际收到受邀 INVITE 最终失败时，按 CF 原发起侧 200 发送前后核对其余或全部受邀者的响应，以及移除或补邀条件。 同一系统未重组、非临时的普通非优先按需预安排组呼新建，最后一名已归属必需成员正常回 200 时，核对被叫 MCPTT ID、未邀全是否因人数上限、向发起侧发 200 与随后发起用户加入的 NOTIFY。 同一系统未重组的在网直接组初始 INVITE，CF 按原始业务指示、用户档和目标组档判定迫近危险授权；缺业务指示的优先级矛盾另看 CF 组旧状态。不要拿会话内取消响应代替。 同一 MC 系统不证明两功能合设；只在 O-PF 的按需 offer/answer 对相关媒体与控制项检查专用地址或端口和省略条件，不推定实际媒体路径。"
@@ -4720,6 +4724,10 @@
         {
           "condition": "若多个组织其实共用同一个 MCX 业务系统，要查管理边界而不是不同系统间互连。",
           "read": "topics/identity/shared-system-organization-management.md"
+        },
+        {
+          "condition": "若问题是 TS 24.379 图示中 CF、NCF 和终接侧分别在哪，或组主伙伴没有以它为主系统的组员，查 Stage 3 连接模型。图例不替代本页对实际参会的条件。",
+          "read": "topics/calls/mcptt-server-function-connectivity.md"
         }
       ],
       "boundary": "Rel-16 两个分属不同信任域的 MC 系统。拟互连的系统须有系统间 IP；用户的客户端用互连与对方系统所服务的用户通信时，才按本题查对端连接要求。办理互连用户的业务授权，不等于办理迁入许可或判一通呼叫的准入。 私呼控制规则限两人由不同系统服务且本次确实使用互连；组呼规则限组主系统的伙伴系统中有用户参加该组的这通组呼。这里只判系统，不据此认定某台服务器或某次呼叫放行。"
@@ -11695,6 +11703,38 @@
         }
       ],
       "boundary": "只查 TS 33.180 V16.13.0 新增成员与发送者同组媒体加密的本地 GMK 选择；不把收到更新或 GMK 当成获准本场呼叫或已激活，亦不补接收、旧钥清理或并列时间的选择。"
+    },
+    {
+      "id": "r16-calls-mcptt-server-function-connectivity",
+      "question": "组主系统没有任何以它为主系统的组员，还能承担组呼 CF 吗？ 同一系统能有 NCF 吗？只知道两系统互助的终接侧在伙伴，能确定 CF 吗？ 受信任互助提供组用户身份与非受信任互助由伙伴 NCF 代邀，分别能说明什么？",
+      "start": "topics/calls/mcptt-server-function-connectivity.md",
+      "next_if": [
+        {
+          "condition": "若要判定这次互连组呼由哪个系统提供控制，且有用户由组主系统的伙伴系统服务并实际参会，读 Stage 2 互连的控制方条件；不要套用私呼规则。",
+          "read": "topics/identity/interconnection-authorization.md"
+        },
+        {
+          "condition": "若要判断某台业务服务器能否承担临时组控制角色，读组成组是否允许来自外系统及成员服务系统的两类条件。",
+          "read": "topics/groups/partner-system-regroup.md"
+        },
+        {
+          "condition": "若要核实伙伴按本地组设置处理这通来话或呼出，或者双方都隐藏拓扑时由谁转送，读限定场景的 Stage 2 准入。",
+          "read": "topics/groups/partner-group-call-admission.md"
+        },
+        {
+          "condition": "若事实是预安排组成组 INVITE 的 403 拒绝名单，另核该次响应、报文字段与处理条件；不拿信任模型代替。",
+          "read": "topics/calls/trusted-regroup-refused-uri-list.md"
+        },
+        {
+          "condition": "若已知是普通按需预安排组呼，想看合设 O-PF 与 CF 的请求，以及发起侧 SDP offer 和 answer 的条件，读具体条款。",
+          "read": "topics/calls/prearranged-server-admission-routing.md"
+        },
+        {
+          "condition": "若实际线索是失败响应的 Response-Source，读角色与物理主机的区别，不用角色标签断定拓扑。",
+          "read": "topics/calls/failure-response-source.md"
+        }
+      ],
+      "boundary": "固定版在网 MCPTT 组呼的功能模型；比较图例，不据图判拓扑实况、注册、许可、SIP 或媒体结果。"
     }
   ]
 }
