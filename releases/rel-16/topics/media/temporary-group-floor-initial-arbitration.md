@@ -8,6 +8,8 @@
 
 等候期间，如果应用和信令面指示收到了某个受邀组成组的 `application/vnd.3gpp.mcptt-floor-request+xml` 请求体，仲裁逻辑须缓存该 MIME 正文，仍留在 `G: Initialising`。这一步不是普通 RTCP `Floor Request` 的授予入口。先收到甲组的请求、或先收到甲组的 200，都不允许据此把甲登记成新组的获准讲话者。[§6.3.4.8.3，印 68](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=69)。
 
+若同一临时组的控制侧逐参与者接口在 `U: not permitted and initiating` 时实际收到本次 `Floor Request`，读[临时组逐参与者 U 的请求处理](temporary-group-participant-floor-initialization.md)。若只有应用与信令面把组成组的 SIP 请求正文交给 G，仍查本页的一般话权仲裁。
+
 ## 全部最终响应的指示到了，谁参加一般话权初选？
 
 G 还在 `Initialising` 且收到全部最终响应的指示时，若有缓存的 `floor-type=general` 请求，比较这些请求代表的参与者。**只有发起临时组会话的参与者已按第 14 章协商隐式话权请求，才把发起方也放进这组候选。** 按 §4.1.1.4 选择有效优先级最高的人。该条允许结合本地策略、用户优先级、参与者类型和呼叫类型等输入；该条没有把 `Floor Priority` 数字、请求到达次序或最早的 200 规定为单独的胜出条件。仅凭这些字段或顺序，不能认定谁获选。[§4.1.1.4，印 21](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=22)；[§6.3.4.8.4 第 1 项，印 68–69](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=69)。

@@ -19,7 +19,9 @@
 
 上文媒体面注释提到的 SIP MESSAGE 不是已有组成聊天组在并接 ACK 后发送的讲话者通知。该通知在 TS 24.379 §10.1.2.5.1.3 中是有讲话者缓存才发送的 [SIP INFO](../calls/trusted-regroup-refused-uri-list.md#chat-ncf-ongoing-invite)。若要查预安排组呼的呼叫信令和拆分条件，读[既有组呼的并接与拆分](../calls/prearranged-group-join-split.md)；要判断终端何时获准发送，读[普通在网客户端话权](on-network-floor-client.md)。[MCVideo 的控制方切换](../mcvideo/role-switch-transmission-queue.md)处理的是视频传输请求，即使条款号相同，也不是这里的 MCPTT 话权程序。
 
-若查的是新临时组呼的控制方，而非旧组成组重递队列，读[临时组呼首次话权仲裁](temporary-group-floor-initial-arbitration.md)。定位 G: Initialising、受邀组成组的最终 SIP 响应和一般话权候选。
+若查的是新临时组呼的一般话权初选，而非旧组成组重递队列，读[临时组呼首次话权仲裁](temporary-group-floor-initial-arbitration.md)。定位 G: Initialising、受邀组成组的最终 SIP 响应和一般话权候选。
+
+若新临时组的控制侧逐参与者接口在 `U: not permitted and initiating` 时实际收到本次 `Floor Request`，读[临时组逐参与者 U 的请求处理](temporary-group-participant-floor-initialization.md)。若只有原组成组重发的记录，仍查本页的发送侧，不能认定 U 实收。
 
 ## 在网组会话拆分：本组如何接回话权和被动队列？
 
