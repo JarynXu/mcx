@@ -400,6 +400,10 @@
         {
           "condition": "如果是在 MCPTT 和 LMR 已进行的互通组呼内，查成功归属后跨 IWF 的 Stage 2 晚入。",
           "read": "topics/calls/lmr-interworking-group-late-entry.md"
+        },
+        {
+          "condition": "若所查是普通在网单话权组呼，且控制侧已确认这名客户端本次 SIP 会话建立时尝试发起既有呼叫并带隐式话权请求，查第 3 项的许可与排队分流；无隐式重入仍按本页。",
+          "read": "topics/media/existing-call-implicit-floor-request.md"
         }
       ],
       "boundary": "主动重入以initial INVITE的Request-URI携session identity，正文仍为group ID；CF晚入须实际新归属/回覆盖通知且有ongoing呼叫。PF PSI与session URI、各角色分别判断；4.5提供Contact/PF映射依据。不覆盖完整断线自动恢复、丢失会话身份发现、NCF、媒体重建或全组交付；主动重入和CF晚入为替代入口，SIP200不证明话权，媒体初始化回指差异不由普通Idle页修补。 ACK 小节只比较同一 MC 系统普通在网按需主动重入的同一终端腿。2xx 构造例不含匹配早期对话或分叉，不建立完整 IMS、NAT 或媒体可达性。"
@@ -11455,6 +11459,26 @@
         }
       ],
       "boundary": "只收在网临时组的组成组场景中实际承担 NCF 的一端。RTP 保护与两段各类控制的保护分开查；不拿一段协商、另一端配置、收到的 RTP 或单边解密证明别段处理和实际送达。"
+    },
+    {
+      "id": "r16-media-existing-call-implicit-floor-request",
+      "question": "要发起的普通在网组呼已经存在：带隐式话权请求的这一客户端 SIP 会话建立以后，控制侧何时设 U permitted，何时排队或向请求端发 Floor Taken？",
+      "start": "topics/media/existing-call-implicit-floor-request.md",
+      "next_if": [
+        {
+          "condition": "这次是按会话身份重入普通预安排组，实际没有隐式话权请求；查重入的准入和终端/控制侧证据。",
+          "read": "topics/calls/rejoin-late-entry.md"
+        },
+        {
+          "condition": "原组呼还不存在，本次从新建会话发起且已识别隐式话权请求；查初建和提前媒体许可。",
+          "read": "topics/media/implicit-floor-early-media.md"
+        },
+        {
+          "condition": "不是本客户端 SIP 建会入态，而是普通组呼中已经处于 Idle 的话权服务器实收一条显式 Floor Request；查显式仲裁。",
+          "read": "topics/media/on-network-idle-floor-server.md"
+        }
+      ],
+      "boundary": "限 TS 24.380 V16.9.0 第 6.3.5.2.2 第 3 项既有普通在网单话权组呼的本客户端控制侧 Start-stop 入态。已有许可不等于正在发 RTP；终端支持排队不等于本场已协商。区分等同于收到请求的仲裁、控制侧接口状态和终端实收。"
     }
   ]
 }

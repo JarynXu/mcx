@@ -1,0 +1,287 @@
+{
+  "topic_id": "r16-media-existing-call-implicit-floor-request",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "本来要发起的组呼已经在打，隐式话权请求怎么处理？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "common_conditions": [
+    "固定 TS 24.380 V16.9.0，Release 16，Stage 3。普通在网 MCPTT 单话权组呼，限第 6.3.5.2.2 第 3 项的控制侧逐参与者接口；不含临时组、离网、监听、广播、紧急/迫近危险、双话权/多话者或音频切入。",
+    "这名客户端此次对应的 SIP 会话已建立；控制侧接口正处理 Start-stop 下的 SIP 会话建立入口，且已按适用规则识别本次为带隐式话权请求尝试发起已存在的 MCPTT 呼叫。单个 SDP 参数或 SIP 200 不替代识别。"
+  ],
+  "condition_rule": "先核该场已有发送许可的参与者，再核请求端是否已协商排队。其他排队端的更新是入队分支内的独立守卫；终端实际收件及许可另证。",
+  "claims": [
+    {
+      "id": "existing-implicit-no-current-permission-uses-request-procedure",
+      "title": "既有呼叫无人获准发送：仍按回指处理隐式请求，另设这名客户端的控制侧 U 为 permitted",
+      "conditions": [
+        "同一场既有普通组呼里没有任何 MCPTT 客户端拥有发送媒体许可。"
+      ],
+      "conclusion": "控制侧面向请求端的接口须按 §6.3.4.3.3 的 Floor Request 程序处理这次隐式请求，如同已收到 Floor Request，并按 §6.3.5.5.2 进入 U: permitted。",
+      "normative_strength": "第 3(a)(i) 的处理与第 3(a)(ii) 的入态均为 SHALL。",
+      "limitations": [
+        "不把无人发 RTP 或本地听到静音改成无人获准。按同一程序处理不建立真实收到了一份显式 Floor Request。",
+        "回指的仲裁程序有自己的适用和拒绝条件。即使 U: permitted 记录可信，也不据它消除这些守卫或代证 G 完成授予、终端已收到授予、已发 RTP 或旁听端收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.2.2 opening and item 3 opening: SIP session established, attempt to initiate existing MCPTT call with an implicit floor request"
+          ],
+          "printed_pages": [
+            71,
+            72,
+            73
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.2.2 item 3(a)(i)–(ii): no client permitted to send, use ordinary Floor Request procedure and enter U permitted"
+          ],
+          "printed_pages": [
+            73
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.3.3, referred-to Floor Request entry and rejection guards retained; not proof of actual explicit message"
+          ],
+          "printed_pages": [
+            57
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.5.2, U permitted entry helper sets the associated participant state"
+          ],
+          "printed_pages": [
+            85
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "existing-implicit-queue-negotiated-after-same-priority",
+      "title": "别人已获准且请求端协商排队：紧接最后一个同优先级请求入队，向请求端报队位",
+      "conditions": [
+        "另一名 MCPTT 客户端已有发送媒体许可；本次请求端已按第 14 章协商支持话权请求排队。"
+      ],
+      "conclusion": "优先级取该端协商可请求的最高值；若该值为抢占优先级，改用高（high）优先级。须将这名请求端插入活动队列，紧接最后一个同优先级排队请求；向该端发送带队位和话权优先级的 Floor Queue Position Info；其控制侧接口进入 U: not permitted and Floor Taken。",
+      "normative_strength": "第 3(b)(i)–(iii) 和 (v) 为相应守卫下的 SHALL。注 4 说明协商上限；注 5 不把加入正在进行呼叫的初始隐式请求作为抢占。",
+      "limitations": [
+        "支持排队不等于已经协商；不凭高优先级字样推定抢占或授予。若想抢占当前发言者，注 5 要求带抢占优先级的显式 Floor Request，也不保证其裁决结果。",
+        "无同优先级请求时，本条不指定插入位置，也不补出完整排序；队位报文不证明现场记录的实际顺序、终端实收、发言许可或 RTP。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.2.2 opening and item 3 opening: SIP session established, attempt to initiate existing MCPTT call with an implicit floor request"
+          ],
+          "printed_pages": [
+            71,
+            72,
+            73
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.2.2 item 3(b)(i)–(iii),(v), NOTES 4–5: negotiated queueing, priority bound, position, joining party notification and enter no-permission Floor Taken"
+          ],
+          "printed_pages": [
+            73
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "existing-implicit-affected-other-queued-position-update-cond",
+      "title": "别的排队端只有满足全部条件，才适用队位更新建议",
+      "conditions": [
+        "第 3(b) 已适用：别人有发送许可，且请求端已协商排队。",
+        "被检查者不是本次加入的客户端；在活动请求队列内，已协商排队，在本场请求过队位状态，与上次 Floor Queue Position Info 相比其队位发生变化。"
+      ],
+      "conclusion": "宜向这名符合条件的既有排队端发更新的 Floor Queue Position Info。若发送，消息须带队位和话权优先级；不要用这项建议代替给本次请求端的必发队位通知。",
+      "normative_strength": "对符合条件的其他排队端发送更新为 SHOULD；更新消息的队位与优先级字段为 SHALL。",
+      "limitations": [
+        "不对所有队列成员无条件广播。仅见未收到更新，不能推定此人未排队、优先级没变、本次加入失败或远端已收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.2.2 opening and item 3 opening: SIP session established, attempt to initiate existing MCPTT call with an implicit floor request"
+          ],
+          "printed_pages": [
+            71,
+            72,
+            73
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.2.2 item 3(b)(iv)(A–B): SHOULD notify other queueing clients satisfying all queue status and position guards"
+          ],
+          "printed_pages": [
+            73
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.2.2 item 3(b)(i)–(iii),(v), NOTES 4–5: negotiated queueing, priority bound, position, joining party notification and enter no-permission Floor Taken"
+          ],
+          "printed_pages": [
+            73
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "existing-implicit-no-queue-negotiation-sends-taken-not-granted",
+      "title": "别人已获准且请求端未协商排队：须向请求端发 Taken，仍无发送许可",
+      "conditions": [
+        "另一名 MCPTT 客户端已有发送媒体许可；本次请求端没有协商话权请求排队。"
+      ],
+      "conclusion": "接口须向该客户端发送 Floor Taken，并进入 U: not permitted and Floor Taken。普通非广播会话的 Permission to Request 可置 1；它允许请求话权，不是授予发送媒体。",
+      "normative_strength": "第 3(c) 的发送及进入无许可状态为 SHALL；普通非广播分支的 Permission to Request=1 字段为 MAY。",
+      "limitations": [
+        "未核到是否协商，不等于确认未协商。Floor Taken 不是给该端的 Floor Granted；不因看到发送记录、权限字段或 U 状态认定终端已收、已获准或已有媒体。",
+        "单独受邀的第 4 项使用自己的入口与发送强度；这里的须发不能直接拿去覆盖受邀情形。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.2.2 opening and item 3 opening: SIP session established, attempt to initiate existing MCPTT call with an implicit floor request"
+          ],
+          "printed_pages": [
+            71,
+            72,
+            73
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.2.2 item 3(c)(i)–(ii), ordinary nonbroadcast branch: not negotiated for queueing, mandatory Taken and U not permitted"
+          ],
+          "printed_pages": [
+            73,
+            74
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-mcptt-rejoin-late-entry",
+    "r16-mcptt-implicit-floor-early-media",
+    "r16-mcptt-onnetwork-idle-floor-server"
+  ],
+  "limitations": [
+    "无隐式请求主动重入、仅受邀、初次新建、实际显式 Floor Request、既有呼叫的紧急升级和 SIP/SDP 是否应接受其隐式请求均不在本页。不从这段搭出完整队列调度或媒体处理流程。",
+    "不从沉默、SIP 应答、服务器接口状态或一次收发记录代证其他状态机、终端实收、话权已授予或音频已送达。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.5.2.2 opening and item 3 opening: SIP session established, attempt to initiate existing MCPTT call with an implicit floor request"
+      ],
+      "printed_pages": [
+        71,
+        72,
+        73
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.5.2.2 item 3(a)(i)–(ii): no client permitted to send, use ordinary Floor Request procedure and enter U permitted"
+      ],
+      "printed_pages": [
+        73
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.4.3.3, referred-to Floor Request entry and rejection guards retained; not proof of actual explicit message"
+      ],
+      "printed_pages": [
+        57
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.5.5.2, U permitted entry helper sets the associated participant state"
+      ],
+      "printed_pages": [
+        85
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.5.2.2 item 3(b)(i)–(iii),(v), NOTES 4–5: negotiated queueing, priority bound, position, joining party notification and enter no-permission Floor Taken"
+      ],
+      "printed_pages": [
+        73
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.5.2.2 item 3(b)(iv)(A–B): SHOULD notify other queueing clients satisfying all queue status and position guards"
+      ],
+      "printed_pages": [
+        73
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.5.2.2 item 3(c)(i)–(ii), ordinary nonbroadcast branch: not negotiated for queueing, mandatory Taken and U not permitted"
+      ],
+      "printed_pages": [
+        73,
+        74
+      ]
+    }
+  ]
+}

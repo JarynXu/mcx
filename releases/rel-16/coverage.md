@@ -5933,6 +5933,16 @@ NCF 与 PF/CF 各段的 RTCP APP 话权、RTCP 媒体控制分别核对这一段
 
 [读取主题](topics/media/temporary-group-noncontrolling-media-protection.md)
 
+## 既有普通在网组呼：隐式话权请求的控制侧入态（Stage 3）
+
+本客户端 SIP 会话建立时，控制侧确认它带隐式请求尝试发起既有普通在网单话权组呼：无人有发送许可时按 Floor Request 规程处理，并按入态条文设关联 U 为 permitted；他人已有许可时，已协商排队要入队并给本请求端发队位通知，明确未协商则要给本请求端发 Floor Taken，两者都进 U: not permitted and Floor Taken。
+
+本请求端的队位通知是必发；其他排队端须同时符合活动队列、已协商、请求过状态、队位变化且不是本次加入者，才适用“宜更新”。通过这一入口加入正在进行的既有呼叫时，初始隐式请求不抢占当前发送者。
+
+尚未建立：不能由 SIP 200、一个 SDP 参数、没有语音或排队能力推定入口、已有许可或协商结果；不把本地 U 状态、发出的通知或终端实收的队位通知和 Floor Taken 当成终端已获发送许可或 RTP 已送达的证据。无隐式重入与已有 Idle 实收显式 Floor Request 另查。
+
+[读取主题](topics/media/existing-call-implicit-floor-request.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

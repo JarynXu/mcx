@@ -117,6 +117,7 @@ CF可因资源/拥塞拒绝500并可带Retry-After；若Request-URI所指组呼�
 
 - TS24.380 §6.3.5.2.2 step2a(ii)写U: not permitted and Floor Idle，却回指§6.3.5.5.2，后者实际设置U: permitted。该文字差异保留，不把它解释为重入已获话权，也不静默改为§6.3.5.3.2。邀请分支step4b(ii)的§6.3.5.3.2回指不同且正确。
 - 本页不请求implicit；§6.3.5.2.2 step3使用attempts to initiate an already existing call with implicit的表述，不把它改写成所有主动重入的默认授权路径。完整G初始化、排队调度及后续请求/授予各按对应媒体owner，不以ordinary Idle页补本回指。
+  只有在普通在网单话权组呼中，控制侧已识别这名客户端本次 SIP 会话建立时带隐式请求发起既有呼叫，才转查[既有组呼的隐式话权请求](../media/existing-call-implicit-floor-request.md)，看谁已有发送许可、请求端是否协商排队。无隐式话权请求的重入仍按本页。
 - conference订阅按client参与中的会话以及非广播条件进行；NOTIFY到达后处理和MAY显示依RFC接口，不能用通知代替语音呈现、全员接收或floor permission。
 
 依据：3gpp-ts-24.379-v16.14.0 §10.1.1.2.1.1 responses;10.1.1.2.4.1；§10.1.3.1–3，印刷页 221,229,301,302。
