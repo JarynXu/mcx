@@ -2587,6 +2587,16 @@ PF 从成功的授权请求定位用户及本端，按配置档补缺项、跨�
 
 [读取主题](topics/media/on-network-idle-floor-server.md)
 
+## 普通在网组呼的控制 U：Release 的条件确认与本地 Idle（Stage 3）
+
+TS 24.380 V16.9.0 §6.3.5.3.7：普通在网单话权 MCPTT 组呼已经建立，控制侧逐参与者 U 已在 not permitted and Floor Idle，且实收本关联参与者的 Floor Release。来向 subtype 首位是 1 才须发 Release Ack，程序字面 Message Type=4、Source=2。无论队列是否命中或来向是否要求确认，均须向该关联参与者生成并发送 Floor Idle，序号加 1；可独立要求对这条 Idle 的确认。U 保持原态。
+
+查同一条实收 Release：有 Track Info 时用 topmost Participant Reference 和该报文的 SSRC；确实无 Track Info 时只用该 SSRC。命中才移除那一项；不要求预先证成排队协商或 G 已 Idle。若 U 实际收到的是本场 G 的 Floor Idle，按 §6.3.5.3.10 转发；不套本地生成与查队列。Ack 的字面取值与通用字段编码、NCF 两侧的 Track Info 和被动队列各按自己的条款。
+
+尚未建立：终端、PF 或 NCF 发送不证明本控制 U 实收；U 前态未知时不能断定适用；收到别的参与者的 Release、U 为 Taken 或 permitted、NCF 的 P 收件均不是该入口。单见 Ack 或出向 Idle 不证明查找命中、实际退队、G 状态变化、全组通知、计时器到期、RTP 已停或终端收到。抓包缺字段不等于来向没有；不据 §6.3.5.3.7 复制出向 Track Info 或裁定通用编码。
+
+[读取主题](topics/media/controlling-idle-floor-release.md)
+
 ## 在网单话权：显式抢占请求与撤销事件责任
 
 在网单话权显式抢占请求的U准入、G条件撤销、持有者客户端停止与U/G宽限期收尾。 还可查普通非持有者撤回排队时，控制服务器怎样确认、匹配并移出活动队列，及怎样另查队位。

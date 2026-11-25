@@ -136,6 +136,10 @@
       "start": "topics/media/on-network-floor-client.md",
       "next_if": [
         {
+          "condition": "若同场已建立的普通在网单话权 MCPTT 组呼中，控制侧逐参与者 U 已在 not permitted and Floor Idle，且该 U 实收本关联参与者的 Floor Release，查控制侧这次是否应答与移出请求；终端发送或用户界面提示不替代该 U 的实收和前态证据。",
+          "read": "topics/media/controlling-idle-floor-release.md"
+        },
+        {
           "condition": "要查在网服务器在 Floor Idle 状态怎样处理普通显式、非排队的话权请求。",
           "read": "topics/media/on-network-idle-floor-server.md"
         },
@@ -329,6 +333,10 @@
       "start": "topics/media/on-network-idle-floor-server.md",
       "next_if": [
         {
+          "condition": "若同场已建立的普通在网单话权 MCPTT 组呼中，控制侧逐参与者 U 已在 not permitted and Floor Idle，且该 U 实收本关联参与者的 Floor Release，查撤回时的局部 Idle、条件 Ack 与队列；不是原页的 Idle U/G 实收非排队 Floor Request，也不要求这次另证 G Idle。",
+          "read": "topics/media/controlling-idle-floor-release.md"
+        },
+        {
           "condition": "要比较在网单话权空闲时的条件授予与 Taken 状态下的抢占、撤销。",
           "read": "topics/media/on-network-preemption-revoke.md"
         },
@@ -391,6 +399,10 @@
       "question": "在网单话权：显式抢占请求与撤销事件责任",
       "start": "topics/media/on-network-preemption-revoke.md",
       "next_if": [
+        {
+          "condition": "若同场已建立的普通在网单话权 MCPTT 组呼中，控制侧逐参与者 U 已在 not permitted and Floor Idle，且该 U 实收本关联参与者的 Floor Release，查本地发 Idle；控制 U 在 Taken 实收撤回则按被占用状态查，不把已有排队协商作为 Idle U 的入口条件。",
+          "read": "topics/media/controlling-idle-floor-release.md"
+        },
         {
           "condition": "若此前没有撤销，且发 Release 的是唯一获准者，不是排队人，查普通主动放权。",
           "read": "topics/media/on-network-holder-release.md"
@@ -6426,6 +6438,10 @@
       "start": "topics/media/noncontrolling-floor-idle-delivery.md",
       "next_if": [
         {
+          "condition": "若同场已建立的普通在网单话权 MCPTT 组呼中，控制侧逐参与者 U 已在 not permitted and Floor Idle，且该 U 实收本关联参与者的 Floor Release，查控制侧本地生成 Idle 的入口；NCF 的 P 实收 Release 或 NCF 服务器接口实收 CF 的 Idle 本身都不是这项控制侧入口。",
+          "read": "topics/media/controlling-idle-floor-release.md"
+        },
+        {
           "condition": "实际消息是 Granted、Deny 或队位答复，要查对应的参与者引用处理。",
           "read": "topics/media/on-network-noncontrolling-floor-grant.md"
         },
@@ -12263,6 +12279,34 @@
         }
       ],
       "boundary": "Release 16，TS 33.180 V16.13.0 §5.8.1–.2。查实际 MCX 业务服务器给已有该用户 KMS 身份材料、已在该服务器注册并因此订阅其下载通知的同一终端分发 MuSiK 或更新 CSK/MuSiK；KMS 也为获准充当该 MCX 业务服务器的身份配置材料。终端成功提取本笔信令密钥后回该笔成功 200；服务器实际收本笔同一终端应答后可开始保护信令。仅见发出、注册或授权响应、其他终端或其他下载的 200 都不能证实此事件。不是实际或强制换钥，不套专用 MBMS Status、重试或单播回退。"
+    },
+    {
+      "id": "r16-media-controlling-idle-floor-release",
+      "question": "已建立的普通在网单话权组呼，控制 U 原在不许可且空闲；它实收关联参与者 Floor Release，但队列没命中，是否仍须回复 Floor Idle？ 收的是 Release 和发的是 Idle，两个 subtype 的确认位能否共用？怎样判断 Floor Ack 确认哪一条？ 来向有 Track Info 时怎样用 topmost 引用和 SSRC 排除同号非匹配项？只有来自 U 的出向 Idle，能判断 G 已空闲或终端已实收吗？",
+      "start": "topics/media/controlling-idle-floor-release.md",
+      "next_if": [
+        {
+          "condition": "若已确认不涉及抢占，且要查普通在网非广播单话权终端 pending Release 时实际收到同场 Floor Idle 后怎样停 T100、改变状态或回确认，转终端页；仅发出 Release 或收到迟到 Granted 不是该收件。",
+          "read": "topics/media/on-network-floor-client.md"
+        },
+        {
+          "condition": "若已确认是已建立的按需普通在网单话权组呼，U 和 G 都已 Idle，且控制侧 U 实收本关联参与者的非抢占、显式、非排队 Floor Request，而非 Floor Release，读请求和条件授予。",
+          "read": "topics/media/on-network-idle-floor-server.md"
+        },
+        {
+          "condition": "若已确认是已建立的按需普通在网单话权组呼，且控制 U 已处于 not permitted and Floor Taken 并实际从本关联参与者收到 Floor Release，只在已协商排队、未在 mc_priority 中包含话权优先级的这支查 Taken 及活动队列；不能套用 Idle U。",
+          "read": "topics/media/on-network-preemption-revoke.md"
+        },
+        {
+          "condition": "若是同系统已建立的按需普通在网单话权组呼，原持有者显式请求获准、无先行抢占撤销或覆盖标记，且该控制 U 处于 permitted 并实收直接关联终端的主动 Floor Release，查持有者放权；G 动作还须本场 G: Floor Taken 实收。",
+          "read": "topics/media/on-network-holder-release.md"
+        },
+        {
+          "condition": "若该场普通在网单话权组呼的 NCF 服务器接口实际收到 CF 的 Floor Idle，再读来向 Track Info 如何选择下游处理及实际 P 确认；只见控制侧发出或 NCF P 实收 Release 都不证明这段 Idle 实收。",
+          "read": "topics/media/noncontrolling-floor-idle-delivery.md"
+        }
+      ],
+      "boundary": "Release 16，Stage 3，TS 24.380 V16.9.0 §6.3.5.3.7 与 §6.3.5.3.10。普通已建立在网单话权组呼、非广播、非特殊组或业务、非音频切入、非 MBMS 程序。该控制侧逐参与者 U 先已在 not permitted and Floor Idle。实收本关联参与者 Floor Release 才按本地回复与查队列；实收本场 G 的 Floor Idle 才是另一条转发。两条消息是替代入口，发送和其他接口收件不是实收。来向要确认才回 Release Ack；不论命中仍发局部 Idle 且可独立要求确认。不能由两条出向推定实际退队、G 状态或终端已收。"
     }
   ]
 }

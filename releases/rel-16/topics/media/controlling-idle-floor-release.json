@@ -1,0 +1,143 @@
+{
+  "topic_id": "r16-media-controlling-idle-floor-release",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "普通在网组呼：控制侧 U 已空闲，收到 Floor Release 后为什么还回 Idle？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "condition_rule": "每条声明继承全部共同条件；按同一场控制 U 的实际入向消息区分 Release 局部应答与 G 的 Idle 转发。§6.3.5.3.7 只以本关联参与者的 Floor Release 实收为触发；仅见发送、错接口或错参与者的收件不能替代；U 前态未知时不能断定适用。两个入口都不要求另证 G 已 Idle 或本场已协商排队。",
+  "common_conditions": [
+    "3GPP TS 24.380 V16.9.0（Release 16，Stage 3）。已建立的普通在网单话权 MCPTT 组呼。排除广播、系统呼叫、紧急或迫近危险、临时组、环境监听、音频切入、双话权、多话者和 MBMS 程序。",
+    "控制服务器面向一名参与者的 U 已在 U: not permitted and Floor Idle。U 与整场仲裁 G、终端 U 及非控制功能的 P 不同。确认对应接口的实际收件；不要求另证 G 已 Idle 或此前协商排队。",
+    "下列收件按各自触发事件适用，不是一个要求两条来向消息均发生的流程。控制 U 的关联参与者可以是终端或非控制功能的相应接口；仅在终端、PF 或 NCF 看到发送不能证明控制 U 实收。"
+  ],
+  "claims": [
+    {
+      "id": "associated-release-ack-and-local-idle",
+      "title": "Release Ack 和本地 Idle 发出是两个动作",
+      "conditions": [
+        "本场控制 U 从本关联话权参与者实收同一条 Floor Release。普通在网 Floor Release 走单播，可以撤回排队，不要求发送者曾获准发送媒体。"
+      ],
+      "conclusion": "来向 Release 的 subtype 首位为 1，须发对此 Release 的 Floor Ack，程序字面 Message Type=4、Source=2。确认为 0 时不触发这一 Ack。无论该位取值或队列命中与否，U 须向关联参与者生成并发送 Floor Idle，消息序号加 1；可另把此 Idle 的 subtype 首位置 1 自己请求 Ack。U 须保持 not permitted and Floor Idle。",
+      "normative_strength": "Release 要求确认后的 Ack、生成发出 Idle 及其序号、U 保持原态为 SHALL；出向 Idle 请求确认是 MAY。该确认收到后怎样处理或没有收到怎样处理，是实现选项。",
+      "limitations": [
+        "首位未知不等于 0。来向 Release 的确认位不会替出向 Idle 选择是否请求自己的 Ack。Floor Ack 确认的是 Release，不是退队结果、之后 Idle 或终端实收。",
+        "表 8.2.2.1-1 中 Release 为 x0100，Idle 为 x0101。§8.2.3.14 对通用 Message Type 要求带被确认 subtype 首位；保留与 §6.3.5.3.7 的字面 4 的差异，不裁定线路取值。留在原态不是重新执行 §6.3.5.3.2 的入态操作。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.3.1–.2 (prior state and entry comparison)",
+            "6.3.5.3.7 opening and items 1–2,6",
+            "8.2.2.1 Table 8.2.2.1-1 (Floor Release and Floor Idle)",
+            "8.2.3.14 and Table 8.2.3.14-1 (generic Message Type)",
+            "8.2.7 opening (use and unicast)"
+          ],
+          "printed_pages": [
+            75,
+            76,
+            77,
+            148,
+            155,
+            165
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lookup-by-the-actual-release-and-remove-only-match",
+      "title": "队列用同一来向查，命中才移除",
+      "conditions": [
+        "本场控制 U 从本关联话权参与者实收同一条 Floor Release。普通在网 Floor Release 走单播，可以撤回排队，不要求发送者曾获准发送媒体。"
+      ],
+      "conclusion": "若控制 U 实收的 Floor Release 带 Track Info，用其中 topmost Participant Reference 和该消息的 SSRC 一起查；确实没有 Track Info 时仅用该消息的 SSRC。匹配才从控制侧队列移除这一个请求；无匹配不移除其他请求，但仍须发本地 Floor Idle 并保持原态。",
+      "normative_strength": "按来向字段查找及有匹配时移除为条件 SHALL；§6.3.5.3.7 未设已协商排队门槛，不定义入队策略。",
+      "limitations": [
+        "实际存在两者却组合未命中时不降为只看 SSRC。字段未知不等于没有。没有队列记录不证明查过而未命中；只见 Ack、Idle 或队位状态不证明由这一次 Release 移出。",
+        "Participant Reference 不是 MCPTT User ID。§8.2.7 的通用 SSRC 描述仍写获准发送者；入口条文用本次收到的 Release 的 SSRC，不用他人 SSRC，也不搬入离网专用 User ID。",
+        "NCF 参与时 §8.2.7 写 Release 包含 Track Info，§8.2.8 对 Idle 明写 SHALL；§6.3.5.3.7 未规定怎样复制入向字段或填出向 Track Info。保留 topmost，不替换成 §6.5.4.8 的下行最后一项。终端腿缺字段不证明控制 U 实收的字段缺失；NCF 被动队列的移除也不等于控制侧匹配或移除。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.3.7 items 2–6",
+            "8.2.3.13 and Table 8.2.3.13-1 (Track Info / reference identity)",
+            "8.2.7–8.2.8 and Tables 8.2.7-1/8.2.8-1",
+            "6.5.4.3 items 1–2 and 6.5.4.8 item 1 (NCF comparison only)"
+          ],
+          "printed_pages": [
+            76,
+            77,
+            106,
+            108,
+            109,
+            154,
+            155,
+            165,
+            166,
+            167
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "locally-generated-idle-versus-forwarded-g-idle",
+      "title": "按 U 的实际入向区别两种 Idle 来源",
+      "conditions": [
+        "该控制 U 仍在 not permitted and Floor Idle。比较各自的入口：一支实收本关联参与者的 Floor Release；另一支实际收到本场 G 发来的 Floor Idle。"
+      ],
+      "conclusion": "第一支按 §6.3.5.3.7 生成发往关联参与者的 Floor Idle，序号加 1，并按实际 Release 做条件 Ack 与队列查找。第二支按 §6.3.5.3.10 转发收到的 Floor Idle 给关联参与者，转发条文未列第一支的本地生成、序号加 1 或 Release 查询。两支都可为各自发出的 Idle 请求确认，且 U 均不换态。",
+      "normative_strength": "符合各自收到事件时生成或转发及保持原态是 SHALL，出向 Idle 请求确认是 MAY。",
+      "limitations": [
+        "单见此 U 发 Idle 不区分来源。不能据此认定 G 转空闲、T1/T4/T7 到期、全组得到通知、RTP 停止或下一人获准。G 发出未证本 U 实收，也不触发第二支。",
+        "终端、PF、NCF 与控制 U 附近的消息分别取证。仅凭先后出现或同名包不能证明另一腿收到、终端离开 pending Release 或已删除本次请求。Taken、permitted 和 NCF P 的程序按各自前态，不套此条。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.3.7 items 1–6 versus 6.3.5.3.10 items 1–3"
+          ],
+          "printed_pages": [
+            76,
+            77
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "limitations": [
+    "只说明此逐参与者 U 的局部回复、该次查队列及另一个转发入口，不覆盖授权、入队、完整 G 调度、确认重传、媒体保护与端到端互通实现。",
+    "不得把任意 Ack、只见出向 Floor Idle、上游发出、其他接口收件或通用消息语义补成本场控制 U 实收和已有前态。邻接阅读不要求接续执行。"
+  ],
+  "related": [
+    "r16-mcptt-onnetwork-idle-floor-server",
+    "r16-media-on-network-floor-client",
+    "r16-mcptt-onnetwork-preemption-revoke",
+    "r16-mcptt-onnetwork-holder-release",
+    "r16-media-noncontrolling-floor-idle-delivery"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  }
+}
