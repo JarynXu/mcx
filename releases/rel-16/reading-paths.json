@@ -225,7 +225,12 @@
       "id": "r16-mcdata-sds-session-media-server",
       "question": "私聊 SDS 会话媒体：服务器路径、绑定与逐跳响应",
       "start": "topics/mcdata/sds-session-media-server.md",
-      "next_if": [],
+      "next_if": [
+        {
+          "condition": "若已确认是独立 SDS 经媒体面且要归因这次 MSRP 403、或分开这笔 SEND 的本跳 200 与实际交付，查独立媒体面；不把该规则套到本页会话已建立后的消息。",
+          "read": "topics/mcdata/standalone-sds-media-msrp-size-gates.md"
+        }
+      ],
       "boundary": "不覆盖完整端到端错误返回、失败恢复、SIP/MSRP/RFC或密码实现；T-PF错误目的地与直接客户端接收边界保留。"
     },
     {
@@ -2944,6 +2949,10 @@
         {
           "condition": "若传的是组文件而非 SDS，要区分接受文件分发请求与下载完成，请查组独立媒体面文件分发。",
           "read": "topics/mcdata/group-media-plane-fd-reports.md"
+        },
+        {
+          "condition": "若已确认是组独立 SDS 经媒体面且问 CF 实收 O-PF SEND 后查哪两个组文档大小上限、或本跳应答，查独立媒体面；不是组会话建立、MBMS 或交付报告。",
+          "read": "topics/mcdata/standalone-sds-media-msrp-size-gates.md"
         }
       ],
       "boundary": "只讨论同一 MCData 系统内、普通在网、供人阅读的组 SDS；都已注册、属于同一预配置组并已归属，不足以推定同一系统。跨系统或系统关系不明，不能仅凭这两条程序外推接收方式。"
@@ -3064,6 +3073,10 @@
         {
           "condition": "若双方离网，则查离网一对一独立 SDS 的交付与已读回报。",
           "read": "topics/mcdata/offnetwork-one-to-one-sds-disposition.md"
+        },
+        {
+          "condition": "若已确认是一对一独立 SDS 经媒体面、实际记录是 MSRP SEND 或应答，且要区分 O-PF 和 CF 的大小拒绝、本跳 200 或转交，查媒体面服务器。选面或用户处置仍读本页。",
+          "read": "topics/mcdata/standalone-sds-media-msrp-size-gates.md"
         }
       ],
       "boundary": "双方已注册接收 MCData 服务，属于同一系统；一笔单向、供人使用的消息。信令面例以载荷低于信令面配置的 SDS 有效载荷上限为前提，媒体面例假定高于。这两例未覆盖恰等于上限；不把整个请求的大小当作载荷大小。"
@@ -11883,6 +11896,26 @@
         }
       ],
       "boundary": "只读在网 MCVideo 组的 NCF 传输参与者接口 P 与其传输控制服务器接口。P 授权状态、相关会话和实际指示或收件分开；不替代终端接收、CF 仲裁、MBMS 或应用与信令面释放程序。 组呼终端接收许可、收件和呈现要看本场对应证据，不借用私呼接收程序。"
+    },
+    {
+      "id": "r16-mcdata-standalone-sds-media-msrp-size-gates",
+      "question": "在网一对一独立 SDS 的媒体面 MSRP 403，怎样区分 O-PF 查发送者用户档、与 CF 查业务大小？恰等上限呢？ 若是组独立 SDS，CF 实际收到 O-PF 的 MSRP SEND 后要查哪两个组配置？ O-PF 转送 CF 的错误说明哪个上限失败？CF 的 MSRP 200 和终接连接、终端收到是什么关系？",
+      "start": "topics/mcdata/standalone-sds-media-msrp-size-gates.md",
+      "next_if": [
+        {
+          "condition": "若要查一对一独立 SDS 怎样选两种传送路径，而非媒体面响应归因，且双方在同一 MCData 系统并都已注册接收 MCData 服务、属于该页单向供人使用的例子，查 Stage 2。",
+          "read": "topics/mcdata/one-to-one-standalone-sds.md"
+        },
+        {
+          "condition": "已确认是普通在网、直接 MCData ID 的一对一独立 SDS 的 SIP 控制面服务器拒绝，而非 MSRP，查控制面；仅看数值 403 不足以改走该页。",
+          "read": "topics/mcdata/sds-control-server.md"
+        },
+        {
+          "condition": "已确认是普通在网、直接 MCData ID、按需的一对一 SDS 会话已经建立后处理 MSRP，且实际角色匹配，查会话媒体服务器；不把独立发送门槛移植给它。",
+          "read": "topics/mcdata/sds-session-media-server.md"
+        }
+      ],
+      "boundary": "Rel-16 Stage 3，TS 24.582 V16.3.0，在网独立 SDS 媒体面；一对一 O-PF/CF 和 CF 的组独立门槛，实际角色事件。非 SIP 控制面、已建 SDS 会话、文件、MBMS、完整部署/运输或实收。"
     }
   ]
 }

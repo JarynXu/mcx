@@ -1,0 +1,472 @@
+{
+  "topic_id": "r16-mcdata-standalone-sds-media-msrp-size-gates",
+  "title": "在网独立短数据走媒体面：同一个 MSRP 403，该查哪个大小上限？",
+  "release": 16,
+  "state": "draft",
+  "standard_stage": 3,
+  "source_id": "3gpp-ts-24.582-v16.3.0",
+  "source_catalog": "../../sources.json",
+  "common_conditions": [
+    "固定 3GPP TS 24.582 V16.3.0，Rel-16、Stage 3。在网独立 SDS 经媒体面，按每条实际 MSRP SEND 或响应的角色与方向选分支。会话内、控制面和建连只作边界对照。"
+  ],
+  "condition_rule": "各条继承共用范围，再叠加自身角色、收件、业务类型和结果条件。不把另一处成功、发送、实收或物理部署当成本条前提已经成立。",
+  "claims": [
+    {
+      "id": "opf-standalone-one-to-one-user-limit",
+      "title": "一对一独立 SDS 的 O-PF 查发起客户端的用户档上限",
+      "conditions": [
+        "O-PF 实际收到发起 MCData 客户端的 MSRP SEND，请求属于一对一独立 SDS 经媒体面。"
+      ],
+      "conclusion": "O-PF 须核 SDS 消息大小不超过发起客户端用户配置档的 <MacData1To1>，按本款印字。失败向发起客户端回 MSRP 403，停止本程序，不走后续建立或复用 CF 连接及转送步骤。等于上限满足本项。",
+      "normative_strength": "§6.2.1.4.3 第 1–4 项为 SHALL，大小检查只在该项的一对一独立分支。",
+      "limitations": [
+        "不把 O-PF 大小检查加到组独立 SDS、会话内 MSRP 或 SIP 控制面。",
+        "没有后续转送不证明不存在更早已建立的连接；该条未定义消息大小按分块或报文如何测量。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "4.1.1 and 5.1.1: on-network standalone SDS via MSRP versus established session, and logical roles distinct from deployment",
+            "6.2.1.1 and 6.3.1.1: standalone media plane participating and controlling procedures for one-to-one and group"
+          ],
+          "printed_pages": [
+            10,
+            11,
+            20,
+            23
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.2.1.4.3 points 1–4: O-PF one-to-one standalone size check against printed MacData1To1, local 403 stop, then appropriate CF connection and forwarding",
+            "6.2.1.4.3 final two paragraphs: actual CF 200 or error received by O-PF, forwarded toward originating client"
+          ],
+          "printed_pages": [
+            21
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "opf-actual-cf-response-relay",
+      "title": "O-PF 实收 CF 的 200 或错误后转送，外观相同不能判生成者",
+      "conditions": [
+        "O-PF 按独立 SDS 媒体面程序处理，实际从 CF 收到对应的 MSRP 200 或错误。"
+      ],
+      "conclusion": "按实收类型，O-PF 向发起客户端转送这份响应。一个从 O-PF 方向到来的 403 可是该 O-PF 本地拒绝，也可是 CF 错误经转送；只看邻接发送角色或状态码不能决定。",
+      "normative_strength": "§6.2.1.4.3 后两段分别规定转送实收的 CF 成功与错误。",
+      "limitations": [
+        "不能把任意 CF 错误认定为同一个大小原因。",
+        "分清本地生成和转送后再判上限，不能把 CF 条款的目标客户端与每种部署的固定传输邻居等同。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.2.1.4.3 points 1–4: O-PF one-to-one standalone size check against printed MacData1To1, local 403 stop, then appropriate CF connection and forwarding",
+            "6.2.1.4.3 final two paragraphs: actual CF 200 or error received by O-PF, forwarded toward originating client"
+          ],
+          "printed_pages": [
+            21
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.3.1.3 points 1–3: CF receipt of SEND from O-PF, one-to-one service maximum or both group document maxima; 403 to the sending MCData client and stop"
+          ],
+          "printed_pages": [
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "4.1.1 and 5.1.1: on-network standalone SDS via MSRP versus established session, and logical roles distinct from deployment",
+            "6.2.1.1 and 6.3.1.1: standalone media plane participating and controlling procedures for one-to-one and group"
+          ],
+          "printed_pages": [
+            10,
+            11,
+            20,
+            23
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "cf-standalone-one-to-one-service-limit",
+      "title": "CF 查一对一独立 SDS 的业务配置，不用 O-PF 的用户档",
+      "conditions": [
+        "CF 实际从 O-PF 收到 MSRP SEND，请求属于一对一独立 SDS 经媒体面。"
+      ],
+      "conclusion": "CF 须核 SDS 消息大小不超过业务配置的 <max-data-size-sds-bytes>。失败向发送该 SDS 的 MCData 客户端回 MSRP 403 并停止本程序，不能继续到 CF 200 或终接转送；等于上限满足本项。",
+      "normative_strength": "§6.3.1.3 第 1、3 项为 SHALL。O-PF 通过不替代这一项。",
+      "limitations": [
+        "原文保留“来自 O-PF”的入口和“发送 SDS 的客户端”的响应目的；建连允许对客户端不等于完整直连收件或回程规则。",
+        "不把它填成 SIP Warning 的大小码或判定任何 CF 错误都是这条。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.3.1.3 points 1–3: CF receipt of SEND from O-PF, one-to-one service maximum or both group document maxima; 403 to the sending MCData client and stop"
+          ],
+          "printed_pages": [
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.3.1.3 points 4–5: CF per-hop 200 to O-PF and separate forward action only to successfully connected terminating MCData clients"
+          ],
+          "printed_pages": [
+            24,
+            25
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.3.1.2.1: originating-leg connection text allows the originating client if no O-PF; retain the incoming O-PF event of 6.3.1.3"
+          ],
+          "printed_pages": [
+            23,
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.2.1.4.3 points 1–4: O-PF one-to-one standalone size check against printed MacData1To1, local 403 stop, then appropriate CF connection and forwarding",
+            "6.2.1.4.3 final two paragraphs: actual CF 200 or error received by O-PF, forwarded toward originating client"
+          ],
+          "printed_pages": [
+            21
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "cf-standalone-group-both-document-limits",
+      "title": "CF 的组独立 SDS 同时检验组文档两项上限",
+      "conditions": [
+        "CF 实际从 O-PF 收到 MSRP SEND，其业务为组独立 SDS 经媒体面。"
+      ],
+      "conclusion": "组文档 <mcdata-max-data-in-single-request> 与 <mcdata-on-network-max-data-size-for-SDS> 分别比较；SDS 消息大小须不超过两项。任何一项失败，CF 都须向发送 SDS 的客户端回 MSRP 403 并停止，任一项恰等于上限只是该项通过。",
+      "normative_strength": "§6.3.1.3 第 2a、2b、3 项；不是同一段的一对一服务配置条件。",
+      "limitations": [
+        "无该次角色、业务类型、配置和失败项证据，不能由 403 选择其中一项。",
+        "组情况仅是 CF 同一条款的对照，不扩成组会话或 MBMS 的程序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.3.1.3 points 1–3: CF receipt of SEND from O-PF, one-to-one service maximum or both group document maxima; 403 to the sending MCData client and stop"
+          ],
+          "printed_pages": [
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "4.1.1 and 5.1.1: on-network standalone SDS via MSRP versus established session, and logical roles distinct from deployment",
+            "6.2.1.1 and 6.3.1.1: standalone media plane participating and controlling procedures for one-to-one and group"
+          ],
+          "printed_pages": [
+            10,
+            11,
+            20,
+            23
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "cf-local-200-versus-terminating-connection",
+      "title": "CF 先发本跳 200，另只向成功连接的终接端转送",
+      "conditions": [
+        "CF 按 §6.3.1.3 实际从 O-PF 收到独立 SDS 媒体面 SEND，并通过该类型的适用大小检查、到达第 4 项。"
+      ],
+      "conclusion": "CF 须向 O-PF 生成并发送本跳 MSRP 200，随后只向已成功建立 MSRP 连接的终接客户端转送。终接连接成功限定转送对象，不是回本跳 200 的前置条件。",
+      "normative_strength": "§6.3.1.3 第 4 项是本跳响应；第 5 项另列成功连接对象。",
+      "limitations": [
+        "200 不证明有成功的终接连接，也不证明另一节点实收、终端交付或已读。",
+        "不推断没有成功终接连接时的新拒绝码、不重写 SIP 或终接事件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.3.1.3 points 1–3: CF receipt of SEND from O-PF, one-to-one service maximum or both group document maxima; 403 to the sending MCData client and stop"
+          ],
+          "printed_pages": [
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.3.1.3 points 4–5: CF per-hop 200 to O-PF and separate forward action only to successfully connected terminating MCData clients"
+          ],
+          "printed_pages": [
+            24,
+            25
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.2.1.4.3 points 1–4: O-PF one-to-one standalone size check against printed MacData1To1, local 403 stop, then appropriate CF connection and forwarding",
+            "6.2.1.4.3 final two paragraphs: actual CF 200 or error received by O-PF, forwarded toward originating client"
+          ],
+          "printed_pages": [
+            21
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "terminating-pf-local-200-not-delivery",
+      "title": "终接参与功能的本跳 200 也不能代替客户端收件",
+      "conditions": [
+        "独立 SDS 媒体面中，终接参与功能实际收到 CF 发来的 MSRP SEND。"
+      ],
+      "conclusion": "终接参与功能须向 CF 回该跳 MSRP 200，再向终接 MCData 客户端转送。响应、转送、客户端实际收到、交付报告和已读是不同事件。",
+      "normative_strength": "§6.2.1.5.3 第 1–2 项。",
+      "limitations": [
+        "这条不补终接客户端错误经 CF 的完整回程。",
+        "正式数据 SEND 与空绑定 SEND 分开，不拿后者的 200 填成本次消息的本跳或终端收件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.2.1.5.3 points 1–2: T-PF on actual SEND from CF; local 200 and subsequent onward forwarding, not terminal receipt"
+          ],
+          "printed_pages": [
+            21
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.1.1.1 and 6.1.1.2.1: pre-establishment assumptions, empty SEND for binding, then data SEND; not server size evidence"
+          ],
+          "printed_pages": [
+            12,
+            13
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.3.1.3 points 4–5: CF per-hop 200 to O-PF and separate forward action only to successfully connected terminating MCData clients"
+          ],
+          "printed_pages": [
+            24,
+            25
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "standalone-size-and-spelling-evidence-boundaries",
+      "title": "留住打印拼写和层级差别，不从报文长度算 SDS 或借用其他程序",
+      "conditions": [
+        "读者正在判孤立的大小、拼写、403、绑定 200、控制面或会话内记录是否足以套用本页规则。"
+      ],
+      "conclusion": "服务器尺寸条款是 SDS 消息大小；按证据分别查角色、实际请求和上限。独立 O-PF 第 21 页写 <MacData1To1>，会话客户端第 18 页写 <MaxData1To1>，分别保留。会话服务器的两段不重复独立服务器这些检查，不能因此取消会话客户端自己的上限。",
+      "normative_strength": "字面比较：§6.1.2.4、§6.2.1.4.3、§6.2.2.4.3、§6.3.1.3 与 §6.3.2.3 按各自范围。",
+      "limitations": [
+        "不补配置 schema、别名、计量公式、条件缺省值或前置路径阈值。",
+        "Stage 2 独立路径选择、SIP 控制面 Warning、空绑定 SEND 的 200 和 SDS 会话的局部 200 都不能替代本次独立数据 SEND 的证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.2.1.4.3 points 1–4: O-PF one-to-one standalone size check against printed MacData1To1, local 403 stop, then appropriate CF connection and forwarding",
+            "6.2.1.4.3 final two paragraphs: actual CF 200 or error received by O-PF, forwarded toward originating client"
+          ],
+          "printed_pages": [
+            21
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.1.2.4: session-client per-SDS allowance and printed MaxData1To1 element, not a server alias",
+            "6.2.2.4.3 and 6.3.2.3: in-session media SEND comparison, not the standalone server size/403 procedure"
+          ],
+          "printed_pages": [
+            18,
+            22,
+            23,
+            26
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.1.1.1 and 6.1.1.2.1: pre-establishment assumptions, empty SEND for binding, then data SEND; not server size evidence"
+          ],
+          "printed_pages": [
+            12,
+            13
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.3.1.3 points 1–3: CF receipt of SEND from O-PF, one-to-one service maximum or both group document maxima; 403 to the sending MCData client and stop"
+          ],
+          "printed_pages": [
+            24
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "4.1.1 and 5.1.1: on-network standalone SDS via MSRP versus established session, and logical roles distinct from deployment",
+        "6.2.1.1 and 6.3.1.1: standalone media plane participating and controlling procedures for one-to-one and group"
+      ],
+      "printed_pages": [
+        10,
+        11,
+        20,
+        23
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.2.1.4.3 points 1–4: O-PF one-to-one standalone size check against printed MacData1To1, local 403 stop, then appropriate CF connection and forwarding",
+        "6.2.1.4.3 final two paragraphs: actual CF 200 or error received by O-PF, forwarded toward originating client"
+      ],
+      "printed_pages": [
+        21
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.3.1.3 points 1–3: CF receipt of SEND from O-PF, one-to-one service maximum or both group document maxima; 403 to the sending MCData client and stop"
+      ],
+      "printed_pages": [
+        24
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.3.1.2.1: originating-leg connection text allows the originating client if no O-PF; retain the incoming O-PF event of 6.3.1.3"
+      ],
+      "printed_pages": [
+        23,
+        24
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.3.1.3 points 4–5: CF per-hop 200 to O-PF and separate forward action only to successfully connected terminating MCData clients"
+      ],
+      "printed_pages": [
+        24,
+        25
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.2.1.5.3 points 1–2: T-PF on actual SEND from CF; local 200 and subsequent onward forwarding, not terminal receipt"
+      ],
+      "printed_pages": [
+        21
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.1.1.1 and 6.1.1.2.1: pre-establishment assumptions, empty SEND for binding, then data SEND; not server size evidence"
+      ],
+      "printed_pages": [
+        12,
+        13
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.1.2.4: session-client per-SDS allowance and printed MaxData1To1 element, not a server alias",
+        "6.2.2.4.3 and 6.3.2.3: in-session media SEND comparison, not the standalone server size/403 procedure"
+      ],
+      "printed_pages": [
+        18,
+        22,
+        23,
+        26
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcdata-one-to-one-standalone-sds",
+    "r16-mcdata-sds-control-server",
+    "r16-mcdata-sds-session-media-server"
+  ],
+  "limitations": [
+    "只答媒体面独立 SEND 的大小拒绝归因和本跳应答。没有原始报文、真实终端接收、完整失败回程、协商或外部标准复核。",
+    "同一笔请求是否经过两角色、有效配置与实际投递须各有证据。物理共置不合并条文里的两个角色。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
