@@ -1374,6 +1374,10 @@
       "start": "topics/groups/client-group-configuration.md",
       "next_if": [
         {
+          "condition": "若要查该业务此次 C-5，终端已实收同一用户同一业务的相应用户档，GM 客户端从这份档取得本次的组成员信息，并要查向承载相应成员关系的宿主 GMS 发的 HTTP 取配，查该 GMS 验证什么组管理范围，及其响应不能证明的结果。仅收到组配置更新通知、缺相关用户档或查询是 GMS 对 GMS 时，不能从这里判定 C-5。",
+          "read": "topics/identity/configuration-and-group-authorization.md"
+        },
+        {
           "condition": "若两端都是 GMS，查伙伴系统获取和订阅组配置。 若组员当前由该组的伙伴 MC 系统服务，要查用户档的组条目对应哪个 GMS 地址，也读这一页。",
           "read": "topics/groups/partner-group-configuration.md"
         },
@@ -1613,6 +1617,10 @@
       "question": "终端已收到伙伴修改档，迁移业务授权时哪台服务器取得这份档？请求里的主档索引能证明它收到了吗？ 同一业务 ID 有三份已启用的用户配置档，选档清单只列两份，算漏下载吗？选中一份就成为活动档了吗？ 同一业务 ID 有多份档，主系统何时全部交给终端？用户迁往伙伴系统后，谁选择对应的档，验证失败还能交付吗？ 迁移用户的取档记录中，两个配置管理服务器之间共享配置，与配置管理服务器和业务用户库之间的读取或存储，怎样分辨？",
       "start": "topics/identity/user-profile-download.md",
       "next_if": [
+        {
+          "condition": "若在主系统为这名已由 IdMS 认证的用户办理同一项 MC 业务的 C-4，终端可安全访问 CMS，且要查终端 CM 客户端向 CMS 发 HTTP 用户档查询时由谁验证哪种范围、用哪个身份取档，读 C-4。目标是伙伴 CMS、问题是迁移档或是已有档的内容变更时，保留相应原分支。",
+          "read": "topics/identity/configuration-and-group-authorization.md"
+        },
         {
           "condition": "若问题是下次预选哪份或当前选用了哪份，查配置档选择与切换。",
           "read": "topics/identity/user-profile-switch.md"
@@ -10630,6 +10638,10 @@
       "start": "topics/identity/mcx-sip-service-authorization.md",
       "next_if": [
         {
+          "condition": "若在主系统为这名已由 IdMS 认证的用户办理同一项 MC 业务的 C-4，终端可安全访问 CMS，且要查终端 CM 客户端向 CMS 发 HTTP 用户档查询时由谁验证哪种范围、用哪个身份取档，读 C-4；若要查该业务此次 C-5，终端已实收同一用户同一业务的相应用户档，GM 客户端从这份档取得本次的组成员信息，并要查向承载相应成员关系的宿主 GMS 发的 HTTP 取配，读 C-5。业务服务器的 C-3 验证或 SIP 成功不能给这两个步骤作凭据。",
+          "read": "topics/identity/configuration-and-group-authorization.md"
+        },
+        {
           "condition": "查 MC 用户身份认证与 SIP 注册的时点，或一次认证能否供多项业务授权使用。",
           "read": "topics/identity/home-system-authentication.md"
         },
@@ -12307,6 +12319,34 @@
         }
       ],
       "boundary": "Release 16，Stage 3，TS 24.380 V16.9.0 §6.3.5.3.7 与 §6.3.5.3.10。普通已建立在网单话权组呼、非广播、非特殊组或业务、非音频切入、非 MBMS 程序。该控制侧逐参与者 U 先已在 not permitted and Floor Idle。实收本关联参与者 Floor Release 才按本地回复与查队列；实收本场 G 的 Floor Idle 才是另一条转发。两条消息是替代入口，发送和其他接口收件不是实收。来向要确认才回 Release Ack；不论命中仍发局部 Idle 且可独立要求确认。不能由两条出向推定实际退队、G 状态或终端已收。"
+    },
+    {
+      "id": "r16-identity-configuration-and-group-authorization",
+      "question": "Release 16 中同一用户已获某项 MCX 业务授权，为什么 HTTP 取用户档还要 CMS 检查令牌？从请求字段还是令牌识别取档身份？ 终端已有同一业务的用户档或组名单，组管理客户端什么时候可以找哪台 GMS 办理 C-5？要查配置管理还是组管理的范围？ CMS 或宿主 GMS 发了响应，能判断终端已收、已保存、已归属或用钥吗？再有配置通知是否每次重做 C-5？",
+      "start": "topics/identity/configuration-and-group-authorization.md",
+      "next_if": [
+        {
+          "condition": "若查终端经 REGISTER 或 PUBLISH 向相应 MCX 业务服务器出示令牌、服务器何时绑定 IMPU 与该业务 ID，读「C-3 的 SIP 业务授权」。只见初次注册成功不证明该服务已授权。",
+          "read": "topics/identity/mcx-sip-service-authorization.md"
+        },
+        {
+          "condition": "若查主系统取档响应应含几份，限该用户已由 IdMS 认证、终端可安全访问 CMS、实际办理主系统取档。本次确需下载时，再用「主系统的取档范围」核对所请求业务 ID 的全部关联档；候选清单不是取档响应。",
+          "read": "topics/identity/user-profile-download.md"
+        },
+        {
+          "condition": "若查终端组管理客户端与该组 GMS 间的 Stage 2 获取或保存，先核对终端已注册业务、该 GMS 已收到并保存组配置、客户端需要当前用户适用的配置，且满足获取的一个入口：业务授权后 CM 客户端已收组清单，或收到有新组配置可取的 GMS 通知。读「组配置的获取、订阅与保存」；通知本身不证明已取或已存，也不是自动重走 C-5 的凭据。",
+          "read": "topics/groups/client-group-configuration.md"
+        },
+        {
+          "condition": "若该用户已由 IdMS 认证、终端可安全访问 CMS 且已取得至少一份 MC 业务用户档，查已存在内容的两种更新：收到变更通知后取新值还要求 CMS 可访问该业务 ID 的关联档；客户端已被触发、要写回修改值则查写回。读「已有用户档的内容更新」。不把内容更新当成这里 C-4 的用户档查询，也不当成选择活动档。",
+          "read": "topics/identity/user-profile-data-update.md"
+        },
+        {
+          "condition": "若查同一 MCX 业务服务器实际向终端分发 MuSiK 或更新 CSK/MuSiK，先核对终端已有本用户的 KMS 材料、已在该服务器注册并因而订阅其密钥下载通知，且 KMS 已为获准充当该业务服务器的身份配置材料。读「服务器何时有依据开始使用信令钥」，另核是否成功提取及服务器实收本笔匹配应答。C-5 组钥不走这条；不判定其他程序能否由服务器初次下发 CSK。",
+          "read": "topics/security/service-signalling-key-download.md"
+        }
+      ],
+      "boundary": "Release 16 共通安全流程 TS 33.180 V16.13.0 §5.1.3.1 C-4/C-5；TS 23.280 V16.7.0 §10.1.4.3.1 和 §10.1.5.2 只对照相应 Stage 2 条件。C-4 是主系统里为已由 IdMS 认证的用户、终端可安全访问 CMS 的同业务 HTTP 取档，CMS 实收后检查配置管理范围的令牌，有效才按其业务身份查档并回送；请求业务 ID 是另一字段。C-5 要终端实收同一用户同一业务的对应档，GM 从该档取得成员信息，再向该成员关系的宿主 GMS 送 HTTP 取配和相应业务组管理范围令牌。GMS 实收验证有效才发用户组策略与钥信息。两步发出不证明另一端实收、安装、启用或归属，不复用 C-3 结果，不解释伙伴迁移、跨域、重试、错误码、每次通知重新授权或令牌个数。"
     }
   ]
 }
