@@ -276,6 +276,10 @@
         {
           "condition": "要查普通预安排 MCVideo 组呼中，控制服务器怎样初始化成员并处理传输许可。",
           "read": "topics/mcvideo/prearranged-group-transmission-server.md"
+        },
+        {
+          "condition": "若手头已有一场普通在网按需预安排组呼，终端为重入该场新发 initial INVITE，或 CF／NCF 明确是在邀请迟入，查该场重入与迟入，不套首次建立的目的身份。",
+          "read": "topics/mcvideo/prearranged-group-sip-rejoin.md"
         }
       ],
       "boundary": "不覆盖完整组服务器汇聚、重入、逐路媒体许可、排队或释放；不解除旧private-only条件，不用Stage2填补mc_granted消费。"
@@ -1040,6 +1044,10 @@
         {
           "condition": "若要判断发送许可或实际媒体分发，查视频会话、传输接收控制与媒体分发。",
           "read": "topics/mcvideo/functional-media-control-roles.md"
+        },
+        {
+          "condition": "若已知是普通在网按需 MCVideo 预安排组呼，且要查终端主动重入的 Request-URI、O-PF 映射、CF／NCF 的信令结果或服务器主动迟入 INVITE 的 Stage 3 分支，读 SIP 重入。",
+          "read": "topics/mcvideo/prearranged-group-sip-rejoin.md"
         }
       ],
       "boundary": "限已有的在网预安排组呼。服务器迟入邀请被拒绝后建议不重发；该路径的别名检查仍待研究。"
@@ -11791,6 +11799,26 @@
         }
       ],
       "boundary": "限已经建立的离网 MCVideo 组中一端想开始发送的 Stage 2 示例。单仲裁有无已发现的现任、自仲裁本端观察、组配置与媒体证据分别判断；不作为两端同时请求、整组建呼、Stage 3 计时或线编码的答案。"
+    },
+    {
+      "id": "r16-mcvideo-prearranged-group-sip-rejoin",
+      "question": "Rel-16 普通在网 MCVideo 预安排组呼主动重入时，客户端和 O-PF 的初始 INVITE 分别填哪个 Request-URI？这是原 SIP 对话内的 re-INVITE 吗？ 同一次重入，CF 的 404、488、403／121、403／120 和 486／122 各看什么？如何区分 O-PF 的 486／103、本场人数上限和实际成功？ 组的 NCF 向重入客户端回 200 时，Contact 用谁的会话身份？哪些 SIP NOTIFY 的规定能从原文确定？ 恢复覆盖或新归属后，CF／NCF 的迟入邀请与客户端主动重入怎样区分？",
+      "start": "topics/mcvideo/prearranged-group-sip-rejoin.md",
+      "next_if": [
+        {
+          "condition": "若问两条 Stage 2 业务流程、功能别名或传输信息通知，改按 Stage 2 的适用范围查。",
+          "read": "topics/mcvideo/prearranged-late-entry-rejoin.md"
+        },
+        {
+          "condition": "若还没有组呼，或手头是普通首次 INVITE 的客户端处理，查首次建立。",
+          "read": "topics/mcvideo/prearranged-group-client-establishment.md"
+        },
+        {
+          "condition": "若要查控制服务器腿上的发送许可、实际 RTP 或 End，按该页的传输控制状态和范围读，不从重入的 200 或 NOTIFY 推许可。",
+          "read": "topics/mcvideo/prearranged-group-transmission-server.md"
+        }
+      ],
+      "boundary": "固定 TS 24.281 V16.12.0，Stage 3；限普通在网按需预安排 MCVideo 组呼，按终端主动重入、各角色处理或服务器主动迟入的实际事件读。非首建、对话内 re-INVITE、紧急／迫近危险、广播、聊天组、离网或媒体许可实现。"
     }
   ]
 }

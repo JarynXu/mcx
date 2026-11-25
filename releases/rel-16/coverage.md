@@ -1534,6 +1534,16 @@ Granted与实际RTP分别取证；容量分支不补列表记账，T205到限停
 
 [读取主题](topics/mcvideo/prearranged-late-entry-rejoin.md)
 
+## MCVideo 预安排组呼重入：INVITE 和 200 各用哪个会话身份？
+
+普通在网按需预安排 MCVideo 组呼中，终端主动重入用新 initial INVITE，Request-URI 为该场会话身份；O-PF 在 prearranged 重入的出站 INVITE 用映射后的会话身份。到成功分支后，即使没有订阅者，CF 也须发送 200，Contact 带本 CF 的会话身份。组的 NCF 面向客户端回重入 200 时，Contact 用 NCF 自己生成的会话身份。
+
+到 CF 的重入检查中，组呼不存在是 404；SDP 媒体参数不可接受或未提供 MCVideo 编解码是 488；403 仍分服务特征、加入授权的 Warning 文本码 121 与未归属的文本码 120。本场已满且没走本地策略下可选的移人分支，回 486／Warning 文本码 122，不等于 O-PF 的用户并发组呼 486／文本码 103。CF 或 NCF 实际获知成员新归属或恢复覆盖时，按各自程序邀请迟入。
+
+尚未建立：恢复覆盖不证明哪侧已发出请求，也不把迟入和重入串起来。200 不证明已有订阅者或已发通知；200 和通知也不证明实际呈现或发送许可。保留 UE 第 9／10 项、CF 的归属回指和 NCF 的 NOTIFY 回指差异；不补映射、归属或 NCF 专用通知算法。
+
+[读取主题](topics/mcvideo/prearranged-group-sip-rejoin.md)
+
 ## 一对一 MCVideo 私呼：谁发起结束，服务器向谁请求、向谁应答？
 
 从结束请求和应答的方向判断谁发起释放，区分两端的媒体面资源与按建呼方式才存在的传输控制资源。
