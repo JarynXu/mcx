@@ -1,0 +1,387 @@
+{
+  "topic_id": "r16-mcdata-group-sds-mbms-unmap-and-paging",
+  "title": "在网 MCData 组短数据：只有组 ID，是解映射还是应用寻呼？",
+  "release": 16,
+  "state": "draft",
+  "standard_stage": 3,
+  "source_id": "3gpp-ts-24.582-v16.3.0",
+  "source_catalog": "../../sources.json",
+  "common_conditions": [
+    "固定 TS 24.582 V16.3.0，Rel-16、Stage 3。判读 MCData MBMS 子信道的 MCDM 控制消息；接收动作另限在网组 SDS 的实际终接客户端。"
+  ],
+  "condition_rule": "逐条叠加通用范围与各条条件。只读到日志摘录时不判定缺字段；按相应消息类型、收发角色与当前通信分别查。",
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "11.2.1 and table 11.2.2-1: MCDM APP name, distinct message Subtypes and participating-function-to-client direction",
+        "Table 11.2.3.1-1: application Field IDs; not the message Subtype table"
+      ],
+      "printed_pages": [
+        37,
+        38
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "11.2.5 opening and table 11.2.5-1 following text: Unmap purpose, mandatory MCData Group ID and paired optional TMGI and MBMS Subchannel",
+        "11.2.5 Subtype paragraph: literal reference to field-ID table 11.2.3.1-1"
+      ],
+      "printed_pages": [
+        41,
+        42
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "11.2.6 and table 11.2.6-1: Application Paging purpose, Group ID application field and reference to Subtype table 11.2.2-1"
+      ],
+      "printed_pages": [
+        42,
+        43
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "11.2.8 items 1–4: ignore entire message for unknown name/Subtype, too short or mandatory-field errors; ignore unspecified or syntactically incorrect optional fields"
+      ],
+      "printed_pages": [
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.5.2.2, Unmap Group To Bearer lead-in and point 1: current communication and removal of an existing association",
+        "6.5.2.2, Unmap Group To Bearer point 2: affected bearer and media subchannel; unicast delivery if the SDS session continues"
+      ],
+      "printed_pages": [
+        27
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "6.5.3.2, final paragraph: corresponding Unmap at session end on the general-purpose subchannel"
+      ],
+      "printed_pages": [
+        28
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "id": "same-group-id-does-not-distinguish-message",
+      "title": "只有组 ID，不能区别解映射和应用寻呼",
+      "conditions": [
+        "要辨别一条属于 MBMS 子信道控制的消息，记录只显示 MCData Group ID，或可继续查其 APP 名称、消息 Subtype。"
+      ],
+      "conclusion": "两类消息都使用 MCDM APP 名称；Unmap 和 Application Paging 在表 11.2.2-1 是不同的消息 Subtype。只显示组 ID 不能辨型。Unmap 的文字回指表 11.2.3.1-1，后者实际列的是应用字段 Field ID；不把字段 ID 当消息 Subtype。",
+      "normative_strength": "§11.2.1–2 与消息类型表给出 APP 名称、类型和方向；成对字段规则与 Paging 内容解释组 ID 为什么不足。",
+      "limitations": [
+        "日志只显示一项不证明其他字段没带。",
+        "只区分这两类 MCDM 消息；不据此判定任何现场接收或状态变化。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "11.2.1 and table 11.2.2-1: MCDM APP name, distinct message Subtypes and participating-function-to-client direction",
+            "Table 11.2.3.1-1: application Field IDs; not the message Subtype table"
+          ],
+          "printed_pages": [
+            37,
+            38
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "11.2.5 opening and table 11.2.5-1 following text: Unmap purpose, mandatory MCData Group ID and paired optional TMGI and MBMS Subchannel",
+            "11.2.5 Subtype paragraph: literal reference to field-ID table 11.2.3.1-1"
+          ],
+          "printed_pages": [
+            41,
+            42
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "11.2.6 and table 11.2.6-1: Application Paging purpose, Group ID application field and reference to Subtype table 11.2.2-1"
+          ],
+          "printed_pages": [
+            42,
+            43
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "unmap-group-required-tmgi-and-subchannel-paired",
+      "title": "Unmap 必带组 ID，TMGI 和媒体子信道一起带或一起省略",
+      "conditions": [
+        "已经识别为 Unmap Group To Bearer，并在完整记录上核对字段。"
+      ],
+      "conclusion": "MCData Group ID 必选；TMGI 和 MBMS Subchannel 都不带可以，二者都带也满足成对要求，只带任一项不符合该要求。表 11.2.5-1 同时画出三项不改变表后的可选条件。",
+      "normative_strength": "§11.2.5 表后正文规定必选与成对可选。",
+      "limitations": [
+        "只确认该处字段存在条件，不据此判整条消息通过所有接收检查。",
+        "不规定仅凭组 ID 定位哪条承载和媒体子信道关联。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "11.2.5 opening and table 11.2.5-1 following text: Unmap purpose, mandatory MCData Group ID and paired optional TMGI and MBMS Subchannel",
+            "11.2.5 Subtype paragraph: literal reference to field-ID table 11.2.3.1-1"
+          ],
+          "printed_pages": [
+            41,
+            42
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "paging-purpose-does-not-prove-unicast",
+      "title": "Application Paging 指向单播计划，不证明传输已开始",
+      "conditions": [
+        "已经识别为参与 MCData 功能发出的 Application Paging。"
+      ],
+      "conclusion": "表 11.2.6-1 的应用字段只有 MCData Group ID，不带 Unmap 所说的字段对。参与功能在准备把现有媒体传输切到单播、或准备在单播开始新媒体传输时发送该消息。",
+      "normative_strength": "§11.2.6 描述发送场景与消息内容。",
+      "limitations": [
+        "不能由这一条寻呼推断是哪种单播场景、单播已经开始、终端已经撤销组映射，或已有一条短数据送达。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "11.2.1 and table 11.2.2-1: MCDM APP name, distinct message Subtypes and participating-function-to-client direction",
+            "Table 11.2.3.1-1: application Field IDs; not the message Subtype table"
+          ],
+          "printed_pages": [
+            37,
+            38
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "11.2.6 and table 11.2.6-1: Application Paging purpose, Group ID application field and reference to Subtype table 11.2.2-1"
+          ],
+          "printed_pages": [
+            42,
+            43
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "receiver-ignore-message-vs-field",
+      "title": "接收规则分开忽略整条消息与忽略单个字段",
+      "conditions": [
+        "接收端实际收到本节范围内的 RTCP APP 控制消息，按相应错误类别判读。"
+      ],
+      "conclusion": "名称与消息 Subtype 的组合未知、消息太短或必选字段有错，接收端须忽略整条消息。未定义字段和语法有错的可选字段须忽略该字段。",
+      "normative_strength": "§11.2.8 分别在 1–2 和 3–4 项规定。",
+      "limitations": [
+        "忽略可选字段说的是这一项动作，不保证剩余消息通过其他检查。",
+        "整条消息未满足 §11.2.5 的共现约束，不由此自动等同于 §11.2.8 所列的任一整条忽略条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "11.2.8 items 1–4: ignore entire message for unknown name/Subtype, too short or mandatory-field errors; ignore unspecified or syntactically incorrect optional fields"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "11.2.5 opening and table 11.2.5-1 following text: Unmap purpose, mandatory MCData Group ID and paired optional TMGI and MBMS Subchannel",
+            "11.2.5 Subtype paragraph: literal reference to field-ID table 11.2.3.1-1"
+          ],
+          "printed_pages": [
+            41,
+            42
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "unmap-single-optional-field-disposition-unspecified",
+      "title": "Unmap 成对字段缺一项不合规，但未指定此情形的单独处置",
+      "conditions": [
+        "完整记录确认是 Unmap，组 ID 可用，TMGI 和 MBMS Subchannel 只带一项。",
+        "在场的可选字段本身语法正确；尚未发现独立的太短、必选字段错误或其他已有处置条件。"
+      ],
+      "conclusion": "缺少另一项不符合 §11.2.5 的成对条件。§11.2.8 未为这一种共现错误规定单独处置。",
+      "normative_strength": "字段构成要求是明确规定；缺一项的单独接收处置是这两节未给出的边界。",
+      "limitations": [
+        "不推断整条被忽略、只忽略在场字段、补齐缺项或一条实现的实际结果。",
+        "若另有明确的整条或字段错误，仍按其各自条件判断，不用本条覆盖。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "11.2.5 opening and table 11.2.5-1 following text: Unmap purpose, mandatory MCData Group ID and paired optional TMGI and MBMS Subchannel",
+            "11.2.5 Subtype paragraph: literal reference to field-ID table 11.2.3.1-1"
+          ],
+          "printed_pages": [
+            41,
+            42
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "11.2.8 items 1–4: ignore entire message for unknown name/Subtype, too short or mandatory-field errors; ignore unspecified or syntactically incorrect optional fields"
+          ],
+          "printed_pages": [
+            44
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "unmap-structure-does-not-select-association",
+      "title": "字段合规不能替代当前通信和关联判定",
+      "conditions": [
+        "要从只带组 ID 的 Unmap 判断终接客户端会处理哪条当前通信；尤其是现场记录留下两个或更多可能的关联时。"
+      ],
+      "conclusion": "§6.5.2.2 以终接客户端实际收到指向当前通信的 Unmap 为接收程序条件，移除的是已存在的对应关联。仅凭组 ID 和已知消息类型，不能确定是哪一条关联；查到终端的当前通信与关联记录时用它们核对；§11.2.5 和 §6.5.2.2 没有规定多条候选时的唯一选择算法。",
+      "normative_strength": "§11.2.5 允许两字段同时省略；§6.5.2.2 规定当前通信和对应关联的作用范围，不为该省略情形另给选择算法。",
+      "limitations": [
+        "多个候选是读者用于核对的现场假设，不宣称标准要求支持同组多映射。",
+        "不假定按最近关联、全组清理或不存在任何匹配；也不据字段合规推断动作已经执行。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "11.2.5 opening and table 11.2.5-1 following text: Unmap purpose, mandatory MCData Group ID and paired optional TMGI and MBMS Subchannel",
+            "11.2.5 Subtype paragraph: literal reference to field-ID table 11.2.3.1-1"
+          ],
+          "printed_pages": [
+            41,
+            42
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.2.2, Unmap Group To Bearer lead-in and point 1: current communication and removal of an existing association",
+            "6.5.2.2, Unmap Group To Bearer point 2: affected bearer and media subchannel; unicast delivery if the SDS session continues"
+          ],
+          "printed_pages": [
+            27
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "unmap-unicast-continues-only-for-ongoing-sds",
+      "title": "Unmap 后续传以原 SDS 会话仍在进行为条件",
+      "conditions": [
+        "终接客户端在 MBMS 子信道实际收到指向当前通信的 Unmap，问题是按 §6.5.2.2 是否须续传。"
+      ],
+      "conclusion": "停止监听的是相关承载及媒体子信道；原 SDS 会话仍在进行时才须恢复或继续单播媒体面投递，已结束不在此条要求内。完整接收程序查同域终接客户端主题。",
+      "normative_strength": "§6.5.2.2 的解除映射段第 2 项；§6.5.3.2 给的是发送方在会话结束时的触发，不是所有 Unmap 的逆向断定。",
+      "limitations": [
+        "发送、客户端收到、关联被移除、单播续传和短数据实收是不同证据。",
+        "会话结束时发送对应 Unmap 的要求不能反推出看到 Unmap 就是会话已结束。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.2.2, Unmap Group To Bearer lead-in and point 1: current communication and removal of an existing association",
+            "6.5.2.2, Unmap Group To Bearer point 2: affected bearer and media subchannel; unicast delivery if the SDS session continues"
+          ],
+          "printed_pages": [
+            27
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "6.5.3.2, final paragraph: corresponding Unmap at session end on the general-purpose subchannel"
+          ],
+          "printed_pages": [
+            28
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "11.2.5 opening and table 11.2.5-1 following text: Unmap purpose, mandatory MCData Group ID and paired optional TMGI and MBMS Subchannel",
+            "11.2.5 Subtype paragraph: literal reference to field-ID table 11.2.3.1-1"
+          ],
+          "printed_pages": [
+            41,
+            42
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-mcdata-group-sds-mbms-map-unmap",
+    "r16-mcdata-group-sds-mbms-forwarding"
+  ],
+  "limitations": [
+    "只说明消息识别、字段共现、接收检查粒度及与已有 §6.5.2.2 主题的接缝。未给出唯一映射、缺项修复或终端实现策略。",
+    "不把 Stage 2 xMB Files、公共承载公告或其他业务的消息规则替代这些 Stage 3 条款；不展开交叉引用的规范。",
+    "这不是现场接收、投递实测或完整版本审定。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
