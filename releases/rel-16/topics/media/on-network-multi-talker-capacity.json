@@ -187,6 +187,133 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "r16-media-multi-talker-pending-other-holder-t1",
+      "title": "待撤甲时，另一获准者乙的 T1 到期，只收尾乙并仍待撤",
+      "conditions": [
+        "同一已建立的普通在网多话者组呼：G 已实收满员时有效优先级为抢占的显式 Floor Request，已经向选中的持有者甲发出 Floor Revoke，丙的请求已进活动队首，G 仍处于 pending Floor Revoke。",
+        "实际到期的是分配给另一名获准者乙的 T1；乙不是已发 Revoke 的甲。"
+      ],
+      "conclusion": "G 须请求媒体分发器停止转发乙的相关 RTP，分别停止乙仍在运行的 T2、T20，发指向乙的 Floor Release Multi Talker（两段过程均写乙的 SSRC、乙的 MCPTT ID），从当前获准名单移除乙。 多话者分支移除乙后，G 仍处于 pending Floor Revoke。",
+      "normative_strength": "§6.3.4.5.6 第二段的本端请求、条件停表、发送通知为 SHALL；移除乙与继续待撤限多话者分支，均为 SHALL。",
+      "limitations": [
+        "请求停转不是分发器已执行；发出 Floor Release Multi Talker 不证明终端实收，也不能凭同名通知辨认事件或原状态。两段都没把停止甲的 T3、移出队首或新的授予列为本步动作；不能据此确认甲完成放权、T3 已停、队首已移出或丙获准。",
+        "§8.2.14 将在网 SSRC 写为话权控制服务器，格式表只列一个 SSRC，与过程给乙的 SSRC 不同；不裁定线上值、不另造字段、不扩大通知接收范围。",
+        "没有确认 T1 归属或只见收不到 RTP，不足判定本事件。甲自己的 T1 到期另见本节首段；不把普通 G Floor Taken 的 T1 分支中的缓存例外或通知收件者当成本段规定。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.5.6 second paragraph, items 1–5: another participant T1 expires during multi-talker pending revoke"
+          ],
+          "printed_pages": [
+            67
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.4.7a 第 1a、2 项"
+          ],
+          "printed_pages": [
+            62
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.5.1–.2"
+          ],
+          "printed_pages": [
+            64,
+            65
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.14, Table 8.2.14-1 and SSRC field description: one shown SSRC and Track Info present (format comparison)"
+          ],
+          "printed_pages": [
+            174
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "r16-media-multi-talker-pending-other-holder-unrevoked-release",
+      "title": "待撤甲时，另收未被发对应 Revoke 的乙的 Release，按名单分流",
+      "conditions": [
+        "同一已建立的普通在网多话者组呼：G 已实收满员时有效优先级为抢占的显式 Floor Request，已经向选中的持有者甲发出 Floor Revoke，丙的请求已进活动队首，G 仍处于 pending Floor Revoke。",
+        "G 实收另一名获准者乙的 Floor Release，且此前没有向乙发过对应这份 Release 的 Floor Revoke。此处不要求乙的 T1 到期。"
+      ],
+      "conclusion": "G 须请求媒体分发器停止转发乙的相关 RTP，分别停止乙仍在运行的 T2、T20，发指向乙的 Floor Release Multi Talker（两段过程均写乙的 SSRC、乙的 MCPTT ID），从当前获准名单移除乙。 移除后名单为空则调用 G: Floor Idle 的入态规程；名单不空时，待撤状态一节的正文写留在 G: Floor Taken，不补另一次 Taken 入态、重新授予或仍在待撤。",
+      "normative_strength": "§6.3.4.5.4 第二段明确列出的停相关转发请求、运行中的乙 T2/T20、发送、移除及各自名单分支为 SHALL。",
+      "limitations": [
+        "请求停转不是分发器已执行；发出 Floor Release Multi Talker 不证明终端实收，也不能凭同名通知辨认事件或原状态。两段都没把停止甲的 T3、移出队首或新的授予列为本步动作；不能据此确认甲完成放权、T3 已停、队首已移出或丙获准。",
+        "§8.2.14 将在网 SSRC 写为话权控制服务器，格式表只列一个 SSRC，与过程给乙的 SSRC 不同；不裁定线上值、不另造字段、不扩大通知接收范围。",
+        "名单是否为空看实际获准名单，不用 RTP 路数替代。按 Idle 入态规程的活动队列分支另有从非 Start-stop 进入、无客户端协商排队、无双话权状态机的守卫；调用不证明最终状态或已授予。若只见乙发出 Release、未知 G 是否收到或是否发过对应 Revoke，不能认定此分支。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.5.4 second paragraph, items 1–5: multi-talker receives another holder Release without corresponding Revoke during pending revoke"
+          ],
+          "printed_pages": [
+            66
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.4.7a 第 1a、2 项"
+          ],
+          "printed_pages": [
+            62
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.5.1–.2"
+          ],
+          "printed_pages": [
+            64,
+            65
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.3.2 (queue advancement boundary)"
+          ],
+          "printed_pages": [
+            56
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.14, Table 8.2.14-1 and SSRC field description: one shown SSRC and Track Info present (format comparison)"
+          ],
+          "printed_pages": [
+            174
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "related": [
