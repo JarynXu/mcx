@@ -6,21 +6,23 @@
   "title": "MCPTT 在网多人讲话：收到某人释放话权的通知，自己就失去话权吗？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.380-v16.9.0",
-  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "condition_rule": "每条继承共同的 Release、版本和呼叫模式。原有终端声明限本端实收，服务器声明各用自己的实收入口；不假定这些入口已经在同一次记录全部发生。",
   "common_conditions": [
-    "3GPP TS 24.380 V16.9.0，Release 16，Stage 3。在网 MCPTT 多人讲话组；本端作为话权参与端收到 Floor Release Multi Talker，仅判断此消息本身及该接收事件。"
+    "3GPP TS 24.380 V16.9.0，Release 16，Stage 3，在网 MCPTT 多话者组。控制侧仲裁、非控制侧转交和终端收件分别按各条的角色、实际事件及状态判断。"
   ],
   "claims": [
     {
       "id": "server-and-releasing-user",
       "title": "服务器发出通知，User ID 标识放权者",
       "conditions": [
+        "3GPP TS 24.380 V16.9.0，Release 16，Stage 3。在网 MCPTT 多人讲话组；本端作为话权参与端收到 Floor Release Multi Talker，仅判断此消息本身及该接收事件。",
         "判读这条通知的方向和身份。"
       ],
-      "conclusion": "话权控制服务器发给话权参与端，表示指定用户已结束本次媒体传输并释放话权。User ID 为放权者的 MCPTT ID，在网 SSRC 则属于话权控制服务器。消息只用于在网，单播和 MBMS 均可承载。",
-      "normative_strength": "§8.2.14 定义消息的用途、方向、承载和字段含义。",
+      "conclusion": "话权控制服务器发给话权参与端，表示指定用户已结束本次媒体传输并释放话权。User ID 为放权者的 MCPTT ID。§8.2.14 把在网 SSRC 写成话权控制服务器的 SSRC；§6.3.4.4.6 第 5(a)(i) 项对主动放权通知则写为放权参与者的 SSRC。消息只用于在网，单播和 MBMS 均可承载。",
+      "normative_strength": "§8.2.14 定义用途、方向、承载和字段含义；§6.3.4.4.6 第 5(a)(i) 项规定该仲裁分支的构造动作。保留两处对 SSRC 的不同写法。",
       "limitations": [
-        "这不是全组空闲指示、给接收者的发言许可或 RTP 送达凭据；接收者是否播放语音也不能由此确定。"
+        "这不是全组空闲指示、给接收者的发言许可或 RTP 送达凭据；接收者是否播放语音也不能由此确定。",
+        "表 8.2.14-1 显示一个 SSRC 栏和一个 Track Info 栏。不能增设第二个 SSRC 栏，也不据此裁定线上 SSRC 值或放权归属；User ID 与收件接口引用分开判读。"
       ],
       "source_references": [
         {
@@ -31,18 +33,37 @@
           "printed_pages": [
             174
           ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.4.6, steps 1–3 and 5(a)–(c): voluntary release in multi-talker G Floor Taken, one sender and remaining talkers"
+          ],
+          "printed_pages": [
+            61
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.14, Table 8.2.14-1 and SSRC field description: one shown SSRC and Track Info present (format comparison)"
+          ],
+          "printed_pages": [
+            174
+          ]
         }
       ],
       "verification": {
         "original_clauses_checked": true,
-        "independent_source_review": true,
-        "independent_usage_acceptance": true
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
       }
     },
     {
       "id": "no-permission-or-requesting-receiver",
       "title": "收到多人讲话放权通知时，无话权者仍无权，正在请求者继续等待",
       "conditions": [
+        "3GPP TS 24.380 V16.9.0，Release 16，Stage 3。在网 MCPTT 多人讲话组；本端作为话权参与端收到 Floor Release Multi Talker，仅判断此消息本身及该接收事件。",
         "接收前本端处于 U: has no permission 或 U: pending Request。"
       ],
       "conclusion": "两种状态下终端都须通知本地用户，多人讲话组中有一位参与者已释放话权。原先无话权的仍然无话权；原先等待话权请求结果的仍在等待。",
@@ -80,6 +101,7 @@
       "id": "permitted-or-queued-receiver",
       "title": "收到多人讲话放权通知时，持权者保留许可，已排队者继续排队",
       "conditions": [
+        "3GPP TS 24.380 V16.9.0，Release 16，Stage 3。在网 MCPTT 多人讲话组；本端作为话权参与端收到 Floor Release Multi Talker，仅判断此消息本身及该接收事件。",
         "接收前本端处于 U: has permission 或 U: queued。"
       ],
       "conclusion": "两种状态下终端都须通知本地用户，多人讲话组中有一位参与者已释放话权。原先有话权的仍然有话权；原先已排队的仍在队列中。",
@@ -135,6 +157,7 @@
       "id": "pending-release-attribution",
       "title": "等待释放结果时，按这条通知是否由本端自己放权而发来分支",
       "conditions": [
+        "3GPP TS 24.380 V16.9.0，Release 16，Stage 3。在网 MCPTT 多人讲话组；本端作为话权参与端收到 Floor Release Multi Talker，仅判断此消息本身及该接收事件。",
         "接收前本端处于 U: pending Release。"
       ],
       "conclusion": "终端须通知本地用户，多人讲话组中有一位参与者已释放话权。若消息因本端自己放权而发，本端须转为 U: has no permission；否则须保持 U: pending Release。",
@@ -167,18 +190,125 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "multi-talker-voluntary-release-one-media-and-remaining-grantees",
+      "title": "多话者主动放权时，G 请求停止该参与者的转发，按移除后的名单判 Taken 或 Idle",
+      "conditions": [
+        "本页只取已建立的普通在网组呼、支持多话者且一般仲裁已在 G: Floor Taken 的情形。G 实际收到当前获准名单中一名参与者的 Floor Release；不是排队撤回、撤权或超时。"
+      ],
+      "conclusion": "G 须请求媒体分发器停止转发该参与者的 RTP，停止该参与者的 T2 和 T20（各自仍在运行时）。G 须发送 Floor Release Multi Talker、移除该参与者；移除后获准名单空则进入 G: Floor Idle 规程，不空则留在 G: Floor Taken。",
+      "normative_strength": "§6.3.4.4.6 第 1–3 项和支持多话者的第 5 项为 SHALL；计时器限该参与者且实际运行中。",
+      "limitations": [
+        "看的是获准名单，不以 RTP 路数代替。请求停转不是停转完成，发送通知不证明某终端实收或其他发言人已中断。",
+        "不把一次 Floor Release 或进入 Idle 当作整场呼叫释放、后继授予或对其他参与者的撤权；不补未列的停止、队列或承载行为。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.4.4.6, steps 1–3 and 5(a)–(c): voluntary release in multi-talker G Floor Taken, one sender and remaining talkers"
+          ],
+          "printed_pages": [
+            61
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "multi-talker-ncf-release-target-and-pop-reference",
+      "title": "NCF 服务器接口收到多人放权通知后，按 Track Info 末位引用定向转交",
+      "conditions": [
+        "非控制 MCPTT 功能的话权控制服务器接口实际收到控制功能送来的 Floor Release Multi Talker，且可用 Track Info 末位 Participant Reference 识别本次收件 P。"
+      ],
+      "conclusion": "末位 Participant Reference 用来找目标 P。若来向仅含一个引用，出向移除整个 Track Info；若含多个，只移除末位引用。服务器接口须把消息转交给识别出的 P。",
+      "normative_strength": "§6.5.4.17 的定位、两种引用分支和转交均为 SHALL。",
+      "limitations": [
+        "User ID 标识放权者，不能替代收件引用。本款不要求向全部 P 广播，不规定没有、为空或不能识别引用时的回退，也不规定 CF 如何补建 Track Info。",
+        "控制侧发出不证明 NCF 收到；服务器接口转发不证明 P 或终端已实收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.4.17, opening and steps 1–3: Floor Release Multi Talker targeted by the last Participant Reference"
+          ],
+          "printed_pages": [
+            112
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "multi-talker-ncf-release-p-keeps-own-permission",
+      "title": "NCF 的 P 实收多人放权通知后，转发给关联参与者，保持 P 的许可状态",
+      "conditions": [
+        "非控制功能中本次会话某客户端的 P 实际收到来自该功能话权控制服务器接口的 Floor Release Multi Talker；收件前 P 为 has no permission 或 has permission。"
+      ],
+      "conclusion": "两个 P 状态都须把消息发给关联话权参与者，各自仍处于原状态。",
+      "normative_strength": "§6.5.5.3.12 与 §6.5.5.4.9 的发送及保持状态均为 SHALL；逐客户端实例范围见 §6.5.5.1。",
+      "limitations": [
+        "P 的许可状态不是一般仲裁 G，也不是客户端的 U。只有客户端另有实收才用本主题的终端状态分支；两处 P 程序不证明实际终端收件、组播分发或另一 P 许可变化。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.3.12, opening and steps 1–2: forward Floor Release Multi Talker and keep P has no permission"
+          ],
+          "printed_pages": [
+            116
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.4.9, opening and steps 1–2: forward Floor Release Multi Talker and keep P has permission"
+          ],
+          "printed_pages": [
+            118
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.5.5.1 and figure 6.5.5.1-1: one P instance per client in a session and fallback only for unspecified events"
+          ],
+          "printed_pages": [
+            113
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "related": [
     "r16-mcptt-onnetwork-preemption-revoke",
-    "r16-mcptt-onnetwork-dual-floor-entry"
+    "r16-mcptt-onnetwork-dual-floor-entry",
+    "r16-mcptt-onnetwork-holder-release",
+    "r16-media-on-network-multi-talker-capacity"
   ],
   "limitations": [
-    "不规定服务器完整仲裁、媒体送达、消息构造或离网流程。用户通知是终端的规定动作，不证明某位用户实际看过或听过提示。"
+    "服务器范围限已获准者主动放权、所列定向转交和 P 状态。不重建完整仲裁、其他 U 状态、媒体送达、MBMS 分发、离网或 SSRC 差异的编码裁决。",
+    "用户通知是终端的规定动作，不证明某位用户实际看过或听过提示。"
   ],
   "verification": {
     "original_clauses_checked": true,
-    "independent_source_review": true,
-    "independent_usage_acceptance": true
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
   }
 }
