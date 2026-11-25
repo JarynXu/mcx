@@ -5905,11 +5905,11 @@ LMR 定义组：正在通话。客户端已注册、尚未参加，用户已认�
 
 ## 临时组逐参与者 U：请求被拒是否入队，撤回时查哪里？
 
-临时组 SIP 会话已建立，关联方为组成组或会话发起方时，按对应入态程序设 U 为初始化状态。该 U 实收 Floor Request 时，先定有效优先级并入队，再按本次实收能力决定回复。 同一 U 实收关联参与者的 Floor Release 时，先查活动队列，未命中才查缓存的请求正文；找到才从相应位置移除该客户端的请求。
+临时组 SIP 会话已建立，关联方为组成组或会话发起方时，按对应入态程序设 U 为初始化状态。该 U 实收 Floor Request 时，先定有效优先级并入队，再按本次实收能力决定回复。 同一 U 实收关联参与者的 Floor Release 时，先查活动队列，未命中才查缓存的请求正文；找到才从相应位置移除该客户端的请求。 同一 U 初始化时实收本场仲裁逻辑的 Floor Taken、Floor Idle 或 Floor Granted，须转发给关联话权参与者，并分别进入 U 非获准 Taken、非获准 Idle 或 U: permitted。
 
-本次 Track Info 能力为 1 时向发起请求的非控制功能回队位和话权优先级；为 0 时发 Floor Deny #1。两支附回本次 Track Info，临时组带相应 Floor Indicator，U 仍在初始化。 撤回消息的 subtype 首位为 1 就须发 Floor Ack，不要求队列或缓存命中。撤回也保持 U 初始化。
+本次 Track Info 能力为 1 时向发起请求的非控制功能回队位和话权优先级；为 0 时发 Floor Deny #1。两支附回本次 Track Info，临时组带相应 Floor Indicator，U 仍在初始化。 撤回消息的 subtype 首位为 1 就须发 Floor Ack，不要求队列或缓存命中。撤回也保持 U 初始化。 转发仲裁结果时可设置 subtype 首位请求 Ack；入态不以收到 Ack 为条件。Taken 和 Idle 入态时，若有已存的 Track Info 则移除该字段。
 
-尚未建立：缺少能力不等于 0。单见拒绝或队位应答不证明现场实际入队、撤出或保留，也不证明 G 已占用、谁获准或整场呼叫已完成；G 收 SIP 正文和 P 实收拆分各按自己的入口。 无队列日志不证明查过且未命中；Floor Ack 不证明撤回成功。同版查找 SSRC 的位置、Ack 的 Message Type 有不同写法，不能据本条指定唯一编码。
+尚未建立：缺少能力不等于 0。单见拒绝或队位应答不证明现场实际入队、撤出或保留，也不证明 G 已占用、谁获准或整场呼叫已完成；G 收 SIP 正文和 P 实收拆分各按自己的入口。 无队列日志不证明查过且未命中；Floor Ack 不证明撤回成功。同版查找 SSRC 的位置、Ack 的 Message Type 有不同写法，不能据本条指定唯一编码。 仲裁发出、别的 U 实收或最终 SIP 响应不能证明本 U 收到结果；出向记录、确认位或 Ack 不证明本 U 已入态、对端已收到消息或 RTP 已到达。
 
 [读取主题](topics/media/temporary-group-participant-floor-initialization.md)
 

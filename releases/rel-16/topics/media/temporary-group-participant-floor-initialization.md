@@ -35,4 +35,20 @@ U 在此状态等待仲裁逻辑完成初始化，期间可以从非控制 MCPTT
 - 第 2 项把 SSRC 写作在 `Track Info` 内。[表 8.2.3.13-1，页 154–155](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=155)列参与者引用，未单列 SSRC；[Floor Release 格式表 8.2.7-1，页 166](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=167)把报文 SSRC 与 Track Info 分列。不能据此断定必须取头部 SSRC 当查找键。
 - 流程第 1(a) 项写 4。[表 8.2.2.1-1，页 148](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=149)把 Floor Release 的 subtype 写成 `x0100`；[§8.2.3.14，页 155](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=156)要求 Ack 的 Message Type 在前面补三个 0，保留原 subtype 的五位，含确认位。首位为 1 时照通用规则读为十进制 20。[§8.2.13 的 Message Type 说明，页 174](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=175)回指这条通用规则。两种文字读数不同，不能据本条宣布哪个线上取值唯一正确。
 
+## 仲裁结果到达 U 后，转发给谁、进入什么状态？
+
+这一步看的是**控制侧的同一个逐参与者接口 U**。U 还处于 `U: not permitted and initiating`，且已收到本场 MCPTT 话权仲裁逻辑交给它的结果。只有仲裁逻辑的发出记录、别的 U 的接收记录或最终 SIP 响应，不能证明这个 U 收到了结果。以下三条也未把该参与者先发过 Floor Request 写成前提。
+
+三条都要求 U 把实收的消息转发给**这个 U 的关联话权参与者**。按实收结果分别进入下表状态：
+
+| U 实收仲裁结果 | 进入的 U 状态 | 入态时的动作 |
+| --- | --- | --- |
+| Floor Taken | `U: not permitted and Floor Taken` | 移除已存的 Track Info（若有），设置该状态。[§6.3.5.10.3，印刷页 92](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=93)；[§6.3.5.4.2，页 78](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=79)。 |
+| Floor Idle | `U: not permitted and Floor Idle` | 移除已存的 Track Info（若有），设置该状态。[§6.3.5.10.4，页 92–93](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=93)；[§6.3.5.3.2，页 75](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=76)。 |
+| Floor Granted | `U: permitted` | 为关联方设置该状态。该入态条文没写移除 Track Info，也不能据它认定 Track Info 一定保留。[§6.3.5.10.6，页 93](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=94)；[§6.3.5.5.2，页 85](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=86)。 |
+
+Taken 和 Idle 入态时清理的是已存的 Track Info。不能据此认定转发报文会删掉 Track Info，也不能认定请求队列或缓存请求正文已清理。
+
+三条都允许 U 把出向消息的 subtype 首位设为 1 来请求 Floor Ack。收到 Ack 后怎样处理，没收到时做什么，由实现决定。**第 3 项要求进入对应状态，没有写成收到 Ack 才进入。** 首位为 1 只表示要求确认；发送记录或 Ack 不能充当现场 U 已入态、相关终端已收到通知、终端已改变状态或 RTP 已到达的证据。[表 8.2.2.1-1，页 148](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=149)。
+
 [结构化条件与声明](temporary-group-participant-floor-initialization.json)。
