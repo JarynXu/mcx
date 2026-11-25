@@ -1,0 +1,414 @@
+{
+  "topic_id": "r16-media-temporary-group-noncontrolling-media-protection",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "临时组的非控制功能：语音、话权和媒体控制分别在哪一段处理？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "common_conditions": [
+    "3GPP TS 24.380 V16.9.0，Release 16，Stage 3。限定临时 MCPTT 组的组成组在网组呼，且所查一端在该呼叫中实际承担非控制 MCPTT 功能（NCF）。"
+  ],
+  "condition_rule": "先区分 RTP 语音、RTCP APP 话权与 RTCP 媒体控制。控制消息按本次 NCF 往来的对端、这一类控制消息的协商结果、以及 NCF 本端的 SPK 与 SPK-ID 判定，互不代用。",
+  "claims": [
+    {
+      "id": "temporary-group-ncf-negotiated-rtp-payload-transparent",
+      "title": "组成组在网呼叫已协商媒体保护：NCF 转发加密 RTP 而不解负载",
+      "conditions": [
+        "该呼叫已协商 RTP 媒体保护。"
+      ],
+      "conclusion": "按 §13.3.5 第 1 项，NCF 须透明转发加密 RTP 流，不解密 RTP 负载。§13.1 的组成组场景以临时 MCPTT 组的 GMK 和 GMK-ID 保护终端发送和接收的媒体；这不是 NCF 控制消息的 SPK。",
+      "normative_strength": "已协商媒体保护时，透明转发且不解 RTP 负载为 SHALL。",
+      "limitations": [
+        "不据此认定 NCF 持有临时组 GMK、完整 RTP 报文字节不变、所有来包须无条件转发、或任何终端已收到/解密/播放媒体。",
+        "RTP 媒体保护条件与该 NCF 的两段、两类控制消息保护分别判断。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.3.5 item 1: NCF transparently forwards encrypted RTP media without decrypting the payload if media protection was negotiated"
+          ],
+          "printed_pages": [
+            236
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.1, on-network constituent-group case item 1: temporary group GMK and GMK-ID protect MCPTT client media when negotiated"
+          ],
+          "printed_pages": [
+            227
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.1, opening numbered list: RTP media, RTCP media control (SR/RR/SDES) and RTCP APP floor control are distinct"
+          ],
+          "printed_pages": [
+            226
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "temporary-group-ncf-pf-floor-protection-directions",
+      "title": "NCF 与参与功能（PF）协商这一段话权控制保护且本端有 SPK/ID：分开判收发",
+      "conditions": [
+        "实际对端是参与功能（PF），本次看的是RTCP APP 的话权消息。",
+        "NCF 与该对端已协商保护这一段的话权控制消息；SPK 与 SPK-ID 都已配置在 NCF 本端。"
+      ],
+      "conclusion": "NCF 须对发往该对端的话权控制消息加密，对从该对端收到的话权控制消息解密。按 §13.2 使用从 SPK 和 SPK-ID 导出的 SRTP-MK、SRTP-MS、SRTP-MKI。",
+      "normative_strength": "§13.3.5 第 2 项 A/B 在两项守卫同时成立时均为 SHALL。只规定 NCF 本端动作。",
+      "limitations": [
+        "不能将另一对端或另一类消息的协商、另一端部署记录、同类密钥/标识或 RTP 保护条件拿来补足这条声明。",
+        "不据此确定应向另一个对端转发、远端是否已收到或处理、两段的密钥材料相同、或未达到守卫时使用明文、丢包还是另有回退。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.3.5 item 2(A–B): negotiated NCF pf-floor protection plus SPK/SPK-ID configured locally; encrypt sent and decrypt received"
+          ],
+          "printed_pages": [
+            237
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.1, on-network constituent-group case item 4: separate negotiated server-side pf-floor protection"
+          ],
+          "printed_pages": [
+            227
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.1, opening numbered list: RTP media, RTCP media control (SR/RR/SDES) and RTCP APP floor control are distinct"
+          ],
+          "printed_pages": [
+            226
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.1 closing SPK/SPK-ID configuration paragraph and 13.2: locally configured server material and derived SRTP-MK/MS/MKI"
+          ],
+          "printed_pages": [
+            229
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "temporary-group-ncf-cf-floor-protection-directions",
+      "title": "NCF 与控制功能（CF）协商这一段话权控制保护且本端有 SPK/ID：分开判收发",
+      "conditions": [
+        "实际对端是控制功能（CF），本次看的是RTCP APP 的话权消息。",
+        "NCF 与该对端已协商保护这一段的话权控制消息；SPK 与 SPK-ID 都已配置在 NCF 本端。"
+      ],
+      "conclusion": "NCF 须对发往该对端的话权控制消息加密，对从该对端收到的话权控制消息解密。按 §13.2 使用从 SPK 和 SPK-ID 导出的 SRTP-MK、SRTP-MS、SRTP-MKI。",
+      "normative_strength": "§13.3.5 第 3 项 A/B 在两项守卫同时成立时均为 SHALL。只规定 NCF 本端动作。",
+      "limitations": [
+        "不能将另一对端或另一类消息的协商、另一端部署记录、同类密钥/标识或 RTP 保护条件拿来补足这条声明。",
+        "不据此确定应向另一个对端转发、远端是否已收到或处理、两段的密钥材料相同、或未达到守卫时使用明文、丢包还是另有回退。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.3.5 item 3(A–B): negotiated NCF cf-floor protection plus SPK/SPK-ID configured locally; encrypt sent and decrypt received"
+          ],
+          "printed_pages": [
+            237
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.1, on-network constituent-group case item 5: separate negotiated server-side cf-floor protection"
+          ],
+          "printed_pages": [
+            227
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.1, opening numbered list: RTP media, RTCP media control (SR/RR/SDES) and RTCP APP floor control are distinct"
+          ],
+          "printed_pages": [
+            226
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.1 closing SPK/SPK-ID configuration paragraph and 13.2: locally configured server material and derived SRTP-MK/MS/MKI"
+          ],
+          "printed_pages": [
+            229
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "temporary-group-ncf-pf-media-control-protection-directions",
+      "title": "NCF 与参与功能（PF）协商这一段媒体控制保护且本端有 SPK/ID：分开判收发",
+      "conditions": [
+        "实际对端是参与功能（PF），本次看的是RTCP SR、RR、SDES 等媒体控制消息。",
+        "NCF 与该对端已协商保护这一段的媒体控制消息；SPK 与 SPK-ID 都已配置在 NCF 本端。"
+      ],
+      "conclusion": "NCF 须对发往该对端的媒体控制消息加密，对从该对端收到的媒体控制消息解密。按 §13.2 使用从 SPK 和 SPK-ID 导出的 SRTP-MK、SRTP-MS、SRTP-MKI。",
+      "normative_strength": "§13.3.5 第 4 项 A/B 在两项守卫同时成立时均为 SHALL。只规定 NCF 本端动作。",
+      "limitations": [
+        "不能将另一对端或另一类消息的协商、另一端部署记录、同类密钥/标识或 RTP 保护条件拿来补足这条声明。",
+        "不据此确定应向另一个对端转发、远端是否已收到或处理、两段的密钥材料相同、或未达到守卫时使用明文、丢包还是另有回退。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.3.5 item 4(A–B): negotiated NCF pf-media-control protection plus SPK/SPK-ID configured locally; encrypt sent and decrypt received"
+          ],
+          "printed_pages": [
+            237
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.1, on-network constituent-group case item 7: separate negotiated server-side pf-media-control protection"
+          ],
+          "printed_pages": [
+            228
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.1, opening numbered list: RTP media, RTCP media control (SR/RR/SDES) and RTCP APP floor control are distinct"
+          ],
+          "printed_pages": [
+            226
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.1 closing SPK/SPK-ID configuration paragraph and 13.2: locally configured server material and derived SRTP-MK/MS/MKI"
+          ],
+          "printed_pages": [
+            229
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "temporary-group-ncf-cf-media-control-protection-directions",
+      "title": "NCF 与控制功能（CF）协商这一段媒体控制保护且本端有 SPK/ID：分开判收发",
+      "conditions": [
+        "实际对端是控制功能（CF），本次看的是RTCP SR、RR、SDES 等媒体控制消息。",
+        "NCF 与该对端已协商保护这一段的媒体控制消息；SPK 与 SPK-ID 都已配置在 NCF 本端。"
+      ],
+      "conclusion": "NCF 须对发往该对端的媒体控制消息加密，对从该对端收到的媒体控制消息解密。按 §13.2 使用从 SPK 和 SPK-ID 导出的 SRTP-MK、SRTP-MS、SRTP-MKI。",
+      "normative_strength": "§13.3.5 第 5 项 A/B 在两项守卫同时成立时均为 SHALL。只规定 NCF 本端动作。",
+      "limitations": [
+        "不能将另一对端或另一类消息的协商、另一端部署记录、同类密钥/标识或 RTP 保护条件拿来补足这条声明。",
+        "不据此确定应向另一个对端转发、远端是否已收到或处理、两段的密钥材料相同、或未达到守卫时使用明文、丢包还是另有回退。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.3.5 item 5(A–B): negotiated NCF cf-media-control protection plus SPK/SPK-ID configured locally; encrypt sent and decrypt received"
+          ],
+          "printed_pages": [
+            237
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.1, on-network constituent-group case item 8: separate negotiated server-side cf-media-control protection"
+          ],
+          "printed_pages": [
+            228
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.1, opening numbered list: RTP media, RTCP media control (SR/RR/SDES) and RTCP APP floor control are distinct"
+          ],
+          "printed_pages": [
+            226
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "13.1 closing SPK/SPK-ID configuration paragraph and 13.2: locally configured server material and derived SRTP-MK/MS/MKI"
+          ],
+          "printed_pages": [
+            229
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-media-on-network-unicast-media-protection",
+    "r16-media-on-network-noncontrolling-floor-rtp"
+  ],
+  "limitations": [
+    "只收 NCF 的媒体面保护和本题所需的组成组场景。终端↔PF、PF 或 CF 各自的保护处理、MBMS 专用子信道、密钥下发与轮换、未达到守卫时的策略及 NCF 日常准入和路由规则不在本页。",
+    "分段与类别描述保护关系，不是物理拓扑、完整转发顺序、两端配置等价或实际端到端交付。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "13.3.5 item 1: NCF transparently forwards encrypted RTP media without decrypting the payload if media protection was negotiated"
+      ],
+      "printed_pages": [
+        236
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "13.1, on-network constituent-group case item 1: temporary group GMK and GMK-ID protect MCPTT client media when negotiated"
+      ],
+      "printed_pages": [
+        227
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "13.1, opening numbered list: RTP media, RTCP media control (SR/RR/SDES) and RTCP APP floor control are distinct"
+      ],
+      "printed_pages": [
+        226
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "13.3.5 item 2(A–B): negotiated NCF pf-floor protection plus SPK/SPK-ID configured locally; encrypt sent and decrypt received"
+      ],
+      "printed_pages": [
+        237
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "13.1, on-network constituent-group case item 4: separate negotiated server-side pf-floor protection"
+      ],
+      "printed_pages": [
+        227
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "13.1 closing SPK/SPK-ID configuration paragraph and 13.2: locally configured server material and derived SRTP-MK/MS/MKI"
+      ],
+      "printed_pages": [
+        229
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "13.3.5 item 3(A–B): negotiated NCF cf-floor protection plus SPK/SPK-ID configured locally; encrypt sent and decrypt received"
+      ],
+      "printed_pages": [
+        237
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "13.1, on-network constituent-group case item 5: separate negotiated server-side cf-floor protection"
+      ],
+      "printed_pages": [
+        227
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "13.3.5 item 4(A–B): negotiated NCF pf-media-control protection plus SPK/SPK-ID configured locally; encrypt sent and decrypt received"
+      ],
+      "printed_pages": [
+        237
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "13.1, on-network constituent-group case item 7: separate negotiated server-side pf-media-control protection"
+      ],
+      "printed_pages": [
+        228
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "13.3.5 item 5(A–B): negotiated NCF cf-media-control protection plus SPK/SPK-ID configured locally; encrypt sent and decrypt received"
+      ],
+      "printed_pages": [
+        237
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "13.1, on-network constituent-group case item 8: separate negotiated server-side cf-media-control protection"
+      ],
+      "printed_pages": [
+        228
+      ]
+    }
+  ]
+}

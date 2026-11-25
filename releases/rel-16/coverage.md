@@ -5913,6 +5913,16 @@ LMR 定义组：正在通话。客户端已注册、尚未参加，用户已认�
 
 [读取主题](topics/media/temporary-group-participant-floor-initialization.md)
 
+## 临时组的非控制功能：加密语音和两段控制保护
+
+组成组在网呼叫的实际 NCF 在协商了媒体保护时转发加密 RTP，不解密负载；该情形的终端媒体使用临时组 GMK 和 GMK-ID。
+
+NCF 与 PF/CF 各段的 RTCP APP 话权、RTCP 媒体控制分别核对这一段这一类已协商，以及 NCF 本端具 SPK 与 SPK-ID；适用时加密发往该对端的消息，解密从该对端实收的消息。
+
+尚未建立：不把同类另一段、同段另一类、对端的配置或 RTP 保护代替本段守卫；不推定 NCF 持有 GMK、全部 RTP 放行、明文回退或对端已收到。
+
+[读取主题](topics/media/temporary-group-noncontrolling-media-protection.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

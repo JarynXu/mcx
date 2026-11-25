@@ -17,4 +17,6 @@
 
 如果观察到的是 **RTCP SR、RR 或 SDES**，那是媒体控制，不是 RTCP APP 话权消息。即使媒体控制在对应链路也使用 CSK 或 SPK，仍要检查**媒体控制**所用的协商，不能援引话权那一条。这里不推定协商或材料缺失时的回退方式，也不解释 MBMS、离网、临时组组成组或预建立会话的专用控制保护。[§13.1，印刷页 226–228](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=227)；[§13.3.2 第 7–8 项，印刷页 230–231](https://www.etsi.org/deliver/etsi_ts/124300_124399/124380/16.09.00_60/ts_124380v160900p.pdf#page=231)
 
+若查的是临时组组成组在网呼叫中实际承担非控制功能的一端，读[临时组的非控制功能](temporary-group-noncontrolling-media-protection.md)，分别核对加密 RTP、话权和媒体控制。
+
 保护层已核实、仍有持有者语音中断时，读[控制侧等 RTP 的计时器](on-network-floor-media-timeouts.md)；终端已处理话权消息、要判断能否开始发送时，读[终端话权状态](on-network-floor-client.md)。若所查记录是 SIP 里的敏感业务正文，另读[SIP XML 的保密和复制](../calls/sip-xml-confidentiality-copy.md)。

@@ -6264,6 +6264,10 @@
         {
           "condition": "报文是 SIP 里的敏感 MCPTT 应用数据正文，查信令保护而非 RTP/RTCP 保护。",
           "read": "topics/calls/sip-xml-confidentiality-copy.md"
+        },
+        {
+          "condition": "若是在网临时组的组成组呼叫，且所查一端实际承担非控制 MCPTT 功能（NCF），转查该端的加密 RTP、话权及媒体控制保护。",
+          "read": "topics/media/temporary-group-noncontrolling-media-protection.md"
         }
       ],
       "boundary": "语音负载和每段话权须分别核对；条件满足才适用相应保护规则，不能从处理一个方向推得另一方向或实际播放。"
@@ -11399,6 +11403,22 @@
         }
       ],
       "boundary": "按此临时组关联方的 U 状态、本次 Floor Request 实收及其 Track Info 判流程。不以回复代替队列操作，也不把 U 动作当成 G 初选、呼叫已完成或 P 拆分。 若是关联参与者的 Floor Release，须由同状态 U 实收：活动队列未命中才查缓存，找到才移除该客户端；要求确认的首位另判。 若查 U 如何转发仲裁结果并结束初始化，须核对此 U 在初始化时实收本场仲裁逻辑的 Floor Taken、Floor Idle 或 Floor Granted。不用仲裁发出记录或 Ack 代替实收或入态证据。 若同一初始化 U 实收本场仲裁的 Floor Release Multi Talker，按通知的转发与保持状态判断；不套三个退出分支或普通 Floor Release 撤队。"
+    },
+    {
+      "id": "r16-media-temporary-group-noncontrolling-media-protection",
+      "question": "临时组组成组的在网呼叫，非控制功能 NCF 要解 RTP 吗？它跟 PF 或 CF 往来的话权和媒体控制，各看什么协商和本端密钥？",
+      "start": "topics/media/temporary-group-noncontrolling-media-protection.md",
+      "next_if": [
+        {
+          "condition": "如果不是临时组组成组，查普通在网组或私呼的终端、参与功能和控制功能的保护。",
+          "read": "topics/media/on-network-unicast-media-protection.md"
+        },
+        {
+          "condition": "如果实际问普通在网组呼的无许可端 RTP 能不能进入媒体分发，按非控制侧 RTP 方向和话权状态判断。",
+          "read": "topics/media/on-network-noncontrolling-floor-rtp.md"
+        }
+      ],
+      "boundary": "只收在网临时组的组成组场景中实际承担 NCF 的一端。RTP 保护与两段各类控制的保护分开查；不拿一段协商、另一端配置、收到的 RTP 或单边解密证明别段处理和实际送达。"
     }
   ]
 }
