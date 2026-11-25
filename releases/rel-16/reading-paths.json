@@ -244,7 +244,12 @@
       "id": "r16-mcdata-service-capability-and-functional-roles",
       "question": "MCData 服务能力与功能角色",
       "start": "topics/mcdata/service-capability-and-functional-roles.md",
-      "next_if": [],
+      "next_if": [
+        {
+          "condition": "若问 MCData 应用层怎样用资料图 B.1-1 区分并发发送的授权、媒体仲裁、队列及后续所发内容，查附录示例及正文边界。不是给某次 EPS 承载、跨系统交付或已读选算法。",
+          "read": "topics/mcdata/send-authorization-and-arbitration.md"
+        }
+      ],
       "boundary": "不覆盖Stage 3信令/媒体实现、DS协议完成度、完整授权算法或从架构图推导的物理拓扑。 能力存在不代表部署已启用；不自动进入任何Stage 3流程。"
     },
     {
@@ -2029,6 +2034,10 @@
         {
           "condition": "若要查在网预安排组的独立短消息由客户端走信令控制面的条件，见组 SDS 客户端。",
           "read": "topics/mcdata/group-sds-control-client.md"
+        },
+        {
+          "condition": "若已经查完具体自动发送和排队指示，另问 MCData 应用层并发发送的资料性队列模型或图中从授权到媒体仲裁和分发的分支，查附录 B。该图不改写这次自动 SDS。",
+          "read": "topics/mcdata/send-authorization-and-arbitration.md"
         }
       ],
       "boundary": "限在网 MCData SDS 向所选用户或所选组的自动传送程序。发送者已配置发权，客户端和服务器仍分别检查；不适用于文件分发或纯离网直传。"
@@ -8725,6 +8734,10 @@
         {
           "condition": "核对 MCPTT Floor Deny 或 Floor Revoke 的拒绝原因字段时，查该业务的 Stage 3 消息。",
           "read": "topics/media/floor-deny-revoke-cause.md"
+        },
+        {
+          "condition": "若另问的是 MCData 应用层附录 B 对并发请求、授权后媒体仲裁、队列分类及发链接或正文的示意，不是本节的通知义务或 MCPTT／MCVideo 队位规则，查 Stage 2 资料例。",
+          "read": "topics/mcdata/send-authorization-and-arbitration.md"
         }
       ],
       "boundary": "限 §6.19/6.19.1 的标题和无编号说明、§6.19.1.1 的七项在网 Stage 1 要求；三项业务均适用。发送请求不是整段新通信的建立请求。"
@@ -11976,6 +11989,34 @@
         }
       ],
       "boundary": "TS 22.346 V16.0.0（Rel-16，Stage 1）：已启动站的尝试、同网联合的交换能力、加站与合并能力、离开或分网的剩余网内本地业务、运营方授权及三种 IOPS 回传情形中的双向认证和路径保护。不据此判定正常 EPC 回传复原、实际认证或联合结果、握手或部署。"
+    },
+    {
+      "id": "r16-mcdata-send-authorization-and-arbitration",
+      "question": "同时有多笔 MCData 发送请求，信令和媒体都查发送权限吗，哪一路在例图中进入仲裁？ 同一请求带有多项优先属性，能否同时入多条队列？紧急、普通组和私聊之间有固定次序吗？ 应用层获准、排队或收到取件链接分别说明什么？图中什么时候直接广播或单播正文？",
+      "start": "topics/mcdata/send-authorization-and-arbitration.md",
+      "next_if": [
+        {
+          "condition": "若已确认是 §7.6.2.2 的在网自动 SDS，手里是此请求的发权、大小、无人归属或排队指示，查具体传送；不要用附录图覆盖程序。",
+          "read": "topics/mcdata/automatic-sds-transmission.md"
+        },
+        {
+          "condition": "若是 §7.6.2.3 或 §7.6.2.4 的在网文件分发，问题是强制下载、收件人同意或暂存期限，查 FD 业务条件，不以链接代替下载。",
+          "read": "topics/mcdata/mandatory-consented-file-distribution.md"
+        },
+        {
+          "condition": "若要查适用 MCData 的 Stage 1 通用队列中，拒绝、入队、出队开传和撤回后通知谁，查该节的通知要求，不拿它推断本图的仲裁算法。",
+          "read": "topics/media/onnetwork-transmit-request-queuing-and-rejection.md"
+        },
+        {
+          "condition": "若要查在网 MCData EPS 单播媒体专用承载是否申请、修改或发生抢占，查 QCI 与 ARP 的条件，不把这一层的优先级当成应用发送请求队列次序。",
+          "read": "topics/mcdata/unicast-bearer-qci-arp.md"
+        },
+        {
+          "condition": "若在网文件分发的记录实际明确 FD 功能端点，要分上传或下发的文件正文、URL、元数据和完成报告，查各参考点，不按附录图给某次传送分配协议。",
+          "read": "topics/mcdata/fd-reference-points.md"
+        }
+      ],
+      "boundary": "TS 23.282 V16.8.0，Stage 2 的并发 MCData 应用层发送控制。正文的功能、拥塞和授予条件照具体程序判断；B.1–B.2 只解释资料性示例。未给出某部署固定优先级、媒体承载、实际收件或跨系统转送。"
     }
   ]
 }
