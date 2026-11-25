@@ -1,0 +1,373 @@
+{
+  "topic_id": "r16-bearers-mcptt-mbms-rohc-processing",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 的 MBMS 通告写了 ROHC，怎样查谁压缩、终端应做什么？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "common_conditions": [
+    "固定 TS 24.380 V16.9.0，Release 16，Stage 3；仅查 MCPTT 经 MBMS 的 ROHC 包头处理。",
+    "按同一 MBMS 承载核对参与 MCPTT 功能（PF）的选择、承载通告和对应的实际收包；通告、发送和终端处理不互为证明。"
+  ],
+  "condition_rule": "发送侧先判 PF 是否为本承载选用头部压缩，再认自压或委托 BM-SC；接收侧分别查该承载的 ROHC 声明和终端的实际 ROHC 收包。",
+  "claims": [
+    {
+      "id": "mcptt-mbms-rohc-declaration",
+      "title": "PF 决定压缩一条 MBMS 承载的包头，就须在该承载通告声明 ROHC；声明不区分压缩方",
+      "conditions": [
+        "PF 已就一条特定 MBMS 承载决定做头部压缩。"
+      ],
+      "conclusion": "声明是 PF 自己压缩和请 BM-SC 压缩共有的义务。只有通告时，不能据此认定走了哪条路径，也不能认定某个包已处理或被终端接收。",
+      "normative_strength": "§10.4.1 给出两种可选分工；§10.4.2 第 1 项为 SHALL，前提是 PF 已作压缩决定。",
+      "limitations": [
+        "通告的具体形式依 TS 24.379；这里不定通告编码，也不把同一承载的声明当作实际压缩、实际收包或解压的结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.4.1 opening paragraph, ROHC use for packet headers delivered over MBMS"
+          ],
+          "printed_pages": [
+            210
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.4.1 first continuation paragraph, participating MCPTT function compresses before MB2-U or asks BM-SC"
+          ],
+          "printed_pages": [
+            211
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.4.2 opening and item 1, chosen use declared in the corresponding bearer announcement"
+          ],
+          "printed_pages": [
+            211
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcptt-mbms-rohc-pf-self-compression",
+      "title": "PF 选择自己做 ROHC 时，要在向 BM-SC 交包前压缩发往该承载的每个包的包头",
+      "conditions": [
+        "已确认 PF 为本承载选择自行执行 ROHC，而不是请求 BM-SC。"
+      ],
+      "conclusion": "PF 按 §10.4.2 第 3 项引用的 RFC 3095 和 RFC 5795 压缩发往本承载的每个包的包头，使用单向模式，不进行 ROHC 分段；此分工的压缩在经 MB2-U 交给 BM-SC 之前。",
+      "normative_strength": "§10.4.2 第 3 项为该分支的 SHALL；§10.4.1 说明自压发生于 MB2-U 交包前。",
+      "limitations": [
+        "不迁入委托分支的组播 IP、端口列表义务；也不由逐包处理推定每个包都用 0x0101 或终端已收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.4.1 first continuation paragraph, participating MCPTT function compresses before MB2-U or asks BM-SC"
+          ],
+          "printed_pages": [
+            211
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.4.2 item 3, PF-side compression on bearer-delivered packets, unidirectional and without ROHC segmentation"
+          ],
+          "printed_pages": [
+            211
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcptt-mbms-rohc-ask-bm-sc",
+      "title": "PF 请 BM-SC 做 ROHC 时，激活或修改该承载须用组播 IP 和端口标明按 0x0101 压缩包头的流",
+      "conditions": [
+        "已确认 PF 请求 BM-SC 为本 MBMS 承载执行头部压缩。"
+      ],
+      "conclusion": "PF 在激活或修改该承载时给出用 0x0101 压缩包头的组播 IP 和端口列表。该动作是 PF 在委托分支的职责，不是 BM-SC 已处理某个包的回执。",
+      "normative_strength": "§10.4.2 第 2 项为该分支的 SHALL；条款引用 TS 29.468 说明依赖。",
+      "limitations": [
+        "不把其他承载的地址端口记录或只有 ROHC 通告当作本次委托。这里不定义 MB2 报文或回执、失败回退，也不把地址端口列表要求移给自压分支。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.4.1 first continuation paragraph, participating MCPTT function compresses before MB2-U or asks BM-SC"
+          ],
+          "printed_pages": [
+            211
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.4.2 item 2, BM-SC request and multicast IP/port list for profile 0x0101 when activating or modifying the bearer"
+          ],
+          "printed_pages": [
+            211
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcptt-mbms-rohc-client-received",
+      "title": "承载已通告 ROHC，MCPTT 终端须解压实际收到的 ROHC 包，再交媒体混合器",
+      "conditions": [
+        "该 MBMS 承载通告声明使用 ROHC。",
+        "MCPTT 终端实际收到该承载的 ROHC 包。"
+      ],
+      "conclusion": "终端按 RFC 3095 和 RFC 5795 解压实际收到的 ROHC 包，然后将解压后的包交给媒体混合器。",
+      "normative_strength": "§10.4.3 的两项均为 SHALL；实际收件是这一步的处理对象。",
+      "limitations": [
+        "不从通告、其他节点发送或不是 ROHC 的 RTP 包推出本端满足收件条件或已完成解压、移交、解密或播放；不代替子信道与本地通话的关联判定。",
+        "未证实通告声明或实收，不能套这条处理。这里没有规定未通告而收到 ROHC 包时应如何回退。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.4.3 opening and items 1–2, ROHC declaration and received-packet decompression and mixer delivery"
+          ],
+          "printed_pages": [
+            211
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcptt-mbms-rohc-encryption-order",
+      "title": "同一路媒体兼用加密与 ROHC 时，先加密再压包头；接收时先解压包头再解密",
+      "conditions": [
+        "同一路经 MBMS 交付的 MCPTT 媒体同时采用对应的媒体面加密和 ROHC。"
+      ],
+      "conclusion": "发送侧的头部压缩在媒体面加密后；接收侧的头部解压在媒体面解密前。",
+      "normative_strength": "§10.4.1 明确这两对处理各自的先后。该段不规定是否启用加密。",
+      "limitations": [
+        "不指定哪个实体执行加解密，也不证明某次已经执行或已经解密；不能用公共 MBMS 的 FEC 编码先于 ROHC 的约束，推出 FEC 与加密的相对顺序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.4.1 second continuation paragraph, header compression after media-plane encryption and decompression before decryption"
+          ],
+          "printed_pages": [
+            211
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcptt-mbms-rohc-profile-and-cid",
+      "title": "0x0101 的 MBMS 子信道用各自 CID；0x0000 的子信道可共用 CID；MAX_CID 等于 15 用小表示",
+      "conditions": [
+        "在查该 MCPTT MBMS 的 ROHC 配置档或建立带头部压缩的承载所用的 MAX_CID。"
+      ],
+      "conclusion": "0x0101 用于压缩 RTP/UDP/IP 头，使用该档的 MBMS 子信道 CID 各不相同。0x0000 用于发送未压缩包，使用该档的子信道可共用一个 CID。PF 在建立带头部压缩的承载前确定 MAX_CID；大于 15 用大 CID 表示，否则用小 CID 表示。MCPTT 经 MBMS 的 ROHC 只用单向模式。",
+      "normative_strength": "§10.4.1 明确用途、CID 表示的分界和单向模式。0x0000 共用 CID 是 MAY。",
+      "limitations": [
+        "不由配置档推定压缩方、实收、全网 CID 唯一、失败自动改用 0x0000 或任何单播行为。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.4.1 profile and MAX_CID paragraphs, 0x0101/0x0000, CID choices, threshold and unidirectional mode"
+          ],
+          "printed_pages": [
+            211
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcptt-mbms-rohc-reference-21-text-difference",
+      "title": "V16.9.0 的 0x0000 描述与同版参考文献 [21] 的 RFC 编号不一致",
+      "conditions": [
+        "核查这份固定版对 0x0000 的文字及引用。"
+      ],
+      "conclusion": "§10.4.1 对 0x0000 写 RFC 3075 [21]；§2 的 [21] 列 RFC 3095。§10.4.2 第 3 项及 §10.4.3 的程序也写 RFC 3095 [21]。",
+      "normative_strength": "这是同一版原文的文字差别，不是额外的协议规则。",
+      "limitations": [
+        "保留字面差别，不从外部 RFC 补裁决，也不据此选择线上编码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.4.1 profile and MAX_CID paragraphs, 0x0101/0x0000, CID choices, threshold and unidirectional mode"
+          ],
+          "printed_pages": [
+            211
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.4.2 item 3, PF-side compression on bearer-delivered packets, unidirectional and without ROHC segmentation"
+          ],
+          "printed_pages": [
+            211
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "10.4.3 opening and items 1–2, ROHC declaration and received-packet decompression and mixer delivery"
+          ],
+          "printed_pages": [
+            211
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "2, bibliography reference [21] names RFC 3095"
+          ],
+          "printed_pages": [
+            17
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "10.4.1 opening paragraph, ROHC use for packet headers delivered over MBMS"
+      ],
+      "printed_pages": [
+        210
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "10.4.1 first continuation paragraph, participating MCPTT function compresses before MB2-U or asks BM-SC"
+      ],
+      "printed_pages": [
+        211
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "10.4.1 second continuation paragraph, header compression after media-plane encryption and decompression before decryption"
+      ],
+      "printed_pages": [
+        211
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "10.4.1 profile and MAX_CID paragraphs, 0x0101/0x0000, CID choices, threshold and unidirectional mode"
+      ],
+      "printed_pages": [
+        211
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "10.4.2 opening and item 1, chosen use declared in the corresponding bearer announcement"
+      ],
+      "printed_pages": [
+        211
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "10.4.2 item 2, BM-SC request and multicast IP/port list for profile 0x0101 when activating or modifying the bearer"
+      ],
+      "printed_pages": [
+        211
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "10.4.2 item 3, PF-side compression on bearer-delivered packets, unidirectional and without ROHC segmentation"
+      ],
+      "printed_pages": [
+        211
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "10.4.3 opening and items 1–2, ROHC declaration and received-packet decompression and mixer delivery"
+      ],
+      "printed_pages": [
+        211
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "2, bibliography reference [21] names RFC 3095"
+      ],
+      "printed_pages": [
+        17
+      ]
+    }
+  ],
+  "related": [
+    "r16-bearers-mbms-rohc-roles",
+    "r16-bearers-mcptt-mbms-map-unmap-timers"
+  ],
+  "limitations": [
+    "本页不定义 TS 24.379 通告编码、TS 29.468 的 MB2 交换、外部 RFC 的 ROHC 编解码算法或实际系统行为；业务共用流程及 FEC、子信道通话关联另查对应主题。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
