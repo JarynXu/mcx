@@ -1,0 +1,356 @@
+{
+  "topic_id": "r16-calls-lmr-interworking-broadcast-group-setup",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCPTT–LMR 互通广播：组成组还在通话，谁先释放再建广播？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v16.8.0",
+  "common_conditions": [
+    "TS 23.283 V16.8.0，Release 16，Stage 2。只看 §10.3.4.2–.3 所示 MCPTT 用户发起互通广播组呼的建立，对照阶段性结果；两例接收方的组成组已有非紧急 MCPTT 组呼。"
+  ],
+  "condition_rule": "按广播组定义在哪一侧选择示例；普通旧组成组的释放、这次广播建立以及两侧回执是不同记录。",
+  "claims": [
+    {
+      "id": "subordinate-call-example-conditions",
+      "title": "两个例子都由 MCPTT 用户起呼，并取一个已有非紧急通话的组成组",
+      "conditions": [
+        "需要判断本次是否符合 §10.3.4.2 或 §10.3.4.3 的建立示例。"
+      ],
+      "conclusion": "广播组的组成单位是组。两图的发起用户属于组成组 X，接收端客户端 2 属于不同的组成组 A，A 已有一场非紧急 MCPTT 组呼。广播组定义在 MCPTT 时，IWF 也是 A 的成员，广播组及组成组同由一个 GMS 定义、由同一 MCPTT 服务器提供服务；定义在 LMR 时，广播组及组成组定义在 IWF。",
+      "normative_strength": "§10.3.4.1 给出一般概念，两个分节各自列出本图前提。",
+      "limitations": [
+        "§10.3.4.1 一般允许 LMR 用户起呼，这两图不演示该分支。旧组成组呼叫为紧急呼叫时不沿用下面的例子，不据此判定紧急呼叫必释放或永远保留。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.1, general group-broadcast scope, group-of-groups and baseline media originator"
+          ],
+          "printed_pages": [
+            51
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.2, opening and preconditions 1–4, MCPTT-defined broadcast group and an ongoing non-emergency subordinate call"
+          ],
+          "printed_pages": [
+            51,
+            52
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.3, opening and preconditions 1–4, LMR-defined group on IWF and MCPTT-user example"
+          ],
+          "printed_pages": [
+            54
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcptt-host-releases-subordinate-before-setup",
+      "title": "MCPTT 定义的广播组：MCPTT 服务器先办理组成组旧呼释放，再向客户端和 IWF 发起广播",
+      "conditions": [
+        "本次符合 MCPTT 定义的广播组示例，组成组 A 正在进行非紧急呼叫。"
+      ],
+      "conclusion": "发起用户通过 MCPTT 客户端 1 请求建立。作为广播组宿主的 MCPTT 服务器解析广播组 ID，找到组成组及需联系的已归属 MCPTT 用户，并检查组成组的在呼情况。在图示的 A 已有呼叫情形，服务器在步骤 5 按 §10.3.3.8.2 办理旧呼释放，步骤 6 再分别向客户端 2 和 IWF 发本场广播的建立请求。",
+      "normative_strength": "顺序取图 10.3.4.2-1 及步骤 3–6；§10.3.3.8.2 是旧呼释放的回指。",
+      "limitations": [
+        "只是办理旧呼释放，不代表删除组成组、解除全部归属或每个设备已释放资源。请求发出也不等于另一侧已收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.2, opening and preconditions 1–4, MCPTT-defined broadcast group and an ongoing non-emergency subordinate call"
+          ],
+          "printed_pages": [
+            51,
+            52
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.2, Figure 10.3.4.2-1 and steps 1–5, MCPTT client originator, resolving subordinate groups and referenced release"
+          ],
+          "printed_pages": [
+            53
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.2, steps 6–8 and NOTEs 1–2, recipient setup and IWF request/response by actual affiliation mode"
+          ],
+          "printed_pages": [
+            54
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcptt-host-iwf-count-by-affiliation-mode",
+      "title": "MCPTT 宿主的这段 IWF 广播建立：代表归属一来一回，逐人归属才按已归属 LMR 用户计数",
+      "conditions": [
+        "图 10.3.4.2-1 步骤 6b、8b 的 IWF 建立请求及相应答复；已核对本组的 LMR 用户归属方式。"
+      ],
+      "conclusion": "若 IWF 为本组 LMR 用户做了代表归属，MCPTT 服务器给 IWF 发一份新广播建立请求，IWF 给服务器回一份；若服务器收到本组 LMR 用户的逐人归属，则服务器按每名已归属的 LMR 用户分别发请求，IWF 对每名用户分别回响应。步骤 8 正文把两方应答合写并用了 IWF 响应名称；按图，8a 是客户端 2 回服务器的客户端建立响应，8b 才是 IWF 回服务器的 IWF 建立响应。",
+      "normative_strength": "步骤 6、8 明列两种计数规则；按图 6a/6b、8a/8b 分开 MCPTT 客户端和 IWF 一跳。",
+      "limitations": [
+        "若逐人归属恰好只有一人，也是一来一回。单凭一份请求或一份回复不能判断归属模式或全体收听。数量不是 LMR 电台侧通知方式，不用于 LMR 定义组的另一个示例。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.2, Figure 10.3.4.2-1 and steps 1–5, MCPTT client originator, resolving subordinate groups and referenced release"
+          ],
+          "printed_pages": [
+            53
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.2, steps 6–8 and NOTEs 1–2, recipient setup and IWF request/response by actual affiliation mode"
+          ],
+          "printed_pages": [
+            54
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-host-releases-then-sends-back-new-setup",
+      "title": "LMR 定义的广播组：MCPTT 服务器先请求 IWF，IWF 处理旧呼后反向发建立",
+      "conditions": [
+        "本次符合 LMR 定义的广播组示例，组成组 A 正在进行非紧急呼叫。"
+      ],
+      "conclusion": "发起用户仍是 MCPTT 客户端 1 的用户。MCPTT 服务器先发建立请求给该广播组的宿主 IWF（步骤 3）；IWF 按 §10.3.3.8.3 办理旧呼释放（4），然后回发一份新的广播建立请求给 MCPTT 服务器（5a），由后者向客户端 2 发建立请求（5b）。按正文步骤 7，客户端 2 回服务器的建立响应、服务器把该回应转向 IWF，是可选的回执路径。",
+      "normative_strength": "第五步的两段和第七步的两段方向按图 10.3.4.3-1；回执是否必发按正文步骤 7。",
+      "limitations": [
+        "IWF 的 5a 是新建请求而非步骤 3 的成功回执。未见客户端 2 的可选回执不能判失败或全体收听。不得套用另一例的代表/逐人计数，也不规定 LMR 电台如何获通知。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.3, opening and preconditions 1–4, LMR-defined group on IWF and MCPTT-user example"
+          ],
+          "printed_pages": [
+            54
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.3, Figure 10.3.4.3-1 and steps 1–3, setup arrows 3 and 5a–5b and response arrows 7a–7b"
+          ],
+          "printed_pages": [
+            55
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.3, steps 4–7 and NOTE, referencing prior call release, new setup and optional client response"
+          ],
+          "printed_pages": [
+            56
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "initiator-answer-is-not-recipient-evidence",
+      "title": "两例都向原发起客户端报告建立；不能凭这个答复替各接收端确认",
+      "conditions": [
+        "能将记录关联到图示这次新广播建立，并区分发起端、接收客户端和 IWF。"
+      ],
+      "conclusion": "MCPTT 服务器向发起客户端 1 发送本次广播组呼建立响应（MCPTT 定义时步骤 9，LMR 定义时步骤 8）；随后由客户端 1 提示它的用户可用本场广播资源开始发送。一般定义的广播不期待接收用户回话，只有发起用户传媒体；两例的说明另说启用抢占功能时发起方可能被抢占。接收用户不回话不等于没有设呼信令回执。",
+      "normative_strength": "建立响应、客户端提示及媒体发起角色分别来自编号步骤、§10.3.4.1 及两个分节开头的抢占说明。",
+      "limitations": [
+        "发起端响应不是独立主叫资格或话权许可的证明，也不证明客户端已收、其他用户已通知或实际听到媒体；不推断具体抢占、广播释放或失败码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.1, general group-broadcast scope, group-of-groups and baseline media originator"
+          ],
+          "printed_pages": [
+            51
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.2, opening and preconditions 1–4, MCPTT-defined broadcast group and an ongoing non-emergency subordinate call"
+          ],
+          "printed_pages": [
+            51,
+            52
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.2, steps 9–10, response to requesting client and user notification"
+          ],
+          "printed_pages": [
+            54
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.3, opening and preconditions 1–4, LMR-defined group on IWF and MCPTT-user example"
+          ],
+          "printed_pages": [
+            54
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.3, steps 8–9, response to requesting client and user notification"
+          ],
+          "printed_pages": [
+            56
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.4.1, general group-broadcast scope, group-of-groups and baseline media originator"
+      ],
+      "printed_pages": [
+        51
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.4.2, opening and preconditions 1–4, MCPTT-defined broadcast group and an ongoing non-emergency subordinate call"
+      ],
+      "printed_pages": [
+        51,
+        52
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.4.2, Figure 10.3.4.2-1 and steps 1–5, MCPTT client originator, resolving subordinate groups and referenced release"
+      ],
+      "printed_pages": [
+        53
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.4.2, steps 6–8 and NOTEs 1–2, recipient setup and IWF request/response by actual affiliation mode"
+      ],
+      "printed_pages": [
+        54
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.4.2, steps 9–10, response to requesting client and user notification"
+      ],
+      "printed_pages": [
+        54
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.4.3, opening and preconditions 1–4, LMR-defined group on IWF and MCPTT-user example"
+      ],
+      "printed_pages": [
+        54
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.4.3, Figure 10.3.4.3-1 and steps 1–3, setup arrows 3 and 5a–5b and response arrows 7a–7b"
+      ],
+      "printed_pages": [
+        55
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.4.3, steps 4–7 and NOTE, referencing prior call release, new setup and optional client response"
+      ],
+      "printed_pages": [
+        56
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.4.3, steps 8–9, response to requesting client and user notification"
+      ],
+      "printed_pages": [
+        56
+      ]
+    }
+  ],
+  "related": [
+    "r16-calls-lmr-interworking-prearranged-group-setup",
+    "r16-calls-lmr-interworking-group-release",
+    "r16-calls-onnetwork-prearranged-broadcast-origin",
+    "r16-groups-mc-hosted-lmr-affiliation"
+  ],
+  "limitations": [
+    "不把这两图扩成 LMR 用户起呼、紧急旧组呼、预配置重组广播、真正听到媒体、无线或 SIP 编码的规则。",
+    "图示步骤不构成现场实收或全部资源已更新的证据。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  }
+}

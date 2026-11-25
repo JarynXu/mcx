@@ -1152,6 +1152,10 @@
         {
           "condition": "若在离网环境，查离网广播；不沿用在网的 SIP 发起路径。",
           "read": "topics/calls/offnetwork-broadcast-client.md"
+        },
+        {
+          "condition": "若是 MCPTT 用户发起含 IWF 的互通广播，且另一组成组已有非紧急组呼，查 Stage 2 互通流程；不把本页的 SIP 字段套到 IWF。",
+          "read": "topics/calls/lmr-interworking-broadcast-group-setup.md"
         }
       ],
       "boundary": "限在网预安排广播发起和本次组呼会话的释放条件；不把业务播报结束当作成员收听回执或预建立会话拆除。"
@@ -10288,6 +10292,10 @@
         {
           "condition": "若只问一名 MC 用户解除对 LMR 定义组的归属，而非宿主结束整场组呼。",
           "read": "topics/groups/lmr-hosted-mc-deaffiliation.md"
+        },
+        {
+          "condition": "若要查 MCPTT 用户发起含 IWF 的互通广播时，正在进行的非紧急组成组呼在新广播建立前谁办理释放，查互通广播建立。",
+          "read": "topics/calls/lmr-interworking-broadcast-group-setup.md"
         }
       ],
       "boundary": "限宿主释放正在进行的互通组呼。保留 MCPTT 宿主代表/逐人归属与 LMR 宿主逐参会 MCPTT 用户的差异；不支持从单条响应判断全端资源状态，也不补写释放触发或报文。"
@@ -11172,9 +11180,37 @@
         {
           "condition": "若查普通在网按需组呼的客户端协议字段，按 TS 24.379 Stage 3 页的适用条件读取；该页不是 IWF 报文字段定义。",
           "read": "topics/calls/prearranged-client-establishment.md"
+        },
+        {
+          "condition": "若由 MCPTT 用户发起含 IWF 的互通广播，并有组成组正进行非紧急组呼，查互通广播的旧呼释放与新建顺序。",
+          "read": "topics/calls/lmr-interworking-broadcast-group-setup.md"
         }
       ],
       "boundary": "这里是 MCPTT 与 LMR 的预安排互通组呼建立。MCPTT 服务器与 IWF 已知互通组，流程中的组用户已归属。图中的 MCPTT 客户端已注册，用户已认证并获准使用 MCPTT 服务；IWF 已配置两侧组和用户 ID 映射，负责跨系统信令的身份转换和协议翻译。 组定义在 MCPTT：MCPTT 用户发起时，服务器核对所选组的发起权限，向 MCPTT 侧组员和 IWF 的两路请求先后不限；IWF 代表归属时向 IWF 发一条，收到逐人归属时按已归属的 LMR 用户发。由 LMR 用户发起时，IWF 先发建呼请求；还有非主叫 LMR 用户且服务器收到他们的逐人归属，才按该分支经 IWF 逐人补发。 组定义在 LMR：MCPTT 主叫时服务器先向 IWF 发请求，再由 IWF 按已归属的 MCPTT 用户向服务器逐人发请求；LMR 主叫时直接从 IWF 的逐人请求开始。控制组呼和管理话权的是定义组的系统，不由主叫侧决定。LMR 主叫要话权时，IWF 请求带隐式话权请求指示；带该指示时可附位置信息。指定 E2EE 时两侧须用同一编解码器；未指定 E2EE 时可以不同，实际不同才需 IWF 转码。 只覆盖这四条预安排组呼的建立和成功分支。没有给出具体 SIP 或媒体协议、LMR 怎么呼叫电台或给主叫转回响应、其他三个流程是否另有一项同样的选组核权、或失败后的处理。不要当作紧急、迫近危险、聊天或广播流程，也不要用建呼响应证明其他终端已加入或已经取得话权。晚入、整场释放和重组管理另查。"
+    },
+    {
+      "id": "r16-calls-lmr-interworking-broadcast-group-setup",
+      "question": "MCPTT 用户发起含 IWF 的互通广播，另一组成组还在非紧急通话。广播组定义在 MCPTT 或 LMR 时，谁先释放旧呼，谁再发建立请求？ MCPTT 定义的广播组，IWF 代表归属或 LMR 用户逐人归属时，新广播请求和回执各有几条？一来一回能反推归属方式吗？ LMR 定义的广播组，IWF 办理旧呼释放后反向发的是新广播建立请求还是成功响应？接收端一定要回执吗？",
+      "start": "topics/calls/lmr-interworking-broadcast-group-setup.md",
+      "next_if": [
+        {
+          "condition": "若查本场广播要先处理的非紧急组成组旧呼如何整场释放，按旧呼的组定义侧查；不要拿这条链释放新广播。",
+          "read": "topics/calls/lmr-interworking-group-release.md"
+        },
+        {
+          "condition": "若是普通预安排互通组呼而非广播，查按主叫侧与组定义侧分出的四条普通建立路径。",
+          "read": "topics/calls/lmr-interworking-prearranged-group-setup.md"
+        },
+        {
+          "condition": "若没有 IWF，查询同一 MCPTT 系统的终端怎样写广播标志及何时释放本次呼叫，查在网 Stage 3。",
+          "read": "topics/calls/onnetwork-prearranged-broadcast-origin.md"
+        },
+        {
+          "condition": "若要知道 MCPTT 定义组的 IWF 代表关系或 LMR 用户逐人归属是否实际成立，查归属过程，别从回执条数倒推。",
+          "read": "topics/groups/mc-hosted-lmr-affiliation.md"
+        }
+      ],
+      "boundary": "不要用于旧呼为紧急、LMR 用户起呼、无 IWF 的单系统广播、普通互通组呼或新广播自身的释放。释放步骤、建呼确认和附属回执不能证明全部设备已释放资源、已收或听到广播，也不能代替发起许可或定义 IWF 的线上报文。"
     },
     {
       "id": "r16-calls-lmr-interworking-chat-group-setup",

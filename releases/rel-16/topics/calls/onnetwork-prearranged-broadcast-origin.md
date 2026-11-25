@@ -22,3 +22,5 @@
 T4 不是唯一理由。[§6.3.8.1，印刷页 136](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=137)把释放条件列为**任一成立**：除广播的 T4 分支外，预安排组呼另列相同的媒体面 T4 到期指示；会话只剩一名或没有参与者、未达到已归属组成员的最低人数、组呼定时器 TNG3 到期，也分别可以触发释放。对于**预安排组呼的发起者离开**，是否以此触发则取决于本地策略。会中参与者人数与已归属成员人数是两项不同判断。这里释放的是这场组呼，不据此认定连预建立会话本身也已被拆除。
 
 普通按需组呼的字段和应答见[预安排组呼的客户端建立](prearranged-client-establishment.md)；预建资源本身的建立与释放见[预建立会话生命周期](preestablished-session-lifecycle.md)。没有网络时使用的是[离网广播程序](offnetwork-broadcast-client.md)，不是这两条 SIP 路径。
+
+若 MCPTT 用户发起含 IWF 的互通广播，且另一组成组已有非紧急组呼，查[互通广播建立](lmr-interworking-broadcast-group-setup.md)的 Stage 2 流程。那一页不规定本页的 SIP 字段，不能把本页的报文写法当成 IWF 消息。

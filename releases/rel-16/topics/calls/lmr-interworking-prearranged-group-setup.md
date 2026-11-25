@@ -25,3 +25,5 @@
 只有 §10.3.3.2 在这四张图里单列选组发起权限检查，不能据其余三节未单列同一步骤而断言它们不做核权。也不能从 TS 23.379 的回指补出 SIP 编码、LMR 侧处理或失败流程。[§10.3.3.1 的适用说明，印刷页 38](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/16.08.00_60/ts_123283v160800p.pdf#page=39)还列出三类可应用这些流程的非广播呼叫：预配置组重组、预配置用户重组和组重组；本页不展开重组形成、取消或拒绝，也不展开紧急、迫近危险、聊天或广播建呼。
 
 需要判断组员此前怎样归属时，先查[MCPTT 定义组的 LMR 归属](../groups/mc-hosted-lmr-affiliation.md)。呼叫已在进行，新用户现在才成功归属，查[晚入](lmr-interworking-group-late-entry.md)；宿主结束整场呼叫，查[整场释放](lmr-interworking-group-release.md)。要看[普通在网组呼的客户端报文](prearranged-client-establishment.md)，按对应 Stage 3 范围查，不把其中字段套到 IWF。
+
+若由 MCPTT 用户发起含 IWF 的互通广播，且另一组成组已有非紧急组呼，改读[互通广播建立](lmr-interworking-broadcast-group-setup.md)。先按广播组定义侧分流，不套用本页的普通建呼请求。

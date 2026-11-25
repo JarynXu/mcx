@@ -22,3 +22,5 @@ MCPTT 客户端向**服务器**回组呼释放响应，是步骤 3；服务器�
 **一份回执不等于整场两侧资源都释放。** MCPTT 宿主的步骤 6 和 LMR 宿主的步骤 5 都写了成功结果：示例中的 MCPTT 客户端和 IWF 已释放与本次组呼关联的话权控制和媒体面资源。实际排查按请求、响应和各端状态分别取证；这些步骤没有说要清除组配置或更改归属。[§10.3.3.8.2 步骤 6，印刷页 50](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/16.08.00_60/ts_123283v160800p.pdf#page=51)、[§10.3.3.8.3 步骤 5，印刷页 51](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/16.08.00_60/ts_123283v160800p.pdf#page=52)
 
 若尚不清楚 MCPTT 宿主先前采用哪种归属方式，读[MCPTT 宿主组的 LMR 归属](../groups/mc-hosted-lmr-affiliation.md)。若组呼未结束，问题是另一边的用户如何加入，读[互通组呼迟入](lmr-interworking-group-late-entry.md)；要查仍在通话时哪一侧管话权，读[互通组呼的话权仲裁](../media/lmr-interworking-group-floor-arbitration.md)。
+
+若在查 MCPTT 用户发起含 IWF 的互通广播时的**旧组成组呼**，到[互通广播建立](lmr-interworking-broadcast-group-setup.md)核对非紧急旧呼和新广播的先后。这里的整场释放程序不能替代新广播的建立或释放。
