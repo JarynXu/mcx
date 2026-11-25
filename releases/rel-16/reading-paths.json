@@ -4480,6 +4480,10 @@
         {
           "condition": "查预建立会话本身的建立、无关联业务会话时的修改，或无业务使用时的释放，转生命周期页。本次 Connect 的 T55 到限是返回未在用；有业务仍在使用时，不能套用邻页的空闲释放程序。",
           "read": "topics/calls/preestablished-session-lifecycle.md"
+        },
+        {
+          "condition": "本次普通在网单话权组呼拟用或正在用的预建立会话已对上，要查 PF 或终端实收话权或 RTP 时各自的在用状态，转查收包与转发；只有 Connect/Accepted 或尚未确定本次会话不套该入口。",
+          "read": "topics/media/preestablished-in-use-media-legs.md"
         }
       ],
       "boundary": "本页限已建 MCPTT 预建立会话上的 Connect 应答；受邀侧自动应答以 CF 的 INVITE 请求为入口；发起侧主叫 Connect 另以 PF 实收 CF 对业务 INVITE 的 200 为入口。不把本次来呼的已建会话前提借给另案重入。另案方式未知先查客户端请求及所选会话；话权许可、预建立会话本身的生命周期分别查对应旧页。 三字段只取受邀侧自动应答普通私呼；不为两个匿名字面选择兼容实现，不用 Accepted 推定密钥验证或话权。"
@@ -11479,6 +11483,34 @@
         }
       ],
       "boundary": "限 TS 24.380 V16.9.0 第 6.3.5.2.2 第 3 项既有普通在网单话权组呼的本客户端控制侧 Start-stop 入态。已有许可不等于正在发 RTP；终端支持排队不等于本场已协商。区分等同于收到请求的仲裁、控制侧接口状态和终端实收。"
+    },
+    {
+      "id": "r16-media-preestablished-in-use-media-legs",
+      "question": "普通 MCPTT 组呼的同一预建立会话，PF 在用，终端却仍未在用；同一 RTP 到了两端，谁须转、谁须丢？",
+      "start": "topics/media/preestablished-in-use-media-legs.md",
+      "next_if": [
+        {
+          "condition": "要查的是 Connect、Accepted 或 SIP 响应怎样触发各端进入在用，不是普通话权或 RTP 收包；查建立应答。",
+          "read": "topics/media/preestablished-connect-outcome.md"
+        },
+        {
+          "condition": "PF 已按实收条件进入具体转发程序；要查上行话权、无 MBMS 的下行、使用 MBMS 的下行和 listening，转 PF 转发。",
+          "read": "topics/media/mbms-pf-floor-routing.md"
+        },
+        {
+          "condition": "终端已在用且实收本场普通话权或 RTP；要判断其基本话权状态、发送许可或本机播放请求，转终端基本话权。",
+          "read": "topics/media/on-network-floor-client.md"
+        },
+        {
+          "condition": "仅知道 RTCP APP 名或子类型，还没有分清普通话权和 MCPC Connect/Disconnect；先查消息族。",
+          "read": "topics/media/rtcp-app-name-subtype.md"
+        },
+        {
+          "condition": "所查是已预建立的在网私呼释放指示、确认或重试，不是实收普通语音或话权；转媒体面释放。",
+          "read": "topics/media/preestablished-release-outcome.md"
+        }
+      ],
+      "boundary": "只查普通在网单话权组呼拟用或实际用的这条已建预建立会话，按 PF 和终端各自的收包前状态。未在用的丢弃结论只用于实际收到且无适用处理的 RTP，不推广成一律丢弃业务话权。"
     }
   ]
 }

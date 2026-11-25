@@ -66,6 +66,8 @@
 
 如果要判**普通在网且采用话权控制的客户端**能否讲话，或排队后的授予是否还需用户确认，读[普通在网话权](on-network-floor-client.md)。MCPC Accepted 本身不是话权许可；该话权页不适用于无话权控制的私呼或双话权等特殊情形。
 
+如果查的是普通在网单话权组呼，且已对上本次组呼使用或拟用的这条预建立会话，要判 PF 或终端实际收到的话权消息、RTP 和各自的在用状态，见[预建立会话的收包与转发](preestablished-in-use-media-legs.md)。不用 Connect 或 Accepted 代填另一端状态。
+
 如果要查**预建立会话本身的建立、无关联业务会话时的修改，或无业务使用时的释放**，读[预建立会话生命周期](../calls/preestablished-session-lifecycle.md)。还有业务在用时，不能把空闲释放程序套过来；结束一次业务呼叫也不能代替容器释放的证据。
 
 若这通呼叫已建立，后来用 Disconnect 结束它，见[媒体面释放时确认、重试与会话保留](preestablished-release-outcome.md)。

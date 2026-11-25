@@ -1,0 +1,289 @@
+{
+  "topic_id": "r16-media-preestablished-in-use-media-legs",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 预建立会话：PF 转了语音，终端为什么还可能丢弃？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "common_conditions": [
+    "固定 TS 24.380 V16.9.0，Release 16，Stage 3。普通在网单话权 MCPTT 组呼；PF 与该客户端的预建立会话已建立，所查报文能与本次组呼拟用或正在用的这条会话对应，不预设接收端已进入在用。这里不收无话权控制、临时组切换、双话权、多讲者或按需会话。",
+    "先识别记录实际来自终端还是参与 MCPTT 功能 PF，并配对角色自身的这条预建立会话与实际收件、收件时状态；不能借另一端、另一条会话或确认报文代填。涉及方向，只按该包的实际来源。"
+  ],
+  "condition_rule": "用接收端自己的预建立会话状态选入口，再按普通话权消息或 RTP 分别查触发和方向；PF 无 MBMS 的下行样例和终端自己的基础话权处理不互代。",
+  "claims": [
+    {
+      "id": "preestablished-in-use-pf-receive-entry",
+      "title": "PF 在用时实收本场话权或 RTP：进入参与功能规程，本侧仍在用",
+      "conditions": [
+        "实收的一侧是参与 MCPTT 功能 PF。它为这个客户端保存的这条预建立会话，当时在 G: Pre-established session in use。",
+        "来件是关联本场呼叫的普通话权控制消息而非 MCPC Connect 或 Disconnect，或者是本场的 RTP。"
+      ],
+      "conclusion": "PF 须执行两个实收入处按事件所回指的 §6.4.1，保持这条预建立会话在 PF 侧的在用状态。§6.4.1 是参与功能规程总则；话权与 RTP 分别按 §6.4.2、§6.4.3 的来向及具体条件处理，不能视为同一种转发。",
+      "normative_strength": "§9.3.2.4.2、§9.3.2.4.3 的处理及保持在用均为 SHALL。",
+      "limitations": [
+        "外层在用不是控制功能的仲裁结果，也不是客户端的在用证明。不能只凭已有预建立会话、报文名或出向记录确定另一端已收或已获得话权。",
+        "话权转发和下行 MBMS 方向由已有 PF 主题负责；这里不扩成固定物理路径或一律转发。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.1, opening and media-plane procedure scope: already established container, a call uses it separately"
+          ],
+          "printed_pages": [
+            193
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.4.1–.3, PF state, actual floor or RTP receive entry and same in-use state; exact reference to 6.4.1"
+          ],
+          "printed_pages": [
+            200
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.4.1 opening, participating function entry for an established on-demand or in-use pre-established session"
+          ],
+          "printed_pages": [
+            101
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "preestablished-in-use-pf-client-rtp-uplink",
+      "title": "在用的 PF 实收这场呼叫的客户端 RTP：须立即转发给控制功能",
+      "conditions": [
+        "实收的一侧是参与 MCPTT 功能 PF。它为这个客户端保存的这条预建立会话，当时在 G: Pre-established session in use。",
+        "本场 RTP 实际来自该客户端；不是从 CF 或 NCF 来的下行 RTP。"
+      ],
+      "conclusion": "PF 按 §6.4.3 第 1 项须立即把该 RTP 转给控制功能 CF。按 §9.3.2.4.3 处理此事，不改变本侧的在用状态。",
+      "normative_strength": "§9.3.2.4.3 与 §6.4.3 第 1 项为 SHALL。",
+      "limitations": [
+        "该上行项没另列先收到本次 Connect 确认或 MBMS 听报；仅见 T55 在运行而没有本端状态与匹配的实际来包，不能确定分支。也不据此推定发送端在确认前就有权发包、CF 已收到，或听众已播放。",
+        "如果是 CF 或 NCF 发来的下行，另查本场是否实际使用 MBMS 及该下行分支；不把上行规则套到下行。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.1, opening and media-plane procedure scope: already established container, a call uses it separately"
+          ],
+          "printed_pages": [
+            193
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.4.1–.3, PF state, actual floor or RTP receive entry and same in-use state; exact reference to 6.4.1"
+          ],
+          "printed_pages": [
+            200
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.4.3 item 1, actual RTP from the MCPTT client and immediate PF forwarding to CF"
+          ],
+          "printed_pages": [
+            102
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "preestablished-in-use-client-ordinary-floor-or-rtp",
+      "title": "终端在用时实收话权或 RTP：进入本机基本话权规程，外层不换态",
+      "conditions": [
+        "实收的一侧是 MCPTT 客户端；这条预建立会话当时处于本侧的 U: Pre-established session in use。",
+        "实收为本场普通话权控制消息（不是 Connect 或 Disconnect），或实际 RTP。"
+      ],
+      "conclusion": "终端须按 §6.2.4 的本机基本话权状态和事件处理，预建立会话这个外层状态仍为 in use。",
+      "normative_strength": "§9.2.2.4.3、§9.2.2.4.4 的处理与保持在用均为 SHALL。",
+      "limitations": [
+        "同名 U 不代表同一状态机；不能把预建立会话在用写成基本话权的 has permission。",
+        "RTP 实收、话权控制实收、播放请求和实际播放是不同观测；本条不展开本机基本话权程序，也不从 PF 转发推定客户端实收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.1, opening and media-plane procedure scope: already established container, a call uses it separately"
+          ],
+          "printed_pages": [
+            193
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.2.2.4.3–.4, in-use client receives other floor control or RTP and invokes the local floor-participant procedure"
+          ],
+          "printed_pages": [
+            196
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "preestablished-not-in-use-unhandled-rtp-discard",
+      "title": "已建未用的这端实收 RTP：按自己的未匹配事件丢包，不改变本侧状态",
+      "conditions": [
+        "所查的是实收 RTP 的一端，且是这一条已经建立的预建立会话。",
+        "若接收者是终端，当时为 U: Pre-established session not in use；若是 PF，该客户端的这一条会话当时为 G: Pre-established session not in use。对应小节未给此态 RTP 处理。"
+      ],
+      "conclusion": "本端须丢弃这份 RTP，保持自己的未在用状态；不读取对端记录来替本端选分支。",
+      "normative_strength": "§9.2.2.1、§9.3.2.1 的无适用处理条目通则为 SHALL；各自未在用段不列 RTP 接收处理。",
+      "limitations": [
+        "此结论只处理实际到达本端的 RTP，不凭沉默或没看到出站包证明已丢。未在用不等于预建立会话不存在。",
+        "不把 RTP 结论扩为普通话权消息一律丢弃；终端未在用段的总则另写可收到话权控制消息。Connect、Disconnect 和相应信令事件仍查各自过程。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.1, opening and media-plane procedure scope: already established container, a call uses it separately"
+          ],
+          "printed_pages": [
+            193
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.2.2.1 following Figure 9.2.2.1-1 and 9.2.2.3.1–.6, unmatched RTP vs scope of can receive floor messages while not in use"
+          ],
+          "printed_pages": [
+            194,
+            195
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "9.3.2.1 following Figure 9.3.2.1-1 and 9.3.2.3.1–.5, PF unmatched RTP while not in use"
+          ],
+          "printed_pages": [
+            197,
+            198,
+            199,
+            200
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-media-preestablished-connect-outcome",
+    "r16-media-mbms-pf-floor-routing",
+    "r16-media-on-network-floor-client",
+    "r16-media-rtcp-app-name-subtype",
+    "r16-media-preestablished-release-outcome"
+  ],
+  "limitations": [
+    "具体的 Connect/Accepted 进入在用、Disconnect 离开在用、消息编码和已用 MBMS 的专门投递分支由各自主题解释。也不由本条规定一端应提前送 RTP、连接构造、实际对端收件或收听。",
+    "没有站点实测或厂商实现结论。只给规范要求与一跳证据界限，不把未见日志判为未执行。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.1, opening and media-plane procedure scope: already established container, a call uses it separately"
+      ],
+      "printed_pages": [
+        193
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.3.2.4.1–.3, PF state, actual floor or RTP receive entry and same in-use state; exact reference to 6.4.1"
+      ],
+      "printed_pages": [
+        200
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.4.1 opening, participating function entry for an established on-demand or in-use pre-established session"
+      ],
+      "printed_pages": [
+        101
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.4.3 item 1, actual RTP from the MCPTT client and immediate PF forwarding to CF"
+      ],
+      "printed_pages": [
+        102
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.2.2.4.3–.4, in-use client receives other floor control or RTP and invokes the local floor-participant procedure"
+      ],
+      "printed_pages": [
+        196
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.2.2.1 following Figure 9.2.2.1-1 and 9.2.2.3.1–.6, unmatched RTP vs scope of can receive floor messages while not in use"
+      ],
+      "printed_pages": [
+        194,
+        195
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "9.3.2.1 following Figure 9.3.2.1-1 and 9.3.2.3.1–.5, PF unmatched RTP while not in use"
+      ],
+      "printed_pages": [
+        197,
+        198,
+        199,
+        200
+      ]
+    }
+  ]
+}
