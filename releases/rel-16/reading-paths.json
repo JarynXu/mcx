@@ -486,6 +486,10 @@
         {
           "condition": "要拆的预建立会话已有呼叫在用，或业务尚在建立，查 PF 如何处理及每条应答的对象。",
           "read": "topics/calls/preestablished-session-in-use-release.md"
+        },
+        {
+          "condition": "若已经识别为同系统归属网内正常优先级、按一个被叫 MCPTT ID 寻址、有话权控制的普通在网私呼，T-PF 实收 CF 初始 INVITE、进自动或人工应答、命中未关联业务且语音和话权两段均匹配的旧预建立会话，两项紧急指示均未置真且因 Priv-Answer-Mode 替换，要查新的 INVITE 在 SIP 核心支持时如何带 Resource-Share，读普通私呼终接。不要沿用原初建 200 的规则。",
+          "read": "topics/calls/private-preestablished-termination.md"
         }
       ],
       "boundary": "仅预建立会话本身的有限生命周期：客户端建立请求与 PF 准入、无关联 MCPTT 会话时的修改，以及无呼叫使用时释放。空闲条件仅约束修改/释放对应主张，不附加到建立。保留 Session-Expires 的 SHOULD 与 refresher=uac 的条件 SHALL、资源绑定条件和媒体交互时序；修改接收方生成 SDP 应答，旧资源保留至 200。预建立会话不等于实际呼叫，200 或 implicit-request 不证明话权授予；不覆盖 REFER 使用链、在用或建立中释放分支、完整保活/定时器、ICE/PCC/安全算法及媒体控制状态机。 SIP 核心网支持共享时，预建立成功响应必须携带逐流规则；用规则辨认媒体流，不能用它证明复用了某条承载。"
@@ -5214,7 +5218,7 @@
     },
     {
       "id": "r16-calls-private-preestablished-termination",
-      "question": "被叫已有预建立会话，私呼来话时怎样区分直接复用、改走按需与替换？自动和人工时谁响应 CF，UE 侧又应核对什么？",
+      "question": "被叫已有预建立会话，私呼来话时怎样区分直接复用、改走按需与替换？自动和人工时谁响应 CF，UE 侧又应核对什么？ 在同系统归属网内的有话权控制的一对一普通私呼，T-PF 实收 CF 初始 INVITE、选定未关联业务且语音和话权段均匹配的旧预建立会话，再因 Priv-Answer-Mode 进入替换时，Resource-Share 写进哪份请求、怎样沿用旧承载键？",
       "start": "topics/calls/private-preestablished-termination.md",
       "next_if": [
         {
@@ -5228,9 +5232,13 @@
         {
           "condition": "若问题是被叫有没有收到某个 Connect，查与本次控制消息及会话状态相对应的收件证据。",
           "read": "topics/media/preestablished-connect-outcome.md"
+        },
+        {
+          "condition": "若实际核对的是 PF 对最初建立预建立会话的 INVITE 所发出的 200，而非普通私呼的新替换 INVITE，且要查由 SIP 核心支持条件触发的 session-initiator、SDP answer 与逐流规则，读预建立会话初建响应。",
+          "read": "topics/calls/preestablished-session-lifecycle.md"
         }
       ],
-      "boundary": "同系统归属网内、有话权控制的一对一私呼终接。替换区分 T-PF 选择目标与被叫实收并处理替换邀请；后者限于正常优先级、两项紧急指示均未置真且因 Priv-Answer-Mode 分流。新邀请的应答、旧对话的释放和实际媒体各需相应证据。"
+      "boundary": "同系统归属网内、有话权控制的一对一私呼终接。替换区分 T-PF 选择目标与被叫实收并处理替换邀请；后者限于正常优先级、两项紧急指示均未置真且因 Priv-Answer-Mode 分流。新邀请的应答、旧对话的释放和实际媒体各需相应证据。 补充的共享头只看上述普通私呼中 T-PF 实收 CF 初始 INVITE、已选自动或人工、目标旧会话未关联业务且语音/话权 SDP 均匹配、已因 Priv-Answer-Mode 替换。仅 SIP 核心支持时在新替换 INVITE 要求 session-receiver 及按出向 offer 逐行沿用旧承载键和方向；未知不当作不支持，不从发送证明实际共享。"
     },
     {
       "id": "r16-calls-offnetwork-private-emergency-establishment",
