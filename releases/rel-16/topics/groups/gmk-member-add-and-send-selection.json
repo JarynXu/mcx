@@ -1,0 +1,282 @@
+{
+  "topic_id": "r16-groups-gmk-member-add-and-send-selection",
+  "release": 16,
+  "standard_stage": null,
+  "state": "draft",
+  "title": "新成员何时拿到 GMK？同组有两把已激活的 GMK，发媒体用哪把？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v16.13.0",
+  "common_conditions": [
+    "固定 3GPP TS 33.180 V16.13.0，Release 16。范围为普通 MCX 组的新增成员 GMK 供应，及 MC 终端为关联组加密媒体时的 GMK 选择。",
+    "按相关的 MC 用户、终端和组 ID 核对证据。新成员的组管理授权、订阅、GMS 发出和终端收件，不替代发送端的本地激活状态。"
+  ],
+  "condition_rule": "新增成员看 §5.7.3 的归属分支和组管理条件。发送组媒体时查 §5.7.1 的同组已激活 GMK，不用是否参加语音组呼、持有配置档或收到最新消息代替。",
+  "claims": [
+    {
+      "id": "gmk-added-member-cms-update",
+      "title": "新增成员的 CMS 用户配置档更新标出受影响的组，不能当作 GMS 组记录或 GMK 已实收",
+      "conditions": [
+        "本项只查 §5.7.3 中用户已订阅 CMS 用户配置档，因被加入新组或已有组而收到的更新。"
+      ],
+      "conclusion": "CMS 用户配置档更新通知成员资格变化并指出受影响的组 ID。它的订阅和 GMS 组配置更新的订阅是不同事项。",
+      "normative_strength": "这是 §5.7.3 开头所述的通知对象及内容，不是 GMS 提供密钥的成功条件。",
+      "limitations": [
+        "不把 GMS 给业务服务器或成员的名册通知、普通组配置引用或业务授权当成这份 CMS 更新、GMS 服务授权或终端收到 GMK。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.7.3 opening paragraph, subscribed CMS profile update identifies the group affected by the membership change"
+          ],
+          "printed_pages": [
+            61
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "gmk-added-member-implicit-affiliation",
+      "title": "新增且走隐式归属：自动订阅 GMS 的组配置更新，仍须组管理服务授权才提供 GMK",
+      "conditions": [
+        "用户被加入新组或已有组，且实际适用隐式归属分支。"
+      ],
+      "conclusion": "该用户自动订阅 GMS 的组配置更新。用户须取得面向 GMS 的组管理服务授权；获得授权后，GMS 向该 UE 发组管理记录和 GMK。",
+      "normative_strength": "适用隐式归属是分支条件，自动订阅是该分支效果；提供组管理记录和 GMK 前的授权为 SHALL。",
+      "limitations": [
+        "不加显式分支的主动订阅与验证门槛；原文也不把自动订阅作授权已通过的证据。规范要求发送，不能代证终端实收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.7.3 first paragraph on printed page 62, implicit affiliation with automatic subscription and GMS-service authorisation before provision"
+          ],
+          "printed_pages": [
+            62
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "gmk-added-member-explicit-affiliation",
+      "title": "新增且须显式归属：先取得 GMS 组管理服务授权，再订阅；供应 GMK 前须验证订阅",
+      "conditions": [
+        "用户配置记录指示已加入新组或已有组，并须显式归属。"
+      ],
+      "conclusion": "用户须先取得面向 GMS 的组管理服务授权，再向 GMS 订阅组更新。授权和订阅验证都满足后，GMS 才按本分支提供组管理记录与 GMK。",
+      "normative_strength": "授权在订阅之前；授权和订阅验证为供应前的 SHALL 条件。",
+      "limitations": [
+        "只有授权或订阅送出不足以证明订阅已验证。没有相应记录不等于证实验证未发生；本项不固定报文、响应码、重试或实际送达。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.7.3 second paragraph on printed page 62, required explicit affiliation with authorisation then GMS subscription and its validation before provision"
+          ],
+          "printed_pages": [
+            62
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "gmk-added-member-receipt-distinct-from-call",
+      "title": "两支都允许收到组更新和 GMK 后参加相应组通信；这不证明已接通或取得话权",
+      "conditions": [
+        "已确认是新增成员的隐式或显式分支，并实际收到相应的组更新和 GMK。"
+      ],
+      "conclusion": "按 §5.7.3，两支都允许该用户在收到这两项后参加相应组通信。",
+      "normative_strength": "参加为 MAY，不是必须参加。",
+      "limitations": [
+        "仅见配置档、授权、订阅成功或 GMS 已发，不代证两项实收。不从规范允许参加推出一次呼叫已经接通、终端获得话权、本端密钥已激活或实际媒体已保护。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.7.3 first paragraph on printed page 62, implicit affiliation with automatic subscription and GMS-service authorisation before provision"
+          ],
+          "printed_pages": [
+            62
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.7.3 second paragraph on printed page 62, required explicit affiliation with authorisation then GMS subscription and its validation before provision"
+          ],
+          "printed_pages": [
+            62
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "gmk-sender-multiple-active-select",
+      "title": "终端加密组媒体时，取同一组已激活 GMK 中 Activation Time 最近的一把",
+      "conditions": [
+        "MC 终端要为该组加密媒体，且同一 Group ID 对应多把已激活的 GMK。"
+      ],
+      "conclusion": "发送端须使用本组已激活 GMK 中 Activation Time 最近的一把，不用 GMK 到达顺序或 GMK-ID 取代激活时间。将来才激活的 GMK 不是这次排序的候选。",
+      "normative_strength": "多个已激活的 GMK 可以并存；此比较规则是发送侧组媒体加密的 SHALL。",
+      "limitations": [
+        "按这份终端记录与组 ID 判，不把收到新密钥当作它已激活。不规定最新激活时间并列、没有已激活候选时的处理，不替接收端选解密钥或规定旧钥存留，不代证某个包已使用哪把密钥。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.7.1 paragraph on multiple active GMKs of one Group ID and most recent Activation Time for encrypting group media"
+          ],
+          "printed_pages": [
+            60
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex E.6.4, Activation time for transmission and zero referring to the timestamp of the received MIKEY I_MESSAGE"
+          ],
+          "printed_pages": [
+            168
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "gmk-activation-expiry-time-difference",
+      "title": "Activation Time 为零取消息自带时间戳，Expiry Time 为零才表示不设到期",
+      "conditions": [
+        "核查与本组 GMK 关联的 Activation Time 和 Expiry Time 参数。"
+      ],
+      "conclusion": "Activation Time 是密钥可开始用于发送的 UTC 时间；值为 0 取收到的 MIKEY I_MESSAGE 所带时间戳，不取本机收件时刻。Expiry Time 是密钥到时不得再使用的 UTC 时间；值为 0 表示该密钥不到期。",
+      "normative_strength": "附录 E.6.4 和 E.6.10 规定各字段的时间含义与零值语义。",
+      "limitations": [
+        "不把两个零值混用；无到期或尚未到期，不证明密钥已激活或没有撤销。条文时间界限不证明该终端已换用、删除密钥或怎样为历史消息解密。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex E.6.4, Activation time for transmission and zero referring to the timestamp of the received MIKEY I_MESSAGE"
+          ],
+          "printed_pages": [
+            168
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "Annex E.6.10, Expiry time and the effect of a zero value"
+          ],
+          "printed_pages": [
+            168
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "5.7.3 opening paragraph, subscribed CMS profile update identifies the group affected by the membership change"
+      ],
+      "printed_pages": [
+        61
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "5.7.3 first paragraph on printed page 62, implicit affiliation with automatic subscription and GMS-service authorisation before provision"
+      ],
+      "printed_pages": [
+        62
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "5.7.3 second paragraph on printed page 62, required explicit affiliation with authorisation then GMS subscription and its validation before provision"
+      ],
+      "printed_pages": [
+        62
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "5.7.1 paragraph on multiple active GMKs of one Group ID and most recent Activation Time for encrypting group media"
+      ],
+      "printed_pages": [
+        60
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "Annex E.6.4, Activation time for transmission and zero referring to the timestamp of the received MIKEY I_MESSAGE"
+      ],
+      "printed_pages": [
+        168
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-33.180-v16.13.0",
+      "clauses": [
+        "Annex E.6.10, Expiry time and the effect of a zero value"
+      ],
+      "printed_pages": [
+        168
+      ]
+    }
+  ],
+  "related": [
+    "r16-groups-group-membership-notification",
+    "r16-groups-gmk-security-context-revocation",
+    "r16-groups-removed-member-gmk",
+    "r16-security-kms-provisioning"
+  ],
+  "limitations": [
+    "本页不规定密钥编码、公告或订阅的具体 SIP 过程、收端解密策略或真实端设备行为；撤销、移出、跨域重组及 KMS 身份材料按各自主题处理。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
