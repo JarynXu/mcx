@@ -4344,6 +4344,10 @@
         {
           "condition": "若问题是同一用户登录多台终端的通用要求，而非同一台终端共享注册。",
           "read": "topics/identity/multiple-device-login.md"
+        },
+        {
+          "condition": "若另查 TS 33.180 §5.8 的共通信令密钥下载：MCX 业务服务器确实向在它处已注册、因而订阅下载通知、且已由 KMS 配置本用户身份材料的同一终端发送含 MIKEY 的下载，用于分发 MuSiK 或更新 CSK/MuSiK，再区分终端成功取钥后回本笔 200 与业务服务器实收本笔成功应答。不要用授权 200、终端上送 CSK 或客户端替换记录替代。",
+          "read": "topics/security/service-signalling-key-download.md"
         }
       ],
       "boundary": "Rel-16 在网 MCPTT：区分同一终端上同时运行的 MC 业务客户端共享注册、客户端请求授权和同人多个 MCPTT 客户端的授权绑定。 CSK 密钥更新另查 PF 收到授权请求后的条件、独立 SIP MESSAGE、客户端 488/136 或提取成功后的替换；不把仅设置 PUBLISH 当作下载。 同时办理授权和设置，读本页 §7.3.3：区分绑定、发布失败停步、本次缓存和 200 后的服务端工作。仅发布设置或查其他客户端收到的通知，才按对应条件转页。 查 UE 绑定，区分第三方 REGISTER 内层的 Resource-Share 和外层 Contact 的 +g.3gpp.registration-token；授权用 PUBLISH 须按本次 P-Asserted-Identity 找对应的第三方 REGISTER。"
@@ -6704,6 +6708,10 @@
         {
           "condition": "在网单播组呼的目标不是临时组的组成组；要核对协商保护的话权两端用什么密钥，以及 PF 或 CF 是否解密加密 RTP 负载。",
           "read": "topics/media/on-network-unicast-media-protection.md"
+        },
+        {
+          "condition": "若证据实际属于 MCX 业务服务器向已有本用户 KMS 身份材料、已在该服务器注册并因此订阅其下载通知的同一终端发送带 MIKEY 的下载，用于分发 MuSiK 或更新 CSK/MuSiK，且问题是成功取钥与服务器实收本笔成功响应后何时可保护信令，查 TS 33.180 共用规则。问题若是 MCPTT MBMS 本笔 Status 停用、默认/显式影响组或逐端回退，留在本页。",
+          "read": "topics/security/service-signalling-key-download.md"
         }
       ],
       "boundary": "只说明 MBMS 受保护话权的 MuSiK 下载组范围、符合条件的客户端处理及未收到 200 时的单播。不能替代承载监听报告、语音 RTP 实收或安全算法。"
@@ -12227,6 +12235,34 @@
         }
       ],
       "boundary": "同一 MC 系统内，普通在网 MCPTT 按直接组身份发起或加入预安排组或受限聊天组；无广播、临时组、重组或紧急、迫近危险请求及组状态。对上实际 O-PF 入站和发往 CF 的初始业务 INVITE。仅判主叫功能别名，不把别名当组目标，也不据此判准入、接收、显示或媒体。"
+    },
+    {
+      "id": "r16-security-service-signalling-key-download",
+      "question": "终端从信令密钥下载成功取钥后回了 200，业务服务器还要实收哪一笔应答才有本次用钥依据？ 看到终端注册成功和一条 MIKEY，怎样区分 KMS 供钥、终端上送 CSK、业务服务器下发 CSK 或 MuSiK？ 同一台终端有两笔信令下载，第一笔的 200 能确认第二把钥吗？MBMS 专用 200 和回退要分开查吗？",
+      "start": "topics/security/service-signalling-key-download.md",
+      "next_if": [
+        {
+          "condition": "若要查终端、业务服务器或组管理服务器实际向 KMS 做初始供应、按需取得身份材料或请求外部域证书，按具体请求和直连/经代理的条件读；不要把业务服务器下发的 CSK/MuSiK 当成 KMSKeySet。",
+          "read": "topics/security/kms-provisioning.md"
+        },
+        {
+          "condition": "若查在网 MCPTT PF 是否更新并另发 MESSAGE，限 PF 实际从授权用 REGISTER 或 PUBLISH 收到 CSK 且机密性保护已启用。若只查终端核验、拒绝或替换，另看终端实际收到的 SIP MESSAGE：P-Asserted-Service 含 MCPTT ICSI，正文有 application/mikey，且 MIKEY 的 CSB-ID 内密钥标识是 CSK-ID。仅 Accept-Contact 有 ICSI 不够，不要求另证 PF 的发送触发。共用 NOTIFY 不给这个专条另开入口。",
+          "read": "topics/identity/shared-sip-registration.md"
+        },
+        {
+          "condition": "若参与 MCPTT 功能打算经 MBMS 向该终端发受机密性保护的下行话权信令，读专用发送和响应；确实未收到该终端对此次下载的 200 才按专条回退。查终端时另看实际收到的 SIP MESSAGE：P-Asserted-Service 含 MCPTT ICSI，application/vnd.3gpp.mcptt-mbms-usage-info+xml 内有 mbms-defaultMuSiK-download（零个或多个 group）或 mbms-explicitMuSiK-download（至少一个 group）。仅 Accept-Contact 有 ICSI 不够，不要求另证 PF 的用钥意图。仅当 MIKEY 的 CSB-ID 内密钥标识是 MuSiK-ID，才走 MIKEY Status 分支；MIKEY 这项判据不作为识别默认/显式组范围或判断本次消息是否有效的通用前提。监听报告、发送记录或其他终端响应不证明本笔实收。",
+          "read": "topics/media/mbms-musik-download.md"
+        },
+        {
+          "condition": "若实际检查在网 MCPTT 客户端收到的承载通告要不要提取 MSCCK，只对上本次 SIP MESSAGE 内带服务区的通告项和 GPMS 专用 m=application 的 MIKEY-SAKKE I_MESSAGE，再读该承载的身份、验签和安全材料；这不是 MuSiK 下载。",
+          "read": "topics/bearers/mcptt-mbms-announcement-sdp.md"
+        },
+        {
+          "condition": "若查 CMS 配置档变更后新增组成员何时从 GMS 取得组记录和 GMK，或发送端在同一组有多把已激活 GMK 时如何选用，查成员和发送条件；不得拿信令密钥下载的 200 确认组钥。",
+          "read": "topics/groups/gmk-member-add-and-send-selection.md"
+        }
+      ],
+      "boundary": "Release 16，TS 33.180 V16.13.0 §5.8.1–.2。查实际 MCX 业务服务器给已有该用户 KMS 身份材料、已在该服务器注册并因此订阅其下载通知的同一终端分发 MuSiK 或更新 CSK/MuSiK；KMS 也为获准充当该 MCX 业务服务器的身份配置材料。终端成功提取本笔信令密钥后回该笔成功 200；服务器实际收本笔同一终端应答后可开始保护信令。仅见发出、注册或授权响应、其他终端或其他下载的 200 都不能证实此事件。不是实际或强制换钥，不套专用 MBMS Status、重试或单播回退。"
     }
   ]
 }

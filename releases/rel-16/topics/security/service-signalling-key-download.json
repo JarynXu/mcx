@@ -1,0 +1,120 @@
+{
+  "topic_id": "r16-security-service-signalling-key-download",
+  "release": 16,
+  "standard_stage": null,
+  "state": "draft",
+  "title": "MCX 业务服务器下发信令密钥，收到哪个 200 才能开始用？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-33.180-v16.13.0",
+  "condition_rule": "各声明继承共同范围，再按本次 MCX 业务服务器发出、同一终端成功提取及回本次 200、业务服务器同笔实收分别取证。一个观察点不能替另一个。",
+  "common_conditions": [
+    "Release 16，TS 33.180 V16.13.0 §5.8.1–.2 的 MCX 共通安全程序，不是独立 Stage 3 业务消息程序。",
+    "KMS 为获准充当 MCX 业务服务器的身份供应材料。终端已有本用户的 KMS 身份材料，已在该服务器注册并因而订阅它的密钥下载通知。",
+    "对象限这笔 MCX 业务服务器向终端分发 MuSiK 或更新 CSK/MuSiK 的信令密钥下载；不是终端上送 CSK、KMS 身份材料供应、GMS 组主密钥、承载通告的 MSCCK 或其他事务的响应。"
+  ],
+  "claims": [
+    {
+      "id": "service-server-signalling-key-download-scope",
+      "title": "谁发信令密钥，终端注册和订阅是哪个阶段？",
+      "conditions": [
+        "终端已由 KMS 配置本 MC 用户的身份密钥材料，且已在负责这笔下载的 MCX 业务服务器注册。服务器身份的材料按 §5.8.1 由 KMS 为获准充当 MCX 业务服务器的身份供应。",
+        "要判定的是业务服务器实际发给这台终端、用于分发 MuSiK 或更新 CSK/MuSiK 的信令密钥下载。"
+      ],
+      "conclusion": "§5.8.2 步骤 0 写明终端因在 MCX 业务服务器注册而订阅该服务器的下载通知。步骤 1 是服务器通过带 MIKEY 的 SIP NOTIFY 或 SIP MESSAGE 向该终端下发。§5.8.1 用这条路分发 MuSiK，或更新 CSK/MuSiK。密钥针对接收的 MC 用户加密，用代表业务服务器的身份签名；CSK 对应 CSK-ID，MuSiK 对应 MuSiK-ID。",
+      "normative_strength": "§5.8.1 明文确定本流程的角色和受保护的目标身份；§5.8.2 描述步骤 0 的前提、订阅结果与步骤 1 的下载，不据此增设另一条订阅事务。",
+      "limitations": [
+        "终端在 IMS 注册或收到业务授权的 200，不能代替业务服务器订阅与本次实际下载的证据。只见业务服务器发出，也不证明终端收到或成功提取。",
+        "这里没有给任一种 SIP 消息的所有业务专用字段。MIKEY 载荷不能把终端上送 CSK、KMS 的身份材料或 GMS 的 GMK 分发变成本步骤。§5.8.1 的用途不回答其他程序能否由服务器初次下发 CSK。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.8.1: service-server CSK or MuSiK key download, roles, user-targeted encryption and server signing"
+          ],
+          "printed_pages": [
+            62
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.8.2, Figure 5.8.2-1 and steps 0–1: identity provisioning, MCX Server registration and the server-to-UE download"
+          ],
+          "printed_pages": [
+            63
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.4: MCX UE-to-server CSK upload direction only, not a key-download exchange"
+          ],
+          "printed_pages": [
+            59
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.9: MSCCK bearer-announcement contrast and reference to the common security distribution procedure only"
+          ],
+          "printed_pages": [
+            63
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "same-signalling-key-download-success-enables-use",
+      "title": "业务服务器实收哪一笔成功应答后可开始用钥？",
+      "conditions": [
+        "同一台有本用户 KMS 身份材料、已在该 MCX 业务服务器注册并因此订阅其下载通知的终端，收到该业务服务器用于分发 MuSiK 或更新 CSK/MuSiK 的本次下载，从中成功提取信令密钥，并回该笔成功 200。",
+        "业务服务器实际收到这台终端对这笔下载的成功响应，才可据本步骤判断该笔开始用钥的条件。"
+      ],
+      "conclusion": "终端成功提取本笔信令密钥后回 200 OK。该 MCX 业务服务器实际收到本次下载的成功应答后，可以开始使用这笔下载的密钥保护信令。",
+      "normative_strength": "§5.8.2 步骤 2 明文用成功提取绑定终端的应答，并用服务器收到成功通知说明能开始用钥；不是要求实收时立即换钥。",
+      "limitations": [
+        "终端已经发 200 不等于服务器实收；无服务器收件记录不等于确定没收到。普通注册或授权、另一笔下载、另一把钥或其他终端的响应不能代证。",
+        "收到应答不证明后续某条信令已受该钥保护、立即换钥、全设备采用、旧钥已清理或本次缺应答的超时重试。MCPTT MBMS 专条的有效停用和逐端逐组回退按该专条判断。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v16.13.0",
+          "clauses": [
+            "5.8.2, Figure 5.8.2-1 and step 2: UE extraction, successful response and server receipt before possible use"
+          ],
+          "printed_pages": [
+            63
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-security-kms-provisioning",
+    "r16-identity-shared-sip-registration",
+    "r16-media-mbms-musik-download",
+    "r16-bearers-mcptt-mbms-announcement-sdp",
+    "r16-groups-gmk-member-add-and-send-selection"
+  ],
+  "limitations": [
+    "不把 §5.8 的 NOTIFY 或 MESSAGE 选择套到专用 MCPTT 消息程序，不从共用 200 推出 MBMS 的组范围、Status 结果或缺 200 回退。",
+    "规范流程提供判断条件，不证明该部署的密钥状态、信令保护效果或媒体结果。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  }
+}
