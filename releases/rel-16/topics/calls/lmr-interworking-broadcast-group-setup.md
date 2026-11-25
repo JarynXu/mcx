@@ -19,3 +19,5 @@
 两例都是 MCPTT 服务器答复甲的客户端“广播已建立”，再由甲的客户端提示可以使用本场资源发媒体。一般定义不期待接收用户回话；这与设备回设呼信令不同。一般定义只有广播发起人传媒体。两个例子的引言另说明，若启用抢占功能，发起人可能被抢占。只看到服务器向甲端发出的响应，不能签认甲端已收、甲另有某项发起许可，或任何接收者已经听到广播。LMR 内部怎样把通知传给电台不在这两段内。[§10.3.4.1，印刷页 51](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/16.08.00_60/ts_123283v160800p.pdf#page=52)；[§10.3.4.2 步骤 9–10，印刷页 54](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/16.08.00_60/ts_123283v160800p.pdf#page=55)；[§10.3.4.3 步骤 8–9，印刷页 56](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/16.08.00_60/ts_123283v160800p.pdf#page=57)。
 
 要继续查 **A 的旧呼怎样释放**，读[普通互通组呼整场释放](lmr-interworking-group-release.md)，不要把它当成这场新广播的释放。若本次根本不是广播，查[预安排互通组呼建立](lmr-interworking-prearranged-group-setup.md)。若没有 IWF，只查 MCPTT 端怎样带广播标志和结束通话，读[在网 MCPTT 广播发起](onnetwork-prearranged-broadcast-origin.md)。要核对代表还是逐人归属，查[MCPTT 定义组中的 LMR 归属](../groups/mc-hosted-lmr-affiliation.md)。
+
+若新广播已经建立，且是发起客户端 1 的用户讲完，要查的是[这场互通广播自身的释放](lmr-interworking-broadcast-group-release.md)；LMR 定义例在建立时可以省略的客户端回执，不决定本场释放时怎样确认。

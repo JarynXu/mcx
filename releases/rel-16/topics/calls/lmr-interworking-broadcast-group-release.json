@@ -1,0 +1,290 @@
+{
+  "topic_id": "r16-calls-lmr-interworking-broadcast-group-release",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCPTT–LMR 互通广播结束：谁确认释放，最后谁答复发起端？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v16.8.0",
+  "common_conditions": [
+    "3GPP TS 23.283 V16.8.0，Release 16，Stage 2。客户端 1、客户端 2 与 IWF 正参与同一场互通广播组呼；发起方是客户端 1 的 MCPTT 用户，现已结束发送。"
+  ],
+  "condition_rule": "按广播组的定义侧选图；分别核对事件属于本场建立或释放、请求还是响应，以及哪一方发、哪一方收。",
+  "claims": [
+    {
+      "id": "active-broadcast-originator-completes-transmission",
+      "title": "两种组定义的图都由本场 MCPTT 发起用户结束发送",
+      "conditions": [
+        "本次要区分已在进行的广播和建广播前的组成组旧呼。"
+      ],
+      "conclusion": "两节都以客户端 1、客户端 2 和 IWF 正参与一场广播为前提。MCPTT 客户端 1 的发起用户结束发送，客户端 1 向 MCPTT 服务器发本场释放请求。两节开头说明的结果是广播结束、资源释放。",
+      "normative_strength": "两节各自的引言、前提和步骤 1–2 指定本场动作；不是对所有组呼或所有发言结束的规则。",
+      "limitations": [
+        "不要求把建立示例中的非紧急组成组旧呼当成这两节的前提。这两图不演示 LMR 用户发起广播，也不把重组取消、设备收件或各端资源的实际状态列为已经观测到的事实。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.4, opening and precondition 1, ongoing MCPTT-defined broadcast and its release outcome"
+          ],
+          "printed_pages": [
+            56
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.4, Figure 10.3.4.4-1 and steps 1–3, MCPTT originator and separate client and IWF release requests"
+          ],
+          "printed_pages": [
+            57
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.5, opening, precondition 1 and steps 1–2, ongoing LMR-defined broadcast and its MCPTT originator"
+          ],
+          "printed_pages": [
+            58
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcptt-defined-two-release-legs",
+      "title": "MCPTT 定义：接收客户端与 IWF 各自确认，服务器答原发起端",
+      "conditions": [
+        "广播组定义在 MCPTT 系统，读本场释放请求和响应的两段。"
+      ],
+      "conclusion": "MCPTT 服务器向客户端 2 发释放请求（3a），向组成组一侧的 IWF 发 IWF 释放请求（3b）。客户端 2 向服务器回本端的释放响应（5a）；IWF 也向服务器回本段的释放响应（5b）。服务器向发起客户端 1 报告本场已结束（6）。步骤 4 正文写客户端 2 与 IWF 各通知自己的用户。",
+      "normative_strength": "按图 10.3.4.4-1 的箭头分辨响应方；步骤 4 的正文写了两方通知，图的通知框只画在客户端 2 一栏。",
+      "limitations": [
+        "步骤 5 没把客户端确认列为可选。不能把 5a 当成给 IWF 的响应，也不能从单份 5a、5b 或 6 签认各端都已收到通知或清理资源。如何通知 LMR 用户不在本规范范围。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.4, Figure 10.3.4.4-1 and steps 1–3, MCPTT originator and separate client and IWF release requests"
+          ],
+          "printed_pages": [
+            57
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.4, steps 4–6, NOTE and figure arrows 5a, 5b and 6, user notification, two confirmations and release response to originator"
+          ],
+          "printed_pages": [
+            57
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcptt-defined-iwf-release-count-by-affiliation",
+      "title": "MCPTT 定义：只按归属方式数 IWF 段的请求和响应",
+      "conditions": [
+        "广播组定义在 MCPTT，已知本组 LMR 用户的归属方式，要数步骤 3b 与 5b。"
+      ],
+      "conclusion": "IWF 代表本组 LMR 用户归属时，服务器向 IWF 发一份释放请求，IWF 向服务器回一份释放响应。若服务器收到本组 LMR 用户的逐人归属，每名已归属的 LMR 用户各对应一份发给 IWF 的请求和一份从 IWF 回服务器的响应。",
+      "normative_strength": "步骤 3、5 在逐人分支简写请求与响应的名称；图 3b、5b 明列为 IWF 释放请求和释放响应。",
+      "limitations": [
+        "不计客户端 2 的 3a、5a，不按已收听或已通知的终端数计。一个已归属用户也可是一来一回，不能凭这两条记录反推代表归属。这项计数不移到 LMR 定义组。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.4, steps 3 and 5 and figure arrows 3b and 5b, IWF releases for representative or individual affiliations"
+          ],
+          "printed_pages": [
+            57
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-defined-iwf-requests-receiver-release",
+      "title": "LMR 定义：IWF 向接收端的服务器反向发释放请求",
+      "conditions": [
+        "广播组定义在 LMR，MCPTT 发起端已通过 MCPTT 服务器请求释放。"
+      ],
+      "conclusion": "服务器先向 IWF 发释放请求（3）。IWF 再向服务客户端 2 的 MCPTT 服务器发 IWF 释放请求（4），这个服务器向客户端 2 发释放请求（4a）。步骤 5 是客户端 2 一侧的结束通知。",
+      "normative_strength": "步骤 4 的两段按图 10.3.4.5-1 中的 4、4a；第 4 步从 IWF 回到服务器，但消息是请求。",
+      "limitations": [
+        "组定义在 LMR 不等于 LMR 用户结束自己的发言。第 4 步不是对第 3 步的成功响应。本节不规定如何通知 LMR 电台。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.5, opening, precondition 1 and steps 1–2, ongoing LMR-defined broadcast and its MCPTT originator"
+          ],
+          "printed_pages": [
+            58
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.5, Figure 10.3.4.5-1 and steps 3–5 with NOTE, request back from IWF via serving MCPTT server to client 2"
+          ],
+          "printed_pages": [
+            58
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-defined-iwf-reply-triggers-initiator-response",
+      "title": "LMR 定义：IWF 得知接收客户端已确认，另回一份响应才触发发起端答复",
+      "conditions": [
+        "广播组定义在 LMR，读同一场成功释放中客户端 2 的确认及其后续。"
+      ],
+      "conclusion": "客户端 2 向服务器确认释放（6），服务器向 IWF 发 IWF 释放响应（7）。IWF 由此得知客户端 2 已确认，另回一份 IWF 释放响应给服务器（7a），触发服务器向发起客户端 1 报告本场已结束（8）。",
+      "normative_strength": "步骤 6 直接写客户端响应，没有“可选”限定；步骤 7 的正文包括图中的 7 和 7a，并明说 IWF 的回送触发步骤 8。",
+      "limitations": [
+        "不能照搬建立广播时的可选回执；也不能用服务器发出的 7 替代 IWF 发回的 7a。只见 8 不证明发起端已收、所有 LMR 电台已获通知、全员听过广播或各端资源都已回收。缺失记录不确定失败或超时处理。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.5, Figure 10.3.4.5-1 arrows 6, 7, 7a and 8 and step 6, release confirmation from client 2"
+          ],
+          "printed_pages": [
+            58
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.4.5, steps 7–8, IWF learns of client 2 confirmation and replies to trigger final response to initiator"
+          ],
+          "printed_pages": [
+            59
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.4.4, opening and precondition 1, ongoing MCPTT-defined broadcast and its release outcome"
+      ],
+      "printed_pages": [
+        56
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.4.4, Figure 10.3.4.4-1 and steps 1–3, MCPTT originator and separate client and IWF release requests"
+      ],
+      "printed_pages": [
+        57
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.4.4, steps 3 and 5 and figure arrows 3b and 5b, IWF releases for representative or individual affiliations"
+      ],
+      "printed_pages": [
+        57
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.4.4, steps 4–6, NOTE and figure arrows 5a, 5b and 6, user notification, two confirmations and release response to originator"
+      ],
+      "printed_pages": [
+        57
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.4.5, opening, precondition 1 and steps 1–2, ongoing LMR-defined broadcast and its MCPTT originator"
+      ],
+      "printed_pages": [
+        58
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.4.5, Figure 10.3.4.5-1 and steps 3–5 with NOTE, request back from IWF via serving MCPTT server to client 2"
+      ],
+      "printed_pages": [
+        58
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.4.5, Figure 10.3.4.5-1 arrows 6, 7, 7a and 8 and step 6, release confirmation from client 2"
+      ],
+      "printed_pages": [
+        58
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.4.5, steps 7–8, IWF learns of client 2 confirmation and replies to trigger final response to initiator"
+      ],
+      "printed_pages": [
+        59
+      ]
+    }
+  ],
+  "related": [
+    "r16-calls-lmr-interworking-broadcast-group-setup",
+    "r16-calls-lmr-interworking-group-release",
+    "r16-calls-lmr-interworking-chat-group-release",
+    "r16-groups-mc-hosted-lmr-affiliation"
+  ],
+  "limitations": [
+    "这里只说明两张成功释放流程图。LMR 用户起呼、LMR 无线侧通知方法、预配置重组取消、具体报文和缺响应后的处置不从这里补。",
+    "标准给出的结束和资源释放结果，不能代替端点的实收、收听或资源状态证据。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
