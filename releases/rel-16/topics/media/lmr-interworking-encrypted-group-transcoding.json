@@ -1,0 +1,268 @@
+{
+  "topic_id": "r16-media-lmr-interworking-encrypted-group-transcoding",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCPTT–LMR 加密组呼需要转码时，谁转发，谁处理保护？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v16.8.0",
+  "condition_rule": "在共同条件成立时，按当前话权与语音方向选声明。两侧的加密条件独立。看见转发不能证明接收端已经收到、解密或播放；呼叫响应也不能代替话权状态。",
+  "common_conditions": [
+    "这里是 TS 23.283 V16.8.0 §10.3.3.6 的示例。MCPTT 客户端、MCPTT 服务器与由 IWF 代表的 LMR 系统已建立预安排互通组呼，且媒体正在传送。",
+    "IWF 与 MCPTT 服务器已完成本场的编解码器和安全参数协商。IWF 已配置语音转码，并已按本节回指的 TS 33.180 程序获得 MCPTT 系统提供的密钥材料。"
+  ],
+  "claims": [
+    {
+      "id": "interworking-encrypted-transcoding-preconditions",
+      "title": "已有会话和媒体，IWF 与服务器已协商，IWF 已具备转码和安全材料",
+      "conditions": [
+        "判断是否落在 §10.3.3.6 的进行中加密转码示例。"
+      ],
+      "conclusion": "MCPTT 客户端、MCPTT 服务器和由 IWF 代表的 LMR 系统已经建立会话，媒体正在传送。IWF 与 MCPTT 服务器已经通过 SDP 协商语音编解码器和本场安全参数。IWF 已配置语音转码，并已按本节回指的 TS 33.180 程序从 MCPTT 系统取得密钥材料。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.3.6, preconditions 1–4: established session and ongoing media, prior IWF/server SDP, configured transcoding and MCPTT key material"
+          ],
+          "printed_pages": [
+            44
+          ]
+        }
+      ],
+      "limitations": [
+        "这些是已成立的前提，不是建立会话、选择协商方或供应安全材料的程序。单见组呼成功或有加密的媒体，不证明这些前提均已满足。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcptt-to-lmr-media-protection-and-conversion",
+      "title": "MCPTT 向 LMR 发送：服务器转发加密语音，IWF 转换并按需使用 LMR 保护",
+      "conditions": [
+        "MCPTT 客户端已经获授话权并正在发语音。"
+      ],
+      "conclusion": "MCPTT 客户端用本组编解码器编码语音并加密后发给 MCPTT 服务器。服务器把加密的语音转发给其他参与者，包括 IWF。IWF 在边界结束 MC 侧语音保护，把语音转换为 LMR 编码；有需要时依 LMR 安全程序重新加密，再送给 LMR 系统。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.3.6, Figure 10.3.3.6-1 and steps 1–3: MCPTT client holds the floor, encodes and protects voice, server forwards to participants including IWF"
+          ],
+          "printed_pages": [
+            45
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.3.6, Figure 10.3.3.6-1, step 4 and NOTE: MC protection terminated at IWF, LMR codec, conditional LMR protection and example-only transcoder location"
+          ],
+          "printed_pages": [
+            45
+          ]
+        }
+      ],
+      "limitations": [
+        "图中没有由 MCPTT 服务器解密或转码的步骤。注只说明本示例假定转码在 IWF 内部，规范不规定转码的部署位置。向 LMR 发送不等于 LMR 已接收或启用了 LMR E2EE。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "example-floor-change-from-mcptt-to-lmr",
+      "title": "图示话权后来空闲，由 IWF 代表的 LMR 侧请求并获授",
+      "conditions": [
+        "正在判断图 10.3.3.6-1 中从 MCPTT 客户端发话转到 LMR 一侧发话的示例。"
+      ],
+      "conclusion": "图中后续话权变为空闲；由 IWF 代表的 LMR 系统请求并获得话权，IWF 已获话权并发送语音。这与谁实际转发语音是不同的判断。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.3.6, Figure 10.3.3.6-1 and steps 5–7: idle floor followed by LMR-side request and grant, and IWF transmission"
+          ],
+          "printed_pages": [
+            45
+          ]
+        }
+      ],
+      "limitations": [
+        "本节不规定话权空闲的触发细节、仲裁策略、最终作决定的实体或所有互通场景都必须按照这个先后切换。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-to-mcptt-media-protection-and-conversion",
+      "title": "LMR 向 MCPTT 发送：IWF 转为本组 MCPTT 编码并施加 MC 侧保护",
+      "conditions": [
+        "由 IWF 代表的 LMR 侧已获话权；IWF 收到来自 LMR 系统的语音。"
+      ],
+      "conclusion": "若来向语音已加密，IWF 按 LMR 安全程序结束该段加密保护。IWF 将语音转换为组的 MCPTT 编码，按本节回指的 TS 33.180 程序给送往 MCPTT 的语音加密，再发给 MCPTT 服务器。服务器把语音转发给本场其他参与者。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.3.6, Figure 10.3.3.6-1 and steps 5–7: idle floor followed by LMR-side request and grant, and IWF transmission"
+          ],
+          "printed_pages": [
+            45
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.3.6, Figure 10.3.3.6-1 and steps 8–10: conditional incoming LMR security processing, MCPTT group codec and protection, IWF/server forwarding"
+          ],
+          "printed_pages": [
+            45
+          ]
+        }
+      ],
+      "limitations": [
+        "来向 LMR 语音是否加密只决定是否要结束 LMR 侧保护，不改变图中对送往 MCPTT 的语音加密。图不规定 LMR 安全程序。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "separate-mc-media-protection-and-lmr-end-to-end-security",
+      "title": "本例 MC 保护在 IWF 开始或结束，不据两段加密推断跨系统端到端保护",
+      "conditions": [
+        "正在判断 §10.3.3.6 的媒体保护边界。引用 §10.3.3.1 是为了区分 MC 媒体加密与 LMR E2EE，二者不是同一概念。"
+      ],
+      "conclusion": "MC 媒体加密可用于 IWF 与 MCPTT 客户端之间，独立于 LMR E2EE，也可在其之外采用。呼叫使用 LMR 编解码器且呼叫双方已预配相应材料时，可以使用 LMR E2EE。在转码示例中，MC 侧保护在 IWF 开始或结束，不能把两侧各自受保护当成同一份 MC 保护贯穿 MCPTT 与 LMR 终端，也不能由此确认实际使用了 LMR E2EE。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.3.6, preconditions 1–4: established session and ongoing media, prior IWF/server SDP, configured transcoding and MCPTT key material"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.3.6, Figure 10.3.3.6-1, step 4 and NOTE: MC protection terminated at IWF, LMR codec, conditional LMR protection and example-only transcoder location"
+          ],
+          "printed_pages": [
+            45
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.3.6, Figure 10.3.3.6-1 and steps 8–10: conditional incoming LMR security processing, MCPTT group codec and protection, IWF/server forwarding"
+          ],
+          "printed_pages": [
+            45
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.3.1, opening media-encryption sentences and NOTE: MC media encryption, LMR vocoder and provisioned LMR E2EE parties, independent protections"
+          ],
+          "printed_pages": [
+            38
+          ]
+        }
+      ],
+      "limitations": [
+        "不把普通预安排组呼建立四例的编解码器条件扩成此处的一般禁令，也不据本例否定其他条件下 LMR E2EE 的可用性。不规定具体保护机制或配置方式。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-lmr-interworking-prearranged-group-setup",
+    "r16-media-lmr-interworking-group-floor-arbitration",
+    "r16-media-on-network-unicast-media-protection",
+    "r16-security-interworking-key-management-record"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.3.6, preconditions 1–4: established session and ongoing media, prior IWF/server SDP, configured transcoding and MCPTT key material"
+      ],
+      "printed_pages": [
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.3.6, Figure 10.3.3.6-1 and steps 1–3: MCPTT client holds the floor, encodes and protects voice, server forwards to participants including IWF"
+      ],
+      "printed_pages": [
+        45
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.3.6, Figure 10.3.3.6-1, step 4 and NOTE: MC protection terminated at IWF, LMR codec, conditional LMR protection and example-only transcoder location"
+      ],
+      "printed_pages": [
+        45
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.3.6, Figure 10.3.3.6-1 and steps 5–7: idle floor followed by LMR-side request and grant, and IWF transmission"
+      ],
+      "printed_pages": [
+        45
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.3.6, Figure 10.3.3.6-1 and steps 8–10: conditional incoming LMR security processing, MCPTT group codec and protection, IWF/server forwarding"
+      ],
+      "printed_pages": [
+        45
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.3.1, opening media-encryption sentences and NOTE: MC media encryption, LMR vocoder and provisioned LMR E2EE parties, independent protections"
+      ],
+      "printed_pages": [
+        38
+      ]
+    }
+  ],
+  "limitations": [
+    "不规定组呼建立、话权仲裁、媒体传输信令、编解码器或加密算法的选择方式、实际部署、密钥管理与供应、LMR 安全程序和无线侧实现。TS 33.180 是本节的回指，本主题不另收它的具体条款。",
+    "仅在此例判断边界的终止与再应用。不得仅据媒体已转发推知接收、播放、授权、解码成功、整组共享一套端到端保护，或断言所有 LMR 侧媒体都必须加密。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
