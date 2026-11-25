@@ -1,0 +1,366 @@
+{
+  "topic_id": "r16-bearers-mbms-different-call-reuse",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "不同场组呼共用 MBMS 承载：谁预留容量，谁发组播？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.280-v16.7.0",
+  "condition_rule": "继承共同条件，再按发现之后的容量请求、组通信建立、媒体转交和下行、容量释放及回应分别核对。使用同一承载不是同一场通信。",
+  "common_conditions": [
+    "讨论 §10.7.3.9.2.1 的不同场流程；涉及的 MC 业务服务器服务同一区域，已配置共享该区 MBMS 承载和承载控制方联系信息。服务器可同类或不同类，不参加同一场组呼，各自分发各场媒体。",
+    "支持多服务器承载协调的 MC 系统须用规定的协调程序，不要求所有系统支持。图中服务器 1 请求分发，服务器 2 担任 MBMS 承载控制方；只收录适用前提和步骤 5–12，从承载发现之后开始。"
+  ],
+  "claims": [
+    {
+      "id": "different-calls-share-bearer-not-their-content",
+      "title": "不同场可以共享同区承载，多服务器协调按支持条件适用",
+      "conditions": [
+        "判断是否进入 §10.7.3.9.2.1，不是 §10.7.3.9.2.2 的同场程序。"
+      ],
+      "conclusion": "在服务同一区域并已配置共享当地承载、已配置承载控制方联系信息的前提下，两台或更多 MC 业务服务器可同类也可不同类。它们不参加同一场组呼，各自分发各场媒体。本例 1 申请分发，2 是 MBMS 承载控制方。多服务器承载协调是可选能力；支持者须采用规定的协调程序。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.9.1, opening paragraph"
+          ],
+          "printed_pages": [
+            136
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.9.2.1, opening paragraph and pre-condition: sharing in the same area, independent group communications and bearer-control contact information"
+          ],
+          "printed_pages": [
+            136
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.9.2.2, step 7b"
+          ],
+          "printed_pages": [
+            140
+          ]
+        }
+      ],
+      "limitations": [
+        "共享一条承载不等于广播同一份媒体；不能套用同场步骤 7b 的可选免播。支持条件不要求所有部署都支持协调，也不要求区内只能有一个控制方。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "server-one-reserves-capacity-with-controller-two",
+      "title": "服务器 1 申请保留指定容量，承载控制方 2 回应",
+      "conditions": [
+        "服务器 1 在图示共享承载流程中向已确定的承载控制方 2 请求分发。"
+      ],
+      "conclusion": "步骤 5 由服务器 1 向服务器 2 发媒体分发请求，以便在该 MBMS 承载上保留指定容量。步骤 6 由 2 向 1 回媒体分发响应，说明能否支持该请求并提供承载详情。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.9.2.1, Figure 10.7.3.9.2.1-1, steps 5–12: arrows, roles and release response label"
+          ],
+          "printed_pages": [
+            137
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.9.2.1, steps 5–6: requested capacity reservation and bearer-control response"
+          ],
+          "printed_pages": [
+            138
+          ]
+        }
+      ],
+      "limitations": [
+        "承载发现与 TMGI 不能证明本次容量已请求或受理。一份分发响应说明对该请求的支持与承载详情，不证明组通信已建立、媒体已发送或已收。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "server-one-establishes-and-informs-mbms-connected-clients",
+      "title": "服务器 1 建立本场组通信并通知已接入 MBMS 的客户端",
+      "conditions": [
+        "正在判断图示分发继续时的步骤 7，不是初始承载发现、通告或监听。"
+      ],
+      "conclusion": "由服务器 1 经该承载建立本场组通信，告知已接入 MBMS 的客户端 1、2，组通信即将在该承载上开始。条款把这一步与 MCPTT 的 MapGroupToBearer 对照。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.9.2.1, Figure 10.7.3.9.2.1-1, steps 5–12: arrows, roles and release response label"
+          ],
+          "printed_pages": [
+            137
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.9.2.1, step 7: server 1 establishes the group communication, informs MBMS-connected clients and references MCPTT MapGroupToBearer"
+          ],
+          "printed_pages": [
+            138
+          ]
+        }
+      ],
+      "limitations": [
+        "功能对照不是其他业务的报文要求。不能只凭步骤 6 的响应或步骤 7 的通知推定客户端已收到媒体。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "controller-two-sends-mbms-after-server-one-relay",
+      "title": "客户端 2 先上行到 1，再由承载控制方 2 下行组播",
+      "conditions": [
+        "正在核对已用该承载建立的图示组通信及其本次媒体。"
+      ],
+      "conclusion": "步骤 8：客户端 2 上行到服务器 1。步骤 9：服务器 1 将媒体转给承载控制方 2。步骤 10：服务器 2 经 MBMS 向图中的客户端 1 下行组播。转交、下行发送、指定终端的接收分别判断。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.9.2.1, Figure 10.7.3.9.2.1-1, steps 5–12: arrows, roles and release response label"
+          ],
+          "printed_pages": [
+            137
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.9.2.1, steps 8–10: client 2 uplink to server 1, transfer to controller 2 and MBMS multicast to client 1"
+          ],
+          "printed_pages": [
+            138
+          ]
+        }
+      ],
+      "limitations": [
+        "1 发往 2 的记录不证明 2 已收或已下行。2 发送不能证明客户端 1 或其他终端实收；实收要有能关联到该终端、同场通信和对应媒体的依据。本节不定义终端收件确认或播放条件。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "release-request-addresses-step-five-capacity",
+      "title": "1 向控制方 2 请求释放步骤 5 预留的容量",
+      "conditions": [
+        "本场已有步骤 5 预留的容量，正在核对不同场共享程序的步骤 11。"
+      ],
+      "conclusion": "服务器 1 向承载控制方 2 发媒体分发释放请求，由控制方处理释放；请求所指的是步骤 5 在本承载上预留的容量。不同场步骤 11 没有写同场例的「只能在组呼终止时发送」限制。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.9.2.1, Figure 10.7.3.9.2.1-1, steps 5–12: arrows, roles and release response label"
+          ],
+          "printed_pages": [
+            137
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.9.2.1, step 11: server 1 requests the bearer controller to release the capacity reserved in step 5"
+          ],
+          "printed_pages": [
+            138
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.9.2.2, steps 11–12, numbered text"
+          ],
+          "printed_pages": [
+            140
+          ]
+        }
+      ],
+      "limitations": [
+        "不把同场的组呼终止门槛移到本节，也不能从省略推断任意时间可发。容量释放请求不是整条共享承载拆除，也不证明已经释放本场或其他场的容量。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "release-response-direction-stable-wire-label-unsettled",
+      "title": "控制方 2 回应 1，图与正文的释放消息名称不同",
+      "conditions": [
+        "已经有步骤 11 从服务器 1 发给控制方 2 的容量释放请求，正在解读步骤 12。"
+      ],
+      "conclusion": "控制方 2 回应服务器 1 的释放请求。步骤 12 正文把 2 发的消息也写为 media distribution release request，图 10.7.3.9.2.1-1 的反向箭头标为 Media distribution release response；两处一致的是回应关系和方向。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.9.2.1, Figure 10.7.3.9.2.1-1, steps 5–12: arrows, roles and release response label"
+          ],
+          "printed_pages": [
+            137
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.9.2.1, step 11: server 1 requests the bearer controller to release the capacity reserved in step 5"
+          ],
+          "printed_pages": [
+            138
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.9.2.1, step 12: controller responds using the numbered text wording media distribution release request"
+          ],
+          "printed_pages": [
+            138
+          ]
+        }
+      ],
+      "limitations": [
+        "不因图中箭头标签与正文有命名差异就裁定线上请求或响应编码。不从回应往回推定实际容量已释放、承载已拆除或所有终端已结束通信。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-bearers-same-group-call-broadcast",
+    "r16-bearers-mbms-discovery-and-distribution-fields",
+    "r16-bearers-mbms-reception-quality"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.9.1, opening paragraph"
+      ],
+      "printed_pages": [
+        136
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.9.2.1, opening paragraph and pre-condition: sharing in the same area, independent group communications and bearer-control contact information"
+      ],
+      "printed_pages": [
+        136
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.9.2.1, Figure 10.7.3.9.2.1-1, steps 5–12: arrows, roles and release response label"
+      ],
+      "printed_pages": [
+        137
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.9.2.1, steps 5–6: requested capacity reservation and bearer-control response"
+      ],
+      "printed_pages": [
+        138
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.9.2.1, step 7: server 1 establishes the group communication, informs MBMS-connected clients and references MCPTT MapGroupToBearer"
+      ],
+      "printed_pages": [
+        138
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.9.2.1, steps 8–10: client 2 uplink to server 1, transfer to controller 2 and MBMS multicast to client 1"
+      ],
+      "printed_pages": [
+        138
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.9.2.1, step 11: server 1 requests the bearer controller to release the capacity reserved in step 5"
+      ],
+      "printed_pages": [
+        138
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.9.2.1, step 12: controller responds using the numbered text wording media distribution release request"
+      ],
+      "printed_pages": [
+        138
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.9.2.2, step 7b"
+      ],
+      "printed_pages": [
+        140
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.3.9.2.2, steps 11–12, numbered text"
+      ],
+      "printed_pages": [
+        140
+      ]
+    }
+  ],
+  "limitations": [
+    "发现、拥塞与无覆盖、承载通告和监听报告、字段列表各有主要维护位置。本页不收录那些步骤，不用同场程序推定本场免播或释放时限。",
+    "图中的回执和媒体方向用于功能分工。不说明具体线上消息编码、终端实际收到媒体、控制方资源记账、失败处置或整条共享承载拆除。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
