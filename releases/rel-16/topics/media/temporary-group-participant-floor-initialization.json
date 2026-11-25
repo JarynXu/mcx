@@ -3,7 +3,7 @@
   "release": 16,
   "standard_stage": 3,
   "state": "draft",
-  "title": "临时组的话权接口还在初始化：收到 Floor Deny，能判请求没入队吗？",
+  "title": "临时组话权接口还在初始化：拒绝是否代表没入队？收到 Floor Release 怎么撤回？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.380-v16.9.0",
   "common_conditions": [
@@ -183,6 +183,90 @@
         "independent_source_review": false,
         "independent_usage_acceptance": false
       }
+    },
+    {
+      "id": "initiating-u-release-searches-active-queue-before-cached-request",
+      "title": "先查活动队列，未命中才查缓存；只移除这名客户端的请求",
+      "conditions": [
+        "关联话权参与者发来的这份 Floor Release 已由处于 U: not permitted and initiating 的控制侧逐参与者接口实收。"
+      ],
+      "conclusion": "第 2 项要求用实收 Floor Release 的最上层 Participant Reference 和原文所称「SSRC in the Track Info field」查该参与者的活动排队请求。活动队列未命中才查缓存的 application/vnd.3gpp.mcptt-floor-request+xml 正文。第 3 项只从命中的队列或缓存正文中移除该客户端的请求；两处都没有就没有本条要求移除的对象。第 4 项要求 U 保持初始化。",
+      "normative_strength": "查找顺序及保持 U 状态为 SHALL；移除为找到该客户端时的 SHALL。",
+      "limitations": [
+        "没有活动队列日志，不能据此断定已查且未命中。命中队列不触发再查缓存；规范也未要求清空队列、删除整个 MIME 正文、逐个清除其他参与者或结束呼叫。只见 Floor Release 或 Floor Ack 不证明发生过哪项存储操作。",
+        "第 2 项把 SSRC 写在 Track Info 中；表 8.2.3.13-1 列参与者引用而未单列 SSRC，表 8.2.7-1 则单列报文 SSRC 和 Track Info。保留这处差异，不把头部 SSRC 强定为该查询键，不据本条猜缺失字段的处理。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.10.7, receiving Floor Release from associated participant while U initiates: steps 1(a/b), 2–4 (Ack guard, ordered lookup, scoped removal, unchanged U)"
+          ],
+          "printed_pages": [
+            93,
+            94
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.3.13 table 8.2.3.13-1 and 8.2.7 table 8.2.7-1: Track Info layout versus separate Floor Release SSRC and Track Info; compare 6.3.5.10.7 step 2"
+          ],
+          "printed_pages": [
+            154,
+            155,
+            166
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "initiating-u-release-ack-uses-received-request-bit-not-queue-match",
+      "title": "确认位为 1 就须发 Floor Ack，不以找到待撤请求为条件",
+      "conditions": [
+        "关联话权参与者发来的这份 Floor Release 已由处于 U: not permitted and initiating 的控制侧逐参与者接口实收。",
+        "这份 Floor Release 的 subtype 首位实收为 1，表示要求确认。"
+      ],
+      "conclusion": "第 1 项要求 U 发送 Floor Ack，流程正文将 Message Type 写为 4（Floor Release）、Source 写为 2（控制 MCPTT 功能）。这个发送条件不取决于队列或缓存是否命中；两处都没有对应请求也适用。",
+      "normative_strength": "按实收首位判定的 SHALL；与第 2–3 项的查找、条件移除分开。",
+      "limitations": [
+        "首位为 0 时，第 1 项的必发条件不成立；位值未知不能当作 0，也不能用队列命中代替确认位。消息到达 U 才适用；发送记录、发 Ack 的规定或单独一条 Ack 不能证明对端收妥、队列命中、请求已移除或话权已释放。",
+        "表 8.2.2.1-1 对 Floor Release 列 x0100，§8.2.3.14 要求 Message Type 复制全部五位（含确认位）并在前面补 000；x=1 时照此读为十进制 20，与流程第 1(a) 项的 4 不同。本条不裁定唯一线上取值。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.10.7, receiving Floor Release from associated participant while U initiates: steps 1(a/b), 2–4 (Ack guard, ordered lookup, scoped removal, unchanged U)"
+          ],
+          "printed_pages": [
+            93,
+            94
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.2.1 table 8.2.2.1-1 Floor Release row, 8.2.3.14 table 8.2.3.14-1 and 8.2.13 Message Type: acknowledgment bit in copied subtype versus 6.3.5.10.7 step 1(a)"
+          ],
+          "printed_pages": [
+            148,
+            155,
+            173,
+            174
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "related": [
@@ -190,7 +274,7 @@
     "r16-mcptt-merge-floor-queue"
   ],
   "limitations": [
-    "不收同一 U 状态的撤回、其他来向处理或角色切换。只证明条款规定到何处，不把回复、局部字段或无队列日志写成已发生的队列变化、G 状态、呼叫全部建立、话权获准或媒体送达。"
+    "仅收本页的入态及初始化中实收 Floor Request、Floor Release 两种输入；不收其他事件或角色切换。只证明条款规定到何处，不把回复、局部字段或无队列日志写成已发生的队列变化、G 状态、呼叫全部建立、话权获准或媒体送达。"
   ],
   "verification": {
     "original_clauses_checked": true,
@@ -243,6 +327,39 @@
       "printed_pages": [
         154,
         155
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.5.10.7, receiving Floor Release from associated participant while U initiates: steps 1(a/b), 2–4 (Ack guard, ordered lookup, scoped removal, unchanged U)"
+      ],
+      "printed_pages": [
+        93,
+        94
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "8.2.3.13 table 8.2.3.13-1 and 8.2.7 table 8.2.7-1: Track Info layout versus separate Floor Release SSRC and Track Info; compare 6.3.5.10.7 step 2"
+      ],
+      "printed_pages": [
+        154,
+        155,
+        166
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "8.2.2.1 table 8.2.2.1-1 Floor Release row, 8.2.3.14 table 8.2.3.14-1 and 8.2.13 Message Type: acknowledgment bit in copied subtype versus 6.3.5.10.7 step 1(a)"
+      ],
+      "printed_pages": [
+        148,
+        155,
+        173,
+        174
       ]
     }
   ]
