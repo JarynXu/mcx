@@ -1,0 +1,487 @@
+{
+  "topic_id": "r16-mcdata-ip-connectivity-eligibility",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCData IP 互通：有资格参加，就能建立连接吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.282-v16.8.0",
+  "condition_rule": "按实际所查对象选择各条：个人或组配置、客户端入站屏蔽、服务器额度、通用身份或点到点信息流、地址池分别判断。按 §7.14.2.2.2 的同系统 Stage 2 点到点示例判断实际准入和目标是否接受时，先核对示例前提。要判断一次已知在网一对一 IP 互通的媒体面或应用是否收件，独立查 TS 24.582 V16.3.0 的 Stage 3 媒体面条目，不把该 Stage 2 示例的同系统、附接主机或别名订阅前提当成入口条件，也不由此推断本版定义了跨系统建立流程。",
+  "common_conditions": [
+    "TS 23.282 V16.8.0，Release 16 Stage 2；按 §5.11 的 IP 互通能力、Annex A 的在网用户配置与 §7.14 的点到点信息流分别判断。并不先假定这次连接已获准或建立。"
+  ],
+  "claims": [
+    {
+      "id": "ipcon-authorised-client-incoming-barring",
+      "title": "有接收资格的客户端仍可屏蔽入站 IP 互通请求",
+      "conditions": [
+        "问支持 IP 互通且获授权的 MCData 客户端能否限制入站 IP 互通请求。"
+      ],
+      "conclusion": "客户端可按需屏蔽，也可提供排除发起方的名单。排除对象按其 MCData ID 识别；相应功能别名可用时，也用相应别名来标识。接收资格与该次是否屏蔽分别核对。",
+      "normative_strength": "§5.11 给客户端拒接能力，不是要求预先设置名单或必须使用某一种方式。",
+      "limitations": [
+        "不把功能别名写成替代 MCData ID 的独立名单机制。不规定现场是否实际命中、处理层、判定顺序、交换格式或响应码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "5.11, incoming barring by an authorised IPcon-capable MCData client, on demand or excluded origins"
+          ],
+          "printed_pages": [
+            21
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "ipcon-on-network-profile-candidates-not-live-decision",
+      "title": "在网用户档的 IP 互通参与数据不是本通连接的判定",
+      "conditions": [
+        "读取表 A.3-2 的 IP 互通参与部分，或要判断其候选用户和关联主机记录的含义。"
+      ],
+      "conclusion": "可纳入 IP 互通会话的 MCData 用户列表每项包含其 MCData ID、该 ID 安全域的 KMS URI 和关联数据主机 IP 信息列表。注 9 列举地址、子网掩码、网关和 DNS。名称为获授权参加的父项虽印有四个 Y，仍按 A.1 只作容器；Y 指列对应实体需要配置，不是该参数的值。四列是 MCData UE、MCData 服务器、配置管理服务器、MCData 用户数据库。",
+      "normative_strength": "规范性 Annex A 中的配置层级和列义；Note 9 的内容是可包含的例子。",
+      "limitations": [
+        "不从表列推本次准入、已经下发、客户端已用该数据配地址，或安全域密钥已经取得。",
+        "可纳入的用户列表不是 §5.11 的排除发起方列表，不能据此指定二者的求交、覆盖或实际判断顺序。A.4-1 是组启用参数而非本用户档。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "A.1, per-entity Y/N configuration and parent/child levels"
+          ],
+          "printed_pages": [
+            169
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "A.3, table A.3-2 (on network): title, column labels and configured IP connectivity participant/user/associated-host hierarchy"
+          ],
+          "printed_pages": [
+            174,
+            175,
+            177
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "A.3, table A.3-2 Note 9: possible content of the associated host IP information"
+          ],
+          "printed_pages": [
+            178
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "A.4 table A.4-1, the IP connectivity enabled child of the group’s configured features"
+          ],
+          "printed_pages": [
+            179
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "ipcon-optional-directional-volume-and-service-time",
+      "title": "服务可按收发分设总量限制，服务器时限另于请求与答复",
+      "conditions": [
+        "要判 IP 互通的服务器策略、所列点到点例子的使用前提，或区分同次请求的建议时限和响应的协商时限。"
+      ],
+      "conclusion": "服务器可支持对授权客户端之间的数据总量按发送、接收分开限制，也可支持总分钟或指定起止时间等时限。点到点例子以配额未阻止本次建立为前提。请求的建议时限和响应的协商时限均为可选字段，不能把其中之一当服务器设置或实际生效时间。",
+      "normative_strength": "§5.11 是 MAY；点到点例的限额是前提；相关表的两种时限均为 O。",
+      "limitations": [
+        "不推出每个部署必启、收发额度相等、限额具体计量/拒因、缺少协商时限就是不限时。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "5.11, optional server limits on IP data volume divided by transmission and reception and on time"
+          ],
+          "printed_pages": [
+            21
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.14.2.2.2, preconditions including usage limits, host authorization note, alias subscription and target address correspondence"
+          ],
+          "printed_pages": [
+            166,
+            167
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.14.2.1.1, table 7.14.2.1.1-1: both MCData identities, originating functional alias, application priority default and proposed time limit"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.14.2.1.2, table 7.14.2.1.2-1: both MCData identities, negotiated time limit and establishment result"
+          ],
+          "printed_pages": [
+            166
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "ipcon-general-addressing-vs-p2p-information-flow",
+      "title": "通用寻址可用别名，点到点请求表仍列两个必填 MCData ID",
+      "conditions": [
+        "区分 §7.14.1 的 IPcon 通用寻址说明与在网点到点请求这一信息流。"
+      ],
+      "conclusion": "通用段落允许各自使用 MCData ID 或功能别名来寻址相关用户，服务器提供二者关联机制。表 7.14.2.1.1-1 要求发起用户、目标客户端 MCData ID 两项都填；该表在身份相关字段中只列发起用户的功能别名为可选。",
+      "normative_strength": "§7.14.1 一般能力；具体请求表的两项 M 与别名 O 有各自范围。",
+      "limitations": [
+        "不因普通段落省掉具体表的两项 M，也不要求所有寻址入口都传两个 ID。不推别名解析顺序、目标地址取得方法或 Stage 3 字段。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.14.1, independent MCData ID and functional alias addressing and the server association mechanism"
+          ],
+          "printed_pages": [
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.14.2.1.1, table 7.14.2.1.1-1: both MCData identities, originating functional alias, application priority default and proposed time limit"
+          ],
+          "printed_pages": [
+            166
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "ipcon-transport-pool-vs-attached-host-address",
+      "title": "传输服务管理自己的地址池，与附接主机的地址分配独立",
+      "conditions": [
+        "比较 IP 互通 MCData 传输服务需要的地址与附接数据主机已经有的地址；若引用示例，限其中的两端附接主机场景。"
+      ],
+      "conclusion": "传输业务所需的 IP 地址池由该 IPcon MCData 传输服务管理，其 IP 分配独立于各个附接数据主机的 IP 分配。在网点到点示例中，主机已经有地址并获准使用其客户端；A.3-2 的关联主机 IP 信息是配置数据，不是分配地址的流程。",
+      "normative_strength": "§5.11 明确两种分配独立和池的归属；§7.14.2.2.2 是示例前提。",
+      "limitations": [
+        "不由独立性要求两个数值必不同或得出实际网络拓扑，也不写分配、主机许可、地址映射的实现。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "5.11, independent IP address allocations and IPcon transport-service pool ownership"
+          ],
+          "printed_pages": [
+            21
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "A.3, table A.3-2 (on network): title, column labels and configured IP connectivity participant/user/associated-host hierarchy"
+          ],
+          "printed_pages": [
+            174,
+            175,
+            177
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "A.3, table A.3-2 Note 9: possible content of the associated host IP information"
+          ],
+          "printed_pages": [
+            178
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.14.2.2.2, preconditions including usage limits, host authorization note, alias subscription and target address correspondence"
+          ],
+          "printed_pages": [
+            166,
+            167
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "ipcon-group-capability-vs-point-to-point-procedure",
+      "title": "支持组 IP 互通不把点到点示例变成组的建立步骤",
+      "conditions": [
+        "区分 §5.11 对模式的支持与 §7.14.2.2 的具体示例范围。"
+      ],
+      "conclusion": "IP 互通 MCData 传输支持一对一、组两种通信。要使用 §7.14.2.2.2 的在网点到点示例，须确认：两端客户端同属一个 MCData 系统且都支持 IP 互通，各接一台已有 IP 地址、获准用本侧客户端建立 IP 互通的数据主机；时长或数据量配额不阻止本次建立；MCData 服务器已向本 MC 系统内的 MCData 功能别名控制服务器订阅功能别名激活和停用两种更新；发起客户端已知目标主机 IP 地址与目标客户端的对应关系。 只订阅一种更新、只见其他目录的通知，或不知道订阅来源，都不能认定本例前提齐备。",
+      "normative_strength": "§5.11 的模式支持不等同于特定步骤；§7.14.2.2 标题/概述和所列前提限定示例。",
+      "limitations": [
+        "知道某个组启用不证明本次建立成功；不把点到点表当作组流程，也不由本示例没有组流程判断该功能不支持。",
+        "这是本版点到点示例的前提，不是所有 IP 互通服务的准入规则。订阅存在不证明请求已获准，也不让请求中的发起方别名变成必填。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "5.11, one-to-one and group transport support and associated QoS and communication priority"
+          ],
+          "printed_pages": [
+            21
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.14.2.2.1, general: data hosts and the point-to-point media plane between IP connectivity clients"
+          ],
+          "printed_pages": [
+            166
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "7.14.2.2.2, preconditions including usage limits, host authorization note, alias subscription and target address correspondence"
+          ],
+          "printed_pages": [
+            166,
+            167
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "A.4 table A.4-1, the IP connectivity enabled child of the group’s configured features"
+          ],
+          "printed_pages": [
+            179
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "ipcon-open-editor-scope-remains-ffs",
+      "title": "业务可带 QoS 和优先级要求，四项 IPcon 机制仍留待研究",
+      "conditions": [
+        "区分当前明文的 IP 互通传输需求与 §5.11 明写留待研究的事项。"
+      ],
+      "conclusion": "IPcon 客户端申请 MCData 传输服务附关联 QoS 要求和通信优先级。获授权用户撤回一条 IPcon 连接、远程发起 IPcon、按逐包优先级控制 QoS、IPcon 对互操作的影响分别为 FFS。",
+      "normative_strength": "正文的能力职责与四个相互独立的编辑注明示。",
+      "limitations": [
+        "FFS 不推功能被禁止或部署不支持，也不能用普通通信的已知步骤替 IPcon 补撤回/远程发起流程。申请 QoS 不是已获资源或逐包约定。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "5.11, one-to-one and group transport support and associated QoS and communication priority"
+          ],
+          "printed_pages": [
+            21
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.282-v16.8.0",
+          "clauses": [
+            "5.11, four Editor’s notes: IPcon withdrawal, remote initiation, per-packet priority and interworking"
+          ],
+          "printed_pages": [
+            21
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "5.11, incoming barring by an authorised IPcon-capable MCData client, on demand or excluded origins"
+      ],
+      "printed_pages": [
+        21
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "A.1, per-entity Y/N configuration and parent/child levels"
+      ],
+      "printed_pages": [
+        169
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "A.3, table A.3-2 (on network): title, column labels and configured IP connectivity participant/user/associated-host hierarchy"
+      ],
+      "printed_pages": [
+        174,
+        175,
+        177
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "A.3, table A.3-2 Note 9: possible content of the associated host IP information"
+      ],
+      "printed_pages": [
+        178
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "A.4 table A.4-1, the IP connectivity enabled child of the group’s configured features"
+      ],
+      "printed_pages": [
+        179
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "5.11, optional server limits on IP data volume divided by transmission and reception and on time"
+      ],
+      "printed_pages": [
+        21
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.14.2.2.2, preconditions including usage limits, host authorization note, alias subscription and target address correspondence"
+      ],
+      "printed_pages": [
+        166,
+        167
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.14.2.1.1, table 7.14.2.1.1-1: both MCData identities, originating functional alias, application priority default and proposed time limit"
+      ],
+      "printed_pages": [
+        166
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.14.2.1.2, table 7.14.2.1.2-1: both MCData identities, negotiated time limit and establishment result"
+      ],
+      "printed_pages": [
+        166
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.14.1, independent MCData ID and functional alias addressing and the server association mechanism"
+      ],
+      "printed_pages": [
+        165
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "5.11, independent IP address allocations and IPcon transport-service pool ownership"
+      ],
+      "printed_pages": [
+        21
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "5.11, one-to-one and group transport support and associated QoS and communication priority"
+      ],
+      "printed_pages": [
+        21
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "7.14.2.2.1, general: data hosts and the point-to-point media plane between IP connectivity clients"
+      ],
+      "printed_pages": [
+        166
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.282-v16.8.0",
+      "clauses": [
+        "5.11, four Editor’s notes: IPcon withdrawal, remote initiation, per-packet priority and interworking"
+      ],
+      "printed_pages": [
+        21
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcdata-affiliation-configured-subservices",
+    "r16-mcdata-point-to-point-ip-connectivity",
+    "r16-mcdata-ip-connectivity-media-roles"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  }
+}
