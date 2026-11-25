@@ -7,14 +7,15 @@
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-23.280-v16.7.0",
   "common_conditions": [
-    "3GPP TS 23.280 V16.7.0，Release 16，Stage 2，§§10.7.3.5.1–2：MC 业务服务器经应用控制消息用的 MBMS 承载向客户端通告另一条 MBMS 承载。"
+    "3GPP TS 23.280 V16.7.0，Release 16，Stage 2。"
   ],
-  "condition_rule": "声明继承上述流程范围，并叠加本条所列条件；区分承载通告消息的载体与消息标识的对象。",
+  "condition_rule": "声明继承版本范围，并叠加本条所列的传送途径、角色和事件条件。区分承载通告消息的载体与消息标识的对象。",
   "claims": [
     {
       "id": "known-control-bearer",
       "title": "经 MBMS 通告另一条承载时，应用控制承载须预先建立并已向该客户端通告",
       "conditions": [
+        "3GPP TS 23.280 V16.7.0，Release 16，Stage 2，§§10.7.3.5.1–2：MC 业务服务器经应用控制消息用的 MBMS 承载向客户端通告另一条 MBMS 承载。",
         "服务器选择在同一业务区经 MBMS 而非单播通告另一条承载。"
       ],
       "conclusion": "客户端先在已建立且已向它通告的 MBMS 承载上监听应用控制消息。",
@@ -61,6 +62,7 @@
       "id": "new-to-client-not-newly-active",
       "title": "服务器既可通告刚激活的 MBMS 承载，也可按需通告已运行一段时间的承载或再次通告",
       "conditions": [
+        "3GPP TS 23.280 V16.7.0，Release 16，Stage 2，§§10.7.3.5.1–2：MC 业务服务器经应用控制消息用的 MBMS 承载向客户端通告另一条 MBMS 承载。",
         "MC 业务服务器准备向客户端通告另一条 MBMS 承载。"
       ],
       "conclusion": "步骤 2 给出一次新激活；步骤 3 明确也允许通告已运行一段时间的承载，并允许按需重复通告。",
@@ -89,6 +91,7 @@
       "id": "target-identity-and-lookup",
       "title": "经 MBMS 控制承载发出的通告包含被通告承载的 TMGI；详情此前已给过时可按标识查找",
       "conditions": [
+        "3GPP TS 23.280 V16.7.0，Release 16，Stage 2，§§10.7.3.5.1–2：MC 业务服务器经应用控制消息用的 MBMS 承载向客户端通告另一条 MBMS 承载。",
         "服务器在应用控制承载上发送另一条 MBMS 承载的通告。"
       ],
       "conclusion": "通告标识的是被通告的承载，可以附上该承载的其他信息。客户端若已取得详情，这次可用标识作键查找。",
@@ -126,6 +129,7 @@
       "id": "monitor-and-requested-ack",
       "title": "经 MBMS 控制承载收到另一条承载的通告后，客户端开始监听被通告承载；服务器请求确认时，客户端向其回执",
       "conditions": [
+        "3GPP TS 23.280 V16.7.0，Release 16，Stage 2，§§10.7.3.5.1–2：MC 业务服务器经应用控制消息用的 MBMS 承载向客户端通告另一条 MBMS 承载。",
         "客户端收到经 MBMS 应用控制承载传来的另一条承载的通告。"
       ],
       "conclusion": "客户端开始监听新通告的承载。如果 MC 业务服务器请求确认，客户端向该服务器发送承载确认。",
@@ -163,6 +167,7 @@
       "id": "withdraw-by-identity",
       "title": "MBMS 承载撤告指明被撤告承载；客户端停听该承载，不据此判定网络已将其停用",
       "conditions": [
+        "3GPP TS 23.280 V16.7.0，Release 16，Stage 2，§§10.7.3.5.1–2：MC 业务服务器经应用控制消息用的 MBMS 承载向客户端通告另一条 MBMS 承载。",
         "服务器撤告一条 MBMS 承载，客户端收到指明该承载身份的撤告。"
       ],
       "conclusion": "客户端停止监听标识所指的承载。这几步没有要求它一并停听用于传送通告的另一条控制承载。",
@@ -203,6 +208,137 @@
         "original_clauses_checked": true,
         "independent_source_review": true,
         "independent_usage_acceptance": true
+      }
+    },
+    {
+      "id": "announcement-default-information-elements",
+      "title": "承载通告不经 MBMS 发送时，TMGI、业务区标识列表和 SDP 必填",
+      "conditions": [
+        "已核对的是完整记录的服务器向客户端发送的 MBMS 承载通告，不是撤告、某项业务专用消息的一部分或截断记录。",
+        "实际发送途径是单播之类非 MBMS 途径，不落入表下注的 MBMS 传输例外。"
+      ],
+      "conclusion": "表 10.7.2.1-1 默认将 TMGI、适用 MBMS 广播业务区标识列表和含适用媒体与话权控制信息的 SDP 列为必填。Alternative TMGI、QCI、Frequency、Monitoring state、Announcement acknowledgment、Unicast status、ROHC information 为可选。Monitoring state 控制是否主动监测 MBMS 承载质量；Announcement acknowledgment 表明是否要求确认通告；Unicast status 表明是否请求单播承载监听状态。",
+      "normative_strength": "默认表 M 项必填、O 项可选；不从可选字段推出发送一份独立报告的条件。",
+      "limitations": [
+        "完整记录的单播通告只有 TMGI 时，缺业务区标识列表和 SDP。若只有片段或不知道实际发送途径，不按缺必填下结论。表不规定 SIP、SDP 语法、终端错误处理或撤告规则。",
+        "通告内控制和请求字段由服务器发出，不代证客户端已监听、已回执、已向服务器发送 §10.7.2.2 的监听状态报告或业务媒体已收。监听状态报告另查对应主题。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.2.1, opening paragraph: server-to-client bearer announcement"
+          ],
+          "printed_pages": [
+            118
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.2.1, Table 10.7.2.1-1: three default mandatory and seven optional information elements"
+          ],
+          "printed_pages": [
+            119
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.2.1, NOTE to Table 10.7.2.1-1: only TMGI remains mandatory when the announcement itself uses a MBMS bearer"
+          ],
+          "printed_pages": [
+            119
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.2.2, opening paragraph only: listening status report runs from client to server, comparison only"
+          ],
+          "printed_pages": [
+            119
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.5.1, paragraphs 1–3"
+          ],
+          "printed_pages": [
+            127
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "announcement-on-mbms-only-tmgi-mandatory",
+      "title": "通告本身经 MBMS 发送时，只有 TMGI 必填",
+      "conditions": [
+        "已核对完整记录的承载通告，以及传送该通告本身的实际承载为 MBMS。不能只确认通告对象是 MBMS 承载。"
+      ],
+      "conclusion": "表 10.7.2.1-1 注保留 TMGI 为必填，其余九项均可选；默认表中的业务区标识列表和 SDP 在这个分支也可省。只有 TMGI 不构成这两项缺失。",
+      "normative_strength": "表下注的例外按消息实际发送在 MBMS 承载上适用，不按被通告承载的类型推定。",
+      "limitations": [
+        "省略字段不代证客户端已经取得详情。若详情此前已给过，能否以 TMGI 查找按 §10.7.3.5.2 的具体程序判断；详情是否事先提供并非表下注将这些字段列为可选的额外前提。",
+        "不把本表例外应用到完整记录的单播通告，或从该消息推断终端实收、回执、监听报告或业务媒体已送达。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.2.1, opening paragraph: server-to-client bearer announcement"
+          ],
+          "printed_pages": [
+            118
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.2.1, Table 10.7.2.1-1: three default mandatory and seven optional information elements"
+          ],
+          "printed_pages": [
+            119
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.2.1, NOTE to Table 10.7.2.1-1: only TMGI remains mandatory when the announcement itself uses a MBMS bearer"
+          ],
+          "printed_pages": [
+            119
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.5.2, pre-conditions (two bullets)"
+          ],
+          "printed_pages": [
+            127
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.7.3.5.2, step 4 (numbered prose)"
+          ],
+          "printed_pages": [
+            128
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
       }
     }
   ],
@@ -269,6 +405,42 @@
       "printed_pages": [
         128
       ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.2.1, opening paragraph: server-to-client bearer announcement"
+      ],
+      "printed_pages": [
+        118
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.2.1, Table 10.7.2.1-1: three default mandatory and seven optional information elements"
+      ],
+      "printed_pages": [
+        119
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.2.1, NOTE to Table 10.7.2.1-1: only TMGI remains mandatory when the announcement itself uses a MBMS bearer"
+      ],
+      "printed_pages": [
+        119
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.7.2.2, opening paragraph only: listening status report runs from client to server, comparison only"
+      ],
+      "printed_pages": [
+        119
+      ]
     }
   ],
   "related": [
@@ -278,11 +450,11 @@
     "r16-bearers-mcptt-mbms-announcement-sdp"
   ],
   "limitations": [
-    "仅解释通告与撤告，不细述单播通告过程、承载质量、区域间媒体接续、网络激活或停用机制，也不规定具体协议编码或设备表现。"
+    "仅涵盖 §10.7.2.1 的通告字段与传输例外、所列经 MBMS 的通告与撤告。§10.7.2.2 只用于区分监听报告的方向，不收完整单播通告过程、承载质量、区域间接续、网络激活或停用、协议编码及设备表现。"
   ],
   "verification": {
     "original_clauses_checked": true,
-    "independent_source_review": true,
-    "independent_usage_acceptance": true
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
   }
 }
