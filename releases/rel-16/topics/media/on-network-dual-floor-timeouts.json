@@ -6,7 +6,7 @@
   "title": "双话权覆盖发言：T11 断流和 T12 到时，服务器各发什么？",
   "source_catalog": "../../sources.json",
   "source_id": "3gpp-ts-24.380-v16.9.0",
-  "condition_rule": "先认定实际到期的是覆盖实例 T11 或 T12，再检查一般话权 G 的当前状态及接收者条件。",
+  "condition_rule": "先区分 D 入态、收到覆盖 RTP、收到当前覆盖持有者的 Floor Request 与定时器到期。认定实际到期的是覆盖实例 T11 或 T12 后，再检查一般话权 G 的当前状态及接收者条件。",
   "common_conditions": [
     "TS 24.380 V16.9.0 Rel-16 Stage 3；在网服务器的双话权覆盖实例 D: Floor Taken。除非另标，动作由话权仲裁逻辑承担。"
   ],
@@ -143,6 +143,93 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "dual-floor-permitted-overrider-request-reply",
+      "title": "D 实收当前覆盖者的 Floor Request，给同一参与者再发 Floor Granted 并保持状态",
+      "conditions": [
+        "D 的话权仲裁逻辑实际收到仍获准发送覆盖媒体的同一参与者所发的 Floor Request。"
+      ],
+      "conclusion": "话权仲裁逻辑须向这名已获准的覆盖参与者发 Floor Granted，并留在 D: Floor Taken。",
+      "normative_strength": "第 1、2 项均为 SHALL；本条条件是实际收到请求且来方仍有覆盖发送许可，不要求证明是重发还是新的请求。",
+      "limitations": [
+        "本条未要求重新进入 D 或启动、重启、延长 T11 或 T12；分别查看 D 入态和实收覆盖 RTP 的动作。",
+        "仅见第二份 Floor Granted 不能反推 D 已收到这份请求，也不足以证明客户端实收回复、发送了 RTP 或开始一轮新的发言。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.6.3.7, opening and steps 1–2: permitted overriding participant request, reply fields and D state retention"
+          ],
+          "printed_pages": [
+            100
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.6.3.1, state and timers"
+          ],
+          "printed_pages": [
+            96
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "dual-floor-repeat-grant-t12-priority-and-current-track-info",
+      "title": "这次 Floor Granted 带 T12 的值、已授优先级；按本次请求回带 Track Info",
+      "conditions": [
+        "D 的话权仲裁逻辑实际收到仍获准发送覆盖媒体的同一参与者所发的 Floor Request。",
+        "读取话权仲裁依此条发送给该覆盖参与者的 Floor Granted。"
+      ],
+      "conclusion": "Duration 填 T12 的值，Floor Priority 填已授优先级。本次 Floor Request 含 Track Info 时须带回收到的字段。广播组呼、系统呼叫、紧急呼叫、迫近危险呼叫或临时组会话须在 Floor Indicator 带相应指示。",
+      "normative_strength": "第 1(a)、(b) 两项为 SHALL；第 1(c)、(d) 是条件成立时的 SHALL。",
+      "limitations": [
+        "本条未规定 T12 值是剩余时长或配置值；不能以一般仲裁的 T2 代替。",
+        "本条规定回带的是本次来向字段，不是入态规程保存的 Track Info；来向无此字段时，本条未规定补值策略。§8.2.5 规定有非控制功能参与时的通用 Track Info 要求。",
+        "不能套用首次进入 D 的保存字段规则，或从本条未重述首次 D 授予所列的 G 位、获准者 SSRC 等要求，推断它们在本次回复中一律省略或禁止。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.6.3.7, opening and steps 1–2: permitted overriding participant request, reply fields and D state retention"
+          ],
+          "printed_pages": [
+            100
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.6.3.2, item 1"
+          ],
+          "printed_pages": [
+            96
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.5"
+          ],
+          "printed_pages": [
+            163
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "related": [
@@ -150,11 +237,12 @@
     "r16-mcptt-onnetwork-floor-media-timeouts"
   ],
   "limitations": [
-    "不涵盖一般话权 G 的计时器事件、客户端确认、用户主动释放、报文到达或 SIP 呼叫结束。"
+    "超时分支不涵盖一般话权 G 的计时器事件、客户端确认、用户主动释放、报文到达或 SIP 呼叫结束。",
+    "再次请求的条件是 D 实收；仲裁发出回复不能证明终端已实收、语音已发送或 T11、T12 已重启。"
   ],
   "verification": {
     "original_clauses_checked": true,
-    "independent_source_review": true,
-    "independent_usage_acceptance": true
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
   }
 }
