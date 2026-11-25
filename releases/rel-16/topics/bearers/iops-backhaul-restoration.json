@@ -1,0 +1,270 @@
+{
+  "topic_id": "r16-bearers-iops-backhaul-restoration",
+  "release": 16,
+  "standard_stage": 1,
+  "state": "draft",
+  "title": "LTE 站已进入 IOPS：回传恢复后，何时停本地路由和受限提示？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-22.346-v16.0.0",
+  "common_conditions": [
+    "TS 22.346 V16.0.0（Release 16，Stage 1）；LTE 站点已经进入 IOPS（孤立 E-UTRAN 运行），讨论有限回传能力、回传复原与退出孤立运行。"
+  ],
+  "condition_rule": "先分监测的回传状态，再分别判断是否已有恢复检测、尝试重建、活动上下文适当转移、两面重建且不再受有限回传限制、该站实际退出。不要把它们写成自动全部达成。各声明按自身事件及对象适用。",
+  "claims": [
+    {
+      "id": "limited-backhaul-epc-control-and-user-plane",
+      "title": "有限回传并不等于正常 EPC 连接；控制面能力与用户面选择分开",
+      "conditions": [
+        "孤立 E-UTRAN 有可用的有限回传，或需要区分表 4.1-1 的回传模式。"
+      ],
+      "conclusion": "表 4.1-1 分开无回传、仅有限信令、信令和用户数据均有限、正常回传。可利用的有限回传存在时，孤立网须能与 EPC 交换控制面信令；可以用该回传与 EPC 交换用户面数据，原文注对后者不承诺服务质量。",
+      "normative_strength": "表是场景区分；控制面 SHALL be able，用户面 MAY。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "4.1, Table 4.1-1, four scenarios and signalling/user data backhaul status columns"
+          ],
+          "printed_pages": [
+            7
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.2.2, paragraphs on limited-backhaul EPC control-plane and user-plane exchange and the following note"
+          ],
+          "printed_pages": [
+            8
+          ]
+        }
+      ],
+      "limitations": [
+        "不会因见到控制信令推断 EPC 用户面已通；即使有限用户面已有流量，也不足以确认正常 EPC 连接或业务恢复。这里不判断能否经本地网关访问公网。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "monitor-disconnected-and-limited-backhaul",
+      "title": "EPS 监测已断开的回传，也监测有限回传，两种监测各有目的",
+      "conditions": [
+        "孤立网处在回传已断开或只有有限带宽回传的状态；按当前实际状态分开适用。"
+      ],
+      "conclusion": "对断开的回传，EPS 须监测其状态，以图重新建立与 EPC 的连接；对有限回传，EPS 亦须监测，以图恢复与 EPC 的正常运行。",
+      "normative_strength": "两种模式中监测均为 SHALL。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.4.2, first two paragraphs (monitoring disconnected and limited backhaul)"
+          ],
+          "printed_pages": [
+            10
+          ]
+        }
+      ],
+      "limitations": [
+        "开始监测不证明已经发现回传恢复、开始重连或正常运行。此处无指定监测周期。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "attempt-restoration-according-to-current-backhaul-mode",
+      "title": "原无回传与原有有限回传，何时须尝试恢复的条件不同",
+      "conditions": [
+        "在已经运行的孤立网，分别核实检测恢复之前的回传模式及 EPS 本次实际检测到的事件。"
+      ],
+      "conclusion": "无回传时，检测到回传恢复，EPS 须尝试重新建立 EPC 与 (N)eNB 的连接；有限回传时，检测到全带宽回传恢复，EPS 须尝试恢复 EPC 与 (N)eNB 之间的正常运行。",
+      "normative_strength": "相应检测事件后 SHALL attempt；两项不要求同时发生。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.5.2, first two paragraphs (attempt triggers for no backhaul and limited backhaul)"
+          ],
+          "printed_pages": [
+            11
+          ]
+        }
+      ],
+      "limitations": [
+        "无回传分支没有列全带宽检测为前提。有限回传仍可用不足以满足第二种恢复检测。尝试不等于成功重建任一连接。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "manage-appropriate-transition-for-active-contexts",
+      "title": "恢复 EPC 期间，对活动上下文的 UE 须能管理适当的等效业务转移",
+      "conditions": [
+        "EPS 正在重新建立与 EPC 的连接或恢复正常运行；对象是有活动上下文的 UE。"
+      ],
+      "conclusion": "EPS 须具备管理这些 UE 的业务转移能力，适当时把孤立网提供的本地业务转至通过 EPC 提供的等效业务。",
+      "normative_strength": "对所有有活动上下文的 UE 都是 SHALL be able to manage；具体业务转移限定适当情形。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.5.2, third paragraph (active contexts and transition where appropriate)"
+          ],
+          "printed_pages": [
+            11
+          ]
+        }
+      ],
+      "limitations": [
+        "不把它解读为每项业务都须转、每个 UE 已转成功、必沿用相同会话标识或原媒体路径。未说明无活动上下文时的转移措施。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "stop-iops-services-and-routing-after-unrestricted-epc-reconnection",
+      "title": "两面都不受限地重新接到 EPC 后，该站须停 IOPS 特有的本地业务和路由",
+      "conditions": [
+        "该 (N)eNB 到 EPC 的控制面连接和用户面连接均已重新建立，两者均不受有限回传能力限制。"
+      ],
+      "conclusion": "该 (N)eNB 须停止提供体现孤立 E-UTRAN 运行的本地业务和路由。",
+      "normative_strength": "条件成立后的 SHALL cease。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.5.2, fourth paragraph (unrestricted EPC control-plane and user-plane connections re-established)"
+          ],
+          "printed_pages": [
+            11
+          ]
+        }
+      ],
+      "limitations": [
+        "仅一面恢复或两面仍受有限回传限制，均不足以触发本项义务。不反推其他终止原因或该站必须保留所有本地业务；不扩展为其他站都已恢复或任一用户已无缝迁移。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "stop-network-restricted-indications-and-support-ue-user-indication",
+      "title": "退出 IOPS 时站点撤受限指示，终端须能向自己的用户提示",
+      "conditions": [
+        "该 (N)eNB 结束 IOPS；网侧旧指示以其覆盖内公共安全 UE 为对象，用户指示能力以由该站服务的公共安全 UE 为对象。"
+      ],
+      "conclusion": "站点须停止提供关于仅有有限带宽回传和／或仅本地服务的指示；由该站服务的公共安全 UE 须能向用户指示受限 IOPS 模式结束、正常 EPC 连接服务可用，或两者。",
+      "normative_strength": "站点 SHALL cease providing 旧指示；UE SHALL be able to indicate 给其用户。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.346-v16.0.0",
+          "clauses": [
+            "5.5.2, fifth paragraph (network indication cessation and UE capability to indicate to user)"
+          ],
+          "printed_pages": [
+            11
+          ]
+        }
+      ],
+      "limitations": [
+        "不要求新提示总需同时包含两项，不指定消息、图标或显示时刻；撤下网侧指示不证明任一台 UE 已向用户显示新提示。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-22.346-v16.0.0",
+      "clauses": [
+        "4.1, Table 4.1-1, four scenarios and signalling/user data backhaul status columns"
+      ],
+      "printed_pages": [
+        7
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.346-v16.0.0",
+      "clauses": [
+        "5.2.2, paragraphs on limited-backhaul EPC control-plane and user-plane exchange and the following note"
+      ],
+      "printed_pages": [
+        8
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.346-v16.0.0",
+      "clauses": [
+        "5.4.2, first two paragraphs (monitoring disconnected and limited backhaul)"
+      ],
+      "printed_pages": [
+        10
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.346-v16.0.0",
+      "clauses": [
+        "5.5.2, first two paragraphs (attempt triggers for no backhaul and limited backhaul)"
+      ],
+      "printed_pages": [
+        11
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.346-v16.0.0",
+      "clauses": [
+        "5.5.2, third paragraph (active contexts and transition where appropriate)"
+      ],
+      "printed_pages": [
+        11
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.346-v16.0.0",
+      "clauses": [
+        "5.5.2, fourth paragraph (unrestricted EPC control-plane and user-plane connections re-established)"
+      ],
+      "printed_pages": [
+        11
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-22.346-v16.0.0",
+      "clauses": [
+        "5.5.2, fifth paragraph (network indication cessation and UE capability to indicate to user)"
+      ],
+      "printed_pages": [
+        11
+      ]
+    }
+  ],
+  "related": [
+    "r16-bearers-iops-local-mcptt-service"
+  ],
+  "limitations": [
+    "仅有限回传、探测到恢复、已经尝试重连或一面已通，都不能确认正常 EPC 运行；不要求原会话标识不变，不推断跨站统一退出、终端已提示或现场媒体无缝。",
+    "限站点已进入 IOPS 后的 Stage 1 有限回传能力、恢复 EPC 与退出条件；不是初始 IOPS 建网、ProSe 直连、网络协议实现或现网合规。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
