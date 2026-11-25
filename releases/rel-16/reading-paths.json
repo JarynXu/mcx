@@ -4388,6 +4388,10 @@
         {
           "condition": "若问普通在网预安排组呼的控制侧接收服务器如何按媒体源判接收许可、在相应状态处理接收流数上限，读这页；它还区分状态机出现的原因与接收响应清单。不把此页用于私呼、接收覆盖或抢占。",
           "read": "topics/mcvideo/prearranged-group-reception-server.md"
+        },
+        {
+          "condition": "若问在网 MCVideo 组的非控制侧，按同一会话中 P 的当前状态及实际事件分流：无许可 P 收到网络媒体接口的 RTP 指示、本关联端的 Transmission Release，或有许可 P 实收服务器接口转来的 Revoked。单有原因值、消息名，或实际是其他角色，不能选定这些分支。",
+          "read": "topics/mcvideo/noncontrolling-participant-rtp-release.md"
         }
       ],
       "boundary": "TS 24.581 V16.9.0 的 Transmission Rejected、Transmission Revoked 和 Receive media response。只解释两种原因值；接收拒绝按 Result=0。"
@@ -11859,6 +11863,26 @@
         }
       ],
       "boundary": "Rel-16 Stage 3，TS 24.582 V16.3.0：组短数据在网 MBMS 子信道控制中 Unmap 与 Application Paging 的辨型、字段和接收检查边界。不是 Stage 2 承载公告、文件分发、唯一映射算法或任何接收/单播结果的证明。"
+    },
+    {
+      "id": "r16-mcvideo-noncontrolling-participant-rtp-release",
+      "question": "在网 MCVideo 组的非控制方 P 无发送许可时，分发器来 RTP 和关联端来 RTP 怎么走？本地 Revoked #3 后等什么？ MCVideo P 无发送许可且收到同一参与端的 Transmission Release：有期待和没期待时，Ack、转交和清记录分别怎样处理？ 有发送许可的 MCVideo NCF P 实收上游 Transmission Revoked 后会转无许可吗？和实收 Idle/Taken 有何不同？",
+      "start": "topics/mcvideo/noncontrolling-participant-rtp-release.md",
+      "next_if": [
+        {
+          "condition": "若问普通在网预安排组呼的控制方如何处理某个接收端对一路媒体的申请，且不是 MBMS、接收覆盖或抢占，读控制侧逐流接收许可。该页不回答本场终端是否实收或呈现，也不由 P 的发送状态判终端接收许可。",
+          "read": "topics/mcvideo/prearranged-group-reception-server.md"
+        },
+        {
+          "condition": "若手里是原因 5 或 7 的记录，先区分 Transmission Rejected、Transmission Revoked 与 Receive media response。",
+          "read": "topics/mcvideo/message-scoped-causes.md"
+        },
+        {
+          "condition": "若所处其实是控制方 U/G 在普通预安排组呼的满容量抢占，查控制侧撤销与等待，勿套 NCF P 的原因 #3。",
+          "read": "topics/mcvideo/onnetwork-preemption-revoke.md"
+        }
+      ],
+      "boundary": "只读在网 MCVideo 组的 NCF 传输参与者接口 P 与其传输控制服务器接口。P 授权状态、相关会话和实际指示或收件分开；不替代终端接收、CF 仲裁、MBMS 或应用与信令面释放程序。 组呼终端接收许可、收件和呈现要看本场对应证据，不借用私呼接收程序。"
     }
   ]
 }

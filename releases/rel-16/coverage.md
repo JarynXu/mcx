@@ -2074,6 +2074,16 @@ MCVideo（TS 24.581 V16.9.0）的原因 7：Transmission Rejected 的原因清�
 
 [读取主题](topics/mcvideo/message-scoped-causes.md)
 
+## MCVideo 非控制方：无发送许可时 RTP 怎么走，Release 要上送吗？
+
+TS 24.581 V16.9.0 在网 MCVideo 组的非控制功能 NCF，每场会话每客户端一个传输参与者接口 P。P 无发送许可且实际收到网络媒体接口的 RTP 指示：来自分发器，须要求该媒体接口向本关联端下行；来自本关联端，须向该参与端本地发 Transmission Revoked 原因 #3，并记录期待该端的 Transmission Release，Revoked 不经 NCF 的传输控制服务器接口。P 在这两支都仍无许可。
+
+无发送许可的 P 实收本关联端 Transmission Release：有期待时按该条 Release 的确认请求决定是否本地回 Ack，但总要清期待，期待分支未规定上送；无期待时必须交给 NCF 服务器接口，只有该条 Release 要求确认才按本地策略选择回本端 Ack 且出站 Release 不再要求确认，或等待传输控制服务器的 Ack。等待不改变转交义务。若 P 当时处于有或无发送许可状态，并实际收到服务器接口转来的 Transmission Ack，才按这条收件程序交给关联端，保持当时状态。NCF 的传输控制服务器接口按本接口实际收到的事件执行：收到分发器报告的 CF 来包指示时，须请求转给本会话中由本 NCF 管理、且所用 SSRC 与来包不同的客户端；收到媒体分发功能报告从网络媒体接口收包的指示时，须请求转向 CF；实收 P 转来的 Release 时，须转发给 CF，只有本地被动队列有该端申请时才移对应项。有许可的 P 实收服务器接口转来的 Revoked 时转给关联端，消息要求确认才记录期待对这条 Revoked 的 Ack，P 仍有许可。有许可的 P 实收来自该接口的 Idle 或 Arbitration Taken，须转给关联端并进入无许可；Taken 按 §6.5.5.4.6 的明文处理。
+
+尚未建立：P 的状态、发送指令或期待记录不是终端实收、终端仍可发送、接收许可或画面呈现的证据。本地 #3 不证明上行 RTP 已转、已丢弃或到达 CF，也不证明终端此前获准；等待 Ack 不是实际收到，看到本地 Ack 不能区分是否转交 Release，也不证明 CF 已收或其主动队列有变化。Transmission Release 不是应用与信令面呼叫释放。图 6.5.5.1-1 的 Taken 重复标记不补出额外自环条件。
+
+[读取主题](topics/mcvideo/noncontrolling-participant-rtp-release.md)
+
 
 ## 显式组归属：本客户端的建立、解除与状态观察
 

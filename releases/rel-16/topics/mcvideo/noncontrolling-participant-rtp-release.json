@@ -1,0 +1,831 @@
+{
+  "topic_id": "r16-mcvideo-noncontrolling-participant-rtp-release",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCVideo 非控制方：无发送许可时 RTP 怎么走，Release 要上送吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.581-v16.9.0",
+  "condition_rule": "各声明先继承共同条件，再按同一角色的实际指示或收件、当时的 P 状态和该条消息的 Ack 要求选择分支。P 的本地事件、服务器接口的收件和后续的实际交付不可互相推出。",
+  "common_conditions": [
+    "固定 3GPP TS 24.581 V16.9.0（Rel-16，Stage 3）的在网 MCVideo 组的非控制功能 NCF；只讨论指定媒体面角色、RTP 指示和传输控制消息。不扩为私呼、离网、MBMS 选路或 Stage 2 业务流程。",
+    "P 指 NCF 面向传输参与端的接口，每场会话中的每个客户端有一个状态机实例；NCF 的传输控制服务器接口是另一个角色。只根据各条列出的角色、相关同一会话和实际收件判断，不把别的参与端或会话的事件当作本 P 的事件。"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.5.1：组的非控制功能内分别设置传输控制服务器接口与传输参与者接口 P"
+      ],
+      "printed_pages": [
+        102
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.5.5.1 及图 6.5.5.1-1：每场会话中每客户端一个 P 实例；无对应程序时才用默认处理"
+      ],
+      "printed_pages": [
+        110,
+        111
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.5.5.3.1：P 无发送许可是其关联参与端的发送状态"
+      ],
+      "printed_pages": [
+        112
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.5.5.3.9 首段：网络媒体接口报告 RTP 来自分发器"
+      ],
+      "printed_pages": [
+        113
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.5.5.3.9 次段：网络媒体接口报告 RTP 来自关联 MCVideo 客户端，本地 Revoked #3 与期待 Release"
+      ],
+      "printed_pages": [
+        113
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.5.4.12 及注：分发器报告 CF 来包；同会话、NCF 管理、不同 SSRC 的客户端"
+      ],
+      "printed_pages": [
+        109
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.5.4.13 及注：媒体分发功能报告网络媒体接口来包；请求转向 CF，与不经服务器接口的本地 Revoked 分开"
+      ],
+      "printed_pages": [
+        110
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.5.5.3.10 开头及第 2–3 项：期待 Release、条件回 Ack、清记录及保持无许可"
+      ],
+      "printed_pages": [
+        113,
+        114
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.5.5.3.10 开头及第 1、3 项：未期待 Release，Ack 请求、本地策略、转交及保持无许可"
+      ],
+      "printed_pages": [
+        113,
+        114
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "9.2.2.1，表 9.2.2.1-1 的 Transmission Release 项及附于表后的通用确认说明"
+      ],
+      "printed_pages": [
+        145,
+        146
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.5.4.3：服务器接口实收后的 Release 转发与条件移除本地被动队列项"
+      ],
+      "printed_pages": [
+        105,
+        106
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.5.5.5.1–2，后者末段：适用状态与服务器接口来的实际 Transmission Ack"
+      ],
+      "printed_pages": [
+        115,
+        116
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.5.5.4.3：P 有发送许可且实收参与端 Transmission Release"
+      ],
+      "printed_pages": [
+        114
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.5.5.4.2：P 有发送许可且收到关联端的 RTP 收件指示"
+      ],
+      "printed_pages": [
+        114
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.5.5.4.7：有许可的 P 实收服务器接口 Revoked，向关联端传递、条件等 Ack、保持本地许可状态"
+      ],
+      "printed_pages": [
+        115
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.5.5.4.5–6：有许可的 P 实收来自服务器接口的 Idle 或 Arbitration Taken，及其转态与条件期待"
+      ],
+      "printed_pages": [
+        115
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "9.2.2.1，表 9.2.2.1-2 的 Transmission idle 项及表后确认说明，用作 Ack 条件对照"
+      ],
+      "printed_pages": [
+        146
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "图 6.5.5.1-1：有许可自环与转为无许可两处均写 Transmission Taken"
+      ],
+      "printed_pages": [
+        111
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "9.2.10.1 通用消息描述及 9.2.10.2 原因 #3：通常发向有许可者与具体无发送许可原因分读"
+      ],
+      "printed_pages": [
+        164,
+        165
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "9.2.7 开头两段：Transmission Release 的传输释放或撤销排队申请用途"
+      ],
+      "printed_pages": [
+        161
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.5.3：单端离开和整场呼叫的两步应用与信令面释放（边界，不展开程序）"
+      ],
+      "printed_pages": [
+        104,
+        105
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "id": "p-no-permission-downlink",
+      "title": "P 无许可但收到分发器来包指示：准备下行，发送状态不变",
+      "conditions": [
+        "同一会话中该客户端的 P 当前为 P: has no permission；P 实际收到网络媒体接口的指示，指示说 RTP 来自媒体分发器。"
+      ],
+      "conclusion": "P 须要求网络媒体接口把所收 RTP 发向本关联 MCVideo 客户端，并保持 P: has no permission。",
+      "normative_strength": "发往关联端的指令和保持状态均为 SHALL。",
+      "limitations": [
+        "P 的无许可状态限制发送，不表示收流被禁止。此下行指令不证明另一接收控制状态已许可、客户端已收到或画面已显示。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.5.1 及图 6.5.5.1-1：每场会话中每客户端一个 P 实例；无对应程序时才用默认处理"
+          ],
+          "printed_pages": [
+            110,
+            111
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.5.3.1：P 无发送许可是其关联参与端的发送状态"
+          ],
+          "printed_pages": [
+            112
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.5.3.9 首段：网络媒体接口报告 RTP 来自分发器"
+          ],
+          "printed_pages": [
+            113
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "p-no-permission-local-rtp-cause-3",
+      "title": "P 无许可却收到关联终端来包指示：本地原因 #3，仍无许可",
+      "conditions": [
+        "同一会话中该客户端的 P 当前为 P: has no permission；P 实际收到网络媒体接口的指示，指示说 RTP 来自本关联 MCVideo 客户端。"
+      ],
+      "conclusion": "P 须向本关联传输参与端发 Transmission Revoked，Reject Cause 为 #3（没有发送媒体权限），记录期待该端的 Transmission Release，并保持 P: has no permission。该 Revoked 不经 NCF 的传输控制服务器接口。",
+      "normative_strength": "发 Revoked、原因 #3、记录期待和保持无许可均为 SHALL；发消息不经服务器接口见 §6.5.4.13 注。",
+      "limitations": [
+        "§9.2.10.1 的通用消息描述提及有许可者；§6.5.5.3.9 次段与 §9.2.10.2 原因 #3 明确本无许可的具体入口。仅见 Revoked 不能推出此前获准或本地哪个角色发送；仅见 P 发 #3 也不证明终端实收。",
+        "§6.5.5.3.9 次段未给出这批 RTP 的转发或丢弃指令，不可用仅在没有规定程序时适用的 §6.5.5.1 默认丢弃替代。P 的本地事件不证明这批 RTP 已到分发器、已向 CF 转发或已被丢弃。",
+        "等待记录不是已收 Release 或已清记录。这个 RTP 入口与 §6.5.5.3.10 没有规定等待 Release 的超时或断开动作。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.5.3.9 次段：网络媒体接口报告 RTP 来自关联 MCVideo 客户端，本地 Revoked #3 与期待 Release"
+          ],
+          "printed_pages": [
+            113
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.4.13 及注：媒体分发功能报告网络媒体接口来包；请求转向 CF，与不经服务器接口的本地 Revoked 分开"
+          ],
+          "printed_pages": [
+            110
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "9.2.10.1 通用消息描述及 9.2.10.2 原因 #3：通常发向有许可者与具体无发送许可原因分读"
+          ],
+          "printed_pages": [
+            164,
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.5.1 及图 6.5.5.1-1：每场会话中每客户端一个 P 实例；无对应程序时才用默认处理"
+          ],
+          "printed_pages": [
+            110,
+            111
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.5.3.10 开头及第 2–3 项：期待 Release、条件回 Ack、清记录及保持无许可"
+          ],
+          "printed_pages": [
+            113,
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.5.3.10 开头及第 1、3 项：未期待 Release，Ack 请求、本地策略、转交及保持无许可"
+          ],
+          "printed_pages": [
+            113,
+            114
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "server-interface-cf-downlink",
+      "title": "NCF 服务器接口实收 CF 来包指示：分发对象须与来包 SSRC 不同",
+      "conditions": [
+        "NCF 的传输控制服务器接口实际收到媒体分发器的指示，指示说收到来自 CF 的 RTP；所列接收者是同一会话中由该 NCF 管理的客户端。"
+      ],
+      "conclusion": "该服务器接口须请求网络媒体分发器将这批 RTP 转给该会话内由 NCF 管理、且使用的 SSRC 与来包不同的各客户端。注说明有本地获准发送者时，其媒体不分发回它自己。",
+      "normative_strength": "按 SSRC 判定分发对象并请求转发是 SHALL；自流不发回的说明见注。",
+      "limitations": [
+        "P 无许可不是该服务器接口分支的入口条件。该请求不证明分发器实际发包或终端收到或显示。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.1：组的非控制功能内分别设置传输控制服务器接口与传输参与者接口 P"
+          ],
+          "printed_pages": [
+            102
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.4.12 及注：分发器报告 CF 来包；同会话、NCF 管理、不同 SSRC 的客户端"
+          ],
+          "printed_pages": [
+            109
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "server-interface-distributor-uplink",
+      "title": "NCF 服务器接口实收分发功能上行指示：另请求转向 CF",
+      "conditions": [
+        "NCF 的传输控制服务器接口实际收到媒体分发功能的指示，指示说分发功能已经从某个网络媒体接口收到 RTP。"
+      ],
+      "conclusion": "该服务器接口须请求网络媒体分发器把所收 RTP 转向 CF。",
+      "normative_strength": "在该实际指示下，请求转向 CF 为 SHALL。",
+      "limitations": [
+        "本条不以 P 发原因 #3 或收到 Release 为条件。仅见 P 收关联端来包指示或发本地 Revoked，不证明服务器接口已收到本条指示、CF 已收或媒体分发器已经转发。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.1：组的非控制功能内分别设置传输控制服务器接口与传输参与者接口 P"
+          ],
+          "printed_pages": [
+            102
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.4.13 及注：媒体分发功能报告网络媒体接口来包；请求转向 CF，与不经服务器接口的本地 Revoked 分开"
+          ],
+          "printed_pages": [
+            110
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.5.3.9 次段：网络媒体接口报告 RTP 来自关联 MCVideo 客户端，本地 Revoked #3 与期待 Release"
+          ],
+          "printed_pages": [
+            113
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "release-expected-local",
+      "title": "无发送许可的 P 正等本端 Release：有无 Ack 请求都清期待",
+      "conditions": [
+        "该 P 当前为 P: has no permission，且实际收到关联参与端的 Transmission Release。P 当时记录期待这场会话中这个参与端的 Release；是否要求 Ack 看这条入站 Release。"
+      ],
+      "conclusion": "要求 Ack 时向关联参与端发 Transmission Ack；无论是否要求 Ack，均须清除这个参与端的 Release 期待记录，保持 P: has no permission。期待分支没有上送 Release 的步骤。",
+      "normative_strength": "确认要求成立时的本地 Ack、清期待和保持状态均为 SHALL；确认要求不是清期待的前提。",
+      "limitations": [
+        "本地 Ack 不能单独区分有无期待，也不能证明 CF 收到 Release。只见另一终端或另一场会话的 Release，不触发此 P 的清除。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.5.1 及图 6.5.5.1-1：每场会话中每客户端一个 P 实例；无对应程序时才用默认处理"
+          ],
+          "printed_pages": [
+            110,
+            111
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.5.3.10 开头及第 2–3 项：期待 Release、条件回 Ack、清记录及保持无许可"
+          ],
+          "printed_pages": [
+            113,
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "9.2.2.1，表 9.2.2.1-1 的 Transmission Release 项及附于表后的通用确认说明"
+          ],
+          "printed_pages": [
+            145,
+            146
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "release-unexpected-forward",
+      "title": "无发送许可的 P 没等本端 Release：转交义务不取决于是否请求 Ack",
+      "conditions": [
+        "该 P 当前为 P: has no permission，且实际收到关联参与端的 Transmission Release；P 当时没有对此参与端的 Release 期待记录。是否要求 Ack 看这条入站 Release。"
+      ],
+      "conclusion": "P 须把 Release 转给 NCF 的传输控制服务器接口，保持 P: has no permission。若这条 Release 要求 Ack，按本地策略二选一：P 向关联参与端回 Transmission Ack，并使出站 Release 不再请求确认；或者等待传输控制服务器的 Ack。未请求 Ack 则不进入此策略分支。两种策略均须转交，不把收到 Ack 另加为转交前提。",
+      "normative_strength": "转交和保持无许可均为 SHALL；要求确认时按本地策略采用其中一支，其中本地确认与修改出站确认要求同属一支。",
+      "limitations": [
+        "等待不是已收 Ack，转交不是服务器接口已实收，更不是 CF 已收。未记期待不证明这个参与端当时排队或曾获准。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.5.1 及图 6.5.5.1-1：每场会话中每客户端一个 P 实例；无对应程序时才用默认处理"
+          ],
+          "printed_pages": [
+            110,
+            111
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.5.3.10 开头及第 1、3 项：未期待 Release，Ack 请求、本地策略、转交及保持无许可"
+          ],
+          "printed_pages": [
+            113,
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "9.2.2.1，表 9.2.2.1-1 的 Transmission Release 项及附于表后的通用确认说明"
+          ],
+          "printed_pages": [
+            145,
+            146
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "release-at-server-interface",
+      "title": "NCF 服务器接口实际收到 Release：转发与本地被动队列检查是它的职责",
+      "conditions": [
+        "NCF 的传输控制服务器接口实际收到某个 P 转来的 Transmission Release。"
+      ],
+      "conclusion": "服务器接口须将 Release 转发给 CF。其被动队列内若有该参与端的 Transmission Request，须移除该请求。",
+      "normative_strength": "向 CF 转发为 SHALL；找到对应请求时的被动队列移除为条件 SHALL。",
+      "limitations": [
+        "本条以服务器接口实收为准，并不把所有 P 分支强制上送。向 CF 发出不证明 CF 已收或 CF 的主动队列有变化。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.4.3：服务器接口实收后的 Release 转发与条件移除本地被动队列项"
+          ],
+          "printed_pages": [
+            105,
+            106
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.5.3.10 开头及第 2–3 项：期待 Release、条件回 Ack、清记录及保持无许可"
+          ],
+          "printed_pages": [
+            113,
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.5.3.10 开头及第 1、3 项：未期待 Release，Ack 请求、本地策略、转交及保持无许可"
+          ],
+          "printed_pages": [
+            113,
+            114
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "p-received-upstream-ack",
+      "title": "实际收到服务器接口的 Ack 后才向关联端转交",
+      "conditions": [
+        "同一 P 当时处于有或无发送许可状态之一，实际收到 NCF 的传输控制服务器接口转来的 Transmission Ack。"
+      ],
+      "conclusion": "P 须向其关联传输参与端发送该 Ack，并保持当前状态。",
+      "normative_strength": "发送及保持状态均为 SHALL。",
+      "limitations": [
+        "此条不适用于 Start-stop 或 Releasing。等待 Ack、存有期待客户端 Ack 或本地已经发出 Ack，不等于从服务器接口实际收到 Ack。转交不证明关联端实收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.5.5.1–2，后者末段：适用状态与服务器接口来的实际 Transmission Ack"
+          ],
+          "printed_pages": [
+            115,
+            116
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "p-permitted-upstream-revoked",
+      "title": "有许可的 P 实收上游 Revoked：转给关联端，P 保持许可",
+      "conditions": [
+        "该 P 当前为 P: has permission，且实际从 NCF 的传输控制服务器接口收到 Transmission Revoked。是否要求 Ack 取该 Revoked 自身。"
+      ],
+      "conclusion": "P 须向关联参与端发该 Revoked；若该 Revoked 要求确认，P 须记下期待这个 Revoked 的 Transmission Ack；处理后 P 仍为 P: has permission。",
+      "normative_strength": "转发、条件记下 Ack 期待、保持状态均为 SHALL。",
+      "limitations": [
+        "这里的 Ack 期待不是无许可本地发 #3 后对 Release 的期待；P 保持许可状态不证明终端实收 Revoked、仍可继续发送或处于某个终端状态。上游只见 CF 发出也不证明 P 实收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.1：组的非控制功能内分别设置传输控制服务器接口与传输参与者接口 P"
+          ],
+          "printed_pages": [
+            102
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.5.4.7：有许可的 P 实收服务器接口 Revoked，向关联端传递、条件等 Ack、保持本地许可状态"
+          ],
+          "printed_pages": [
+            115
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.5.3.9 次段：网络媒体接口报告 RTP 来自关联 MCVideo 客户端，本地 Revoked #3 与期待 Release"
+          ],
+          "printed_pages": [
+            113
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "p-permitted-upstream-idle-taken",
+      "title": "有许可的 P 实收上游 Idle 或 Arbitration Taken：转给关联端并变为无许可",
+      "conditions": [
+        "该 P 当前为 P: has permission，实际从 NCF 的传输控制服务器接口收到 Transmission Idle 或 Transmission Arbitration Taken；各用自身收件事件。"
+      ],
+      "conclusion": "P 须向关联参与端发送收到的消息，并进入 P: has no permission。两处状态条款均把记录期待 Ack 写在消息要求确认的条件下。",
+      "normative_strength": "发送和转态均为 SHALL，状态条款所列记录期待 Ack 是条件 SHALL。",
+      "limitations": [
+        "本版表 9.2.2.1-2 的 Transmission idle 列为不请求确认；不因状态处有条件句推造另一种合法 Idle 编码。图 6.5.5.1-1 同时在有许可自环和转无许可处写 Taken；对于本条实际 Arbitration Taken 收件条件，使用 §6.5.5.4.6 三项明文，不从图的重复标签补自环条件。",
+        "该分支不同于刚收到 Revoked；不以任意一个上游消息名推断 P 的实际收件、状态或终端行为。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.5.4.5–6：有许可的 P 实收来自服务器接口的 Idle 或 Arbitration Taken，及其转态与条件期待"
+          ],
+          "printed_pages": [
+            115
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "图 6.5.5.1-1：有许可自环与转为无许可两处均写 Transmission Taken"
+          ],
+          "printed_pages": [
+            111
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "9.2.2.1，表 9.2.2.1-2 的 Transmission idle 项及表后确认说明，用作 Ack 条件对照"
+          ],
+          "printed_pages": [
+            146
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.5.4.7：有许可的 P 实收服务器接口 Revoked，向关联端传递、条件等 Ack、保持本地许可状态"
+          ],
+          "printed_pages": [
+            115
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "p-permitted-associated-rtp",
+      "title": "有许可的 P 收关联端 RTP 指示：要求媒体接口转向分发器",
+      "conditions": [
+        "该 P 当前为 P: has permission；P 实际收到网络媒体接口的指示，指示说 RTP 来自本关联 MCVideo 客户端。"
+      ],
+      "conclusion": "P 须要求媒体接口把所收 RTP 转向分发器，并保持 P: has permission。",
+      "normative_strength": "请求转发和保持状态均为 SHALL。",
+      "limitations": [
+        "P 的转发指令不证明分发器已收到或已向服务器接口报告。不是无许可本地原因 #3 的分支。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.5.4.2：P 有发送许可且收到关联端的 RTP 收件指示"
+          ],
+          "printed_pages": [
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.4.13 及注：媒体分发功能报告网络媒体接口来包；请求转向 CF，与不经服务器接口的本地 Revoked 分开"
+          ],
+          "printed_pages": [
+            110
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.5.3.9 次段：网络媒体接口报告 RTP 来自关联 MCVideo 客户端，本地 Revoked #3 与期待 Release"
+          ],
+          "printed_pages": [
+            113
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "p-permitted-associated-release",
+      "title": "有许可的 P 实收本端 Release：交给服务器接口，P 仍有许可",
+      "conditions": [
+        "该 P 当前为 P: has permission；P 实际收到本关联传输参与端的 Transmission Release。"
+      ],
+      "conclusion": "P 须把 Release 发给 NCF 的传输控制服务器接口，保持 P: has permission。",
+      "normative_strength": "发送和保持状态均为 SHALL。",
+      "limitations": [
+        "§6.5.5.4.3 没有用无许可时的期待记录和本地 Ack 策略作入口。Transmission Release 可用于传输释放或撤回排队请求；不同于 SIP 挂断或应用与信令面呼叫释放。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.5.4.3：P 有发送许可且实收参与端 Transmission Release"
+          ],
+          "printed_pages": [
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.5.3.10 开头及第 2–3 项：期待 Release、条件回 Ack、清记录及保持无许可"
+          ],
+          "printed_pages": [
+            113,
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.5.3.10 开头及第 1、3 项：未期待 Release，Ack 请求、本地策略、转交及保持无许可"
+          ],
+          "printed_pages": [
+            113,
+            114
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "9.2.7 开头两段：Transmission Release 的传输释放或撤销排队申请用途"
+          ],
+          "printed_pages": [
+            161
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.5.3：单端离开和整场呼叫的两步应用与信令面释放（边界，不展开程序）"
+          ],
+          "printed_pages": [
+            104,
+            105
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-mcvideo-prearranged-group-reception-server",
+    "r16-mcvideo-message-scoped-causes",
+    "r16-mcvideo-onnetwork-preemption-revoke"
+  ],
+  "limitations": [
+    "Transmission Ack 不等于 SIP ACK；Transmission Release 的收发不等于应用与信令面已发起／完成呼叫释放，也不能代替终端 RTP 接收／呈现证据。",
+    "不从 P 状态推出终端或 CF 的本地状态，不从发出或等待推出另一处已实收。本页不定义原始报文构造、底层媒体实现或所有组呼的完整状态机。",
+    "在网组呼的终端接收许可、实际收件和显示，需要本场相应证据；不能借普通按需一对一私呼的接收程序补组呼。关联的预安排组呼接收服务器主题只供满足该页条件的控制侧逐流许可问题，不是终端收件证明。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
