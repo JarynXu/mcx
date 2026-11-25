@@ -447,6 +447,148 @@
         "independent_source_review": true,
         "independent_usage_acceptance": true
       }
+    },
+    {
+      "id": "no-permission-t103-expiry-may-notify-idle-without-floor-idle",
+      "title": "无发送许可时 T103 实际到期：可提示空闲，仍无发送许可",
+      "conditions": [
+        "普通在网单话权 MCPTT 组呼中的终端话权参与者处于 U: has no permission，且启用的本地可选 T103（End of RTP media）实际到期。"
+      ],
+      "conclusion": "终端可提示用户话权空闲，并须留在 U: has no permission。该分支不要求收到 Floor Idle，也未规定发送 Ack。启表可以源自同状态真实收到 Floor Taken 或 RTP 的程序；提示不证明语音已实际播放或服务器已空闲。",
+      "normative_strength": "用户提示为 MAY；保持本端状态为 SHALL。前述可选 T103 启动或重启为相应收件条款的 SHOULD。",
+      "limitations": [
+        "实收 Floor Idle 是 §6.2.4.3.2 的单独分支；不要从提示倒推已收到 Floor Idle、应发 Ack、远端 RTP 断流、全组新许可或通话释放。",
+        "表 11.1.1-1 对 T103 与 T1 时值的建议不等于同一实例、同一计时起点或实际同步。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.3.6, items 1–2: actual expiry of optional T103 without permission; optional idle notice and unchanged state"
+          ],
+          "printed_pages": [
+            39
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.3.3 item 5 and 6.2.4.3.4 item 2: optional receiver T103 on actual Taken or RTP"
+          ],
+          "printed_pages": [
+            38
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.3.2: Floor Idle received by a client already without permission; conditional acknowledgment and T103"
+          ],
+          "printed_pages": [
+            37,
+            38
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "11.1.1 table11.1.1-1 T103"
+          ],
+          "printed_pages": [
+            213
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "pending-request-t103-expiry-has-no-action",
+      "title": "终端等待话权请求应答：T103 可运行，实际到期不执行动作",
+      "conditions": [
+        "普通在网单话权 MCPTT 组呼中的终端话权参与者处于 U: pending Request，且它的 T103 实际到期。"
+      ],
+      "conclusion": "本状态允许 T103 运行，但该计时器到期没有动作；原文把启表解释为收到话权请求应答后状态变化的准备。不能借用无发送许可状态的空闲提示或用本次到期结束话权请求。",
+      "normative_strength": "§6.2.4.4.1 明示本状态 T103 可以运行、到期没有动作；不是待请求状态共用的超时操作。",
+      "limitations": [
+        "T101 请求重试、实收应答、媒体播放请求另判。不从 T103 到期补出统一停表、重传、提示、许可或播放结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.4.1, T103 paragraph: may be running in pending Request, but no local expiry action"
+          ],
+          "printed_pages": [
+            39
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "queued-floor-taken-optional-t103-not-exit-queued",
+      "title": "终端已排队并实收 Floor Taken：宜启可选 T103，仍排队",
+      "conditions": [
+        "普通在网单话权 MCPTT 组呼中的终端话权参与者处于 U: queued，并实际收到本次 Floor Taken。"
+      ],
+      "conclusion": "第 4–5 项要求保留 U: queued，并建议启动用于判断该路 RTP 媒体是否结束的可选 T103。该控制消息不能代替实收 RTP。与之不同，若实际收到队位通知（Floor Queue Position Info），§6.2.4.9.7 明写停运行中的 T104 并保持 U: queued，不能当作 Taken 的 T103 启动或发言许可。 排队时实收 Floor Idle 的原文写停在运行的 T104 且转无许可，未另列 T103；表的 T103 正常停止列保留，不补出统一的现场 T103 状态。",
+      "normative_strength": "按本次 Floor Taken 启动可选 T103 为 SHOULD；保持 U: queued 为 SHALL。",
+      "limitations": [
+        "这不是 Floor Idle、Floor Granted 或用户撤回，不能把打开接收计时器当退队、获准、一段语音已播放或 G 的状态。",
+        "表 11.1.1-1 的 T103 停止摘要和 §6.2.4.9.8 的具体动作是不同证据；不规定排队中任意 T103 到期、排队撤回或确认报文的额外动作。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.9.3, event opening and items 4–5: actual Taken while queued, optional T103 start and retained queue state"
+          ],
+          "printed_pages": [
+            48
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.9.7, opening and items 2–4: actual Queue Position Info while queued, stop T104 if running and retain queue state (contrast only)"
+          ],
+          "printed_pages": [
+            49,
+            50
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.2.4.9.8, Floor Idle in queued, items 3–4: T104 stop if running and no-permission transition (contrast only)"
+          ],
+          "printed_pages": [
+            50
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "11.1.1 table11.1.1-1 T103"
+          ],
+          "printed_pages": [
+            213
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "verification": {
