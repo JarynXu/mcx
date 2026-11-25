@@ -2028,6 +2028,10 @@
         {
           "condition": "若是 MCVideo 从组播改回单播，要判断何时释放该传输的组播实例，查 MCVideo 组播转单播。",
           "read": "topics/mcvideo/mbms-to-unicast.md"
+        },
+        {
+          "condition": "若需查 MCData 媒体专用承载的 QCI、已有承载 ARP 修改或有条件抢占，按 MCData 专门条款判断。",
+          "read": "topics/mcdata/unicast-bearer-qci-arp.md"
         }
       ],
       "boundary": "限公共 Stage 2 的在网单播媒体资源。建会程序用于需要请求网络资源的情况；修改程序以呼叫或会话正在进行为前提。"
@@ -7804,6 +7808,10 @@
         {
           "condition": "若查采用 EPS 优先级共享时 PCRF 确认请求和 PCC 更新承载优先级的区别。",
           "read": "topics/bearers/unicast-bearer-priority-sharing.md"
+        },
+        {
+          "condition": "若实际线索是 MCData 单播使用 QCI 70，或新 MCData EPS 承载可能让一条非 MCData 承载让位，查 Stage 2 的策略与承载条件。",
+          "read": "topics/mcdata/unicast-bearer-qci-arp.md"
         }
       ],
       "boundary": "限 TS 22.280 V16.8.0 §6.8.1 -002 至 -006 的在网 MCX 业务 Stage 1 要求，适用于 MCPTT、MCVideo、MCData，不以有无话权控制划分。查抢占能力及资源不足时的业务义务，不查承载或话权实现。 两套 Stage 2 程序各有前提，不是必经的同一条路径。多服务器仲裁的授予只说明申请方获准以较高优先级请求资源。EPS 优先级共享中，步骤 4 的 PCRF 确认不等于步骤 5 的 PCC 更新。授予、确认或承载优先级更新均不足以证明较低优先级的通信已被抢占，且相应资源已因此分给本次通信；须分别核实这两项，建通信和媒体送达另查。"
@@ -11735,6 +11743,30 @@
         }
       ],
       "boundary": "固定版在网 MCPTT 组呼的功能模型；比较图例，不据图判拓扑实况、注册、许可、SIP 或媒体结果。"
+    },
+    {
+      "id": "r16-mcdata-unicast-bearer-qci-arp",
+      "question": "在网 MCData 会话经 Rx 向 PCRF 申请资源时带什么标识，哪种承载使用 QCI 70？ 有一条现成承载，能只请求修改 ARP 吗？其他应用的承载数满时，什么条件下会抢占一条？ 紧急、迫近危险和普通 MCData 的 EPS 承载优先级怎么排？仅看到 QCI 70 或一次资源请求能确认什么？",
+      "start": "topics/mcdata/unicast-bearer-qci-arp.md",
+      "next_if": [
+        {
+          "condition": "若手头是通用在网会话建立或修改中的客户端 OK，按公共单播程序区分请求确认和资源结果。",
+          "read": "topics/bearers/unicast-resource-establishment-modification.md"
+        },
+        {
+          "condition": "若网络对并行会话采用共享优先级，查公共 EPS 单播优先级共享及对应前提。",
+          "read": "topics/bearers/unicast-bearer-priority-sharing.md"
+        },
+        {
+          "condition": "若问资源不足时向有抢占权限的组发起通信，按 MCX 业务 Stage 1 的条件和义务判断。",
+          "read": "topics/bearers/onnetwork-service-preemption.md"
+        },
+        {
+          "condition": "若已经在进行的同系统一对一 SDS 要升级紧急，查对端确认、服务器调整双方承载和继续通信的专门程序。",
+          "read": "topics/mcdata/one-to-one-sds-emergency-upgrade.md"
+        }
+      ],
+      "boundary": "限 TS 23.282 V16.8.0 §5.8.3 的在网 MCData EPS 单播。区分媒体专用承载的 QCI、策略下的 ARP 调整与抢占、MCData 通信类型内部的优先级；不把规范分支和实际承载处理结果混用。"
     }
   ]
 }

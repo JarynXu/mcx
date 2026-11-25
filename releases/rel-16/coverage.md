@@ -694,6 +694,16 @@ Stage 2服务能力与功能角色，以及文件存储和消息历史的职责�
 
 [读取主题](topics/mcdata/service-capability-and-functional-roles.md)
 
+## MCData 单播承载：看见 QCI 70，能判断新建或抢占了吗？
+
+MCData 系统用动态 PCC 经 Rx 申请会话资源，请求带 MCData 应用标识；QCI 70 用于媒体专用承载。UE 至少须支持一条用于 MCData 的承载；紧急、迫近危险、普通 MCData 的 EPS 承载优先级依次降低。
+
+媒体面按运营商策略可请求调整已有承载的 ARP，无需为此另起专用 GBR 承载。采用运营商策略允许的媒体面抢占时，其他应用的承载数须已达上限，新 MCData EPS 承载的 ARP 优先级须高于待让位的非 MCData 承载，且后者可被抢占。这一分支抢占一条原有 EPS 承载。
+
+尚未建立：仅有 QCI 70 或 Rx 请求，不足以确定通信类型或是否新建承载。是否已发生抢占，要看实际承载处理结果。本节未给数值 ARP、跨业务优先次序或具体 GBR 判定。
+
+[读取主题](topics/mcdata/unicast-bearer-qci-arp.md)
+
 ## 预安排组 standalone SDS 控制面：客户端发送、接收与处置
 
 预安排组standalone SDS控制面客户端许可、请求、接收与处置。
