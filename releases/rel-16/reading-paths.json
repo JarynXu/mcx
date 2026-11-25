@@ -256,7 +256,12 @@
       "id": "r16-mcvideo-functional-media-control-roles",
       "question": "MCVideo 功能职责：会话、传输接收控制与媒体分发。同一场在网会话中，甲请乙开传：许可给谁，处理结果回谁，哪条记录才是乙的上行？",
       "start": "topics/mcvideo/functional-media-control-roles.md",
-      "next_if": [],
+      "next_if": [
+        {
+          "condition": "问题已转到跨系统 MCVideo，需区分控制/视频去向或识别对接的服务器、网关参考点。若只查同系统内的传输许可、分发与呈现，不换到互连。",
+          "read": "topics/mcvideo/intersystem-call-control-and-media-routing.md"
+        }
+      ],
       "boundary": "不覆盖完整 Stage 3 流程、模式选择、报文构造、媒体呈现或安全实现；可选调度、获准后通知与排队能力不变成每次强制动作。 现有会话内远程启动时，甲的成功响应报告乙开始发送；不能当成乙端实际媒体记录或甲端收看。"
     },
     {
@@ -4218,6 +4223,10 @@
         {
           "condition": "若是同一个系统内的 MCVideo 建呼成功与必答成员确认，转 MCVideo 预安排组呼；跨系统的两段组呼响应不据此变成全员确认。",
           "read": "topics/mcvideo/prearranged-group-call-setup.md"
+        },
+        {
+          "condition": "若确认目标是跨系统 MCVideo 组呼，且问题是组视频应到哪一侧，或实际服务器/网关片段对应哪个参考点，而非本次请求的业务准入，查 MCVideo；不从转送成功推定视频已到。",
+          "read": "topics/mcvideo/intersystem-call-control-and-media-routing.md"
         }
       ],
       "boundary": "限 Rel-16 Stage 2 的互联组呼。§10.14.3：组主提供配置，伙伴采用本地设置，并服务已归属的成员；区分伙伴侧起呼与组宿主来话。§10.14.2：双方都隐藏拓扑，主叫已归属目标组，当前服务系统不同于组主系统；具体两网关路径取主叫在自己的主系统接受服务的情形。这不是私呼按目标用户 ID 选主服务器的流程。"
@@ -4786,6 +4795,10 @@
         {
           "condition": "若问题是 TS 24.379 图示中 CF、NCF 和终接侧分别在哪，或组主伙伴没有以它为主系统的组员，查 Stage 3 连接模型。图例不替代本页对实际参会的条件。",
           "read": "topics/calls/mcptt-server-function-connectivity.md"
+        },
+        {
+          "condition": "若确认业务是 MCVideo，要查组视频必须路由到哪、私呼视频选路与当前服务主叫的控制区别，或 MCVideo-3/-10；只问通用互连授权和客户端可达性，留在本页。",
+          "read": "topics/mcvideo/intersystem-call-control-and-media-routing.md"
         }
       ],
       "boundary": "Rel-16 两个分属不同信任域的 MC 系统。拟互连的系统须有系统间 IP；用户的客户端用互连与对方系统所服务的用户通信时，才按本题查对端连接要求。办理互连用户的业务授权，不等于办理迁入许可或判一通呼叫的准入。 私呼控制规则限两人由不同系统服务且本次确实使用互连；组呼规则限组主系统的伙伴系统中有用户参加该组的这通组呼。这里只判系统，不据此认定某台服务器或某次呼叫放行。"
@@ -12017,6 +12030,46 @@
         }
       ],
       "boundary": "TS 23.282 V16.8.0，Stage 2 的并发 MCData 应用层发送控制。正文的功能、拥塞和授予条件照具体程序判断；B.1–B.2 只解释资料性示例。未给出某部署固定优先级、媒体承载、实际收件或跨系统转送。"
+    },
+    {
+      "id": "r16-mcvideo-intersystem-call-control-and-media-routing",
+      "question": "同一通跨系统 MCVideo，组归属、用户主系统和当前服务系统不同：谁控制，视频该路由到哪？ 私呼按同组织或不同组织走哪个主系统？本地复制选项是否与另一选项叠加，看到复制实体或同组织能证明什么？ MCVideo-3、MCVideo-10 和 SIP-3 的两端、信令和媒体如何区分？网关的 FFS 与已写明的转送是什么关系？",
+      "start": "topics/mcvideo/intersystem-call-control-and-media-routing.md",
+      "next_if": [
+        {
+          "condition": "要查通用互连里哪一方给用户授权、端点如何可达，或确认本次的控制对象而不问 MCVideo 视频去向。",
+          "read": "topics/identity/interconnection-authorization.md"
+        },
+        {
+          "condition": "要查这一次跨系统组呼的准入或拓扑隐藏下请求转给谁。分别核实相应的双侧隐藏前提，或组宿主已提供配置且组伙伴采用本地设置并给已归属成员服务。",
+          "read": "topics/groups/partner-group-call-admission.md"
+        },
+        {
+          "condition": "若由组归属系统服务的已归属端发起组呼，会话、控制与媒体已建立且发送获准，已有已归属接收者由同一伙伴服务器服务并由其复制，查宿主到这一服务器的单流。不是反向发言或多服务器的一般流数。",
+          "read": "topics/media/partner-group-media-replication.md"
+        },
+        {
+          "condition": "若实际符合同一 MC 系统的在网预安排组呼、原场次还有成员，问恢复覆盖或新归属时服务器邀入、终端掌握现有场次信息时的主动重入。不要照搬为跨域流程。",
+          "read": "topics/mcvideo/prearranged-late-entry-rejoin.md"
+        },
+        {
+          "condition": "若实际是同一 MC 系统中已定义且还在通话的组，问成员解除归属后被要求离开，或用户主动离开以及何时转查整场释放。",
+          "read": "topics/mcvideo/group-call-leave.md"
+        },
+        {
+          "condition": "若已知是普通在网按需预安排 MCVideo 组呼，且要判主动重入的新初始 INVITE、对应响应或控制侧实际触发的迟入邀请，按 O-PF、CF 或 NCF 的实际角色查 Stage 3；既有对话内的 re-INVITE 不从这里进入。",
+          "read": "topics/mcvideo/prearranged-group-sip-rejoin.md"
+        },
+        {
+          "condition": "若已知是已按需信令建立的普通在网预安排 MCVideo 组呼，且要按实际 BYE、匹配响应或释放策略判断该腿或整场，读 Stage 3。仅早期对话里的 BYE 或对应的 200 不能证明该场已建立；不从一份 BYE 200 判全局。",
+          "read": "topics/mcvideo/prearranged-group-sip-bye-policy.md"
+        },
+        {
+          "condition": "若实际是在网 MCVideo 组的非控制方参与者接口/服务器接口，要判当时状态下的实收 RTP、Transmission Release 或 Ack，查媒体面 Stage 3，不从网关类型推断已收到。",
+          "read": "topics/mcvideo/noncontrolling-participant-rtp-release.md"
+        }
+      ],
+      "boundary": "TS 23.281 V16.4.0 + TS 23.280 V16.7.0，Rel-16 Stage 2。分别判呼叫控制、视频路由、MCVideo 逻辑参考点。通用控制先限 §5.2.10.1 两个分属不同信任域的服务系统，再分别看私呼实际互连或组伙伴实际参呼；TS 23.281 §5.1 的媒体去向不以这两个通用分支的适用条件为前提。不补跨域全流程或 Stage 3 报文、去重、收件。"
     }
   ]
 }

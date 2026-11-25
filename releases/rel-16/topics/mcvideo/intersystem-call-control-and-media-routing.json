@@ -1,0 +1,583 @@
+{
+  "topic_id": "r16-mcvideo-intersystem-call-control-and-media-routing",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "跨系统 MCVideo：谁控制这通呼叫，视频该到哪个系统？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.281-v16.4.0",
+  "common_conditions": [
+    "Rel-16 Stage 2；以 TS 23.281 V16.4.0 的 MCVideo 在网逻辑角色和媒体路由为主，只有对应通用控制、互连或信令条件时用 TS 23.280 V16.7.0。无需所有角色或事件同时出现。"
+  ],
+  "condition_rule": "先认定是组呼还是私呼，以及所查角色是组归属、组宿主、伙伴或当前服务系统。按实际业务和条件分别取呼叫控制、视频去向和参考点的依据。§5.2.10.4–.5 的通用控制按 §5.2.10.1 限分属不同信任域的两个服务系统；不把该范围或组伙伴实际参呼要求移入 §5.1 的媒体去向。配置、一次转送、实收和终端使用不是同一证据。",
+  "claims": [
+    {
+      "id": "group-home-system-versus-host-server",
+      "title": "定义组的系统和提供集中支持的服务器分开",
+      "conditions": [
+        "要定位一个已识别的 MCVideo 组所对应的功能职责。"
+      ],
+      "conclusion": "MCVideo 组归属系统是定义该组的 MC 系统；组宿主是为该组集中提供 MCVideo 业务支持的服务器。支持同一组用户的客户端须为该组使用同一 MCVideo 服务器；支持涉及多个组用户的客户端可以和多个 MCVideo 服务器有关系。",
+      "normative_strength": "组归属和宿主是定义；同一组使用同一服务器是明确要求，多组是允许的关系。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "3.1, definitions of MCVideo group home system and MCVideo group host server"
+          ],
+          "printed_pages": [
+            12
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "6.2.1",
+            "6.2.2.3.2, centralized support and the same-group/multiple-group MCVideo server relationships"
+          ],
+          "printed_pages": [
+            16,
+            17
+          ]
+        }
+      ],
+      "limitations": [
+        "功能实体不等同物理设备，不推出所有客户端直接连一台设备、某次媒体已到、或者通用互连中的参与服务器角色不存在。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "group-video-to-group-home",
+      "title": "MCVideo 组呼的视频媒体须到组归属系统",
+      "conditions": [
+        "已识别为 MCVideo 组呼，且要判断它的视频媒体路由要求。"
+      ],
+      "conclusion": "视频媒体流须路由到组归属 MCVideo 系统，用组在哪定义识别该系统。不能把私呼本地路由选项移到这里。",
+      "normative_strength": "§5.1 组呼末段的 SHALL be routed to。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "3.1, definitions of MCVideo group home system and MCVideo group host server"
+          ],
+          "printed_pages": [
+            12
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "5.1, final group-call video media routing paragraph"
+          ],
+          "printed_pages": [
+            13
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.4.1, scope: partner replicates media to served group members",
+            "10.14.4.2, introductory direction, note 1 and precondition 1",
+            "10.14.4.2, preconditions 2–3 and note 2",
+            "10.14.4.2, figure 10.14.4.2-1 and steps 1–2",
+            "10.14.4.2, figure 10.14.4.2-1 and step 3b"
+          ],
+          "printed_pages": [
+            209,
+            210
+          ]
+        }
+      ],
+      "limitations": [
+        "说的是到该系统，不是只有该系统处理或所有人已收到。通用伙伴复制例需要专门的主方发起、原会话、许可和伙伴复制条件，不从组归属推出每个方向的跨系统流数。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "group-control-if-group-partner-user-participates",
+      "title": "相对于组归属系统的伙伴用户参呼，组归属提供控制",
+      "conditions": [
+        "在 TS 23.280 §5.2.10.1 的通用互连范围，两个 MC 系统分别为两侧用户提供业务且分属不同信任域；有由组归属系统的伙伴 MC 系统提供业务的用户实际参加该组的这通组呼。"
+      ],
+      "conclusion": "按 TS 23.280 §5.2.10.5，由组归属系统提供该组呼的控制功能。它不是主叫用户自己的主系统或当前服务系统一概负责。",
+      "normative_strength": "对应条件成立时为通用架构控制功能归属；不等于选择物理节点。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.10.1, two sets of users receiving service from MC systems in different trust domains"
+          ],
+          "printed_pages": [
+            23,
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.10.5, where MC service users in a partner MC system of the group home MC system take part in a group call in that group: the group home MC system provides the controlling function for the group call"
+          ],
+          "printed_pages": [
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.2.2, figure 10.14.2.2-1 and steps 1–3",
+            "10.14.2.2, figure 10.14.2.2-1, steps 4–5 and note 3",
+            "10.14.2.2, steps 11–14: intersystem response and delivery to originator"
+          ],
+          "printed_pages": [
+            206,
+            207
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.14.3.1, scope and participating server enforcing local group configuration"
+          ],
+          "printed_pages": [
+            207
+          ]
+        }
+      ],
+      "limitations": [
+        "信任域关系未知或确认同域时，不用这条判本次控制方；不因此限制 TS 23.281 §5.1 的组视频去向要求。用户迁到自己的伙伴、组配置存在或已归属都不是实际参呼；也不替代逐通准入。拓扑隐藏示例步骤 2–3 及步骤 4 后的注 3 写发起侧服务系统，步骤 5、12–13 写发起侧主系统，不能据图给两者不同的部署补逐跳路线。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "private-control-current-serving-caller",
+      "title": "经互连且各自由不同系统服务的私呼，控制由主叫服务系统提供",
+      "conditions": [
+        "在 TS 23.280 §5.2.10.1 的通用互连范围，两个 MC 系统分别为两侧用户提供业务且分属不同信任域；已确认两名 MC 服务用户由不同 MC 系统提供业务，且这通私呼实际用了 MC 业务互连。"
+      ],
+      "conclusion": "按 TS 23.280 §5.2.10.4，由当前提供 MC 业务给本次主叫用户的系统提供私呼控制。不是用户主服务档归属的系统一概负责。",
+      "normative_strength": "通用控制功能归属，独立于视频媒体选项。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.10.1, two sets of users receiving service from MC systems in different trust domains"
+          ],
+          "printed_pages": [
+            23,
+            24
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "5.2.10.4, private calls using interconnection between users receiving MC service in different MC systems: the system serving the calling user provides the controlling function for the private call"
+          ],
+          "printed_pages": [
+            24
+          ]
+        }
+      ],
+      "limitations": [
+        "仅已开通互连、主叫已经迁移或两人属于不同组织，不足以使用这条；信任域关系未知或确认同域，不能按这条指认控制方，也不影响 TS 23.281 §5.1 的私呼媒体路由要求。也不确定某个服务器、媒体路径、路由选项或该呼叫已被允许。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "private-video-option1-primary-by-organization",
+      "title": "私呼媒体选项 1 按双方组织判断该经过的主系统",
+      "conditions": [
+        "这是 MCVideo 私呼的视频流，使用 TS 23.281 §5.1 两个可选路由中的选项 1。"
+      ],
+      "conclusion": "同组织，经主 MCVideo 系统；不同组织，经两名用户各自的主 MCVideo 系统。条件是组织关系，不是当前是否由同一系统提供服务。",
+      "normative_strength": "私呼须采用两种规定路由中的其中一种；此为 Option 1(a)(1)–(2)。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "5.1, private video routing opening paragraph and Option 1(a)(1)–(2)"
+          ],
+          "printed_pages": [
+            13
+          ]
+        }
+      ],
+      "limitations": [
+        "不在本项补出两个主系统经过的先后次序，不从同组织推断同服务系统、同一物理设备或呼叫控制归属。选项 2 不是接着选项 1 的下一步。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "private-video-option2-controlled-local-duplication-capability",
+      "title": "私呼媒体选项 2 允许在主 MCVideo 系统控制下本地路由",
+      "conditions": [
+        "这是 MCVideo 私呼的视频流，采用 TS 23.281 §5.1 的本地选项 2。"
+      ],
+      "conclusion": "视频可以在主 MCVideo 系统的控制下本地路由，经一个允许向各用户主 MCVideo 系统复制媒体的实体。它与选项 1 是备选，不是同一条必须连续走的路。",
+      "normative_strength": "主规则 SHALL 选一；此选项正文的本地路由是 MAY。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "5.1, private video routing opening paragraph and Option 2(b)"
+          ],
+          "printed_pages": [
+            13
+          ]
+        }
+      ],
+      "limitations": [
+        "本项未选择跨两用户时哪一个主系统控制，也不指定如何选择、复制、去重、已实际发给每一系统或终端收到；仅看到本地节点不能确定用了此选项。私呼选项不适用组呼。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "gateway-routing-role-and-ts33180-ffs",
+      "title": "MC 网关的互连职责与特定安全信令代理是否可用分开",
+      "conditions": [
+        "不同信任域的伙伴 MCVideo 系统互连，判断拓扑隐藏中的网关功能角色。"
+      ],
+      "conclusion": "网关代理一个或多个伙伴 MCVideo 服务器，无需向主系统信任域外暴露主系统的 MCVideo 服务器，并负责转送呼叫控制、话权控制（floor control）信令与媒体。网关可以是 MCVideo 服务器的一个角色。能否作为 TS 33.180 定义的信令代理，原文仍留待研究。",
+      "normative_strength": "原文功能角色与负责的转送；共置角色 MAY；TS 33.180 特定代理是编辑注 FFS。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "6.2.2.3.8, topology-hiding MC gateway role, relaying and the TS 33.180-specific Editor's note"
+          ],
+          "printed_pages": [
+            18
+          ]
+        }
+      ],
+      "limitations": [
+        "不把该 FFS 当成一般代理或转送职责未定、已兼容或禁止；不由拓扑隐藏、网关名称或其本段记录推出另一端已收、链路走向或设备数量。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "reference-points-mcvideo3-mcvideo10-and-sip3",
+      "title": "分别识别 MCVideo-3、MCVideo-10 与 SIP-3 的逻辑两端和用途",
+      "conditions": [
+        "要判 MCVideo 应用信令或两个互联系统网关之间的会话建立、话权控制与媒体参考点，须按本次所查的逻辑端点和承载种类判断。"
+      ],
+      "conclusion": "MCVideo-3 在服务器和另一 MCVideo 服务器之间，或服务器和 MC 网关之间，用于应用信令。MCVideo-10 在不同互联 MCVideo 系统的 MC 网关之间；建立会话的 MCVideo 应用信令须用 SIP-3 传送和路由。话权控制信令和媒体也经 MCVideo-10。通用 SIP-3 的逻辑端点为两个 SIP 核心，适用会话管理、媒体协商等信令。",
+      "normative_strength": "§6.3.3 使用声明；§6.3.8 的 SHALL use SIP-3 限其所说会话建立信令；媒体/话权控制使用 -10。§7.5.3.4 的跨信任域服务器使用需不需要改动留为 FFS。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "6.3.3, MCVideo-3 endpoints and MCVideo application signalling"
+          ],
+          "printed_pages": [
+            19
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "6.3.8, MCVideo-10 gateway-to-gateway endpoints, session-signalling via SIP-3 and floor control/media"
+          ],
+          "printed_pages": [
+            20
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "7.5.3.4, opening paragraph: SIP core endpoints and Mm and ICi reference points",
+            "7.5.3.4, three listed uses: event subscription and notification, session management and media negotiation",
+            "7.5.3.4, Editor's note: FFS on changes for use between servers in different trust domains"
+          ],
+          "printed_pages": [
+            42
+          ]
+        }
+      ],
+      "limitations": [
+        "不把 -10 上的话权控制或媒体武断等同 SIP-3；不把通用编辑注取消专规建会信令的明确要求，不确认改动已定、具体协议消息、地址或物理参与端。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "affiliation-and-single-system-lifecycle-evidence",
+      "title": "视频组归属、某场参加与单系统迟入/离开流程分开",
+      "conditions": [
+        "需要判断组归属或解除归属对 MCVideo 的业务含义，或评估多服务器描述是否足以套用指定的同系统流程。"
+      ],
+      "conclusion": "§5.2 归属参照通用 §5.2.5，§7.9 归属/解除归属使用通用 §10.8 程序，代入 MCVideo 业务、客户端、服务器、组及用户/组 ID。实际归属给该组媒体的收发资格，解除归属后不能再收发。§7.1.2.1 提到一或多个服务器不改变 §7.1.2.3 的同一系统边界。",
+      "normative_strength": "通用归属流程 SHALL support；同系统是指定章节和前提边界，不是普遍禁止跨系统。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "5.2, MCVideo affiliation and common 5.2.5 reference, affiliated user capabilities"
+          ],
+          "printed_pages": [
+            14
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.9, reference to TS 23.280 clause 10.8, MCVideo roles/IDs and effect of affiliation/de-affiliation"
+          ],
+          "printed_pages": [
+            155,
+            156
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.281-v16.4.0",
+          "clauses": [
+            "7.1.2.1, introductory single/multiple MCVideo servers sentence",
+            "7.1.2.3, heading limiting the named group-call procedures to one MC system"
+          ],
+          "printed_pages": [
+            20,
+            29
+          ]
+        }
+      ],
+      "limitations": [
+        "归属响应、覆盖恢复或某条腿的 INVITE/BYE 结果不能代替实际参加、每条媒体许可、远端实收、全域主动迟入或整场离开过程。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "3.1, definitions of MCVideo group home system and MCVideo group host server"
+      ],
+      "printed_pages": [
+        12
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "5.1, private video routing opening paragraph and Option 1(a)(1)–(2)"
+      ],
+      "printed_pages": [
+        13
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "5.1, private video routing opening paragraph and Option 2(b)"
+      ],
+      "printed_pages": [
+        13
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "5.1, final group-call video media routing paragraph"
+      ],
+      "printed_pages": [
+        13
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "6.2.1",
+        "6.2.2.3.2, centralized support and the same-group/multiple-group MCVideo server relationships"
+      ],
+      "printed_pages": [
+        16,
+        17
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "6.2.2.3.8, topology-hiding MC gateway role, relaying and the TS 33.180-specific Editor's note"
+      ],
+      "printed_pages": [
+        18
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "6.3.3, MCVideo-3 endpoints and MCVideo application signalling"
+      ],
+      "printed_pages": [
+        19
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "6.3.8, MCVideo-10 gateway-to-gateway endpoints, session-signalling via SIP-3 and floor control/media"
+      ],
+      "printed_pages": [
+        20
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "5.2, MCVideo affiliation and common 5.2.5 reference, affiliated user capabilities"
+      ],
+      "printed_pages": [
+        14
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.9, reference to TS 23.280 clause 10.8, MCVideo roles/IDs and effect of affiliation/de-affiliation"
+      ],
+      "printed_pages": [
+        155,
+        156
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.281-v16.4.0",
+      "clauses": [
+        "7.1.2.1, introductory single/multiple MCVideo servers sentence",
+        "7.1.2.3, heading limiting the named group-call procedures to one MC system"
+      ],
+      "printed_pages": [
+        20,
+        29
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.10.1, two sets of users receiving service from MC systems in different trust domains"
+      ],
+      "printed_pages": [
+        23,
+        24
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.10.4, private calls using interconnection between users receiving MC service in different MC systems: the system serving the calling user provides the controlling function for the private call"
+      ],
+      "printed_pages": [
+        24
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "5.2.10.5, where MC service users in a partner MC system of the group home MC system take part in a group call in that group: the group home MC system provides the controlling function for the group call"
+      ],
+      "printed_pages": [
+        24
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "7.5.3.4, opening paragraph: SIP core endpoints and Mm and ICi reference points",
+        "7.5.3.4, three listed uses: event subscription and notification, session management and media negotiation",
+        "7.5.3.4, Editor's note: FFS on changes for use between servers in different trust domains"
+      ],
+      "printed_pages": [
+        42
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.14.2.2, figure 10.14.2.2-1 and steps 1–3",
+        "10.14.2.2, figure 10.14.2.2-1, steps 4–5 and note 3",
+        "10.14.2.2, steps 11–14: intersystem response and delivery to originator"
+      ],
+      "printed_pages": [
+        206,
+        207
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.14.3.1, scope and participating server enforcing local group configuration"
+      ],
+      "printed_pages": [
+        207
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.14.4.1, scope: partner replicates media to served group members",
+        "10.14.4.2, introductory direction, note 1 and precondition 1",
+        "10.14.4.2, preconditions 2–3 and note 2",
+        "10.14.4.2, figure 10.14.4.2-1 and steps 1–2",
+        "10.14.4.2, figure 10.14.4.2-1 and step 3b"
+      ],
+      "printed_pages": [
+        209,
+        210
+      ]
+    }
+  ],
+  "related": [
+    "r16-identity-interconnection-authorization",
+    "r16-groups-partner-group-call-admission",
+    "r16-media-partner-group-media-replication",
+    "r16-mcvideo-prearranged-late-entry-rejoin",
+    "r16-mcvideo-group-call-leave",
+    "r16-mcvideo-prearranged-group-sip-rejoin",
+    "r16-mcvideo-prearranged-group-sip-bye-policy",
+    "r16-mcvideo-noncontrolling-participant-rtp-release"
+  ],
+  "limitations": [
+    "只说明所引版本的 Stage 2 架构及有限分流；不把多个 MCVideo 服务器当多个 MC 系统，不在此补跨系统迟入、重入、释放、实际媒体复制或去重的实现。",
+    "以实际条件分别看通用准入/复制和 Stage 3 角色、收件、状态；不补 SIP/RTCP 报文、地址、物理链路或 TS 33.180 专门代理的答案。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
