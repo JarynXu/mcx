@@ -1,0 +1,183 @@
+{
+  "topic_id": "r16-calls-offnetwork-private-emergency-establishment",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "离网 MCPTT 紧急私呼初建：什么时候标紧急，谁启动 TFP8？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "各声明继承共同范围。本端 P、Q 及不同角色的入口是各自分支，按当前状态、用户指示和实收事件分别判断，不要求同时成立。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0（Release 16，Stage 3），离网 MCPTT 一对一紧急私呼初建；普通私呼和已有普通私呼的紧急升级仅作标明的对照。",
+    "基本呼叫控制 P 与呼叫类型控制 Q 在每端并行。同一端的类型记录、信令收发和计时器记录各自取证；不得以另一端的发送代替本端实收。"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": ["11.2.3.1–.3：并行类型控制和 Q 状态"],
+      "printed_pages": [436, 437]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": ["11.2.3.4.2–.3：Q0 发起和空闲被叫的类型选择", "11.2.3.4.4：Q0 实收后进入相应类型状态"],
+      "printed_pages": [437, 438]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": ["12.2.2.2：告警状态机按 MCPTT 组"],
+      "printed_pages": [457]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": ["11.2.2.4.2.1 第 1、4–5、9、10–14 项：初建发起与模式", "11.2.3.4.5.1 入口和第 6(a)、6(d)、12 项：已有普通私呼的紧急升级对照"],
+      "printed_pages": [423, 424, 438]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": ["11.2.2.4.2.8：发起端 P2 实收 ACCEPT", "11.2.2.4.3.2、.3.4：自动接听成功与接收端成立事件", "11.2.2.4.4.1、.4.3、.4.5：手动来电、接受成功与接收端成立事件"],
+      "printed_pages": [425, 426, 427, 428, 429, 430, 431, 432]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": ["15.1.11.1：ACCEPT ACK 的收件确认含义"],
+      "printed_pages": [482]
+    }
+  ],
+  "claims": [
+    {
+      "id": "offnetwork-private-emergency-initial-type-selection",
+      "title": "Q0 发起时，何时初次保存紧急私呼类型？",
+      "conditions": [
+        "发起端在 Q0，收到本端用户发起呼叫的指示。以下两支读取 §12.2.2.2 告警状态机关联的已存紧急状态，并检查用户配置档的 Common/PrivateCall/EmergencyCall/Authorised。"
+      ],
+      "conclusion": "已存紧急状态为 true 且紧急私呼授权为 true，须保存 EMERGENCY PRIVATE CALL 类型及对应的 ProSe 逐包优先级。若已存紧急状态为 false，用户明确发起紧急私呼且紧急私呼授权为 true，须保存相同类型和对应的逐包优先级。",
+      "normative_strength": "§11.2.3.4.2 第 1 项与第 2(a) 项为满足该分支时的 SHALL。",
+      "limitations": [
+        "§12.2.2.2 的告警状态机按 MCPTT 组。本项不规定涉及多个组时怎样选取或合并状态，不用另一终端的告警记录或本通私呼的 Q2 替代该已存值。",
+        "不能用紧急授权代替 P 层的私呼发起授权，也不能在紧急授权不满足时套用未规定的普通类型回退。设置类型与优先级不等于启动 TFP8 或进入 Q2。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": ["11.2.3.4.2 第 1 项与第 2(a) 项：发起端两条紧急类型分支"],
+          "printed_pages": [437]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": ["12.2.2.2：告警机范围", "11.2.2.4.2.1：基本发起条件", "11.2.3.4.4：类型建立另有收件条件"],
+          "printed_pages": [423, 438, 457]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "offnetwork-private-emergency-initial-mode-and-call-id",
+      "title": "发起端怎样填写模式和标识，与已有呼叫升级有何区别？",
+      "conditions": [
+        "初建发起端在 P0 或 P1，用户要求发起，Common/PrivateCall/Authorised 为 true；请求类型取本次类型控制所存值。",
+        "对照仅限另一路：已有普通私呼，本端实际处于 Q1，用户请求紧急升级且满足该升级授权。"
+      ],
+      "conclusion": "初建生成并保存本次 Call identifier。请求自动且 AutoCommence 为 true 时选择自动，否则 ManualCommence 为 true 时选择手动。SETUP REQUEST 取该标识、所选模式及已存类型。发出后启动 TFP1、进入 P2。已有通话的 Q1 升级复用所存 Call identifier，须填自动模式，按该程序发起后进入 Q2。",
+      "normative_strength": "初建看 §11.2.2.4.2.1 的对应项；升级对照看 §11.2.3.4.5.1。",
+      "limitations": [
+        "报文名、紧急类型或自动模式均不能单独判新建或升级；要结合本端本次标识的来源、当前状态和实际事件。",
+        "不补出两项接听模式条件均不满足时的默认，也不把初次发出 SETUP REQUEST 当作本端 Q2、TFP8 已启动或对端已收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": ["11.2.2.4.2.1 第 1、4–5、9、10–14 项：初建与 P2"],
+          "printed_pages": [423, 424]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": ["11.2.3.4.5.1 入口和第 6(a)、6(d)、12 项：已有普通私呼的紧急升级对照"],
+          "printed_pages": [438]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "offnetwork-private-emergency-initial-callee-type",
+      "title": "空闲被叫收到紧急初建，类型与接听分别怎样处理？",
+      "conditions": [
+        "类型分支：空闲被叫的 Q 状态为 Q0，实际收到 PRIVATE CALL SETUP REQUEST 且来件 Call type 为 EMERGENCY PRIVATE CALL。",
+        "手动基本分支另判：被叫处于 P0/P1，实收的 SETUP REQUEST 写手动模式，Call identifier 不同于已存值。"
+      ],
+      "conclusion": "类型分支须按入站类型保存紧急私呼类型和对应的 ProSe 逐包优先级。手动基本分支须发送 PRIVATE CALL RINGING，启动等待用户应答的 TFP2，并进入 P5。",
+      "normative_strength": "适用入口下，§11.2.3.4.3 第 1 项规定保存类型和优先级；§11.2.2.4.4.1 规定手动振铃和等待。",
+      "limitations": [
+        "Q0 的类型保存不是 Q2。紧急类型不改来件模式；手动振铃不是用户接受，也不代替接听后的状态证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": ["11.2.3.4.3–.4：空闲收端保存类型与类型成立", "11.2.2.4.4.1：手动振铃入口"],
+          "printed_pages": [429, 437, 438]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "offnetwork-private-emergency-initial-p-q-evidence",
+      "title": "实收 ACCEPT、ACCEPT ACK 或 RTP，各能支持什么本地状态判断？",
+      "conditions": [
+        "发起端基本层：处于 P2，实收回应本次 SETUP REQUEST 且 Call identifier 相同的 PRIVATE CALL ACCEPT。",
+        "被叫端基本层：处于 P5，实收 PRIVATE CALL ACCEPT ACK 或来自发起用户的 RTP。",
+        "本端类型层另判：处于 Q0，已存类型为 EMERGENCY PRIVATE CALL，实收这通呼叫的 PRIVATE CALL ACCEPT 或 PRIVATE CALL ACCEPT ACK。"
+      ],
+      "conclusion": "第一项下发起端须发送 PRIVATE CALL ACCEPT ACK，并按基本流程进入 P4。第二项下被叫按本端基本流程进入 P4。第三项下这一端须启动隐式降级计时器 TFP8 并进入 Q2。P5 被叫实际只收到主叫 RTP、没有实收 ACCEPT 或 ACCEPT ACK 的证据时，RTP 支持基本层成立分支；Q0 的类型成立条款没有列 RTP。",
+      "normative_strength": "P 层看 §11.2.2.4.2.8、.4.3.4 或 .4.4.5 的 SHALL；Q 层看 §11.2.3.4.4 第 1 项的 SHALL。",
+      "limitations": [
+        "被叫按成功接听分支发 ACCEPT 后，基本层进入或仍在 P5；不拿本端发出的 ACCEPT 代替本端实际收到的类型成立消息，也不把 P4 代替 Q2/TFP8。",
+        "原文不指定 P 与 Q 在同一个事件上的实现调度顺序。发出 ACK 不证明对端实收，未抓到 ACK 不证明对端没有收到。ACK 的定义是确认收到 ACCEPT，不是确认播放或双方状态同步。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": ["11.2.2.4.2.8：发起端接受", "11.2.2.4.3.2、.3.4：自动接听后待确认与成立", "11.2.2.4.4.3、.4.5：手动接受后待确认与成立"],
+          "printed_pages": [425, 426, 427, 428, 429, 430, 431, 432]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": ["11.2.3.1：并行状态机", "11.2.3.4.4 第 1 项：TFP8 与 Q2", "15.1.11.1：ACCEPT ACK 的语义"],
+          "printed_pages": [436, 438, 482]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-offnetwork-mcptt-group-emergency-alert",
+    "r16-calls-offnetwork-private-manual-client",
+    "r16-calls-offnetwork-private-auto-client",
+    "r16-calls-offnetwork-private-emergency-upgrade",
+    "r16-calls-offnetwork-private-emergency-downgrade"
+  ],
+  "limitations": [
+    "不展开初建全流程、已建立呼叫的升级或降级、释放和并发处理；不代替在网 SIP、组呼及其他 MC 业务程序。",
+    "不补 SDP、保护算法、配置获取、底层优先级数值或实际发送效果。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}

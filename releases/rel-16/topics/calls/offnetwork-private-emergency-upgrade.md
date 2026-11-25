@@ -31,6 +31,6 @@
 
 抓到对端发 ACCEPT，不等于发起端实收；发起端真实收到对应 ACCEPT 才能套用接受分支；要看本地动作是否完成，还须核对本端处理记录。发出 ACK 仍不证明对端实收。两端的 Q 状态、媒体会话处理、实际语音是否到达分别查证。
 
-如果抓到的是新通话的建立或振铃，而不是已在 Q1 的同一通升级，查[普通离网私呼自动应答](offnetwork-private-auto-client.md)或[手动应答](offnetwork-private-manual-client.md)。若是组公告里的同组类型变化，查[离网组呼紧急升级](offnetwork-group-emergency-upgrade.md)。本页不展开新建紧急私呼、不定义实际降级步骤、媒体参数计算、话权或一端同时收到对向升级时的处理顺序。
+若确认是[新建离网紧急私呼](offnetwork-private-emergency-establishment.md)，查首条请求、接听模式和 TFP8 的启动。普通私呼初建按模式查[自动应答](offnetwork-private-auto-client.md)或[手动应答](offnetwork-private-manual-client.md)。若是组公告里的同组类型变化，查[离网组呼紧急升级](offnetwork-group-emergency-upgrade.md)。本页不展开新建紧急私呼、不定义实际降级步骤、媒体参数计算、话权或一端同时收到对向升级时的处理顺序。
 
 已在进行中的离网紧急私呼要恢复普通私呼时，查[取消紧急、TFP6 达限与 TFP8 隐式降级](offnetwork-private-emergency-downgrade.md)；这不是再次升级或释放整通话。

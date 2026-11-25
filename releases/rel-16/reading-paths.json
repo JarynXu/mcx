@@ -5109,10 +5109,42 @@
       "boundary": "同系统归属网内、有话权控制的一对一私呼终接。替换区分 T-PF 选择目标与被叫实收并处理替换邀请；后者限于正常优先级、两项紧急指示均未置真且因 Priv-Answer-Mode 分流。新邀请的应答、旧对话的释放和实际媒体各需相应证据。"
     },
     {
+      "id": "r16-calls-offnetwork-private-emergency-establishment",
+      "question": "离网紧急私呼的首条 SETUP REQUEST 为什么已经标紧急，能请求手动接听吗？ 被叫发出 ACCEPT 后只收到主叫 RTP，P4 能证明 Q2 或 TFP8 已启动吗？",
+      "start": "topics/calls/offnetwork-private-emergency-establishment.md",
+      "next_if": [
+        {
+          "condition": "若已在同一通普通私呼，实际发起升级或收到这通已有呼叫的紧急升级请求，查升级；不要只凭相同报文名或紧急类型判初建或升级。",
+          "read": "topics/calls/offnetwork-private-emergency-upgrade.md"
+        },
+        {
+          "condition": "若是新建普通离网私呼，且模式为自动，查普通自动应答。",
+          "read": "topics/calls/offnetwork-private-auto-client.md"
+        },
+        {
+          "condition": "若是新建普通离网私呼，且模式为手动，查普通手动应答。",
+          "read": "topics/calls/offnetwork-private-manual-client.md"
+        },
+        {
+          "condition": "若要核对本机按组保存的离网告警状态，查告警机；不从另一端的告警或回执代填本端已存状态。",
+          "read": "topics/calls/offnetwork-mcptt-group-emergency-alert.md"
+        },
+        {
+          "condition": "若本端已在 Q2，此次记录是 TFP8 到期而非启动，查隐式降级。",
+          "read": "topics/calls/offnetwork-private-emergency-downgrade.md"
+        }
+      ],
+      "boundary": "限离网 MCPTT 一对一新建紧急私呼，不用后来升级或降级的规则。不规定多组告警状态的选择、未列授权组合的默认、对端实收或实际媒体呈现。 从端点 A 发出 ACCEPT ACK 不判定端点 B 已实收；只收到 RTP 不能作 Q 层的成立事件。"
+    },
+    {
       "id": "r16-calls-offnetwork-private-emergency-upgrade",
       "question": "一通离网普通私呼升级到紧急，怎样跟踪同一 Call identifier、对端能否接收、两端计时器和拒绝/无应答结果？",
       "start": "topics/calls/offnetwork-private-emergency-upgrade.md",
       "next_if": [
+        {
+          "condition": "若确认是本次新建的离网紧急私呼，而非同一场已有呼叫的升级，查首次类型、接听模式及本端 TFP8 的启动。",
+          "read": "topics/calls/offnetwork-private-emergency-establishment.md"
+        },
         {
           "condition": "若这是普通离网私呼的初次自动建立，查 P2/P5、ACCEPT 和 ACK 对双方的初建证据。",
           "read": "topics/calls/offnetwork-private-auto-client.md"
@@ -5138,8 +5170,12 @@
           "read": "topics/calls/offnetwork-private-manual-client.md"
         },
         {
-          "condition": "若仍在初建并等待 ACCEPT 或其确认，不是已建立后的 RELEASE 确认，读普通自动初建程序。",
+          "condition": "若是普通自动私呼初建，仍等 ACCEPT 或其确认，查普通自动初建，不用本页判断已建立呼叫释放。",
           "read": "topics/calls/offnetwork-private-auto-client.md"
+        },
+        {
+          "condition": "若确认是紧急私呼初建，仍在等 ACCEPT 或其确认，查 P/Q 的初建证据，不当作 RELEASE 确认。",
+          "read": "topics/calls/offnetwork-private-emergency-establishment.md"
         },
         {
           "condition": "若证据是同一通话的紧急升级请求、REJECT 或 TFP1/CFP1 达限，分开查升级的 P/Q 状态动作。",

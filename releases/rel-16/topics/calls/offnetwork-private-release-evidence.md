@@ -28,4 +28,4 @@ P1 的 TFP7 到期才清除已存 Call identifier，进入 P0。仍有旧标识�
 
 **RELEASE ACK 的定义是回复 RELEASE，表示发送方终止呼叫。** 它与只确认收到 ACCEPT 的 ACCEPT ACK 不同。核对本端实际收到的是本次 RELEASE 的 ACK，再用本机记录查 P3 后的媒体动作。也不能把 ACK 的发送时刻当作乙媒体确实已停的时刻：P4 收到 RELEASE 的程序先发 ACK，随后才要求终止媒体。无 ACK 达限同样不证明对端收到、拒绝或终止。要核实两端实际状态或媒体结果，各查两端的处理与媒体记录。[§15.1.10.1、§15.1.11.1，印刷页 482](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=483)；[§11.2.2.4.5.4–.5，印刷页 434–435](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=435)
 
-需要核对普通手动初建取消和重传细节，见[普通离网私呼手动应答](offnetwork-private-manual-client.md)；仍在初建等 ACCEPT 的，见[普通离网私呼自动应答](offnetwork-private-auto-client.md)。如果只有紧急升级的 SETUP REQUEST、匹配 REJECT 或 TFP1/CFP1 达限，见[离网私呼紧急升级](offnetwork-private-emergency-upgrade.md)，不能当作实际 RELEASE 来处理。
+需要核对普通手动初建取消和重传细节，见[普通离网私呼手动应答](offnetwork-private-manual-client.md)；若仍在等初建应答或确认，普通自动接听查[普通离网私呼自动应答](offnetwork-private-auto-client.md)，紧急私呼查[离网紧急私呼初建](offnetwork-private-emergency-establishment.md)。如果只有紧急升级的 SETUP REQUEST、匹配 REJECT 或 TFP1/CFP1 达限，见[离网私呼紧急升级](offnetwork-private-emergency-upgrade.md)，不能当作实际 RELEASE 来处理。
