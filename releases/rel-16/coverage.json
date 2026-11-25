@@ -629,6 +629,22 @@
         },
         {
           "domain": "calls",
+          "title": "MCPTT 预建立组呼：REFER 已回 200，紧急或迫近危险状态如何确认？",
+          "can_answer": "限在网预安排 MCPTT 组呼使用主叫已有的预建立会话。O-PF 前置检查进入成功分支才先回对话外 REFER 的 200，再向 CF 另发业务 INVITE；终端实收 REFER 2xx 只触发这里的媒体面交互。O-PF 实收该业务 INVITE 的 200 且原请求带紧急或迫近危险优先级、响应无 Warning 文本码 149，须对旧预建立对话发 re-INVITE。O-PF 实收 CF 对本次紧急或迫近危险业务 INVITE 的 200 且响应带 149，须等 CF 的 INFO；失败响应带 149 不适用。组呼专条的入口写 200，通用条款写 2xx，不把组呼专条套给所有非 200 的 2xx。另看实收 INFO：O-PF 实收 CF 在本次紧急或迫近危险组呼的业务 INVITE 对话内发来的 INFO，须先回本条 INFO 的 200，再生成并发出终端旧对话内的 re-INVITE。没有前一条 149 的抓包记录，不妨碍判断这条实收；不由此推断 CF 可以脱离对应业务程序发送 INFO。",
+          "conditional_or_interface_only": "两种 re-INVITE 的 SDP offer 都基于旧会话已协商的 SDP，优先级头对照原业务 INVITE；INFO 分支只复制实际存在的紧急、告警、迫近危险指示。终端须实收原 REFER 所指预建立会话内的 re-INVITE，且原 REFER 请求发起紧急或迫近危险组呼，才按 MEGC／MEA／MIGC 的前态和字段判本机结果。普通 REFER 到已有高优先状态的组可以触发 O-PF 的无 149 分支，不能替代终端的显式请求条件。别的 Warning 不等于 149。MEGC 2 的紧急组呼获准要求迫近危险指示不存在，false 不算不存在；其中 MEA 2 的告警另按 alert-ind 判。MIGC 2 下收到迫近危险 false 且紧急 true 时，本项只写调整组 MEG，不写授予迫近危险。",
+          "not_established": "REFER 的 200、CF 业务 INVITE 的 200、O-PF 回 INFO 的 200 和终端回旧对话 re-INVITE 的 200 分别看对应请求。单独一笔不能证明本人所请求的优先级已授予、话权已获或告警已送达。组呼专条的 200 入口和通用 2xx 写法分别保留；不推断其他 2xx、跨系统分发或被叫复用规则。",
+          "read": [
+            {
+              "title": "MCPTT 预建立组呼：REFER 已回 200，紧急或迫近危险状态如何确认？",
+              "path": "topics/calls/prearranged-preestablished-priority-confirmation.md",
+              "source_ids": [
+                "3gpp-ts-24.379-v16.14.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "calls",
           "title": "跨系统私呼：哪一侧找到被叫的主系统，哪一侧找到被叫的主业务服务器？",
           "can_answer": "MCPTT 或 MCVideo 私呼中，A、B 分别在互联且使用拓扑隐藏的主系统甲、乙接受服务。为 A 服务的业务服务器选甲网关；甲网关找 B 的主系统乙并按配置转给乙网关；乙网关按配置用 B 的业务用户 ID 找到 B 的主业务服务器并转交。",
           "conditional_or_interface_only": "MCPTT 或 MCVideo 跨系统私呼，双方在各自主系统接受服务，两系统互联且均隐藏拓扑。B 的主业务服务器对本次来话核对主叫当前服务系统与主叫用户，失败无向 B 的请求和 B 的响应。通过时，这两步须在 8 后、15 前且 9 先于 10，乙服务器在 11 发响应不必等 B 在 10 应答。只有呼叫响应成功才进入建路。",

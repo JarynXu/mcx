@@ -1,0 +1,471 @@
+{
+  "topic_id": "r16-calls-prearranged-preestablished-priority-confirmation",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCPTT 预建立组呼：REFER 已回 200，紧急或迫近危险状态如何确认？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明继承全部 common_conditions，再叠加本条 conditions；关联主题不是必经流程。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0，Release 16 Stage 3。仅讨论在网预安排 MCPTT 组呼的发起侧使用已有预建立会话：主叫终端、服务它的起始参与功能（O-PF）以及本次组控制功能（CF）的业务腿。",
+    "REFER、业务 INVITE、CF 发来的 INFO 和终端旧对话内 re-INVITE 是不同请求；分别在各自实际收发事件下判断。组已有高优先状态与本次主叫显式请求发起高优先呼叫分开；不把显式请求或无 149 当成所有条目的共同前提。",
+    "不套给被叫收到邀请复用会话、按需在场通话升级或取消、普通按指定既有业务会话标识重入、聊天组自身入口、广播、私呼、跨系统选路或媒体实现。"
+  ],
+  "claims": [
+    {
+      "id": "refer-acceptance-is-not-priority-grant",
+      "title": "对话外 REFER 的 200 回初始请求，不确认组呼优先状态",
+      "conditions": [
+        "终端用已有预建立会话发起在网预安排组呼，O-PF 按对应 REFER 入口处理；下列动作各看实际请求、分支与响应。"
+      ],
+      "conclusion": "终端在对话外发 REFER，Request-URI 和 Target-Dialog 指向预建立会话。Refer-To 的 cid 指向资源列表，其中 entry 的 URI 标识目标预安排组，信息体 session-type 为 prearranged。O-PF 在前置检查进入成功分支后先生成并发 REFER 的 200，再生成并发去组 CF 的另一条业务 INVITE。终端实收初始 REFER 的最终 2xx 后须与媒体面交互。O-PF 实收对业务 INVITE 的临时响应后须丢弃，不转给终端。",
+      "normative_strength": "对话外 REFER 及对应目标填写、O-PF 成功分支行为、终端实收最终 2xx 后交互和 O-PF 处理业务临时响应均为 SHALL。",
+      "limitations": [
+        "终端没看到业务临时响应，不等于 CF 没发；媒体面交互和 REFER 200 不确认 CF 接纳、终端本地优先级获准、已获话权或实际收发媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.2.1 opening and items 1–3; 10.1.2.2.2.1 items 1–3 and 10, inherited out-of-dialog REFER target (with prearranged group and session-type modifications)"
+          ],
+          "printed_pages": [
+            228,
+            273,
+            275
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.2 opening, items 13–19 and provisional responses on the business INVITE after acknowledging REFER"
+          ],
+          "printed_pages": [
+            233,
+            234,
+            235
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.2.1 inherited UE procedure; 10.1.2.2.2.1 received final REFER 2xx and received matching in-dialog re-INVITE for a requested priority call, items 1–5"
+          ],
+          "printed_pages": [
+            228,
+            275
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "matched-business-200-without-149",
+      "title": "CF 业务 200 无 149 且原请求优先级相符，O-PF 向旧对话发 re-INVITE",
+      "conditions": [
+        "O-PF 实收 CF 对同一次业务 INVITE 的 200 (OK)，该 INVITE 的 Resource-Priority 按 §6.3.2.1.8.4 填为紧急组呼或迫近危险组呼优先级。",
+        "匹配应答没有 SIP Warning 文本中的 MCPTT 码 149；另一 Warning 不等于 149。"
+      ],
+      "conclusion": "O-PF 须在终端预建立对话内生成并发送 re-INVITE。SDP offer 基于预建立会话此前协商的 SDP，Resource-Priority 用发给 CF 的业务 INVITE 中的值。本分支不等 INFO，也不要求补造 emergency-ind、alert-ind 或 imminentperil-ind。",
+      "normative_strength": "组呼专条满足响应与优先级条件后须生成、发送；通用构造步骤须设置 SDP、Resource-Priority 并停止余下步骤。",
+      "limitations": [
+        "不能用缺 149 代替原请求优先级检查。组呼专条的外层入口印 236 写 200 (OK)，子项及通用 helper 写 2xx；不要自动把该专条扩至所有非 200 的 2xx。",
+        "原业务 INVITE 正文未带紧急或迫近危险指示不等于优先级头不满足。若普通 REFER 指向已经处于紧急或迫近危险状态的组，满足服务器条件也可走本分支；这不替代终端的原 REFER 意图和实收会话条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.4.1–2, Table 4.4.2-1 and Table 4.4.2-2 code 149: SIP Warning code vs MCPTT code in warning text"
+          ],
+          "printed_pages": [
+            33,
+            34,
+            37
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.8.4–5 priority header reference and 2xx without MCPTT warning text code 149 (items 1–4 and Note 1)"
+          ],
+          "printed_pages": [
+            90
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.2 business INVITE 200 response branch item 3, Note 10, and reception of matching CF INFO (items 1–3 and Note 11)"
+          ],
+          "printed_pages": [
+            236
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "warning-149-waits-for-matched-info",
+      "title": "CF 业务 200 的 Warning 文本含 149，O-PF 须等 CF 的 INFO",
+      "conditions": [
+        "O-PF 实收 CF 对本次紧急或迫近危险组呼业务 INVITE 的 200 (OK)，且 SIP Warning 文本含 MCPTT 码 149。"
+      ],
+      "conclusion": "O-PF 须等 CF 的 INFO。149 说明尚有业务结果待转报，不等于已授予请求的状态，也不等于业务否决。",
+      "normative_strength": "等待 CF 的 INFO 为 SHALL。",
+      "limitations": [
+        "149 是 Warning 文本中的 MCPTT 码，不是 SIP 状态码或 Warning 头首部的警告码。业务 INVITE 的 4xx、5xx、6xx 即使带这个文本码，也不进入等待分支。",
+        "组呼专条的响应入口写 200 (OK)，通用构造条款写收到带 149 的 2xx；不据此把组呼专条扩大到任意非 200 的 2xx。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "4.4.1–2, Table 4.4.2-1 and Table 4.4.2-2 code 149: SIP Warning code vs MCPTT code in warning text"
+          ],
+          "printed_pages": [
+            33,
+            34,
+            37
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.8.5 2xx with MCPTT warning text code 149 and matched business-dialog INFO entry"
+          ],
+          "printed_pages": [
+            90
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.2 business INVITE 200 response branch item 3, Note 10, and reception of matching CF INFO (items 1–3 and Note 11)"
+          ],
+          "printed_pages": [
+            236
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "matched-info-builds-reinvite-with-present-values",
+      "title": "实收本次 CF 业务对话内的 INFO：先回复，再向终端旧对话发 re-INVITE",
+      "conditions": [
+        "O-PF 实收 CF 在本次紧急或迫近危险组呼的业务 INVITE 对话内发来的 SIP INFO。"
+      ],
+      "conclusion": "O-PF 须先向 CF 发送本笔 INFO 的 200，再生成并发出终端旧预建立对话内的 re-INVITE。SDP offer 基于旧会话已协商的 SDP，Resource-Priority 取先前发给 CF 的业务 INVITE。新请求的 MCPTT 信息体分别复制 INFO 中实际存在的 emergency-ind、alert-ind、imminentperil-ind，保留每项的值；不存在的元素不补成 false。",
+      "normative_strength": "向 CF 发送本笔 INFO 的 200，生成及发出终端 re-INVITE，按相应来源填 SDP 和优先级头、复制实际存在的指示，均为 SHALL。",
+      "limitations": [
+        "这条实收入口没有把先前收到 149 列作条件。只看到这条匹配的入向 INFO，就能判断 O-PF 须做的动作；不能反推 149 一定出现过，也不由此认定 CF 可以脱离对应业务程序发送 INFO。",
+        "只有 CF 发出 INFO 或 O-PF 收到另一业务对话的 INFO 不适用。终端回旧对话 re-INVITE 的 200 不代替 O-PF 回 CF 的 INFO 200。这组动作规定 O-PF 的发送顺序，不证明 CF 或终端已经收到，也不保证它们的到达顺序。",
+        "印 91 第 3 项 Resource-Priority 文字重复，句末所指是先前发给 CF 的 INVITE，不能改成从 INFO 取头。以上复制规则不反套给无 149 的直接 re-INVITE。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.8.5 matched INFO branch items 1–4 and Note 2: re-INVITE headers, original SDP and present fields; item 3 literal repetition"
+          ],
+          "printed_pages": [
+            91
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.2 business INVITE 200 response branch item 3, Note 10, and reception of matching CF INFO (items 1–3 and Note 11)"
+          ],
+          "printed_pages": [
+            236
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "originating-ue-requires-same-dialog-and-explicit-request",
+      "title": "主叫状态确认要同时核原请求和实际收到的旧对话内请求",
+      "conditions": [
+        "主叫终端已发的 REFER 是发起紧急或迫近危险组呼的请求；主叫实收位于该 REFER 所指的预建立会话中的 re-INVITE。"
+      ],
+      "conclusion": "主叫按 §6.2.8.1.16 核当前状态及实收业务指示，然后检查该 re-INVITE 是否带 Resource-Priority，接受并发回对这条 re-INVITE 的 200；SDP answer 按预建立会话已协商参数构造。缺优先级头不是该步骤列出的拒绝条件。",
+      "normative_strength": "收到目标对话中 re-INVITE 且原 REFER 明确请求发起紧急或迫近危险组呼时，适用状态 helper、查优先级头、接受和发送应答；发现头后的进一步处理可按范围外方式执行（MAY）。",
+      "limitations": [
+        "另一预建立会话的 re-INVITE、O-PF 仅发送还没看到本机实收、或原 REFER 是普通请求且目标组本已高优先，都不能触发本条终端状态结论。",
+        "终端这笔 200 回应的是旧对话 re-INVITE，不替代对收到的优先状态、告警实际送达、媒体或话权的验证。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.2.1 inherited UE procedure; 10.1.2.2.2.1 received final REFER 2xx and received matching in-dialog re-INVITE for a requested priority call, items 1–5"
+          ],
+          "printed_pages": [
+            228,
+            275
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.8.1.16 opening and items 1(a–b), 2(a–b), final note: UE priority-request status upon actual reception in the targeted pre-established session"
+          ],
+          "printed_pages": [
+            70
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.8.4–5 priority header reference and 2xx without MCPTT warning text code 149 (items 1–4 and Note 1)"
+          ],
+          "printed_pages": [
+            90
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "emergency-call-grant-requires-no-imminent-field",
+      "title": "MEGC 2 的紧急组呼获准要求没有迫近危险指示元素",
+      "conditions": [
+        "已发 REFER 请求发起紧急或迫近危险组呼，主叫实际收到该 REFER 所指预建立会话内的 re-INVITE；本机紧急组呼请求状态为 MEGC 2。",
+        "实收 emergency-ind 缺失或为 true，且 imminentperil-ind 元素不存在。"
+      ],
+      "conclusion": "须将该组 MEG 置 2（若还不是 2），将 MEGC 置 3。不以 MEA 2 待确认告警为前提。",
+      "normative_strength": "满足该项状态和指示守卫时，MEG 的条件设置和 MEGC 变更为 SHALL。",
+      "limitations": [
+        "imminentperil-ind=false 仍是元素存在，不满足缺失守卫。不能从 MEGC 3 或组 MEG 2 推断告警已送达其他用户。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.8.1.16 opening and items 1(a–b), 2(a–b), final note: UE priority-request status upon actual reception in the targeted pre-established session"
+          ],
+          "printed_pages": [
+            70
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.2.1 inherited UE procedure; 10.1.2.2.2.1 received final REFER 2xx and received matching in-dialog re-INVITE for a requested priority call, items 1–5"
+          ],
+          "printed_pages": [
+            228,
+            275
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "alert-confirmation-is-independent-within-megc2",
+      "title": "同在 MEGC 2 时，MEA 2 的告警按收到的 alert-ind 单独处理",
+      "conditions": [
+        "已发 REFER 请求发起紧急或迫近危险组呼，主叫实际收到该 REFER 所指预建立会话内的 re-INVITE；本机同时处于 MEGC 2 和 MEA 2。"
+      ],
+      "conclusion": "实收 alert-ind 缺失或为 true 须将 MEA 置 3；实收 alert-ind=false 须置 MEA 1。告警判断不要求紧急组呼获准的分支已命中。",
+      "normative_strength": "MEGC 2 内、MEA 2 下，收到相应指示或指示缺失时，须按对应项设置告警状态。",
+      "limitations": [
+        "不要把 MEA 2 当成紧急组呼确认的条件。其他 MEA 状态不由本项判定，不能将本地告警状态当成其他人已收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.8.1.16 opening and items 1(a–b), 2(a–b), final note: UE priority-request status upon actual reception in the targeted pre-established session"
+          ],
+          "printed_pages": [
+            70
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.2.1 inherited UE procedure; 10.1.2.2.2.1 received final REFER 2xx and received matching in-dialog re-INVITE for a requested priority call, items 1–5"
+          ],
+          "printed_pages": [
+            228,
+            275
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "imminent-request-grant-vs-existing-emergency",
+      "title": "MIGC 2 下区分授予迫近危险和参加已有紧急优先级",
+      "conditions": [
+        "已发 REFER 请求发起紧急或迫近危险组呼，主叫实际收到该 REFER 所指预建立会话内的 re-INVITE；本机迫近危险组呼请求状态为 MIGC 2。"
+      ],
+      "conclusion": "实收 imminentperil-ind 缺失或为 true 时，须将 MIGC 置 3、将该组 MIG 置 2。实收 imminentperil-ind=false 且 emergency-ind=true 时，须将该组的 MEG 置 2；本项没有写置 MIGC 3 或退到 MIGC 1。注释说明后一种是所请求的迫近危险未获准，按组已有紧急优先级参加。",
+      "normative_strength": "两种守卫下对应状态动作为 SHALL；按组已有紧急优先级参加的解释来自末尾 Note。",
+      "limitations": [
+        "只有 emergency-ind=true，不检查 imminentperil-ind 是否存在及其值，不足以认定命中第二种。不能以终端对 re-INVITE 的 200 判迫近危险已获准。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.2.8.1.16 opening and items 1(a–b), 2(a–b), final note: UE priority-request status upon actual reception in the targeted pre-established session"
+          ],
+          "printed_pages": [
+            70
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.2.1 inherited UE procedure; 10.1.2.2.2.1 received final REFER 2xx and received matching in-dialog re-INVITE for a requested priority call, items 1–5"
+          ],
+          "printed_pages": [
+            228,
+            275
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "4.4.1–2, Table 4.4.2-1 and Table 4.4.2-2 code 149: SIP Warning code vs MCPTT code in warning text"
+      ],
+      "printed_pages": [
+        33,
+        34,
+        37
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.2.2.1 opening and items 1–3; 10.1.2.2.2.1 items 1–3 and 10, inherited out-of-dialog REFER target (with prearranged group and session-type modifications)"
+      ],
+      "printed_pages": [
+        228,
+        273,
+        275
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.3.1.2 opening, items 13–19 and provisional responses on the business INVITE after acknowledging REFER"
+      ],
+      "printed_pages": [
+        233,
+        234,
+        235
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.1.8.4–5 priority header reference and 2xx without MCPTT warning text code 149 (items 1–4 and Note 1)"
+      ],
+      "printed_pages": [
+        90
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.1.8.5 2xx with MCPTT warning text code 149 and matched business-dialog INFO entry"
+      ],
+      "printed_pages": [
+        90
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.1.8.5 matched INFO branch items 1–4 and Note 2: re-INVITE headers, original SDP and present fields; item 3 literal repetition"
+      ],
+      "printed_pages": [
+        91
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.3.1.2 business INVITE 200 response branch item 3, Note 10, and reception of matching CF INFO (items 1–3 and Note 11)"
+      ],
+      "printed_pages": [
+        236
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.2.2.1 inherited UE procedure; 10.1.2.2.2.1 received final REFER 2xx and received matching in-dialog re-INVITE for a requested priority call, items 1–5"
+      ],
+      "printed_pages": [
+        228,
+        275
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.2.8.1.16 opening and items 1(a–b), 2(a–b), final note: UE priority-request status upon actual reception in the targeted pre-established session"
+      ],
+      "printed_pages": [
+        70
+      ]
+    }
+  ],
+  "related": [
+    "r16-calls-preestablished-group-rejoin",
+    "r16-mcptt-emergency-group-server",
+    "r16-calls-prearranged-preestablished-termination",
+    "r16-calls-preestablished-emergency-private-confirmation"
+  ]
+}

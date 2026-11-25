@@ -351,6 +351,10 @@
         {
           "condition": "要查已有按需预安排组会话中，CF 怎样处理紧急升级或取消的 re-INVITE。",
           "read": "topics/calls/emergency-group-server.md"
+        },
+        {
+          "condition": "若这次发起在网预安排紧急或迫近危险组呼用的是已有预建立会话，终端先走对话外 REFER，优先状态还要核原 REFER、终端旧对话里的匹配 re-INVITE 和本机前态；不是这里的按需发起。",
+          "read": "topics/calls/prearranged-preestablished-priority-confirmation.md"
         }
       ],
       "boundary": "仅在网按需预安排组客户端对应发起、已有会话升级、本人取消或状态反馈事件；不新增告警仍须按已有MEA状态判断，组取消与告警取消权限分别适用。不覆盖CF全局准入、独立告警发送或第三方取消、完整紧急话权/媒体及生命周期；MES、MEG、MEGC、MEA分别取证，INFO200、re-INVITE和BYE不能互相替代。"
@@ -366,7 +370,12 @@
       "id": "r16-mcptt-emergency-group-server",
       "question": "已有按需预安排组会话：CF紧急升级、取消与分层反馈 已有会话的终接 PF 收到优先状态 re-INVITE，如何传 Resource-Priority、tdialog、正文及 SDP，实际终端 200 和媒体接口先后怎么查？ 已有预安排组呼的 200 带 149：怎么区分随呼告警不准、撤警不准和已紧急组的迫近危险请求，原对话 ACK 后怎样读 INFO？ 区分 TNG2 到期的参会 re-INVITE、已归属非参会 MESSAGE，与普通 TNG3 启动和本组释放。 组未处于紧急状态时，比较获准发起迫近危险的首次升级与已有状态下新指示，拆分成员通知、正向优先级字段及发起人 200。",
       "start": "topics/calls/emergency-group-server.md",
-      "next_if": [],
+      "next_if": [
+        {
+          "condition": "若原请求是主叫用已有预建立会话发起在网预安排组呼，要判断这笔业务 INVITE 的 200/149 怎样转给主叫旧对话，查起始参与功能和终端的确认分支；不是已有按需组呼的升级或取消。",
+          "read": "topics/calls/prearranged-preestablished-priority-confirmation.md"
+        }
+      ],
       "boundary": "CF 主线仅按其实收的已有按需预安排组会话紧急 re-INVITE，或对应下行响应、ACK/INFO及MESSAGE结果事件；CF组状态与客户端MES/MEG/MEGC/MEA分别判断。不覆盖初始建立、完整告警/紧急媒体/话权或全组生命周期；正向取消授权错回指、通知集合和200事件衔接差异未闭合，不借客户端授权或普通初始服务器条件补全。 另列终接 PF 对已有按需预安排组呼中实际收到紧急或迫近危险指示的转送、相应媒体与 200；不用 CF 初始纠错或客户端状态程序补缺头与 ACK。 新增两类回复是 CF 已进入 200 构造后才适用；先区分请求字段、授权与组原有状态，再匹配本次 ACK 和 INFO。不从 200/149 推定所有子请求、终端收件或承载结果。 TNG2 到期的组状态处理与来件授权分开；MESSAGE 不等活动组呼或参会响应。收到响应不证明所有人收件、撤警或实际承载优先级。 正值分流不校正发起权限的错回指，不把已迫近危险时“其他已归属成员”的通知收件范围改为首次升级的非参会范围，也不借取消分支给首升 200 补时序。"
     },
     {
@@ -4199,6 +4208,10 @@
         {
           "condition": "要查预建立会话身份 P 如何建立、空闲修改或拆除，转该页；P 已存在不意味着组呼仍在或本次重入已获准。",
           "read": "topics/calls/preestablished-session-lifecycle.md"
+        },
+        {
+          "condition": "若实际用已有预建立会话发起预安排组呼，且要判本次显式紧急或迫近危险请求的状态，先配对业务 200、Warning 文本码 149 和终端旧对话的 re-INVITE；不要把普通主动重入当成该过程。",
+          "read": "topics/calls/prearranged-preestablished-priority-confirmation.md"
         }
       ],
       "boundary": "TS 24.379 V16.14.0 在网预安排组预建立重入，不请求隐式话权；区分通用 cid/组 entry 与重入专条，不提供实际 ACK 或路由模板。"
@@ -12098,6 +12111,30 @@
         }
       ],
       "boundary": "TS 24.281 V16.12.0，Release 16 Stage 3。只查已在进行的在网 MCVideo 环境查看呼叫使用目标端预建立会话的释放判据。CF BYE 在 PF 实收、INFO 在终端实收、匹配 INFO 2xx 在 PF 实收和终端实际媒体面指示分别判定；用户发起 REFER 另有本场实际能力条件。不代替按需环境查看、普通私呼、组呼、跨系统、设备媒体实现或整项预建立会话生命周期。"
+    },
+    {
+      "id": "r16-calls-prearranged-preestablished-priority-confirmation",
+      "question": "MCPTT 主叫用已有预建立会话发起预安排紧急或迫近危险组呼，REFER 的 200 能确认优先状态吗？ O-PF 收到 CF 对这条业务 INVITE 的 200，有或没有 Warning 文本码 149，什么时候给终端发 re-INVITE？ 主叫在原 REFER 指向的预建立对话里收到 re-INVITE，怎样区分 MEGC、MEA、MIGC 和按组已有紧急优先级参加？",
+      "start": "topics/calls/prearranged-preestablished-priority-confirmation.md",
+      "next_if": [
+        {
+          "condition": "若实际是主叫按原业务会话标识主动重入仍存在的普通预安排组呼，且不请求隐式话权，查普通重入；不把它当成终端显式发起紧急或迫近危险组呼。",
+          "read": "topics/calls/preestablished-group-rejoin.md"
+        },
+        {
+          "condition": "若实际是已有在网按需预安排组呼，控制功能收到同一业务对话里的升级或取消 re-INVITE，查控制侧的优先状态与结果分发；此路径不是用预建立会话发起。",
+          "read": "topics/calls/emergency-group-server.md"
+        },
+        {
+          "condition": "若是同系统、在网、普通预安排组呼，终接参与功能（T-PF）实收 CF 为本场发来的终接 INVITE，且问题是被叫的已有预建立会话能否复用、选自动还是人工处理，查终接侧。CF 的发送记录不能代替 T-PF 实收，也不能当成被叫终端直接收到 CF 的 INVITE。",
+          "read": "topics/calls/prearranged-preestablished-termination.md"
+        },
+        {
+          "condition": "若首次 REFER 的业务是带话权的紧急私呼，不是组呼，按私呼的请求和本地状态判确认。",
+          "read": "topics/calls/preestablished-emergency-private-confirmation.md"
+        }
+      ],
+      "boundary": "TS 24.379 V16.14.0，Release 16 Stage 3。限在网预安排组呼的发起侧使用已有预建立会话。分别核对 O-PF 实收 CF 业务应答、O-PF 实收同业务对话 INFO、主叫实收原 REFER 指向会话内的 re-INVITE。组内已存在高优先状态不等于原 REFER 明确请求发起高优先呼叫。不能从各腿 200 推断话权、媒体、实际送达、其他人告警或组内所有成员状态。"
     }
   ]
 }
