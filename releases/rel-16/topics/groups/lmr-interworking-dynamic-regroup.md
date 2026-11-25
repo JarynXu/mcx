@@ -27,3 +27,5 @@ IWF 在此方向扮演对等组管理服务器并发出创建通知。临时组�
 如果待纳入重组的某个 LMR 组要求使用 LMR 端到端加密（E2EE），**MCPTT 临时组宜优先选择 LMR 语音编解码器**。纳入该临时组的某位 MC 用户不支持 LMR E2EE，或不支持首选 LMR 编解码器，使用 LMR E2EE 的语音通话会对该用户失败。这句话不说其他用户也会失败，也没有规定改为明文、使用其他编解码器或如何判定 E2EE 和编解码需求。〔[§10.2.2.6 及注 1–2，印刷页 27](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/16.08.00_60/ts_123283v160800p.pdf#page=28)〕
 
 若两个系统都是 MC 伙伴系统，或只要查 TS 23.280 §10.2.4.4 的通用规则，读[MC 伙伴系统间重组与通用规则](partner-system-regroup.md)。只有一个 MC 系统且不含 IWF 时，读[单个 MC 系统的组重组](single-system-temporary-regroup.md)。若问题是 LMR 用户怎样归属 MC 侧定义的组，读[LMR 用户归属 MC 侧定义的组](mc-hosted-lmr-affiliation.md)。若问题是 MCPTT 预配置组的 SIP 创建，读[预配置组的 SIP 创建（Stage 3）](preconfigured-group-regroup-creation.md)，不要用它补本页的 Stage 2 消息或回执。
+
+采用预配置组的互通重组另有漏收场景。先确认实际重组组 D 由 IWF 托管：重组仍生效且已归属组成组 A 的终端漏收重组请求仍按 A，或重组已取消且原 A 组员漏收取消仍按 D。 再读[IWF 预配置重组的漏收分支](../calls/lmr-preconfigured-regroup-stale-ptt.md)。

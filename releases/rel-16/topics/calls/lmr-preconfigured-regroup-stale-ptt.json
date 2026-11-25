@@ -1,0 +1,244 @@
+{
+  "topic_id": "r16-calls-lmr-preconfigured-regroup-stale-ptt",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "IWF 预配置组重组：漏收更新后按 PTT 被拒，补重组还是补取消？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v16.8.0",
+  "condition_rule": "每条声明继承共同条件；按 IWF 的实际组重组状态、所漏消息和本次请求目标选择分支。",
+  "common_conditions": [
+    "TS 23.283 V16.8.0，Release 16，Stage 2。这里只看 MCPTT 客户端漏收重组或取消请求，向 MCPTT 服务器尝试组建呼的两个示例；实际预配置组重组 D 由 IWF 宿主。"
+  ],
+  "claims": [
+    {
+      "id": "stale-regroup-target-and-status-must-match",
+      "title": "先核对本次请求按的是 A 还是 D，再看 IWF 的重组状态",
+      "conditions": [
+        "需要判断这次 MCPTT 客户端建呼是否符合本版两个漏收重组信令的示例之一。"
+      ],
+      "conclusion": "仍在重组的示例中，客户端已归属组成组 A，A 与 B、C 已参加由 IWF 宿主的预配置组重组 D；客户端漏收重组请求，仍以 A 为建呼目标。已取消示例中，客户端是原组成组 A 的成员；IWF 宿主的重组 D 已取消，客户端漏收取消请求，仍以 D 为建呼目标。D 是本次重组所用的组，不是只为它供配置的预配置组。",
+      "normative_strength": "各举例的前提与步骤 1；配置来源和实际重组的区别来自 §10.3.7.1。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.7.1, paragraph distinguishing the serving regroup from the group that supplies configuration"
+          ],
+          "printed_pages": [
+            70
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.7.5.1, opening and three preconditions: active IWF-homed pre-configured group regroup, affiliated client and missed request"
+          ],
+          "printed_pages": [
+            78
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.7.5.1, Figure 10.3.7.5.1-1, steps 1–7 and NOTE 1: target A, call denial, separate regroup request for D and ordering boundary"
+          ],
+          "printed_pages": [
+            79
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.7.6.1, preconditions, Figure 10.3.7.6.1-1, steps 1–6 and NOTEs 1–2: target D, inactive regroup, and optional cancellation legs"
+          ],
+          "printed_pages": [
+            80
+          ]
+        }
+      ],
+      "limitations": [
+        "一次失败不区分漏了哪条消息。不要用两个例子补出“仍活动时按 D”或“已取消时按 A”的结果，也不据例子判断任何其他宿主或漏收的原因。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "ongoing-target-a-denial-and-separate-update",
+      "title": "重组仍在生效且按 A：IWF 拒原组建呼，另发带 D 的重组请求",
+      "conditions": [
+        "处在 §10.3.7.5.1 示范范围：IWF 宿主的 D 对应重组仍在生效，已归属 A 的客户端漏收重组请求，实际请求目标 A。"
+      ],
+      "conclusion": "客户端向 MCPTT 服务器请求建 A 的呼叫；服务器转给 IWF。IWF 回应拒绝建立，因为 A 属于进行中的重组；服务器转回。IWF 另发带 D 组 ID 的重组请求，由服务器转给客户端。图画服务器转拒绝的步骤 4 在 IWF 发重组请求的步骤 5 前；注 1 允许步骤 5 早于步骤 4。客户端在图示程序中提示这次建呼失败及重组。",
+      "normative_strength": "拒绝、补重组及提示分属编号步骤；图的相对顺序按注 1 限定。注 1 另写步骤 7 可以在步骤 4 之后，不据此添加新的固定等待条件。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.7.5.1, opening and three preconditions: active IWF-homed pre-configured group regroup, affiliated client and missed request"
+          ],
+          "printed_pages": [
+            78
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.7.5.1, Figure 10.3.7.5.1-1, steps 1–7 and NOTE 1: target A, call denial, separate regroup request for D and ordering boundary"
+          ],
+          "printed_pages": [
+            79
+          ]
+        }
+      ],
+      "limitations": [
+        "IWF 重组请求不是对原 A 建呼的 302 或成功响应，也不是客户端已收。见到原呼失败不证明补请求已发、已收或另一场呼叫建立。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "regroup-ack-affiliation-and-possible-late-entry",
+      "title": "重组回应的两跳、IWF 归属和迟入各取证",
+      "conditions": [
+        "仍是 §10.3.7.5.1 的活动分支，客户端处理的是含 D 的补重组流程，不是原 A 建呼响应。"
+      ],
+      "conclusion": "步骤 8 由客户端回重组响应给 MCPTT 服务器。步骤 9 由服务器转给 IWF，条文在该步另写 IWF 把该客户端归属到 D。注 2 按 D 有没有进行中的呼叫分流：有呼叫时可以用迟入让该客户端加入；没有时用户可以重试建呼。",
+      "normative_strength": "步骤 8、9 及注 2；迟入和重试均为可行分支，不是必做或自动结果。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.7.5.1, steps 8–9 and NOTE 2: acknowledgement chain, affiliation at IWF and separate conditional late entry or retry"
+          ],
+          "printed_pages": [
+            79
+          ]
+        }
+      ],
+      "limitations": [
+        "只见客户端发响应不证明服务器已收到或 IWF 实收转发；只见回执、或已经确认客户端归属 D，也不能证明 D 有进行中的呼叫、已执行迟入、听到媒体或任何新呼叫成功。选择 D 不是 IWF 已完成归属的证据。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "cancelled-target-d-denial-optional-cancel",
+      "title": "重组已取消且按 D：拒建呼，补取消和回应可选",
+      "conditions": [
+        "处在 §10.3.7.6.1 示范范围：IWF 宿主的 D 对应重组已取消，组成组 A 的成员漏收取消请求，实际请求目标 D。"
+      ],
+      "conclusion": "服务器把对 D 的建呼请求转给 IWF，IWF 因重组已不活动回拒绝，服务器转回客户端。D 可以还在客户端配置档内，客户端也可以是 D 成员。步骤 5、6 是 IWF 发补取消及服务器转发；步骤 8、9 是客户端回取消响应及服务器转回。注 2 明列这四步可选，虽图只把 5、6 画虚线。步骤 6 后的注 3 建议该给客户端的取消请求用单播。步骤 7 仍描述客户端向用户提示失败及重组取消。",
+      "normative_strength": "按步骤 1–9 与注 1–3；是否可选以注 2 为准。步骤 6 后的注 3 用 should。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.7.6.1, preconditions, Figure 10.3.7.6.1-1, steps 1–6 and NOTEs 1–2: target D, inactive regroup, and optional cancellation legs"
+          ],
+          "printed_pages": [
+            80
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.3.7.6.1, NOTE 3 and steps 7–9: client-facing unicast recommendation, user notification and optional acknowledgement forwarding"
+          ],
+          "printed_pages": [
+            81
+          ]
+        }
+      ],
+      "limitations": [
+        "取消请求、回执、客户端提示不是同一事件。缺补取消或回执不表示例子没有发生，回执也不证明所有用户或组状态均已同步。单播建议不扩到所有腿，不规定 SIP 或自动改发原组。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.7.1, paragraph distinguishing the serving regroup from the group that supplies configuration"
+      ],
+      "printed_pages": [
+        70
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.7.5.1, opening and three preconditions: active IWF-homed pre-configured group regroup, affiliated client and missed request"
+      ],
+      "printed_pages": [
+        78
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.7.5.1, Figure 10.3.7.5.1-1, steps 1–7 and NOTE 1: target A, call denial, separate regroup request for D and ordering boundary"
+      ],
+      "printed_pages": [
+        79
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.7.5.1, steps 8–9 and NOTE 2: acknowledgement chain, affiliation at IWF and separate conditional late entry or retry"
+      ],
+      "printed_pages": [
+        79
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.7.6.1, preconditions, Figure 10.3.7.6.1-1, steps 1–6 and NOTEs 1–2: target D, inactive regroup, and optional cancellation legs"
+      ],
+      "printed_pages": [
+        80
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v16.8.0",
+      "clauses": [
+        "10.3.7.6.1, NOTE 3 and steps 7–9: client-facing unicast recommendation, user notification and optional acknowledgement forwarding"
+      ],
+      "printed_pages": [
+        81
+      ]
+    }
+  ],
+  "related": [
+    "r16-calls-regrouped-group-invite-redirect",
+    "r16-calls-regrouped-local-session-fallback",
+    "r16-groups-lmr-interworking-dynamic-regroup",
+    "r16-groups-preconfigured-regroup-removal",
+    "r16-calls-lmr-interworking-group-late-entry"
+  ],
+  "limitations": [
+    "不规定 SIP 字段、状态码、路由实现或 LMR 无线侧处理；不把同系统 Stage 3 的 302、初建或动态组重组套到本例。",
+    "看到通知或响应发出，只能确认该事件，不能替代实际收件、所属组归属、呼叫现存或迟入已经执行的证据。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  }
+}

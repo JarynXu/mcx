@@ -44,3 +44,5 @@ T-PF 也可因缺少资源而无法处理或有拥塞风险，回 500、可带 R
 排查时按 T 和每一笔 MESSAGE 对照 T-PF 的入站、上游响应、逐人出站及本侧归属；再查目标客户端是否收到、按哪一类处理，是否回了**它自己那一笔** 200。客户端收到相应通知后须回 200、在本端视为已解除归属，宜提醒用户。没抓到终端回执不能证明它没处理，T-PF 的 200 也不能替终端作证。[客户端收件后的处理](preconfigured-regroup-notification.md)同样适用于用户重组。〔[§16.2.1.4，印 497](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=498)；[§16.3.1.4，印 508](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=509)〕
 
 如果操作方是组管理服务器（GMS），问题是何时结束 T 上的组呼、何时拆组，请查[Stage 2 临时重组拆除](temporary-regroup-teardown.md)，不要用这里的 CF 响应代替 GMS 的业务结果。
+
+确认 IWF 托管的 D 所对应重组已取消，原组成组 A 的成员漏收取消请求，仍向 D 建呼。 若要查这次 PTT 被拒及可选补取消，读[IWF 预配置重组的漏收分支](../calls/lmr-preconfigured-regroup-stale-ptt.md)。本页的 SIP 响应不能单独证实该场景。

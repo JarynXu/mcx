@@ -38,3 +38,5 @@ CF 发出 302、O-PF 实收 302 并发送新 INVITE、真正宿主收到新 INVI
 - **收到组成组提示时再看下一层守卫：** 原 INVITE 正文实际有 `associated-group-id`，该 ID 出现在 TGI 文档的组成组列表，且该组不归本机托管时，第 (6h) 项规定退出此程序、由非控制功能处进行用户授权。退出不是已获授权，更不是加入呼叫。
 
 依据：[§6.3.5.2(6)(c)–(h)、(8)，印 132–133](https://www.etsi.org/deliver/etsi_ts/124300_124399/124379/16.14.00_60/ts_124379v161400p.pdf#page=133)。如果目前只能核到文档订阅或缓存，先查[组文档是否实际可用](../groups/mcptt-server-group-document-cache.md)；重组建立和客户端通知分别参见[同系统临时重组](../groups/single-system-temporary-regroup.md)与[预配置组重组通知](../groups/preconfigured-regroup-notification.md)。
+
+确认实际重组组 D 由 IWF 托管：重组仍生效且已归属组成组 A 的终端漏收重组请求仍按 A，或重组已取消且原 A 组员漏收取消仍按 D。 若要查被拒后补哪条信令，读[IWF 预配置重组的漏收分支](lmr-preconfigured-regroup-stale-ptt.md)。这两个 Stage 2 示例不规定 SIP 302。

@@ -5280,9 +5280,41 @@
         {
           "condition": "要核实聊天组原 REFER 的 200 或首次业务 INVITE 成败与隐式归属的关系。",
           "read": "topics/calls/chat-preestablished-refer-outcome.md"
+        },
+        {
+          "condition": "确认实际重组组 D 由 IWF 托管：重组仍生效且已归属组成组 A 的终端漏收重组请求仍按 A，或重组已取消且原 A 组员漏收取消仍按 D。 若查这次建呼被拒后如何补信令，查互通重组；拒绝本身不能判组状态或 SIP 302。",
+          "read": "topics/calls/lmr-preconfigured-regroup-stale-ptt.md"
         }
       ],
       "boundary": "固定 Stage 3 原组实际 CF INVITE；另成一笔的直接 TGI INVITE、原组重组本身及最终参与/媒体均不可自动推出。"
+    },
+    {
+      "id": "r16-calls-lmr-preconfigured-regroup-stale-ptt",
+      "question": "IWF 托管的预配置组重组仍生效，已归属组成组 A 的终端漏收重组请求还按 A，被拒后要补哪条信令？ IWF 上的重组已取消，原 A 组员漏收取消仍按 D；D 留在配置档里能否继续按这套重组建呼，哪四步可选？ IWF 发补重组与服务器转拒绝谁先？客户端回执、IWF 归属和 D 是否已有呼叫，哪项能证明已经晚入？",
+      "start": "topics/calls/lmr-preconfigured-regroup-stale-ptt.md",
+      "next_if": [
+        {
+          "condition": "只查同系统里原组 INVITE 的 SIP 302，按控制功能、临时组宿主及其文档条件到旧页；不把本页的组呼拒绝当成 302。",
+          "read": "topics/calls/regrouped-group-invite-redirect.md"
+        },
+        {
+          "condition": "已确认程序是 Stage 3 临时组 INVITE，本地 NCF 实收自己的转出 INVITE 的最终响应，查本地回退。",
+          "read": "topics/calls/regrouped-local-session-fallback.md"
+        },
+        {
+          "condition": "从组管理服务器发起普通动态重组才查动态流程，不用这里的既有预配置组重组状态补 GMS 动作。",
+          "read": "topics/groups/lmr-interworking-dynamic-regroup.md"
+        },
+        {
+          "condition": "若查正常移除预配置组重组的 SIP MESSAGE 与每跳回执，另读 Stage 3，不当作漏取消后 PTT 受拒的补取消。",
+          "read": "topics/groups/preconfigured-regroup-removal.md"
+        },
+        {
+          "condition": "已另证 D 有正在进行的呼叫，想查某种互通组的迟入条件，按已知实际组及该页前提读；不据补重组通知或归属推实际迟入。",
+          "read": "topics/calls/lmr-interworking-group-late-entry.md"
+        }
+      ],
+      "boundary": "一次建呼拒绝不能判组状态、漏了什么或 SIP 302。不能用选中 D 或一条回执确认 IWF 已收到、归属已完成或实际迟入。其他宿主、普通组重组、协议编码与现场收件不从两例推出。"
     },
     {
       "id": "r16-calls-direct-tgi-constituent-authorization",
@@ -6716,6 +6748,10 @@
         {
           "condition": "要查的是组管理服务器拆除临时组的业务条件，而非 CF 的移除 MESSAGE。",
           "read": "topics/groups/temporary-regroup-teardown.md"
+        },
+        {
+          "condition": "确认 IWF 托管的 D 所对应重组已取消，原组成组 A 的成员漏收取消请求，仍向 D 建呼。 若要查这次 PTT 受拒及可选补取消，读 IWF 漏收分支；不从本页的 200 推取消或实收。",
+          "read": "topics/calls/lmr-preconfigured-regroup-stale-ptt.md"
         }
       ],
       "boundary": "仅限基于预配置组的移除；区分服务器分发和终端接收，不从某一段回执推断全员解除归属。"
@@ -10512,6 +10548,10 @@
         {
           "condition": "若问已配置组作为模板时的 SIP 创建与回执，只作不同流程的导航，不把该页任何消息或等待条件套到本页。",
           "read": "topics/groups/preconfigured-group-regroup-creation.md"
+        },
+        {
+          "condition": "若不是 GMS 动态重组，而是预配置组重组后的漏收排查，先确认实际重组组 D 由 IWF 托管：重组仍生效且已归属组成组 A 的终端漏收重组请求仍按 A，或重组已取消且原 A 组员漏收取消仍按 D。 只按相符的一支看补信令。",
+          "read": "topics/calls/lmr-preconfigured-regroup-stale-ptt.md"
         }
       ],
       "boundary": "只读 MC 系统与 IWF 动态互通组重组的 Stage 2 分工。不是普通 MC 伙伴或单系统重组、预配置组呼、成员归属/退组和整场释放，也不说明 SIP 或无线侧消息、用户数据交换例外、内部存储实现、加密实现或能力回退。"
