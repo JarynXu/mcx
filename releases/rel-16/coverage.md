@@ -5903,6 +5903,16 @@ LMR 定义组：正在通话。客户端已注册、尚未参加，用户已认�
 
 [读取主题](topics/bearers/mbms-different-call-reuse.md)
 
+## 临时组逐参与者 U：收到 Floor Deny #1 就没入队吗？
+
+临时组 SIP 会话已建立，关联方为组成组或会话发起方时，按对应入态程序设 U 为初始化状态。该 U 实收 Floor Request 时，先定有效优先级并入队，再按本次实收能力决定回复。
+
+本次 Track Info 能力为 1 时向发起请求的非控制功能回队位和话权优先级；为 0 时发 Floor Deny #1。两支附回本次 Track Info，临时组带相应 Floor Indicator，U 仍在初始化。
+
+尚未建立：缺少能力不等于 0。单见拒绝或队位应答不证明现场实际入队、撤出或保留，也不证明 G 已占用、谁获准或整场呼叫已完成；G 收 SIP 正文和 P 实收拆分各按自己的入口。
+
+[读取主题](topics/media/temporary-group-participant-floor-initialization.md)
+
 ## 阅读结果时仍须分开的证据
 
 按主题共同条件、角色、事件、条款和规范层级读取。响应、媒体建立、数据到达与应用处理分别判断；功能定义不能替代协议实现或完整错误恢复。其他 Release 不作默认补充。

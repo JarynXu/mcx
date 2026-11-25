@@ -1,0 +1,249 @@
+{
+  "topic_id": "r16-media-temporary-group-participant-floor-initialization",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "临时组的话权接口还在初始化：收到 Floor Deny，能判请求没入队吗？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.380-v16.9.0",
+  "common_conditions": [
+    "3GPP TS 24.380 V16.9.0，Release 16，Stage 3，在网 MCPTT。临时组控制侧的话权服务器面向关联话权参与者的 U；与一般仲裁 G、非控制侧 P 及终端状态分开。"
+  ],
+  "condition_rule": "各条继承共同的版本、业务与角色，再按本条的实收、状态和字段判定。入态、U 收请求和 G 收应用／信令指示不是同一事件。",
+  "claims": [
+    {
+      "id": "temporary-constituent-or-initiator-enters-per-participant-u",
+      "title": "关联方为组成组或发起者时，按临时组分支设 U 初始化状态",
+      "conditions": [
+        "按 §6.3.5.2.2 的 Start-stop 入态程序处理；临时组 SIP 会话已建立。这个 U 的关联话权参与者是一个组成 MCPTT 组或临时组会话发起者。"
+      ],
+      "conclusion": "尚未初始化一般状态机时须先初始化；随后须为关联方进入 U: not permitted and initiating。此 U 等待仲裁逻辑完成临时组状态机的初始化。",
+      "normative_strength": "一般状态机初始化受尚未初始化条件约束；关联方的 U 入态和设置为 SHALL。",
+      "limitations": [
+        "单独受邀的 MCPTT 客户端不是组成组入口，不能只按临时组成员身份套用本条。该 U 状态不证明 G 当前处于哪一状态、初选完成、一般话权获准或全组会话处理完成。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.2.2, SIP-established temporary-group paragraph: constituent group or session initiator enters initiating U; initialize general instance if needed"
+          ],
+          "printed_pages": [
+            74
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.10.1–.2, initiating U context, received requests and associated-state setup"
+          ],
+          "printed_pages": [
+            92
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "initiating-u-priority-and-queue-before-capability-response",
+      "title": "U 实收 Floor Request 时须先定有效优先级并按其入队",
+      "conditions": [
+        "控制侧接口已处于 U: not permitted and initiating，且实际收到本次 Floor Request。"
+      ],
+      "conclusion": "按 §4.1.1.4 确定有效优先级，并据此把这份 Floor Request 放入话权请求队列。第 1–2 项不以 Queueing Capability=1 为前提；第 5 项保持 U: not permitted and initiating。",
+      "normative_strength": "第 1、2、5 项为 SHALL；能力字段用于其后列出的两份条件回复。",
+      "limitations": [
+        "只看到拒绝、队位应答或没有找到队列日志，都不能证明本次队列操作执行、跳过、撤销或保留到何时。队列不是获准名单。",
+        "没有明示可把缺失或保留的能力值写成 0；也不规定缺值时的默认回复。不从本段推出异常报文的其他处理。",
+        "不把信令面的组成组 SIP MIME、发送端的 Floor Request 记录、队位或有效优先级数字代替本 U 实收、G 首次仲裁或实际入队证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.10.1–.2, initiating U context, received requests and associated-state setup"
+          ],
+          "printed_pages": [
+            92
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.10.5, opening and steps 1–5 including NOTE: enqueue, received capability reply and unchanged initiating U"
+          ],
+          "printed_pages": [
+            93
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "4.1.1.4"
+          ],
+          "printed_pages": [
+            21
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.3.13, table 8.2.3.13-1 and note 2: queueing capability and 32-bit reference meaningful to the local floor control server interface"
+          ],
+          "printed_pages": [
+            154,
+            155
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "received-capability-one-sends-queue-position-to-requesting-ncf",
+      "title": "实收能力为 1：返回队位、话权优先级和本次 Track Info",
+      "conditions": [
+        "控制侧接口已处于 U: not permitted and initiating，且实际收到本次 Floor Request。",
+        "本次请求的实收 Track Info 内 Queueing Capability 明确为 1。"
+      ],
+      "conclusion": "U 须向发起请求的非控制 MCPTT 功能发送 Floor Queue Position Info。Queue Info 带队位与话权优先级；须回带本次实收的 Track Info，临时组会话须带相应 Floor Indicator；保持 U 初始化状态。",
+      "normative_strength": "第 3 项及其字段、第 5 项均为适用时的 SHALL。",
+      "limitations": [
+        "队位和话权优先级不是入队生命周期、当前发言许可或 G 状态的证据。不能把先前事务缓存的 Track Info 当成本次实收字段。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.10.5, opening and steps 1–5 including NOTE: enqueue, received capability reply and unchanged initiating U"
+          ],
+          "printed_pages": [
+            93
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.3.13, table 8.2.3.13-1 and note 2: queueing capability and 32-bit reference meaningful to the local floor control server interface"
+          ],
+          "printed_pages": [
+            154,
+            155
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "received-capability-zero-sends-deny-one-not-a-g-observation",
+      "title": "实收能力为 0：回 Floor Deny #1，仍不能判 G Taken 或未入队",
+      "conditions": [
+        "控制侧接口已处于 U: not permitted and initiating，且实际收到本次 Floor Request。",
+        "本次请求的实收 Track Info 内 Queueing Capability 明确为 0。"
+      ],
+      "conclusion": "U 须发 Floor Deny，Reject Cause 填 1；须回带本次实收的 Track Info，临时组会话须带相应的 Floor Indicator，并保持 U 初始化状态。第 1–2 项仍是该程序列出的动作。",
+      "normative_strength": "第 4 项和第 5 项为 SHALL。注说，合并期间，若仍在进行会话的组成组话权空闲，有一名话权参与者请求话权，可以收到该组 MCPTT 客户端发来的 Floor Request，原文称「without the queueuing capability」。注没有给出实收字段的有无、数值或请求方是否支持排队的判据。 第 4 项未另写第 3 项的收件方说明。",
+      "limitations": [
+        "不得从缺失、部分记录或保留值推定实际字段为 0。仅见 Floor Deny #1 不能定位本 U 输入分支，不能据此判 G Taken、另有获准者、入队已执行或拒绝后已删除。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "6.3.5.10.5, opening and steps 1–5 including NOTE: enqueue, received capability reply and unchanged initiating U"
+          ],
+          "printed_pages": [
+            93
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.380-v16.9.0",
+          "clauses": [
+            "8.2.3.13, table 8.2.3.13-1 and note 2: queueing capability and 32-bit reference meaningful to the local floor control server interface"
+          ],
+          "printed_pages": [
+            154,
+            155
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-media-temporary-group-floor-initial-arbitration",
+    "r16-mcptt-merge-floor-queue"
+  ],
+  "limitations": [
+    "不收同一 U 状态的撤回、其他来向处理或角色切换。只证明条款规定到何处，不把回复、局部字段或无队列日志写成已发生的队列变化、G 状态、呼叫全部建立、话权获准或媒体送达。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  },
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.5.2.2, SIP-established temporary-group paragraph: constituent group or session initiator enters initiating U; initialize general instance if needed"
+      ],
+      "printed_pages": [
+        74
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.5.10.1–.2, initiating U context, received requests and associated-state setup"
+      ],
+      "printed_pages": [
+        92
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "6.3.5.10.5, opening and steps 1–5 including NOTE: enqueue, received capability reply and unchanged initiating U"
+      ],
+      "printed_pages": [
+        93
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "4.1.1.4"
+      ],
+      "printed_pages": [
+        21
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.380-v16.9.0",
+      "clauses": [
+        "8.2.3.13, table 8.2.3.13-1 and note 2: queueing capability and 32-bit reference meaningful to the local floor control server interface"
+      ],
+      "printed_pages": [
+        154,
+        155
+      ]
+    }
+  ]
+}
