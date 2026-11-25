@@ -62,6 +62,10 @@
         {
           "condition": "要区分预安排组呼初建和主动重入，尤其是重入时使用哪个会话身份。",
           "read": "topics/calls/rejoin-late-entry.md"
+        },
+        {
+          "condition": "若同一 MC 系统内以直接预安排组身份发起普通在网按需 MCPTT 组呼，现要查终端实际所带的主叫别名与 O-PF 发给 CF 的业务 INVITE，读组呼主叫别名。",
+          "read": "topics/calls/group-caller-alias-forwarding.md"
         }
       ],
       "boundary": "不覆盖紧急/迫近危险、chat、广播、晚入重入、完整服务器成员选择与媒体生命周期。"
@@ -181,6 +185,10 @@
         {
           "condition": "若要比较同系统与跨系统的 PF、CF、NCF 功能模型，查功能连接图例；本页 O-PF 与 CF 合设的情形不能用来反推组主、组员主系统或物理部署。",
           "read": "topics/calls/mcptt-server-function-connectivity.md"
+        },
+        {
+          "condition": "若同一 MC 系统内用直接预安排组身份发起普通在网按需 MCPTT 组呼，已认清 O-PF 收到的初始 INVITE，问其构造发往组 CF 的业务 INVITE 时何时保留主叫别名，读组呼主叫别名。",
+          "read": "topics/calls/group-caller-alias-forwarding.md"
         }
       ],
       "boundary": "不覆盖完整响应聚合、会议事件、组呼释放或媒体/安全实现；分别看普通请求和迫近危险初始准入。 同一系统未重组、非临时的普通在网按需预安排组呼新建，可按已归属必需成员的实际邀请响应和 TNG1 事件，区分邀请前 480/112、提前失败和到期；查到期放弃的 BYE/CANCEL 要看 CF 的受邀对话状态。 同一系统未重组、非临时的普通在网按需预安排组呼新建，TNG1 未运行时，区分 CF 从受邀腿收到 183/P-Answer-State: Unconfirmed 或 200 后的媒体缓冲分支；主叫的 SIP 200 不等于 RTP 发送许可。 同一系统未重组、非临时的普通在网按需预安排组呼新建，TNG1 未运行且实际收到受邀 INVITE 最终失败时，按 CF 原发起侧 200 发送前后核对其余或全部受邀者的响应，以及移除或补邀条件。 同一系统未重组、非临时的普通非优先按需预安排组呼新建，最后一名已归属必需成员正常回 200 时，核对被叫 MCPTT ID、未邀全是否因人数上限、向发起侧发 200 与随后发起用户加入的 NOTIFY。 同一系统未重组的在网直接组初始 INVITE，CF 按原始业务指示、用户档和目标组档判定迫近危险授权；缺业务指示的优先级矛盾另看 CF 组旧状态。不要拿会话内取消响应代替。 同一 MC 系统不证明两功能合设；只在 O-PF 的按需 offer/answer 对相关媒体与控制项检查专用地址或端口和省略条件，不推定实际媒体路径。"
@@ -819,6 +827,10 @@
         {
           "condition": "如果要判断建呼前为什么重订阅、已有订阅是否已得组文档，或非控制功能怎样处理相符文档，查 MCPTT 服务器的组文档缓存。",
           "read": "topics/groups/mcptt-server-group-document-cache.md"
+        },
+        {
+          "condition": "若同一 MC 系统内以直接受限聊天组身份发起或加入普通在网按需 MCPTT 聊天组，核终端初始 INVITE 的主叫别名与 O-PF 的实际下一腿，读组呼主叫别名。",
+          "read": "topics/calls/group-caller-alias-forwarding.md"
         }
       ],
       "boundary": "限未重组组 ID 的在网按需 MCPTT 聊天组。普通分支说明会话、容量与订阅通知。控制功能在紧急或迫近危险分支核对本侧来包，头缺失或值不符才纠错。读 SDP 时分别配对参与功能两侧的 INVITE。 普通聊天组收到 486 时，分别核对 O-PF 本地检查和 CF 回来的失败应答；只看状态或外层 Warning 码不能判原因。 普通聊天组的 404/141 查发起侧参与功能接收的公共用户身份与主叫 MCPTT ID 的绑定；403/108 查该功能的本地发起权限。 在同一 MC 系统内、使用未重组的 MCPTT 组身份且不是临时组的普通在网按需聊天组中，CF 组文档初检查 xcap-diff 的 113/114、组停用（组禁用）403/115、成员名单 403/116；初检通过后的未归属和隐式归属资格另查 403/120。 同一系统内未重组、非临时的普通按需聊天组收到 488，要按 O-PF 与 CF 各自收到的 SDP offer 核媒体参数和语音编解码；只看终端状态码不定位检查点。 组文档正常不代替本地组信息项；资格判断、实际调用写入、按订阅通知分开，不用 200 或缺包证明归属结果。 组已建立后的迫近危险 re-INVITE 另查本组原状态、是否新指示与入会分组；不按预安排组的 MESSAGE 分发判断聊天组首升，不凭通用 200 推定分发或媒体已到。 聊天组取消只取实际 false re-INVITE 的取消授权和原迫近危险状态。分开发起端 200、CF 清除与成员腿，不由一个 false 或匹配 200 推断全组结果。"
@@ -5516,6 +5528,10 @@
         {
           "condition": "若要区分预建立私呼的 REFER 200 和另发业务 INVITE 的结果，查发起侧两笔事务。",
           "read": "topics/calls/private-preestablished-origination.md"
+        },
+        {
+          "condition": "若已确认实际呼叫并非私呼，而是同一 MC 系统内按直接预安排组或受限聊天组身份发起或加入的普通在网 MCPTT 组呼，读组呼的主叫别名；不沿用私呼准入。",
+          "read": "topics/calls/group-caller-alias-forwarding.md"
         }
       ],
       "boundary": "始呼 O-PF 复制或省略主叫功能别名；不判功能别名作为被叫、目标解析、被叫显示/应答或媒体。"
@@ -6744,6 +6760,10 @@
         {
           "condition": "本次预建立聊天组的业务 INVITE 遇到已重组原组的 302，要核对新路由、业务目标和出向 SDP。",
           "read": "topics/calls/regrouped-group-invite-redirect.md"
+        },
+        {
+          "condition": "若同一 MC 系统内用已有预建立会话按直接受限聊天组身份发起或加入普通在网 MCPTT 组呼，要查 REFER 的 entry URI 内层主叫别名及 O-PF 构造的初始业务 INVITE，读组呼主叫别名。",
+          "read": "topics/calls/group-caller-alias-forwarding.md"
         }
       ],
       "boundary": "主叫侧的普通聊天组预建立 REFER 与 O-PF 实收在网终端 re-INVITE 分开；后者对上另发的 CF 腿 403 或 2xx。终接 T-PF 的初始 INVITE 准入与既有会话 re-INVITE 分开；区分终端按需或预建立 SIP 对话、各自 SDP 和匹配应答。不定义 CF 何时邀请、整个优先组呼或实际媒体交付。"
@@ -9516,6 +9536,10 @@
         {
           "condition": "若要查在网 Stage 2 的伙伴迁移授权与处理角色。",
           "read": "topics/identity/partner-migration-authorization.md"
+        },
+        {
+          "condition": "若问题从参与用户标识转为同一 MC 系统内按直接组身份发起或加入普通在网 MCPTT 预安排组或受限聊天组，查终端和 O-PF 如何传本主叫别名，读组呼的 Stage 3 信令。",
+          "read": "topics/calls/group-caller-alias-forwarding.md"
         }
       ],
       "boundary": "第 5 章共通要求区分参与者身份、为组指定别名、两种可达条件和组织内判重。§6.9 的在网一般判重仅作对照，不把迁移授权或任意跨系统路由当作可达性要求。"
@@ -12163,6 +12187,38 @@
         }
       ],
       "boundary": "TS 23.282 V16.8.0，Release 16 Stage 2。分别核 §5.11 的 IP 互通能力、A.3-2 的在网用户档和 §7.14 的具体信息流。仅将同系统、两端附接主机、额度及本 MC 系统内的 MCData 功能别名控制服务器激活和停用两种订阅等条件用于该点到点示例；不把别名订阅当成普遍授权或必传别名，不从个人候选表、组启用、配置额度或地址池推断本次接受、媒体面或应用收包。"
+    },
+    {
+      "id": "r16-calls-group-caller-alias-forwarding",
+      "question": "同一系统的普通在网 MCPTT 用直接组身份发起预安排组或聊天组，终端写了主叫功能别名，为何 O-PF 发给 CF 的 INVITE 没有？ 同一系统的普通在网 MCPTT 用已有预建立会话按直接组身份发起预安排组或聊天组，到 REFER 的哪里找主叫别名，O-PF 何时删去？ 同一系统用直接组身份发起普通在网 MCPTT 预安排组或聊天组，怎样区分没有带别名、准备启用、出向省略和对端未显示？",
+      "start": "topics/calls/group-caller-alias-forwarding.md",
+      "next_if": [
+        {
+          "condition": "若是同一 MC 系统内、GMS 管理、按直接组身份发起的普通在网按需预安排组，且组文档不含 temporary/regrouped、不是 constituent 或预配置重组，才读适用的准入与邀请。只查待判断的角色实际收到的本次初始 INVITE（O-PF 实收终端请求，或 CF 实收业务请求），不要求两边都已收到。仅有 O-PF 出站不能代替 CF 实收。",
+          "read": "topics/calls/prearranged-server-admission-routing.md"
+        },
+        {
+          "condition": "若同一 MC 系统、普通在网用直接受限聊天组身份发起按需组呼，要核实际 O-PF 和 CF 按需建会或加入的准入，读聊天组。",
+          "read": "topics/calls/chat-establish-join.md"
+        },
+        {
+          "condition": "若同一 MC 系统、普通在网用已有预建立会话按直接受限聊天组身份发起或加入，要区分实际 REFER 的 200、业务 INVITE 应答和隐式归属，读聊天组两腿结果。",
+          "read": "topics/calls/chat-preestablished-refer-outcome.md"
+        },
+        {
+          "condition": "若同一 MC 系统内这个普通在网直接预安排或聊天组的主叫曾手动新增同一个别名，需要核 O-PF 是否实际收到相符通知及同一对主叫与别名的状态变化，读启用服务器流程。",
+          "read": "topics/identity/mcptt-functional-alias-activation-servers.md"
+        },
+        {
+          "condition": "若实际观察对象不是组业务 INVITE，而是公共 MC 业务服务器或 LMS 向该别名控制服务器订启用名单、或收到该名单的 Stage 2 消息，读别名名单订阅；不以该订阅代替组呼 O-PF 状态。",
+          "read": "topics/identity/functional-alias-subscriber-list.md"
+        },
+        {
+          "condition": "若已证实不是组呼，而是同一 MC 系统的归属网内普通在网一对一带话权私呼，由对方 MCPTT ID 寻址且问自己别名的去留，读私呼专条。",
+          "read": "topics/calls/private-caller-alias-forwarding.md"
+        }
+      ],
+      "boundary": "同一 MC 系统内，普通在网 MCPTT 按直接组身份发起或加入预安排组或受限聊天组；无广播、临时组、重组或紧急、迫近危险请求及组状态。对上实际 O-PF 入站和发往 CF 的初始业务 INVITE。仅判主叫功能别名，不把别名当组目标，也不据此判准入、接收、显示或媒体。"
     }
   ]
 }

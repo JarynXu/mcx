@@ -949,6 +949,23 @@
         },
         {
           "domain": "calls",
+          "title": "普通 MCPTT 组呼：终端带了主叫功能别名，CF 为何可能看不到？",
+          "can_answer": "同一 MC 系统内，普通在网 MCPTT 按直接组身份发起或加入预安排组或受限聊天组，分开终端的按需初始 INVITE 或预建立 REFER，以及 O-PF 构造发给组 CF 的另一条业务 INVITE。组是目标，别名与实际主叫 MCPTT ID 一起使用。",
+          "conditional_or_interface_only": "原请求和目标组状态均非紧急或迫近危险，不含广播、临时组或重组。走到 O-PF 构造业务 INVITE 时，按需分支只对实际收到的主叫别名核对同一主叫 ID 的状态；等于 activated 才保留来值，否则省略。预建立分支沿 Refer-To 的 cid 与 entry URI 的 body 找内层信息；复制到 INVITE 后，该元素存在且被判 not active 才由 11A 移除，另写真实主叫 ID。",
+          "not_established": "缺入站或状态证据不是判未启用；不统一两种状态字面和过渡状态，不据此规定 MIME 容错。未建立准入、启停、临时查询、被叫解析、实际 CF/UE 接收与显示、媒体结果；不适用于按会话身份重入。",
+          "read": [
+            {
+              "title": "普通 MCPTT 组呼：终端带了主叫功能别名，CF 为何可能看不到？",
+              "path": "topics/calls/group-caller-alias-forwarding.md",
+              "source_ids": [
+                "3gpp-ts-24.379-v16.14.0",
+                "3gpp-ts-23.280-v16.7.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "calls",
           "title": "MCPTT 拒绝请求时，Response-Source 能指出哪种功能？",
           "can_answer": "根据应答中可选的标签区分 PF、CF 与 NCF；SIP 状态码、警告码和业务文本号分别解释。",
           "conditional_or_interface_only": "生成这类 SIP 应答的 MCPTT 服务器可依运营策略标当前角色。普通按需私呼的 O-PF 和 CF 可能报告同一资源列表错误；各自以收到的请求为准。",

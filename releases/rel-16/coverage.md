@@ -582,6 +582,16 @@ TS 23.283 V16.8.0 §§10.3.7.5.1、10.3.7.6.1。实际预配置重组组 D 由 I
 
 [读取主题](topics/calls/private-caller-alias-forwarding.md)
 
+## 普通 MCPTT 组呼：终端带了主叫功能别名，CF 为何可能看不到？
+
+同一 MC 系统内，普通在网 MCPTT 按直接组身份发起或加入预安排组或受限聊天组，分开终端的按需初始 INVITE 或预建立 REFER，以及 O-PF 构造发给组 CF 的另一条业务 INVITE。组是目标，别名与实际主叫 MCPTT ID 一起使用。
+
+原请求和目标组状态均非紧急或迫近危险，不含广播、临时组或重组。走到 O-PF 构造业务 INVITE 时，按需分支只对实际收到的主叫别名核对同一主叫 ID 的状态；等于 activated 才保留来值，否则省略。预建立分支沿 Refer-To 的 cid 与 entry URI 的 body 找内层信息；复制到 INVITE 后，该元素存在且被判 not active 才由 11A 移除，另写真实主叫 ID。
+
+尚未建立：缺入站或状态证据不是判未启用；不统一两种状态字面和过渡状态，不据此规定 MIME 容错。未建立准入、启停、临时查询、被叫解析、实际 CF/UE 接收与显示、媒体结果；不适用于按会话身份重入。
+
+[读取主题](topics/calls/group-caller-alias-forwarding.md)
+
 ## MCPTT 拒绝请求时，Response-Source 能指出哪种功能？
 
 根据应答中可选的标签区分 PF、CF 与 NCF；SIP 状态码、警告码和业务文本号分别解释。

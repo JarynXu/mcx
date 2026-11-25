@@ -1,0 +1,617 @@
+{
+  "topic_id": "r16-calls-group-caller-alias-forwarding",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "普通 MCPTT 组呼：终端带了主叫功能别名，CF 为何可能看不到？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "每条声明继承全部 common_conditions，并叠加本条 conditions；两种发起方式和实际收发证据分别判断，关联不是流程或授权。",
+  "common_conditions": [
+    "固定 TS 24.379 V16.14.0，Release 16 Stage 3。同一 MC 系统内，普通在网 MCPTT 按直接组身份发起或加入预安排组或受限聊天组，对照主叫按需初始 INVITE 或以已有预建立会话发起的对话外 REFER，以及 O-PF 给组 CF 的另一个初始业务 INVITE。",
+    "原请求和目标组状态均非紧急或迫近危险；无广播、临时组/重组、跨系统。不是按既有业务会话身份重入、迟入邀请、在场升级或按别名找被叫，不规定实际接收、显示或媒体。"
+  ],
+  "claims": [
+    {
+      "id": "on-demand-client-caller-alias",
+      "title": "按需初始 INVITE：主叫自己的别名写在 MCPTT 信息正文",
+      "conditions": [
+        "终端按直接组身份发起同系统普通预安排或受限聊天组的按需初始 INVITE。"
+      ],
+      "conclusion": "终端将 Request-URI 指向服务自己的 O-PF PSI，正文 mcptt-request-uri 填目标组、session-type 分别为 prearranged 或 chat。终端知道已启用的别名且本次要带其中一个时，须把所用 F 写入同一 mcptt-info+xml 正文的 functional-alias-URI。",
+      "normative_strength": "目标及正文构造为 SHALL；写 F 是已知并选择带该别名时的条件 SHALL。",
+      "limitations": [
+        "F 与主叫 ID 一起使用，不是组 ID 或以别名解析被叫的 call-to-functional-alias-ind。该终端构造条件不证实 O-PF 实收 F 或认定它启用。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.1.3(k): functional-alias-URI used with mcptt-calling-user-id",
+            "F.1.3(o): call-to-functional-alias-ind distinguishes use of an alias for potential terminating MCPTT IDs"
+          ],
+          "printed_pages": [
+            551
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.1.1 items 10 and 14(a–e), Notes 2 and 6: originating PF PSI, direct group and caller functional alias"
+          ],
+          "printed_pages": [
+            220,
+            221
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.1.1 items 9 and 13(a–d), Note 2: originating PF PSI, chat group and caller functional alias"
+          ],
+          "printed_pages": [
+            266
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "on-demand-pf-checks-calling-user-activated",
+      "title": "按需 O-PF：只按同一主叫和收到别名的状态决定保留原值",
+      "conditions": [
+        "O-PF 实收到符合直接组身份和对应 session-type 的初始 INVITE，从入站 P-Asserted-Identity 的公共用户身份绑定确定主叫 MCPTT ID，且通过前序检查走到构造给组 CF 的业务 INVITE。"
+      ],
+      "conclusion": "O-PF 在第二条 INVITE 写组 CF 的 PSI 为 SIP Request-URI，并把确定的主叫 MCPTT ID 写进 mcptt-calling-user-id；目标组不因携带功能别名而改变。若实际收到的 MCPTT 信息正文有 F，则查对这个主叫 ID，F 的状态是否等于 activated。等于就写收到的同一 F 值，状态不等于 activated 就不带该元素。若完整入站本来无 F，这一步不要求另补。",
+      "normative_strength": "O-PF 功能和主叫字段按 SHALL 构造；专条对实收别名规定检查、保留或省略。通用正文复制不替代专条对元素的判断。",
+      "limitations": [
+        "同一 F 对他人已启用不能代替同一主叫的状态。省略的是别名元素，不能推为改了组目标、取消呼叫或拒绝整笔请求。没有完整入站或处理时状态不能倒推出是哪一种。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.1 items 2, 2a, 3, 9–13a, Note 8 and item 17: calling ID, group CF PSI, and equality to activated for the same MCPTT ID"
+          ],
+          "printed_pages": [
+            230,
+            231,
+            232
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.1 items 2, 2a, 3, 9–11a, Notes 8–9 and item 16: calling ID, group CF PSI, and equality to activated for the same MCPTT ID"
+          ],
+          "printed_pages": [
+            276,
+            277,
+            278
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.3(8): copy the received MCPTT information body to the outgoing INVITE"
+          ],
+          "printed_pages": [
+            85
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.1.3(k): functional-alias-URI used with mcptt-calling-user-id",
+            "F.1.3(o): call-to-functional-alias-ind distinguishes use of an alias for potential terminating MCPTT IDs"
+          ],
+          "printed_pages": [
+            551
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "pre-established-client-embedded-caller-alias",
+      "title": "预建立发起：别名在 REFER 的 entry URI 内层信息",
+      "conditions": [
+        "主叫使用已有预建立会话按直接组身份发起普通聊天组或预安排组。"
+      ],
+      "conclusion": "终端发对话外 REFER，SIP Request-URI 和 Target-Dialog 指明预建立会话。Refer-To 的 cid 指向 Content-ID 匹配的资源列表；单个 entry 的 URI 标识目标组，URI headers 的 body 参数内有 MCPTT 信息。知道已启用的别名且本次要带 F 时，须在该内层信息写 functional-alias-URI。预安排客户端条款继承聊天组构造，改用预安排组条目及 session-type=prearranged；别名项保留适用。",
+      "normative_strength": "对话外 REFER、会话标识和目标组结构为 SHALL；别名字段按已知并选用条件填写。",
+      "limitations": [
+        "客户端构造项 MIME 字面未写 +xml，复制 helper 写了 +xml；两种字面不是本版规定可互换的编码。只检查 REFER 的顶层不够，也不能把 F 当作 entry 的目标组。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.2.2.1 items 1–3, 3(c)(ii)(C), Note 2 and item 10: chat REFER target, entry URI, inner caller functional alias and Target-Dialog",
+            "10.1.1.2.2.1 opening and items 1–3: inherit chat REFER construction with its explicit prearranged group and session-type changes"
+          ],
+          "printed_pages": [
+            228,
+            273,
+            274,
+            275
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.4(11,11A,12): nested MCPTT information body copied into new INVITE, inactive alias removed, caller ID added"
+          ],
+          "printed_pages": [
+            86
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "pre-established-pf-copies-then-tests-not-active",
+      "title": "预建立 O-PF：已拷入的 F 被判 not active 才按 11A 删除",
+      "conditions": [
+        "O-PF 实收相应预建立 REFER，从入站 P-Asserted-Identity 的公共用户身份确定实际主叫 MCPTT ID。前序检查通过，走到按对应组呼第 15 项构造发往组 CF 的新业务 INVITE。"
+      ],
+      "conclusion": "通用 §6.3.2.1.4(11) 把内层信息从 REFER 的 entry URI headers/body 复制到 INVITE；若拷入的正文有 F，(11A) 要求检查，原文为 not active 时删除该元素，认定 active 时这一步不删除。第 12 项写入实际主叫 MCPTT ID。两条组呼专条都另把 CF PSI 写入 SIP Request-URI，从 entry 的 URI 复制直接组身份到正文 mcptt-request-uri。",
+      "normative_strength": "有别名才查、not active 才按 11A 删除为条件 SHALL；复制内层、写实际主叫及组目标按 SHALL。",
+      "limitations": [
+        "不要套用按需专条的逐字状态比较；没有要求另选一个别名来补；本项不决定呼叫准入。CF 实收、终端显示各需自己的记录。REFER 的成功答复不证明出向 F。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.2 entry and items 2–3, 9–10, 13–17 and 19: prearranged REFER calling identity, reply and separate initial group INVITE through 6.3.2.1.4"
+          ],
+          "printed_pages": [
+            233,
+            234,
+            235
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.2.1 entry and items 2–5, 11–17 and 19: chat REFER calling identity, reply and separate initial group INVITE through 6.3.2.1.4"
+          ],
+          "printed_pages": [
+            282,
+            283,
+            284
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.4(11,11A,12): nested MCPTT information body copied into new INVITE, inactive alias removed, caller ID added"
+          ],
+          "printed_pages": [
+            86
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "F.1.3(k): functional-alias-URI used with mcptt-calling-user-id",
+            "F.1.3(o): call-to-functional-alias-ind distinguishes use of an alias for potential terminating MCPTT IDs"
+          ],
+          "printed_pages": [
+            551
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "transient-and-missing-status-evidence",
+      "title": "过渡状态和观察缺项不能替不同分支判别名",
+      "conditions": [
+        "拟判同一普通直接组呼的别名去留，已经分辨按需或预建立，且有或缺相应 O-PF 的处理时状态。"
+      ],
+      "conclusion": "按需专条写状态等于 activated 才给原值；具有名字 deactivating 的记录与 activated 不同。预建立 helper 写 not active；§3.1 既把 deactivating 列成单独状态，又说明别名此时仍为该用户启用。这里不把两个字面条件对所有过渡状态统一归类。只知状态名称时，不替预建立规则作决定；缺观察记录不等于服务器已判不启用。",
+      "normative_strength": "两组程序的条件与状态定义为原文；对观察缺项的判断为证据边界。",
+      "limitations": [
+        "未捕获 O-PF 入站，与完整入站未含 F 不同。即使实际入站有 F，所录的状态若不属于匹配的主叫与别名、或不是当时 O-PF 判定，也不能无条件推出保留或删除。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "3.1 functional alias status: activating, activated and deactivating (still activated)"
+          ],
+          "printed_pages": [
+            30
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.1 items 2, 2a, 3, 9–13a, Note 8 and item 17: calling ID, group CF PSI, and equality to activated for the same MCPTT ID"
+          ],
+          "printed_pages": [
+            230,
+            231,
+            232
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.1 items 2, 2a, 3, 9–11a, Notes 8–9 and item 16: calling ID, group CF PSI, and equality to activated for the same MCPTT ID"
+          ],
+          "printed_pages": [
+            276,
+            277,
+            278
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.4(11,11A,12): nested MCPTT information body copied into new INVITE, inactive alias removed, caller ID added"
+          ],
+          "printed_pages": [
+            86
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "alias-status-evidence-is-not-call-permission",
+      "title": "别名状态学习、前序准入和这一次字段是三件事",
+      "conditions": [
+        "核的是普通直接组业务 INVITE 的调用时状态、发起侧前序拒绝或关联的别名状态证据，不是新做别名订阅。"
+      ],
+      "conclusion": "按需组呼注 8 指 O-PF 通过 §9A.2.2.2.7 学习对应 MCPTT ID 的别名状态。手动新增别名时，按该条核其实际收到的相符通知和对应启用记录；PUBLISH 的 200 不代替通知或处理时状态。公共 Stage 2 的 MC 业务服务器或 LMS 可订别名已启用者名单，订阅响应必带所订功能别名 F 和 Status（成功或失败），不含已激活用户的 MC 业务 ID 名单；名单另见控制服务器发出的通知请求；LMS 得到名单也不证明实际 O-PF 这次的状态。组呼条文没有规定每通为此重新发 SUBSCRIBE 或等通知。若实际是 O-PF 在主叫绑定缺失或已过期回 404/141，前序已退出，不按别名无效解释。",
+      "normative_strength": "状态学习、前序身份检查与拒绝，以及 Stage 2 各信息项和收发方按各自条款；不把不同程序叠成每次组呼的前置条件。",
+      "limitations": [
+        "触发者、被订阅对象、发言许可和入会要分别判断。一个注册、PUBLISH 或 REFER 的成功答复不替代其他腿的证明。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "9A.2.2.2.7: participating function learns the alias state from its own matched per-alias notification"
+          ],
+          "printed_pages": [
+            208,
+            209
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.280-v16.7.0",
+          "clauses": [
+            "10.13.2.11, table 10.13.2.11-1 and direction",
+            "10.13.2.12, table 10.13.2.12-1 and direction",
+            "10.13.2.13, table 10.13.2.13-1, direction and note",
+            "10.13.10.1, service server and LMS subscribers",
+            "10.13.10.2, precondition, figure 10.13.10.2-1 and steps 1–2",
+            "10.13.10.3, preconditions, figure 10.13.10.3-1 and steps 1–2"
+          ],
+          "printed_pages": [
+            195,
+            196,
+            203,
+            204
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.1 items 2, 2a, 3, 9–13a, Note 8 and item 17: calling ID, group CF PSI, and equality to activated for the same MCPTT ID"
+          ],
+          "printed_pages": [
+            230,
+            231,
+            232
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.1 items 2, 2a, 3, 9–11a, Notes 8–9 and item 16: calling ID, group CF PSI, and equality to activated for the same MCPTT ID"
+          ],
+          "printed_pages": [
+            276,
+            277,
+            278
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.2 entry and items 2–3, 9–10, 13–17 and 19: prearranged REFER calling identity, reply and separate initial group INVITE through 6.3.2.1.4"
+          ],
+          "printed_pages": [
+            233,
+            234,
+            235
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.2.1 entry and items 2–5, 11–17 and 19: chat REFER calling identity, reply and separate initial group INVITE through 6.3.2.1.4"
+          ],
+          "printed_pages": [
+            282,
+            283,
+            284
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "egress-does-not-prove-delivery-or-display",
+      "title": "O-PF 出站带 F，只能确认这条腿的字段",
+      "conditions": [
+        "已经配对 O-PF 实际出站的对应业务 INVITE；或另问普通预安排组终端实际收到的初始邀请。"
+      ],
+      "conclusion": "出向 INVITE 有 F 可确认 O-PF 写入该值，不证明 CF 收到或被邀终端看到。预安排组真正的终端初始邀请分支第 6A 项允许显示邀请者的功能别名；不是要求一定显示。只见 REFER 200 不足以确定该别名是否写入后续业务 INVITE。",
+      "normative_strength": "预安排被邀终端显示为 MAY；各腿能证明的内容是证据边界。",
+      "limitations": [
+        "CF 收件与终端本机展示均需各自证据。此处不把预安排的显示条款套给普通聊天组或规定下游必转，不认定入会、话权或实际媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.1 items 2, 2a, 3, 9–13a, Note 8 and item 17: calling ID, group CF PSI, and equality to activated for the same MCPTT ID"
+          ],
+          "printed_pages": [
+            230,
+            231,
+            232
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.1.1 items 2, 2a, 3, 9–11a, Notes 8–9 and item 16: calling ID, group CF PSI, and equality to activated for the same MCPTT ID"
+          ],
+          "printed_pages": [
+            276,
+            277,
+            278
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.2 entry and items 2–3, 9–10, 13–17 and 19: prearranged REFER calling identity, reply and separate initial group INVITE through 6.3.2.1.4"
+          ],
+          "printed_pages": [
+            233,
+            234,
+            235
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.2.3.2.1 entry and items 2–5, 11–17 and 19: chat REFER calling identity, reply and separate initial group INVITE through 6.3.2.1.4"
+          ],
+          "printed_pages": [
+            282,
+            283,
+            284
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.2.1.2 initial prearranged incoming INVITE entry and step 6A: invited UE may display the inviter alias"
+          ],
+          "printed_pages": [
+            222,
+            223
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "3.1 functional alias status: activating, activated and deactivating (still activated)"
+      ],
+      "printed_pages": [
+        30
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "F.1.3(k): functional-alias-URI used with mcptt-calling-user-id",
+        "F.1.3(o): call-to-functional-alias-ind distinguishes use of an alias for potential terminating MCPTT IDs"
+      ],
+      "printed_pages": [
+        551
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.2.1.1 items 10 and 14(a–e), Notes 2 and 6: originating PF PSI, direct group and caller functional alias"
+      ],
+      "printed_pages": [
+        220,
+        221
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.1.1 items 9 and 13(a–d), Note 2: originating PF PSI, chat group and caller functional alias"
+      ],
+      "printed_pages": [
+        266
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.3.1.1 items 2, 2a, 3, 9–13a, Note 8 and item 17: calling ID, group CF PSI, and equality to activated for the same MCPTT ID"
+      ],
+      "printed_pages": [
+        230,
+        231,
+        232
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.3.1.1 items 2, 2a, 3, 9–11a, Notes 8–9 and item 16: calling ID, group CF PSI, and equality to activated for the same MCPTT ID"
+      ],
+      "printed_pages": [
+        276,
+        277,
+        278
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.1.3(8): copy the received MCPTT information body to the outgoing INVITE"
+      ],
+      "printed_pages": [
+        85
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.2.2.1 items 1–3, 3(c)(ii)(C), Note 2 and item 10: chat REFER target, entry URI, inner caller functional alias and Target-Dialog",
+        "10.1.1.2.2.1 opening and items 1–3: inherit chat REFER construction with its explicit prearranged group and session-type changes"
+      ],
+      "printed_pages": [
+        228,
+        273,
+        274,
+        275
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.3.1.2 entry and items 2–3, 9–10, 13–17 and 19: prearranged REFER calling identity, reply and separate initial group INVITE through 6.3.2.1.4"
+      ],
+      "printed_pages": [
+        233,
+        234,
+        235
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.2.3.2.1 entry and items 2–5, 11–17 and 19: chat REFER calling identity, reply and separate initial group INVITE through 6.3.2.1.4"
+      ],
+      "printed_pages": [
+        282,
+        283,
+        284
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.1.4(11,11A,12): nested MCPTT information body copied into new INVITE, inactive alias removed, caller ID added"
+      ],
+      "printed_pages": [
+        86
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "9A.2.2.2.7: participating function learns the alias state from its own matched per-alias notification"
+      ],
+      "printed_pages": [
+        208,
+        209
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.280-v16.7.0",
+      "clauses": [
+        "10.13.2.11, table 10.13.2.11-1 and direction",
+        "10.13.2.12, table 10.13.2.12-1 and direction",
+        "10.13.2.13, table 10.13.2.13-1, direction and note",
+        "10.13.10.1, service server and LMS subscribers",
+        "10.13.10.2, precondition, figure 10.13.10.2-1 and steps 1–2",
+        "10.13.10.3, preconditions, figure 10.13.10.3-1 and steps 1–2"
+      ],
+      "printed_pages": [
+        195,
+        196,
+        203,
+        204
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.2.1.2 initial prearranged incoming INVITE entry and step 6A: invited UE may display the inviter alias"
+      ],
+      "printed_pages": [
+        222,
+        223
+      ]
+    }
+  ],
+  "related": [
+    "r16-calls-prearranged-server-admission-routing",
+    "r16-mcptt-chat-establish-join",
+    "r16-calls-chat-preestablished-refer-outcome",
+    "r16-identity-mcptt-functional-alias-activation-servers",
+    "r16-identity-functional-alias-subscriber-list",
+    "r16-calls-private-caller-alias-forwarding"
+  ],
+  "limitations": [
+    "按需比较已判状态是否等于 activated；预建立 helper 字面用 not active。不得把 deactivating、未知状态或观察证据缺失用统一二值规则处理。",
+    "发布或 REFER 的 200、公共别名订阅均不代替本次 O-PF 的别名判定。缺字段、仅有 SIP 应答或邀请端未显示，不能单独证明终端缺发、F 实际经 CF 到达被邀端、本人已见别名或业务已获准。",
+    "本主题只消费别名状态，不重写状态学习、跨系统、上报、告警、准入及重入的规则；不据这里的 MIME 字面差异给出解析兼容规则。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  }
+}
