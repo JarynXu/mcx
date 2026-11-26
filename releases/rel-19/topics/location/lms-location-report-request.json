@@ -927,6 +927,329 @@
         "independent_source_review": false,
         "independent_usage_acceptance": false
       }
+    },
+    {
+      "id": "report-coordinate-request-selects-by-key-presence",
+      "conditions": [
+        "查已辨认的 LMS→已注册 LMC LocationReportRequest 的 requestedLocationInfo；判断实际选择字段时需要完整相关字段，区分标准写法。"
+      ],
+      "conclusion": "requestedLocationInfo 可省略。RequestedLocationInfo 中依描述按出现来选项的字段，在请求中出现就选定；坐标选项印刷表写 Coordinate，A.2 写 coordinate、可空布尔。按这一语义，实际键存在而值是 false 或 null 也不等于省略，不能作不要坐标的标准开关。minimumIntervalLength 是整数秒的报告间隔要求，不属于这种按出现选内容的标记。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.7.2"
+          ],
+          "printed_pages": [
+            21,
+            22
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.33 Table 7.1.6.2.33-1"
+          ],
+          "printed_pages": [
+            50
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.47 Table 7.1.6.2.47-1"
+          ],
+          "printed_pages": [
+            55
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 RequestedLocationInfo and LocationRequest"
+          ],
+          "printed_pages": [
+            85,
+            86
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "缺这个键只说明未通过它请求，不等于禁止输出坐标。不引申为所有布尔字段按出现或两个拼法可换，也不以 schema 类型许可证明某端会接受、有权索要或已取得位置。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "report-coordinate-evidence-in-actual-corresponding-response",
+      "conditions": [
+        "要判断本次索要确取得坐标，先核同一目标注册位置回调、请求上下文、LMS 实际收到对应应答及可读报告内容。"
+      ],
+      "conclusion": "正文与 A.2 的 200 + MCUELocation 中，看实际 locationData 的 currentCoordinate 和其中的地理坐标数据。印刷表 204 无报告正文，只确认请求实收，不能证明坐标回到 LMS。只见请求选项、发出或正文缺捕获的 200 都不能给取得坐标下结论。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.7.2"
+          ],
+          "printed_pages": [
+            21,
+            22
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.2"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.50–.51 Tables 7.1.6.2.50-1 and 7.1.6.2.51-1"
+          ],
+          "printed_pages": [
+            57
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LocationInfo and CurrentCoordinate"
+          ],
+          "printed_pages": [
+            87
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.5.3.3.1 Table 7.1.5.3.3.1-2"
+          ],
+          "printed_pages": [
+            42
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 locationRequest callback"
+          ],
+          "printed_pages": [
+            75
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "别把独立发布 POST 的 201、查询 LMC 的通知或另一目标的应答当作本笔证据；不据缺失片段判线上漏字段。选项和报告本身不授予、也不证明位置请求/分享许可。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "report-coordinate-distinct-from-cell-or-historical-position",
+      "conditions": [
+        "按实收完整的同笔 MCUELocation 区分普通位置数据、坐标和旁带的历史数据。"
+      ],
+      "conclusion": "报告的位置数据按适用配置至少一项；ecgi、ncgi 等小区信息是独立的内容类型。实际只含小区信息的报告能证明该项数据，不是已经返回请求的地理坐标。历史 locationHistoryData 中的坐标另看，不替当前 locationData。看实际报告的 locTimestamp 判断该测量时间，不用 HTTP 到达时刻。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.7.2"
+          ],
+          "printed_pages": [
+            21,
+            22
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.2"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.49 Table 7.1.6.2.49-1"
+          ],
+          "printed_pages": [
+            56
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.50–.51 Tables 7.1.6.2.50-1 and 7.1.6.2.51-1"
+          ],
+          "printed_pages": [
+            57
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LocationInfo and CurrentCoordinate"
+          ],
+          "printed_pages": [
+            87
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不以“至少一项”让小区信息视作坐标请求已满足。不从缺坐标认定拒绝、定位失败或必定回退；没有 GPS 来源、实际精度或新测量的保证。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "report-coordinate-required-geographic-data-and-optional-details",
+      "conditions": [
+        "限实际报告选中了 currentCoordinate 的分支，不把每份位置报告都当坐标。"
+      ],
+      "conclusion": "正文 §6.2.2.8.2 与表 7.1.6.2.51-1 要求给出 geographicalCoordinates（印刷名，复数）；高度、水平／垂直精度、航向和速度是可选资料，不因坐标分支变成必带。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.2"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.50–.51 Tables 7.1.6.2.50-1 and 7.1.6.2.51-1"
+          ],
+          "printed_pages": [
+            57
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LocationInfo and CurrentCoordinate"
+          ],
+          "printed_pages": [
+            87
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不要从只有容器、空白或不完整正文断言存在坐标；TS 29.572 的具体坐标类型、经纬顺序、量纲、算法、可达到的精度及测量新旧未在此展开。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "report-coordinate-printed-and-a2-field-spellings",
+      "conditions": [
+        "对照同版 CurrentCoordinate 的正文、印刷表和 A.2，不将一处写法代作另一处。"
+      ],
+      "conclusion": "正文/印刷表 geographicalCoordinates（复数），A.2 CurrentCoordinate 写 geographicalCoordinate（单数）并引用 TS 29.572 的 GeographicalCoordinates。精度名在正文/A.2 写 horizontalaccuracy，印刷表写 horizonalaccuracy。A.2 未列 required；A.1 的优先限 API 信息元素/方法的编码，程序适用条件仍读正文。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.2"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.50–.51 Tables 7.1.6.2.50-1 and 7.1.6.2.51-1"
+          ],
+          "printed_pages": [
+            57
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LocationInfo and CurrentCoordinate"
+          ],
+          "printed_pages": [
+            87
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不造别名或规定兼容性、缺省值、补字段或同一固定状态码。不从 schema 未列必填项抹去对应分支的必带坐标数据要求。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "source_references": [
@@ -1235,6 +1558,47 @@
       ],
       "printed_pages": [
         73
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 RequestedLocationInfo and LocationRequest"
+      ],
+      "printed_pages": [
+        85,
+        86
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.50–.51 Tables 7.1.6.2.50-1 and 7.1.6.2.51-1"
+      ],
+      "printed_pages": [
+        57
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 LocationInfo and CurrentCoordinate"
+      ],
+      "printed_pages": [
+        87
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 locationRequest callback"
+      ],
+      "printed_pages": [
+        75
       ],
       "usage": "primary"
     }

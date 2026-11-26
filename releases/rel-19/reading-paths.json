@@ -2798,6 +2798,22 @@
       ]
     },
     {
+      "id": "lms-report-request-coordinate-selection-and-evidence",
+      "question": "索要坐标时 coordinate 为 false、null 或缺失各表示什么？如何确认报告确含坐标？",
+      "start": "topics/location/lms-location-report-request.md",
+      "boundary": "查 TS 24.283 V19.3.0 的 LMS→已注册 LMC 回调中 requestedLocationInfo 的坐标选择和报告的实际字段，查规范无需抓包。表 Coordinate、A.2 coordinate；描述按键出现而非必须 true。出现 false/null 不能当省略，没出现也不表示禁止坐标。要确认拿到坐标，另查 LMS 实收匹配回调的 200+报告，currentCoordinate 内要有地理坐标数据，保留来源的单复数和精度字段差异。小区信息、历史坐标或仅看印刷 204/发布 201 不替该笔的当前地理坐标；不从字段推定位权限、实际精度、GPS 或新测量。",
+      "next_if": [
+        {
+          "condition": "实际问 LMC 自己向 LMS 独立 POST 发布报告的提交结果，而非此索要回调的应答。",
+          "read": "topics/location/lms-location-report-publish.md"
+        },
+        {
+          "condition": "实际问上游查询 LMC 的那次结果或请求/分享许可；该目标回调不能代替上游 LocationInfoNotify。",
+          "read": "topics/location/lms-one-time-location-request.md"
+        }
+      ]
+    },
+    {
       "id": "lms-own-configuration-request",
       "question": "GET /lms-reporting/v1/configurations 的 200 和 401 说明什么？取到配置等于已保存并触发上报吗？",
       "start": "topics/location/lms-own-configuration-request.md",

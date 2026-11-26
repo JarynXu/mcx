@@ -45,3 +45,17 @@ LMS **可以自行决定**向已注册的 LMC 要一份报告，先前不必有L
 **本版的历史明细结构有差异。** 表 7.1.6.2.52-1 列 `LocationHistoryData` 内的 `locationHistoryEvent` 数组，标记 M、`1..N`；A.2 将 `LocationHistoryData` 本身定义为 `LocationHistoryEvent` 数组，未列 `minItems`。事件的 `locationData` 在印刷表里类型是 `LocationInfo`，基数印为 `1..N`；A.2 引用单个 `LocationInfo` 对象。印刷摘要表的 `storedReports`、最早和最新时间标 M、`1`，`triggerId` 标 M、`0..N`；A.2 摘要模型未列 `required`。这些写法分别核对。A.1 的附录优先限 API 信息元素及方法的编码，不把两种外形定义为别名，也不以缺字段推零值、空表合规或报告不存在。[印刷页 57–58、73、87–88](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=88)。
 
 收到明细只能确认这笔实际报告里有哪些条目。它不证明缓冲已清除、取到所有历史或有新的测量，也不证明独立发布 POST 或给上游查询 LMC 的位置通知已发、已收。没有完整事件正文，不能用摘要倒推经纬度或补造时间点。按 TS 23.280 V19.9.0 查[单系统历史补报与取消](history-recovery.md)时，另读 Stage 2，不为它补入这套 HTTP 报文规则。
+
+## 索要坐标时，`coordinate: false` 是不要坐标吗？
+
+**按本版不是。** 在 LMS 向已注册目标 LMC 索要报告的 `LocationRequest` 里，`requestedLocationInfo` 可省略。若带它，`coordinate` 这类选择字段按**键是否出现**表达要报告的项目。印刷表写 `Coordinate`；A.2 写 `coordinate`，类型为可空布尔，描述仍以出现为准。实际请求里带 `coordinate: false` 或 `coordinate: null`，不能用来表示不索要坐标。没带这个键，只说明该项没有通过这一个键提出，不等于禁止报告提供坐标，也不替任何位置传播许可作决定。`minimumIntervalLength` 是整数秒的间隔要求，不是这种出现即选的字段。[§6.2.2.7.2，印刷页 21](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=22)；[表 7.1.6.2.33-1、.47-1，页 50、55；A.2，页 85–86](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=51)。
+
+| 实际看到什么 | 能确认什么 |
+| --- | --- |
+| LMS 实收同一目标 LMC 对这笔请求的匹配 200，报告含可读的 `locationData.currentCoordinate` 及地理坐标数据 | 可以确认这笔报告提供了坐标。看这份报告的 `locTimestamp` 判断测量时间，不拿 200 到达时刻当测量时间。还不能据此断定刚测、必为 GPS 或达到指定精度。 |
+| 完整、匹配的报告正文只有 `ecgi`、`ncgi` 等小区信息，没有坐标 | 一般报告的位置数据不只一种；这份正文可以报告小区，但不能当作已经返回所请求的坐标。不从缺坐标推断未授权、GPS 关闭、取得失败或固定回退。历史条目里的坐标与该次报告的当前位置也要分开。 |
+| 只见请求里有选择字段、目标端出站、孤立状态码或不完整的报告正文 | 不能确认 LMS 拿到坐标。按印刷表，204 只确认请求收件；即使实际收到 200 也要看这笔对应正文。未抓到坐标字段不等于线上漏发。 |
+
+**一旦报告给出 `currentCoordinate`，就要再查其中的地理坐标数据。** §6.2.2.8.2 和表 7.1.6.2.51-1 写 `geographicalCoordinates`（复数），在该分支必带；A.2 的 `CurrentCoordinate` schema 写 `geographicalCoordinate`（单数），引用 TS 29.572 的坐标类型，未列 `required`。高度、水平和垂直精度、航向和速度都不因此必带。水平精度在正文与 A.2 写 `horizontalaccuracy`，印刷表写 `horizonalaccuracy`。A.1 的优先限信息元素和方法的编码。别把缺少 schema 关键字读成地理数据可以从本分支省掉，也不设字段别名、`null` 的缺省处理、经纬顺序、采集算法或兼容策略。本页不核 TS 29.572 的具体形状或精度要求。[§§6.2.2.7.2、6.2.2.8.2，印刷页 22–23](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=23)；[表 7.1.6.2.50-1、.51-1，页 57、A.1–A.2，页 73、87](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=58)。
+
+查规范不用抓包。要判断某次通信，还要对上实际请求、响应方向和目标实例；另一笔发布 POST 的 201 或上游查询通知不能代替本次收到的报告。请求字段和报告类型都不说明谁获准索要或分享位置。
