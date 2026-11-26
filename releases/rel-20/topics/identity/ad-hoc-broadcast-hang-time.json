@@ -1,0 +1,166 @@
+{
+  "topic_id": "r20-identity-ad-hoc-broadcast-hang-time",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3；只核 MCPTT 与 MCVideo 的在网业务配置中的 ad hoc 组呼时长项。没有离网、MCData 或运行测试结论。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "two-fields-same-path-distinct-service-docs",
+      "clause": "8.4.2.1",
+      "conditions": [
+        "按 TS 24.484 V20.1.0 查 MCPTT 或 MCVideo 业务配置文档中的在网 ad hoc 组呼块。"
+      ],
+      "conclusion": "两份文档的 on-network → anyExt → adhoc-group-call 均列 hang-time 和 broadcast-hang-time 两个并列元素。它们分别归 MCPTT 和 MCVideo 自己的服务配置 Schema；不能用用户配置档、离网配置或 MCData 的同名/相似字段替代。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1",
+            "9.4.2.1",
+            "8.4.2.3",
+            "9.4.2.3"
+          ],
+          "items": [
+            "§8.4.2.1 on-network 13(d)(iii),(iv)",
+            "§9.4.2.1 on-network 6(c)(iii),(iv)",
+            "§8.4.2.3 / §9.4.2.3 adhoc-group-callType"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-configured-value-pair",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "核 MCPTT 业务配置文档中在网 adhoc-group-call 的两个时长。"
+      ],
+      "conclusion": "项 49 的 hang-time 指在网 ad hoc 组呼的时长；只引用 TS 24.483 §7.2.32 HangTime。项 50 的 broadcast-hang-time 指在网广播 ad hoc 组呼的挂起计时值；只引用 TS 24.483 §7.2.36 BroadcastHangTime。字段独立；普通字段的文字不是运行时优先级或缺项继承定义。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network 49, 50"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-configured-value-pair",
+      "clause": "9.4.2.7",
+      "conditions": [
+        "核 MCVideo 业务配置文档中在网 adhoc-group-call 的两个时长。"
+      ],
+      "conclusion": "项 16 的 hang-time 指在网 ad hoc 呼叫的时长；只引用 TS 24.483 §14.2.24 HangTime。项 16A 的 broadcast-hang-time 指在网广播 ad hoc 组呼的挂起计时值；只引用 TS 24.483 §14.2.26 BroadcastHangTime。不能因两业务的局部标签同名就互换配置文档或推定同一值。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "on-network 16, 16A"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "optional-children-no-default-fallback",
+      "clause": "8.4.2.3",
+      "conditions": [
+        "完整核对对应业务配置块；关心其中某个时长是否存在。"
+      ],
+      "conclusion": "hang-time 和 broadcast-hang-time 的 XSD 声明分别为 xs:duration、minOccurs=\"0\"，声明不设 default 或 fixed。普通字段存在、广播子项未写时，只能确认后者缺项，不从 Schema 或这几项语义赋一个业务默认值、回退或优先次序。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3",
+            "9.4.2.3",
+            "8.4.2.7",
+            "9.4.2.7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "broadcast-not-in-named-duration-lists",
+      "clause": "8.4.2.6",
+      "conditions": [
+        "判断广播字段是否可直接沿用相邻具名字段的细化格式、单位或错误行为。"
+      ],
+      "conclusion": "§8.4.2.6 的 25 项清单列 hang-time 而未列 broadcast-hang-time；§9.4.2.6 的 3 项列表列 hang-time，另有 13 项列表，两者都未列 broadcast-hang-time。不能只因同为 xs:duration 就将清单特指的格式、秒数处理或 HTTP 409 规则移给广播字段。服务配置仍须符合 XSD，不推断任意值有效或不校验。原文对已列字段描述 PT<h>H<m>M<n>S，紧接的检查文字写 PT <n>S，分别保留，不调和成线上格式。MCPTT 25 项、MCVideo 3 项清单后分别对格式不符或 n 值无效要求 HTTP 409 和 constraint-failure；若带 phrase，分别建议 invalid format for duration 或 invalid value for duration。MCVideo 13 项清单后只另明写格式不符的 409/constraint-failure 和可选的格式诊断，没有另列 n 值无效响应。三份清单的这些句子不移给广播字段。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6",
+            "9.4.2.6",
+            "8.4.2.3",
+            "9.4.2.3"
+          ],
+          "items": [
+            "MCPTT 25-name duration checks; MCVideo 3-name and 13-name duration checks"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "support-block-default-not-duration",
+      "clause": "8.4.2.6",
+      "conditions": [
+        "比较完整在网 adhoc-group-call 块缺失和块内单个广播时长子项缺失。"
+      ],
+      "conclusion": "两处校验把整个 adhoc-group-call 块不存在解释为相应业务不支持 ad hoc 组呼；文中的默认 true 是 allow-adhoc-group-call-support 值，不是广播或普通的计时默认。只缺 broadcast-hang-time 不满足整块缺失条件；此处不裁定支持开关本身缺失时如何满足 Schema。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6",
+            "9.4.2.6",
+            "8.4.2.3",
+            "9.4.2.3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "configured-hang-time-not-runtime-machinery",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "已找到计时字段，或要区分同块的总时长、计时器状态和话权事件。"
+      ],
+      "conclusion": "max-duration-of-call 是允许的总呼叫时长，位置对应 MCPTT 项 51 和 MCVideo 项 17，不等于广播或普通 hang-time。这些配置语义不能证明某次终端/服务已采用值，也不定义计时器启动、重置、到期或话权、会话释放动作。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7",
+            "9.4.2.7"
+          ],
+          "items": [
+            "MCPTT items 49–51; MCVideo items 16, 16A, 17"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "两个字段并列；普通字段是原文面向在网 ad hoc 的一项配置，不推断与广播字段的运行优先顺序。",
+    "子项 minOccurs=0 不是缺项默认或回退。具名时长校验清单不列广播字段；不是说广播字段无需 Schema 验证。",
+    "不补写默认、运行单位或范围、缺项回退、计时开始或到期动作。引用 TS 24.483 是索引，不核对照原文；不延伸到离网或 MCData。"
+  ],
+  "related": [],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
