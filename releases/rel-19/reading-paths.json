@@ -2586,6 +2586,26 @@
       "boundary": "限 TS 24.283 V19.3.0 Stage 3。注册看实际同一 LMC→LMS 注册集合 POST（/lms-reporting/v1/registrations）的匹配 201 Location。发送看 LMS 实际另发独立的 ConfigurationNotify POST，目的为已注册 LMC 的 locationConfigUri，正文为 LocationConfiguration。收件看这笔回调的实际匹配 LMC 204，或该 LMC 实收这份配置的独立证据。已能独立核实回调不要求同一份日志含此前的 201。 LMS 可在注册成功分支发起配置通知，条款不规定每次必推、首次下发期限或两事务到达顺序。发送不确认收件；匹配回调 204 不证明配置已执行或已报位置。IMS REGISTER、其他事务的 201/204、配置 GET 的 200 不替代回调。不把本笔 HTTP 注册、配置回调映射为另版 Stage 2 上报事件，也不以此闭合续期／注销、订阅或报告上送。"
     },
     {
+      "id": "lms-mcloc-client-id-continuity",
+      "question": "同一 LMC 重启、失去 LMS 授权或另建注册，MCLOC client ID 要换吗？",
+      "start": "topics/location/lms-registration-configuration.md",
+      "boundary": "限 TS 24.283 V19.3.0 §4.3.1–.2 的 MCLOC client ID。查分配和保留规则无需抓包；判断实际变化时要识别同一 LMC 实例和相应事件。LMC 首次使用分配；获授权、未获授权但 UE 开机、UE 关机和重新上电均保留，出厂重置 NOTE 不保留。实例 ID、业务身份、注册资源分开；同值不证明旧注册仍在或授权未失。网络实体分配 ID 不等于沿用 UE 的保留规则；读当前操作的字段而非统一前缀或 UUID 版本。",
+      "next_if": [
+        {
+          "condition": "问的是同一个别注册有没有成功续期、到期或注销，而非同 LMC 是否保存实例 ID。",
+          "read": "topics/location/lms-registration-maintenance.md"
+        },
+        {
+          "condition": "问 LMC 向 LMS 独立 POST 发布位置报告的实例字段、测量或提交证据；不能把报告字段格式给注册套用。",
+          "read": "topics/location/lms-location-report-publish.md"
+        },
+        {
+          "condition": "问 LMS 向 LMC 索要位置报告及目标应答，而非终端另发的发布 POST。",
+          "read": "topics/location/lms-location-report-request.md"
+        }
+      ]
+    },
+    {
       "id": "lms-subscription-create-authorization",
       "question": "创建 LMS 位置订阅的 POST：401、两种 403 与 201 各对应什么条件？",
       "start": "topics/location/lms-subscription-notification.md",

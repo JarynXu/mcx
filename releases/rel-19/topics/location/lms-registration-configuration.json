@@ -313,6 +313,375 @@
       "limitations": [
         "该计时器不是 LMS 的推送期限；不能用 201、204 或发送日志证明 LMC 已执行处理、触发、计时或产生实际位置报告。"
       ]
+    },
+    {
+      "id": "mcloc-instance-id-first-use",
+      "conditions": [
+        "读 TS 24.283 V19.3.0 的 MCLoc 客户端实例；解释分配时，区别该 LMC 首次使用与同一实例后续启动。"
+      ],
+      "conclusion": "MCLOC client ID 识别特定 LMC 实例，§3.1 定义它为全局唯一的 UUID URN。该 LMC 首次使用时自行分配 ID，§4.3.2 的生成指向 RFC 9562 §4.2。LMC 向 LMS 发送请求另带该 ID，区分同一用户的多个位置管理客户端。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "3.1 MCLOC client ID"
+          ],
+          "printed_pages": [
+            11
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "4.3.1"
+          ],
+          "printed_pages": [
+            12,
+            13
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "4.3.2"
+          ],
+          "printed_pages": [
+            13
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不以 LMS 201 或 MC 用户身份代作 ID 分配。不由注册 POST、令牌换发或同一实例普通重启把这一次使用重定为首次。这里不从引用编号判 UUID 版本或 API 序列化。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcloc-instance-id-retention",
+      "conditions": [
+        "判断同一 LMC 的实例 ID 连续性；对实际设备先查同一 LMC 实例及所发生的事件。"
+      ],
+      "conclusion": "有 LMS 业务授权、未获授权但所在 UE 开机、该 UE 关机、该 UE 重新上电，§4.3.2 均规定保留该实例 ID；出厂重置按同节的 NOTE。失去业务授权或通常的一次电源循环不是分配新 ID 的条件。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "4.3.1"
+          ],
+          "printed_pages": [
+            12,
+            13
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "4.3.2"
+          ],
+          "printed_pages": [
+            13
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "同一用户名、UE 标签或回调 URI 不证明同一实例。相同值不证明授权尚有效、旧注册仍存在、已及时续期或适用配置已收。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcloc-instance-id-factory-reset-note",
+      "conditions": [
+        "确认是同一条规范所说的 UE 恢复出厂设置，而非普通重启；没有现场记录时也可以查规范的这个条件。"
+      ],
+      "conclusion": "§4.3.2 的 NOTE 写 UE 恢复出厂设置时不保留 MCLOC client ID；不能把普通关机和重新上电的保留规则覆盖这项说明。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "4.3.2"
+          ],
+          "printed_pages": [
+            13
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.3.2 and 6.2.2.4.2"
+          ],
+          "printed_pages": [
+            19,
+            20
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "该说明没有规定 LMS 自动清除旧注册或自动新注册。没写卸载重装、换设备、迁移、备份恢复或其他设备的等效事件，不把它们自动归到恢复出厂或普通重启。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcloc-instance-id-separate-business-auth-resource",
+      "conditions": [
+        "比较实例 ID、用户业务身份、注册资源；确认某次交易时按其实际请求、验证状态、LMS 及匹配应答。"
+      ],
+      "conclusion": "MC service IDs 来自用户认证的 access token 和 ID token，不存在位置管理专属 MC service ID，LMC 与 LMS 交互提供当前可用的一组。初建注册请求携带适用于其有效业务 ID 的全部 Bearer 访问令牌，LMS 据令牌派生发起者身份，把所有获 LMS 授权的 MC service IDs 与新资源关联；注册资源地址由匹配 POST 的 201 Location 给出。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "4.3.1"
+          ],
+          "printed_pages": [
+            12,
+            13
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "4.3.2"
+          ],
+          "printed_pages": [
+            13
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.2.2"
+          ],
+          "printed_pages": [
+            17,
+            18
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.9"
+          ],
+          "printed_pages": [
+            60
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "ID 在客户端保留不等于既有服务授权、实际收到的凭据、新建注册或旧资源仍在；不从同值认人、把当前有效等同所有都获业务授权，或以回调地址代资源 URI。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcloc-registration-optional-equipment-subscription-identifiers",
+      "conditions": [
+        "限初建注册 POST 的 LMCRegistration 中可选的 pei、supi；按各字段的角色解读。"
+      ],
+      "conclusion": "pei 是设备标识，supi 是订阅标识，注册正文两者均可选。LMS 经 Le 向位置服务网络请求位置时可使用这些值。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.2.2"
+          ],
+          "printed_pages": [
+            17,
+            18
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.2 Table 7.1.6.2.2-1"
+          ],
+          "printed_pages": [
+            43
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LMCRegistration"
+          ],
+          "printed_pages": [
+            77,
+            78
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "没有这两个可选字段不等于缺实例身份；也不用二者代替 MCLOC client ID、业务认证或注册资源 URI。这里不推 Le 部分的必选字段、网络是否给位置或定位结果。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcloc-network-location-consumer-id-scope",
+      "conditions": [
+        "只问同版 §4.3.2 所列消费位置信息的网络实体，或比较承载 LMC 的设备类型。"
+      ],
+      "conclusion": "消费位置信息的 IWF、MC 业务服务器或另一 LMS 等网络实体也要给此规范 API 分配 MCLOC client ID。§5.3.1 允许 LMC 位于 UE 或其他设备，例如调度台。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "4.3.2"
+          ],
+          "printed_pages": [
+            13
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "5.3.1"
+          ],
+          "printed_pages": [
+            14
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "角色由实际用途决定。不把只适用 UE 的开关机与恢复出厂规则搬给其他设备或网络实体；ID 本身不证明网络角色获准进行普通 LMC 注册、具有用户授权或已收到位置。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcloc-instance-id-wire-fields-by-operation",
+      "conditions": [
+        "比较同一 TS 24.283 V19.3.0 的定义、注册 LMCRegistration 与 LMS_Reporting 的 MCUELocation；实际字段按该操作判。"
+      ],
+      "conclusion": "§3.1 定义 UUID URN。注册正文写 mclocClientId，而表 7.1.6.2.2-1 和 A.2 LMCRegistration 写必带的 mclocClientID 字符串，A.2 未为该注册字段声明 format。报告 MCUELocation 的字段是 mclocClientId，引用 A.2 的 MclocClientId（string、format: uuid），印刷报告表将该字段列 M。A.1 附录优先限 API 信息元素和方法的编码。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "3.1 MCLOC client ID"
+          ],
+          "printed_pages": [
+            11
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "4.3.2"
+          ],
+          "printed_pages": [
+            13
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.2.2"
+          ],
+          "printed_pages": [
+            17,
+            18
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.2 Table 7.1.6.2.2-1"
+          ],
+          "printed_pages": [
+            43
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.49 Table 7.1.6.2.49-1"
+          ],
+          "printed_pages": [
+            56
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LMCRegistration"
+          ],
+          "printed_pages": [
+            77,
+            78
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 MCUELocation and MclocClientId"
+          ],
+          "printed_pages": [
+            86,
+            87
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "不从对照得出大小写字段别名、固定线上前缀、统一 UUID 版本、接收侧校验结果或拒绝码；不将报告格式要求迁到注册。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
@@ -536,12 +905,136 @@
         74
       ],
       "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "3.1 MCLOC client ID"
+      ],
+      "printed_pages": [
+        11
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "4.3.1"
+      ],
+      "printed_pages": [
+        12,
+        13
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "4.3.2"
+      ],
+      "printed_pages": [
+        13
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.2.2.3.2 and 6.2.2.4.2"
+      ],
+      "printed_pages": [
+        19,
+        20
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.9"
+      ],
+      "printed_pages": [
+        60
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.2 Table 7.1.6.2.2-1"
+      ],
+      "printed_pages": [
+        43
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 LMCRegistration"
+      ],
+      "printed_pages": [
+        77,
+        78
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "5.3.1"
+      ],
+      "printed_pages": [
+        14
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.49 Table 7.1.6.2.49-1"
+      ],
+      "printed_pages": [
+        56
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.1"
+      ],
+      "printed_pages": [
+        73
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 MCUELocation and MclocClientId"
+      ],
+      "printed_pages": [
+        86,
+        87
+      ],
+      "usage": "comparison-only"
     }
   ],
   "related": [
     {
       "topic": "r19-location-reporting",
       "relation": "separate-stage2-config-and-report-event",
+      "required": false
+    },
+    {
+      "topic": "r19-location-lms-registration-maintenance",
+      "relation": "registration-resource-continuity-not-instance-id",
+      "required": false
+    },
+    {
+      "topic": "r19-location-lms-location-report-publish",
+      "relation": "comparison-report-wire-instance-evidence",
       "required": false
     }
   ],
