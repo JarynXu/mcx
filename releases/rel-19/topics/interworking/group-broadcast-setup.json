@@ -1,0 +1,623 @@
+{
+  "topic_id": "r19-iwf-group-broadcast-setup",
+  "release": 19,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "互通组广播建呼：哪一侧负责，接收端必须回包吗？",
+  "common_conditions": [
+    "TS 23.283 V19.5.0 Rel‑19 Stage 2 §§10.3.4.1–.3，两支均为 MCPTT 用户发起含 IWF 的 group-broadcast group 建呼；不是一个普通组 ID 的原生按需广播。",
+    "图示分支的接收方子组 A 已有 MCPTT 组呼，这通不是 MCPTT 紧急组呼；主叫属于同一广播组下的另一子组 X。广播组实际定义侧和各自组配置前提另核。",
+    "查规范无需抓包；判断实况按本次操作、角色、适用场景、原事务与独立信令或媒体证据。"
+  ],
+  "condition_rule": "继承本页共同条件与单条条件；除明确标为对照的内容外不借临近章节补实际分支。",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "hierarchy-receiving-users-and-override-scope",
+      "conditions": [
+        "选择 group-broadcast group 互通建呼；图示是 MCPTT 用户实际发起。"
+      ],
+      "conclusion": "广播组由子组而非用户列表组成；同组的子组由同一个系统定义。§10.3.4.1 说发起者发媒体、接收者不回话，不等于没有建呼信令应答；也允许 LMR 起呼，但两支图没有给 LMR 起呼过程。启用 override 时发起者可能被覆盖，不补覆盖规则、参与权限或多人同时发媒体。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.4.1"
+          ],
+          "printed_pages": [
+            53
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.4.2",
+            "Figure 10.3.4.2-1",
+            "10.3.4.2 NOTES 1–2"
+          ],
+          "printed_pages": [
+            53,
+            54,
+            55,
+            56
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.4.3",
+            "Figure 10.3.4.3-1",
+            "10.3.4.3 NOTE"
+          ],
+          "printed_pages": [
+            56,
+            57,
+            58
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "both-examples-select-by-group-definition-and-active-nonemergency-subgroup",
+      "conditions": [
+        "确认主叫、广播组的实际定义侧、子组 A/X 和既有呼叫。"
+      ],
+      "conclusion": "接收客户端所在 A 有进行中的 MCPTT 组呼，且不是 MCPTT 紧急组呼。主叫为另一子组 X 的成员，两组属于广播组。MCPTT 定义支还要求接收客户端及 IWF 是 A 成员、广播组和子组在同一 GMS 且由同一 MCPTT server 服务；LMR 定义支在 IWF 定义广播组和子组。主叫归属、看到 IWF 或普通广播指示都不判广播组的定义侧。没有上述既有呼叫、紧急呼叫或定义条件不符时，本页不判能否中断或建呼。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.4.1"
+          ],
+          "printed_pages": [
+            53
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.4.2",
+            "Figure 10.3.4.2-1",
+            "10.3.4.2 NOTES 1–2"
+          ],
+          "printed_pages": [
+            53,
+            54,
+            55,
+            56
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.4.3",
+            "Figure 10.3.4.3-1",
+            "10.3.4.3 NOTE"
+          ],
+          "printed_pages": [
+            56,
+            57,
+            58
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.2",
+            "Table 10.3.2.2-1",
+            "10.3.2.3",
+            "Table 10.3.2.3-1"
+          ],
+          "printed_pages": [
+            35,
+            36
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcptt-defined-owner-direct-setup-after-existing-subgroup-release",
+      "conditions": [
+        "广播组定义于 MCPTT，满足共同条件及此支前提。"
+      ],
+      "conclusion": "MCPTT server 是广播组所有者；收到主叫客户端的步骤 2 后解析子组、考虑既有呼叫（3/4），按 §10.3.3.8.2 处理子组 A 原有呼叫的释放（5），然后分别发步骤 6a 给接收客户端、6b 给 IWF。步骤 4 的正文末句不完整，不补句子或推广到所有原呼叫。原通话释放请求不证明各端资源已清。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.4.2",
+            "Figure 10.3.4.2-1",
+            "10.3.4.2 NOTES 1–2"
+          ],
+          "printed_pages": [
+            53,
+            54,
+            55,
+            56
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.3.8.2",
+            "10.3.3.8.3"
+          ],
+          "printed_pages": [
+            51,
+            52,
+            53
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcptt-defined-recipient-and-iwf-responses-with-affiliation-granularity",
+      "conditions": [
+        "MCPTT 定义分支步骤 6a/6b；判断 IWF 请求数须核实该组的实际归属。"
+      ],
+      "conclusion": "接收客户端步骤 7 获来呼提示。图 10.3.4.2-1 分列客户端→MCPTT server 的 8a（普通组广播建呼响应）与 IWF→server 的 8b（IWF 组广播建呼响应），步骤 8 正文合称 IWF 应答，不改图示角色。IWF 实际代表该组 LMR 用户归属时 6b/8b 各一条；server 实收逐人归属时每名已归属 LMR 用户各有对应请求/应答。不按静态名单、单一箭头、主叫本属或没有日志决定数量，不补混合模式规则。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.4.2",
+            "Figure 10.3.4.2-1",
+            "10.3.4.2 NOTES 1–2"
+          ],
+          "printed_pages": [
+            53,
+            54,
+            55,
+            56
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-defined-two-opposite-setup-request-legs",
+      "conditions": [
+        "广播组定义在 LMR，满足共同条件及此支前提。"
+      ],
+      "conclusion": "IWF 是广播组所有者。主叫仍是 MCPTT 用户，客户端→server 为步骤 2，server→IWF 为原建呼步骤 3；IWF 按 §10.3.3.8.3 处理原有子组呼叫释放（4），再由 IWF→MCPTT server 发 5a、server→接收客户端发 5b。两笔相反方向的 IWF 请求分开判，不将本支改成 LMR 用户原发，不套 MCPTT 定义支的代理/逐人数量。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.4.3",
+            "Figure 10.3.4.3-1",
+            "10.3.4.3 NOTE"
+          ],
+          "printed_pages": [
+            56,
+            57,
+            58
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.3.8.2",
+            "10.3.3.8.3"
+          ],
+          "printed_pages": [
+            51,
+            52,
+            53
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-defined-receiving-client-response-optional-not-originator-result",
+      "conditions": [
+        "核 LMR 定义支接收腿，或将它与 MCPTT 定义支对照。"
+      ],
+      "conclusion": "MCPTT 接收客户端获来呼提示（6）。§10.3.4.3 步骤 7 明写可选：接收客户端可向 server 回 7a，再由 server 向 IWF 回 7b；7b 是接收腿，不是 IWF 给步骤 3 的应答。不能因未见 7a/7b 判失败，也不能把这项可选性搬到 MCPTT 定义支的 8a/8b。此处不补其他收件、最少应答数、全员等待、统一失败或重试规则。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.4.3",
+            "Figure 10.3.4.3-1",
+            "10.3.4.3 NOTE"
+          ],
+          "printed_pages": [
+            56,
+            57,
+            58
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.4.2",
+            "Figure 10.3.4.2-1",
+            "10.3.4.2 NOTES 1–2"
+          ],
+          "printed_pages": [
+            53,
+            54,
+            55,
+            56
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "broadcast-iwf-setup-tables-not-ordinary-response",
+      "conditions": [
+        "已识别 IWF-1 组广播建呼事务，按其请求或应答表确定字段。"
+      ],
+      "conclusion": "IWF 组广播建呼请求和应答都列必带主叫 MCPTT ID、MCPTT 组 ID；请求带 SDP offer，应答带 SDP answer。普通 IWF 组呼应答表写目标组员 MCPTT ID，不能替换广播应答的主叫字段；普通请求带可选广播指示也不等同本消息。广播请求功能别名、位置可选，隐式话权只在发起客户端请求时带；不是已授予。LMR 起呼且没提供主叫身份时的预留 ID 是请求表 NOTE 1 的条件，不移到本页 MCPTT 用户发起的图。广播应答表没有 Result，不用原生 SIP 状态、其他 IWF 消息或 SDP 答案补出明确拒绝/话权/媒体结果。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.1",
+            "10.3.2.4",
+            "Table 10.3.2.4-1",
+            "10.3.2.5",
+            "Table 10.3.2.5-1"
+          ],
+          "printed_pages": [
+            35,
+            36
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.2",
+            "Table 10.3.2.2-1",
+            "10.3.2.3",
+            "Table 10.3.2.3-1"
+          ],
+          "printed_pages": [
+            35,
+            36
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "originator-result-per-hop-and-actual-media-evidence",
+      "conditions": [
+        "对齐同一呼叫、本次操作、事务和实际端点；对照发起腿、接收腿与媒体。"
+      ],
+      "conclusion": "MCPTT 定义支步骤 9、LMR 定义支步骤 8 分别是 server→原主叫的建呼已建立结果；分别在 10/9 提示用户可传输。成员应答不替主叫应答；实际发送不保证对方接收。同组、同主叫或 SDP 不单独配对并行腿；判断信令收件不需要媒体，实际媒体传输/到达、下游听到和授话权须另证。不以图上应答顺序补等全员、总可提前或超时规则。两支都不规定 LMR 用户怎样被提示，MCPTT 定义支 NOTE 1 不规定 IWF 怎样往 LMR 转请求。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.4.2",
+            "Figure 10.3.4.2-1",
+            "10.3.4.2 NOTES 1–2"
+          ],
+          "printed_pages": [
+            53,
+            54,
+            55,
+            56
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.4.3",
+            "Figure 10.3.4.3-1",
+            "10.3.4.3 NOTE"
+          ],
+          "printed_pages": [
+            56,
+            57,
+            58
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.1",
+            "10.3.2.4",
+            "Table 10.3.2.4-1",
+            "10.3.2.5",
+            "Table 10.3.2.5-1"
+          ],
+          "printed_pages": [
+            35,
+            36
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "keep-existing-subgroup-release-and-final-broadcast-release-separate",
+      "conditions": [
+        "核要解释的是本次组广播的建立，还是原子组／本次广播的释放或另一类广播。"
+      ],
+      "conclusion": "回查既有子组呼叫的释放才用 §10.3.3.8.2/.3。本次组广播在发起者完成传输后释放；要查它的释放消息另读 §10.3.4.4–.5，预配置重组广播另读 §10.3.4.6。只以相邻章节作分路阅读，不拿普通单组原生 Stage 3、LMR 起呼、已建后的释放或重组广播补本页。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.4.1"
+          ],
+          "printed_pages": [
+            53
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.4.2",
+            "Figure 10.3.4.2-1",
+            "10.3.4.2 NOTES 1–2"
+          ],
+          "printed_pages": [
+            53,
+            54,
+            55,
+            56
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.4.3",
+            "Figure 10.3.4.3-1",
+            "10.3.4.3 NOTE"
+          ],
+          "printed_pages": [
+            56,
+            57,
+            58
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.3.8.2",
+            "10.3.3.8.3"
+          ],
+          "printed_pages": [
+            51,
+            52,
+            53
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.4.4–.5 pointer only"
+          ],
+          "printed_pages": [
+            58,
+            59,
+            60,
+            61
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.4.6 pointer only"
+          ],
+          "printed_pages": [
+            61,
+            62,
+            63
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.4.1"
+      ],
+      "printed_pages": [
+        53
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.4.2",
+        "Figure 10.3.4.2-1",
+        "10.3.4.2 NOTES 1–2"
+      ],
+      "printed_pages": [
+        53,
+        54,
+        55,
+        56
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.4.3",
+        "Figure 10.3.4.3-1",
+        "10.3.4.3 NOTE"
+      ],
+      "printed_pages": [
+        56,
+        57,
+        58
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.2.1",
+        "10.3.2.4",
+        "Table 10.3.2.4-1",
+        "10.3.2.5",
+        "Table 10.3.2.5-1"
+      ],
+      "printed_pages": [
+        35,
+        36
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.2.2",
+        "Table 10.3.2.2-1",
+        "10.3.2.3",
+        "Table 10.3.2.3-1"
+      ],
+      "printed_pages": [
+        35,
+        36
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.3.8.2",
+        "10.3.3.8.3"
+      ],
+      "printed_pages": [
+        51,
+        52,
+        53
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.4.4–.5 pointer only"
+      ],
+      "printed_pages": [
+        58,
+        59,
+        60,
+        61
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.4.6 pointer only"
+      ],
+      "printed_pages": [
+        61,
+        62,
+        63
+      ],
+      "usage": "comparison-only"
+    }
+  ],
+  "limitations": [
+    "不提供 LMR 用户起呼、LMR 内部转送/提示、发起者 override、失败/重试算法、完整原生 SIP/RTP 或两种广播产品互通认证。",
+    "本次广播释放及预配置重组广播只给原文入口；不把它们当入场条件或同一流程。"
+  ],
+  "related": [
+    {
+      "topic": "r19-iwf-group-call-request",
+      "required": false,
+      "meaning": "对照普通 IWF 组呼请求及 Broadcast indicator，不替组广播建呼消息。"
+    },
+    {
+      "topic": "r19-iwf-group-call-release",
+      "required": false,
+      "meaning": "查 A 原有预安排通话释放所引用的接口，不是本次广播结束。"
+    },
+    {
+      "topic": "r19-iwf-affiliation-representation",
+      "required": false,
+      "meaning": "需要区分代表归属和实际逐人归属时阅读。"
+    },
+    {
+      "topic": "r19-groups-broadcast-ondemand-signalling",
+      "required": false,
+      "meaning": "查原生普通未重组的 MCPTT 组广播信令时阅读，不映射本 Stage 2。"
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  }
+}
