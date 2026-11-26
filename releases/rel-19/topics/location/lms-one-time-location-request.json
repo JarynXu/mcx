@@ -1,0 +1,1559 @@
+{
+  "topic_id": "r19-location-lms-one-time-location-request",
+  "release": 19,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "向 LMS 查一次位置：201 之后，谁的位置到了请求端？",
+  "common_conditions": [
+    "3GPP TS 24.283 V19.3.0，Rel-19 Stage 3。主路径为 LMC 发起的一次性 LMS_Information 查询；网络发送方、目标侧 LMS_Reporting 及订阅仅作明确标出的对照。",
+    "查规范不要求先有抓包。回答某次交易时只将该声明的消息、角色和关联证据用于该阶段。"
+  ],
+  "condition_rule": "共同范围与单条 conditions 同时适用；创建、目标展开、目标上报、请求端收件和应用使用各自判断。",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.283-v19.3.0",
+  "claims": [
+    {
+      "id": "requester-token-instance-and-callback",
+      "conditions": [
+        "一次性 LocationRequest 的发起端是 LMC。"
+      ],
+      "conclusion": "LMC 用全部适用的 Bearer 访问令牌，带实例标识、locationNotificationUri，及直接用户、激活别名、组 ID 中至少一种目标。LMS 从已验证的令牌派生发起者 MC service IDs；实例 ID、请求/目标别名、目标 ID、通知地址均不替代认证身份。历史详情或状态是可选请求。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.1"
+          ],
+          "printed_pages": [
+            24
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2"
+          ],
+          "printed_pages": [
+            24,
+            25
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2"
+          ],
+          "printed_pages": [
+            25,
+            26
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.6.2.2 Table 7.2.6.2.2-1"
+          ],
+          "printed_pages": [
+            70
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 /requests POST requestLMC"
+          ],
+          "printed_pages": [
+            89
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 ClientOriginatingLocationRequest"
+          ],
+          "printed_pages": [
+            93,
+            94
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "stop-on-bad-token-or-actual-empty-targets",
+      "conditions": [
+        "LMS 收到该 LMC 的完整查询；按步骤 1–4 依次判断。"
+      ],
+      "conclusion": "任一令牌验证失败，回 401 并停止。通过令牌核查后，三类目标数组实际全空则回 403，Warning 为 Invalid location request target client list，并停止。数组未完整观察、非空却在后续过滤、或只看到两种身份头，不是这里列出的失败条件。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2"
+          ],
+          "printed_pages": [
+            24,
+            25
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2"
+          ],
+          "printed_pages": [
+            25,
+            26
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.6.2.2 Table 7.2.6.2.2-1"
+          ],
+          "printed_pages": [
+            70
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 ClientOriginatingLocationRequest"
+          ],
+          "printed_pages": [
+            93,
+            94
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.3.2"
+          ],
+          "printed_pages": [
+            27,
+            28
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      },
+      "limitations": [
+        "A.3 anyOf 限定至少一种目标字段存在，未给数组 minItems；不替代程序的全空判断。混合头拒绝的订阅规则不能移植到一次性请求。"
+      ]
+    },
+    {
+      "id": "creation-201-is-not-location",
+      "conditions": [
+        "辨明 LMC→LMS 的 LMS_Information 一次性集合 POST /lms-information/v1/requests；判实际创建时核对此事务匹配的 LMS 201。"
+      ],
+      "conclusion": "在令牌有效且目标非全空后，LMS 创建查询资源并发出 201。Location 是新资源 URI；按表和 A.3，响应体类型为 ClientOriginatingLocationRequest。步骤 5 发出应答先于按组授权、展开目标、逐人许可和刷新。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2"
+          ],
+          "printed_pages": [
+            24,
+            25
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2"
+          ],
+          "printed_pages": [
+            25,
+            26
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.1"
+          ],
+          "printed_pages": [
+            60,
+            61
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.3.1 Figure 7.2.3.1-1 and Table 7.2.3.1-1"
+          ],
+          "printed_pages": [
+            62
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.3.2.2"
+          ],
+          "printed_pages": [
+            62
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.3.2.3.1 Tables 7.2.3.2.3.1-2, -3, -5"
+          ],
+          "printed_pages": [
+            63
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 /requests POST requestLMC"
+          ],
+          "printed_pages": [
+            89
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      },
+      "limitations": [
+        "不是位置结果、客户端通知 URI 或已存在的订阅，不要求同一笔日志中已有回调。资源方法表仅列 POST，未据此建立 GET；LMS 发出 201 不证明请求端收到，也不约束两端实际收包时序。"
+      ]
+    },
+    {
+      "id": "expand-direct-or-activated-alias",
+      "conditions": [
+        "请求带直接用户 ID 或功能别名列表。"
+      ],
+      "conclusion": "直接用户取列出的 MC service IDs；别名取实际激活该别名者的 MC service IDs。仅登记、配置、已停用的别名不建立目标。步骤 8 合并这些与获准组的动态归属结果，仍须逐目标检查。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2"
+          ],
+          "printed_pages": [
+            24,
+            25
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2"
+          ],
+          "printed_pages": [
+            25,
+            26
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.6.2.2 Table 7.2.6.2.2-1"
+          ],
+          "printed_pages": [
+            70
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 ClientOriginatingLocationRequest"
+          ],
+          "printed_pages": [
+            93,
+            94
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "authorized-group-and-current-affiliates",
+      "conditions": [
+        "步骤 6 对输入的每个组分别核发起者位置用户配置：条件匹配该组 ID，且 allow-request-location-of-groups 为 true。"
+      ],
+      "conclusion": "不满足则忽略这个组；该组中的 U 若也被直接点名，仍有独立目标来源。通过核查的组由 LMS 分别以服务发起者的 MCPTT、MCVideo、MCData 服务器角色订阅组动态数据；只从对应动态通知识别已归属各该组的客户端 service IDs。静态成员或只见 SIP SUBSCRIBE 都不证明当前归属。这是组动态数据订阅，不是位置订阅。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2"
+          ],
+          "printed_pages": [
+            24,
+            25
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2"
+          ],
+          "printed_pages": [
+            25,
+            26
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "request-grant-and-target-sharing",
+      "conditions": [
+        "步骤 9 核发起者能否请求目标；步骤 11 核每一目标能否向此次发起者分享；各自按本地策略或正文所列配置规则。"
+      ],
+      "conclusion": "配置核查的方向相反：发起者侧按目标身份检查 allow-request-location-of-users=true；目标侧按发起者身份检查 allow-to-share-location-information=true。组获准、单向许可或创建 201 均不能证明另一方。9/11 的忽略分支只显式回指各自的身份匹配项 i)，不补齐所有策略不满足时的结果或错误码。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2"
+          ],
+          "printed_pages": [
+            25,
+            26
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "other-owning-lms-not-instance-redirect",
+      "conditions": [
+        "步骤 10：识别到目标 MC service IDs 不归当前 LMS。"
+      ],
+      "conclusion": "LMS 向拥有这些 ID 的 LMS 另建 HTTP 请求；如何确定该 URI 不属本规范范围。该步位于步骤 9 和 11 之间。§7.2.10 的 307/308 是同一 LMS 内不同服务实例的重定向；既不替代本步，也不证明对端授权、结果聚合或返回。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2"
+          ],
+          "printed_pages": [
+            25,
+            26
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.10"
+          ],
+          "printed_pages": [
+            72
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "one-or-more-notifications-with-target-items",
+      "conditions": [
+        "按该一次性查询向授权的请求端 LMC 返回目标位置。"
+      ],
+      "conclusion": "LMS 单独向请求中 locationNotificationUri 发一次或多次 LocationInfoNotify HTTP POST；每份可含一个或多个 MC UE。LocationNotification 标明 requestingMcServiceId，可含请求者已激活别名；逐个 MCUserLocation 查目标 mcServiceIds 与 locationInfo，目标已激活别名和 mcServiceUELabel 可选。设备未区分时不能把一个结果推广到同用户全部终端。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2"
+          ],
+          "printed_pages": [
+            25,
+            26
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.4.2"
+          ],
+          "printed_pages": [
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.5.2.2–.3.1"
+          ],
+          "printed_pages": [
+            69
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.6.2.3 Table 7.2.6.2.3-1"
+          ],
+          "printed_pages": [
+            70
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.6.2.4 Table 7.2.6.2.4-1"
+          ],
+          "printed_pages": [
+            71
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 /requests POST locationRequestResponse"
+          ],
+          "printed_pages": [
+            89,
+            90
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 MCUserLocation and LocationNotification"
+          ],
+          "printed_pages": [
+            94,
+            95
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "specific-query-and-intended-lmc-receipt",
+      "conditions": [
+        "针对一次实际查询：能独立关联触发请求、请求者身份/实例、应收的请求端 LMC 和这笔回调；判断某目标时另匹配通知条目。"
+      ],
+      "conclusion": "该请求端 LMC 实际收到通知，或实际发出匹配此 POST 的收件应答，可证明该端点收到该通知；确定谁的位置到了还要看正文。LMS 出站、代理响应、错误应答、不同事务或不同实例均不够。收到不等于应用使用、显示或 LMS 已收到回执。A.3 查询和通知模型未定义一次性请求 ID；同 URI、同用户或缺 subscriptionID 不能区分并发查询。一次性查询可以有多条通知。实证归为订阅须核实际通知的 subscriptionID 与同一个别订阅及应收的请求端 LMC 对应；次数、未知或错配 ID 均不够。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2"
+          ],
+          "printed_pages": [
+            25,
+            26
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.4.2"
+          ],
+          "printed_pages": [
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.5.2.2–.3.1"
+          ],
+          "printed_pages": [
+            69
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.6.2.3 Table 7.2.6.2.3-1"
+          ],
+          "printed_pages": [
+            70
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.6.2.4 Table 7.2.6.2.4-1"
+          ],
+          "printed_pages": [
+            71
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 ClientOriginatingLocationRequest"
+          ],
+          "printed_pages": [
+            93,
+            94
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 MCUserLocation and LocationNotification"
+          ],
+          "printed_pages": [
+            94,
+            95
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      },
+      "limitations": [
+        "查一次性或订阅规则不以存在旧 201 或抓包为前提。订阅通知按表注携带 subscriptionID，未见字段不能作为一次性的充分证据。"
+      ]
+    },
+    {
+      "id": "missing-user-is-not-a-terminal-result",
+      "conditions": [
+        "已通过令牌核查，至少一类目标数组提交时非空而后续目标全被筛除；或已关联的一份通知只含所请求目标的子集。"
+      ],
+      "conclusion": "非空后全被筛除不等于入口三类数组实际全空，不能套步骤 4 的请求级 403。所引条款没有说明全被筛除时是否发送空结果 POST、逐目标拒绝或最后一条通知，也未给等待期限。只收到甲时，只可说这份里有甲、未见乙；没有逐目标拒绝原因、最后一条标志或全量清单，不据此判乙拒绝、离线、没有测量、全部目标完成或一定未送达。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2"
+          ],
+          "printed_pages": [
+            25,
+            26
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.4.2"
+          ],
+          "printed_pages": [
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.5.2.2–.3.1"
+          ],
+          "printed_pages": [
+            69
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.6.2.3 Table 7.2.6.2.3-1"
+          ],
+          "printed_pages": [
+            70
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.6.2.4 Table 7.2.6.2.4-1"
+          ],
+          "printed_pages": [
+            71
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 ClientOriginatingLocationRequest"
+          ],
+          "printed_pages": [
+            93,
+            94
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 MCUserLocation and LocationNotification"
+          ],
+          "printed_pages": [
+            94,
+            95
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "refresh-request-not-measurement",
+      "conditions": [
+        "步骤 12 要求 refresh 属性存在且显式为 true。"
+      ],
+      "conclusion": "LMS 据此向相应目标 LMC 发起独立的 LocationReportRequest，按该端注册的报告请求回调地址；不是向请求端回位置。A.3 定义可空布尔，描述按存在表述，false、null 或缺字段均不符合程序的 true 条件；不排除另有测量原因。触发请求不证明已执行、200 返回、请求端收到或位置是新测。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2"
+          ],
+          "printed_pages": [
+            25,
+            26
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.7.2"
+          ],
+          "printed_pages": [
+            21,
+            22
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 ClientOriginatingLocationRequest"
+          ],
+          "printed_pages": [
+            93,
+            94
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 locationRequest callback"
+          ],
+          "printed_pages": [
+            74,
+            75
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "measurement-time-vs-notification-time",
+      "conditions": [
+        "要判目标项目是否是此次请求之后的新测量，能把该目标、设备、具体报告和收到的位置项目对应起来。"
+      ],
+      "conclusion": "核目标测量时间（完整 MCUELocation 的 locTimestamp）或其他独立测量证据，再同查询时间比。通知的 MCUserLocation 只嵌套 LocationInfo，可有非坐标位置信息；通知本身不包含完整报告的必备测量时间。请求发送、回调抵达或成功码都不能替代测量时间。可选历史/状态请求不证明完整历史已取回。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2"
+          ],
+          "printed_pages": [
+            24,
+            25
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2"
+          ],
+          "printed_pages": [
+            25,
+            26
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.1–.2"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.49–.50"
+          ],
+          "printed_pages": [
+            56,
+            57
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.6.2.3 Table 7.2.6.2.3-1"
+          ],
+          "printed_pages": [
+            70
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 MCUELocation and LocationInfo"
+          ],
+          "printed_pages": [
+            86,
+            87
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 MCUserLocation and LocationNotification"
+          ],
+          "printed_pages": [
+            94,
+            95
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "notification-code-and-callback-literal",
+      "conditions": [
+        "核一次性 LocationInfoNotify 的收件应答与其编码，而非查询创建或目标报告。"
+      ],
+      "conclusion": "正文 §6.3.2.4.2 写该 LMC 答 201；表 7.2.5.2.3.1-2 与 A.3 的 locationRequestResponse 写 204、无正文。A.3 此回调引用 locationNotificationUri；subscriptionResponseUri 是另一项订阅回调的字面写法。一次性回调的 204 描述写 Configuration，POST 引用的实际模型仍是 LocationNotification。正文结果字段 mcUserResponseList 与表/A.3 的 mcUEResponseList 并列，不设地址回退或双码兼容。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.4.2"
+          ],
+          "printed_pages": [
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.5.2.2–.3.1"
+          ],
+          "printed_pages": [
+            69
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.6.2.4 Table 7.2.6.2.4-1"
+          ],
+          "printed_pages": [
+            71
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 /requests POST locationRequestResponse"
+          ],
+          "printed_pages": [
+            89,
+            90
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 subscriptionNotification"
+          ],
+          "printed_pages": [
+            91
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 MCUserLocation and LocationNotification"
+          ],
+          "printed_pages": [
+            94,
+            95
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "target-report-operation-code-comparator",
+      "conditions": [
+        "独立核目标侧：LMS 向已注册目标 LMC 发 LocationReportRequest，LMC 实收该请求。"
+      ],
+      "conclusion": "§6.2.2.7.2 写 LMC 向 LMS 发 200、带位置报告；A.2 locationRequest 的 200 明列 MCUELocation。表 7.1.5.3.3.1-2 列 204、无正文。§6.2.2.8.1 又规定收到该请求时按 .8.2 发布报告（另一笔 LMC→LMS POST）。分辨实际应答、发布和请求端通知；不能从其中一处补另一处报告、到达顺序或最终收件。目标请求的可选 requestId 与报告对应不等于一次性查询/通知的端到端请求 ID。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.7.2"
+          ],
+          "printed_pages": [
+            21,
+            22
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.5.3.3.1 Table 7.1.5.3.3.1-2"
+          ],
+          "printed_pages": [
+            42
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.1–.2"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.49–.50"
+          ],
+          "printed_pages": [
+            56,
+            57
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 locationRequest callback"
+          ],
+          "printed_pages": [
+            74,
+            75
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 ClientOriginatingLocationRequest"
+          ],
+          "printed_pages": [
+            93,
+            94
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 MCUserLocation and LocationNotification"
+          ],
+          "printed_pages": [
+            94,
+            95
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "sender-network-role-boundary",
+      "conditions": [
+        "发起者是 MC service server、IWF 或另一 LMS，而非本主题详解的 LMC。"
+      ],
+      "conclusion": "发送侧正文要求 X-3GPP-Asserted-Identity 携该网络实体的公共服务身份；§7.2.9 要求认证发送者并维护获准 MC service server 的 PSI 列表。接收流程、应答、通知目标在本段明确为 LMC，而 A.3 /requests POST 声明 BearerAuth；不据此给网络请求者拼接完整授权、回程端点或跨域信任。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.1"
+          ],
+          "printed_pages": [
+            24
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.1"
+          ],
+          "printed_pages": [
+            24
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2"
+          ],
+          "printed_pages": [
+            24,
+            25
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2"
+          ],
+          "printed_pages": [
+            25,
+            26
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.9"
+          ],
+          "printed_pages": [
+            72
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 /requests POST requestLMC"
+          ],
+          "printed_pages": [
+            89
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "request-encoding-and-printed-crossreferences",
+      "conditions": [
+        "TS 24.283 V19.3.0 同一固定原件；核 A.1 所限编码优先，不抛弃 OpenAPI 未表达的程序条件。"
+      ],
+      "conclusion": "正文 mclocClientId、mcServiceIDs、requestedLocationHistory、requestedLocationStatus 与表/A.3 的 mclocClientID、mcServiceIds、requestLocationHistory、requestHistoryStatus 对照；p70 行内 functionalAliasIds、表注 functionalAliasIDs。A.3 未写列表 minItems 或通知模型 required，不把拼法互作别名或省略程序必需字段。p26 步骤 9/11 字面指 6/7，目标 ID 展开在 8；12 写步骤 8 的 LMC，而 8 列 service IDs。p63 创建 201 应答行/A.3 写 Location，同页单列应答头表却为 n/a。§7.2.2.1 指 A.4；§6.1 与实际 API 为 A.3，A.3 externalDocs 标签 V19.1.0 不改变正文版本。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.1 Table 6.1-2"
+          ],
+          "printed_pages": [
+            16
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2"
+          ],
+          "printed_pages": [
+            24,
+            25
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2"
+          ],
+          "printed_pages": [
+            25,
+            26
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.2.1"
+          ],
+          "printed_pages": [
+            61
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.3.2.3.1 Tables 7.2.3.2.3.1-2, -3, -5"
+          ],
+          "printed_pages": [
+            63
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.6.2.2 Table 7.2.6.2.2-1"
+          ],
+          "printed_pages": [
+            70
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.6.2.4 Table 7.2.6.2.4-1"
+          ],
+          "printed_pages": [
+            71
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 /requests POST requestLMC"
+          ],
+          "printed_pages": [
+            89
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 ClientOriginatingLocationRequest"
+          ],
+          "printed_pages": [
+            93,
+            94
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 MCUserLocation and LocationNotification"
+          ],
+          "printed_pages": [
+            94,
+            95
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "limitations": [
+    "不建立整个位置服务的覆盖、所有策略失败的互操作行为、跨 LMS 的聚合/信任回程、所有目标结果或新测量的时限。",
+    "不替代 Stage 2、MCData 业务专有位置、订阅维护或配置生命周期。"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.3.2.1"
+      ],
+      "printed_pages": [
+        24
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.3.2.2.1"
+      ],
+      "printed_pages": [
+        24
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.3.2.2.2"
+      ],
+      "printed_pages": [
+        24,
+        25
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.3.2.2.2"
+      ],
+      "printed_pages": [
+        25,
+        26
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.3.2.4.2"
+      ],
+      "printed_pages": [
+        28
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.2.1"
+      ],
+      "printed_pages": [
+        60,
+        61
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.2.3.1 Figure 7.2.3.1-1 and Table 7.2.3.1-1"
+      ],
+      "printed_pages": [
+        62
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.2.3.2.2"
+      ],
+      "printed_pages": [
+        62
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.2.3.2.3.1 Tables 7.2.3.2.3.1-2, -3, -5"
+      ],
+      "printed_pages": [
+        63
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.2.5.2.2–.3.1"
+      ],
+      "printed_pages": [
+        69
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.2.6.2.2 Table 7.2.6.2.2-1"
+      ],
+      "printed_pages": [
+        70
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.2.6.2.3 Table 7.2.6.2.3-1"
+      ],
+      "printed_pages": [
+        70
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.2.6.2.4 Table 7.2.6.2.4-1"
+      ],
+      "printed_pages": [
+        71
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.2.9"
+      ],
+      "printed_pages": [
+        72
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.2.10"
+      ],
+      "printed_pages": [
+        72
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.1 Table 6.1-2"
+      ],
+      "printed_pages": [
+        16
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.2.2.1"
+      ],
+      "printed_pages": [
+        61
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.1"
+      ],
+      "printed_pages": [
+        73
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.3 /requests POST requestLMC"
+      ],
+      "printed_pages": [
+        89
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.3 /requests POST locationRequestResponse"
+      ],
+      "printed_pages": [
+        89,
+        90
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.3 subscriptionNotification"
+      ],
+      "printed_pages": [
+        91
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.3 ClientOriginatingLocationRequest"
+      ],
+      "printed_pages": [
+        93,
+        94
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.3 MCUserLocation and LocationNotification"
+      ],
+      "printed_pages": [
+        94,
+        95
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.2.2.7.2"
+      ],
+      "printed_pages": [
+        21,
+        22
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.2.2.8.1–.2"
+      ],
+      "printed_pages": [
+        22,
+        23
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.5.3.3.1 Table 7.1.5.3.3.1-2"
+      ],
+      "printed_pages": [
+        42
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.49–.50"
+      ],
+      "printed_pages": [
+        56,
+        57
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 locationRequest callback"
+      ],
+      "printed_pages": [
+        74,
+        75
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 MCUELocation and LocationInfo"
+      ],
+      "printed_pages": [
+        86,
+        87
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.3.2.3.2"
+      ],
+      "printed_pages": [
+        27,
+        28
+      ],
+      "usage": "primary"
+    }
+  ],
+  "related": [
+    {
+      "topic": "r19-location-lms-subscription-notification",
+      "relation": "separate-recurring-location-notify-and-maintenance",
+      "required": false
+    },
+    {
+      "topic": "r19-location-lms-registration-configuration",
+      "relation": "separate-lms-reporting-registration-and-configuration",
+      "required": false
+    },
+    {
+      "topic": "r19-location-on-demand-usage",
+      "relation": "separate-stage2-on-demand-flow",
+      "required": false
+    },
+    {
+      "topic": "r19-iwf-location-query",
+      "relation": "separate-stage2-iwf-query",
+      "required": false
+    },
+    {
+      "topic": "r19-mcdata-local-location-request",
+      "relation": "distinct-mcdata-stage3-query",
+      "required": false
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  }
+}

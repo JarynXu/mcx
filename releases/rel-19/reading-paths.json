@@ -2530,6 +2530,22 @@
           "read": "topics/location/lms-registration-configuration.md"
         }
       ]
+    },
+    {
+      "id": "lms-one-time-location-request",
+      "question": "LMC 发一次性 POST /requests 收到 201，能否说明某个目标的位置已到或是刚测的？",
+      "start": "topics/location/lms-one-time-location-request.md",
+      "boundary": "LMC 向 LMS 一次性 POST /requests。查操作、目标许可、返回位置或新测量的规则无需抓包。 匹配创建 201 仅证请求资源；实际到达看同一次查询发给请求端 LMC 的独立通知和目标条目。仅 refresh=true 明触发另向目标 LMC 要报告，测量时刻要另核。 不把组名单当作当前归属，不从缺席目标推出拒绝、末条通知或新测量；不把重复订阅、LMS_Reporting 或 IWF Stage 2 当作一次性查询。 同一次查询可有多条通知；通知条数或孤立的 subscriptionID 不能区分查询和订阅。",
+      "next_if": [
+        {
+          "condition": "若问订阅创建、通知、PUT 或 DELETE，可直接读订阅规范，无需抓包。判断实际通知则核其 subscriptionID 与同一个别订阅及应收的请求端 LMC 对应；重复通知、未知或错配 ID 都不足以认定是订阅。",
+          "read": "topics/location/lms-subscription-notification.md"
+        },
+        {
+          "condition": "问的是 TS 23.280 V19.9.0 的单系统 Stage 2 信息流，而不是本版 HTTP 收件。",
+          "read": "topics/location/on-demand-usage.md"
+        }
+      ]
     }
   ]
 }

@@ -751,6 +751,14 @@
 
 入口：[同一订阅已创建：更新、取消和到期](topics/location/lms-subscription-notification.md)。
 
+### 向 LMS 查一次位置：201 之后，谁的位置到了请求端？
+
+- **能回答：**LMC 向 LMS 一次性 POST /requests。查操作、目标许可、返回位置或新测量的规则无需抓包。
+- **只到条件或接口：**匹配创建 201 仅证请求资源；实际到达看同一次查询发给请求端 LMC 的独立通知和目标条目。仅 refresh=true 明触发另向目标 LMC 要报告，测量时刻要另核。
+- **尚未建立的结论：**不把组名单当作当前归属，不从缺席目标推出拒绝、末条通知或新测量；不把重复订阅、LMS_Reporting 或 IWF Stage 2 当作一次性查询。
+
+入口：[一次性查询](topics/location/lms-one-time-location-request.md)。
+
 ## 网络策略与QoS
 
 [查看本域全部主题](topics-network-policy.json)
