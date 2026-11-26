@@ -5,12 +5,13 @@
 ## 阅读入口
 
 - [Release 19](releases/rel-19/README.md)：MCPTT 呼叫信令、预建立媒体控制与话权、身份和安全、组文档与 LMR 互通，以及位置、网络策略、部分 MCVideo/MCData 业务要求与指定客户端、服务器协议路径。各主题覆盖范围和证据强度不同，详见版本入口。
+- [Release 20](releases/rel-20/README.md)：已收录 TS 22.179 V20.0.0 的部分 MCPTT Stage 1 通话需求。
 - [Release 16](releases/rel-16/README.md)：按问题查 MCPTT、MCData、MCVideo 的业务角色、信令与媒体控制。
 - [Agent 使用说明](AGENTS.md)与[版本目录](catalog.json)：按版本和问题逐层定位。
 - [编写与维护约定](CONTRIBUTING.md)：内容、来源和核验状态的含义。
 
 每个主题保留标准版本、精确条款及证据范围。知识摘要不替代规范原文；未核实或未覆盖的行为不会因页面已经公开而变成确定结论。
 
-各 Release 独立维护，当前尚未覆盖 Rel20、Rel17、Rel18；Rel19 与 Rel16 均为局部覆盖。缺少版本内容时不静默以其他版本替代。
+各 Release 独立维护。Rel19、Rel20 与 Rel16 均为局部覆盖；Rel17、Rel18 尚未收录。缺少版本内容时不静默以其他版本替代。
 
 本仓库提供自撰解释及公开来源，不转载标准全文或长篇原文、图表。源规范版权归相应权利人。

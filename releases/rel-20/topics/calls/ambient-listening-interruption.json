@@ -1,0 +1,88 @@
+{
+  "topic_id": "r20-calls-ambient-listening-interruption",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS 22.179 V20.0.0，Release 20，Stage 1，在网需求。按本条的业务事件和条件判断，不借用其他 Release。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-22.179-v20.0.0",
+  "standard_stage": 1,
+  "claims": [
+    {
+      "id": "interrupt-context",
+      "clause": "6.16.2.2.1",
+      "requirements": [
+        "R-6.16.2.2.1-004"
+      ],
+      "conditions": [
+        "当前有环境监听，被监听用户开始发送或接收 MCPTT 私呼或组呼"
+      ],
+      "conclusion": "服务结束环境监听，或按后列要求暂停后恢复或并行继续。私呼和组呼均可触发；仅有另一呼叫建立信令不足以认定这里的实际发送或接收已发生。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.16.2.2.1"
+          ],
+          "printed_pages": [
+            56
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pause-then-resume",
+      "clause": "6.16.2.2.1",
+      "requirements": [
+        "R-6.16.2.2.1-005"
+      ],
+      "conditions": [
+        "当前有环境监听；被监听用户开始在另一 MCPTT 私呼或组呼中发送或接收；服务选择暂停"
+      ],
+      "conclusion": "服务暂停环境监听，并在造成该次暂停的呼叫结束后恢复。别的呼叫结束或一次话轮结束不是恢复条件。结束环境监听也不是暂停待恢复。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.16.2.2.1"
+          ],
+          "printed_pages": [
+            56
+          ]
+        }
+      ]
+    },
+    {
+      "id": "parallel-if-supported",
+      "clause": "6.16.2.2.1",
+      "requirements": [
+        "R-6.16.2.2.1-006"
+      ],
+      "conditions": [
+        "当前有环境监听；被监听用户开始在另一 MCPTT 私呼或组呼中发送或接收；服务选择并行继续且允许双路并行通话"
+      ],
+      "conclusion": "环境监听与被监听用户的另一 MCPTT 私呼或组呼的发送或接收并行，不暂停也不结束环境监听。没有并行能力不等于一定暂停，结束路径仍在总要求内。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.16.2.2.1"
+          ],
+          "printed_pages": [
+            56
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "条款给出服务行为，不规定选路策略、SIP 报文、话权动作、媒体切换时刻或实现状态机；注中的 Discreet Listening 是另一能力，不是暂停或恢复。"
+  ],
+  "related": [],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
