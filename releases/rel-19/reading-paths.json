@@ -250,6 +250,10 @@
         {
           "condition": "问 LMR 用户发起且互通组定义在 MCPTT 的紧急建呼、个人或代理归属、原应答和可选的反向逐人腿；查规则不需要实况记录。",
           "read": "topics/interworking/emergency-group-setup-lmr-to-mcptt.md"
+        },
+        {
+          "condition": "问互通组组态仍处于迫近危险的明确取消、IWF 无建呼支持时的应答或组播/确认时序；查规范无需实况记录。",
+          "read": "topics/interworking/imminent-peril-group-state-cancel.md"
         }
       ],
       "boundary": "Bounded Stage2 interworking procedures; underlying security and full call state machine not verified."
@@ -2347,7 +2351,13 @@
       "id": "mcptt-group-imminent-request-feedback",
       "question": "已有按需预安排组呼怎样请求迫近危险升级或取消，各角色状态守卫是什么？",
       "start": "topics/emergency/group-imminent-request-feedback.md",
-      "boundary": "在网按需预安排既有组呼，各角色按实际事件读取；升级与取消分别适用，客户端许可不替代CF许可，组emergency=false仅用于明确列出的分派守卫。 不套初始建会、独立告警或通话释放；保留CF许可回指、取消helper入口及失败false反馈缺口。INFO200不受状态转换的MIGC守卫限制，也不证明原请求获准或全员一致。"
+      "boundary": "在网按需预安排既有组呼，各角色按实际事件读取；升级与取消分别适用，客户端许可不替代CF许可，组emergency=false仅用于明确列出的分派守卫。 不套初始建会、独立告警或通话释放；保留CF许可回指、取消helper入口及失败false反馈缺口。INFO200不受状态转换的MIGC守卫限制，也不证明原请求获准或全员一致。",
+      "next_if": [
+        {
+          "condition": "实际问 TS 23.283 V19.5.0 Stage 2 互通组的迫近危险状态取消，按 IWF 与 MCPTT 成员、发起端的分工；不套原生会话守卫。",
+          "read": "topics/interworking/imminent-peril-group-state-cancel.md"
+        }
+      ]
     },
     {
       "id": "mcdata-deferred-group-file-list",
@@ -2796,6 +2806,38 @@
         {
           "condition": "问整体组呼释放，而不是本次建呼或紧急状态取消。",
           "read": "topics/interworking/group-call-release.md"
+        }
+      ]
+    },
+    {
+      "id": "iwf-imminent-peril-group-state-cancel",
+      "question": "互通组的迫近危险状态是否在挂断后还在？IWF 不支持迫近危险组呼时是否仍要回取消？",
+      "start": "topics/interworking/imminent-peril-group-state-cancel.md",
+      "boundary": "查 TS 23.283 V19.5.0 §10.6.3.4 互通组迫近危险状态的明确取消、MCPTT server 承载动作和三笔信令。仅挂断不会清组状态；查规则无需抓包。 组在 MCPTT 内仍处于该状态且支持优先承载；client 1 曾发起，其用户取消授权另核。4 清组状态、5 调承载。6/7 按实际 LMR 归属，与组播不回 ACK 的 8/10、发起端 2/11 分开。6 和 8 在 5 后可换序，11 在 5 后不等 7 或 10；IWF 即使不支持该类组呼也回 7。 同组同取消者不足以匹配逐人成员腿。实际信令收件、组员应用、承载和媒体结果各需证据。不把告警取消、整体释放、晚加入、话权、原生 Stage 3 或 IWF 内部优先级补入本支。",
+      "next_if": [
+        {
+          "condition": "实际问原生 MCPTT 已有在网按需预安排组呼的端/PF/CF 消息、状态与授权，不是 IWF 互通信息流。",
+          "read": "topics/emergency/group-imminent-request-feedback.md"
+        },
+        {
+          "condition": "明确是原生 MCPTT 取消紧急组状态，而非互通组的迫近危险取消；按原生主题自身范围。",
+          "read": "topics/emergency/group-inprogress-cancel.md"
+        },
+        {
+          "condition": "问的是原生 MCPTT 独立告警取消，不是本互通组状态取消。",
+          "read": "topics/emergency/standalone-alert-cancellation.md"
+        },
+        {
+          "condition": "问预安排互通组呼整体释放和资源边界，而非仅清组迫近危险状态。",
+          "read": "topics/interworking/group-call-release.md"
+        },
+        {
+          "condition": "问正在进行中的组呼晚加入，不是清此前迫近危险状态。",
+          "read": "topics/interworking/late-entry.md"
+        },
+        {
+          "condition": "问正在进行的会话内话权覆盖。",
+          "read": "topics/interworking/floor-override.md"
         }
       ]
     }
