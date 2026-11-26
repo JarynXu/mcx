@@ -290,6 +290,10 @@
         {
           "condition": "问 LMR 用户发起互通紧急告警：区分位置不可用指示、代表用户的组授权、IWF 回执与成员确认，或 MC 定义组的隐式归属。同次另有紧急呼叫请求，告警仍在本支；查建呼另读建呼流程。取消告警、MC 用户发起告警或原生 Stage 3 另查。查规范无需抓包。",
           "read": "topics/interworking/emergency-alert-init-lmr-origin.md"
+        },
+        {
+          "condition": "问 MC 用户发起互通紧急告警：查组授权、位置不可用、原发起端 2/4、IWF 5/6 或成员 7/9。另有紧急呼叫请求，所问若仍是告警，留在本支；问建呼、取消告警、LMR 发起告警或原生 Stage 3 另查。查规范无需抓包。",
+          "read": "topics/interworking/emergency-alert-init-mc-origin.md"
         }
       ],
       "boundary": "Bounded Stage2 interworking procedures; underlying security and full call state machine not verified."
@@ -3126,6 +3130,10 @@
         {
           "condition": "实际查原生 MCPTT 的告警取消，而非互通 IWF 信息流。",
           "read": "topics/emergency/standalone-alert-cancellation.md"
+        },
+        {
+          "condition": "同为 MC 用户，但原请求是发起紧急告警，不是取消告警；包括同时另有紧急呼叫请求时所问的独立告警腿，查 §10.6.4.2。",
+          "read": "topics/interworking/emergency-alert-init-mc-origin.md"
         }
       ]
     },
@@ -3149,6 +3157,38 @@
         },
         {
           "condition": "实际问原生 MCPTT 告警，不是互通 IWF 信息流。",
+          "read": "topics/emergency/standalone-group-alert.md"
+        },
+        {
+          "condition": "仍问发起互通紧急告警，但实际由 MC 用户而非 LMR 用户发起，改查 §10.6.4.2；另有紧急呼叫请求不改变告警入口。",
+          "read": "topics/interworking/emergency-alert-init-mc-origin.md"
+        }
+      ]
+    },
+    {
+      "id": "iwf-emergency-alert-init-mc-origin",
+      "question": "MC 用户发起互通告警时，发起端、IWF 和成员分别确认哪一笔？位置不可用和逐人请求怎样判断？",
+      "start": "topics/interworking/emergency-alert-init-mc-origin.md",
+      "boundary": "TS 23.283 V19.5.0 §10.6.4.2：MC 用户发起互通紧急告警，组可定义在 MC 或 LMR；发起端位置对 server 不可用时，步骤 5 向 IWF 明确指示，不以可选 Location 缺失代替。查规范无需抓包。 组已在管理服务器定义，两个 MC service 客户端已归属；IWF 已接入并获准互通，掌握互通组且配置组与用户映射。步骤 3 解析组并查成员归属及发警者对所指组的告警权限；本场景有已归属成员本属 IWF，IWF 必须参与。4 回 2、6 回 5、9 回各自收到的 7。IWF 实际代理归属发一条，已逐人送归属则经 IWF 发给每名已归属 LMR 成员。 NOTE 3 的 5/7 可任一先，10 仅是 client 1 未归属紧急组时在 3 后的隐式归属；不套 LMR 发起的组定义、代理身份或时限。回执不证明反向实收、授权结果、真实位置、成员通知或组态；只告警且未请求紧急呼叫不置组紧急，同时请求也不证明建呼。组播 ACK 不搬取消例外。",
+      "next_if": [
+        {
+          "condition": "原请求是发起告警，实际 LMR 用户发起而非 MC 用户。",
+          "read": "topics/interworking/emergency-alert-init-lmr-origin.md"
+        },
+        {
+          "condition": "原请求是 MC 用户取消告警，而非发起。",
+          "read": "topics/interworking/emergency-alert-cancel-mc-origin.md"
+        },
+        {
+          "condition": "所问是 MCPTT 用户向 MCPTT 定义组的紧急建呼，即使另有互通告警。",
+          "read": "topics/interworking/emergency-group-setup-mcptt-to-mcptt.md"
+        },
+        {
+          "condition": "所问是 MCPTT 用户向 LMR 定义组的紧急建呼，即使另有互通告警。",
+          "read": "topics/interworking/emergency-group-setup-mcptt-to-lmr.md"
+        },
+        {
+          "condition": "实际问原生 MCPTT 的告警，不是互通 IWF 信息流。",
           "read": "topics/emergency/standalone-group-alert.md"
         }
       ]
