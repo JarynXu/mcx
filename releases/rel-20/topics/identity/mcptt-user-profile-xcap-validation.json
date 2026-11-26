@@ -1,0 +1,161 @@
+{
+  "topic_id": "r20-identity-mcptt-user-profile-xcap-validation",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3；仅限 MCPTT 用户配置档的客户端文档 URI、相关格式及校验。用户是 XCAP 文档所针对的 MCPTT 用户，不把认证前默认 MO、伙伴迁移或其他业务的用户配置档套入。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "client-document-uri",
+      "clause": "8.3.1A",
+      "conditions": [
+        "已认证的 MCPTT 用户；按客户端模板定位该用户 XDM 集合中某一份 MCPTT 用户配置档。"
+      ],
+      "conclusion": "XCAP 的用户是 MCPTT ID。AUID 为 org.3gpp.mcptt.user-profile。客户端模板是 CMSXCAPROOTURI/org.3gpp.mcptt.user-profile/users/sip:MCPTTID/mcptt-user-profile-INDEX.xml；INDEX 来自本档的 user-profile-index，索引 9 的例为 mcptt-user-profile-9.xml。不要用 ProfileName 或用户名替代 INDEX。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.1A",
+            "8.3.1",
+            "8.3.2.2",
+            "8.3.2.7",
+            "8.3.2.8"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "root-attributes-and-profile-name",
+      "clause": "8.3.2.1",
+      "conditions": [
+        "检查 MCPTT 用户配置档根元素和用于标识该档的属性。"
+      ],
+      "conclusion": "mcptt-user-profile 根元素必须带 XUI-URI（xs:anyURI）及 user-profile-index（xs:unsignedByte）。ProfileName 可选，用于表示配置档名称。§8.3.1 所说档案名称与 ProfileName 的关系，不改变 §8.3.1A 访问路径以索引定位文件。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.1",
+            "8.3.2.3",
+            "8.3.1",
+            "8.3.2.7"
+          ],
+          "items": [
+            "§8.3.2.1 items 1, 4, 6",
+            "§8.3.2.3 mcptt-user-profile root type",
+            "§8.3.2.7 user-profile-index / ProfileName"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "document-xui-mismatch",
+      "clause": "8.3.2.6",
+      "conditions": [
+        "验证用户配置档时，正文根元素 XUI-URI 与该文档 URI 的 XUI 值不一致。"
+      ],
+      "conclusion": "XDMS 返回 HTTP 409 Conflict 并含 constraint-failure；若包括 phrase 属性，建议用 Wrong User Profile URI。比较对象是文档 URI 的 XUI 值，不是整条 URI、档案索引或显示名称；本条未给出通用 URI 规范化算法。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "document-filename-validation",
+      "clause": "8.3.2.6",
+      "conditions": [
+        "核对本版文档命名和不满足文件名约束时的校验。"
+      ],
+      "conclusion": "按索引命名为 mcptt-user-profile-<profile-index>.xml，与 §8.3.1A 的客户端模板及 §8.3.2.8 的命名示例一致。文件名不符时，§8.3.2.6 规定 XDMS 返回 HTTP 409 Conflict 和 constraint-failure；若带 phrase 属性，建议说明该命名格式。原文不规定容错文件名、字符规范化、自动改名或检查顺序。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.6",
+            "8.3.1A",
+            "8.3.2.8"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "preselection-presence-and-directory-size",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "解释同一 MCPTT 用户目录的现有配置档及 Pre-selected-indication 的状态。"
+      ],
+      "conclusion": "Pre-selected-indication 是空类型，出现就表示该档被指定预选，不取布尔值。只一份档时此元素可省略，省略也默认预选；多份时正文规定只一份档带此元素，一份档没有它不表示默认预选。本条未指定多份档而无预选时的专用报错、自动选第一份或终端已改用的结论。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7",
+            "8.3.2.6",
+            "8.3.2.1",
+            "8.3.2.3"
+          ],
+          "items": [
+            "§8.3.2.6 last paragraph",
+            "§8.3.2.7 Pre-selected-indication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "second-preselection-conflict",
+      "clause": "8.3.2.6",
+      "conditions": [
+        "同一用户的 XDM 目录中已有一份档带 Pre-selected-indication；验证又一份带同一预选元素的档。"
+      ],
+      "conclusion": "XDMS 返回 HTTP 409 Conflict，包含 constraint-failure。若包含 phrase，建议诊断文字指出已有预选档的名称，不是新档的名称。该校验段称存名称的元素为 Profile-Name；结构和 schema 声明的是 ProfileName，不把校验段的拼法当成第二个 XML 元素。无由推断自动取消已有预选项或原子替换。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.6",
+            "8.3.2.1",
+            "8.3.2.3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "409-insufficient-to-diagnose",
+      "clause": "8.3.2.6",
+      "conditions": [
+        "现场只看到 HTTP 409/constraint-failure，未对上请求和被校验的目录或文档。"
+      ],
+      "conclusion": "XUI、文件名和预选冲突都可落入这对报错，且诊断 phrase 并非必须携带。无法仅凭同一个状态/错误元素判因；查询该次请求的 URI、XML、同一用户当时的档案目录和响应中实际存在的诊断。§8.3.2.6 的其他约束不因本题未展开而不存在。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.6"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "XCAP 用户用已认证的 MCPTT ID，档案资源用 user-profile-index；ProfileName 不替代索引。只说明本版客户端文档 URI 模板。",
+    "HTTP 409 和 constraint-failure 不能单独判因；phrase 可省略。核对请求 URI、正文和同一用户的档案目录；不把诊断文字当作文件名容错规则。",
+    "不覆盖 §8.3 的全部校验或编解码要求，不规定身份规范化、容错文件名或预选档的原子切换，也不把本版文字归因于某一条 CR 改动。"
+  ],
+  "related": [
+    "r20-identity-primary-ue-online-configuration"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
