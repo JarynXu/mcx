@@ -1,0 +1,204 @@
+{
+  "topic_id": "r20-identity-cmc-subscription-notify-fetch",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3；从主系统 MCPTT UE 的 CMC 多文档代理订阅和配置取文观察。只核直接相关的通用条款；附录 A.2.2 是资料性示例，不补写普遍的协议行为。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "cmc-proxy-initial-hop",
+      "clause": "6.3.13.2.2",
+      "conditions": [
+        "MCPTT UE 内的 CMC 发起多文档代理订阅，核初始 SIP SUBSCRIBE。"
+      ],
+      "conclusion": "Request-URI 设为配置的 CMS 订阅代理 PSI。application/resource-lists+xml 为每个文档或元素含一条相对引用；application/vnd.3gpp.mcptt-info+xml 中的 mcptt-access-token 取自 TS 24.482 认证。此发出一跳用 P-Preferred-Service 承载 MCPTT ICSI urn:urn-7:3gpp-service.ims.icsi.mcptt；这不是 CMS 入站断言的同一报头。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.2.2"
+          ],
+          "items": [
+            "initial request b, c, e"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cms-receive-proxy-branch",
+      "clause": "6.3.13.3.2.2",
+      "conditions": [
+        "CMS 实际收到初始 SIP SUBSCRIBE；判断 CMC 发起的代理入站分支。"
+      ],
+      "conclusion": "该分支同时核对 Event: xcap-diff、Request-URI 为自己的代理 PSI、有 P-Asserted-Identity 且其中无授权 MCS 服务器清单身份、有包含 mcptt-access-token 的 application/vnd.3gpp.mcptt-info+xml、有 application/resource-lists+xml、以及 P-Asserted-Service 承载 MCPTT ICSI。仅在发起侧看到 P-Preferred-Service 或请求中没有此断言身份头，不能仅凭其他条件判定命中该入站分支。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.2",
+            "6.2.4.1"
+          ],
+          "items": [
+            "§6.3.13.3.2.2 ingress a–f",
+            "§6.2.4.1 authorized MCS server list"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "subscription-identity-and-rejection",
+      "clause": "6.3.13.3.2.2",
+      "conditions": [
+        "命中上述 CMC 代理入站分支；只核普通可见字段及授权。"
+      ],
+      "conclusion": "CMS 从请求访问令牌识别发起方 MCPTT ID，按该已认证身份判订阅权限，不拿 P-Asserted-Identity 替代。若清单内的资源都不允许该身份订阅，满足拒绝条件，SIP 403 且停止；不从本题裁定部分获准时的处理。入站条件的 MIME 为 application/vnd.3gpp.mcptt-info+xml，取令牌的 c 项印作 application/vnd.3gpp.mcpttinfo+xml；后者不作为另一个线上格式。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.2",
+            "A.2.2"
+          ],
+          "items": [
+            "§6.3.13.3.2.2 processing c–e",
+            "A.2.2 step 3 example"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "proxy-notify-doc-uri",
+      "clause": "6.3.13.3.2.2",
+      "conditions": [
+        "初始代理订阅中，该条目引用的 XCAP URI 装有标识配置文档应用的 auid。"
+      ],
+      "conclusion": "CMS 在这个初始请求所建立订阅对应的 SIP NOTIFY 返回标识配置文档的 XCAP URI。CMC 的接收处理适用于它收到与该订阅关联的 NOTIFY；一条其他订阅或仅 CMS 出站的消息不是 CMC 实收到此文档通知的证据。不要求该 URI 本身已带配置正文。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.2",
+            "6.3.13.2.2"
+          ],
+          "items": [
+            "§6.3.13.3.2.2 processing e",
+            "§6.3.13.2.2 associated NOTIFY receive"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "example-first-notify-and-sip-oks",
+      "clause": "A.2.2",
+      "conditions": [
+        "资料性附录 A.2.2 的 MCPTT UE 多文档代理示例；核首个 SIP NOTIFY 和该例的两个 SIP 响应链。"
+      ],
+      "conclusion": "4–5 的 SIP 200 回 SUBSCRIBE；7–8 的首个 NOTIFY 是 application/xcap-diff+xml，列各文档 sel、new-etag、previous-etag 而无配置 XML；9–10 的 SIP 200 回该 NOTIFY。三个条目的两种 ETag 在示例均相同，后续仍 GET，不据此确定终端的本地版本。初始请求 Accept 中 message/external-body 表示示例支持内容间接引用，不是该 NOTIFY 传正文的证据。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "A.2.2"
+          ],
+          "figures": [
+            "A.2.2-1"
+          ],
+          "items": [
+            "informative steps 1, 4–5, 7–10",
+            "table A.2.2-1; step 7 points to A.2.2-7, printed caption A.2.3-7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "example-get-response-and-fetch-auth",
+      "clause": "A.2.2",
+      "conditions": [
+        "资料性附录 A.2.2 中 CMC 已收到首通知，依据各文档 sel 定位该 XCAP URI 再取文。"
+      ],
+      "conclusion": "11–16 分别示例 HTTP GET 与对应成功 HTTP 200，CMS 按每次 HTTP 请求 Authorization 中访问令牌再查取文权限，成功响应携各自配置 XML。三个对象为 UE 配置、用户配置档与该例的离网业务配置；第三个正文含 common 与 off-network，并非主系统各业务共同限定为离网。一般取文用识别该档的 HTTP GET，CMC 使用配置的 XCAP 根与相应 auid；不把订阅许可当取文许可。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "A.2.2",
+            "6.3.3.2.1",
+            "6.3.3.2.2",
+            "6.3.3.3"
+          ],
+          "figures": [
+            "A.2.2-1"
+          ],
+          "items": [
+            "informative steps 11–16, tables A.2.2-11 through -16",
+            "§6.3.3.2.1–.2 and §6.3.3.3, only document retrieval"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "received-document-local-state-boundary",
+      "clause": "A.2.2",
+      "conditions": [
+        "要判断某一份配置是否已到 CMC，或本地副本/业务有没有变化。"
+      ],
+      "conclusion": "在此例对齐目标文档的 GET 与 CMC 实际收到的 HTTP 200 正文；SIP 200、首通知、相等 ETag、另一份配置的回复、CMS 出站或独立的 HTTP 状态行都不足以证明。收到配置正文也不等于本地副本已保存或业务已使用。§4.2.2.1.1 的本地更新以相关文档相对所存版本已有更新为前提；本例不规定先前副本是否存在，不推出每次通知必 GET 或通用 ETag 决策。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "A.2.2",
+            "4.2.2.1.1"
+          ],
+          "figures": [
+            "A.2.2-1"
+          ],
+          "items": [
+            "informative steps 7–16",
+            "§4.2.2.1.1 primary stated local copy condition"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "example-original-locators",
+      "clause": "A.2.2",
+      "conditions": [
+        "回查资料性附录 A.2.2 的首通知表与第 12 步方向。"
+      ],
+      "conclusion": "第 7 步正文引用 A.2.2-7，紧接表题印 A.2.3-7。第 12 步标题把应答方向印为 CMC 到 CMS，但当步段落、表 A.2.2-12 与图 A.2.2-1 一起说明 HTTP GET 的成功响应由 CMS 到 CMC。不能把该标题当作终端回 HTTP 200 的另一个步骤。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "A.2.2"
+          ],
+          "figures": [
+            "A.2.2-1"
+          ],
+          "items": [
+            "informative step 7 referring to A.2.2-7 / literal caption A.2.3-7",
+            "informative step 12 heading, prose, caption and figure"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "先把 SIP 200 对到原请求；Example A.2.2 的首通知只有文档引用及版本信息，不携配置正文。",
+    "按同一文档找匹配 HTTP GET 的实收正文。同 ETag 不证明本地副本或配置已用，也不定义通用重取策略。",
+    "不展开各类重新订阅、身份隐藏、业务服务器的订阅、其他 XCAP Diff 形态或组文档取回。示例不证明某台终端保存或应用了配置。"
+  ],
+  "related": [
+    "r20-identity-primary-ue-online-configuration"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
