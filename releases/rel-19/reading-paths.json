@@ -2586,6 +2586,26 @@
       "boundary": "限 TS 24.283 V19.3.0 Stage 3。注册看实际同一 LMC→LMS 注册集合 POST（/lms-reporting/v1/registrations）的匹配 201 Location。发送看 LMS 实际另发独立的 ConfigurationNotify POST，目的为已注册 LMC 的 locationConfigUri，正文为 LocationConfiguration。收件看这笔回调的实际匹配 LMC 204，或该 LMC 实收这份配置的独立证据。已能独立核实回调不要求同一份日志含此前的 201。 LMS 可在注册成功分支发起配置通知，条款不规定每次必推、首次下发期限或两事务到达顺序。发送不确认收件；匹配回调 204 不证明配置已执行或已报位置。IMS REGISTER、其他事务的 201/204、配置 GET 的 200 不替代回调。不把本笔 HTTP 注册、配置回调映射为另版 Stage 2 上报事件，也不以此闭合续期／注销、订阅或报告上送。"
     },
     {
+      "id": "lms-subscription-create-authorization",
+      "question": "创建 LMS 位置订阅的 POST：401、两种 403 与 201 各对应什么条件？",
+      "start": "topics/location/lms-subscription-notification.md",
+      "boundary": "限 TS 24.283 V19.3.0 Stage 3 的 LMC→LMS 订阅集合 POST /lms-information/v1/subscriptions。查规范无需抓包；判断实际拒绝须识别同一方法、资源、请求条件与 LMS 匹配应答。双凭据或令牌失败是已列 401，三个目标数组全空与没有创建订阅许可是两种 403 Warning；已有个别订阅的 PUT 可用相同 Warning，状态或文本不能选定操作。通过入口后的 201 只确认建资源；逐目标查询与分享、动态归属、实际位置通知和收件另判。不把 asserted 头当授权，也不搬一次性查询 refresh。",
+      "next_if": [
+        {
+          "condition": "实际问题是已存在同一个别订阅的 PUT、DELETE 或生效期限，看同页「更新、取消和到期」；两种 Warning 也可能来自 PUT。",
+          "read": "topics/location/lms-subscription-notification.md"
+        },
+        {
+          "condition": "实际问一次性查询的 POST /requests 才换入口。若只是核创建后如何筛选本订阅的目标，按本页所引步骤 6–11，不搬其创建和 refresh。",
+          "read": "topics/location/lms-one-time-location-request.md"
+        },
+        {
+          "condition": "问本订阅某份 LocationInfoNotify 或目标位置是否实收，而非这笔创建获准；看同页的通知关联及实际条目。",
+          "read": "topics/location/lms-subscription-notification.md"
+        }
+      ]
+    },
+    {
       "id": "lms-subscription-notification",
       "question": "LMS 订阅创建成功了吗，还是 LMC 已收到一份位置通知？V19.3.0 回调写 201 还是 204？",
       "start": "topics/location/lms-subscription-notification.md",

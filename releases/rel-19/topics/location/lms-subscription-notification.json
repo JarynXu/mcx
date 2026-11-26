@@ -75,6 +75,456 @@
       }
     },
     {
+      "id": "subscription-create-lmc-identity",
+      "conditions": [
+        "读 LocationInfoSubscribe：LMC 向 LMS 发送订阅集合 POST。"
+      ],
+      "conclusion": "该操作针对全部有效 MC service ID，LMC 带所有适用的 Bearer 访问令牌。LMS 校验令牌，从令牌派生发起者的 MC service IDs。请求的 mclocClientId 是实例区别；对照表和 A.3 的 mclocClientID。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "4.3.1–.2"
+          ],
+          "printed_pages": [
+            12,
+            13
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.3.2"
+          ],
+          "printed_pages": [
+            27,
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.9"
+          ],
+          "printed_pages": [
+            72
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.6.2.5 Table 7.2.6.2.5-1"
+          ],
+          "printed_pages": [
+            71
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 LocationSubscriptionRequest"
+          ],
+          "printed_pages": [
+            94
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "目标 ID、回调地址、实例 ID 不作认证身份。身份成立不证明通过订阅许可或目标查询和分享许可。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "subscription-create-network-assertion-source-boundary",
+      "conditions": [
+        "比较同一创建操作的网络发送者条款、接收段步骤 3、通用安全和 OpenAPI；不把网络角色当作本主题 LMC 流程。"
+      ],
+      "conclusion": "发送段列 MC 业务服务器、IWF 或另一 LMS 在 x-3gpp-asserted-identity 写网络实体自身的 PSI。接收段步骤 3 在没有 Bearer 方案及其访问令牌但有断言头时，将头部 URI 用作发送者身份。§7.2.9 要求按 TS 24.482 确定发送者身份并以认证身份做授权。接收段写从 LMC 收到；A.3 的创建 POST 声明 BearerAuth。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.3.2"
+          ],
+          "printed_pages": [
+            27,
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.9"
+          ],
+          "printed_pages": [
+            72
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 /subscriptions POST"
+          ],
+          "printed_pages": [
+            90
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不以头的存在或通用 MC 业务服务器 PSI 准许名单替代身份核验和本操作授权。不闭合网络实体的创建结果、应答与回调。正文没有为两类凭据都不在的情形列一个固定返回码。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "subscription-create-401-dual-credentials-or-invalid-bearer",
+      "conditions": [
+        "按 §6.3.2.3.2 读创建时的凭据检查；给某次通信下结论时，先对上实际 LMC→LMS 的集合 POST、所带凭据与 LMS 应答。"
+      ],
+      "conclusion": "步骤 4：在有 Bearer 方案及其访问令牌的请求中，若同时有 x-3gpp-asserted-identity，或任一访问令牌校验失败，LMS 回 401 并停止本次创建；一个令牌成功不挽救任一失败。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.3.2"
+          ],
+          "printed_pages": [
+            27,
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 /subscriptions POST"
+          ],
+          "printed_pages": [
+            90
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "孤立 401 不区分双凭据和令牌失败；不借同状态、PUT、一次性查询、配置、回调或缺捕获推出。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "subscription-create-403-empty-target-lists",
+      "conditions": [
+        "创建 POST 已进入目标检查；用户业务 ID、功能别名 ID、组 ID 的三个目标数组实际全空。"
+      ],
+      "conclusion": "步骤 5 回 403，Warning 为 Invalid subscription request target client list，停止。若之后订阅许可也本来欠缺，不改成本笔步骤 6 的拒绝。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.3.2"
+          ],
+          "printed_pages": [
+            27,
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.6.2.5 Table 7.2.6.2.5-1"
+          ],
+          "printed_pages": [
+            71
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 LocationSubscriptionRequest"
+          ],
+          "printed_pages": [
+            94
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "仅捕获到一类空或请求片段不足以证明三类全空。入口有条目、后续目标被过滤时不套本分支。同一 Warning 也见对应的个别订阅 PUT，须先区分方法和资源。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "subscription-create-403-no-subscription-grant",
+      "conditions": [
+        "创建 POST 已通过前置检查；MC 用户的配置文档没有一条在 action 内把 allow-subscription-on-location-information 设 true 的 rule。"
+      ],
+      "conclusion": "步骤 6 回 403，Warning 为 Unauthorized for location subscription，并停止。只具有某个目标查询许可，或目标同意分享，不替代这里的创建订阅许可。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.3.2"
+          ],
+          "printed_pages": [
+            27,
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2 steps 6–11, cited by 6.3.2.3.2"
+          ],
+          "printed_pages": [
+            25,
+            26
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.5.2 includes same warnings for individual PUT"
+          ],
+          "printed_pages": [
+            29,
+            30
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "不要把此分支写成某目标拒绝分享。见到相同 Warning 不证明这笔是 POST；孤立 403 不说明具体原因。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "subscription-create-201-precedes-target-authorization",
+      "conditions": [
+        "读本版 LMC 创建成功分支与此后按继承条款展开目标的关系；实际创建仍需匹配该 POST 的 LMS 201 与 Location。"
+      ],
+      "conclusion": "步骤 7–9 生成订阅标识、创建资源并发出 201；其后 §6.3.2.3.2 引用一次性查询的步骤 6–11。组查询许可和实际动态归属、直接 ID、实际激活别名用于展开；发起者查询许可、目标分享许可另判。对按归属或激活别名求得的目标，目标可随订阅期内状态变化。外属目标处理和配置规则的详细条件按被引段，不作本地判断的替代。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.3.2"
+          ],
+          "printed_pages": [
+            27,
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2 steps 6–11, cited by 6.3.2.3.2"
+          ],
+          "printed_pages": [
+            25,
+            26
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.3.3.2–.3.1"
+          ],
+          "printed_pages": [
+            63,
+            64
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.4.2"
+          ],
+          "printed_pages": [
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 /subscriptions POST"
+          ],
+          "printed_pages": [
+            90
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "这是 LMS 程序顺序，不是端点收包时序。201 不证明任何目标位置已发或实收；非空目标后来均被筛掉不触发入口 403，也不补空通知、目标拒绝、最后一条或超时时限。只核同订阅同接收 LMC 的匹配通知和相应条目判断实际送达。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "subscription-create-inherited-target-steps-not-refresh",
+      "conditions": [
+        "检查订阅段复用一次性查询的步骤范围，或区分对被订阅 LMC 的上报配置动作。"
+      ],
+      "conclusion": "§6.3.2.3.2 仅借用一次性查询 §6.3.2.2.2 的步骤 6–11，不借步骤 12 的 refresh；它另写 LMS 可能需要按 §6.2.2.5 更新所订阅 LMC 的上报配置。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.3.2"
+          ],
+          "printed_pages": [
+            27,
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2 steps 6–11, cited by 6.3.2.3.2"
+          ],
+          "printed_pages": [
+            25,
+            26
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.2.2 step 12"
+          ],
+          "printed_pages": [
+            26
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "创建 201 不证明要求了刷新、配置已通知或应用、上报或新测量已发生。是否发生另按对应事务和证据核实。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "subscription-create-schema-presence-not-nonempty-or-authorization",
+      "conditions": [
+        "仅比较固定 V19.3.0 的创建流程、LocationSubscriptionRequest 数据类型与 A.3。"
+      ],
+      "conclusion": "A.3 要求 expTime、mclocClientID、locationNotificationUri；anyOf 只检查至少一类目标字段存在，数组无 minItems。表 7.2.6.2.5-1 的可选目标数组条目数为 1..N。§6.3.2.3.2 写 mclocClientId，与表和 A.3 的大小写不同。附录优先只覆盖编码；全空与许可的程序门仍适用。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.3.2"
+          ],
+          "printed_pages": [
+            27,
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.6.2.5 Table 7.2.6.2.5-1"
+          ],
+          "printed_pages": [
+            71
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 /subscriptions POST"
+          ],
+          "printed_pages": [
+            90
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 LocationSubscriptionRequest"
+          ],
+          "printed_pages": [
+            94
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不造等价字段，不从 schema 检查通过推出请求有效、获准或目标非空，不给缺字段定过程未列的固定响应。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
       "id": "actual-notification-role-address",
       "conditions": [
         "实际辨认由本订阅引出的独立 LocationInfoNotify。"
@@ -1114,6 +1564,70 @@
         92
       ],
       "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "4.3.1–.2"
+      ],
+      "printed_pages": [
+        12,
+        13
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.3.2.3.2"
+      ],
+      "printed_pages": [
+        27,
+        28
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.2.9"
+      ],
+      "printed_pages": [
+        72
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.3.2.2.2 steps 6–11, cited by 6.3.2.3.2"
+      ],
+      "printed_pages": [
+        25,
+        26
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.3.2.5.2 includes same warnings for individual PUT"
+      ],
+      "printed_pages": [
+        29,
+        30
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.3.2.2.2 step 12"
+      ],
+      "printed_pages": [
+        26
+      ],
+      "usage": "comparison-only"
     }
   ],
   "related": [
@@ -1130,6 +1644,11 @@
     {
       "topic": "r19-location-lms-registration-configuration",
       "relation": "separate-lms-reporting-registration-and-config",
+      "required": false
+    },
+    {
+      "topic": "r19-location-lms-one-time-location-request",
+      "relation": "reused-target-selection-steps-6-through-11-only",
       "required": false
     }
   ],
