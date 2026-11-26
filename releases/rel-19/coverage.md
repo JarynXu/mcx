@@ -689,9 +689,9 @@
 
 ### MCX与LMR互通
 
-- **能回答：**可查IWF边界、组配置/归属、重组、组呼/私呼、SDS地址映射、话权过滤与位置的信息流。
+- **能回答：**可查IWF边界、组配置/归属、重组、组呼/私呼、SDS地址映射、话权过滤与位置的信息流。 已辨认 TS 23.283 V19.5.0 IWF-2 组 standalone SDS 媒体应答、MCData server→实际代理 IWF 的处置通知或双向通用处置通知时，可按 §10.8.2.9、§10.8.2.6 或 §10.8.2.3 区分所选参数、通知的两种用户身份和被报告的原事务。
 - **只到条件或接口：**TS23.283 V19.5.0 Stage2；IWF前的本地选中不等于最终Granted，互通MCData范围为SDS。
-- **尚未建立的结论：**不代表IWF内部实现、LMR协议编码、全部SIP或媒体互通测试；不能直接当原生MCX Stage3消息配方。
+- **尚未建立的结论：**不代表IWF内部实现、LMR协议编码、全部SIP或媒体互通测试；不能直接当原生MCX Stage3消息配方。 SDP answer、请求的回执类型、方向或会话 ID 都不能替代关联原事务的实际处置通知，也不证明终端送达、已读、未收到或全组完成。
 
 入口：[LMR 互通：IWF 的规范边界](topics/interworking/scope.md)；[归属信息流：服务类型与逐组结果](topics/interworking/affiliation-results.md)；[互通私呼释放：发起方与确认次序](topics/interworking/private-release.md)；[互通SDS：地址映射与代理回执](topics/interworking/sds-addressing.md)；[组话权本地过滤：通过预选不等于最终授予](topics/interworking/floor-filtering.md)。
 
