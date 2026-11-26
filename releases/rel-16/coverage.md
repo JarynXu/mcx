@@ -1474,6 +1474,16 @@ MCVideo-3 是服务器到服务器或服务器到网关的应用信令参考点�
 
 [读取主题](topics/mcvideo/prearranged-group-transmission-server.md)
 
+## 普通预安排 MCVideo 组：控制方无发送许可时的来包与结束请求
+
+CF 直连客户端无发送许可时，U Taken 怎么区分分发器下行和上行带载荷 RTP？U Idle 何时还须前次 End？无许可仍发送态的 T3 和 End 如何处理？
+
+普通在网预安排组：当此端 U 为无许可 Taken，有本 CF 媒体分发器的实际 RTP 到来时，由网络媒体接口向关联端转发；不要求另证控制 U 自身收包或收到指示。此下行不触发上行 #3。上行另取本端带载荷的实际指示，U Idle 另核前次实收 End，U Taken 未列同历史守卫。同一 U 已进入无许可仍发送态后，T3 实际到期与 U 实收关联端的 End Request 是两种事件。对实收 End，按 Ack 请求位处理确认，按当时的 G 分路。
+
+尚未建立：不知道实际来源时不从 G、Notify、原因 #3 或 T3 选择上下行或角色。若 U 仍处无许可 Taken，当前实收 End Request 另查 §6.3.5.4.5 的条件，不套 .7.4。转发不证明关联端有发送或接收许可、终端实收；不补停 T3、其他 G 出口、编码、跨 NCF 或整场释放。
+
+[读取主题](topics/mcvideo/controlling-client-no-permission-rtp.md)
+
 ## 普通预安排组呼：接收服务器逐流许可与结束职责
 
 普通预安排组接收Gr/U职责、逐接收者与逐发送流许可、实际RTP处理及分别结束。

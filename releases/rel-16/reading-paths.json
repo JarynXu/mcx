@@ -355,6 +355,10 @@
         {
           "condition": "要区分普通预安排 MCVideo 组呼的发送许可和逐流接收许可。",
           "read": "topics/mcvideo/prearranged-group-reception-server.md"
+        },
+        {
+          "condition": "普通在网预安排组中，确证是控制方面向直连客户端的 U，处于无许可 Idle/Taken 且网络媒体接口实报收到本关联端带载荷 RTP；Idle 还须查上次有许可态实收 End Request。 同一控制角色的 U 若已进入无许可仍发送态，也可查其实际 T3 到期或实收关联端 End；仅对 End 再核当时 G。",
+          "read": "topics/mcvideo/controlling-client-no-permission-rtp.md"
         }
       ],
       "boundary": "不覆盖完整初始化、授权策略、队列/竞争/抢占、PF跨节点、接收仲裁或呈现；Grant、RTP、End及应用释放分别取证，不能套私呼条件。 按本页受邀初始化、实际U/G状态及请求/结果/媒体/结束事件分别进入；不由任意SIP200推定G已Idle。"
@@ -471,7 +475,12 @@
       "id": "r16-mcvideo-onnetwork-preemption-revoke",
       "question": "普通在网组显式抢占：满容量撤销、等待与 End 证据",
       "start": "topics/mcvideo/onnetwork-preemption-revoke.md",
-      "next_if": [],
+      "next_if": [
+        {
+          "condition": "普通在网预安排组中，确证是控制方面向直连客户端的 U，处于无许可 Idle/Taken 且网络媒体接口实报收到本关联端带载荷 RTP；Idle 还须查上次有许可态实收 End Request。 也可查该端已进无许可仍发送态后的实际 End；勿把仍处 pending、仅见 Revoke 或 T3 等同于进入无许可状态。",
+          "read": "topics/mcvideo/controlling-client-no-permission-rtp.md"
+        }
+      ],
       "boundary": "仅普通在网预安排组的实际 G Taken、请求者 U、旧发送者 U 或客户端状态与事件。容量已满及 pre-emptive 仅约束相应请求分支，不附加到后续 RTP、计时和 End。Revoke、队首、End、Grant 与 RTP 分别取证；cause #4 不推定客户端 End/queued 后续。保留 OR 条件重叠、Idle helper 守卫、回指及计时表差异，不补完整配置、队列调度、初始化、安全或端到端抢占闭环；不借私呼、离网或 MCPTT 页替代。"
     },
     {
@@ -12056,6 +12065,10 @@
         {
           "condition": "若所处其实是控制方 U/G 在普通预安排组呼的满容量抢占，查控制侧撤销与等待，勿套 NCF P 的原因 #3。",
           "read": "topics/mcvideo/onnetwork-preemption-revoke.md"
+        },
+        {
+          "condition": "普通在网预安排组中，确证是控制方面向直连客户端的 U，处于无许可 Idle/Taken 且网络媒体接口实报收到本关联端带载荷 RTP；Idle 还须查上次有许可态实收 End Request。 本入口不是 NCF 的 P 或 NCF 面向 CF 的服务器接口；只有相同 #3 时不转。",
+          "read": "topics/mcvideo/controlling-client-no-permission-rtp.md"
         }
       ],
       "boundary": "只读在网 MCVideo 组的 NCF 传输参与者接口 P 与其传输控制服务器接口。P 授权状态、相关会话和实际指示或收件分开；不替代终端接收、CF 仲裁、MBMS 或应用与信令面释放程序。 组呼终端接收许可、收件和呈现要看本场对应证据，不借用私呼接收程序。"
@@ -12399,6 +12412,30 @@
         }
       ],
       "boundary": "只查 TS 23.283 V16.8.0 两方向按组成组清单的预配置重组形成、申请拒绝与显式撤销。区分配置 P、实际重组 D、客户端回执、服务器归属／解除归属、向 IWF 报结果及实际通话。不得借用同系统 SIP、动态 GMS、个人重组或无线侧处理。"
+    },
+    {
+      "id": "r16-mcvideo-controlling-client-no-permission-rtp",
+      "question": "普通预安排组的控制方，直连客户端没发送许可却收到带载荷 RTP：哪种 U 状态还要查以前是否收到 End Request？ 原因 #3 和 T3 能否判角色、要不要停转发，或判断客户端已经断开？ 无许可仍发送态实收 End Request，谁回 Ack？当前 G Idle 或 Taken 时分别给谁发什么，接口是否重新获准？",
+      "start": "topics/mcvideo/controlling-client-no-permission-rtp.md",
+      "next_if": [
+        {
+          "condition": "若实际问题是普通预安排组的未排队显式请求、授予，或已有许可 U 收关联端带载荷 RTP、收到普通 End Request，查旧页对应 U/G；不把它当成无许可仍发送态的 End。",
+          "read": "topics/mcvideo/prearranged-group-transmission-server.md"
+        },
+        {
+          "condition": "若实际问题是普通在网预安排组的显式抢占，或已证实控制侧旧发送端 U 还处于 pending Transmit Revoke 且该阶段实收 RTP/T3/End，查抢占等待页，不凭相同 T3 或一条 Revoke 判该状态。",
+          "read": "topics/mcvideo/onnetwork-preemption-revoke.md"
+        },
+        {
+          "condition": "若确定位于在网组的 NCF P，按同一会话、该关联端和 P 当前状态查实际网络媒体接口报告的来包，或 P 实收本端 Transmission Release；仅见原因 #3 不选择此分支。",
+          "read": "topics/mcvideo/noncontrolling-participant-rtp-release.md"
+        },
+        {
+          "condition": "若另查普通预安排组的控制侧接收仲裁、逐流 Receive Media Request 或实到 RTP 的 SSRC 检查，按该页实际角色和事件；不把本页向接收仲裁发出的 Notify 当授予。",
+          "read": "topics/mcvideo/prearranged-group-reception-server.md"
+        }
+      ],
+      "boundary": "只讲 TS 24.581 V16.9.0 普通在网预安排组的直接客户端控制接口 U。先核对本端、实际带载荷 RTP 和 U Idle/Taken；Idle 还须上一许可态实收 End。已进入无许可仍发送态后，实际 End 独立查当前 G；仅凭 #3 不判来源或交付。不套 NCF、抢占等待、其他 G 状态或信令释放。"
     }
   ]
 }

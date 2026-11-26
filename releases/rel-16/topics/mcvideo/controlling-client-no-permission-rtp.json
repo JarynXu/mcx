@@ -1,0 +1,569 @@
+{
+  "topic_id": "r16-mcvideo-controlling-client-no-permission-rtp",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "MCVideo 客户端无发送许可却上传 RTP：控制方何时发 #3，怎样收尾？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.581-v16.9.0",
+  "condition_rule": "先按同一呼叫、接口角色和实际 U 状态套同一条内的事件条件；入态历史 End 只附在 Idle 来包入口，实际 End 后另取当时 G。",
+  "common_conditions": [
+    "固定 TS 24.581 V16.9.0（Rel-16，Stage 3）；普通在网、已有传输控制的预安排组呼。仅看 CF 面向直接关联 MCVideo 客户端的基本发送控制 U；G 是同一呼叫独立的一般发送仲裁。其他角色和状态只做对照。",
+    "现有状态、实际事件、参与端和同一呼叫分别核对。历史 End Request 只限定 Idle 的来包入口。除明确的对照外，不套 NCF、广播/系统/紧急/危急/临时组、私呼、离网或 MBMS；所需媒体与控制保护仍按其协商及角色条件处理。"
+  ],
+  "claims": [
+    {
+      "id": "idle-ingress-needs-prior-end-receipt",
+      "title": "U 无许可且 Idle：关联带载荷 RTP 还不够",
+      "conditions": [
+        "同一直接客户端 U 当前为 U: not permitted and Transmit Idle。",
+        "网络媒体接口实际报告收到该客户端的带载荷 RTP。",
+        "同一 U 在上一 U: permitted 已实际收到 Transmission End Request。"
+      ],
+      "conclusion": "符合三个条件才按 §6.3.5.3.8：先要求网络媒体接口不把这批 RTP 交给分发器，再向关联参与端发 Transmission Revoke（Reject Cause #3），转入 U: not permitted but sends media 并按入口启动 T3。",
+      "normative_strength": "触发条件及动作见正文步骤 1–3 和 .7.2；图 6.3.5.1-1 的来包箭头未列历史守卫。",
+      "limitations": [
+        "只有客户端发出 End、别的参与端来包或只有 RTP 头，不补齐相应守卫。没有前序收件证据，不能依本段判发 #3、已丢包或已放行。",
+        "若确定当前实际事件没有适用流程，§6.3.5.1 另要求请求网络媒体接口丢弃 RTP 并留 U 原态；未找到历史记录不等于已穷尽适用程序。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.1, 6.3.2.2 and 6.3.5.1: controlling function, distinct per-client basic transmission control U and per-call general transmission control G"
+          ],
+          "printed_pages": [
+            52,
+            64,
+            65,
+            66
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.5.1 Figure 6.3.5.1-1 and unhandled-event paragraphs: overview labels versus exact ingress and End guards; conditional discard and state retention"
+          ],
+          "printed_pages": [
+            65,
+            66
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.5.3.8 full ingress: actual associated-client RTP with payload, prior U permitted End Request receipt, note about NCF, and steps 1–3"
+          ],
+          "printed_pages": [
+            70,
+            71
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.5.7.1–3 and 11.1.3 Table 11.1.3-1 T3 row: entry, no distributor forwarding request, expiry/cause #3, implementation options and wording differences; 6.3.5.6.8 step 2 (pending End Response comparison only)"
+          ],
+          "printed_pages": [
+            81,
+            82,
+            207
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "taken-ingress-no-idle-history-premise",
+      "title": "U 无许可且 Taken：分发器下行与关联端上行分开",
+      "conditions": [
+        "同一普通在网预安排组呼中，控制方面向这个直接客户端的 U 当前为 U: not permitted and Transmit Taken。",
+        "按本次实际来包的来源分支适用；不存在一个同时要求两种来包、或要求下行也有本端上行带载荷指示的共同条件。"
+      ],
+      "conclusion": "在此 U 状态下，若这条路径上实际有来自本 CF 媒体分发器的 RTP，按 §6.3.5.4.1 由网络媒体接口向该关联参与端转发，不要求另证控制 U 自身收包或收到事件指示。若实际事件是网络媒体接口报告收到这个关联端发来的带载荷 RTP，按 §6.3.5.4.6，先要求网络媒体接口不把这批 RTP 交给分发器，再向关联参与端发 Transmission Revoke（Reject Cause #3），转入 U: not permitted but sends media 并按入口启动 T3；这一上行入口没有前次许可态已收到 End 的条件。",
+      "normative_strength": "另一客户端已获许可是 .4.1 所述的该 U 状态背景。下行转发按 .4.1；实际本端带载荷上行的三步按 .4.6，入态启 T3 按 .7.2。",
+      "limitations": [
+        "分发器来包不是关联端上行，不触发这次 #3；仅见 G、Notify、SSRC、未知来源或尚未实际收到分发器 RTP，不算此下行事实。不能拿非控制功能 P 替换这个 U。",
+        "两个上行入口的注释均把 NCF 处理留在 NCF。来自媒体分发器、另一端或不存在载荷的来包不满足上行入口；规定转发或接口指令不证明执行、通知或媒体实收，也不证明关联端获发送或接收许可、整通呼叫的 G 状态或整场释放。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.5.4.1 and 6.3.5.4.6 full ingress: other client permitted, actual associated-client payload, NCF note and steps 1–3 without prior End requirement"
+          ],
+          "printed_pages": [
+            71,
+            76,
+            77
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.5.7.1–3 and 11.1.3 Table 11.1.3-1 T3 row: entry, no distributor forwarding request, expiry/cause #3, implementation options and wording differences; 6.3.5.6.8 step 2 (pending End Response comparison only)"
+          ],
+          "printed_pages": [
+            81,
+            82,
+            207
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "no-permission-state-and-t3-expiry",
+      "title": "先阻止转发，再按实际 T3 到期重发",
+      "conditions": [
+        "U 进入 U: not permitted but sends media；重发段另要求此 U 内 T3 已实际到期。"
+      ],
+      "conclusion": "入态启动 T3。在该状态，U 不请求网络媒体接口把本端 RTP 交给分发器。T3 到期才向同一参与端再发原因 #3、重启 T3、保持本状态。",
+      "normative_strength": "入态、到期重发、重启及留态用 SHALL；重发次数和放弃动作由实现决定，断开该客户端只是注释建议。",
+      "limitations": [
+        "收到或发出重复 #3 不证明又收到一批 RTP；不能以 T3 到期替代首个不转发指令。没有固定次数后必须断整个呼叫的要求。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.5.3.8 full ingress: actual associated-client RTP with payload, prior U permitted End Request receipt, note about NCF, and steps 1–3"
+          ],
+          "printed_pages": [
+            70,
+            71
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.5.4.1 and 6.3.5.4.6 full ingress: other client permitted, actual associated-client payload, NCF note and steps 1–3 without prior End requirement"
+          ],
+          "printed_pages": [
+            71,
+            76,
+            77
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.5.7.1–3 and 11.1.3 Table 11.1.3-1 T3 row: entry, no distributor forwarding request, expiry/cause #3, implementation options and wording differences; 6.3.5.6.8 step 2 (pending End Response comparison only)"
+          ],
+          "printed_pages": [
+            81,
+            82,
+            207
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "timer-table-does-not-imply-automatic-stop",
+      "title": "T3 表的正常停止文字不能代替本态 End Request 程序",
+      "conditions": [
+        "解释本 U 进入或离开无许可仍发送状态的 T3。"
+      ],
+      "conclusion": "表列 T3 默认 1 秒且可配置，启动栏写向有许可者发 Revoke、正常停止栏写收到 Transmission Release。§6.3.5.7.2 则明确无许可仍发送态入态时启动；.7.4 收到 Transmission End Request 时未列单独停止 T3 的动作。",
+      "normative_strength": "逐处保留表与正文用语；不把未列的动作写成 SHALL 或禁止。",
+      "limitations": [
+        "Transmission Release 不替换 Transmission End Request；不能从离态、Ack、Idle 或 Notify 推断计时器自动停止或仍运行，不能把 pending U 收到 End Response 的停止动作搬来。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.5.7.1–3 and 11.1.3 Table 11.1.3-1 T3 row: entry, no distributor forwarding request, expiry/cause #3, implementation options and wording differences; 6.3.5.6.8 step 2 (pending End Response comparison only)"
+          ],
+          "printed_pages": [
+            81,
+            82,
+            207
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.5.7.4 lead-in and step 1 including subparts a/b; 9.2.2.1 Table 9.2.2.1-3 and 9.2.3.10 (Message Type format comparison only)"
+          ],
+          "printed_pages": [
+            82,
+            83,
+            146,
+            151
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.5.7.4 step 2 including subparts a(i) and b: G Transmit Idle, Transmission Idle sequence increment and U exit (§6.3.5.3.2)"
+          ],
+          "printed_pages": [
+            69,
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.5.7.4 step 3 and NOTE: G Transmit Taken, Media Transmission Notify to reception arbitration, fields and Ack boundary, U exit (§6.3.5.4.2) and separate basic reception instance"
+          ],
+          "printed_pages": [
+            71,
+            83
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "actual-end-ack-independent-of-g-branch",
+      "title": "实收 End Request：Ack 位只管确认，不替代 G",
+      "conditions": [
+        "同一 U 尚在 U: not permitted but sends media，实际收到该关联参与端的 Transmission End Request。"
+      ],
+      "conclusion": "Subtype 首位为 1 时须发传输控制 Ack，步骤 1 字面 Message Type=4、Source=2；为 0 时此步无强制 Ack。之后按实际 G 状态处理，与 Ack 请求位无关。",
+      "normative_strength": "§6.3.5.7.4 第 1 步有独立首位守卫；此处 Ack 是传输控制确认。",
+      "limitations": [
+        "Ack 不是 SIP ACK，不是 Transmission End Response，也不证明停流。过程 Message Type=4 与表 9.2.2.1-3 的 End Request subtype x0000、§9.2.3.10 的含首位编码描述分开给出，不构造一致的线上编码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.5.7.4 lead-in and step 1 including subparts a/b; 9.2.2.1 Table 9.2.2.1-3 and 9.2.3.10 (Message Type format comparison only)"
+          ],
+          "printed_pages": [
+            82,
+            83,
+            146,
+            151
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "actual-end-when-g-idle",
+      "title": "同一 End Request，G Idle 时发 Idle",
+      "conditions": [
+        "本 U 正在无许可仍发送态，实际收到同一关联端的 Transmission End Request。",
+        "此刻同一呼叫的 G 为 G: Transmit Idle；不从入态时的 U: Idle 或 Taken 倒推。"
+      ],
+      "conclusion": "U 发 Transmission Idle，将消息序列号加 1，并按 §6.3.5.3.2 进入 U: not permitted and Transmit Idle。是否另有传输控制 Ack 只取决于该请求首位。",
+      "normative_strength": "§6.3.5.7.4 步骤 2 对该 G 分支规定发送 Idle 与状态转换；没有额外 End Response 或停止 T3 动作。",
+      "limitations": [
+        "不能在这一步调用有许可 U 或一般发送仲裁的 End Response 分支，也不证明新发送许可、终端收件、媒体已停或整场释放。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.5.1 Figure 6.3.5.1-1 and unhandled-event paragraphs: overview labels versus exact ingress and End guards; conditional discard and state retention"
+          ],
+          "printed_pages": [
+            65,
+            66
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.5.7.4 lead-in and step 1 including subparts a/b; 9.2.2.1 Table 9.2.2.1-3 and 9.2.3.10 (Message Type format comparison only)"
+          ],
+          "printed_pages": [
+            82,
+            83,
+            146,
+            151
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.5.7.4 step 2 including subparts a(i) and b: G Transmit Idle, Transmission Idle sequence increment and U exit (§6.3.5.3.2)"
+          ],
+          "printed_pages": [
+            69,
+            83
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "actual-end-when-g-taken-notify-reception-arbitration",
+      "title": "同一 End Request，G Taken 时通知接收仲裁",
+      "conditions": [
+        "本 U 正在无许可仍发送态，实际收到同一关联端的 Transmission End Request。",
+        "此刻同一呼叫的 G 为 G: Transmit Taken。"
+      ],
+      "conclusion": "U 向接收控制仲裁发送 Media Transmission Notify。未请求隐私时，Granted Party's Identity 字段须填获准者的 MCVideo ID。普通非广播可带 Permission to Request the transmission=1，也可为这个 Notify 请求 Ack。U 进入 U: not permitted and Transmit Taken，启动面向该参与端的基本接收控制实例。",
+      "normative_strength": "步骤 3.a、c 描述发送和转态；d 文字为启动实例。两项可选字段不是强制。Notify Ack 收到或缺失的处理是实现选项，与 End Request 的 Ack 守卫分开。",
+      "limitations": [
+        "发送目标是接收仲裁，不是终端。通知、可请求发送、接收实例都不授予该端发送或接收，不证明 RTP 交付或呈现。图未标各 G 守卫，未列 G 状态的出口不补写。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.5.1 Figure 6.3.5.1-1 and unhandled-event paragraphs: overview labels versus exact ingress and End guards; conditional discard and state retention"
+          ],
+          "printed_pages": [
+            65,
+            66
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.5.7.4 lead-in and step 1 including subparts a/b; 9.2.2.1 Table 9.2.2.1-3 and 9.2.3.10 (Message Type format comparison only)"
+          ],
+          "printed_pages": [
+            82,
+            83,
+            146,
+            151
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.5.7.4 step 3 and NOTE: G Transmit Taken, Media Transmission Notify to reception arbitration, fields and Ack boundary, U exit (§6.3.5.4.2) and separate basic reception instance"
+          ],
+          "printed_pages": [
+            71,
+            83
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "cause-3-and-t3-not-role-proof",
+      "title": "原因 #3 与 T3 均不能单独定位角色和状态",
+      "conditions": [
+        "只见 Revoked #3、只见 T3，或另有独立证据命中以下对照角色。"
+      ],
+      "conclusion": "原因 #3 是无发送许可；通用描述称 Revoked 发给有许可者，不取消具体无许可分支。NCF P 无许可且收到本端来包指示时也发本地 #3，保持 P 无许可并记期待 Transmission Release。CF 的有许可 U 收到关联端带载荷 RTP 指示则要求交分发器；pending U 实际收到关联端带载荷 RTP 仍转给分发器并留在 pending。",
+      "normative_strength": "三种接口状态按各自触发规定动作；只作范围对照。",
+      "limitations": [
+        "NCF 这一无许可分支未规定如何转发或丢弃该批包，不能搬用 CF 指令。出现相同 Revoke 原因、T3、箭头或 End 名称，不能据此改定 CF/NCF、进入状态、此前授权、收件或物理丢包。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.5.5.6, 6.3.5.6.2–4 and 6.5.5.3.9 (comparisons only): permitted/pending U media and no-permission NCF P lower-interface indication and local Revoked"
+          ],
+          "printed_pages": [
+            79,
+            80,
+            113
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "9.2.10.1–2: general Transmission Revoked description and literal reason #3; no sending-state or interface provenance from cause alone"
+          ],
+          "printed_pages": [
+            164,
+            165
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.5.3.8 full ingress: actual associated-client RTP with payload, prior U permitted End Request receipt, note about NCF, and steps 1–3"
+          ],
+          "printed_pages": [
+            70,
+            71
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.5.4.1 and 6.3.5.4.6 full ingress: other client permitted, actual associated-client payload, NCF note and steps 1–3 without prior End requirement"
+          ],
+          "printed_pages": [
+            71,
+            76,
+            77
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.581-v16.9.0",
+          "clauses": [
+            "6.3.5.7.1–3 and 11.1.3 Table 11.1.3-1 T3 row: entry, no distributor forwarding request, expiry/cause #3, implementation options and wording differences; 6.3.5.6.8 step 2 (pending End Response comparison only)"
+          ],
+          "printed_pages": [
+            81,
+            82,
+            207
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.3.1, 6.3.2.2 and 6.3.5.1: controlling function, distinct per-client basic transmission control U and per-call general transmission control G"
+      ],
+      "printed_pages": [
+        52,
+        64,
+        65,
+        66
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.3.5.1 Figure 6.3.5.1-1 and unhandled-event paragraphs: overview labels versus exact ingress and End guards; conditional discard and state retention"
+      ],
+      "printed_pages": [
+        65,
+        66
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.3.5.3.8 full ingress: actual associated-client RTP with payload, prior U permitted End Request receipt, note about NCF, and steps 1–3"
+      ],
+      "printed_pages": [
+        70,
+        71
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.3.5.4.1 and 6.3.5.4.6 full ingress: other client permitted, actual associated-client payload, NCF note and steps 1–3 without prior End requirement"
+      ],
+      "printed_pages": [
+        71,
+        76,
+        77
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.3.5.7.1–3 and 11.1.3 Table 11.1.3-1 T3 row: entry, no distributor forwarding request, expiry/cause #3, implementation options and wording differences; 6.3.5.6.8 step 2 (pending End Response comparison only)"
+      ],
+      "printed_pages": [
+        81,
+        82,
+        207
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.3.5.7.4 lead-in and step 1 including subparts a/b; 9.2.2.1 Table 9.2.2.1-3 and 9.2.3.10 (Message Type format comparison only)"
+      ],
+      "printed_pages": [
+        82,
+        83,
+        146,
+        151
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.3.5.7.4 step 2 including subparts a(i) and b: G Transmit Idle, Transmission Idle sequence increment and U exit (§6.3.5.3.2)"
+      ],
+      "printed_pages": [
+        69,
+        83
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.3.5.7.4 step 3 and NOTE: G Transmit Taken, Media Transmission Notify to reception arbitration, fields and Ack boundary, U exit (§6.3.5.4.2) and separate basic reception instance"
+      ],
+      "printed_pages": [
+        71,
+        83
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "6.3.5.5.6, 6.3.5.6.2–4 and 6.5.5.3.9 (comparisons only): permitted/pending U media and no-permission NCF P lower-interface indication and local Revoked"
+      ],
+      "printed_pages": [
+        79,
+        80,
+        113
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.581-v16.9.0",
+      "clauses": [
+        "9.2.10.1–2: general Transmission Revoked description and literal reason #3; no sending-state or interface provenance from cause alone"
+      ],
+      "printed_pages": [
+        164,
+        165
+      ]
+    }
+  ],
+  "related": [
+    "r16-mcvideo-prearranged-group-transmission-server",
+    "r16-mcvideo-onnetwork-preemption-revoke",
+    "r16-mcvideo-noncontrolling-participant-rtp-release",
+    "r16-mcvideo-prearranged-group-reception-server"
+  ],
+  "limitations": [
+    "不覆盖特殊呼叫、非控制转发、信令释放、完整编码和调度策略。",
+    "仅证状态机义务及可识别记录，不声明媒体执行成功、终端实收或当前业务现场。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}
