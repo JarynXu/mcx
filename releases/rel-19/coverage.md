@@ -785,6 +785,14 @@
 
 入口：[MCPTT 定义的互通组取消紧急状态：会清告警吗？谁确认？](topics/interworking/emergency-group-state-cancel-mcptt-origin.md)。
 
+### LMR 用户取消 MCPTT 定义组的紧急状态：谁验权，谁回 IWF？
+
+- **能回答：**查 TS 23.283 V19.5.0 §10.6.2.3.1：LMR 用户发起的是取消 MCPTT 定义互通组现有紧急状态的请求。只有同一请求另指定，才一并清发起者本人的告警。挂断不清组状态，查规范无需抓包。
+- **只到条件或接口：**组仍处紧急状态，已有 MCPTT 客户端归属。IWF 已接入并获准互通，且已配置组和用户身份映射；server 另验 LMR 发起者的本组取消权限。1 是 IWF 向 server 请求，步骤 3 清组状态，4 调承载，5 面向成员；6 是 server 回原 IWF 请求，NOTE 4 允许在 3 后发，不固定等 4、5。
+- **尚未建立的结论：**紧急告警取消请求即使另带清组状态指示，也查 §10.6.5.1，不走本支。仅凭两项取消目标不能判定请求类型。迫近危险、LMR 定义组、MCPTT 用户发起或整体释放另查。IWF 回执不证明成员实收、LMR 侧结果或媒体停止；不从总则补反向 IWF 请求或逐人扇出。
+
+入口：[LMR 用户取消 MCPTT 定义组的紧急状态：谁验权，谁回 IWF？](topics/interworking/emergency-group-state-cancel-lmr-origin-mcptt-defined.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)
