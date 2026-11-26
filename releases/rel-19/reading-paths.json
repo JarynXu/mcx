@@ -258,6 +258,10 @@
         {
           "condition": "问 MCPTT 用户对 MCPTT 定义互通组起迫近危险呼叫的指定组、位置传给谁、IWF 建呼可否拒绝及各腿；不是取消或 LMR 发起。查规范无需实况记录。",
           "read": "topics/interworking/imminent-peril-group-call-mcptt-origin.md"
+        },
+        {
+          "condition": "问 LMR 用户普通起呼，目标互通组在 MCPTT 内已处迫近危险状态；查普通 IWF 请求、迫近危险应答、各腿和组播。查规范无需实况记录。",
+          "read": "topics/interworking/imminent-peril-group-call-lmr-origin.md"
         }
       ],
       "boundary": "Bounded Stage2 interworking procedures; underlying security and full call state machine not verified."
@@ -2869,6 +2873,38 @@
         },
         {
           "condition": "明确问既有组呼整体释放，别用建呼应答或媒体阶段代替。",
+          "read": "topics/interworking/group-call-release.md"
+        },
+        {
+          "condition": "实际由 LMR 用户普通起呼，互通组已在 MCPTT 迫近危险状态，不是 MCPTT 主动迫近危险起呼；查 .3.3。",
+          "read": "topics/interworking/imminent-peril-group-call-lmr-origin.md"
+        }
+      ]
+    },
+    {
+      "id": "iwf-imminent-peril-group-call-lmr-origin",
+      "question": "LMR 用户普通起呼时，MCPTT 已有迫近危险组状态：为何普通 IWF 请求会收到迫近危险应答？",
+      "start": "topics/interworking/imminent-peril-group-call-lmr-origin.md",
+      "boundary": "查 TS 23.283 V19.5.0 §10.6.3.3 中 LMR 普通组呼进入已处迫近危险状态的 MCPTT 互通组。查规范无需抓包。 IWF 不跟踪该组状态，步骤 1 发普通请求，MCPTT server 在 2 识别已有状态。原 1/5 的回复类型是迫近危险；已归属 MCPTT 3/4 与带额外逐人归属条件的 LMR 3a/4a 分开，组播只免 MCPTT 的 4；6 为媒体，MCPTT 主控。 不可给 5 套普通应答字段或其他分支时序。实际单跳收件不需要媒体也不替代目标收件或媒体。不把普通起呼当新设/取消迫近危险组状态，不补完整 LMR、IWF 优先级、失败行为或 Stage 3。",
+      "next_if": [
+        {
+          "condition": "实际是 MCPTT 用户主动发迫近危险组呼，查 .3.2 的位置许可、IWF 7/8 与主叫 10。",
+          "read": "topics/interworking/imminent-peril-group-call-mcptt-origin.md"
+        },
+        {
+          "condition": "实际问获授权明确取消组迫近危险状态，不是 LMR 新起普通组呼。",
+          "read": "topics/interworking/imminent-peril-group-state-cancel.md"
+        },
+        {
+          "condition": "只问普通 IWF 请求主叫 ID、预留身份、隐式话权或 SDP offer，不问 .3.3 应答选择。",
+          "read": "topics/interworking/group-call-request.md"
+        },
+        {
+          "condition": "问现有互通组呼晚加入，不是本分支新起普通呼叫。",
+          "read": "topics/interworking/late-entry.md"
+        },
+        {
+          "condition": "明确问已建的互通组呼整体释放。",
           "read": "topics/interworking/group-call-release.md"
         }
       ]

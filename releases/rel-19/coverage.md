@@ -769,6 +769,14 @@
 
 入口：[MCPTT 发起迫近危险互通组呼：IWF 可以拒绝吗？位置能给谁？](topics/interworking/imminent-peril-group-call-mcptt-origin.md)。
 
+### LMR 普通组呼遇到已有迫近危险状态：为什么 IWF 收到不同类型的应答？
+
+- **能回答：**查 TS 23.283 V19.5.0 §10.6.3.3 中 LMR 普通组呼进入已处迫近危险状态的 MCPTT 互通组。查规范无需抓包。
+- **只到条件或接口：**IWF 不跟踪该组状态，步骤 1 发普通请求，MCPTT server 在 2 识别已有状态。原 1/5 的回复类型是迫近危险；已归属 MCPTT 3/4 与带额外逐人归属条件的 LMR 3a/4a 分开，组播只免 MCPTT 的 4；6 为媒体，MCPTT 主控。
+- **尚未建立的结论：**不可给 5 套普通应答字段或其他分支时序。实际单跳收件不需要媒体也不替代目标收件或媒体。不把普通起呼当新设/取消迫近危险组状态，不补完整 LMR、IWF 优先级、失败行为或 Stage 3。
+
+入口：[LMR 普通组呼遇到已有迫近危险状态：为什么 IWF 收到不同类型的应答？](topics/interworking/imminent-peril-group-call-lmr-origin.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)
