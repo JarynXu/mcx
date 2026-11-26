@@ -2606,6 +2606,26 @@
       ]
     },
     {
+      "id": "lms-signalling-event-configuration-and-trigger-id",
+      "question": "LMC 初次登录和实际收到配置分别怎样触发位置上报？旧触发的 ID 或配置何时保留？",
+      "start": "topics/location/lms-registration-configuration.md",
+      "boundary": "查 TS 24.283 V19.3.0 Stage 3 下发配置中可选的 signallingEvent，查规范无需抓包。按实际适用配置区分 initialLogOn 和 locationConfigurationReceived；不把前者直接映射为 SIP 注册、LMS 注册或业务授权，也不把后者映为强制下发。定义 ID 的触发子项已有且有效则复用，否则另给唯一值。删项要应用 FULL；UPDATE 不因省略旧项删除。配置收到、实际应用、事件触发和已发布分别核；不从同一回调刚新增的事件、配置 204 或单个 ID 定实际执行与上报。",
+      "next_if": [
+        {
+          "condition": "实际问事件触发后 LMC 是否发 LocationReportPublish、计时器门槛或 LMS 是否接受，而非配置发送或子项选择。",
+          "read": "topics/location/lms-location-report-publish.md"
+        },
+        {
+          "condition": "实际问发起者 A 如何请 LMS 改 B 的规则，先查另一笔请求和授权；不拿配置收件证明这笔请求存在。",
+          "read": "topics/location/lms-target-configuration-change.md"
+        },
+        {
+          "condition": "实际问 TS 23.280 V19.10.1 Stage 2 的下发时机、用户档和上报事件；不能用另一版业务过程确定 Stage 3 的 initialLogOn 线路。",
+          "read": "topics/location/reporting.md"
+        }
+      ]
+    },
+    {
       "id": "lms-subscription-create-authorization",
       "question": "创建 LMS 位置订阅的 POST：401、两种 403 与 201 各对应什么条件？",
       "start": "topics/location/lms-subscription-notification.md",

@@ -682,6 +682,429 @@
         "independent_source_review": false,
         "independent_usage_acceptance": false
       }
+    },
+    {
+      "id": "signalling-trigger-applicable-criteria-and-event-kind",
+      "conditions": [
+        "查 TS 24.283 V19.3.0 的 LocationConfiguration。判运行时，先确认同一 LMC、当时实际适用的触发配置和 MC UE 紧急／非紧急状态。"
+      ],
+      "conclusion": "紧急状态读 emergencyTriggeringCriteria，非紧急读 triggeringCriteria。所在状态的 TriggeringCriteria 可以含 signallingEvent；initialLogOn（初次登录）、locationConfigurationReceived（收到位置配置）是两个独立的可选子项。被配置且实际发生的相符事件是 LMC 上报的触发，不是要求 LMS 下发配置的条件。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.3–.4 Tables 7.1.6.2.3-1 and 7.1.6.2.4-1"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.40 Table 7.1.6.2.40-1"
+          ],
+          "printed_pages": [
+            54
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.43 Table 7.1.6.2.43-1"
+          ],
+          "printed_pages": [
+            54
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.46 Table 7.1.6.2.46-1"
+          ],
+          "printed_pages": [
+            55
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 SignallingEvent, InitialLogOn and LocationConfigurationReceived"
+          ],
+          "printed_pages": [
+            83,
+            84
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不同事件、其他状态下具备的配置、仅收到构成条件的单个信息元素均不能证明该事件当前已适用或报告已发送。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "signalling-trigger-initial-logon-not-a-defined-registration-mapping",
+      "conditions": [
+        "已辨认适用 SignallingEvent.initialLogOn。对照注册或授权记录时只问它是否能单独代表这项初次登录事件。"
+      ],
+      "conclusion": "表 .40-1 和 A.2 把初次登录列为可配置的位置报告事件，没有给出等同哪种协议注册/授权。SIP REGISTER、LMS 注册 POST/201、续期或普通业务授权成功，均不能单独证明这一事件成立。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.40 Table 7.1.6.2.40-1"
+          ],
+          "printed_pages": [
+            54
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.43 Table 7.1.6.2.43-1"
+          ],
+          "printed_pages": [
+            54
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 SignallingEvent, InitialLogOn and LocationConfigurationReceived"
+          ],
+          "printed_pages": [
+            83,
+            84
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.2.2"
+          ],
+          "printed_pages": [
+            17,
+            18
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "不把本事件当作条件“LMS 必须推配置”，不套 TS23.280 Stage 2 或其他 release 的术语。未定义如何重登录、补报首次事件或每次启动必触发。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "signalling-trigger-configuration-receipt-not-applied-or-self-trigger",
+      "conditions": [
+        "按适用 SignallingEvent.locationConfigurationReceived 表述规则；判实际配置回调时要核已注册目标 LMC 的实际收件或匹配的协议收件应答。"
+      ],
+      "conclusion": "这项配置把 LMC 收到位置配置作为报告事件。仅 LMS 已发送、已注册、知道用户档已有配置而没有本份回调收件证据，不能当作实际收到了这笔。匹配 ConfigurationNotify 204 只确认收件；后续按 configScope 处理、保存、设置触发并启动 minimumReportInterval。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.40 Table 7.1.6.2.40-1"
+          ],
+          "printed_pages": [
+            54
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.46 Table 7.1.6.2.46-1"
+          ],
+          "printed_pages": [
+            55
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.5.2"
+          ],
+          "printed_pages": [
+            20
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 SignallingEvent, InitialLogOn and LocationConfigurationReceived"
+          ],
+          "printed_pages": [
+            83,
+            84
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.5.2.3.1 Table 7.1.5.2.3.1-2"
+          ],
+          "printed_pages": [
+            41
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不由 204 证明采用配置、计时器或报告。这里未规定刚在本次回调加上此触发时，同一次收件事件读的是旧配置还是新配置，也不定义其固定触发顺序、时限、失败重试及 GET 等价行为。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "signalling-trigger-id-reuse-and-new-value-in-notify",
+      "conditions": [
+        "LMS 构造 ConfigurationNotify POST，且所下发的触发子项定义 triggerId；比较该子项已有且有效的值与不存在/无效的值。"
+      ],
+      "conclusion": "§6.2.2.5.2 要求对于已定义 triggerId 的触发子项，已有且有效时保留已分配值，没有或无效时给该项新分配唯一值。初次登录和配置收件的印刷子类型分别标 triggerId M、1，A.2 各自列属性但未声明 required。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.5.2"
+          ],
+          "printed_pages": [
+            20
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.43 Table 7.1.6.2.43-1"
+          ],
+          "printed_pages": [
+            54
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.46 Table 7.1.6.2.46-1"
+          ],
+          "printed_pages": [
+            55
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 SignallingEvent, InitialLogOn and LocationConfigurationReceived"
+          ],
+          "printed_pages": [
+            83,
+            84
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.3.2 Table 7.1.6.3.2-1"
+          ],
+          "printed_pages": [
+            58
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "一个配置可有不同子项；不从 ID 没变推没有更新，不从 ID 改变推某事件已被删、LMC 已采用、全局回收方式或历史绑定。编码的优先范围按 A.1。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "signalling-trigger-removal-needs-applied-full",
+      "conditions": [
+        "已识别同一 LMC 的上一份适用配置和本次 ConfigurationNotify 中 configScope；要判删去某触发，另外核 LMC 实际采用的配置。"
+      ],
+      "conclusion": "UPDATE 是向已有配置追加，省略一个旧触发子项不是删除命令；要删除配置项需 FULL 替换。LMC 实收后按当前 configScope 修改并保存，再设置报告触发。只有核实同一实例实际采用的 FULL 内容不再有该触发，才可判它在这份配置中被删。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.5.2"
+          ],
+          "printed_pages": [
+            20
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.3–.4 Tables 7.1.6.2.3-1 and 7.1.6.2.4-1"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.3.3 Table 7.2.6.3.3-1"
+          ],
+          "printed_pages": [
+            58,
+            59
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 ConfigScope"
+          ],
+          "printed_pages": [
+            86
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "未给 configScope 时不默认 FULL；出站 FULL、单独收件、触发 ID 变化或未抓到旧项均不足以确认已删除。不规定空配置可接受、删历史记录、原有事件在途处理或触发回退。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "signalling-trigger-report-attribution-needs-matching-rule",
+      "conditions": [
+        "针对已发生的 LocationReportPublish 给出归因时，核同一 LMC 当时适用的事件配置、实际事件和实际报告，区分报告触发 ID 与请求-应答或资源标识。"
+      ],
+      "conclusion": "实际报告里的 triggerId 若与适用配置内该子项的 ID 对上，可用于追溯报告所列触发。§6.2.2.8.2 列触发 ID 数组；报告数据表把数组标可选，与印刷触发子项定义的 M、1 属于不同层。通用事件发布仍看 minimumReportInterval，不能只凭配置收件就判实际发布。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.40 Table 7.1.6.2.40-1"
+          ],
+          "printed_pages": [
+            54
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.43 Table 7.1.6.2.43-1"
+          ],
+          "printed_pages": [
+            54
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.46 Table 7.1.6.2.46-1"
+          ],
+          "printed_pages": [
+            55
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.1–.2"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.49 Table 7.1.6.2.49-1"
+          ],
+          "printed_pages": [
+            56
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 SignallingEvent, InitialLogOn and LocationConfigurationReceived"
+          ],
+          "printed_pages": [
+            83,
+            84
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 MCUELocation"
+          ],
+          "printed_pages": [
+            86,
+            87
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "孤立 ID、ID 缺捕获、收件或规则改动都不证明唯一触发、网络实际发送、LMS 已接受或刚测。没有在这里定义一次性事件如何保持至计时器到期、因未匹配而重试、或给出从收到配置到发包的固定时限。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
@@ -1019,6 +1442,142 @@
         87
       ],
       "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.3–.4 Tables 7.1.6.2.3-1 and 7.1.6.2.4-1"
+      ],
+      "printed_pages": [
+        43,
+        44
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.40 Table 7.1.6.2.40-1"
+      ],
+      "printed_pages": [
+        54
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.43 Table 7.1.6.2.43-1"
+      ],
+      "printed_pages": [
+        54
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.46 Table 7.1.6.2.46-1"
+      ],
+      "printed_pages": [
+        55
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 SignallingEvent, InitialLogOn and LocationConfigurationReceived"
+      ],
+      "printed_pages": [
+        83,
+        84
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.2.2.2.2"
+      ],
+      "printed_pages": [
+        17,
+        18
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.5.2.3.1 Table 7.1.5.2.3.1-2"
+      ],
+      "printed_pages": [
+        41
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.3.2 Table 7.1.6.3.2-1"
+      ],
+      "printed_pages": [
+        58
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.3.3 Table 7.2.6.3.3-1"
+      ],
+      "printed_pages": [
+        58,
+        59
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 ConfigScope"
+      ],
+      "printed_pages": [
+        86
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.2.2.8.1–.2"
+      ],
+      "printed_pages": [
+        22,
+        23
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.49 Table 7.1.6.2.49-1"
+      ],
+      "printed_pages": [
+        56
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 MCUELocation"
+      ],
+      "printed_pages": [
+        86,
+        87
+      ],
+      "usage": "primary"
     }
   ],
   "related": [
@@ -1035,6 +1594,11 @@
     {
       "topic": "r19-location-lms-location-report-publish",
       "relation": "comparison-report-wire-instance-evidence",
+      "required": false
+    },
+    {
+      "topic": "r19-location-lms-target-configuration-change",
+      "relation": "compare-separate-cross-user-request-and-authorization",
       "required": false
     }
   ],
