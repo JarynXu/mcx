@@ -3,7 +3,7 @@
   "release": 19,
   "state": "clause-checked",
   "common_conditions": [
-    "TS23.283 §10.3.7.1 的 MCPTT 预配置重组，非完整形成协议。"
+    "TS 23.283 V19.5.0，Rel-19，Stage 2，MCPTT 预配置组重组。配置来源组与实际重组组遵从 §10.3.7.1；各分支另按其声明的前提判断。"
   ],
   "condition_rule": "Inherit common_conditions and add claim conditions.",
   "source_catalog": "../../sources.json",
@@ -32,15 +32,147 @@
         "某个待重组组已按 TS23.280 或 §10.2.2 重组"
       ],
       "conclusion": "本节预配置重组请求必须拒绝；本过程仅服务 MCPTT，并独立于 §10.2.2 的组重组。"
+    },
+    {
+      "id": "active-regroup-stale-constituent-call-denial",
+      "clause": "10.3.7.5.1",
+      "conditions": [
+        "实际组 D 由 IWF 管理；A 与 B、C 正在重组；终端已归属 A，漏收建立通知，实际呼叫目标为 A"
+      ],
+      "conclusion": "A、B、C 可由 IWF 或 MCPTT 系统管理。实际终端→server 的 A 组呼请求由 server 转给 IWF；IWF 因 A 参与进行中的重组而拒绝，server 转交该原因。IWF 另向 server 发含实际组 D 的重组请求，server 转发终端。补发不代表 A 呼叫接受或自动转到 D。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.7.5.1"
+          ],
+          "printed_pages": [
+            80,
+            81
+          ]
+        }
+      ]
+    },
+    {
+      "id": "active-regroup-resync-response-and-conditional-continuation",
+      "clause": "10.3.7.5.1",
+      "conditions": [
+        "实际组 D 由 IWF 管理；A 与 B、C 正在重组；终端已归属 A，漏收建立通知，实际呼叫目标为 A"
+      ],
+      "conclusion": "步骤 5 可在步骤 4 之前，步骤 7 可在步骤 4 之后；注 1 不给出整个流程的固定顺序。终端告知失败和重组；终端→server 确认，server→IWF 转发确认，IWF 归属该终端到 D。发出确认不证明 IWF 已收到或执行归属。D 有实际进行中呼叫时可按晚加入程序加入；确认 D 无进行中呼叫时用户可重试。晚加入另核对参与侧归属成功、两侧已知组配置、IWF 组和用户 ID 映射及适用的组定义与用户侧分支。不以 IWF-home D 当作另一流程的组定义条件。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.7.5.1"
+          ],
+          "printed_pages": [
+            80,
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.3.7.1",
+            "10.3.3.7.2",
+            "10.3.3.7.3"
+          ],
+          "printed_pages": [
+            48,
+            49,
+            50
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cancelled-regroup-stale-actual-group-call-denial",
+      "clause": "10.3.7.6.1",
+      "conditions": [
+        "D 是 IWF 管理的原实际重组组；由 A、B、C 形成的重组已取消；终端为 A 的成员，漏收取消通知，实际呼叫目标为 D"
+      ],
+      "conclusion": "终端向 server 请求建立 D 组呼，server 转给 IWF；IWF 因重组不再活跃而拒绝，server 向终端转交。D 仍在配置档或终端仍是 D 成员均不证明重组活跃。这里不要求该终端当前已归属 A。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.7.6.1"
+          ],
+          "printed_pages": [
+            82
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cancelled-regroup-optional-repair-and-ack-chain",
+      "clause": "10.3.7.6.1",
+      "conditions": [
+        "D 是 IWF 管理的原实际重组组；由 A、B、C 形成的重组已取消；终端为 A 的成员，漏收取消通知，实际呼叫目标为 D"
+      ],
+      "conclusion": "步骤 5、6、8、9 可选。IWF→server 补发取消，server→终端转发；步骤 6 如发，注 3 建议单播。步骤 7 的失败及已取消用户提示不在该可选列表。终端→server 取消确认、server→IWF 转发分开查；仅有该应答不证明 IWF 已收，也不证明重新拆除、退归属、删配置或其他用户状态。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.7.6.1"
+          ],
+          "printed_pages": [
+            82,
+            83
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stale-regroup-call-response-has-no-denial-wire-mapping",
+      "clause": "10.3.2.3",
+      "conditions": [
+        "§10.3.7.5.1 或 §10.3.7.6.1 所列实际组呼拒绝"
+      ],
+      "conclusion": "表 10.3.2.3-1 给出通用 IWF 组呼应答的目标成员 MCPTT ID、MCPTT 组 ID、SDP answer；未提供这两个拒绝分支的失败字段、SIP 状态码或 SDP 映射。两个步骤 3 的拒绝原因不能用通用消息名或成功协商代替。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.3"
+          ],
+          "printed_pages": [
+            35,
+            36
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.7.5.1"
+          ],
+          "printed_pages": [
+            81
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.7.6.1"
+          ],
+          "printed_pages": [
+            82
+          ]
+        }
+      ]
     }
   ],
   "limitations": [
-    "只核验所列互通条款；TS23.280/23.379 引用的配置字段、隐私策略及基础过程未独立核验，不能据此形成完整实现。"
+    "只核验所列互通条款；TS23.280/23.379 引用的配置字段、隐私策略及基础过程未独立核验，不能据此形成完整实现。",
+    "只补两个 IWF-home 陈旧 PTT 的信息流；不覆盖新建重组冲突、主动撤销、重组中新归属及 MCPTT Stage 3。归属、晚加入、话权、媒体结果分别取证。"
   ],
   "related": [
     "regroup-boundaries.md",
     "regroup-media.md",
-    "group-configuration.md"
+    "group-configuration.md",
+    "late-entry.md"
   ],
   "verification": {
     "original_clauses_checked": true,
