@@ -921,9 +921,9 @@
 
 ### LMS 向目标 LMC 要位置：这笔回调拿到了报告吗？
 
-- **能回答：**查 TS 24.283 V19.3.0 Stage 3 的 LMS→已注册目标 LMC 位置报告请求，含地址、请求双方身份、可选历史与回调应答判断。不用先有抓包。
-- **只到条件或接口：**LMS 可以自行发起，POST 目标登记的 locationRequestUri，正文 LocationRequest。requestedMcServiceId 是被要求上报的用户，从 LMC 发起时 requestingMcServiceId 指发起者。看 LMS 实收实际匹配 200 和 MCUELocation 正文；印刷表写 204，只确认请求收件。
-- **尚未建立的结论：**保留请求者文字、历史字段及 200/204 差别。出站或孤立码不确认报告；收件不保证重置计时器、独立发布、新测量、全部历史、LMS 存储或通知查询者。不套用上游 /requests、配置回调、设备能力或另一事务的状态码。
+- **能回答：**查 TS 24.283 V19.3.0 Stage 3 的 LMS→已注册目标 LMC 位置报告请求，含地址、请求双方身份、可选历史与回调应答判断。不用先有抓包。 还可查历史明细请求的时间范围、测量条目、存量摘要与 A.2 结构。
+- **只到条件或接口：**LMS 可以自行发起，POST 目标登记的 locationRequestUri，正文 LocationRequest。requestedMcServiceId 是被要求上报的用户，从 LMC 发起时 requestingMcServiceId 指发起者。看 LMS 实收实际匹配 200 和 MCUELocation 正文；印刷表写 204，只确认请求收件。 历史条目读对应事件的 locTimestamp 和 locationData。请求起点取严格更新，终点取严格更早；摘要的 storedReports 和最早／最新已存时刻不是实际条目，也不是请求界线。
+- **尚未建立的结论：**保留请求者文字、历史字段及 200/204 差别。出站或孤立码不确认报告；收件不保证重置计时器、独立发布、新测量、全部历史、LMS 存储或通知查询者。不套用上游 /requests、配置回调、设备能力或另一事务的状态码。 A.2 的直接数组与印刷表的 locationHistoryEvent 包装、事件与摘要基数分别读；不以摘要、缺字段或 204 推取回完整历史、清缓冲、独立发布或上游交付。
 
 入口：[LMS 向目标 LMC 要位置：这笔回调拿到了报告吗？](topics/location/lms-location-report-request.md)。
 

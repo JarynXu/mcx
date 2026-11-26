@@ -561,6 +561,372 @@
         "independent_source_review": false,
         "independent_usage_acceptance": false
       }
+    },
+    {
+      "id": "report-history-details-vs-status-matched-evidence",
+      "conditions": [
+        "读 LMS→已注册目标 LMC 的 LocationReportRequest 回调；若判实际取得哪些历史数据，先确认 LMS 实收同一目标实例、同一笔请求的匹配应答及其可读正文。"
+      ],
+      "conclusion": "程序和 A.2 的实际成功响应是 200 加 MCUELocation；核其中的 locationHistoryData 明细和 locationHistoryStatus 摘要，两者不是同一项。印刷回调表的 204 是请求收件确认，表没有报告正文。看到摘要、状态码或发送记录不证明 LMS 收到该历史条目。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.7.2"
+          ],
+          "printed_pages": [
+            21,
+            22
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.2"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.49 Table 7.1.6.2.49-1"
+          ],
+          "printed_pages": [
+            56
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.5.3.3.1 Table 7.1.5.3.3.1-2"
+          ],
+          "printed_pages": [
+            42
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LocationReportRequest callback"
+          ],
+          "printed_pages": [
+            74,
+            75
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LocationHistoryData, LocationHistoryEvent and LocationHistoryStatus"
+          ],
+          "printed_pages": [
+            87,
+            88
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不从该回调证明另一笔 LMC→LMS 发布 POST、上游 LocationInfoNotify、存储/显示或阻塞刷新成功。不合并从其他来源读到的 200/204 或刻意要求双码兼容。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "report-history-request-filter-and-time-bounds",
+      "conditions": [
+        "问实际 LocationReportRequest 里的历史明细请求；辨认它与独立的历史状态请求、返回的状态摘要和测量事件。解释时间界线时核同一请求实际给出的对应项。"
+      ],
+      "conclusion": "请求可分别索要历史明细或历史状态。表/A.2 写 requestLocationHistory、requestHistoryStatus。明细的 numberOfReports 是请求的存储报告数；startTime 只选比其更新的历史报告，endTime 只选比其更早的历史报告。两端有值时等于对应端点不符合该条件。triggerCriteria 描述生成历史报告的触发条件，minimumIntervalLength 指报告间最短时间，A.2 写秒。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.7.2"
+          ],
+          "printed_pages": [
+            21,
+            22
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.48 Table 7.1.6.2.48-1"
+          ],
+          "printed_pages": [
+            56
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.47 Table 7.1.6.2.47-1"
+          ],
+          "printed_pages": [
+            55
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LocationRequest and RequestedLocationHistory"
+          ],
+          "printed_pages": [
+            85,
+            86
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不把请求时限读作摘要的最早/最新时间；不从请求数量、间隔或时限推已取回全部、应答固定批次/排序、缺失原因或 minimumReportInterval 计时器状态。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "report-history-event-content-and-measurement",
+      "conditions": [
+        "核对实际匹配的 MCUELocation 所包含的 locationHistoryData 条目；按每个 LocationHistoryEvent 判本条历史样本。"
+      ],
+      "conclusion": "每个事件提供自身的 locationData 和 locTimestamp；事件的 locTimestamp 是其测量时刻，triggerId 按印刷表为可选的关联触发信息。把该事件的时间与这次明细请求的范围对照，不用报告顶层 locTimestamp、请求时间或 200 到达时间替代。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.49 Table 7.1.6.2.49-1"
+          ],
+          "printed_pages": [
+            56
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.48 Table 7.1.6.2.48-1"
+          ],
+          "printed_pages": [
+            56
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.52–.53 Tables 7.1.6.2.52-1 and 7.1.6.2.53-1"
+          ],
+          "printed_pages": [
+            57,
+            58
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LocationHistoryData, LocationHistoryEvent and LocationHistoryStatus"
+          ],
+          "printed_pages": [
+            87,
+            88
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "一个条目只证明收到对应的历史记录；不推出精度、新测量、全部历史、默认按时间排序、还原未给的点或服务器/客户端实际处理。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "report-history-status-unreported-count-not-trajectory",
+      "conditions": [
+        "只得到或希望解读同笔报告里实际收到的 locationHistoryStatus，区分只含摘要和另有实际明细。"
+      ],
+      "conclusion": "表 7.1.6.2.54-1 的 storedReports 是已存而未报告的数量，startTime、endTime 分别为最早、最新的已存位置报告时间，triggerId 为关联触发信息。它们描述状态，不是请求过滤界线。状态中即使 storedReports 大于零，也不包含这些报告的实际位置。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.7.2"
+          ],
+          "printed_pages": [
+            21,
+            22
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.2"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.54 Table 7.1.6.2.54-1"
+          ],
+          "printed_pages": [
+            58
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LocationHistoryData, LocationHistoryEvent and LocationHistoryStatus"
+          ],
+          "printed_pages": [
+            87,
+            88
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "缺摘要不等于零，摘要或数组计数都不替目标记录。这里不推空缓冲边界值、何时清除、重试、完整性或补报的最终结束。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "report-history-data-wrapper-and-event-shape-variance",
+      "conditions": [
+        "只比较 TS 24.283 V19.3.0 HistoryData 与 Event 的印刷表、程序及 A.2 schema。实际报文按相应形式证据核验。"
+      ],
+      "conclusion": "表 .52-1 将 LocationHistoryData 的 locationHistoryEvent 列为 M 的数组、1..N，A.2 的 LocationHistoryData 本身是 LocationHistoryEvent 数组且未写 minItems。表 .53-1 将事件 locationData 类型列 LocationInfo、M 1..N，A.2 则引用单一 LocationInfo 对象。比较时沿 A.1 规定的编码优先范围读，未在附录表达的适用条件仍在。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.52–.53 Tables 7.1.6.2.52-1 and 7.1.6.2.53-1"
+          ],
+          "printed_pages": [
+            57,
+            58
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LocationHistoryData, LocationHistoryEvent and LocationHistoryStatus"
+          ],
+          "printed_pages": [
+            87,
+            88
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LocationInfo"
+          ],
+          "printed_pages": [
+            87
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不把外层包装与裸数组当别名，不要求并行接收、补嵌套层或从无 minItems 断言空表合规。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "report-history-status-table-vs-schema-cardinality",
+      "conditions": [
+        "只比较 HistoryStatus 字段在同版印刷表和 A.2 的声明。"
+      ],
+      "conclusion": "表 .54-1 将 storedReports、startTime、endTime 标为 M、1，triggerId 标为 M、0..N；A.2 的 LocationHistoryStatus 模型列字段但未声明 required。既保留纸面字段含义和基数，也按 A.1 区分 API 编码与程序。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.54 Table 7.1.6.2.54-1"
+          ],
+          "printed_pages": [
+            58
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LocationHistoryData, LocationHistoryEvent and LocationHistoryStatus"
+          ],
+          "printed_pages": [
+            87,
+            88
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不拿省略的值、空数组或损坏的捕获造零值、空缓冲或接受结果；标准没有在这段给没有明细或摘要的统一状态码。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "source_references": [
@@ -735,6 +1101,142 @@
         63
       ],
       "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.2.2.7.2"
+      ],
+      "printed_pages": [
+        21,
+        22
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.2.2.8.2"
+      ],
+      "printed_pages": [
+        22,
+        23
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.49 Table 7.1.6.2.49-1"
+      ],
+      "printed_pages": [
+        56
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.5.3.3.1 Table 7.1.5.3.3.1-2"
+      ],
+      "printed_pages": [
+        42
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 LocationReportRequest callback"
+      ],
+      "printed_pages": [
+        74,
+        75
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 LocationHistoryData, LocationHistoryEvent and LocationHistoryStatus"
+      ],
+      "printed_pages": [
+        87,
+        88
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.48 Table 7.1.6.2.48-1"
+      ],
+      "printed_pages": [
+        56
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.47 Table 7.1.6.2.47-1"
+      ],
+      "printed_pages": [
+        55
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 LocationRequest and RequestedLocationHistory"
+      ],
+      "printed_pages": [
+        85,
+        86
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.52–.53 Tables 7.1.6.2.52-1 and 7.1.6.2.53-1"
+      ],
+      "printed_pages": [
+        57,
+        58
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.54 Table 7.1.6.2.54-1"
+      ],
+      "printed_pages": [
+        58
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 LocationInfo"
+      ],
+      "printed_pages": [
+        87
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.1"
+      ],
+      "printed_pages": [
+        73
+      ],
+      "usage": "primary"
     }
   ],
   "related": [
@@ -761,6 +1263,11 @@
     {
       "topic": "r19-location-lms-target-configuration-change",
       "relation": "separate-config-control-not-asking-for-location",
+      "required": false
+    },
+    {
+      "topic": "r19-location-history-recovery",
+      "relation": "separate-stage2-history-recovery-and-cancel",
       "required": false
     }
   ],
