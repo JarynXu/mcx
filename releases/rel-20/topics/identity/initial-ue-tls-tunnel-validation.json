@@ -1,0 +1,204 @@
+{
+  "topic_id": "r20-identity-initial-ue-tls-tunnel-validation",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。主体是 MCS UE 初始配置文档在网 on-network 的 App-Server-Info 内与 TLS 隧道认证有关的设置。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "tls-mutual-true-neither-credential-requires-409",
+      "clause": "7.2.2.6",
+      "conditions": [
+        "已确认双向认证为 true。",
+        "x509 与 key 元素均不在。"
+      ],
+      "conclusion": "配置管理服务器须返回 HTTP 409 (Conflict)，包含 XCAP constraint-failure。phrase 可选；若含该属性，宜填 mutual authentication enabled without a X.509 certificate or pre-shared key。这条检查元素有无，不检验证书或密钥内容。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tls-mutual-true-both-credentials-requires-409",
+      "clause": "7.2.2.6",
+      "conditions": [
+        "已确认双向认证为 true。",
+        "x509 与 key 元素均在。"
+      ],
+      "conclusion": "配置管理服务器须返回 HTTP 409 (Conflict)，包含 XCAP constraint-failure。phrase 可选；若含该属性，宜填 mutual authentication enabled with both a X.509 certificate and a pre-shared key。不同诊断不是另一个 HTTP 状态或 TLS 握手告警。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tls-mutual-true-exactly-one-outside-these-two-guards",
+      "clause": "7.2.2.6",
+      "conditions": [
+        "已确认双向认证为 true。",
+        "x509 和 key 中恰有一个元素在，另一个不在。"
+      ],
+      "conclusion": "既不是两个均无，也不是两个均有，不命中这两条组合校验。仍须符合 Schema 和其余校验；没有据此确认响应、配置已接受、凭据有效或 TLS 握手成功。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.6"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tls-mutual-explicit-false-is-not-missing-boolean",
+      "clause": "7.2.2.6",
+      "conditions": [
+        "已确认双向认证的布尔项存在且值为 false。"
+      ],
+      "conclusion": "不满足这两个校验分支的 true 条件，不证明文档或凭据合格。不能把字段缺失视作相同的已知 false：在对应方法块中，Schema 要求布尔子元素。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.6"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tls-method-schema-boolean-and-independent-optional-credentials",
+      "clause": "7.2.2.3",
+      "conditions": [
+        "按 §7.2.2.1 和 §7.2.2.3 核对这份在网初始文档的 App-Server-Info 内方法块是否存在及其结构。"
+      ],
+      "conclusion": "在网 App-Server-Info 必须包含 tls-tunnel-auth-method。该方法块的 AuthMethodType 按顺序直接包含必须的 xs:boolean mutual-authentication、各自可选的 xs:string x509 和 key；布尔项未声明默认值。确认整个方法块或布尔项实际缺失，是结构问题，不等同于布尔值明确为 false。这两条组合校验未为缺项另定 HTTP 状态。§7.2.2.6 要求文档符合 Schema；各自可选不替代双向认证启用时的两条组合校验。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tls-method-schema-and-two-prose-renderings-differ",
+      "clause": "7.2.2.6",
+      "conditions": [
+        "对照结构、内嵌 Schema、组合校验原文和字段语义原文。"
+      ],
+      "conclusion": "结构和 Schema 用 tls-tunnel-auth-method 包含 mutual-authentication。§7.2.2.6 的写法是 App-Server-Info 内 mutual-authentication-element 包含 tls-tunnel-auth-method；§7.2.2.7 写后者包含 mutual-authentication-element。分开定位，不能据此选实际 XML 层级或规定布尔拼法、归一规则。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.6"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tls-method-setting-and-two-credential-meanings",
+      "clause": "7.2.2.7",
+      "conditions": [
+        "解读 §7.2.2.7 项 4(g) 的设置含义与参考项。"
+      ],
+      "conclusion": "true 表示为 TLS 隧道使用双向认证，指 TS 24.483 §8.2.44B 的 Mutual。若出现 x509，它载 X.509 证书，指 §8.2.44C 的 X509；若出现 key，它载预共享密钥，指 §8.2.44D 时字面也写 X509。两种凭据含义不相同；目标正文未核，不据此补编码或判握手。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tls-configuration-generic-409-does-not-locate-cause",
+      "clause": "7.2.2.6",
+      "conditions": [
+        "已知该请求响应为 HTTP 409 并有 XCAP constraint-failure，但没有能定位原因的原请求设置或诊断。"
+      ],
+      "conclusion": "状态和错误元素不区分这两个组合分支，也不排除同节其他约束，例如 KMS URI 不合语法。叠加多个失败条件时，这两条未规定先返回哪个诊断。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.6"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "配置校验不是 TLS 握手。两处正文和 Schema 分别定位，不裁定实现采用的 XML 层级、凭据有效性、配置已接受或错误优先级；TS 24.483 只核引用。"
+  ],
+  "related": [
+    "r20-identity-initial-ue-config-xcap",
+    "r20-identity-default-profile-reference-xcap"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}

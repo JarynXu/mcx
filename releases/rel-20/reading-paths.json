@@ -331,6 +331,18 @@
       "question": "离线 MCPTT 初始 MO 要放 DefaultUserProfile：先在哪建档，要匹配哪个用户和索引？",
       "start": "topics/identity/offline-ue-configuration.md",
       "boundary": "MCPTT 业务管理员在离线初始 MO 设置 DefaultUserProfile 时，先在离线 CMS 建至少一份用户档 MO，同时包含引用内同一组 MCPTTUserID 与 UserProfileIndex 值；不能拆到两份档，也不能套在线 XCAP 字段或 409。"
+    },
+    {
+      "id": "initial-ue-tls-tunnel-neither-or-both-409",
+      "question": "MCS 在网初始配置报 409：怎样区分 TLS 双向认证两种凭据都缺和两种都填？只配一种能证明通过吗？",
+      "start": "topics/identity/initial-ue-tls-tunnel-validation.md",
+      "boundary": "MCS UE 在网初始文档内，双向认证为 true 且证书和预共享密钥元素均不在或均在时，各自要求 CMS 返回 HTTP 409 和 XCAP constraint-failure，诊断短语可省略。已知只出现其中一种不命中这两条，不能从通用响应定位原因，也不能证明文档获接受或实际握手成功。"
+    },
+    {
+      "id": "initial-ue-tls-tunnel-schema-vs-validation-and-field-semantics",
+      "question": "为什么 TLS 隧道的布尔开关在 XML Schema、校验条文和字段语义里写法不同？证书和预共享密钥是不是一个字段？",
+      "start": "topics/identity/initial-ue-tls-tunnel-validation.md",
+      "boundary": "在网 App-Server-Info 必须包含 TLS 方法块，块内必有布尔子元素，证书和密钥子元素各自可选。缺整个方法块或缺布尔是结构问题，不等同 false，不能从这两条组合校验推出缺项的 HTTP 状态。独立可选也不等同启用时可都填或都省。分别查校验倒置的包含方向、语义命名差异与 key 的 PSK 含义、TS 24.483 §8.2.44D 原写 X509 的引文；不从差异决定实现层级或从引文推定目标格式。"
     }
   ]
 }
