@@ -238,6 +238,10 @@
         {
           "condition": "问已知 MCPTT 用户发起到 LMR 定义互通组的紧急建呼、两组 IWF 请求或其响应；查标准无需运行记录。",
           "read": "topics/interworking/emergency-group-setup-mcptt-to-lmr.md"
+        },
+        {
+          "condition": "问已知 LMR 用户发起且组定义在 LMR 的紧急组呼、IWF 第一跳和逐成员结果；查规则不需实况记录。",
+          "read": "topics/interworking/emergency-group-setup-lmr-to-lmr.md"
         }
       ],
       "boundary": "Bounded Stage2 interworking procedures; underlying security and full call state machine not verified."
@@ -2691,6 +2695,30 @@
         },
         {
           "condition": "问整体组呼释放，而不是这两条建呼腿或紧急状态取消。",
+          "read": "topics/interworking/group-call-release.md"
+        },
+        {
+          "condition": "发起者实际是 LMR 用户，组仍定义在 LMR，读 .2.3 建呼。",
+          "read": "topics/interworking/emergency-group-setup-lmr-to-lmr.md"
+        }
+      ]
+    },
+    {
+      "id": "iwf-emergency-group-setup-lmr-to-lmr",
+      "question": "LMR 用户发起、组也定义在 LMR：谁先发 IWF 请求？怎么按已归属 MCPTT 成员配 a/b 的应答？",
+      "start": "topics/interworking/emergency-group-setup-lmr-to-lmr.md",
+      "boundary": "查 TS 23.283 V19.5.0 Stage 2 中 LMR 发起、LMR 定义互通组的第一跳 IWF 请求、逐已归属 MCPTT 用户的链及结果。查规则无需抓包。 §10.6.2.2.3 以实际发起和组定义、既有归属、IWF 接入和授权、组/用户映射为前提。IWF→MCPTT server 是步骤 1，按已归属 MCPTT 用户发；通过客户端 2/3 后，server→IWF 的 4 按各自 1 配对。LMR 为主控。信令到达和 Result 看同一事务/端点，不需要媒体；判断实际媒体另需证据。 保留图中 4a 在 3b 前及 §10.6.2.1 的端点差异。同组 ID 和相同主叫 ID 不能单独配对应答；一次 Result 不证明全员成功、RTP 或话权。不套 MCPTT 发起的初始双向腿或 NOTE 5；不展全组失败、等待规则、LMR 内部、SIP 或取消。",
+      "next_if": [
+        {
+          "condition": "呼叫确由 MCPTT 用户发起且组定义在 LMR，核那一支的原请求 3/8 与逐成员 4/7。",
+          "read": "topics/interworking/emergency-group-setup-mcptt-to-lmr.md"
+        },
+        {
+          "condition": "问普通 IWF 组呼请求的字段，不问紧急建呼过程。",
+          "read": "topics/interworking/group-call-request.md"
+        },
+        {
+          "condition": "问预安排组呼的整体释放，不是这条紧急建呼或紧急状态取消。",
           "read": "topics/interworking/group-call-release.md"
         }
       ]

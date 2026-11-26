@@ -729,6 +729,14 @@
 
 入口：[MCPTT 发起、组定义在 LMR：IWF 两向请求怎么对？](topics/interworking/emergency-group-setup-mcptt-to-lmr.md)。
 
+### LMR 发起、组也定义在 LMR：谁先发请求，谁回结果？
+
+- **能回答：**查 TS 23.283 V19.5.0 Stage 2 中 LMR 发起、LMR 定义互通组的第一跳 IWF 请求、逐已归属 MCPTT 用户的链及结果。查规则无需抓包。
+- **只到条件或接口：**§10.6.2.2.3 以实际发起和组定义、既有归属、IWF 接入和授权、组/用户映射为前提。IWF→MCPTT server 是步骤 1，按已归属 MCPTT 用户发；通过客户端 2/3 后，server→IWF 的 4 按各自 1 配对。LMR 为主控。信令到达和 Result 看同一事务/端点，不需要媒体；判断实际媒体另需证据。
+- **尚未建立的结论：**保留图中 4a 在 3b 前及 §10.6.2.1 的端点差异。同组 ID 和相同主叫 ID 不能单独配对应答；一次 Result 不证明全员成功、RTP 或话权。不套 MCPTT 发起的初始双向腿或 NOTE 5；不展全组失败、等待规则、LMR 内部、SIP 或取消。
+
+入口：[LMR 发起、组也定义在 LMR：谁先发请求，谁回结果？](topics/interworking/emergency-group-setup-lmr-to-lmr.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)
