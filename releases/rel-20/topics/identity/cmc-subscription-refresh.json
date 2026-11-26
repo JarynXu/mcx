@@ -1,0 +1,173 @@
+{
+  "topic_id": "r20-identity-cmc-subscription-refresh",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。主体是终端配置管理客户端（CMC）与配置管理服务器（CMS）的配置文档订阅；换清单、初订关联通知及直接订阅对照按各自条件阅读，不适用业务服务器分支。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "cmc-changed-proxy-list-per-document-or-element-relative",
+      "clause": "6.3.13.2.2",
+      "conditions": [
+        "CMC 要续订变更后的配置清单，使用订阅代理同时订阅多份文档。"
+      ],
+      "conclusion": "CMC 发 SIP re-SUBSCRIBE，包含 application/resource-lists+xml。每个拟订阅文档或元素各有 entry，uri 按所引 RFC 5875 为文档的相对路径引用。Contact 包含 g.3gpp.icsi-ref，值为 MCPTT ICSI urn:urn-7:3gpp-service.ims.icsi.mcptt。此代理续订条目没有重述初订配置代理 PSI 的赋值，不据此重写 Request-URI、删改旧清单或推断成功。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.2.2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cmc-direct-renewal-uri-as-separate-sender-branch",
+      "clause": "6.3.13.2.2",
+      "conditions": [
+        "CMC 更改所订阅的配置清单，并采用直接订阅。"
+      ],
+      "conclusion": "SIP re-SUBSCRIBE 的 Request-URI 是 SIP URI，基 URI 为 CMC 配置的 CMSXCAPRootURI，auid 为对应配置管理文档应用用法。直接分支的寻址条件不替代多文档代理资源列表。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.2.2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cms-received-cmc-renewal-event-and-list-before-notifier",
+      "clause": "6.3.13.3.2.2",
+      "conditions": [
+        "已定位到 CMC 发起的代理续订接收段；CMS 实际收到 SIP re-SUBSCRIBE。",
+        "Event 为 xcap-diff，且有 application/resource-lists+xml 正文。"
+      ],
+      "conclusion": "CMS 按所引 RFC 5875 担任通知方。只见 Event 或只见 CMC 发包不足以判断这一接收条件；这两个字段也不是区分所有 MCS 角色的充分证据。返回地址和解密列表各有附加条件。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cms-received-document-auid-and-no-related-then-original-notify-uri",
+      "clause": "6.3.13.3.2.2",
+      "conditions": [
+        "CMC 代理分支的 CMS 实际收到 SIP re-SUBSCRIBE，Event 为 xcap-diff，且有 application/resource-lists+xml 正文。",
+        "某 entry 的 uri 中的 XCAP URI 含 auid，识别配置管理文档的应用用法。",
+        "该配置文档确无按 §6.3.13.3.2.3 建立的相关订阅。"
+      ],
+      "conclusion": "CMS 须在与收到的初始 SIP SUBSCRIBE 所建立订阅关联的 SIP NOTIFY 中返回该配置文档的 XCAP URI。这一续订段的相关订阅条件没有写在同节初订的 e 项里。返回地址不等于新建订阅、送达文档正文或业务采用。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cms-renewal-extra-uri-gate-does-not-prohibit-other-notifications",
+      "clause": "6.3.13.3.2.2",
+      "conditions": [
+        "已定位符合接收前件的 CMC 代理续订。",
+        "所看条目有按 §6.3.13.3.2.3 建立的相关订阅，或其 auid 不识别配置管理文档应用用法。"
+      ],
+      "conclusion": "该条目不命中续订段新增的返回文档地址要求。不能据此禁止 CMS 通知、禁止返回地址或抹掉适用的通知方动作。也不能把没有查到日志当成已经证明不存在相关订阅。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cmc-identity-hiding-renewal-protects-two-bodies-using-initial-csk",
+      "clause": "6.3.13.2.2",
+      "conditions": [
+        "CMC 发改清单的续订，需要隐藏身份。"
+      ],
+      "conclusion": "CMC 使用初始 SIP SUBSCRIBE 中包含的 CSK，按所引 TS 24.379 中 MC 客户端的流程对 application/vnd.3gpp.mcptt-info+xml 和 application/resource-lists+xml 作保密及完整性保护。此保护条件不等同增加令牌或 CSK 发放要求，不据此设鉴权例外。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.2.2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cms-decrypt-received-renewal-list-only-under-two-local-guards",
+      "clause": "6.3.13.3.2.2",
+      "conditions": [
+        "CMS 在 CMC 代理分支实际收到 Event 为 xcap-diff 且带 application/resource-lists+xml 的 SIP re-SUBSCRIBE。",
+        "该列表正文含 EncryptedData。",
+        "CMS 已在初始 SIP SUBSCRIBE 的 application/mikey 正文中收到 CSK。"
+      ],
+      "conclusion": "CMS 须解密此次续订的资源列表正文。仅有加密标签或仅知道终端发出初订都不满足两个独立证据；此处不从未满足的条件补猜错误或重发机制。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cms-sending-initial-subscription-associated-notify-protects-separately",
+      "clause": "6.3.13.3.2.2",
+      "conditions": [
+        "CMS 发送与收到的初始 SIP SUBSCRIBE 所建立订阅关联的 SIP NOTIFY。",
+        "CMS 已在该初订的 application/mikey 正文中收到 CSK。"
+      ],
+      "conclusion": "CMS 须按所引 TS 24.379 中 MCPTT 服务器的流程做保密和完整性保护。证据要对应这次发送通知，不用续订收包时解密列表替代；条文按订阅关联写，不从段落位置断定只适用第一条通知。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.2"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "不把文档地址当正文或取文成功，不推断另建订阅、删改清单方式、业务服务器授权、重发令牌或 TS 24.379 的密码流程。",
+    "只核 TS 24.484 的字段、角色和条件；TS 24.229、TS 24.379、TS 24.483、IETF RFC 5875 的正文或算法不在本题范围。"
+  ],
+  "related": [
+    "r20-identity-cmc-subscription-notify-fetch",
+    "r20-identity-mcs-server-service-config"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
