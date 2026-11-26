@@ -775,6 +775,14 @@
 
 入口：[一次性查询](topics/location/lms-one-time-location-request.md)。
 
+### 向 LMS 上报位置：收到 201，能确认到哪一步？
+
+- **能回答：**TS 24.283 V19.3.0 Stage 3。查 LMC 正式向 LMS 发布位置的路径、触发、鉴权和结果，不需要先有抓包。
+- **只到条件或接口：**事件分支看计时器和到期时仍为真的触发；索要报告看 LMC 实收。另核同一 /locationreports POST 的实际 LMS 应答。实例 ID 不是认证身份，发布 201 不等于另一笔索要报告的回包。
+- **尚未建立的结论：**报告 201 是成功提交；不以它确认持久化、实际转送、应用使用或新测量。区分创建 Location 字面、307/308 重定向和回调地址；不规定未运行计时器分支、重试去重或发布后到达其他 LMC。
+
+入口：[LMC 发布位置报告](topics/location/lms-location-report-publish.md)。
+
 ## 网络策略与QoS
 
 [查看本域全部主题](topics-network-policy.json)
