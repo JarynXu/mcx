@@ -274,6 +274,10 @@
         {
           "condition": "问 LMR 用户对 LMR 定义互通组发起的组紧急状态取消请求：查 1/4 的方向和应答下界。若原请求类型是紧急告警取消，即使另带清组状态指示，也查 §10.6.5.1，不走本支。迫近危险、MCPTT 发起或组定义在 MCPTT 另查。查规范无需抓包。",
           "read": "topics/interworking/emergency-group-state-cancel-lmr-origin-lmr-defined.md"
+        },
+        {
+          "condition": "问 MCPTT 用户对 LMR 定义互通组发起的组紧急状态取消请求：区分 2/7、3/4 或步骤 7 的下界。若原请求是紧急告警取消，即使另带清组状态指示，也查 §10.6.5.2，不走本支。迫近危险、LMR 发起或组定义在 MCPTT 另查。查规范无需抓包。",
+          "read": "topics/interworking/emergency-group-state-cancel-mcptt-origin-lmr-defined.md"
         }
       ],
       "boundary": "Bounded Stage2 interworking procedures; underlying security and full call state machine not verified."
@@ -2954,6 +2958,10 @@
         {
           "condition": "是 LMR 用户对 MCPTT 定义互通组发起组紧急状态取消请求，查 .2.3.1 的 IWF 原请求和回执。若请求类型是紧急告警取消，即使另带清组状态指示，也不转入。",
           "read": "topics/interworking/emergency-group-state-cancel-lmr-origin-mcptt-defined.md"
+        },
+        {
+          "condition": "同为 MCPTT 用户的组紧急状态取消请求，但互通组实际定义在 LMR，查 .2.3.4 的 2/7、3/4。若原请求是紧急告警取消，即使另带清组状态指示，也不转入本支。",
+          "read": "topics/interworking/emergency-group-state-cancel-mcptt-origin-lmr-defined.md"
         }
       ]
     },
@@ -3005,6 +3013,38 @@
         },
         {
           "condition": "实际问整体组呼释放，而非清除组紧急状态。",
+          "read": "topics/interworking/group-call-release.md"
+        },
+        {
+          "condition": "组仍定义在 LMR，但原组紧急状态取消请求是 MCPTT 用户发起，查 .2.3.4。若原请求是紧急告警取消，即使另带清组状态指示，也不转入本支。",
+          "read": "topics/interworking/emergency-group-state-cancel-mcptt-origin-lmr-defined.md"
+        }
+      ]
+    },
+    {
+      "id": "iwf-emergency-group-state-cancel-mcptt-origin-lmr-defined",
+      "question": "MCPTT 用户取消 LMR 定义互通组的紧急状态时，发起端的步骤 7 要等哪一笔？",
+      "start": "topics/interworking/emergency-group-state-cancel-mcptt-origin-lmr-defined.md",
+      "boundary": "查 TS 23.283 V19.5.0 §10.6.2.3.4：MCPTT 用户对 LMR 定义互通组发起的组紧急状态取消请求。挂断不清组状态，需获授权用户明确取消。查规范无需抓包。 对应 MCPTT 组仍处紧急状态，另一 MCPTT 客户端已归属；IWF 已接入并获准互通，组和用户身份映射已配置。IWF 的 4 回原 3；server 的 7 回原 2。NOTE 5 是 7 在匹配的 4 后并按继续呼叫条件，不固定等 5、6，不是无条件应答。 紧急告警取消请求即使另带清组状态指示，也查 §10.6.5.2，不走本支。NOTE 3 不展开 IWF 怎样验权或清状态；LMR 可拒绝，但未定失败回包、Result 或成员 ACK。不从 4/7 推 LMR 接受、成员实收或媒体停止，不从总则或单箭头定请求数。LMR 发起、组定义在 MCPTT、迫近危险、整体释放另查。",
+      "next_if": [
+        {
+          "condition": "还是 MCPTT 用户发组紧急状态取消请求，但互通组实际由 MCPTT 定义。",
+          "read": "topics/interworking/emergency-group-state-cancel-mcptt-origin.md"
+        },
+        {
+          "condition": "组定义仍在 LMR，但组紧急状态取消请求由 LMR 用户发起。",
+          "read": "topics/interworking/emergency-group-state-cancel-lmr-origin-lmr-defined.md"
+        },
+        {
+          "condition": "还是 MCPTT 发起、LMR 定义组，但实际问紧急建呼。",
+          "read": "topics/interworking/emergency-group-setup-mcptt-to-lmr.md"
+        },
+        {
+          "condition": "实际取消互通组迫近危险状态，不是紧急状态。",
+          "read": "topics/interworking/imminent-peril-group-state-cancel.md"
+        },
+        {
+          "condition": "实际问互通组呼整体释放，不是清除组紧急状态。",
           "read": "topics/interworking/group-call-release.md"
         }
       ]

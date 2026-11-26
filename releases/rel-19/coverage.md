@@ -801,6 +801,14 @@
 
 入口：[LMR 用户取消 LMR 定义组的紧急状态：IWF 回执要等什么？](topics/interworking/emergency-group-state-cancel-lmr-origin-lmr-defined.md)。
 
+### MCPTT 用户取消 LMR 定义组的紧急状态：发起端确认等哪一笔？
+
+- **能回答：**查 TS 23.283 V19.5.0 §10.6.2.3.4：MCPTT 用户对 LMR 定义互通组发起的组紧急状态取消请求。挂断不清组状态，需获授权用户明确取消。查规范无需抓包。
+- **只到条件或接口：**对应 MCPTT 组仍处紧急状态，另一 MCPTT 客户端已归属；IWF 已接入并获准互通，组和用户身份映射已配置。IWF 的 4 回原 3；server 的 7 回原 2。NOTE 5 是 7 在匹配的 4 后并按继续呼叫条件，不固定等 5、6，不是无条件应答。
+- **尚未建立的结论：**紧急告警取消请求即使另带清组状态指示，也查 §10.6.5.2，不走本支。NOTE 3 不展开 IWF 怎样验权或清状态；LMR 可拒绝，但未定失败回包、Result 或成员 ACK。不从 4/7 推 LMR 接受、成员实收或媒体停止，不从总则或单箭头定请求数。LMR 发起、组定义在 MCPTT、迫近危险、整体释放另查。
+
+入口：[MCPTT 用户取消 LMR 定义组的紧急状态：发起端确认等哪一笔？](topics/interworking/emergency-group-state-cancel-mcptt-origin-lmr-defined.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)
