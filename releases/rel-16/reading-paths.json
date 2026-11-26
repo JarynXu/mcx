@@ -4445,6 +4445,10 @@
         {
           "condition": "若对象是 MCPTT 与 LMR 之间的自动开始私呼，查话权控制启用时发起系统的责任。",
           "read": "topics/calls/lmr-interworking-private-auto-setup.md"
+        },
+        {
+          "condition": "若旧式常规 FM 的 LMR 用户发起预安排互通组呼、开场时电台发话者 ID 未知，且 IWF 在已建立呼叫的同一次媒体传送中实际获知发话者 ID，查 MCPTT 或 LMR 定义组各自的通知。示例要求两侧已知互通组、用户已归属、MCPTT 客户端与用户满足注册认证和服务授权、IWF 已配置两侧身份映射。只有预配置 IWF ID、建呼确认、Floor Taken 或音频不满足实际获知条件。",
+          "read": "topics/media/lmr-legacy-talker-id-update.md"
         }
       ],
       "boundary": "已有互通组呼且话权初始空闲；按宿主和本地筛选判断。只对 §10.5.8 步骤 7 的 Floor Taken 使用代表归属的数量注。"
@@ -11545,6 +11549,10 @@
         {
           "condition": "若另查一笔实际发起的 Stage 2 MCPTT–LMR 互通紧急组呼建立，已有 MCPTT 或 IWF 紧急组呼建立请求的适用依据，按发起方和组定义方查该笔。普通建呼响应、组已经处于紧急状态或同名的逐人分发不满足此条件。",
           "read": "topics/calls/lmr-interworking-emergency-group-setup.md"
+        },
+        {
+          "condition": "若旧式常规 FM 的 LMR 用户发起预安排互通组呼、开场时电台发话者 ID 未知，且 IWF 在已建立呼叫的同一次媒体传送中实际获知发话者 ID，查 MCPTT 或 LMR 定义组各自的通知。示例要求两侧已知互通组、用户已归属、MCPTT 客户端与用户满足注册认证和服务授权、IWF 已配置两侧身份映射。只有预配置 IWF ID、建呼确认、Floor Taken 或音频不满足实际获知条件。",
+          "read": "topics/media/lmr-legacy-talker-id-update.md"
         }
       ],
       "boundary": "这里是 MCPTT 与 LMR 的预安排互通组呼建立。MCPTT 服务器与 IWF 已知互通组，流程中的组用户已归属。图中的 MCPTT 客户端已注册，用户已认证并获准使用 MCPTT 服务；IWF 已配置两侧组和用户 ID 映射，负责跨系统信令的身份转换和协议翻译。 组定义在 MCPTT：MCPTT 用户发起时，服务器核对所选组的发起权限，向 MCPTT 侧组员和 IWF 的两路请求先后不限；IWF 代表归属时向 IWF 发一条，收到逐人归属时按已归属的 LMR 用户发。由 LMR 用户发起时，IWF 先发建呼请求；还有非主叫 LMR 用户且服务器收到他们的逐人归属，才按该分支经 IWF 逐人补发。 组定义在 LMR：MCPTT 主叫时服务器先向 IWF 发请求，再由 IWF 按已归属的 MCPTT 用户向服务器逐人发请求；LMR 主叫时直接从 IWF 的逐人请求开始。控制组呼和管理话权的是定义组的系统，不由主叫侧决定。LMR 主叫要话权时，IWF 请求带隐式话权请求指示；带该指示时可附位置信息。指定 E2EE 时两侧须用同一编解码器；未指定 E2EE 时可以不同，实际不同才需 IWF 转码。 只覆盖这四条预安排组呼的建立和成功分支。没有给出具体 SIP 或媒体协议、LMR 怎么呼叫电台或给主叫转回响应、其他三个流程是否另有一项同样的选组核权、或失败后的处理。不要当作紧急、迫近危险、聊天或广播流程，也不要用建呼响应证明其他终端已加入或已经取得话权。晚入、整场释放和重组管理另查。"
@@ -12548,6 +12556,30 @@
         }
       ],
       "boundary": "限 Rel-16 在网、按直接 MCVideo ID 的普通按需一对一私呼初建；不是组呼、视频推拉、环境查看、first-to-answer、优先呼叫、预建立、Replaces 或在话修改。 查主叫创建请求，须是主叫实际要求不带传输控制的新建私呼；应不提供指定传输控制实体的媒体段，不是去掉整个 SDP offer。 收件分角色查本次私呼的初始 INVITE（TS 24.281 V16.12.0 §6.3.1.1，印 61–62；§10.2.3，印 291）：被叫客户端实收本笔私呼的初始 INVITE；O-PF 实收 S-CSCF 处理发起侧初始过滤条件后路由给本 PF 的初始 INVITE，Request-URI 是本 PF 的 PSI，且不是预建立设置 PSI；T-PF 实收 S-CSCF 处理终止侧初始过滤条件后路由给本 PF 的初始 INVITE，Request-URI 是本 PF 的 PSI；私呼 CF 实收经发起侧 PSI 路由或终止侧直接 PSI 路由的初始 INVITE，Request-URI 是 MCVideo 私呼 PSI，Contact 不带 isfocus。四者都检查本跳实收的完整 SDP offer，确认其中没有媒体传输控制实体的媒体段。缺段不能反推角色；上一跳的 offer 不能代用。 未取得 offer、抓包缺失或截断，不是证实缺段；有该段但端口为 0、被拒或 inactive 也不满足缺段。无隐式发送申请、200、SDP answer、已建会话的 re-INVITE、媒体停发或优先事件不代证本次初始 offer。 分类不证明授权、接通、发送许可或媒体实际送达。不补错引、通用 SIP/SDP 处置或运行结果。 TS 23.281 V16.4.0 只比对两张 Stage 2 请求表：是否使用传输控制是必选业务信息，隐式发送视频申请是另一可选项；不映射线上字段。"
+    },
+    {
+      "id": "r16-media-lmr-legacy-talker-id-update",
+      "question": "旧式 FM 电台主叫的互通组呼，开场不知道发话者，为什么先用 IWF 的 ID？IWF 在同一次媒体传送中得知电台 ID 后，要放掉话权吗？ 同一发话者 ID 更新，MCPTT 宿主与 LMR 宿主分别由谁发给谁？步骤 9 与 10 不同的名称能当报文同义词吗？ MCPTT 定义组，什么时候还给 IWF 按 LMR 用户逐人发送？只有代表归属或缺逐人记录也能这样做吗？ 通用 IWF Floor Talker ID Update 的 MCPTT ID 与复用标识分别是什么条件？能把 Floor Taken 的确认请求字段带入吗？",
+      "start": "topics/media/lmr-legacy-talker-id-update.md",
+      "next_if": [
+        {
+          "condition": "若实际查的是初始预安排 MCPTT–LMR 互通组呼建立，且 IWF 和 MCPTT 服务器已知该组、用户已归属、MCPTT 客户端与用户满足注册认证和服务授权前提、IWF 已配置两侧映射，按发起方与组定义侧查。开场未知 ID 或建呼响应不证明后续实际学习。",
+          "read": "topics/calls/lmr-interworking-prearranged-group-setup.md"
+        },
+        {
+          "condition": "若另查既有互通组呼的实际话权竞争，参与者已归属、话权起初空闲，并确有该参与者发出的 Floor Request，则查本地筛选和最终仲裁。正在传送媒体时更新当前发话者 ID 不是这条路径。",
+          "read": "topics/media/lmr-interworking-group-floor-arbitration.md"
+        },
+        {
+          "condition": "若同一互通组呼仍在进行、MCPTT 服务器和 IWF 已知该组、IWF 已配置两侧组和用户映射，且参与侧实际成功归属同一组，按组定义侧查晚入。MCPTT 定义组：首位 LMR 用户可由 IWF 代表归属或逐人转达，后续 LMR 用户须由 IWF 实际逐人转达本人的归属；仅在 LMR 本地归属或仅代表归属不触发该后续跨 IWF 流程。LMR 定义组：查新归属的 MCPTT 用户，适用首位及后续，不套用 LMR 用户的逐人转达条件。原参与者的发话者 ID 更新不等同于新归属。",
+          "read": "topics/calls/lmr-interworking-group-late-entry.md"
+        },
+        {
+          "condition": "若 MCPTT 用户离开覆盖前已经在 LMR 定义的聊天组呼里、回覆盖时该组呼仍在进行，查返回用户的媒体恢复；看到 IWF Floor Taken 不说明发生了发话者 ID 更新。",
+          "read": "topics/calls/lmr-chat-return-to-coverage.md"
+        }
+      ],
+      "boundary": "旧式常规 FM 电台发起预安排互通组呼，电台发话者 ID 开场未知。两侧已知互通组，用户已归属，MCPTT 客户端已注册、用户已认证获准，IWF 已配置两侧身份映射。建呼与首轮 Floor Taken 使用预配置的 IWF MCPTT ID。呼叫已建立，媒体已开始传送，IWF 在同一次传送中实际获知电台 ID，更新标识而不释放话权。首轮话权消息只针对隐式话权请求且无人竞争的示例；组定义侧控制本次话权。 MCPTT 定义组：第 8 步是首轮话权通知后、IWF 学到 ID 前，MCPTT 服务器向 IWF 的逐人通知。第 12 步是 IWF 在同一次媒体传送中实际学到 ID 并向 MCPTT 服务器发第 10 步 Update 后，服务器另向 IWF 发的逐人通知，不以第 8 步发生为前提。第 8、12 步分别核对当时是否另有主叫以外的已归属 LMR 用户，且服务器确已收到这些人的逐人归属；两项满足才向 IWF 逐人发 IWF Floor Taken。第 11 步是服务器向已归属 MCPTT 用户发带新 ID 的 Floor Taken，不取决于 LMR 逐人归属。第 3 步的建呼请求不能代证第 8 或 12 步已发。LMR 定义组：IWF 向服务器为每位已归属 MCPTT 用户发通知，步骤 9 图与正文写 IWF Floor Taken，步骤 10 正文称新 ID 来自 Update；不据异文增加消息。通用表另有双向定义、必带的 MCPTT ID 和只在媒体复用时可选的 Source identifier，不据此给两个例子添加反向更新。 单凭首轮 IWF ID 或语音不能判定 IWF 已学到真实 ID；发出新 ID 不能判定终端已收到、显示或播放，也不证明另获话权或媒体未停顿。两例未定义 IWF 学习方式、结束后补发、两名称线上等同或本次须发 ACK。"
     }
   ]
 }

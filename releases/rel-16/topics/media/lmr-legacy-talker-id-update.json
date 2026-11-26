@@ -1,0 +1,326 @@
+{
+  "topic_id": "r16-media-lmr-legacy-talker-id-update",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "旧式 LMR 互通组呼：为何先看到 IWF 的 ID，稍后才看到电台发话者？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v16.8.0",
+  "condition_rule": "每条 claim 继承共同条件，再叠加本条条件；两个示例的前提不限制单独的通用信息流表。",
+  "common_conditions": [
+    "3GPP TS 23.283 V16.8.0，Release 16，Stage 2。对象是 IWF 与 MCPTT 的互通话权信息；流程示例和通用信息流表分别读。"
+  ],
+  "claims": [
+    {
+      "id": "initial-proxy-id",
+      "title": "开场未知发话者：建呼请求先用 IWF 的预配置 ID",
+      "conditions": [
+        "旧式常规 FM 的 LMR 用户发起预安排互通组呼；开场时电台发话者 ID 未知。MCPTT 服务器与 IWF 已从配置或建组获知互通组；例中用户已归属，MCPTT 客户端已注册，其用户已认证并获准使用该服务；IWF 已配置两侧组和用户的身份映射。",
+        "核对 IWF 发给 MCPTT 服务器的初始组呼请求。"
+      ],
+      "conclusion": "两种组定义侧的步骤 1 都用 IWF 自身预配置的 MCPTT ID。LMR 定义组的该请求按已归属的 MCPTT 用户逐人发。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.13.3.1: MCPTT-defined group preconditions, first group call request, controlling system and first floor notice"
+          ],
+          "printed_pages": [
+            153,
+            154,
+            155
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.13.3.2: LMR-defined group preconditions, first group call request, controlling system and first floor notice"
+          ],
+          "printed_pages": [
+            155,
+            156,
+            157
+          ]
+        }
+      ],
+      "source_detail": "§10.13.3.1、§10.13.3.2 前提及步骤 1；两例的请求在建立媒体面之前。",
+      "limitations": [
+        "初始请求的预配置 IWF ID 不证明 IWF 已知电台发话者 ID，也不要求先看到首轮 Floor Taken 或建立媒体。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "first-floor-and-host-conditions",
+      "title": "首次授予或占用消息：隐式请求且无人竞争",
+      "conditions": [
+        "旧式常规 FM 的 LMR 用户发起预安排互通组呼；开场时电台发话者 ID 未知。MCPTT 服务器与 IWF 已从配置或建组获知互通组；例中用户已归属，MCPTT 客户端已注册，其用户已认证并获准使用该服务；IWF 已配置两侧组和用户的身份映射。",
+        "核对首轮话权消息时，媒体面已建立，建呼请求带隐式话权请求，且没有其他用户请求话权。"
+      ],
+      "conclusion": "MCPTT 定义组由 MCPTT 侧控制；步骤 7 服务器向 IWF 发 IWF Floor Granted，并向已归属 MCPTT 用户发带预配置 IWF MCPTT ID 的 Floor Taken。LMR 定义组由 LMR 侧控制；步骤 6 由 IWF 按已归属 MCPTT 用户逐人向服务器发 IWF Floor Taken，步骤 7 由服务器向目标用户发带预配置 IWF MCPTT ID 的 Floor Taken。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.13.3.1: MCPTT-defined group preconditions, first group call request, controlling system and first floor notice"
+          ],
+          "printed_pages": [
+            153,
+            154,
+            155
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.13.3.2: LMR-defined group preconditions, first group call request, controlling system and first floor notice"
+          ],
+          "printed_pages": [
+            155,
+            156,
+            157
+          ]
+        }
+      ],
+      "source_detail": "§10.13.3.1 前提、步骤 1、6–7；§10.13.3.2 前提、步骤 1、5–7。建呼请求用预配置 ID；首轮授予或占用通知另带隐式请求且无人竞争的条件。",
+      "limitations": [
+        "预配置 IWF ID、建呼请求或正文中的媒体面已建立都不证明 IWF 已知电台发话者 ID。这里不把无人竞争另立为后续 ID 更新的通用前置条件。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcptt-host-id-update",
+      "title": "MCPTT 定义组：Update 到服务器，再向 MCPTT 已归属用户发 Taken",
+      "conditions": [
+        "旧式常规 FM 的 LMR 用户发起预安排互通组呼；开场时电台发话者 ID 未知。MCPTT 服务器与 IWF 已从配置或建组获知互通组；例中用户已归属，MCPTT 客户端已注册，其用户已认证并获准使用该服务；IWF 已配置两侧组和用户的身份映射。",
+        "本互通组由 MCPTT 系统定义。",
+        "呼叫已建立，媒体已开始传送；IWF 在同一次传送中实际获知该 LMR 用户的发话者 ID。"
+      ],
+      "conclusion": "步骤 9 记 IWF 获知 ID；步骤 10 由 IWF 向 MCPTT 服务器发 IWF Talker ID Update，报告正在使用话权的发话者而不释放话权。步骤 11 是服务器向已归属 MCPTT 用户发 Floor Taken，带该 Update 中的新 ID。MCPTT 是本场控制系统。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.13.3.1: MCPTT-defined group preconditions, first group call request, controlling system and first floor notice"
+          ],
+          "printed_pages": [
+            153,
+            154,
+            155
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.13.3.1, Figure 10.13.3.1-1, steps 9–11 and Notes 6–7: IWF learns identity during media and notifies MCPTT server"
+          ],
+          "printed_pages": [
+            154,
+            155
+          ]
+        }
+      ],
+      "source_detail": "图 10.13.3.1-1 的 10、11 与印刷页 155 正文相合；注 7 说本场其他话权参与者收到通知。步骤 7 的首轮 Floor Granted 在这次更新之前。",
+      "limitations": [
+        "这次更新不是重新授予话权、释放话权或另一次建呼。步骤 12 是另外有条件向 IWF 的分发。只观察到服务器发出消息时，不能据此判定目标终端已收到、显示或播放。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcptt-host-conditional-individual-lmr",
+      "title": "MCPTT 定义组：什么时候向 IWF 为 LMR 成员逐人通知",
+      "conditions": [
+        "旧式常规 FM 的 LMR 用户发起预安排互通组呼；开场时电台发话者 ID 未知。MCPTT 服务器与 IWF 已从配置或建组获知互通组；例中用户已归属，MCPTT 客户端已注册，其用户已认证并获准使用该服务；IWF 已配置两侧组和用户的身份映射。",
+        "本互通组由 MCPTT 系统定义。",
+        "组内另有主叫之外的已归属 LMR 用户，且 MCPTT 服务器已收到这些人的逐人归属。区分首轮通知的步骤 8 与 IWF 在媒体开始后实际得知并报告新 ID 之后的步骤 12。"
+      ],
+      "conclusion": "步骤 8 和步骤 12 分别说，MCPTT 服务器向 IWF 为每位已归属 LMR 用户各发一条 IWF Floor Taken。步骤 8 属于首轮话权，步骤 12 属于身份更新后的另一路分发，不替代向已归属 MCPTT 用户的步骤 11。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.13.3.1, Figure 10.13.3.1-1, steps 8 and 12: separate conditions for individual notices to IWF"
+          ],
+          "printed_pages": [
+            154,
+            155
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.13.3.1, Figure 10.13.3.1-1, steps 9–11 and Notes 6–7: IWF learns identity during media and notifies MCPTT server"
+          ],
+          "printed_pages": [
+            154,
+            155
+          ]
+        }
+      ],
+      "source_detail": "§10.13.3.1 步骤 8、12 的条件要求有主叫以外的已归属 LMR 用户，而且服务器收到了这些人的逐人归属。发几条按条文随后「每位已归属 LMR 用户」的措辞，条件与计数分别读。",
+      "limitations": [
+        "只知道代表归属、缺逐人记录或没有主叫以外的已归属 LMR 用户，不支持这两步的逐人通知。该例未另定给主叫补发或混合归属计数，也未说明电台侧收件。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-host-id-update",
+      "title": "LMR 定义组：逐位 MCPTT 用户报 Taken；保留步骤 9、10 异文",
+      "conditions": [
+        "旧式常规 FM 的 LMR 用户发起预安排互通组呼；开场时电台发话者 ID 未知。MCPTT 服务器与 IWF 已从配置或建组获知互通组；例中用户已归属，MCPTT 客户端已注册，其用户已认证并获准使用该服务；IWF 已配置两侧组和用户的身份映射。",
+        "本互通组由 LMR 系统定义。",
+        "呼叫已建立，媒体已开始传送；IWF 在同一次传送中实际获知该 LMR 用户的发话者 ID。"
+      ],
+      "conclusion": "步骤 8 记 IWF 获知 ID。步骤 9 的正文与图中 9a/9b 都称 IWF Floor Taken：IWF 为每位已归属 MCPTT 用户向服务器各发一条，报告当前发话者而不释放话权。步骤 10 由 MCPTT 服务器向目标用户发带新 ID 的 Floor Taken；该步正文将新 ID 的来源称作 IWF Talker ID Update。LMR 是本场控制系统。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.13.3.2: LMR-defined group preconditions, first group call request, controlling system and first floor notice"
+          ],
+          "printed_pages": [
+            155,
+            156,
+            157
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.13.3.2, Figure 10.13.3.2-1, steps 8–10 and Notes 4–5: per-affiliate step-9 IWF floor taken and step-10 update wording"
+          ],
+          "printed_pages": [
+            156,
+            157
+          ]
+        }
+      ],
+      "source_detail": "图 10.13.3.2-1 第 9、10 步与印刷页 157 的正文分别核对。注 5 写本场其他话权参与者收到通知；不依据服务器侧发送记录替代目标用户实收。",
+      "limitations": [
+        "两种称呼不是已核实的线上协议同义词；不添加另一条独立的 Update 或回执。MCPTT 服务器转发不证明它接管话权，不搬用另一分支的服务器向 IWF 发 Floor Granted。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "generic-flow-fields-and-direction",
+      "title": "通用 IWF Floor Talker ID Update 信息流的方向和字段",
+      "conditions": [
+        "查 §10.5.2.17 的通用功能信息流或与 §10.5.2.10 的字段差别，不把两个常规 FM 示例的发起方、组宿主或流程套到通用定义。"
+      ],
+      "conclusion": "IWF Floor Talker ID Update 可在 IWF 与 MCPTT 话权控制服务器之间双向传递，表示当前已获话权一方的发话者 ID 改变。MCPTT ID 必带（M）。Source identifier 用来标识通信，只在媒体复用时可出现，仍为可选（O）。IWF Floor Taken 的表另列可选的确认请求字段，Update 表未列这一字段。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.5.2.17, Table 10.5.2.17-1: generic direction and information elements"
+          ],
+          "printed_pages": [
+            104
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.5.2.10, Table 10.5.2.10-1: contrast with IWF floor talker ID update, not a wire mapping"
+          ],
+          "printed_pages": [
+            102
+          ]
+        }
+      ],
+      "source_detail": "TS 23.283 V16.8.0 表 10.5.2.17-1 印刷页 104 与表 10.5.2.10-1 印刷页 102 对照。",
+      "limitations": [
+        "双向定义不给两个 IWF 向 MCPTT 服务器报告新 ID 的例子增加反向更新。不能把 Floor Taken 表的字段直接移植到 Update，或据 §10.13.3.2 步骤 9 的名字断言本次有确认请求或实际回执。不能据 Source identifier 推断具体编码、SSRC 或 RTP 形式。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "late-learning-and-evidence",
+      "title": "怎样用同一段记录判断 ID 更新，不把收件或媒体结果读出来",
+      "conditions": [
+        "旧式常规 FM 的 LMR 用户发起预安排互通组呼；开场时电台发话者 ID 未知。MCPTT 服务器与 IWF 已从配置或建组获知互通组；例中用户已归属，MCPTT 客户端已注册，其用户已认证并获准使用该服务；IWF 已配置两侧组和用户的身份映射。",
+        "区分开场未知、媒体已开始、IWF 是否实际获知发话者的 ID，以及 IWF 和 MCPTT 服务器后续各自的消息。"
+      ],
+      "conclusion": "记录同一场、同一次媒体传送的标识：先是 IWF 预配置 ID，随后 IWF 在媒体开始后实际获知电台 ID，才有示例里的 IWF 报告和服务器面向用户的 Floor Taken。§10.13.3 允许把机制用在本文描述的其他 MCPTT 媒体传送中；未要求每场都用。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.13.3: identity update during a media transmission, other procedures may use the mechanism"
+          ],
+          "printed_pages": [
+            153
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.13.3.1, Figure 10.13.3.1-1, steps 9–11 and Notes 6–7: IWF learns identity during media and notifies MCPTT server"
+          ],
+          "printed_pages": [
+            154,
+            155
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.13.3.2, Figure 10.13.3.2-1, steps 8–10 and Notes 4–5: per-affiliate step-9 IWF floor taken and step-10 update wording"
+          ],
+          "printed_pages": [
+            156,
+            157
+          ]
+        }
+      ],
+      "source_detail": "§10.13.3.1 步骤 9、注 6–7 和 §10.13.3.2 步骤 8、注 4–5 都分开 IWF 学到 ID、两段发送与例中其余话权参与者收件。两例注明通知让参与者知道所谓新获话权者的身份；更新步骤未另发授予。也指出有的旧式系统在呼叫结束时才提供 ID。",
+      "limitations": [
+        "本节不规定 IWF 如何获知 ID；到呼叫结束才得到 ID 不等于标准规定要在结束后补报。首轮代理 ID、通话中的语音或服务器发出新 ID 均不单独证明用户已实收、显示或播放。不从更新判断换人重新获准、媒体没有停顿、可用的 SIP/RTCP 线上编码或终端呈现规则。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-lmr-interworking-prearranged-group-setup",
+    "r16-media-lmr-interworking-group-floor-arbitration",
+    "r16-calls-lmr-interworking-group-late-entry",
+    "r16-calls-lmr-chat-return-to-coverage"
+  ],
+  "limitations": [
+    "不以呼叫结束才取得 ID 补写结束后流程。此处不规定电台侧识别方式、协议编码、实际媒体连续性、终端呈现或 ACK。",
+    "预安排组初始建呼、初始空闲时的话权竞争、另一侧新归属迟入和聊天组回覆盖均有独立主题，不能由同名 Taken 推断。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false,
+    "entire_source_verified": false
+  }
+}

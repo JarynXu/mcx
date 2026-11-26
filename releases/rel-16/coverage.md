@@ -2707,6 +2707,16 @@ MCPTT、MCVideo 的伙伴复制例中，甲乙互联，A 由组主系统甲服�
 
 [读取主题](topics/media/lmr-interworking-group-floor-arbitration.md)
 
+## 旧式 LMR 互通组呼：为何先看到 IWF 的 ID，稍后才看到电台发话者？
+
+旧式常规 FM 电台发起预安排互通组呼，电台发话者 ID 开场未知。两侧已知互通组，用户已归属，MCPTT 客户端已注册、用户已认证获准，IWF 已配置两侧身份映射。建呼与首轮 Floor Taken 使用预配置的 IWF MCPTT ID。呼叫已建立，媒体已开始传送，IWF 在同一次传送中实际获知电台 ID，更新标识而不释放话权。首轮话权消息只针对隐式话权请求且无人竞争的示例；组定义侧控制本次话权。
+
+MCPTT 定义组：第 8 步是首轮话权通知后、IWF 学到 ID 前，MCPTT 服务器向 IWF 的逐人通知。第 12 步是 IWF 在同一次媒体传送中实际学到 ID 并向 MCPTT 服务器发第 10 步 Update 后，服务器另向 IWF 发的逐人通知，不以第 8 步发生为前提。第 8、12 步分别核对当时是否另有主叫以外的已归属 LMR 用户，且服务器确已收到这些人的逐人归属；两项满足才向 IWF 逐人发 IWF Floor Taken。第 11 步是服务器向已归属 MCPTT 用户发带新 ID 的 Floor Taken，不取决于 LMR 逐人归属。第 3 步的建呼请求不能代证第 8 或 12 步已发。LMR 定义组：IWF 向服务器为每位已归属 MCPTT 用户发通知，步骤 9 图与正文写 IWF Floor Taken，步骤 10 正文称新 ID 来自 Update；不据异文增加消息。通用表另有双向定义、必带的 MCPTT ID 和只在媒体复用时可选的 Source identifier，不据此给两个例子添加反向更新。
+
+尚未建立：单凭首轮 IWF ID 或语音不能判定 IWF 已学到真实 ID；发出新 ID 不能判定终端已收到、显示或播放，也不证明另获话权或媒体未停顿。两例未定义 IWF 学习方式、结束后补发、两名称线上等同或本次须发 ACK。
+
+[读取主题](topics/media/lmr-legacy-talker-id-update.md)
+
 ## 预建立会话里两次看到 Connect 和 Accepted，是两通 MCPTT 呼叫吗？
 
 在客户端已经使用的那条预建立会话上，再收到要求确认的 Connect，客户端须回 Accepted，这条会话保持在用，不能据此多记一通。受邀侧 PF 收到 CF 的 INVITE，在自动应答模式下用原未在用的预建立会话承接来呼；向受邀客户端发出 Connect 后，这条会话在 PF 侧就转为在用，不等于终端已答。 主叫 Connect 由发起侧 PF 在实际收到 CF 对业务 INVITE 的 200 后发送；身份值取那份响应的 Contact，不取 REFER 的 200。
