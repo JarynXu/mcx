@@ -246,6 +246,10 @@
         {
           "condition": "问 MCPTT 发起且实际互通组定义在 MCPTT 的紧急建呼、指定组/所选组配置、LMR 归属与 IWF 回包；查规则不需实况记录。",
           "read": "topics/interworking/emergency-group-setup-mcptt-to-mcptt.md"
+        },
+        {
+          "condition": "问 LMR 用户发起且互通组定义在 MCPTT 的紧急建呼、个人或代理归属、原应答和可选的反向逐人腿；查规则不需要实况记录。",
+          "read": "topics/interworking/emergency-group-setup-lmr-to-mcptt.md"
         }
       ],
       "boundary": "Bounded Stage2 interworking procedures; underlying security and full call state machine not verified."
@@ -2728,6 +2732,10 @@
         {
           "condition": "问预安排组呼的整体释放，不是这条紧急建呼或紧急状态取消。",
           "read": "topics/interworking/group-call-release.md"
+        },
+        {
+          "condition": "主叫实际在 LMR 但组定义在 MCPTT，则读 .2.1 及原 1/9、可选逐 LMR 用户 7/8。",
+          "read": "topics/interworking/emergency-group-setup-lmr-to-mcptt.md"
         }
       ]
     },
@@ -2755,6 +2763,38 @@
         },
         {
           "condition": "问整体组呼释放，不用它推断紧急状态取消。",
+          "read": "topics/interworking/group-call-release.md"
+        },
+        {
+          "condition": "主叫实际在 LMR 且组仍定义在 MCPTT，查 .2.1 的原请求 1/9 与条件反向 7/8。",
+          "read": "topics/interworking/emergency-group-setup-lmr-to-mcptt.md"
+        }
+      ]
+    },
+    {
+      "id": "iwf-emergency-group-setup-lmr-to-mcptt",
+      "question": "LMR 用户在 MCPTT 定义组发起紧急呼叫：IWF 原请求 1 / 9 怎样和逐人 7 / 8 配对？",
+      "start": "topics/interworking/emergency-group-setup-lmr-to-mcptt.md",
+      "boundary": "查 TS 23.283 V19.5.0 Stage 2 的 LMR 发起、MCPTT 定义紧急互通组；能区分主叫归属/授权、原请求和逐人请求。查规则无需抓包。 §10.6.2.2.1 步骤 1 IWF→server，由 9 server→IWF 回应。步骤 2 区分主叫个人和 IWF 代理归属，步骤 3 仍查主叫。仅主叫之外有已归属 LMR 用户且收到其逐人归属才走反向请求 7 及应答 8；NOTE 5 定 9 的边界，步骤 10 媒体另证。组定义在 MCPTT 时由 MCPTT 系统主控。 本支不从概述补单代理 7。应答名、同组同主叫、实际单跳收件均不能证明全员成功、媒体或话权。不补 LMR 内部、IWF 优先级动作、失败等待、SIP、整体释放或紧急状态取消。",
+      "next_if": [
+        {
+          "condition": "主叫实际为 MCPTT 用户且组仍定义在 MCPTT，查 .2.2 的主叫配置、授权与另一条 7/8。",
+          "read": "topics/interworking/emergency-group-setup-mcptt-to-mcptt.md"
+        },
+        {
+          "condition": "主叫仍是 LMR 用户但实际组定义在 LMR，查 .2.3 的逐已归属 MCPTT 用户 1/4。",
+          "read": "topics/interworking/emergency-group-setup-lmr-to-lmr.md"
+        },
+        {
+          "condition": "实际是 MCPTT 发起且组定义在 LMR，查 .2.4 的原请求 3/8 与逐人 4/7。",
+          "read": "topics/interworking/emergency-group-setup-mcptt-to-lmr.md"
+        },
+        {
+          "condition": "问在会话权处理而非紧急初次建呼。",
+          "read": "topics/interworking/floor-override.md"
+        },
+        {
+          "condition": "问整体组呼释放，而不是本次建呼或紧急状态取消。",
           "read": "topics/interworking/group-call-release.md"
         }
       ]

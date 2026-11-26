@@ -745,6 +745,14 @@
 
 入口：[MCPTT 发起、组也定义在 MCPTT：何时发 IWF 请求，回包能证明什么？](topics/interworking/emergency-group-setup-mcptt-to-mcptt.md)。
 
+### LMR 发起、组定义在 MCPTT：原请求和逐人请求怎么区分？
+
+- **能回答：**查 TS 23.283 V19.5.0 Stage 2 的 LMR 发起、MCPTT 定义紧急互通组；能区分主叫归属/授权、原请求和逐人请求。查规则无需抓包。
+- **只到条件或接口：**§10.6.2.2.1 步骤 1 IWF→server，由 9 server→IWF 回应。步骤 2 区分主叫个人和 IWF 代理归属，步骤 3 仍查主叫。仅主叫之外有已归属 LMR 用户且收到其逐人归属才走反向请求 7 及应答 8；NOTE 5 定 9 的边界，步骤 10 媒体另证。组定义在 MCPTT 时由 MCPTT 系统主控。
+- **尚未建立的结论：**本支不从概述补单代理 7。应答名、同组同主叫、实际单跳收件均不能证明全员成功、媒体或话权。不补 LMR 内部、IWF 优先级动作、失败等待、SIP、整体释放或紧急状态取消。
+
+入口：[LMR 发起、组定义在 MCPTT：原请求和逐人请求怎么区分？](topics/interworking/emergency-group-setup-lmr-to-mcptt.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)
