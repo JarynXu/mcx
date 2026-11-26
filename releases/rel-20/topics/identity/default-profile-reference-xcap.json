@@ -1,0 +1,137 @@
+{
+  "topic_id": "r20-identity-default-profile-reference-xcap",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3；MCS UE 初始配置文档中的默认用户配置档引用，仅收录相关字段与校验。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "mcs-initial-default-profile-reference-optional-attributes",
+      "clause": "7.2.2.1",
+      "conditions": [
+        "描述 MCS UE 初始配置文档的 Default-user-profile 结构。"
+      ],
+      "conclusion": "根文档可不包含 Default-user-profile。若包含该元素，User-ID 与 user-profile-index 都是必需属性；Schema 类型分别是 xs:anyURI 和 xs:unsignedByte，即使只存在一份用户档也不能省略索引。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcs-initial-default-profile-target-pair-pre-exists",
+      "clause": "7.2.2.7",
+      "conditions": [
+        "MCS 管理员在初始配置文档中使用 Default-user-profile 引用默认用户档。"
+      ],
+      "conclusion": "User-ID 填欲用作默认的 MCPTT 用户配置档 XUI-URI 里的 XUI；user-profile-index 匹配同一目标用户档里的索引值。§4.1.1 和 §7.2.2.6 的注要求先在 CMS 创建至少一份同时含两项匹配值的目标档。注称目标档的 XUI-URI，引用侧的属性名依结构仍是 User-ID；不以另一用户的同索引、设备 ID 或 ProfileName 替代。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.7"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.6"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.1.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcs-initial-default-profile-invalid-user-id-uri",
+      "clause": "7.2.2.6",
+      "conditions": [
+        "存在 Default-user-profile，且其 User-ID 的 URI 语法不符合所引 RFC 3986。"
+      ],
+      "conclusion": "CMS 须回 HTTP 409 (Conflict)，带 XCAP constraint-failure。若包含 phrase，建议 syntactically incorrect User ID URI。此项判断 URI 语法，不能代替查用户档和索引。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcs-initial-default-profile-user-xui-not-found",
+      "clause": "7.2.2.6",
+      "conditions": [
+        "存在 Default-user-profile，但没有 MCS 用户配置档的 XUI-URI 对应该 User-ID。"
+      ],
+      "conclusion": "CMS 须回 HTTP 409 (Conflict)，带 XCAP constraint-failure。若包含 phrase，建议提示该用户标识没有 MCS 用户配置档，原文前缀 No MCS User Profile configuration document exists。该条件不是索引对另一用户存在与否。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.6"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcs-initial-default-profile-index-not-found-for-user",
+      "clause": "7.2.2.6",
+      "conditions": [
+        "存在 Default-user-profile，但给出的 user-profile-index 未定位到 User-ID 所指用户的一份 MCPTT 用户配置档。"
+      ],
+      "conclusion": "CMS 须回 HTTP 409 (Conflict)，带 XCAP constraint-failure。若包含 phrase，建议指出索引未标识该用户的一份配置档，原文前缀 The user profile index does not identify。不据这三条设定检查顺序，其他 409 仍须核实际条件。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.6"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.7"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "三个失败条件各自判断，phrase 若带才有建议内容；不推断校验顺序、自动改选、删档联动或接受后立即下发。RFC 3986 和 TS 24.483 仅留本版指针，不验证目标规范正文或设备实现。",
+    "§7.2.2.10 段写无资源相互依赖，不能据此跳过 §7.2.2.6 的明确约束和先建档注。§7.2.2.7 的 TS 24.483 UserID/UserProfileIndex 只是对应关系指针；§4.2.2.1.1 的 MO 下载条件不是写引用校验。"
+  ],
+  "related": [
+    "r20-identity-mcptt-user-profile-xcap-validation",
+    "r20-identity-primary-ue-online-configuration",
+    "r20-identity-initial-ue-config-xcap"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
