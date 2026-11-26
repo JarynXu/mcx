@@ -1,0 +1,148 @@
+{
+  "topic_id": "r20-identity-primary-ue-online-configuration",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只适用于 §4.2.2.1.1 主 MC 系统的 MCS UE 在线配置；不把用于迁往伙伴系统的配置档或授权流程套入。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "ue-initial-mo-update",
+      "clause": "4.2.2.1.1",
+      "conditions": [
+        "主 MC 系统在线配置中，MCS UE 初始配置管理对象（MO）相对终端保存的版本已变化。"
+      ],
+      "conclusion": "下载更新的初始配置 MO。正文未要求其中带默认档引用；MO 格式由 TS 24.483 定义。此条没有定义检查版本的机制或无本地版本时的处理步骤。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.2.1.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "referenced-default-mo-update",
+      "clause": "4.2.2.1.1",
+      "conditions": [
+        "初始配置有 default-user-profile 元素。",
+        "该元素所指的默认 MCS 用户配置档 MO 相对终端保存的版本已变化。"
+      ],
+      "conclusion": "下载更新的所指默认档。两项条件须同时满足；不额外要求初始配置自身已变化。仅见初始配置换版或出现引用，不足以得出被引用默认档已换版；未由该元素指向的文档不满足这个分支。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.2.1.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "default-identities-before-authentication",
+      "clause": "4.2.2.1.1",
+      "conditions": [
+        "解释默认 MCS 用户配置档的内容。"
+      ],
+      "conclusion": "默认档说明认证前的默认身份和该用户可用的业务。紧急 MCPTT 是注 1 的示例，不是每台终端必有的业务，也不证明认证已经完成。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.2.1.1"
+          ],
+          "notes": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "id": "primary-idms-and-authentication-identities",
+      "clause": "4.2.2.1.1",
+      "conditions": [
+        "主系统在线配置进入用户认证及随后按身份订阅。"
+      ],
+      "conclusion": "UE 从主系统的 UE 初始配置读 IdMS HTTPS URI，按 TS 24.482 办理用户认证。订阅所用身份在用户认证中取得，不从默认档直接替代；这句话讲身份来源，未规定两处身份值必然不同，也不能从地址或默认档证明已经认证。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.2.1.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "primary-proxy-and-group-document",
+      "clause": "4.2.2.1.1",
+      "conditions": [
+        "使用用户认证取得的身份订阅主系统配置。"
+      ],
+      "conclusion": "每项已启用的 MCS 的 UE 配置、用户配置档和业务配置经 CMS 订阅代理，所引程序为 §6.3.13.2.2。组文档的格式、订阅及按通知的 HTTPS URI 取回由 TS 24.481 定义；不能据此给组文档套多文档代理路径，URI 本身也不证明取回成功。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.2.1.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "subscribed-update-notifies-local-copy",
+      "clause": "4.2.2.1.1",
+      "conditions": [
+        "所订阅的文档相对终端保存的版本已更新。"
+      ],
+      "conclusion": "UE 收到含 XCAP Diff 的 SIP NOTIFY，CMC 更新本地文档副本。若要判断目标文档，须对准该订阅和文档；发出订阅、收到差异通知、确认本地副本更新和业务采用新内容是不同证据。变更通知也可在 MCS 使用期间到达。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.2.1.1"
+          ],
+          "notes": [
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "id": "figure-roles-do-not-change-prose",
+      "clause": "4.2.2.1.1",
+      "conditions": [
+        "对照主系统在线配置时序图和 §4.2.2.1.1 正文。"
+      ],
+      "conclusion": "图 4.2.2.1.1-1 用 MCPTT UE 示意，画出 Bootstrap 下的两种管理对象，并标出业务授权和离网业务配置。正文明确用户认证及使用所获身份订阅已启用业务的配置；不能用图的标签推出额外的授权报文或授权结果，也不能按该标签把正文的业务配置限定为离网。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.2.1.1"
+          ],
+          "figures": [
+            "4.2.2.1.1-1"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "初始配置与它指向的默认档分开判断。此条没有规定无本地旧版本时的处理或下载报文。",
+    "终端用认证所得身份订阅；组文档按 TS 24.481。收到差异通知、本地副本已更新、业务已用新配置是不同证据。",
+    "不包括认证报文、首次无本地版本时的下载方案、业务采用新配置的时点或设备实测。"
+  ],
+  "related": [
+    "r20-identity-partner-migration-profile"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
