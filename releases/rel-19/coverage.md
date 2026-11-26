@@ -761,6 +761,14 @@
 
 入口：[互通组的迫近危险状态怎么取消？谁的应答算数？](topics/interworking/imminent-peril-group-state-cancel.md)。
 
+### MCPTT 发起迫近危险互通组呼：IWF 可以拒绝吗？位置能给谁？
+
+- **能回答：**查 TS 23.283 V19.5.0 §10.6.3.2 MCPTT 用户起呼、MCPTT 定义互通组的迫近危险建呼与位置传播判断。查规范无需抓包。
+- **只到条件或接口：**发起端已配置指定迫近危险组，另一 MCPTT 客户端及至少一名 LMR 用户已归属，IWF 获准且映射已配。主叫起呼许可、对其他 MCPTT 用户和 IWF 的位置披露判断分开。7/8 是 IWF 腿，9 是成员腿；10 在 5 后、11 前并看继续条件。IWF 不支持可拒绝建呼，不搬取消的应答规则。
+- **尚未建立的结论：**IWF 表隐式话权 NOTE 的客户端→服务器与表题双向信息流要分读，不从步骤 2 的可选字段推 7。NOTE 7 不保证 IWF 拒绝后成功，实际信令、位置传播、话权和媒体各有证据；不推出 LMR 内部、IWF 优先级或 SIP。
+
+入口：[MCPTT 发起迫近危险互通组呼：IWF 可以拒绝吗？位置能给谁？](topics/interworking/imminent-peril-group-call-mcptt-origin.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)

@@ -254,6 +254,10 @@
         {
           "condition": "问互通组组态仍处于迫近危险的明确取消、IWF 无建呼支持时的应答或组播/确认时序；查规范无需实况记录。",
           "read": "topics/interworking/imminent-peril-group-state-cancel.md"
+        },
+        {
+          "condition": "问 MCPTT 用户对 MCPTT 定义互通组起迫近危险呼叫的指定组、位置传给谁、IWF 建呼可否拒绝及各腿；不是取消或 LMR 发起。查规范无需实况记录。",
+          "read": "topics/interworking/imminent-peril-group-call-mcptt-origin.md"
         }
       ],
       "boundary": "Bounded Stage2 interworking procedures; underlying security and full call state machine not verified."
@@ -2838,6 +2842,34 @@
         {
           "condition": "问正在进行的会话内话权覆盖。",
           "read": "topics/interworking/floor-override.md"
+        },
+        {
+          "condition": "若实际是 MCPTT 用户对 MCPTT 定义的互通组发起迫近危险组呼，而非明确取消，查 .3.2 的建呼、IWF 支持及位置许可。",
+          "read": "topics/interworking/imminent-peril-group-call-mcptt-origin.md"
+        }
+      ]
+    },
+    {
+      "id": "iwf-imminent-peril-group-call-mcptt-origin",
+      "question": "MCPTT 向指定的迫近危险互通组起呼，IWF 不支持时能否拒绝？附带的主叫位置能给谁？",
+      "start": "topics/interworking/imminent-peril-group-call-mcptt-origin.md",
+      "boundary": "查 TS 23.283 V19.5.0 §10.6.3.2 MCPTT 用户起呼、MCPTT 定义互通组的迫近危险建呼与位置传播判断。查规范无需抓包。 发起端已配置指定迫近危险组，另一 MCPTT 客户端及至少一名 LMR 用户已归属，IWF 获准且映射已配。主叫起呼许可、对其他 MCPTT 用户和 IWF 的位置披露判断分开。7/8 是 IWF 腿，9 是成员腿；10 在 5 后、11 前并看继续条件。IWF 不支持可拒绝建呼，不搬取消的应答规则。 IWF 表隐式话权 NOTE 的客户端→服务器与表题双向信息流要分读，不从步骤 2 的可选字段推 7。NOTE 7 不保证 IWF 拒绝后成功，实际信令、位置传播、话权和媒体各有证据；不推出 LMR 内部、IWF 优先级或 SIP。",
+      "next_if": [
+        {
+          "condition": "不是起呼，而是明确取消仍在 MCPTT 中的组迫近危险状态，查 .3.4 的 6/7、8/10、2/11。",
+          "read": "topics/interworking/imminent-peril-group-state-cancel.md"
+        },
+        {
+          "condition": "实际是 MCPTT 用户发起紧急组呼而非迫近危险，且组定义在 MCPTT。",
+          "read": "topics/interworking/emergency-group-setup-mcptt-to-mcptt.md"
+        },
+        {
+          "condition": "实际问原生 MCPTT 已有按需预安排组呼的端/PF/CF 升级或取消，不是 IWF 建呼。",
+          "read": "topics/emergency/group-imminent-request-feedback.md"
+        },
+        {
+          "condition": "明确问既有组呼整体释放，别用建呼应答或媒体阶段代替。",
+          "read": "topics/interworking/group-call-release.md"
         }
       ]
     }
