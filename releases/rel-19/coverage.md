@@ -737,6 +737,14 @@
 
 入口：[LMR 发起、组也定义在 LMR：谁先发请求，谁回结果？](topics/interworking/emergency-group-setup-lmr-to-lmr.md)。
 
+### MCPTT 发起、组也定义在 MCPTT：何时发 IWF 请求，回包能证明什么？
+
+- **能回答：**查 TS 23.283 V19.5.0 Stage 2 中 MCPTT 发起且组也由 MCPTT 定义时，发起端配置、主叫许可、IWF 请求粒度及回包与实际媒体的区别。查规则无需抓包。
+- **只到条件或接口：**§10.6.2.2.2 指定紧急组或所选组紧急行为二选一，主叫授权另判。步骤 7 server→IWF 随已有 LMR 代理归属或逐名实际归属发送；IWF→server 应答 8 与发起端应答 10 分开。NOTE 6/8 定时序边界，9 向已归属 MCPTT 成员发请求，11 媒体另证。由 MCPTT 系统主控。
+- **尚未建立的结论：**组或主叫相同不等于同笔事务。Result 可拒绝，响应名字或实际单跳收件不能证明下游媒体、全员收件、告警或话权。图示不定全员等待或失败算法；不扩到 LMR 内部、SIP、IWF 优先级实现及紧急状态取消。
+
+入口：[MCPTT 发起、组也定义在 MCPTT：何时发 IWF 请求，回包能证明什么？](topics/interworking/emergency-group-setup-mcptt-to-mcptt.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)

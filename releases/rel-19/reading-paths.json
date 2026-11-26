@@ -242,6 +242,10 @@
         {
           "condition": "问已知 LMR 用户发起且组定义在 LMR 的紧急组呼、IWF 第一跳和逐成员结果；查规则不需实况记录。",
           "read": "topics/interworking/emergency-group-setup-lmr-to-lmr.md"
+        },
+        {
+          "condition": "问 MCPTT 发起且实际互通组定义在 MCPTT 的紧急建呼、指定组/所选组配置、LMR 归属与 IWF 回包；查规则不需实况记录。",
+          "read": "topics/interworking/emergency-group-setup-mcptt-to-mcptt.md"
         }
       ],
       "boundary": "Bounded Stage2 interworking procedures; underlying security and full call state machine not verified."
@@ -2700,6 +2704,10 @@
         {
           "condition": "发起者实际是 LMR 用户，组仍定义在 LMR，读 .2.3 建呼。",
           "read": "topics/interworking/emergency-group-setup-lmr-to-lmr.md"
+        },
+        {
+          "condition": "主叫实际为 MCPTT 用户且互通组定义也在 MCPTT，查 .2.2 的发起配置、授权及步骤 7/8。",
+          "read": "topics/interworking/emergency-group-setup-mcptt-to-mcptt.md"
         }
       ]
     },
@@ -2719,6 +2727,34 @@
         },
         {
           "condition": "问预安排组呼的整体释放，不是这条紧急建呼或紧急状态取消。",
+          "read": "topics/interworking/group-call-release.md"
+        }
+      ]
+    },
+    {
+      "id": "iwf-emergency-group-setup-mcptt-to-mcptt",
+      "question": "MCPTT 用户呼叫 MCPTT 定义的互通组：配置过紧急行为就能建立吗？什么时候只发一条 IWF 请求？",
+      "start": "topics/interworking/emergency-group-setup-mcptt-to-mcptt.md",
+      "boundary": "查 TS 23.283 V19.5.0 Stage 2 中 MCPTT 发起且组也由 MCPTT 定义时，发起端配置、主叫许可、IWF 请求粒度及回包与实际媒体的区别。查规则无需抓包。 §10.6.2.2.2 指定紧急组或所选组紧急行为二选一，主叫授权另判。步骤 7 server→IWF 随已有 LMR 代理归属或逐名实际归属发送；IWF→server 应答 8 与发起端应答 10 分开。NOTE 6/8 定时序边界，9 向已归属 MCPTT 成员发请求，11 媒体另证。由 MCPTT 系统主控。 组或主叫相同不等于同笔事务。Result 可拒绝，响应名字或实际单跳收件不能证明下游媒体、全员收件、告警或话权。图示不定全员等待或失败算法；不扩到 LMR 内部、SIP、IWF 优先级实现及紧急状态取消。",
+      "next_if": [
+        {
+          "condition": "实际是 MCPTT 发起但互通组定义在 LMR；查 .2.4 的原请求与逐 MCPTT 成员请求。",
+          "read": "topics/interworking/emergency-group-setup-mcptt-to-lmr.md"
+        },
+        {
+          "condition": "实际是 LMR 发起且组定义也在 LMR；查 .2.3 的第一跳 IWF 与逐 MCPTT 成员结果。",
+          "read": "topics/interworking/emergency-group-setup-lmr-to-lmr.md"
+        },
+        {
+          "condition": "问普通 IWF 组呼请求的字段，不问紧急建呼过程。",
+          "read": "topics/interworking/group-call-request.md"
+        },
+        {
+          "condition": "已建立组呼，实际问在会话权覆盖，不查这条首次建呼。",
+          "read": "topics/interworking/floor-override.md"
+        },
+        {
+          "condition": "问整体组呼释放，不用它推断紧急状态取消。",
           "read": "topics/interworking/group-call-release.md"
         }
       ]
