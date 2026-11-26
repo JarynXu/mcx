@@ -1,0 +1,369 @@
+{
+  "topic_id": "r20-calls-mcptt-access-clock",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 22.179 V20.0.0，Release 20，Stage 1，第 6 章在网。主体为 §6.15.3.1/.2 的组呼和带话权私呼接入；附录 A 和 §6.15.4.1 仅为对照。按各条另核自动确认、同网覆盖、网络与角色条件，不能从这组摘录推全版性能。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-22.179-v20.0.0",
+  "standard_stage": 1,
+  "claims": [
+    {
+      "id": "group-kpi1-kpi2-common-clock-different-inclusions",
+      "clause": "6.15.3.1",
+      "conditions": [
+        "读 §6.15.3.1 的一般发话接入，不替代带话权私呼 KPI 2 的专门端点。"
+      ],
+      "conclusion": "KPI 1 从用户请求发话到收到可开始发话的信号，不包括接收方确认和用户归属组的时间；可用于组呼建立请求与同一呼叫内后续 MCPTT 请求。一般 KPI 2 也是发话请求到许可发话信号，但含适用时的建呼，并可能包括发话前首个接收用户的确认；既不等同于 KPI 1，也不要求所有收方均确认。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.3.1"
+          ],
+          "printed_pages": [
+            51,
+            52
+          ],
+          "figures": [
+            "6.15.3.1.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "group-no-ack-request-vs-requested-automatic-ack",
+      "clause": "6.15.3.2",
+      "requirements": [
+        "R-6.15.3.2-012",
+        "R-6.15.3.2-014"
+      ],
+      "conditions": [
+        "在网 MCPTT 组呼；按是否请求已归属组成员确认和同网覆盖的适用条件选指标。"
+      ],
+      "conclusion": "不要求已归属组成员确认时，-012 的 KPI 1 须使全部 MCPTT 请求的 95% 小于 300 ms。注仅排除未向任何已归属组成员请求确认的组传输建呼的 KPI 2；已经请求但还没收到确认与没请求不同。若要求已归属成员的 UE 自动确认且用户同网覆盖，-014 对 KPI 2 要求严格小于 1000 ms，未规定 95% 等比例。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.3.2"
+          ],
+          "printed_pages": [
+            53
+          ],
+          "requirements": [
+            "R-6.15.3.2-012",
+            "R-6.15.3.2-014"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.3.1"
+          ],
+          "printed_pages": [
+            52
+          ]
+        }
+      ]
+    },
+    {
+      "id": "private-floor-kpi2-auto-response-vs-manual-ringing",
+      "clause": "6.15.3.1",
+      "requirements": [
+        "R-6.15.3.2-009",
+        "R-6.15.3.2-018"
+      ],
+      "conditions": [
+        "带话权控制的在网 MCPTT 私呼；区分自动或手动开始。"
+      ],
+      "conclusion": "KPI 2 从发起客户端的私呼请求开始，自动到发起侧收到 Private Call response，手动到发起侧收到 MCPTT 振铃指示，不等接听。自动 -009 和手动 -018 分别要求两端已连接 MCPTT 服务。图 6.15.3.1.1 只有通用 PTT 请求/发话许可区间，未分别标出这两个私呼端点；按正文保留区别，不推定 SIP 状态码，也不套到无话权私呼。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.3.1"
+          ],
+          "printed_pages": [
+            52
+          ],
+          "figures": [
+            "6.15.3.1.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.3.2"
+          ],
+          "printed_pages": [
+            53
+          ],
+          "requirements": [
+            "R-6.15.3.2-009",
+            "R-6.15.3.2-018"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "same-network-private-inclusive-vs-group-strict",
+      "clause": "6.15.3.2",
+      "requirements": [
+        "R-6.15.3.2-014",
+        "R-6.15.3.2-019",
+        "R-6.15.3.2-020"
+      ],
+      "conditions": [
+        "同网覆盖，按要求已归属 UE 自动确认的组呼或按私呼的开始模式核 KPI 2 限值。"
+      ],
+      "conclusion": "组呼 -014 是 <1000 ms；私呼手动 -019、自动 -020 是 ≤1000 ms。三个条目没有写 95% 样本比例。私呼门槛条目没有重述带话权限定，这不提供无话权私呼的测量端点。资料性表 A.1 的概括 <1000 ms 不覆盖私呼正文的等号。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.3.2"
+          ],
+          "printed_pages": [
+            53
+          ],
+          "requirements": [
+            "R-6.15.3.2-014",
+            "R-6.15.3.2-019",
+            "R-6.15.3.2-020"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.3.1"
+          ],
+          "printed_pages": [
+            52
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "Annex A"
+          ],
+          "printed_pages": [
+            69
+          ],
+          "tables": [
+            "A.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "separate-kpi1-statistical-samples-in-call-and-emergency",
+      "clause": "6.15.3.2",
+      "requirements": [
+        "R-6.15.3.2-012",
+        "R-6.15.3.2-012a",
+        "R-6.15.3.2-013"
+      ],
+      "conditions": [
+        "在网既有呼叫的后续请求，或紧急组呼、迫近危险呼叫；区分所列请求集合。"
+      ],
+      "conclusion": "已建立组呼/私呼 -012a 要求全部 MCPTT PTT 请求的 95% 小于 300 ms；紧急组呼和迫近危险呼叫 -013 要求全部 MCPTT 请求的 99% 小于 300 ms。-012 的无确认组呼请求、-012a 的既有呼叫 PTT 请求和 -013 紧急类规定不能合并成唯一的 95% 规则。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.3.2"
+          ],
+          "printed_pages": [
+            53
+          ],
+          "requirements": [
+            "R-6.15.3.2-012",
+            "R-6.15.3.2-012a",
+            "R-6.15.3.2-013"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.3.1"
+          ],
+          "printed_pages": [
+            51,
+            52
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sender-selected-and-receiver-affiliated-are-distinct",
+      "clause": "6.15.3.2",
+      "requirements": [
+        "R-6.15.3.2-007",
+        "R-6.15.3.2-008",
+        "R-6.15.3.2-009",
+        "R-6.15.3.2-018"
+      ],
+      "conditions": [
+        "读 §6.15.3.2 的组呼或自动/手动私呼适用性。"
+      ],
+      "conclusion": "组呼发话侧须已接入服务且选组，接收侧须已接入服务且归属组；不能把选组当作归属的替代。自动和手动开始私呼分别要求收发两端已连接。反过来，收发两端连接并不证明自动确认已发生或已可发话。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.3.2"
+          ],
+          "printed_pages": [
+            53
+          ],
+          "requirements": [
+            "R-6.15.3.2-007",
+            "R-6.15.3.2-008",
+            "R-6.15.3.2-009",
+            "R-6.15.3.2-018"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "measurement-backhaul-node-and-qos-sector",
+      "clause": "6.15.3.2",
+      "requirements": [
+        "R-6.15.3.2-001",
+        "R-6.15.3.2-005",
+        "R-6.15.3.2-006"
+      ],
+      "conditions": [
+        "配置本小节的测量环境和网络负载条件。"
+      ],
+      "conclusion": "KPI 1/2/3 宜在回传时延可忽略时测，不是另立固定回传预算。每个 3GPP 节点的容量占用负载 ≤70%；有 QoS 服务的网络，服务扇区内同优先级或更高优先级 MCPTT 用户合计负载须 <70%，被测用户是优先级比较基准。不同对象与不等号，不以网络平均值或任意用户扇区总负载替代。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.3.2"
+          ],
+          "printed_pages": [
+            52
+          ],
+          "requirements": [
+            "R-6.15.3.2-001"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.3.2"
+          ],
+          "printed_pages": [
+            53
+          ],
+          "requirements": [
+            "R-6.15.3.2-005",
+            "R-6.15.3.2-006"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "transcoder-relative-to-no-transcoder-specified-performance",
+      "clause": "6.15.3.2",
+      "requirements": [
+        "R-6.15.3.2-003",
+        "R-6.15.3.2-004",
+        "R-6.15.3.2-011"
+      ],
+      "conditions": [
+        "分别核承载路径无转码器和有转码功能。"
+      ],
+      "conclusion": "-003/-004 对无转码器承载路径下的组呼所有已归属组成员、私呼所有参与者规定提供性能的能力；-011 若承载路径有转码功能，MCPTT 服务性能不得比所规定的无转码性能值多 40 ms。它是对规定基准的附加值上限，不是拿另一次实测或将每个内部媒体点都加 40 ms。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.3.2"
+          ],
+          "printed_pages": [
+            52
+          ],
+          "requirements": [
+            "R-6.15.3.2-003",
+            "R-6.15.3.2-004"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.3.2"
+          ],
+          "printed_pages": [
+            53
+          ],
+          "requirements": [
+            "R-6.15.3.2-011"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "voice-burst-mouth-to-ear-not-request-or-late-entry",
+      "clause": "6.15.3.1",
+      "requirements": [
+        "R-6.15.3.2-015"
+      ],
+      "conditions": [
+        "要核发话方话音到对端听见，而非接入许可信号或迟入。"
+      ],
+      "conclusion": "KPI 3 从发话方发出一段话音，到接收方扬声器播放该话音，-015 要求全部话音突发的 95% 小于 300 ms，不能按 PTT 请求抽样。不替代发话接入 KPI 1/2 或接收者决定监听后第一次播放的迟入 KPI 4。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.3.1"
+          ],
+          "printed_pages": [
+            52
+          ],
+          "figures": [
+            "6.15.3.1.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.3.2"
+          ],
+          "printed_pages": [
+            53
+          ],
+          "requirements": [
+            "R-6.15.3.2-015"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.4.1"
+          ],
+          "printed_pages": [
+            53
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "未收录全部性能、传输实现或离网要求，不推定无话权私呼计时终点、SIP 响应码、测试分位算法或单台设备表现。",
+    "计时端点是业务事件，不将图中通用标记当成私呼的独立协议步骤。"
+  ],
+  "related": [
+    "r20-calls-late-call-entry-kpi"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
