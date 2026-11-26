@@ -807,6 +807,14 @@
 
 入口：[LMS 向目标 LMC 要位置：这笔回调拿到了报告吗？](topics/location/lms-location-report-request.md)。
 
+### LMC 怎样主动拉取自己的位置配置？
+
+- **能回答：**查 TS 24.283 V19.3.0 Stage 3 LMC 怎样主动 GET 自己的位置配置，含地址、业务授权、应答和到达证据。查规则不用抓包。
+- **只到条件或接口：**LMC 可以按需向 LMS 的 /lms-reporting/v1/configurations 发 GET，不等推送，不指定目标 ID 或 GET 正文；需要 LMS 注册背景及本操作的全部适用 Bearer 和业务授权。获准回匹配 200 及一份适用 LocationConfiguration；未获业务授权回 401，要确认取到配置须另核发起端实收正文。
+- **尚未建立的结论：**保留一般 MCLOC client ID 要求与 GET 未指定专用位置、资源及响应说明误写、共享字段同版差异。不由 200、出站或重定向断言最新配置、已保存并生效、推送或跨用户更新成功。不定无配置错误、GET 网络方等价入口或并发时序。
+
+入口：[LMC 怎样主动拉取自己的位置配置？](topics/location/lms-own-configuration-request.md)。
+
 ## 网络策略与QoS
 
 [查看本域全部主题](topics-network-policy.json)

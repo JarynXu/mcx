@@ -2511,6 +2511,10 @@
         {
           "condition": "问已注册目标 LMC 的 locationRequestUri 收到索要报告而非配置通知，或问这笔回调的应答。",
           "read": "topics/location/lms-location-report-request.md"
+        },
+        {
+          "condition": "问 LMC 怎样向 LMS 主动 GET 自己的配置、200 具体带什么或是否已生效，不问注册或配置推送。",
+          "read": "topics/location/lms-own-configuration-request.md"
         }
       ],
       "boundary": "限 TS 24.283 V19.3.0 Stage 3。注册看实际同一 LMC→LMS 注册集合 POST（/lms-reporting/v1/registrations）的匹配 201 Location。发送看 LMS 实际另发独立的 ConfigurationNotify POST，目的为已注册 LMC 的 locationConfigUri，正文为 LocationConfiguration。收件看这笔回调的实际匹配 LMC 204，或该 LMC 实收这份配置的独立证据。已能独立核实回调不要求同一份日志含此前的 201。 LMS 可在注册成功分支发起配置通知，条款不规定每次必推、首次下发期限或两事务到达顺序。发送不确认收件；匹配回调 204 不证明配置已执行或已报位置。IMS REGISTER、其他事务的 201/204、配置 GET 的 200 不替代回调。不把本笔 HTTP 注册、配置回调映射为另版 Stage 2 上报事件，也不以此闭合续期／注销、订阅或报告上送。"
@@ -2624,6 +2628,10 @@
         {
           "condition": "只问目标有没有实际把位置报告提交给 LMS；不凭收到配置推已报告。",
           "read": "topics/location/lms-location-report-publish.md"
+        },
+        {
+          "condition": "问 LMC 主动取自己的适用位置配置，不是替另一用户发起更改或接它的通知。",
+          "read": "topics/location/lms-own-configuration-request.md"
         }
       ]
     },
@@ -2644,6 +2652,22 @@
         {
           "condition": "本机注册、注册 201 或接到配置通知和其响应，不走这笔位置报告请求。",
           "read": "topics/location/lms-registration-configuration.md"
+        }
+      ]
+    },
+    {
+      "id": "lms-own-configuration-request",
+      "question": "GET /lms-reporting/v1/configurations 的 200 和 401 说明什么？取到配置等于已保存并触发上报吗？",
+      "start": "topics/location/lms-own-configuration-request.md",
+      "boundary": "查 TS 24.283 V19.3.0 Stage 3 LMC 怎样主动 GET 自己的位置配置，含地址、业务授权、应答和到达证据。查规则不用抓包。 LMC 可以按需向 LMS 的 /lms-reporting/v1/configurations 发 GET，不等推送，不指定目标 ID 或 GET 正文；需要 LMS 注册背景及本操作的全部适用 Bearer 和业务授权。获准回匹配 200 及一份适用 LocationConfiguration；未获业务授权回 401，要确认取到配置须另核发起端实收正文。 保留一般 MCLOC client ID 要求与 GET 未指定专用位置、资源及响应说明误写、共享字段同版差异。不由 200、出站或重定向断言最新配置、已保存并生效、推送或跨用户更新成功。不定无配置错误、GET 网络方等价入口或并发时序。",
+      "next_if": [
+        {
+          "condition": "问本机 LMS 注册或 LMS 主动推送以及配置回调收件，不是主动拉取。",
+          "read": "topics/location/lms-registration-configuration.md"
+        },
+        {
+          "condition": "问 A 请求 LMS 改 B 的配置或 B 实收了哪次变更通知，而不是 GET 自己的适用配置。",
+          "read": "topics/location/lms-target-configuration-change.md"
         }
       ]
     }
