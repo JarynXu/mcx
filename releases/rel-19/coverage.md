@@ -665,11 +665,11 @@
 
 ### 保护层次与密钥生命周期
 
-- **能回答：**可查组密钥验证、用户切换时材料保存/隔离、私呼与组保护、信令/媒体保护边界。
+- **能回答：**可查组密钥验证、用户切换时材料保存/隔离、私呼与组保护、信令/媒体保护边界。 TS 33.180 V19.4.0 的 KMS 应答另分 HTTP 成功和实际正文：KmsKeyProv 可含零个或多个用户密钥集；有匹配材料才判断签发 KMS、用户 UID 和周期。
 - **只到条件或接口：**安全专题说明所列条件下的密钥及保护责任；多发言者安全片段仅解释保护/混音限制，不等于完整多发言者控制。
-- **尚未建立的结论：**不提供完整密码编码、KMS部署、擦除算法或所有安全失败映射；取得密钥不代表归属、通话或发流获准。
+- **尚未建立的结论：**不提供完整密码编码、KMS部署、擦除算法或所有安全失败映射；取得密钥不代表归属、通话或发流获准。 完整正文为零与正文未见不同；证书、TrK/InK 更新和外层字段不能证实已取得这一用户的密钥集，也不证明客户端验收、储存、启用或媒体成功。
 
-入口：[组密钥下发：收到GMK之前要验证什么](topics/security/group-key-distribution.md)；[UE密钥生命周期：保存、换用户与失效清理](topics/security/ue-key-lifecycle.md)；[在网私呼：PCK 分发完成不等于通话获准](topics/security/private-key-distribution.md)；[多发言者与预配置重组：服务器混音和组密钥前提](topics/security/group-call-media-boundaries.md)。
+入口：[组密钥下发：收到GMK之前要验证什么](topics/security/group-key-distribution.md)；[UE密钥生命周期：保存、换用户与失效清理](topics/security/ue-key-lifecycle.md)；[在网私呼：PCK 分发完成不等于通话获准](topics/security/private-key-distribution.md)；[多发言者与预配置重组：服务器混音和组密钥前提](topics/security/group-call-media-boundaries.md)；[KMS 应答：怎样判断是否返回这位用户的密钥](topics/security/kms-provisioning.md)。
 
 所列入口的来源：3GPP TS33.180 V19.4.0。具体Stage、条款及跨源差异以各主题为准。
 

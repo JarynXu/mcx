@@ -49,16 +49,233 @@
         "选择KMS请求及目的端"
       ],
       "conclusion": "KMSInit和KMSKeyProv可发给Home或Migration KMS；KMSCertCache请求与KRR上传只能发给Home KMS。初始化取得域参数，与取得特定身份/时间的密钥材料并非同一请求。"
+    },
+    {
+      "id": "keyprov-http-status-is-not-user-key-set",
+      "clauses": [
+        "5.3.4",
+        "D.3.5.1"
+      ],
+      "printed_pages": [
+        58,
+        157
+      ],
+      "conditions": [
+        "按同版 KM client 向 Home 或 Migration KMS 的已辨认 KeyProvision 请求/应答读；鉴别某次通信须有同一请求/应答和实际可核验正文，保护按所适用的直连或代理条件另核。已知请求但只看见 HTTP 成功，也可用本条判断证据不足。"
+      ],
+      "conclusion": "HTTP 成功不证明返回了用户密钥集。KmsKeyProv 响应允许零到多条 KmsKeySet。只有完整可核验正文确实没有密钥集，才判断本次为零；未见正文、截断或仍不可核验均是未知。零不推定终端没有其他密钥，也不决定失败码、重试或密钥安装。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v19.4.0",
+          "clauses": [
+            "5.3.4"
+          ],
+          "printed_pages": [
+            58
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v19.4.0",
+          "clauses": [
+            "D.3.5.1"
+          ],
+          "printed_pages": [
+            157
+          ],
+          "usage": "primary"
+        }
+      ],
+      "evidence_notes": [
+        "D.3.5.1 的 KmsKeyProvType 中 KmsKeySet 可出现零次；§5.3.3/D.3.1 的一般 provisioning 说明不保证每次返回非零。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "keyprov-certificate-and-transport-are-not-user-key-set",
+      "clauses": [
+        "5.3.3",
+        "5.3.4",
+        "5.3.5",
+        "D.3.1",
+        "D.3.5.1"
+      ],
+      "printed_pages": [
+        57,
+        58,
+        148,
+        159
+      ],
+      "conditions": [
+        "实际或在题目中明确给定同版 KMS 应答类别及实际所含材料，用来区分用户密钥和初始化/证书/查找/传输更新。"
+      ],
+      "conclusion": "KMSInit 提供本 KMS 证书及可能的附加参数；证书缓存或单证书应答实际返回的证书属于域材料；单证书不可用时 Annex D 另写错误，不推 HTTP 状态。KMS Lookup 不带密钥材料，可返回 KMS 标识信息。域证书中的公开材料与用户签名/解密私钥不同。KmsKeyProv 可带 TrK 更新；一般应答说明和相关扩展还允许 InK 更新。只有这些更新、无实际 KmsKeySet，不证明给了用户密钥；也不证明客户端已装入新更新或获新信任。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v19.4.0",
+          "clauses": [
+            "5.3.3",
+            "5.3.4",
+            "5.3.5"
+          ],
+          "printed_pages": [
+            57,
+            58
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v19.4.0",
+          "clauses": [
+            "D.3.1"
+          ],
+          "printed_pages": [
+            148
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v19.4.0",
+          "clauses": [
+            "D.3.5.1"
+          ],
+          "printed_pages": [
+            159
+          ],
+          "usage": "primary"
+        }
+      ],
+      "evidence_notes": [
+        "D.3.1 表 D.3.1-1 与其后各应答正文；D.3.5.1 的 KmsKeyProvTkIkType 允许 NewTransportKey/NewIntegrityKey。未核完整 XML、信任扩张或轮换安装。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "key-set-evidence-belongs-to-issuer-uid-and-period",
+      "clauses": [
+        "5.3.6",
+        "D.3.3.1",
+        "D.3.3.2",
+        "D.3.5.1"
+      ],
+      "printed_pages": [
+        59,
+        150,
+        158
+      ],
+      "conditions": [
+        "匹配请求的实际 KmsKeyProv 正文可核验，且有一条 KmsKeySet。判断是否就是要找的材料时，核对该条实际签发 KMS、用户 URI/UID 和所问密钥周期；不能只按外层 UserUri。"
+      ],
+      "conclusion": "KmsKeySet 的 KmsUri 是签发 KMS，UserUri/UserID 是所发用户 URI/UID，KeyPeriodNo 是密钥周期。用户材料含 RSK（解密私钥）、SSK（签名私钥）和 PVT（公开验证令牌）；不是某次通话的 PCK/组 GMK。可选 CertUri、ValidFrom、ValidTo、Revoked 缺失不提供有效性/撤销默认。只确认匹配身份和周期的材料出现在应答，不证明客户端收到、验收、保存、启用、获准通话或媒体活跃。D.3.3.2 注仅指出可能解密该用户的旧消息，不推定旧密钥适用新消息或永久留存。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v19.4.0",
+          "clauses": [
+            "5.3.6"
+          ],
+          "printed_pages": [
+            59
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v19.4.0",
+          "clauses": [
+            "D.3.3.1",
+            "D.3.3.2"
+          ],
+          "printed_pages": [
+            150
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v19.4.0",
+          "clauses": [
+            "D.3.5.1"
+          ],
+          "printed_pages": [
+            158
+          ],
+          "usage": "primary"
+        }
+      ],
+      "evidence_notes": [
+        "表 D.3.3.2-1 与该表注，D.3.5.1 的 KmsKeySetType。收到新材料不等于所问周期的材料已采用；外层响应发送时间不代替密钥周期。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "kms-response-envelope-and-error-are-separate-evidence",
+      "clauses": [
+        "D.3.1",
+        "D.3.5.1"
+      ],
+      "printed_pages": [
+        148,
+        156,
+        157
+      ],
+      "conditions": [
+        "已知同版实际 KMS 应答，问题是区分外层元数据、正文材料或 XML 错误；只看到状态码不能推到正文。"
+      ],
+      "conclusion": "在 KmsResponse 外层，UserUri 是应答对象、KmsUri 是发应答的 KMS、Time 是应答发送时间、ClientReqUrl 指原请求资源；都不替代内层 KmsKeySet 的签发方、UID 或密钥周期。XML KmsError 是另一个显式错误内容。只有证据可核验才记录所见；未核固定 HTTP 状态映射、字段共现语义、接受优先级或重试。不改变 KMS 端点信任。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-33.180-v19.4.0",
+          "clauses": [
+            "D.3.1"
+          ],
+          "printed_pages": [
+            148
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-33.180-v19.4.0",
+          "clauses": [
+            "D.3.5.1"
+          ],
+          "printed_pages": [
+            156,
+            157
+          ],
+          "usage": "primary"
+        }
+      ],
+      "evidence_notes": [
+        "表 D.3.1-1；D.3.5.1 的 ErrorType 和 KmsResponseType，结构证据而非完整错误状态机。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
-    "只核所列KMS角色、参考点和请求差异；Annex D XML、密钥轮换/撤销、TrK具体算法与完整KRR策略未核。",
-    "本主题不覆盖所有KMS请求，不能据此生成完整实现。"
+    "核所列 KMS 角色、参考点、请求差异和应答证据；Annex D 只核本页所列应答结构，未核完整 XML、密钥轮换/撤销过程、TrK 具体算法与完整 KRR 策略。",
+    "本主题不覆盖所有KMS请求，不能据此生成完整实现。",
+    "仅观察到状态码、应答外层、域证书或传输/完整性密钥更新不能证明用户密钥集存在。材料存在与客户端收到、验收、保存、启用、业务许可或媒体通信分别判断。不推 HTTP 状态映射或错误重试。"
   ],
   "related": [
     "access-transport.md",
     "../identity/primary-registration.md",
-    "group-key-distribution.md"
+    "group-key-distribution.md",
+    "ue-key-lifecycle.md",
+    "private-key-distribution.md"
   ],
   "verification": {
     "original_clauses_checked": true,
