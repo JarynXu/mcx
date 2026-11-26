@@ -19,4 +19,4 @@
 
 [§§10.3.2.6–.7，表 10.3.2.6-1、10.3.2.7-1，印刷页 36–37](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=38)；建呼表对照见[§§10.3.2.4–.5，印刷页 36](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=37)。
 
-若问本次[组广播如何建立](group-broadcast-setup.md)，或建立前[旧子组呼叫的释放](group-call-release.md)，按各自阶段读。[互通私呼释放](private-release.md)、取消紧急组状态或只结束话权，都不是本次组广播的释放。[§10.3.4.6 预配置重组广播](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=62)另有撤销重组，不能从本页的结束应答推出。这里不定义 LMR 内部、SIP/BYE 映射、失败补救、参与端资源清除时序或完整状态机。[结构化知识](group-broadcast-release.json)。
+若问本次[组广播如何建立](group-broadcast-setup.md)，或建立前[旧子组呼叫的释放](group-call-release.md)，按各自阶段读。[互通私呼释放](private-release.md)、取消紧急组状态或只结束话权，都不是本次组广播的释放。[§10.3.4.6 预配置重组广播](preconfigured-regroup.md#广播结束后谁发起取消重组)另有撤销重组，不能从本页的结束应答推出。这里不定义 LMR 内部、SIP/BYE 映射、失败补救、参与端资源清除时序或完整状态机。[结构化知识](group-broadcast-release.json)。

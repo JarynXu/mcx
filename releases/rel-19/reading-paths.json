@@ -186,6 +186,10 @@
         {
           "condition": "构成组新归属后加入已有预配置重组：查 TS 23.283 V19.5.0 Stage 2。「原为成员、尚未归属」且 A 参与进行中的预配置重组，核实本次新归属 A 后，再按两种参与方查加入 D。查规范不需要抓包。 比对客户端与 IWF 侧的既有配置和安全条件、A 由哪一侧定义及实际报文方向；客户端确认可选且组播不回，不替代另笔 server→IWF 应答。IWF 侧步骤 5 图写 user、正文写 IWF，均为 server 动作。 组员、配置、请求已发或单笔应答不等于实际 D 归属；用户或 A 的定义侧不决定 D 所有者。D 有进行中呼叫和实际晚加入须另证，不推出 Stage 3 状态码、话权或媒体。",
           "read": "topics/interworking/preconfigured-regroup.md"
+        },
+        {
+          "condition": "问 §10.3.4.6 专为一次互通广播形成的预配置重组：按 D 实际由 MCPTT server 或 IWF 托管选支，查注册、成员／归属／安全条件，以及广播结束后谁发起取消。查规范无需抓包。若问普通层级组广播建呼/释放、非广播重组、陈旧 PTT 或已有 D 的新归属，不从这支判断。",
+          "read": "topics/interworking/preconfigured-regroup.md"
         }
       ]
     },
@@ -302,6 +306,10 @@
         {
           "condition": "问已经在进行、含 IWF 的层级组广播在发起者完成传输后如何结束这次广播，查 §10.3.4.4–.5 的各腿释放与发起端结果。查规范无需抓包。普通／既有子组的释放、建呼、成员退出、预配置重组撤销、私呼或紧急组状态取消另查。",
           "read": "topics/interworking/group-broadcast-release.md"
+        },
+        {
+          "condition": "问 §10.3.4.6 专为一次互通广播形成的预配置重组：按 D 实际由 MCPTT server 或 IWF 托管选支，查注册、成员／归属／安全条件，以及广播结束后谁发起取消。查规范无需抓包。若问普通层级组广播建呼/释放、非广播重组、陈旧 PTT 或已有 D 的新归属，不从这支判断。",
+          "read": "topics/interworking/preconfigured-regroup.md"
         }
       ],
       "boundary": "Bounded Stage2 interworking procedures; underlying security and full call state machine not verified."
@@ -3333,6 +3341,10 @@
         {
           "condition": "要判断的是已经在进行的同一组广播在发起者完成传输后如何释放及向发起者回执，不是建呼前的旧子组释放",
           "read": "topics/interworking/group-broadcast-release.md"
+        },
+        {
+          "condition": "问专为一次广播形成预配置重组 D，查 D 托管、形成与取消；不是本页的层级组广播建呼",
+          "read": "topics/interworking/preconfigured-regroup.md"
         }
       ],
       "boundary": "仅 TS 23.283 V19.5.0 Stage 2 §10.3.4.1–.3 MCPTT 起呼的两个图示场景：A 已有非 MCPTT 紧急的 MCPTT 组呼，主叫属另一子组 X。按广播组定义系统分路；MCPTT 定义的 8a/8b 与 LMR 定义的可选 7a/7b 不通用，server 回主叫另判。查规范无需运行记录。不由建呼结果判全员收件、话权或媒体，不扩 §10.3.4.4–.6、LMR 起呼或原生 SIP。"
@@ -3357,9 +3369,37 @@
         {
           "condition": "要判断同次事务是已建立的互通私呼结束，不是组广播结束",
           "read": "topics/interworking/private-release.md"
+        },
+        {
+          "condition": "要核的是结束本次广播之后是否另发起和完成对广播专用 D 的重组取消，不是本页的广播释放应答",
+          "read": "topics/interworking/preconfigured-regroup.md"
         }
       ],
       "boundary": "仅 TS 23.283 V19.5.0 Stage 2 §10.3.4.4–.5 中已进行、实际有发起与接收客户端和 IWF 的互通层级组广播；发起者结束传输，按广播组实际定义侧选支。MCPTT 定义 3a/5a、3b/5b、2/6 分开；LMR 定义 6/7 后由另一腿 7a 触发 8，不套建呼的可选应答。查规范无需运行记录。结束结果不表示每端资源已清或 RTP 实际停止，不补 §10.3.4.6 撤销重组、私呼、紧急状态取消或原生 SIP。"
+    },
+    {
+      "id": "iwf-preconfigured-group-broadcast",
+      "question": "预配置重组广播：结束后谁发起取消",
+      "start": "topics/interworking/preconfigured-regroup.md",
+      "next_if": [
+        {
+          "condition": "要判断普通含 IWF 的层级组广播建立，非这次预配置重组的三阶段",
+          "read": "topics/interworking/group-broadcast-setup.md"
+        },
+        {
+          "condition": "要判断同一实际广播的结束应答，且该释放图的角色和前提独立满足；不是重组 D 的取消",
+          "read": "topics/interworking/group-broadcast-release.md"
+        },
+        {
+          "condition": "要判断跨系统重组的接纳及归属，不是本次预配置广播专用重组",
+          "read": "topics/interworking/regroup-boundaries.md"
+        },
+        {
+          "condition": "要判断另一个重组场景的 LMR 加密与编解码兼容，而非这里第三步何时由谁发起",
+          "read": "topics/interworking/regroup-media.md"
+        }
+      ],
+      "boundary": "仅 TS 23.283 V19.5.0 Stage 2 §10.3.4.6.1–.3：先形成广播专用 D，做广播，再发起取消。按 D 自身托管侧，MCPTT 客户端或 IWF 发起取消；P 和任一构成组本属都不替 D。结束应答不证明取消已发起或生效；查规范无需运行记录。不把两图的三块当三条消息，不用 §10.3.4 宽泛回指自动套其他建呼／释放流程。"
     }
   ]
 }
