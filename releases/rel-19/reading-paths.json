@@ -2507,6 +2507,10 @@
         {
           "condition": "问发起方如何请求 LMS 改另一用户的位置配置，或如何从这笔 HTTP 应答追到另一次目标回调。",
           "read": "topics/location/lms-target-configuration-change.md"
+        },
+        {
+          "condition": "问已注册目标 LMC 的 locationRequestUri 收到索要报告而非配置通知，或问这笔回调的应答。",
+          "read": "topics/location/lms-location-report-request.md"
         }
       ],
       "boundary": "限 TS 24.283 V19.3.0 Stage 3。注册看实际同一 LMC→LMS 注册集合 POST（/lms-reporting/v1/registrations）的匹配 201 Location。发送看 LMS 实际另发独立的 ConfigurationNotify POST，目的为已注册 LMC 的 locationConfigUri，正文为 LocationConfiguration。收件看这笔回调的实际匹配 LMC 204，或该 LMC 实收这份配置的独立证据。已能独立核实回调不要求同一份日志含此前的 201。 LMS 可在注册成功分支发起配置通知，条款不规定每次必推、首次下发期限或两事务到达顺序。发送不确认收件；匹配回调 204 不证明配置已执行或已报位置。IMS REGISTER、其他事务的 201/204、配置 GET 的 200 不替代回调。不把本笔 HTTP 注册、配置回调映射为另版 Stage 2 上报事件，也不以此闭合续期／注销、订阅或报告上送。"
@@ -2560,6 +2564,10 @@
         {
           "condition": "问的是 TS 23.280 V19.9.0 的单系统 Stage 2 信息流，而不是本版 HTTP 收件。",
           "read": "topics/location/on-demand-usage.md"
+        },
+        {
+          "condition": "问 LMS 向已注册目标端要报告的独立回调、目标返回的报告或应答，不问上游查询或最终通知。",
+          "read": "topics/location/lms-location-report-request.md"
         }
       ]
     },
@@ -2576,6 +2584,10 @@
         {
           "condition": "问的是查询方 LMC 有没有收到通知、哪些目标和测量到了，不是报告成功提交。",
           "read": "topics/location/lms-one-time-location-request.md"
+        },
+        {
+          "condition": "只问 LMS→已注册目标的上报请求、条件身份和匹配应答，而非终端向 LMS 发布报告。",
+          "read": "topics/location/lms-location-report-request.md"
         }
       ]
     },
@@ -2612,6 +2624,26 @@
         {
           "condition": "只问目标有没有实际把位置报告提交给 LMS；不凭收到配置推已报告。",
           "read": "topics/location/lms-location-report-publish.md"
+        }
+      ]
+    },
+    {
+      "id": "lms-location-report-request",
+      "question": "LMS 索要位置报告的回调中，目标 LMC 的匹配 200、204、MCUELocation 和发布 201 各证明什么？",
+      "start": "topics/location/lms-location-report-request.md",
+      "boundary": "查 TS 24.283 V19.3.0 Stage 3 的 LMS→已注册目标 LMC 位置报告请求，含地址、请求双方身份、可选历史与回调应答判断。不用先有抓包。 LMS 可以自行发起，POST 目标登记的 locationRequestUri，正文 LocationRequest。requestedMcServiceId 是被要求上报的用户，从 LMC 发起时 requestingMcServiceId 指发起者。看 LMS 实收实际匹配 200 和 MCUELocation 正文；印刷表写 204，只确认请求收件。 保留请求者文字、历史字段及 200/204 差别。出站或孤立码不确认报告；收件不保证重置计时器、独立发布、新测量、全部历史、LMS 存储或通知查询者。不套用上游 /requests、配置回调、设备能力或另一事务的状态码。",
+      "next_if": [
+        {
+          "condition": "问终端向 LMS 提交报告的独立 POST、其 201/401 或发布计时器时读；不是目标对索要报告的响应。",
+          "read": "topics/location/lms-location-report-publish.md"
+        },
+        {
+          "condition": "问上游请求方怎样向 LMS 发 /requests、要求刷新、接收位置结果，而不是目标向 LMS 回报告。",
+          "read": "topics/location/lms-one-time-location-request.md"
+        },
+        {
+          "condition": "本机注册、注册 201 或接到配置通知和其响应，不走这笔位置报告请求。",
+          "read": "topics/location/lms-registration-configuration.md"
         }
       ]
     }
