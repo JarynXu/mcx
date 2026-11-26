@@ -1,0 +1,135 @@
+{
+  "topic_id": "r20-identity-online-cms-user-profile-database",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3，§4.4 用于在线配置的 CMS。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "online-cms-converts-administrator-initial-document",
+      "clause": "4.4",
+      "conditions": [
+        "在线 CMS 收到 MCS 管理员发来的 MCS UE 初始配置文档。"
+      ],
+      "conclusion": "CMS 需要将这份文档转换为适合配置 MCS UE 初始配置 MO 的格式。这里不要求已有默认档引用，也不证明已经下发或采用。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.4"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "online-cms-converts-identified-admin-profile-for-default-mo",
+      "clause": "4.4",
+      "conditions": [
+        "MCS UE 初始配置 MO 中有 default-user-profile 元素，且该元素标识一份 MCS 用户配置文档。"
+      ],
+      "conclusion": "CMS 需要将该元素所指的、管理员提供的 MCS 用户配置文档转换成适合配置 MCS 用户档 MO 的格式。不以唯一用户档替代实际引用，也不从未见引用否定其他取档规则。主系统 MO 的下载条件另见 §4.2.2.1.1。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.4"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.2.1.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "online-cms-obtains-user-profile-for-download-or-update",
+      "clause": "4.4",
+      "conditions": [
+        "在线 CMS 需要向 MCS UE 下载用户配置文档，或者需要支持 MCS UE 更新该文档。"
+      ],
+      "conclusion": "CMS 使用 TS 29.283 所引程序从 MC service user database 取得 MCS 用户档。下载与支持更新是两个可独立适用的用途；不把已更新、已订阅或已写入作为本条的取档前提。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.4"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "online-cms-stores-after-ue-created-or-updated",
+      "clause": "4.4",
+      "conditions": [
+        "MCS 用户配置文档已由 MCS UE 创建或更新。"
+      ],
+      "conclusion": "CMS 使用 TS 29.283 所引程序将此配置文档作为 MCS 用户档存入 MC service user database。看到更新请求、获知库侧变更或读回档，不单独证明 UE 已创建/更新或本次写入实际成功。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.4"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "online-cms-userdb-notice-for-ue-subscribed-profile",
+      "clause": "4.4",
+      "conditions": [
+        "该 MCS 用户配置文档已被 MCS UE 订阅，CMS 需要获知该文档的变更。"
+      ],
+      "conclusion": "CMS 用 TS 29.283 所引程序获知 MC service user database 中对应 MCS 用户档的变更。这里的接收方是 CMS，不用 UE 对另一文档的订阅替代此前条件；CMS 获知库侧变化不证明 UE 已收到与其订阅匹配的 SIP NOTIFY、取档或应用。反过来，像 CMC 代理订阅的 SIP 报文也不能代替本次库侧记录。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.4"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "online-cms-deletes-user-profile-on-ue-request",
+      "clause": "4.4",
+      "conditions": [
+        "MCS UE 请求删除该 MCS 用户档。"
+      ],
+      "conclusion": "CMS 使用 TS 29.283 所引程序从 MC service user database 删除该档。收到请求不表示已删成功，不要求本条先观测读、更新或订阅，也不证明关联初始配置引用会改选。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.4"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "TS 29.283 只作操作引用，不规定请求格式、实际完成、事务或缓存。本篇不从转换、用户库通知或删除请求推断下发、采用或联动，也不补离线 CMS/GMS 职责。",
+    "§4.4 注把离线配置的 CMS/GMS 职责排除在本规范描述之外；不是声称实际没有离线配置或该角色。对象是用户档，不套到所有设备配置、组档或组织业务配置。"
+  ],
+  "related": [
+    "r20-identity-default-profile-reference-xcap",
+    "r20-identity-primary-ue-online-configuration",
+    "r20-identity-cmc-subscription-notify-fetch"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
