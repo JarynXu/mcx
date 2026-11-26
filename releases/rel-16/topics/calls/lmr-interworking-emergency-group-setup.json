@@ -1,0 +1,279 @@
+{
+  "topic_id": "r16-calls-lmr-interworking-emergency-group-setup",
+  "release": 16,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCPTT 与 LMR 怎样建立紧急组呼？两侧谁发请求、谁回响应？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v16.8.0",
+  "condition_rule": "每条声明继承共同范围。按实际发起、组定义、同笔请求及各自适用条件选择分支；不用成功应答作为查适用条件或查拒绝边界的前提。相关页不是本次建呼步骤。",
+  "common_conditions": [
+    "限 TS 23.283 V16.8.0 的 Stage 2 MCPTT–LMR 互通紧急组呼建立。先按实际紧急组呼请求的发起方和互通组定义方选分支；只见组已紧急、个人告警、普通组呼或取消均不足以识别本次紧急建呼。",
+    "图示前提是互通组已定义，图中接收的 MCPTT 客户端已归属，IWF 已连接且获准与 MCPTT 互通，两侧用户及组 ID 的映射已配置。这些前提不代替对发起人的业务核权或对成功的验证。"
+  ],
+  "claims": [
+    {
+      "id": "emergency-iwf-request-result-and-floor-guard",
+      "title": "紧急请求的指示、IWF 响应与业务结果各自判断",
+      "conditions": [
+        "所查的是 IWF 与 MCPTT 服务器之间实际发起的本次紧急组呼建立请求，或与其匹配的 IWF 响应。"
+      ],
+      "conclusion": "请求表必有主叫 MCPTT ID、目标 MCPTT 组 ID 和紧急指示；告警指示和可取得的位置可选。隐式话权请求是可选信息，只有发起端请求话权时才可包含。IWF 响应必有主叫 MCPTT ID、目标 MCPTT 组 ID 和 Result，按结果判断该笔；该请求可以被拒绝。",
+      "normative_strength": "表 10.6.1.1-1 的 M/O 及表注只在发起端请求时可含隐式请求；表 10.6.1.2-1 的 Result 为 M，名称不保证取值。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.1.1, Table 10.6.1.1-1 and note: emergency call request and guarded implicit floor indication"
+          ],
+          "printed_pages": [
+            113
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.1.2, Table 10.6.1.2-1: calling identity, group and result of the matching emergency request"
+          ],
+          "printed_pages": [
+            113,
+            114
+          ]
+        }
+      ],
+      "limitations": [
+        "告警指示不等于实际告警，缺告警不排除紧急组呼；位置字段不规定采集或发给何人。",
+        "隐式请求不等于话权获准，只见请求或响应类型不证明准入、其他腿实收、媒体连通，也不能推出 SIP 原因值、重试或回滚。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-origin-mc-defined-emergency-caller-check-and-distinct-replies",
+      "title": "LMR 发起 MCPTT 定义组：代表归属不替代主叫核权",
+      "conditions": [
+        "组定义在 MCPTT 系统，LMR 用户发起紧急组呼；IWF 发送给 MCPTT 服务器的步骤 1 是初始请求。",
+        "若查步骤 7 的额外分发，应核实有主叫以外的已归属 LMR 用户，且服务器已收其逐人归属。"
+      ],
+      "conclusion": "若尚未归属，步骤 2 隐式归属 LMR 用户的映射 MCPTT ID；配置由 IWF 代表组员一次归属时改为归属 IWF。步骤 3 仍核 LMR 主叫的映射 MCPTT ID 的紧急发起权限，获准才解析目标组成员及归属。MCPTT 服务器配置该组所有 MCPTT 参与者的底层承载优先级（4），记录组紧急状态直到该状态取消（5），向已归属的 MCPTT 客户端分发（6）。组紧急状态期间的后续呼叫获得调整后的承载优先级。只有满足所列条件才有步骤 7 的向 IWF 逐人请求；步骤 8 是 IWF 回这些请求，步骤 9 是服务器回 IWF 的初始请求 1。按注 5，步骤 9 在步骤 5 后可回，最迟在步骤 8 后，取决于继续呼叫的条件。组由 MCPTT 系统控制，步骤 10 另列媒体建立。",
+      "normative_strength": "§10.6.2.2.1 步骤及图按成功示例说明列出的动作，注 5 给相对条件，不设固定等待所有下游终端。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.2.2.1, Figure 10.6.2.2.1-1, preconditions, steps 1–10 and NOTEs 1–5"
+          ],
+          "printed_pages": [
+            117,
+            118,
+            119
+          ]
+        }
+      ],
+      "limitations": [
+        "IWF 身份可用于代表归属，不代替主叫紧急发起授权；代表归属不能替代步骤 7 的逐人条件。",
+        "这些步骤未规定入向请求失败后的补偿、给主叫 LMR 的无线侧传送或 IWF 优先级操作。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mc-origin-mc-defined-emergency-states-and-affiliate-fanout",
+      "title": "MCPTT 发起 MCPTT 定义组：分开个人状态、组记录、成员分发和主叫响应",
+      "conditions": [
+        "组定义在 MCPTT 系统，MCPTT 用户实际发起紧急组呼。示例的发起客户端已配置紧急组，注 3 也允许配置在所选组执行紧急行为。"
+      ],
+      "conclusion": "发起端步骤 1 设置自己的紧急状态，直到显式取消；随后发请求（2）。服务器在未归属时隐式归属（3），另查主叫的紧急发起权限，获准才解析成员及归属（4）。服务器配置该组所有参与者的底层承载优先级（5）；步骤 6 记录组紧急状态与发起人身份，组状态持续至该组状态取消，发起人身份原文写为保留到 MCPTT 紧急取消。紧急状态期间的后续呼叫获得调整后的承载优先级。已知 IWF 代表本组 LMR 用户归属时，步骤 7 向 IWF 一条；服务器已收逐人归属时，每位已归属的 LMR 用户各一条。IWF 以步骤 8 答 7，步骤 9 向已归属的 MCPTT 客户端发请求，步骤 10 另回发起客户端。保留注 6 对步骤 7–8 可在 5 和 10 之间发生的说明，以及注 8 对步骤 10 在步骤 8 后、最迟在 9 后并依继续条件的说明。MCPTT 系统控制组呼，步骤 11 另列媒体建立。",
+      "normative_strength": "§10.6.2.2.2 为成功示例及相对时点说明；§10.6.2.1 总述给代表归属／已收到逐人归属的分发边界。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.2.1, General, and 10.6.2.2 heading: representative versus individual distribution; literal LMR-homed receiver conflict"
+          ],
+          "printed_pages": [
+            117
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.2.2.2, Figure 10.6.2.2.2-1, preconditions, steps 1–11 and NOTEs 1–8"
+          ],
+          "printed_pages": [
+            119,
+            120,
+            121
+          ]
+        }
+      ],
+      "limitations": [
+        "状态各自管理，不以接到初始请求、代表归属或呼叫结束证明组已紧急或已解除。图的 7–8、9、10 不组成必须收齐各端确认的固定串行流程。",
+        "未给混合或未知归属的默认规则，不从承载配置推实际分配、优先级编码或 LMR 无线侧处理。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-origin-lmr-defined-emergency-per-affiliated-mc-user",
+      "title": "LMR 发起 LMR 定义组：IWF 起始逐个呼叫已归属的 MCPTT 用户",
+      "conditions": [
+        "组定义在 LMR 系统，LMR 用户发起紧急组呼；步骤 1 的发送者是 IWF，目标是 MCPTT 服务器。"
+      ],
+      "conclusion": "IWF 向 MCPTT 服务器按每位已归属的 MCPTT 用户各发一条请求（1）。服务器配置底层承载优先级并向对应客户端发请求（2），客户端响应服务器（3），服务器以步骤 4 回 IWF 相应请求。实际媒体建立另列在步骤 5。控制组呼的是 LMR 系统。",
+      "normative_strength": "§10.6.2.2.3 图和正文明确步骤 1 的方向、逐人条件、两腿的响应及建成后的控制方。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.2.2.3, Figure 10.6.2.2.3-1, preconditions, steps 1–5 and NOTEs 1–4"
+          ],
+          "printed_pages": [
+            121,
+            122
+          ]
+        }
+      ],
+      "limitations": [
+        "无本分支中 MCPTT 服务器先向 IWF 发初始请求的步骤，不能用其响应传递行为判定为控制方。",
+        "响应、适用的承载优先级和媒体步骤是不同证据，不证明全组终端就绪；IWF 内部优先级及 LMR 如何叫组员不在此处。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mc-origin-lmr-defined-emergency-independent-initial-and-member-transactions",
+      "title": "MCPTT 发起 LMR 定义组：步骤 7、8 回两笔方向相反的请求",
+      "conditions": [
+        "组定义在 LMR 系统，MCPTT 发起端向其服务器发紧急组呼请求。",
+        "服务器发给 IWF 的初始请求、IWF 向服务器为已归属 MCPTT 成员分别发的请求、客户端响应，按实际同一事务各自关联。"
+      ],
+      "conclusion": "服务器配置底层承载优先级并向 IWF 发初始请求（3）。IWF 向服务器对每名已归属的 MCPTT 用户发个别请求（4，例中客户端 2），服务器为接收端配置底层承载优先级并发请求（5），收对应客户端响应（6）。服务器步骤 7 回步骤 4；IWF 步骤 8 回步骤 3，按注 5 可在 3 后任一时点发生，最迟在 7 后，不固定等 7。服务器步骤 9 另回发起端。步骤 10 另列媒体建立；虽然由 MCPTT 用户发起，组呼由 LMR 系统控制。",
+      "normative_strength": "§10.6.2.2.4 图、步骤和注 5 分开初始与逐人请求、各自回复、实际媒体与控制方。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.2.2.4, Figure 10.6.2.2.4-1, preconditions, steps 1–10 and NOTEs 1–5"
+          ],
+          "printed_pages": [
+            122,
+            123,
+            124
+          ]
+        }
+      ],
+      "limitations": [
+        "两个相反方向的同名请求不是重复发送；不能拿 7、8 或 9 的任意一份替代另外两份、证实全部收件或媒体。",
+        "没有把 MCPTT 宿主的核权、写组状态、发起者身份记录作为本分支的步骤。没有据此判定业务无需授权。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "group-defining-system-and-lmr-summary-address-boundary",
+      "title": "组定义的一侧控制；LMR 宿主总述与细分流程的收件人冲突",
+      "conditions": [
+        "比较 §§10.6.2.2.1–.4 的组定义方及承载优先级，或核查 LMR 定义组的实际 IWF 逐人请求方向。"
+      ],
+      "conclusion": "四个成功流程的组呼由定义组的系统控制，不由主叫方向或转发者决定。§10.6.2.1 最后一段将 LMR 宿主的逐人请求目的端印作 “to the IWF”，而 .2.3 步骤 1 和 .2.4 步骤 4 的图及正文明确是从 IWF 到 MCPTT 服务器；保留原文差异，以两个细分流程判各自的路径。相关注写组紧急状态期间后续呼叫获得调整后的承载优先级；LMR 宿主的两条流程并未重述 MCPTT 宿主的组状态、发起者记录或核权步骤。",
+      "normative_strength": "§10.6.2.1 的字面目的端和两个细分图／正文同时保留；各成功图的媒体阶段列明控制方，不是规范勘误。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.2.1, General, and 10.6.2.2 heading: representative versus individual distribution; literal LMR-homed receiver conflict"
+          ],
+          "printed_pages": [
+            117
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.2.2.1, Figure 10.6.2.2.1-1, preconditions, steps 1–10 and NOTEs 1–5"
+          ],
+          "printed_pages": [
+            117,
+            118,
+            119
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.2.2.2, Figure 10.6.2.2.2-1, preconditions, steps 1–11 and NOTEs 1–8"
+          ],
+          "printed_pages": [
+            119,
+            120,
+            121
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.2.2.3, Figure 10.6.2.2.3-1, preconditions, steps 1–5 and NOTEs 1–4"
+          ],
+          "printed_pages": [
+            121,
+            122
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v16.8.0",
+          "clauses": [
+            "10.6.2.2.4, Figure 10.6.2.2.4-1, preconditions, steps 1–10 and NOTEs 1–5"
+          ],
+          "printed_pages": [
+            122,
+            123,
+            124
+          ]
+        }
+      ],
+      "limitations": [
+        "不将总述读成额外 IWF 自环，也不把给 IWF 的 MCPTT 发起请求当该反向逐人请求。",
+        "IWF 的优先级动作与 LMR 本侧怎么叫组员在原文范围之外；不推具体 QCI、抢占、无线侧所有用户获响应或一份确认即媒体就绪。",
+        "不把紧急组呼的结束等同显式取消组紧急状态，不从此处补独立告警、普通组呼、迫近危险、广播或释放处理。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-lmr-interworking-prearranged-group-setup",
+    "r16-calls-lmr-interworking-emergency-group-state-cancel",
+    "r16-calls-lmr-interworking-emergency-alert",
+    "r16-calls-lmr-interworking-group-release",
+    "r16-groups-mc-hosted-lmr-affiliation",
+    "r16-media-lmr-interworking-group-floor-arbitration"
+  ],
+  "limitations": [
+    "两张 MCPTT 定义组的示意图以一台服务器代画用户归属与组宿主服务器，不表示功能必须合设。客户端消息的细节回指 TS 23.379；此处未用其他版本或 Stage 补齐。",
+    "表中紧急请求的告警指示、位置可选；隐式话权指示仅在发起端请求时才可有，不代表话权授予。响应类型不等于成功；须核对实际请求及 Result。单笔成功响应不证明其他请求完成、终端实收或媒体已通。不规定拒绝码、回滚、重试、IWF 优先级动作、LMR 本侧呼叫、具体 SIP 字段或网络承载配置值。不把挂断或独立告警当成对组状态的取消；取消、普通建立、广播和迫近危险另查。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  }
+}
