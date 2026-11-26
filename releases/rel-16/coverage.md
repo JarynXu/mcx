@@ -1414,6 +1414,16 @@ MCVideo普通私呼服务器准入、分层身份路由和有限响应证据。
 
 [读取主题](topics/mcvideo/private-server-admission-routing.md)
 
+## 普通按需 MCVideo 私呼：传输控制媒体段缺失与各角色入口
+
+区分主叫实际请求、不带传输控制的 SDP 段条件、各接收角色的入口，以及原文回指的有效范围。
+
+限 Rel-16 在网、按直接 MCVideo ID 的普通按需一对一私呼初建；不是组呼、视频推拉、环境查看、first-to-answer、优先呼叫、预建立、Replaces 或在话修改。 查主叫创建请求，须是主叫实际要求不带传输控制的新建私呼；应不提供指定传输控制实体的媒体段，不是去掉整个 SDP offer。 收件分角色查本次私呼的初始 INVITE（TS 24.281 V16.12.0 §6.3.1.1，印 61–62；§10.2.3，印 291）：被叫客户端实收本笔私呼的初始 INVITE；O-PF 实收 S-CSCF 处理发起侧初始过滤条件后路由给本 PF 的初始 INVITE，Request-URI 是本 PF 的 PSI，且不是预建立设置 PSI；T-PF 实收 S-CSCF 处理终止侧初始过滤条件后路由给本 PF 的初始 INVITE，Request-URI 是本 PF 的 PSI；私呼 CF 实收经发起侧 PSI 路由或终止侧直接 PSI 路由的初始 INVITE，Request-URI 是 MCVideo 私呼 PSI，Contact 不带 isfocus。四者都检查本跳实收的完整 SDP offer，确认其中没有媒体传输控制实体的媒体段。缺段不能反推角色；上一跳的 offer 不能代用。 §10.2.3.1–.3 原文中 UE/O-PF 有不存在的回指，T-PF 的引用指到 CF 终止条；这些入向回指中，私呼 CF 的终止回指与该角色一致。
+
+尚未建立：未取得 offer、抓包缺失或截断，不是证实缺段；有该段但端口为 0、被拒或 inactive 也不满足缺段。无隐式发送申请、200、SDP answer、已建会话的 re-INVITE、媒体停发或优先事件不代证本次初始 offer。 分类不证明授权、接通、发送许可或媒体实际送达。不补错引、通用 SIP/SDP 处置或运行结果。 TS 23.281 V16.4.0 只比对两张 Stage 2 请求表：是否使用传输控制是必选业务信息，隐式发送视频申请是另一可选项；不映射线上字段。
+
+[读取主题](topics/mcvideo/private-call-without-transmission-control.md)
+
 ## 在网 MCVideo 客户端：请求传输、获准与结束
 
 MCVideo客户端显式传输请求、非排队响应、所列队列查询与排队后获准确认，以及结束/释放界面。

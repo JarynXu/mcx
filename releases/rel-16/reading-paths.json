@@ -90,6 +90,10 @@
         {
           "condition": "要查普通按需 MCVideo 私呼中，服务器怎样核准初始 INVITE 并选择路由。",
           "read": "topics/mcvideo/private-server-admission-routing.md"
+        },
+        {
+          "condition": "若仍是在网、按直接 MCVideo ID 的普通按需一对一私呼初建，但主叫实际要求不带传输控制，或被叫实收适用初始 INVITE 且本跳实际 offer 确实不含传输控制实体媒体段，查不带传输控制。只见初始 offer 未捕获、缺隐式申请、端口 0、200/SDP answer 或 re-INVITE 不够；不套优先、预建或已建会话。",
+          "read": "topics/mcvideo/private-call-without-transmission-control.md"
         }
       ],
       "boundary": "不覆盖组呼、离网、视频推拉、远程ambient、预建立承载、完整服务端或媒体许可实现。"
@@ -126,6 +130,10 @@
         {
           "condition": "要查普通按需 MCVideo 私呼的客户端怎样发起、拒绝、应答或取消。",
           "read": "topics/mcvideo/private-client-answer-evidence.md"
+        },
+        {
+          "condition": "若是普通在网、按直接 MCVideo ID 的按需一对一私呼初建，并已按 §6.3.1.1 辨明实际收到的是 O-PF、T-PF 或私呼 CF 的相应初始 INVITE，本跳实际 offer 确实缺传输控制实体媒体段时查本版不带控制的角色处理；不从缺段选择角色。缺 offer、停用或被拒的现有媒体段、缺隐式申请、应答或在话 re-INVITE 都不是此条件；排除优先、预建立和其他呼叫。",
+          "read": "topics/mcvideo/private-call-without-transmission-control.md"
         }
       ],
       "boundary": "不覆盖优先、预建立、完整SIP/SDP或媒体生命周期；原文回指缺口仍未解决。"
@@ -4049,6 +4057,10 @@
         {
           "condition": "在网、带传输控制、按直接 MCVideo ID 建立的普通按需私呼，要核客户端的具体 SIP 请求、应答或取消，查 Stage 3 客户端条款及该页前提。",
           "read": "topics/mcvideo/private-client-answer-evidence.md"
+        },
+        {
+          "condition": "仅要核对 Stage 3 的在网、按直接 MCVideo ID 的普通按需一对一私呼初建时才转读。主叫实际要求不带传输控制，或被叫/相应具名 PF、私呼 CF 实收本跳适用初始 INVITE 且其实际 SDP offer 缺控制实体媒体段，按不同入口查。只见 Stage 2 指示、没有隐式发送申请或缺完整 offer 不是这项 Stage 3 收件证据。组呼、优先、预建或在话修改不用此入口。",
+          "read": "topics/mcvideo/private-call-without-transmission-control.md"
         }
       ],
       "boundary": "Rel-16 Stage 2 在网 MCVideo 普通私呼的四张建呼信息表：两跳建呼请求、两跳建呼响应。结束请求和结束响应不适用。不据此判定离网、紧急私呼、自动或手动建呼程序以及 SIP 编码。"
@@ -12516,6 +12528,26 @@
         }
       ],
       "boundary": "限 TS 23.283 V16.8.0 的 Stage 2 MCPTT–LMR 互通紧急组呼建立。先按实际紧急组呼请求的发起方和互通组定义方选分支；只见组已紧急、个人告警、普通组呼或取消均不足以识别本次紧急建呼。 图示前提是互通组已定义，图中接收的 MCPTT 客户端已归属，IWF 已连接且获准与 MCPTT 互通，两侧用户及组 ID 的映射已配置。这些前提不代替对发起人的业务核权或对成功的验证。 MCPTT 定义组且 LMR 主叫：IWF 发初始请求；服务器的步骤 7 须有主叫外已归属的 LMR 用户且实收他们的逐人归属，与步骤 8 回这类请求、步骤 9 回初始请求分开。代表归属不替代主叫映射 ID 的紧急发起权限。MCPTT 定义组且 MCPTT 主叫：发起端须已配置指定紧急组，或按 §10.6.2.2.2 注 3 配置在当前所选组执行紧急行为。两者都未配置时，不能套用这张成功示例，不据此判实际拒绝。IWF 已代表归属时一条；服务器已收逐人归属时向每位已归属 LMR 用户各一条。步骤 8 是 IWF 回复，步骤 10 另回发起客户端。LMR 定义组：IWF 向 MCPTT 服务器逐人发请求。LMR 主叫时由此开始；MCPTT 主叫时先有反方向的初始请求。后者步骤 7 回逐人请求 4，步骤 8 回初始请求 3，步骤 9 再回发起客户端。 组定义方控制建成后的组呼。MCPTT 服务器在所列路径配置承载优先级；两个 MCPTT 宿主路径记组紧急状态，其中 MCPTT 主叫在本端设置个人紧急状态，服务器另记发起者身份。不要把这些状态动作套给 LMR 宿主。 LMR 发起 MCPTT 定义组：.2.1 注 5 说步骤 9 回初始请求，步骤 5 后可回，最迟在步骤 8 后。MCPTT 发起 MCPTT 定义组：.2.2 注 6 把步骤 7–8 放在步骤 5 和 10 之间；注 8 说步骤 10 在 8 后、最迟在 9 后，取决于继续呼叫的条件。MCPTT 发起 LMR 定义组：.2.4 注 5 允许步骤 8 在步骤 3 后发生，最迟在步骤 7 后，不固定等待 7。 LMR 宿主总述印作 “to the IWF”；.2.3 步骤 1 和 .2.4 步骤 4 的图和正文均为 IWF 向 MCPTT 服务器逐人发送。分支不补一条 IWF 自环。 表中紧急请求的告警指示、位置可选；隐式话权指示仅在发起端请求时才可有，不代表话权授予。响应类型不等于成功；须核对实际请求及 Result。单笔成功响应不证明其他请求完成、终端实收或媒体已通。不规定拒绝码、回滚、重试、IWF 优先级动作、LMR 本侧呼叫、具体 SIP 字段或网络承载配置值。不把挂断或独立告警当成对组状态的取消；取消、普通建立、广播和迫近危险另查。"
+    },
+    {
+      "id": "r16-mcvideo-private-call-without-transmission-control",
+      "question": "普通按需私呼没有传输控制，主叫应省掉哪一个 SDP 段？实际收到初始请求的 UE、O-PF、T-PF 和 CF 怎么分别判断？ 抓包没拿到完整 offer、缺隐式发送申请、已有 m-line 但端口为 0、看到 200 或在话 re-INVITE，能不能都当作不带控制？ 本版哪些客户端、PF 回指悬空，哪一处 T-PF 回指实际属于 CF？Stage 2 的是否启用和隐式申请能否代证 Stage 3？",
+      "start": "topics/mcvideo/private-call-without-transmission-control.md",
+      "next_if": [
+        {
+          "condition": "只查 Stage 2 普通在网 MCVideo 私呼的两跳建呼信息：分请求/响应和发送方向；不将字段套到 SIP、结束或紧急呼叫。",
+          "read": "topics/mcvideo/private-call-infoflows.md"
+        },
+        {
+          "condition": "在网、确实带传输控制、按直接 MCVideo ID 的普通按需一对一私呼；不是组呼、离网、功能别名、视频推拉、环境查看、预建立、优先、Replaces 或在话修改。查相应客户端实际发起、收到对应初始请求、应答或建立前取消。主叫不处于 MVEPC2、MVEPC3 或本呼叫 MVEPP2；被叫入向不是 emergency-ind=true。",
+          "read": "topics/mcvideo/private-client-answer-evidence.md"
+        },
+        {
+          "condition": "在网、确实带传输控制、按直接 MCVideo ID 的普通按需一对一私呼；不是组呼、离网、功能别名、视频推拉、环境查看、预建立、优先、Replaces 或在话修改。查具名 O-PF、T-PF 或私呼 CF 的实际初始来件，不从他端回应反推入向。请求不含 emergency-ind、alert-ind、imminentperil-ind 或紧急 Resource-Priority，主叫与该目标无进行中紧急私呼；按需选择仍需单独核实。",
+          "read": "topics/mcvideo/private-server-admission-routing.md"
+        }
+      ],
+      "boundary": "限 Rel-16 在网、按直接 MCVideo ID 的普通按需一对一私呼初建；不是组呼、视频推拉、环境查看、first-to-answer、优先呼叫、预建立、Replaces 或在话修改。 查主叫创建请求，须是主叫实际要求不带传输控制的新建私呼；应不提供指定传输控制实体的媒体段，不是去掉整个 SDP offer。 收件分角色查本次私呼的初始 INVITE（TS 24.281 V16.12.0 §6.3.1.1，印 61–62；§10.2.3，印 291）：被叫客户端实收本笔私呼的初始 INVITE；O-PF 实收 S-CSCF 处理发起侧初始过滤条件后路由给本 PF 的初始 INVITE，Request-URI 是本 PF 的 PSI，且不是预建立设置 PSI；T-PF 实收 S-CSCF 处理终止侧初始过滤条件后路由给本 PF 的初始 INVITE，Request-URI 是本 PF 的 PSI；私呼 CF 实收经发起侧 PSI 路由或终止侧直接 PSI 路由的初始 INVITE，Request-URI 是 MCVideo 私呼 PSI，Contact 不带 isfocus。四者都检查本跳实收的完整 SDP offer，确认其中没有媒体传输控制实体的媒体段。缺段不能反推角色；上一跳的 offer 不能代用。 未取得 offer、抓包缺失或截断，不是证实缺段；有该段但端口为 0、被拒或 inactive 也不满足缺段。无隐式发送申请、200、SDP answer、已建会话的 re-INVITE、媒体停发或优先事件不代证本次初始 offer。 分类不证明授权、接通、发送许可或媒体实际送达。不补错引、通用 SIP/SDP 处置或运行结果。 TS 23.281 V16.4.0 只比对两张 Stage 2 请求表：是否使用传输控制是必选业务信息，隐式发送视频申请是另一可选项；不映射线上字段。"
     }
   ]
 }
