@@ -413,6 +413,10 @@
         {
           "condition": "自动私呼的步骤5/6、参数变更与媒体建立：TS 23.283 V19.5.0 Stage 2，主叫已选自动；查哪一端报告、哪一笔转发、是否另发请求及媒体建立，不需要先有抓包。 MCPTT 主叫看 IWF→server→MCPTT 客户端；LMR 主叫看 MCPTT 客户端→server→IWF。步骤 5/6 是各自匹配应答；接受替代参数可另发，不以旧应答判新尝试。两个步骤 6 的正文回指与步骤 7 的媒体节点分开。 只见别名解析、支持一种媒体类型、参数不变、发送响应或成功码，不足判媒体已建立、首包/收音、已获话权或已释放；不推出 SIP/RTP 细节，不套手动振铃、用户接受或已建释放。",
           "read": "topics/interworking/private-automatic.md"
+        },
+        {
+          "condition": "问已建立且启用话权的互通私呼，按实际 LMR/IWF 或 MCPTT server 控制查打断、放弃话权、Granted/Taken/Revoked 或媒体证据。查规范无需抓包。若问自动/手动建呼、整通释放、单独消息含义或组呼本地筛选，另查各自分支。",
+          "read": "topics/interworking/floor-control-owner.md"
         }
       ],
       "boundary": "TS 23.283 V19.5.0 Stage 2。按所问模式和阶段查；不从无振铃推自动，先区分两个自动发起方向与手动接受、已建释放；不覆盖完整 SIP/话权状态机。"
@@ -436,6 +440,10 @@
         {
           "condition": "信息流含义而非仲裁机制",
           "read": "topics/interworking/floor-signals.md"
+        },
+        {
+          "condition": "问已建立且启用话权的互通私呼，按实际 LMR/IWF 或 MCPTT server 控制查打断、放弃话权、Granted/Taken/Revoked 或媒体证据。查规范无需抓包。若问自动/手动建呼、整通释放、单独消息含义或组呼本地筛选，另查各自分支。",
+          "read": "topics/interworking/floor-control-owner.md"
         }
       ],
       "boundary": "分清组/私呼、组归属地和过滤配置；示例胜者不构成通用调度算法。"
@@ -3428,6 +3436,34 @@
         }
       ],
       "boundary": "仅 TS 24.283 V19.3.0 Stage 3 §7.1.7/.8 与 §7.2.7/.8 的 Reporting 和 Information；本版无特性号/值，不强填 0；空本地应用错误表不免除通用要求，须匹配实际 HTTP 方法和必选状态码。普通报错、具体业务条件和真实结果分开；原文 LMS_Registration 与所在 LMS_Reporting 的命名差异不是第三套 API。查规范无需运行记录。不补外部通用表或其他 Release 的码表、字段、值或重试。"
+    },
+    {
+      "id": "iwf-established-private-floor-control",
+      "question": "互通私呼已建立并启用话权时，LMR 或 MCPTT 主控如何处理打断请求，授予、占用、撤销和媒体能证明什么？",
+      "start": "topics/interworking/floor-control-owner.md",
+      "next_if": [
+        {
+          "condition": "问组呼中的本地筛选或组归属，不是已建立私呼的全部话权请求转交",
+          "read": "topics/interworking/floor-filtering.md"
+        },
+        {
+          "condition": "问普通 IWF 话权消息含义、队列或单播控制；不是主控示例时序",
+          "read": "topics/interworking/floor-signals.md"
+        },
+        {
+          "condition": "问自动模式的私呼建立与初始媒体，不是已建立后的话权",
+          "read": "topics/interworking/private-automatic.md"
+        },
+        {
+          "condition": "问手动模式的私呼建立、振铃和被叫接受",
+          "read": "topics/interworking/private-manual.md"
+        },
+        {
+          "condition": "问整通已建立私呼释放，非一次 Floor release 或 Revoked",
+          "read": "topics/interworking/private-release.md"
+        }
+      ],
+      "boundary": "只读 TS 23.283 V19.5.0 Stage 2 §10.5.9/.10 的两条已建立且启用话权的互通私呼例：实际 LMR 经 IWF 控制且初始 MCPTT 持有，或实际 MCPTT server 控制且初始空闲。§10.5.3 的非主控方全部转交、不做过滤，主控不由起呼方推。NOTE 只限 2/3、8/9。查规范无需运行记录。不把拒绝发送者当裁决方，不从信令判媒体或整呼释放、不补组呼筛选、Stage 3。"
     }
   ]
 }
