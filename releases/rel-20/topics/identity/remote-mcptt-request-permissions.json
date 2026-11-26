@@ -1,0 +1,154 @@
+{
+  "topic_id": "r20-identity-remote-mcptt-request-permissions",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。读面向提出请求的 MCPTT 用户的用户配置档；只核远程环境监听、远程发起私呼及组呼对应字段，不用被请求一方或其他业务配置代替。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "remote-ambient-request-permission",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "判断请求用户自己的远程发起环境监听许可；对应元素有明示表值。"
+      ],
+      "conclusion": "allow-request-remote-initiated-ambient-listening 的 true 表示该 MCPTT 用户获准提出远程环境监听请求，false 表示无此请求许可。表 40 未在这一字段语义中指明参与功能服务器；相邻两表的服务器措辞不移入此表。本条只引用 TS 24.483 §5.2.48R 和 TS 24.379 的请求流程。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "tables": [
+            "8.3.2.7-40"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "remote-private-request-permission",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "判断请求用户自己的远程发起私呼许可；对应元素有明示表值。"
+      ],
+      "conclusion": "allow-request-remote-init-private-call 的 true 或 false 告诉为该请求用户执行参与 MCPTT 功能的服务器，该用户是否获准提出远程私呼请求。它不是组呼许可，不表明被请求方已同意，也不表明请求已通过。本条只引用 TS 24.483 §5.2.48W1 与 TS 24.379。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "tables": [
+            "8.3.2.7-43"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "remote-group-request-permission",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "判断请求用户自己的远程发起组呼许可；对应元素有明示表值。"
+      ],
+      "conclusion": "allow-request-remote-init-group-call 的 true 或 false 告诉为该请求用户执行参与 MCPTT 功能的服务器，该用户是否获准提出远程组呼请求。它不是私呼许可，不表明某个组已接纳请求。本条只引用 TS 24.483 §5.2.48W2 与 TS 24.379。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "tables": [
+            "8.3.2.7-44"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "optional-independent-rule-elements",
+      "clause": "8.3.2.1",
+      "conditions": [
+        "检查 MCPTT 用户配置档内所述用户规则的结构，或出现缺项。"
+      ],
+      "conclusion": "§8.3.2.1 项 11(b)(xxxviii) 在规则的 actions 中写 anyExt，可包含 C、F、G 三个子元素；§8.3.2.3 各自声明 xs:boolean，声明未设 default 或 fixed。没有 anyExt、或容器存在但缺一个元素，都不能等同该元素虚构的 true 或 false。三表只定义所列明示值，不规定缺项时业务默认或以另一类型的权限补齐。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.1",
+            "8.3.2.3",
+            "8.3.2.7"
+          ],
+          "tables": [
+            "8.3.2.7-40",
+            "8.3.2.7-43",
+            "8.3.2.7-44"
+          ],
+          "items": [
+            "§8.3.2.1 11(b)(xxxviii)(C), (F), (G)",
+            "§8.3.2.3 global Boolean elements and anyExtType"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mixed-configuration-values",
+      "clause": "8.3.2.1",
+      "conditions": [
+        "同一份匹配请求用户的配置规则内，私呼项为 true、组呼为 false、环境监听项缺失。"
+      ],
+      "conclusion": "该规则表明可请求远程发起私呼、无远程发起组呼的请求许可；环境监听只能从这份规则记为缺项。不能拿另一个许可补齐或以远程业务共同开启解释这组值。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.1",
+            "8.3.2.3",
+            "8.3.2.7"
+          ],
+          "tables": [
+            "8.3.2.7-40",
+            "8.3.2.7-43",
+            "8.3.2.7-44"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "declared-request-permission-not-runtime",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "看到明确的允许/不允许值，但要判断某次请求或服务状态。"
+      ],
+      "conclusion": "这些字段描述匹配用户、匹配业务的请求许可。仅有某份保存/传送的配置档，不证明服务实际已采用对应规则；即使对应值为 true，也不证明某次实际通过、呼叫已建立、优先级提升或话权授予。需要各自的现场依据；本题不推断 SIP 结果、设备能力或缺项策略。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "tables": [
+            "8.3.2.7-40",
+            "8.3.2.7-43",
+            "8.3.2.7-44"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "三项独立查值；表 43/44 指向请求用户的参与功能服务器，表 40 只说明该用户的请求权限。",
+    "缺项不自动补 true 或 false；收到或存有配置档不证明服务器采用，也不证明具体呼叫已获准、建通或获优先级/话权。",
+    "不定义缺项业务默认、规则合成方式、策略安装、对端许可、优先级或话权授予。TS 24.483、TS 24.379 只保留本条的引用，未复核其正文。"
+  ],
+  "related": [
+    "r20-calls-remotely-initiated-mcptt-call"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
