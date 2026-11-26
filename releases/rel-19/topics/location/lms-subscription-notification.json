@@ -5,7 +5,7 @@
   "state": "draft",
   "title": "位置订阅的 201，和位置通知的收件应答有什么区别？",
   "common_conditions": [
-    "TS 24.283 V19.3.0 Stage 3 的 LMS_Information；本主题限定请求者为 LMC 的位置订阅创建和由该订阅触发的位置通知。",
+    "TS 24.283 V19.3.0 Stage 3 的 LMS_Information；本主题限定请求者为 LMC 的位置订阅。按各声明分别读创建、由该订阅触发的通知，以及同一个别资源的后续维护。",
     "问规范时可直接查；给一次实际事务下结论，按消息类型、请求和应答匹配、实际角色与同一订阅判断。"
   ],
   "condition_rule": "真实事务的结论须命中相应声明；接收条件不传给发送，注册或订阅创建结果不传给通知。不同来源的写法按所引位置单独保留。",
@@ -397,10 +397,459 @@
         "independent_source_review": false,
         "independent_usage_acceptance": false
       }
+    },
+    {
+      "id": "individual-subscription-put-full-replacement",
+      "conditions": [
+        "读既有且可辨识的同一 LMS_Information 个别订阅的更新；实际操作为 LMC→LMS 对该资源的 PUT。"
+      ],
+      "conclusion": "PUT 用完整 LocationSubscriptionRequest 替换原资源全部属性。请求带 LMC 实例标识、locationNotificationUri、至少一类目标清单（MC 业务 ID、已激活功能别名或组 ID）及到期日期时间 expTime。流程写 mclocClientId，表和 A.3 schema 写 mclocClientID。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.5.2"
+          ],
+          "printed_pages": [
+            29,
+            30
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.3.4.3.1"
+          ],
+          "printed_pages": [
+            65,
+            66
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.6.2.5 Table 7.2.6.2.5-1"
+          ],
+          "printed_pages": [
+            71
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 LocationSubscriptionRequest"
+          ],
+          "printed_pages": [
+            94
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "只发 expTime 或另一个 PATCH 不满足本流程的完整替换，不推旧属性保留或新期限生效。捕获片段未见其他字段，不等于实际请求缺字段。拼写不设兼容别名。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "individual-subscription-put-matched-success",
+      "conditions": [
+        "同一 LMC、LMS、个别订阅及实际 PUT 已关联；给结果时必须是该次 LMS 匹配应答，不能从一个状态码匹配资源。"
+      ],
+      "conclusion": "§6.3.2.5.2 第 7–8 项先更新完整资源，再回 204；响应表也用 204 确认更新成功。A.3 的 UpdateLocationSub 另外明列带 LocationSubscriptionRequest 的 200，及无正文的 204。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.5.2"
+          ],
+          "printed_pages": [
+            29,
+            30
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.3.4.3.1"
+          ],
+          "printed_pages": [
+            65,
+            66
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 UpdateLocationSub PUT"
+          ],
+          "printed_pages": [
+            91,
+            92
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不把 A.3 的 200 改写成流程步骤，不说两种必须兼容或接受。邻接的配置回调、订阅通知、DELETE 或其他订阅 204 都不成立。匹配结果不是 GET 读回、另一笔业务已推进、后续通知已收或实际端点收到；仅见 LMS 发出不证明 LMC 实收应答。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "individual-subscription-put-explicit-rejections",
+      "conditions": [
+        "LMS 实收这一个 PUT；具体验证或配置分支已独立核实，不能用孤立的状态码倒推原因。"
+      ],
+      "conclusion": "流程第 4 项的两条 401 分支是规定的令牌和网络身份头同在，或任一令牌未通过；全空目标清单与没有获准订阅的配置规则各有 403/Warning 分支。全空目标文本是 Invalid subscription request target client list；配置规则未获准时是 Unauthorized for location subscription。以上各分支停止本笔后续步骤。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.5.2"
+          ],
+          "printed_pages": [
+            29,
+            30
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "这些是本版 PUT 所列条件，不是所有 401/403 的逆推公式。A.3 PUT 还列其他错误，不能把 DELETE 获准后的未找到分支硬搬到 PUT 或据此猜测失败原因。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "individual-subscription-authorized-delete-results",
+      "conditions": [
+        "已识别 LMC→LMS 的 DELETE 和同一个别订阅。按实际收到的本次事务先核身份与删除权限。若解释未找到分支，须独立确认本次有删除权限。"
+      ],
+      "conclusion": "§6.3.2.6.2 在获准之后按订阅 ID 找资源：未找到回 404；找到则删除这项位置订阅及其资源，随后回这笔 DELETE 的 204。响应表和 A.3 都列删除成功 204。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.6.2"
+          ],
+          "printed_pages": [
+            30,
+            31
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.3.4.3.2"
+          ],
+          "printed_pages": [
+            66,
+            67
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 DeleteLocationSub DELETE"
+          ],
+          "printed_pages": [
+            92
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "未获准的具体状态码未由该过程指定，不用 A.3通用错误表补强制码。孤立 404 不证明授权、曾存在、过期或曾删除。只见发出不证明 LMS 实收及删除；匹配 204 的资源结果不证明物理清理或所有位置入口结束。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "individual-subscription-repeat-notify-horizon",
+      "conditions": [
+        "同一个别订阅；已确定生效的 expTime 才据它算到期。观察退订时区分本资源的消息发出、LMS 实收、获准、资源处理；另匹配通知的发出和到达。"
+      ],
+      "conclusion": "创建与更新的末段把反复发送本订阅通知的界线写为按生效 expTime 到期，或收到退订消息。对退订接收后的权限与实际删除结果另按 §6.3.2.6.2 判断。晚到通知只证明在该时刻到达，不能据此推出终点后发送。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.3.1–.2"
+          ],
+          "printed_pages": [
+            26,
+            27,
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.5.2"
+          ],
+          "printed_pages": [
+            29,
+            30
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.6.2"
+          ],
+          "printed_pages": [
+            30,
+            31
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.6.2.5 Table 7.2.6.2.5-1"
+          ],
+          "printed_pages": [
+            71
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "没有规定被拒绝或并发退订的发送顺序、在途排空、物理删除时间。未确认的 PUT 中 expTime 不代替生效期限。不会由这项订阅的结果断另一订阅、注册、目标 LMC 上报、已缓存位置、应用使用或时效。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "individual-subscription-uri-source-discrepancies",
+      "conditions": [
+        "核同一既有个别资源的 URI，或读 V19.3.0 各处写法；保留适用来源，实际关联需独立证据。"
+      ],
+      "conclusion": "§7.2.3.4.2 为 lms-information/.../subscription/{subscriptionID}，总表及 A.3 为复数 /subscriptions/{subscriptionId}，A.3 基址 lms-information/v1。创建正文和 A.3 使用 Location，p64 表 7.2.3.3.3.1-5 字面写 Locationn，示例用 lms-location-information/.../subscriptions。更新步骤 7 的原回指是集合 POST §7.2.3.3.3，不把本体个别 PUT 改为创建新订阅。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.3.1–.2"
+          ],
+          "printed_pages": [
+            26,
+            27,
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.1"
+          ],
+          "printed_pages": [
+            60,
+            61
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.3.1 Figure 7.2.3.1-1 and Table 7.2.3.1-1"
+          ],
+          "printed_pages": [
+            62
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Table 7.2.3.3.3.1-5"
+          ],
+          "printed_pages": [
+            64
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.3.3.2–.3.1"
+          ],
+          "printed_pages": [
+            63,
+            64
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.3.4.2"
+          ],
+          "printed_pages": [
+            65
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.5.2"
+          ],
+          "printed_pages": [
+            29,
+            30
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 LMS_Information servers"
+          ],
+          "printed_pages": [
+            89
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 /subscriptions POST"
+          ],
+          "printed_pages": [
+            90
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 UpdateLocationSub PUT"
+          ],
+          "printed_pages": [
+            91,
+            92
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 DeleteLocationSub DELETE"
+          ],
+          "printed_pages": [
+            92
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "看该订阅实际创建响应的 Location 或其他独立资源关联；不拼路径、不合并拼法、不发明重试或回退，不证明某个实际部署两种都接受。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "individual-subscription-delete-body-source-discrepancy",
+      "conditions": [
+        "只比较 V19.3.0 的个别订阅 DELETE 请求定义和对应来源表。"
+      ],
+      "conclusion": "p67 Table 7.2.3.4.3.2-2 请求体行是 n/a M 1；同页有 POST/200 表标签，成功行是 204。Annex A.3 DeleteLocationSub 没有 requestBody 定义，明确成功 204。Annex A.1 的优先范围是 API 信息元素和方法编码，流程条件仍看正文。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.6.2"
+          ],
+          "printed_pages": [
+            30,
+            31
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.3.4.3.2"
+          ],
+          "printed_pages": [
+            66,
+            67
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 DeleteLocationSub DELETE"
+          ],
+          "printed_pages": [
+            92
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不构造空 JSON、必需完整更新体、禁止所有 DELETE 请求正文或两种实现兼容结论。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
-    "仅核本版 LMS_Information 的 LMC 订阅创建、这一订阅的位置通知及收件。未核完整取消、更新/到期、授权、跨 LMS 或网络实体请求。",
+    "仅核本版 LMS_Information 的 LMC 订阅创建、通知实收，以及同一个别资源的更新、取消和到期边界。未核完整授权、跨 LMS、网络实体请求或竞态处理。",
     "同版正文、表和 A.3 不一致时保留来源边界，不给实现补别名、回退或双接受策略。取证不替代合规判断或实际应用结果。"
   ],
   "source_references": [
@@ -539,6 +988,132 @@
         92
       ],
       "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.3.2.5.2"
+      ],
+      "printed_pages": [
+        29,
+        30
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.3.2.6.2"
+      ],
+      "printed_pages": [
+        30,
+        31
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.2.3.1 Figure 7.2.3.1-1 and Table 7.2.3.1-1"
+      ],
+      "printed_pages": [
+        62
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Table 7.2.3.3.3.1-5"
+      ],
+      "printed_pages": [
+        64
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.2.3.3.2–.3.1"
+      ],
+      "printed_pages": [
+        63,
+        64
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.2.3.4.2"
+      ],
+      "printed_pages": [
+        65
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.2.3.4.3.1"
+      ],
+      "printed_pages": [
+        65,
+        66
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.2.3.4.3.2"
+      ],
+      "printed_pages": [
+        66,
+        67
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.2.6.2.5 Table 7.2.6.2.5-1"
+      ],
+      "printed_pages": [
+        71
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.3 LMS_Information servers"
+      ],
+      "printed_pages": [
+        89
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.3 UpdateLocationSub PUT"
+      ],
+      "printed_pages": [
+        91,
+        92
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.3 DeleteLocationSub DELETE"
+      ],
+      "printed_pages": [
+        92
+      ],
+      "usage": "primary"
     }
   ],
   "related": [

@@ -735,6 +735,14 @@
 
 入口：[位置订阅的 201，和位置通知的收件应答有什么区别？](topics/location/lms-subscription-notification.md)。
 
+### 同一个别位置订阅：更新、取消与到期
+
+- **能回答：**查 TS 24.283 V19.3.0 Stage 3 的 LMS_Information 同一个别订阅的更新、取消和到期。问规范不必先有抓包。
+- **只到条件或接口：**判断实际事务时，核同一个别订阅 ID/资源、LMC→LMS 的 PUT 或 DELETE 和同一笔实际 LMS 应答，不从同名用户、通知 URI 或孤立状态码推断。PUT 是完整 LocationSubscriptionRequest 替换，不是只送 expTime/PATCH；流程和表回 204，A.3 另列带 LocationSubscriptionRequest 的 200。具体 401/403 只按已核实的更新拒绝条件读。DELETE 先核身份和权限；获准后找不到资源 404，找到删除后 204，不给未获准设固定状态码。反复发通知的界线只按生效 expTime 或 LMS 实收退订消息；实收与获准删除不是同一事实。 §7.2.3.4.2 单数 /subscription/{subscriptionID}、A.3 复数 /subscriptions/{subscriptionId} 及创建表 Locationn / lms-location-information 与流程/API 的 Location、lms-information 要分别读。DELETE 表 n/a M 1 与 A.3 无 requestBody 并存；不猜别名、拼接、回退、兼容码或载荷。
+- **尚未建立的结论：**实际匹配 PUT/DELETE 应答不证明 GET 读回、业务进展、以后通知已送或实际端点实收。迟到不证明界线后发；不判并发/拒绝退订的排空、物理删除或其他订阅、注册、终端上报已停。不要用 Stage 2、LMS_Reporting、位置回调或另一订阅的结果代替。
+
+入口：[同一订阅已创建：更新、取消和到期](topics/location/lms-subscription-notification.md)。
+
 ## 网络策略与QoS
 
 [查看本域全部主题](topics-network-policy.json)
