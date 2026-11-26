@@ -282,6 +282,10 @@
         {
           "condition": "问 LMR 用户发起的互通紧急告警取消：即使原告警取消请求还带清组状态指示，也查 §10.6.5.1 的 1/2、成员请求和组播 ACK。若原请求是取消组紧急状态，或告警取消由 MC 用户发起，则另查。查规范无需抓包。",
           "read": "topics/interworking/emergency-alert-cancel-lmr-origin.md"
+        },
+        {
+          "condition": "问 MC 用户发起的互通紧急告警取消：原请求即使附带清组状态指示，仍查 §10.6.5.2 的发起端、IWF 归属粒度和成员确认。若原请求是组紧急状态取消，或告警由 LMR 用户发起，另查。查规范无需抓包。",
+          "read": "topics/interworking/emergency-alert-cancel-mc-origin.md"
         }
       ],
       "boundary": "Bounded Stage2 interworking procedures; underlying security and full call state machine not verified."
@@ -2966,6 +2970,10 @@
         {
           "condition": "同为 MCPTT 用户的组紧急状态取消请求，但互通组实际定义在 LMR，查 .2.3.4 的 2/7、3/4。若原请求是紧急告警取消，即使另带清组状态指示，也不转入本支。",
           "read": "topics/interworking/emergency-group-state-cancel-mcptt-origin-lmr-defined.md"
+        },
+        {
+          "condition": "仍是 MC 用户和同一互通组，但原请求类型是紧急告警取消，即使另带清组状态指示也走 §10.6.5.2，而非组状态取消。",
+          "read": "topics/interworking/emergency-alert-cancel-mc-origin.md"
         }
       ]
     },
@@ -3058,6 +3066,10 @@
         {
           "condition": "实际问互通组呼整体释放，不是清除组紧急状态。",
           "read": "topics/interworking/group-call-release.md"
+        },
+        {
+          "condition": "仍是 MC 用户和同一互通组，但原请求类型是紧急告警取消，即使另带清组状态指示也走 §10.6.5.2，而非组状态取消。",
+          "read": "topics/interworking/emergency-alert-cancel-mc-origin.md"
         }
       ]
     },
@@ -3077,6 +3089,34 @@
         },
         {
           "condition": "实际查原生 MCPTT 的告警取消，不是互通 IWF 信息流。",
+          "read": "topics/emergency/standalone-alert-cancellation.md"
+        },
+        {
+          "condition": "若原请求仍是紧急告警取消，但发起方为 MC 用户而非 LMR，含附带清组状态指示，改查 §10.6.5.2。",
+          "read": "topics/interworking/emergency-alert-cancel-mc-origin.md"
+        }
+      ]
+    },
+    {
+      "id": "iwf-emergency-alert-cancel-mc-origin",
+      "question": "MC 用户取消此前在互通组发的紧急告警时，发起端确认是否要等 IWF、server 发几笔 IWF 请求？",
+      "start": "topics/interworking/emergency-alert-cancel-mc-origin.md",
+      "boundary": "TS 23.283 V19.5.0 §10.6.5.2：MC 用户原请求是互通紧急告警取消。组可定义在 MC 或 LMR；原请求可附清组状态，主请求类型不变。查规范无需抓包。 client 1 此前已成功发起告警且仍处紧急状态，client 2 已归属；IWF 已掌握互通组并配置组与用户映射。步骤 2 对原告警组解析组 ID、查成员归属；此场景有已归属成员本属在 IWF，IWF 必须参与。3 回原 2；4/5 是独立 IWF 腿，按实际代理归属一条或 server 实收逐人归属逐条发；NOTE 3 让 3、4 任一先。6/8 为成员腿，组播只省 8。 server 发 3 不保证 client 1 实收或重置；可选指示不证明复制到 IWF 或组态已清。IWF 回 5 或成员回 8 不证明另一边实收、全员应用或媒体状态。不以成员名单猜 IWF 粒度，不补混合、拒绝或重试规则。原请求是组紧急状态取消、LMR 发起告警或者原生 Stage 3 另查。",
+      "next_if": [
+        {
+          "condition": "原请求是告警取消，但实际 LMR 用户发起，而非 MC 用户。",
+          "read": "topics/interworking/emergency-alert-cancel-lmr-origin.md"
+        },
+        {
+          "condition": "原请求类型是组紧急状态取消，且互通组定义在 MCPTT；不按一个附带组态标志倒推。",
+          "read": "topics/interworking/emergency-group-state-cancel-mcptt-origin.md"
+        },
+        {
+          "condition": "原请求类型是组紧急状态取消，且互通组定义在 LMR；不按一个附带组态标志倒推。",
+          "read": "topics/interworking/emergency-group-state-cancel-mcptt-origin-lmr-defined.md"
+        },
+        {
+          "condition": "实际查原生 MCPTT 的告警取消，而非互通 IWF 信息流。",
           "read": "topics/emergency/standalone-alert-cancellation.md"
         }
       ]
