@@ -1,0 +1,976 @@
+{
+  "topic_id": "r19-location-lms-registration-maintenance",
+  "release": 19,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "LMS 注册续期与注销：哪次更新赶在到期前？",
+  "common_conditions": [
+    "3GPP TS 24.283 V19.3.0，Rel‑19 Stage 3，LMS_Reporting 的个别 LMC 注册。初建/配置回调、位置报告和订阅仅在注明处对照。",
+    "查规范无需抓包；判一次实际状态，须核相应资源、消息、角色与匹配事务和真正的截止时间。"
+  ],
+  "condition_rule": "声明继承共同及单条的前提；收到/成功/操作状态不相互替代。",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.283-v19.3.0",
+  "claims": [
+    {
+      "id": "individual-registration-target-and-transaction",
+      "conditions": [
+        "查同一 LMS 中个别 LMC 注册的续期或注销，不查另一客户端、订阅、回调、首次创建。"
+      ],
+      "conclusion": "PUT/DELETE 针对既有个别注册的资源 URI，可用创建时实际返回的 201 Location 或独立证据定位。registrationId 不是实例字段、位置配置或报告请求回调、订阅 ID。按正确的 LMC、资源、HTTP 方法、发送/实收和匹配应答判一笔事务，不要求同份记录也有历史 201。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.2.2"
+          ],
+          "printed_pages": [
+            18
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.3.2"
+          ],
+          "printed_pages": [
+            18,
+            19
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.4.2"
+          ],
+          "printed_pages": [
+            19,
+            20
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.3.3.2"
+          ],
+          "printed_pages": [
+            35
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 /registrations/{registrationId} PUT"
+          ],
+          "printed_pages": [
+            75,
+            76
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 DeleteLMCRegistration DELETE"
+          ],
+          "printed_pages": [
+            76
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "put-complete-registration-replaces-properties",
+      "conditions": [
+        "判断此 LMC 的个别注册更新。"
+      ],
+      "conclusion": "与 POST 创建分开：PUT 用一份完整 LMCRegistration 替换原属性；不只传 expTime、不做 PATCH，也不新建。必有 expTime、mclocClientID（正文 mclocClientId）、locationConfigUri、locationRequestUri；表列 pei、supi 可选。两回调 URI 是属性不是目标 URI。表和 A.2 明确请求体，成员必需条件不能被 PUT 描述里的 subscription 字样换成订阅载荷。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.3.2"
+          ],
+          "printed_pages": [
+            18,
+            19
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.3.3.2"
+          ],
+          "printed_pages": [
+            35
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.3.3.3.1 Tables 7.1.3.3.3.1-2, -3, -7, -8"
+          ],
+          "printed_pages": [
+            35,
+            36
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.2 Table 7.1.6.2.2-1"
+          ],
+          "printed_pages": [
+            43
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 /registrations/{registrationId} PUT"
+          ],
+          "printed_pages": [
+            75,
+            76
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LMCRegistration"
+          ],
+          "printed_pages": [
+            77,
+            78
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "put-resource-check-before-bearer-validation",
+      "conditions": [
+        "LMS 收到针对同一个别注册的 PUT。"
+      ],
+      "conclusion": "LMC 发送时带所有适用有效 MC service IDs 的 Bearer 令牌；资源不存在返回 404，存在才执行 TS 33.180 令牌验证，并从令牌派生 MC service IDs 作发送者身份。任何令牌验证失败则返回 401 停止；通过后替换注册，并关联 LMS 授权的 MC service IDs。registrationId、实例字段、回调地址、TLS 连接本身不证明认证或完成。孤立 401 不定位哪项失败；404 不给缺失历史的原因。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.3.2"
+          ],
+          "printed_pages": [
+            18,
+            19
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.9"
+          ],
+          "printed_pages": [
+            60
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LMS_Reporting servers and BearerAuth"
+          ],
+          "printed_pages": [
+            73,
+            77
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 /registrations/{registrationId} PUT"
+          ],
+          "printed_pages": [
+            75,
+            76
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "matched-put-200-204-and-effective-expiry",
+      "conditions": [
+        "实际 LMS 应答与已知个别注册的这笔完整 PUT 匹配。"
+      ],
+      "conclusion": "成功 200 带 LMCRegistration，程序可用它返回更新后的到期值；LMC 收到的 expTime 覆盖其当前维护值。成功 204 无正文，表示此次成功替换，不返回服务端正文到期值。按完整替换规则回看本次获准请求中提交的 expTime；若不知道其值、另有更改或没有可靠配对，不能凭 204 推日期或固定延长量。任一成功码本身不证明旧截止前已收、此刻仍有效或配置已到了。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.3.2"
+          ],
+          "printed_pages": [
+            18,
+            19
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.3.3.3.1 Tables 7.1.3.3.3.1-2, -3, -7, -8"
+          ],
+          "printed_pages": [
+            35,
+            36
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.2 Table 7.1.6.2.2-1"
+          ],
+          "printed_pages": [
+            43
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 /registrations/{registrationId} PUT"
+          ],
+          "printed_pages": [
+            75,
+            76
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LMCRegistration"
+          ],
+          "printed_pages": [
+            77,
+            78
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "use-current-official-effective-expiry",
+      "conditions": [
+        "要判断同一个别注册是否撞上旧截止。"
+      ],
+      "conclusion": "看该注册在相关时点生效的 expTime，不用其他资源、历史值、固定续期间隔或初次请求自拟时间。创建 201 可返回更早的期限，成功更新 200 中实际返回 expTime 覆盖原值。成功 204 不返回正文时间；判断持续有效还要查已接受的替换值以及后续更新、到期或注销。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.2.2"
+          ],
+          "printed_pages": [
+            18
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.3.2"
+          ],
+          "printed_pages": [
+            18,
+            19
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.3.3.3.1 Tables 7.1.3.3.3.1-2, -3, -7, -8"
+          ],
+          "printed_pages": [
+            35,
+            36
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.2 Table 7.1.6.2.2-1"
+          ],
+          "printed_pages": [
+            43
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 /registrations/{registrationId} PUT"
+          ],
+          "printed_pages": [
+            75,
+            76
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "expiry-tests-server-receipt-of-successful-update",
+      "conditions": [
+        "同一注册，已知旧有效 expTime；判定在此截止是否因无成功更新而过期。"
+      ],
+      "conclusion": "LMC 必须到期前发；是否隐式注销看 LMS 在到期前收到的更新中是否存在成功的一笔。LMC 提前发送不足，终端应答晚到不是 LMS 请求晚到；用对应请求的 LMS 收件时刻和成功结果判断，不要求 LMS 发成功码或终端收成功码都在截止前。错误、代理码、其他注册的成功、更新时戳不明均不够。若截止前已收并有同笔成功证据，这笔算及时，不独证新期限或后来状态。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.2.2"
+          ],
+          "printed_pages": [
+            18
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.3.2"
+          ],
+          "printed_pages": [
+            18,
+            19
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.3.3.3.1 Tables 7.1.3.3.3.1-2, -3, -7, -8"
+          ],
+          "printed_pages": [
+            35,
+            36
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 /registrations/{registrationId} PUT"
+          ],
+          "printed_pages": [
+            75,
+            76
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "implicit-deregistration-and-late-update-bounds",
+      "conditions": [
+        "同一注册真实到期；已证实在截止前 LMS 没收到成功 RegistrationUpdate，而非仅缺日志。"
+      ],
+      "conclusion": "LMS 视 LMC 为隐式注销并移除对应注册资源。真正晚于旧截止的一笔 PUT 不能回补为及时，也不能排除另有及时更新。若该 PUT 在实际资源查找时不存在，按 PUT 404。不得从单笔迟到、缺应答或 404 判失效原因；未定义容忍/过期复活/自动重建、同刻竞争调度或重放。分开规范要求移除与设备实况、后台持久化/回调送达。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.2.2"
+          ],
+          "printed_pages": [
+            18
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.3.2"
+          ],
+          "printed_pages": [
+            18,
+            19
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.3.3.3.1 Tables 7.1.3.3.3.1-2, -3, -7, -8"
+          ],
+          "printed_pages": [
+            35,
+            36
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 /registrations/{registrationId} PUT"
+          ],
+          "printed_pages": [
+            75,
+            76
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "delete-verifies-identity-before-authorized-lookup",
+      "conditions": [
+        "LMC 发同一注册的 DELETE，携全部适用 Bearer 令牌。"
+      ],
+      "conclusion": "LMS 先核 LMC 身份和注销权限；获准后才查资源。获准且不存在返回 404；获准且存在则注销、删对应资源，再回 204。没有给身份或权限拒绝选定唯一失败状态；A.2 列通用 401/403 也不定义具体映射。不能拿 PUT 的先查资源和任一令牌失败分支代替 DELETE。表请求体 n/a，A.2 无 requestBody，不传 PUT 的 LMCRegistration。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.4.2"
+          ],
+          "printed_pages": [
+            19,
+            20
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.3.3.3.2 Tables 7.1.3.3.3.2-2, -3, -6, -7, -8"
+          ],
+          "printed_pages": [
+            36,
+            37,
+            38
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.9"
+          ],
+          "printed_pages": [
+            60
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LMS_Reporting servers and BearerAuth"
+          ],
+          "printed_pages": [
+            73,
+            77
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 DeleteLMCRegistration DELETE"
+          ],
+          "printed_pages": [
+            76
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "delete-204-is-this-logical-deregistration",
+      "conditions": [
+        "来自 LMS、匹配同一注册这笔 DELETE 的实际 204，不是 PUT 或配置回调的 204。"
+      ],
+      "conclusion": "确认该 DELETE 成功注销、移除相应注册资源；若只见出站、缺日志、404 或另一事务的 204 不能替代。LMS 发出与 LMC 实收分开；不推出此后仍无注册、用户的其他注册/位置订阅或 IMS 也结束、不证明物理抹除或已排空其他回调。删除链接表标题写 200 不能补出成功码，实际应答表及 A.2 写 204。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.4.2"
+          ],
+          "printed_pages": [
+            19,
+            20
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.3.3.3.2 Tables 7.1.3.3.3.2-2, -3, -6, -7, -8"
+          ],
+          "printed_pages": [
+            36,
+            37,
+            38
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 DeleteLMCRegistration DELETE"
+          ],
+          "printed_pages": [
+            76
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "registration-uri-model-and-openapi-scope-literals",
+      "conditions": [
+        "对照同版注册维护的程序、印刷资源表与 A.2 编码。"
+      ],
+      "conclusion": "§7.1.3.3.2 URI 用 lms-reporting//<apiVersion>/registrations/{registrationId}；A.2 单斜杠基址加 /registrations/{registrationId}。原文 mclocClientId 对表和 A.2 的 mclocClientID，PUT 步骤中虽写 RegistrationRequest 名称，仍指本 PUT。A.2 PUT 的正文说明引用 subscription 字样，实际类型及 URI 是 LMC 注册。A.1 只对 API 元素/方法编码差异给优先范围，未在 YAML 表达的程序条件仍适用。从实际注册 URI 和适用文档查，不据此拼回退 URI、路径别名、订阅或 GET。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.3.2"
+          ],
+          "printed_pages": [
+            18,
+            19
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.1"
+          ],
+          "printed_pages": [
+            32
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.3.1 Figure 7.1.3.1-1 and Table 7.1.3.1-1"
+          ],
+          "printed_pages": [
+            33,
+            34
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.3.3.2"
+          ],
+          "printed_pages": [
+            35
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.2 Table 7.1.6.2.2-1"
+          ],
+          "printed_pages": [
+            43
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LMS_Reporting servers and BearerAuth"
+          ],
+          "printed_pages": [
+            73,
+            77
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 /registrations/{registrationId} PUT"
+          ],
+          "printed_pages": [
+            75,
+            76
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LMCRegistration"
+          ],
+          "printed_pages": [
+            77,
+            78
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "307-308-not-renewed-or-deleted",
+      "conditions": [
+        "实际看到对应个别资源的 307/308 + Location，或比较原件所列响应。"
+      ],
+      "conclusion": "PUT/DELETE 印刷表均列 307/308，Location 说 alternative LMS；§7.1.10 的规则指同一 LMS 的另一服务实例。A.2 DELETE 明列 307/308 而 PUT 未逐项列。重定向不确认已续期、在旧截止前成功收、已发到重定向目的地或已注销。实际后续另核，不能从该条补自动重试、跨 LMS 迁移或两条路径同一注册已延长。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.3.3.3.1 Tables 7.1.3.3.3.1-2, -3, -7, -8"
+          ],
+          "printed_pages": [
+            35,
+            36
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.3.3.3.2 Tables 7.1.3.3.3.2-2, -3, -6, -7, -8"
+          ],
+          "printed_pages": [
+            36,
+            37,
+            38
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.10"
+          ],
+          "printed_pages": [
+            60
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 /registrations/{registrationId} PUT"
+          ],
+          "printed_pages": [
+            75,
+            76
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 DeleteLMCRegistration DELETE"
+          ],
+          "printed_pages": [
+            76
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "limitations": [
+    "不建立临界时刻调度、迟到策略、重放/并发重试、重新注册决策或跨 LMS 迁移。",
+    "不以注册状态下断配置回调送达或排空、存储删除、上报或 LMS_Information 订阅结束的结论。"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.2.2.2.2"
+      ],
+      "printed_pages": [
+        18
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.2.2.3.2"
+      ],
+      "printed_pages": [
+        18,
+        19
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.2.2.4.2"
+      ],
+      "printed_pages": [
+        19,
+        20
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.1"
+      ],
+      "printed_pages": [
+        32
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.3.1 Figure 7.1.3.1-1 and Table 7.1.3.1-1"
+      ],
+      "printed_pages": [
+        33,
+        34
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.3.3.2"
+      ],
+      "printed_pages": [
+        35
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.3.3.3.1 Tables 7.1.3.3.3.1-2, -3, -7, -8"
+      ],
+      "printed_pages": [
+        35,
+        36
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.3.3.3.2 Tables 7.1.3.3.3.2-2, -3, -6, -7, -8"
+      ],
+      "printed_pages": [
+        36,
+        37,
+        38
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.2 Table 7.1.6.2.2-1"
+      ],
+      "printed_pages": [
+        43
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.9"
+      ],
+      "printed_pages": [
+        60
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.10"
+      ],
+      "printed_pages": [
+        60
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.1"
+      ],
+      "printed_pages": [
+        73
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 LMS_Reporting servers and BearerAuth"
+      ],
+      "printed_pages": [
+        73,
+        77
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 /registrations/{registrationId} PUT"
+      ],
+      "printed_pages": [
+        75,
+        76
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 DeleteLMCRegistration DELETE"
+      ],
+      "printed_pages": [
+        76
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 LMCRegistration"
+      ],
+      "printed_pages": [
+        77,
+        78
+      ],
+      "usage": "primary"
+    }
+  ],
+  "related": [
+    {
+      "topic": "r19-location-lms-registration-configuration",
+      "relation": "separate-registration-create-and-config-post",
+      "required": false
+    },
+    {
+      "topic": "r19-location-lms-subscription-notification",
+      "relation": "separate-location-information-subscription-lifecycle",
+      "required": false
+    },
+    {
+      "topic": "r19-location-lms-location-report-publish",
+      "relation": "separate-report-publication-transaction",
+      "required": false
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  }
+}

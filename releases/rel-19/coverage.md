@@ -783,6 +783,14 @@
 
 入口：[LMC 发布位置报告](topics/location/lms-location-report-publish.md)。
 
+### LMS 注册续期与注销：哪次更新赶在到期前？
+
+- **能回答：**TS 24.283 V19.3.0 Stage 3，LMS_Reporting 个别 LMC 注册。查完整 PUT、到期与 DELETE 的规则无需抓包。
+- **只到条件或接口：**实际核同一注册与生效 expTime、LMS 是否截止前收到成功更新、返回的更新结果和该笔应答。PUT 先查资源再验令牌；DELETE 先验身份和注销权限再查资源。
+- **尚未建立的结论：**出站、终端晚收、孤立 2xx/4xx 和缺日志均不能单独定连续有效或已注销；不建立晚到复活、竞争调度、配置回调排空、实际数据清除或订阅状态。
+
+入口：[LMS 个别注册维护](topics/location/lms-registration-maintenance.md)。
+
 ## 网络策略与QoS
 
 [查看本域全部主题](topics-network-policy.json)
