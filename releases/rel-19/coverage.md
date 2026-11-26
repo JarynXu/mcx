@@ -895,6 +895,14 @@
 
 入口：[LMS 注册与位置配置回调：201 和 204 各确认什么？](topics/location/lms-registration-configuration.md)。
 
+### LMS 两类 API：特性协商与通用 HTTP 错误
+
+- **能回答：**查 TS 24.283 V19.3.0 Stage 3：LMS_Reporting、LMS_Information 都没有本版特性号或值，空本地应用错误表不免通用 HTTP 错误。查规则无需抓包。
+- **只到条件或接口：**§7.1.7/.8、§7.2.7/.8：通用机制与本服务已定义项分开；通用错误按实际 HTTP 方法及引用表的必选状态码判定。注册 POST 的令牌失败 401、订阅 POST 的目标全空 403 Warning 按独立操作条件解释。
+- **尚未建立的结论：**不另造 0、空串、第三 API、每方法全量码表、统一 Warning、错误正文或重试；不据空表判断设备能力、认证或实际下游。§7.1.7.1 名与所在 LMS_Reporting 的差异不能单独改适用范围。
+
+入口：[LMS 两类 API：特性协商与通用 HTTP 错误](topics/location/lms-registration-configuration.md#lms-特性协商与空错误表)。
+
 ### LMS_Information 订阅创建与通知收件
 
 - **能回答：**查 TS 24.283 V19.3.0 Stage 3 的 LMS_Information 订阅创建、发通知和收件。查规范无需已有抓包。 创建授权还可分别查 401、两种 403 Warning 与 201；先核是集合 POST，不因相同 Warning 路由到个别订阅 PUT。

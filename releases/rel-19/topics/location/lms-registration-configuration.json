@@ -1105,6 +1105,357 @@
         "independent_source_review": false,
         "independent_usage_acceptance": false
       }
+    },
+    {
+      "id": "lms-common-scope-identify-api-and-http-method",
+      "conditions": [
+        "问 TS24.283 V19.3.0 对 LMS_Reporting 或 LMS_Information 的 API 共通条文。"
+      ],
+      "conclusion": "先辨认实际 API、操作、方向和 HTTP 方法。§§7.1.1、7.2.1 的服务 API 路径分别为 lms-reporting/v1、lms-information/v1；v1 是路径上的 API 版本，既不是 V19.3.0 的文档号也不是协商位。回调按所属操作和目标地址核对：Reporting 索要报告用注册里的 locationRequestUri；Information 位置通知用查询或订阅里的 locationNotificationUri。不因回调 URI 无服务前缀否定 API 归属。查规范无需抓包。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.1",
+            "7.2.1",
+            "Annex A.2 / A.3 servers"
+          ],
+          "printed_pages": [
+            32,
+            60,
+            61,
+            73,
+            89
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.7.2",
+            "7.1.5.2.2–7.1.5.3.2 target URIs",
+            "7.2.5.2.2 target URI",
+            "7.1.9",
+            "7.2.9"
+          ],
+          "printed_pages": [
+            21,
+            41,
+            60,
+            69,
+            72
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "A.1",
+            "Annex A.2 / A.3 local OpenAPI declarations"
+          ],
+          "printed_pages": [
+            73,
+            74,
+            75,
+            76,
+            77,
+            78,
+            79,
+            80,
+            81,
+            82,
+            83,
+            84,
+            85,
+            86,
+            87,
+            88,
+            89,
+            90,
+            91,
+            92,
+            93,
+            94,
+            95
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lms-no-assigned-features-not-zero-or-handshake-result",
+      "conditions": [
+        "核对所选 API 的本版特性协商，而不是目标终端实际能力。"
+      ],
+      "conclusion": "§7.1.8、§7.2.8 都引用 TS29.500 §6.6 的通用机制，两张 Supported Features 表没有任何特性号、名称或 M/O 项，正文也说本版未定义特性；A.2/A.3 的本地 API 声明没有定义这两套服务的特性协商字段。不据此自定值、强填 0 或空串、移借别的 API/Release 的编号、规定对端某字段必须出现或如何接收/拒绝。没有本服务的协商值不能证明某一回调、设备、GPS、数据或认证状态。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.8 and Table 7.1.8-1"
+          ],
+          "printed_pages": [
+            60
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.8 and Table 7.2.8-1"
+          ],
+          "printed_pages": [
+            72
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "A.1",
+            "Annex A.2 / A.3 local OpenAPI declarations"
+          ],
+          "printed_pages": [
+            73,
+            74,
+            75,
+            76,
+            77,
+            78,
+            79,
+            80,
+            81,
+            82,
+            83,
+            84,
+            85,
+            86,
+            87,
+            88,
+            89,
+            90,
+            91,
+            92,
+            93,
+            94,
+            95
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.7.2",
+            "7.1.5.2.2–7.1.5.3.2 target URIs",
+            "7.2.5.2.2 target URI",
+            "7.1.9",
+            "7.2.9"
+          ],
+          "printed_pages": [
+            21,
+            41,
+            60,
+            69,
+            72
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lms-empty-local-error-table-retains-per-method-generic-rule",
+      "conditions": [
+        "核 §7.1.7 或 §7.2.7 的本地错误表与引用，而不是猜状态或应用失败。"
+      ],
+      "conclusion": "两套 API 的 .7.2 没另定本服务协议错误处理；.7.3 的应用错误表无本服务新增条目。§7.1.7.1、§7.2.7.1 要求按 TS29.501 §4.8 支持 HTTP 错误响应；按 TS29.500 表 5.2.7.2-1 支持通用协议/应用错误的条件，是其相应状态码在表 5.2.7.1-1 对所用 HTTP 方法列为必选。空表不免支持，不能反推任何方法要支持整个总表，不能仅凭引用生成错误正文、自动重试或处理顺序。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.7.1–.3",
+            "Table 7.1.7.3-1"
+          ],
+          "printed_pages": [
+            59,
+            60
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.7.1–.3",
+            "Table 7.2.7.3-1"
+          ],
+          "printed_pages": [
+            71,
+            72
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lms-post-examples-registered-token-and-subscription-warning-distinct",
+      "conditions": [
+        "已辨认两个代表性 POST 的实际方法、资源和各自入口条件。"
+      ],
+      "conclusion": "Reporting 注册 POST 的令牌验证若任一失败，LMS 回 401 并停止。Information 创建订阅 POST 通过前序身份检查、入口三类目标列表均空时回 403 加该分支 Warning；是否因权限受拒另查订阅操作。不同操作、上下游或孤立的 401/403 不证明这些原因。两个资源成功表的注仍要求该 POST 的通用必选错误，A.2/A.3 两 POST 声明也列公共响应引用。不从成功表只见 201 或公共引用推出统一 403/Warning、错误正文、重试或其他方法码表。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.2.2",
+            "6.3.2.3.2",
+            "Table 7.1.3.2.3.1-3 and NOTE",
+            "Table 7.2.3.3.3.1-3 and NOTE",
+            "Annex A.2 POST /registrations",
+            "Annex A.3 POST /subscriptions"
+          ],
+          "printed_pages": [
+            17,
+            18,
+            27,
+            28,
+            35,
+            64,
+            73,
+            74,
+            90,
+            91
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.7.1–.3",
+            "Table 7.1.7.3-1"
+          ],
+          "printed_pages": [
+            59,
+            60
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.7.1–.3",
+            "Table 7.2.7.3-1"
+          ],
+          "printed_pages": [
+            71,
+            72
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lms-reporting-name-discrepancy-and-annex-scope",
+      "conditions": [
+        "核 §7.1.7.1 的字面名称和 Annex A 编码优先，并分层读具体条件。"
+      ],
+      "conclusion": "§7.1.7.1 在 §7.1 下两次写 LMS_Registration，邻接 .7.2/.7.3、§7.1.8 及 A.2 用 LMS_Reporting；保留字面不同。此名不定义第三个 API、专用路径，也不能独自把通用规则缩到注册 POST。A.1 的附录优先限方法/信息元素编码冲突，未表达的正文操作条件仍适用；不要因 OpenAPI 未列服务错误表或可选字段而抹去通用或每项操作的程序。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.7.1–.3",
+            "Table 7.1.7.3-1"
+          ],
+          "printed_pages": [
+            59,
+            60
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.8 and Table 7.1.8-1"
+          ],
+          "printed_pages": [
+            60
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.1",
+            "7.2.1",
+            "Annex A.2 / A.3 servers"
+          ],
+          "printed_pages": [
+            32,
+            60,
+            61,
+            73,
+            89
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "A.1",
+            "Annex A.2 / A.3 local OpenAPI declarations"
+          ],
+          "printed_pages": [
+            73,
+            74,
+            75,
+            76,
+            77,
+            78,
+            79,
+            80,
+            81,
+            82,
+            83,
+            84,
+            85,
+            86,
+            87,
+            88,
+            89,
+            90,
+            91,
+            92,
+            93,
+            94,
+            95
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
@@ -1578,6 +1929,141 @@
         87
       ],
       "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.8 and Table 7.1.8-1"
+      ],
+      "printed_pages": [
+        60
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.2.8 and Table 7.2.8-1"
+      ],
+      "printed_pages": [
+        72
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.7.1–.3",
+        "Table 7.1.7.3-1"
+      ],
+      "printed_pages": [
+        59,
+        60
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.2.7.1–.3",
+        "Table 7.2.7.3-1"
+      ],
+      "printed_pages": [
+        71,
+        72
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.1",
+        "7.2.1",
+        "Annex A.2 / A.3 servers"
+      ],
+      "printed_pages": [
+        32,
+        60,
+        61,
+        73,
+        89
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "A.1",
+        "Annex A.2 / A.3 local OpenAPI declarations"
+      ],
+      "printed_pages": [
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.2.2.2.2",
+        "6.3.2.3.2",
+        "Table 7.1.3.2.3.1-3 and NOTE",
+        "Table 7.2.3.3.3.1-3 and NOTE",
+        "Annex A.2 POST /registrations",
+        "Annex A.3 POST /subscriptions"
+      ],
+      "printed_pages": [
+        17,
+        18,
+        27,
+        28,
+        35,
+        64,
+        73,
+        74,
+        90,
+        91
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.2.2.7.2",
+        "7.1.5.2.2–7.1.5.3.2 target URIs",
+        "7.2.5.2.2 target URI",
+        "7.1.9",
+        "7.2.9"
+      ],
+      "printed_pages": [
+        21,
+        41,
+        60,
+        69,
+        72
+      ],
+      "usage": "comparison-only"
     }
   ],
   "related": [
@@ -1599,6 +2085,16 @@
     {
       "topic": "r19-location-lms-target-configuration-change",
       "relation": "compare-separate-cross-user-request-and-authorization",
+      "required": false
+    },
+    {
+      "topic": "r19-location-lms-subscription-notification",
+      "relation": "separate-subscription-post-admission-and-warning",
+      "required": false
+    },
+    {
+      "topic": "r19-location-lms-location-report-request",
+      "relation": "report-callback-result-and-capability-not-proven-by-api-feature-rules",
       "required": false
     }
   ],

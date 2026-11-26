@@ -2678,6 +2678,10 @@
         {
           "condition": "若实际问题是 TS 23.280 V19.10.1 Stage 2 的 CSC‑15 组动态数据与位置参考点区别，不给 HTTP 回调补规则。",
           "read": "topics/location/reporting.md"
+        },
+        {
+          "condition": "问本版两类 LMS API 是否有特性号／协商值，或空应用错误表是否免通用错误；不是单笔状态码或设备回调能力",
+          "read": "topics/location/lms-registration-configuration.md"
         }
       ]
     },
@@ -2809,6 +2813,10 @@
         },
         {
           "condition": "本机注册、注册 201 或接到配置通知和其响应，不走这笔位置报告请求。",
+          "read": "topics/location/lms-registration-configuration.md"
+        },
+        {
+          "condition": "问本版两类 LMS API 是否有特性号／协商值，或空应用错误表是否免通用错误；不是单笔状态码或设备回调能力",
           "read": "topics/location/lms-registration-configuration.md"
         }
       ]
@@ -3400,6 +3408,26 @@
         }
       ],
       "boundary": "仅 TS 23.283 V19.5.0 Stage 2 §10.3.4.6.1–.3：先形成广播专用 D，做广播，再发起取消。按 D 自身托管侧，MCPTT 客户端或 IWF 发起取消；P 和任一构成组本属都不替 D。结束应答不证明取消已发起或生效；查规范无需运行记录。不把两图的三块当三条消息，不用 §10.3.4 宽泛回指自动套其他建呼／释放流程。"
+    },
+    {
+      "id": "lms-api-feature-negotiation-and-generic-errors",
+      "question": "LMS_Reporting / LMS_Information 的特性位应该填什么？本地应用错误表为空还要处理通用 HTTP 错误吗？",
+      "start": "topics/location/lms-registration-configuration.md",
+      "next_if": [
+        {
+          "condition": "实际问 LMS 向已注册 LMC 请求当前或历史报告的回调；查实收与报告，不拿空特性表判断可用数据",
+          "read": "topics/location/lms-location-report-request.md"
+        },
+        {
+          "condition": "实际是 LMS_Information 创建订阅的 401、403 或 Warning，按它的操作条件而非通用空表判断",
+          "read": "topics/location/lms-subscription-notification.md"
+        },
+        {
+          "condition": "实际是已有 LMS_Reporting 注册资源的续期、注销或 404，找对应 PUT/DELETE 操作",
+          "read": "topics/location/lms-registration-maintenance.md"
+        }
+      ],
+      "boundary": "仅 TS 24.283 V19.3.0 Stage 3 §7.1.7/.8 与 §7.2.7/.8 的 Reporting 和 Information；本版无特性号/值，不强填 0；空本地应用错误表不免除通用要求，须匹配实际 HTTP 方法和必选状态码。普通报错、具体业务条件和真实结果分开；原文 LMS_Registration 与所在 LMS_Reporting 的命名差异不是第三套 API。查规范无需运行记录。不补外部通用表或其他 Release 的码表、字段、值或重试。"
     }
   ]
 }

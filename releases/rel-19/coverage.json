@@ -2140,6 +2140,22 @@
         },
         {
           "domain": "location",
+          "title": "LMS 两类 API：特性协商与通用 HTTP 错误",
+          "can_answer": "查 TS 24.283 V19.3.0 Stage 3：LMS_Reporting、LMS_Information 都没有本版特性号或值，空本地应用错误表不免通用 HTTP 错误。查规则无需抓包。",
+          "conditional_or_interface_only": "§7.1.7/.8、§7.2.7/.8：通用机制与本服务已定义项分开；通用错误按实际 HTTP 方法及引用表的必选状态码判定。注册 POST 的令牌失败 401、订阅 POST 的目标全空 403 Warning 按独立操作条件解释。",
+          "not_established": "不另造 0、空串、第三 API、每方法全量码表、统一 Warning、错误正文或重试；不据空表判断设备能力、认证或实际下游。§7.1.7.1 名与所在 LMS_Reporting 的差异不能单独改适用范围。",
+          "read": [
+            {
+              "title": "LMS 两类 API：特性协商与通用 HTTP 错误",
+              "path": "topics/location/lms-registration-configuration.md",
+              "source_ids": [
+                "3gpp-ts-24.283-v19.3.0"
+              ]
+            }
+          ]
+        },
+        {
+          "domain": "location",
           "title": "LMS_Information 订阅创建与通知收件",
           "can_answer": "查 TS 24.283 V19.3.0 Stage 3 的 LMS_Information 订阅创建、发通知和收件。查规范无需已有抓包。 创建授权还可分别查 401、两种 403 Warning 与 201；先核是集合 POST，不因相同 Warning 路由到个别订阅 PUT。",
           "conditional_or_interface_only": "实际创建看同一 LMC→LMS 订阅集合 POST 对应的 LMS 201 Location。判断实际通知时，另查 LMS→该订阅方 LMC 的 LocationInfoNotify HTTP POST；目标按正文和表核对该订阅请求的 locationNotificationUri（A.3 另有差异），LocationNotification 的 subscriptionID 因订阅通知时必带，并要和本订阅相符。收件看该 LMC 实收这笔通知，或该 LMC 对这笔 POST 的实际匹配收件应答。不要求同一份记录也有历史创建的 201；同用户、同 URI、只有出站、中间节点状态或不同事务的 201/204 不证明这次实收。匹配的错误响应不是收件确认。 §6.3.2.4.2 的应答写 201，表 7.2.5.2.3.1-2 和 Annex A.3 写 204；A.3 订阅回调表达式引用 subscriptionResponseUri，正文、回调表和请求 schema 给 locationNotificationUri，同一 schema 未定义前一字段。不设别名或 URI 回退，也不要求实现接受两个成功码。 POST 入口检查身份凭据、目标数组是否三类全空、配置是否准许订阅；通过后才创建。201 发出后另按一次性流程 §6.3.2.2.2 步骤 6–11 解析和授权逐目标，发起者查目标与目标分享分开。",
