@@ -1,0 +1,497 @@
+{
+  "topic_id": "r19-iwf-private-automatic",
+  "release": 19,
+  "standard_stage": 2,
+  "state": "clause-checked",
+  "title": "互通自动私呼：哪一笔应答之后能走到媒体建立？",
+  "common_conditions": [
+    "TS 23.283 V19.5.0，Rel‑19 Stage 2，IWF‑1 的 MCPTT↔LMR 自动开始私呼主路径；手动、释放和通用表只作标注的比较。",
+    "查标准不要求实况；判断实际消息、成败或媒体时按相应命题去和同一尝试、正确端点、方向及事件关联。"
+  ],
+  "condition_rule": "仅读命题的共同及个别条件；授权、报文发送和接收、参数结果、媒体建立和话权不能互补。",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "auto-mode-before-selecting-a-branch",
+      "clause": "10.4.2",
+      "conditions": [
+        "查两类发起者的自动开始私呼。"
+      ],
+      "conclusion": "两支的主叫已选择自动模式，MCPTT 客户端已注册 MCPTT 服务，MCPTT server 已订阅 MC 系统功能别名激活/去激活更新。别名可选。查规范不要求抓包；判实际分支，核主叫、所选模式和实际交易，不能只凭没有振铃。表 10.4.1.2-1 的 Requested commencement mode 一般可选，本流程的步骤 1 带所选自动模式；不得从通用表补缺字段时默认自动。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.1"
+          ],
+          "printed_pages": [
+            89
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.2",
+            "Table 10.4.1.2-1"
+          ],
+          "printed_pages": [
+            90
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.2.1",
+            "Figure 10.4.2.1-1"
+          ],
+          "printed_pages": [
+            92,
+            93
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.2.2",
+            "Figure 10.4.2.2-1"
+          ],
+          "printed_pages": [
+            94,
+            95
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mc-origin-admission-iwf-request",
+      "clause": "10.4.2.1",
+      "conditions": [
+        "MCPTT 用户是发起者，目标为经 IWF 接入的 LMR 用户。"
+      ],
+      "conclusion": "MCPTT server 检查主叫发起私呼权限及自动发起权限，核如有主叫别名的可用及激活；被叫用别名时查 ID 解析及两侧别名权限。授权后 step 4 是 server→IWF，提供收到请求中的媒体类型或其子集。若请求带位置，按本支隐私核查决定是否转给 IWF；不由请求发出推实际接受，不补 IWF→LMR 内部手续。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.2.1",
+            "Figure 10.4.2.1-1"
+          ],
+          "printed_pages": [
+            92,
+            93
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mc-origin-iwf-answer-then-client-answer",
+      "clause": "10.4.2.1",
+      "conditions": [
+        "MCPTT 用户是发起者，目标为经 IWF 接入的 LMR 用户。",
+        "判断实际收到的步骤 5 / 步骤 6 时，核对本次对应的授权请求而非旧尝试。"
+      ],
+      "conclusion": "step 5 IWF→MCPTT server 的 IWF private call response 报告媒体支持和 success/failure。step 6 server→主叫 MCPTT 客户端转应答。正文以这笔结果 success 区分成功；失败可给替代参数，客户端接受时可按新参数另发 MCPTT 请求，也可结束；不接受则失败。替代参数不追认旧成功，且这笔响应不能代替 step 7。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.2.1",
+            "Figure 10.4.2.1-1"
+          ],
+          "printed_pages": [
+            92,
+            93
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.3",
+            "Table 10.4.1.3-1"
+          ],
+          "printed_pages": [
+            90,
+            91
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-origin-admission-client-request",
+      "clause": "10.4.2.2",
+      "conditions": [
+        "LMR 用户是发起者，且已向 MCPTT 用户发起私呼；MCPTT 用户是接收侧。"
+      ],
+      "conclusion": "step 1 是 IWF→MCPTT server；后者核 MCPTT 被叫获授权且能够接收，并核接收自动模式的权限。前提 4 允许 LMR 主叫选用已激活、归属 MCPTT 系统的功能别名，非必带。这是主叫使用别名的前提；被叫用别名寻址时另按步骤 2 查解析及两侧使用许可，不套 .2.1 关于 GSM-R 最终解析的注 1。授权后 step 4 是 server→MCPTT 被叫客户端，保留或取初始提出媒体类型的子集。不以 MCPTT 主叫权限替代这一接收检查。LMR 用户与 IWF 之间的私呼操作、替代寻址映射在本节范围之外。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.2.2",
+            "Figure 10.4.2.2-1"
+          ],
+          "printed_pages": [
+            94,
+            95
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-origin-client-answer-then-iwf-answer",
+      "clause": "10.4.2.2",
+      "conditions": [
+        "LMR 用户是发起者，且已向 MCPTT 用户发起私呼；MCPTT 用户是接收侧。",
+        "判断实际收到的两笔响应时，关联本次匹配的 step 4 请求及对应的 IWF 请求。"
+      ],
+      "conclusion": "step 5 MCPTT 被叫客户端→server 报告媒体支持和 success/failure，可在失败时提供替代参数；step 6 server→IWF 的 IWF private call response 写所用媒体类型同 step 4。参数不接受则失败；可接受但有变化时，IWF 可用新参数从 step 1 另发 IWF 请求。无变化是正文继续本次的条件，不替代匹配 Result，亦不把一次失败或变更后重试读成媒体已接通。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.2.2",
+            "Figure 10.4.2.2-1"
+          ],
+          "printed_pages": [
+            94,
+            95
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.3",
+            "Table 10.4.1.3-1"
+          ],
+          "printed_pages": [
+            90,
+            91
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "alias-result-versus-private-call-result",
+      "clause": "10.4.2",
+      "conditions": [
+        "出现 step 3a 的功能别名解析响应，或对已解析目标另发请求。"
+      ],
+      "conclusion": "解析响应给 MCPTT ID，不是 step 5/6 的呼叫结果；按相应响应放弃原请求、由原发起侧向已解析 ID 新发请求。与改变参数的重试分别关联。LMR 主叫图的 step 3b 给出 IWF private call request，正文写 MCPTT private call request，均为 IWF 发起，非被叫客户端动作。MC 主叫段注 1 对归属 GSM-R 的别名写最终由 GSM-R 解析；不扩大到所有 LMR 寻址，不替 IWF 定义内部映射。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.2.1",
+            "Figure 10.4.2.1-1"
+          ],
+          "printed_pages": [
+            92,
+            93
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.2.2",
+            "Figure 10.4.2.2-1"
+          ],
+          "printed_pages": [
+            94,
+            95
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-one-hop-response-elements-not-transport-proof",
+      "clause": "10.4.1.3",
+      "conditions": [
+        "确定信息流是 IWF‑1 的 IWF private call response，不是别名解析、振铃、媒体、释放，也不是该信息的 SIP 映射。"
+      ],
+      "conclusion": "表 10.4.1.3-1 的 Result 与 SDP answer 均标 M，Acceptance confirmation 标 O。步骤 5 报告支持一种媒体类型，参数一样、存在 SDP answer 或接受确认都不能替代匹配的成功 Result；可选确认缺失不自动转入手动。server 发送不代表发起侧收到，另一笔响应、错误结果或孤立支持信息均不证明本次已接通，不能导出 SIP/SDP 载荷状态、ACK 或早期媒体。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.1"
+          ],
+          "printed_pages": [
+            89
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.3",
+            "Table 10.4.1.3-1"
+          ],
+          "printed_pages": [
+            90,
+            91
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.2.1",
+            "Figure 10.4.2.1-1"
+          ],
+          "printed_pages": [
+            92,
+            93
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.2.2",
+            "Figure 10.4.2.2-1"
+          ],
+          "printed_pages": [
+            94,
+            95
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "actual-media-at-step-seven-and-floor-scope",
+      "clause": "10.4.2",
+      "conditions": [
+        "相应自动流程的匹配结果和参数处理能够沿成功路径继续；要说实际可传媒体，还要核对同一尝试的媒体面确已建立。"
+      ],
+      "conclusion": "两图及正文都把 MCPTT 客户端至 IWF 媒体面成功建立列为 step 7，此时两个媒体端可传，启用话权时另守话权。从 .2.1 success 或 .2.2 参数不变后正文均回指 step 6，保留字面，不发明响应循环、引用修正或时序结论。两段还把授予、竞争与撤销交给本例发起侧 MCPTT 或 LMR 系统；自动模式不必有话权，媒体建立不证明话权或首包/对端实收，也不替一般主控配置。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.2.1",
+            "Figure 10.4.2.1-1"
+          ],
+          "printed_pages": [
+            92,
+            93
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.2.2",
+            "Figure 10.4.2.2-1"
+          ],
+          "printed_pages": [
+            94,
+            95
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "manual-acceptance-established-release-boundaries",
+      "clause": "10.4.2",
+      "conditions": [
+        "在 IWF‑1 互通私呼中，判定是自动建立、手动建立还是已建呼叫释放。"
+      ],
+      "conclusion": "两条自动流程不列手动分支等待振铃、实际被叫接受后的应答和媒体建立步骤 9–11；不能从没有振铃日志反推模式。§10.4.4.1 的释放用于已经进行的私呼，可出自任一模式；建立失败、参数改动另发或早期放弃不据此宣布完成已建资源释放。Stage2 不补全 TS 23.379/Stage3、离网私呼、LMR 内部媒体、RTP 首包、实际接听或加密。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.2.1",
+            "Figure 10.4.2.1-1"
+          ],
+          "printed_pages": [
+            92,
+            93
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.2.2",
+            "Figure 10.4.2.2-1"
+          ],
+          "printed_pages": [
+            94,
+            95
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.3.1–2"
+          ],
+          "printed_pages": [
+            95,
+            96,
+            97,
+            98,
+            99
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.4.1"
+          ],
+          "printed_pages": [
+            99
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.4.1.1"
+      ],
+      "printed_pages": [
+        89
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.4.1.2",
+        "Table 10.4.1.2-1"
+      ],
+      "printed_pages": [
+        90
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.4.1.3",
+        "Table 10.4.1.3-1"
+      ],
+      "printed_pages": [
+        90,
+        91
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.4.2.1",
+        "Figure 10.4.2.1-1"
+      ],
+      "printed_pages": [
+        92,
+        93
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.4.2.2",
+        "Figure 10.4.2.2-1"
+      ],
+      "printed_pages": [
+        94,
+        95
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.4.3.1–2"
+      ],
+      "printed_pages": [
+        95,
+        96,
+        97,
+        98,
+        99
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.4.4.1"
+      ],
+      "printed_pages": [
+        99
+      ]
+    }
+  ],
+  "related": [
+    {
+      "topic": "r19-iwf-private-manual",
+      "relation": "different-mode-and-actual-user-acceptance",
+      "required": false
+    },
+    {
+      "topic": "r19-iwf-private-release",
+      "relation": "separate-ongoing-call-release",
+      "required": false
+    },
+    {
+      "topic": "r19-iwf-private-encryption",
+      "relation": "separate-media-protection",
+      "required": false
+    },
+    {
+      "topic": "r19-iwf-floor-control-owner",
+      "relation": "different-general-floor-owner-question",
+      "required": false
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  },
+  "limitations": [
+    "不映射 SIP，不能用离网或 MCVideo 的状态机补完。",
+    "不涵盖 LMR 内部操作、RTP 首包/E2EE 线级细节、全部话权规则、接通或释放部署验证。"
+  ]
+}
