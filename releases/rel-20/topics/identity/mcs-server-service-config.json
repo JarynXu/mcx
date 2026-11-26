@@ -1,0 +1,228 @@
+{
+  "topic_id": "r20-identity-mcs-server-service-config",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3；MCS 业务服务器取得组织的业务配置。CMC 代理和 MCPTT global 文档只作指定对照。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "mcs-server-service-configuration-organization-scope",
+      "clause": "4.3.1",
+      "conditions": [
+        "MCS 服务器对任务关键组织的业务配置文档办理订阅。"
+      ],
+      "conclusion": "为每个已配置且该服务器支持的任务关键组织订阅相应 MCS 业务配置文档。§4.3.1 不规定如何给服务器配置组织标识；不是按认证用户或某一 UE 订阅其档案。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.3.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcs-server-initial-sip-cms-target-and-asserted-identity",
+      "clause": "6.3.13.2.3",
+      "conditions": [
+        "MCS 业务服务器为订阅业务配置文档而发出初始 SIP SUBSCRIBE。"
+      ],
+      "conclusion": "发送初订时，Request-URI 是 SIP URI，基址是服务器配置的 CMS PSI，auid 标识该业务配置文档的应用；PAI（P-Asserted-Identity）带业务服务器自身 PSI。P-Asserted-Service 的 ICSI 与 Contact 的 g.3gpp.icsi-ref 都用 urn:urn-7:3gpp-service.ims.icsi.mcptt。这是发送规则，不以已观察到 CMS 收包为前提。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.2.3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcs-server-cms-initial-subscribe-inbound-guards",
+      "clause": "6.3.13.3.2.4",
+      "conditions": [
+        "CMS 实际收到初始 SIP SUBSCRIBE，判断是否进入 MCS 服务器发起的分支。"
+      ],
+      "conclusion": "CMS 初订入站需 Event xcap-diff、基址为 CMS PSI、PAI 身份列入授权 MCS 服务器清单、P-Asserted-Service 含 urn:urn-7:3gpp-service.ims.icsi.mcptt，满足才按本条作为 notifier。清单是 CMS 所属提供方的 MCS 服务器 PSI；CMC 代理分支的用户令牌不替代它。§6.3.13.3.2.3 也检查清单，但其基址条件是 CMS XCAP 根 URI。缺任一入站条件不据此推出固定失败回复。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.4"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.2.4.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcs-server-resubscribe-outbound-sip-fields",
+      "clause": "6.3.13.2.3",
+      "conditions": [
+        "MCS 业务服务器为重新订阅业务配置文档变更而发 SIP re-SUBSCRIBE。"
+      ],
+      "conclusion": "服务器续订发送段明列配置的 CMS PSI 基址、适用 auid 和 Contact 的 g.3gpp.icsi-ref（urn:urn-7:3gpp-service.ims.icsi.mcptt）。不能由发送段没列 PAI 或资源列表推出禁止、不出现或是谁添加。接收端在特定 Event 和资源清单下的权限规则不是本发送规则的前提。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.2.3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcs-server-resubscribe-cms-pai-and-list-permission",
+      "clause": "6.3.13.3.2.4",
+      "conditions": [
+        "CMS 收到 MCS 业务服务器分支的 SIP re-SUBSCRIBE，其中 Event 为 xcap-diff，且有 application/resource-lists+xml 正文。"
+      ],
+      "conclusion": "CMS 以本次入站 P-Asserted-Identity 的 URI 作认证身份，并查资源列表中文档或元素的变更订阅权限。只有一项文档或元素且该身份无权订阅其变更时，须回 SIP 403 (Forbidden) 并不继续；不据本句推定混合授权项的处理。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.4"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcs-server-changed-configuration-notified-https-uri",
+      "clause": "4.3.1",
+      "conditions": [
+        "业务配置文档相对于 MCS 服务器保存的当前版本已更新。"
+      ],
+      "conclusion": "MCS 服务器收到带该文档 HTTPS URI 的 SIP NOTIFY，再用通知的 URI 取文。变更通知也可在业务运行时到达。仅看到通知、指针或 SIP 成功，不证明已收到指定的 HTTP 正文或应用了该文档。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.3.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.3.2.3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcs-server-csc5-get-target-xml-and-auid",
+      "clause": "6.3.3.2.3",
+      "conditions": [
+        "MCS 服务器经 CSC-5 取配置管理文档。"
+      ],
+      "conclusion": "经 CSC-5 取文用 HTTP GET，Request-URI 按配置定位目标 XML 文档，并包含适用 AUID。本取文条款没有把收到 NOTIFY 或本地已经有旧版写成通用前提。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.3.2.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.3.2.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.3.3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcs-server-http-network-entity-client",
+      "clause": "6.2.3",
+      "conditions": [
+        "MCS 服务器发送 HTTP 请求。"
+      ],
+      "conclusion": "MCS 服务器按 TS 24.482 附录 A 的网络实体 HTTP 客户端角色发送。该发送规则不以 CMS 已经收到或授权为前提。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.2.3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcs-server-http-authorization-independent-of-sip",
+      "clause": "6.2.4.1",
+      "conditions": [
+        "CMS 处理本业务配置交换中的 HTTP 请求；这里只核 TS 24.484 正文，TS 24.482 规则仅作指针。"
+      ],
+      "conclusion": "CMS 按 TS 24.482 附录 A 的 HTTP 服务器规则处理，按 TS 24.482 辨认这次 HTTP 请求的发送者，将该身份作为认证身份做授权。不能拿此前 SIP PAI 在清单里当作这次 HTTP 获准的证据，也不从本段猜实际凭据或两种身份的映射。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.2.4.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-service-config-global-per-organization",
+      "clause": "8.4.2.8",
+      "conditions": [
+        "用 MCPTT 业务配置文档对照组织文档的寻址；两条 URI 仅是本版示例。"
+      ],
+      "conclusion": "MCPTT 业务配置在 CMSXCAPROOT 的 global 树，每个任务关键组织一份，名称 service-config.xml。单组织根例 mc-org-domain/mcorg12345/org.3gpp.mcptt.service-config/global/service-config.xml；共根时可用组织名作 global 子目录，例 CMSXCAPROOTURI/org.3gpp.mcptt.service-config/global/mc-org-name/service-config.xml。原文用户只读，读写只给该任务关键组织系统管理员。global 不等同 users 目录，也不证明某次 HTTP 授权或要求某种部署。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.8"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.9"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "不从条件不齐的初订推断固定失败回复，不解释续订混合授权的处理、HTTP 凭据或两种身份映射。通知或 SIP 授权不证明 HTTP 已取文或业务采用；未核外部规范正文、示例报文或设备实现。",
+    "不把资料性附录 A.2.3 的样例报文字段当作身份规范；不从相邻分支的基址条件推导不同 PSI 或 XCAP 根必须使用不同物理主机。"
+  ],
+  "related": [
+    "r20-identity-cmc-subscription-notify-fetch",
+    "r20-identity-initial-ue-config-xcap"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}

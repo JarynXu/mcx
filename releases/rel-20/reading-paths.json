@@ -199,6 +199,30 @@
       "question": "生成的初始配置文档里有设备筛选项，为什么在终端的初始配置管理对象（MO）里查不到？",
       "start": "topics/identity/initial-ue-config-xcap.md",
       "boundary": "管理员或 CMS 的初始配置文档与配置给终端的 MO 不同。生成文档要设置 UE ID；配置给终端的 MO 不含这个筛选项，不能据其缺失断定未按设备选档或生成文档。"
+    },
+    {
+      "id": "mcs-server-initial-subscribe-asserted-identity",
+      "question": "业务服务器向 CMS 初订组织业务配置，Request-URI 和 P-Asserted-Identity 分别用谁的 PSI，CMS 怎样认这条分支？",
+      "start": "topics/identity/mcs-server-service-config.md",
+      "boundary": "初订用已配置的 CMS PSI 作 Request-URI 基址，用业务服务器自己的 PSI 作 PAI；auid 标识应用。CMS 入站核 Event xcap-diff、CMS PSI、清单内 PAI、P-Asserted-Service 的 MCPTT ICSI，不套用户令牌。"
+    },
+    {
+      "id": "mcs-server-resubscribe-list-authorization",
+      "question": "业务服务器续订收到 SIP 403，应该查实际请求的哪个身份和哪一份资源清单？",
+      "start": "topics/identity/mcs-server-service-config.md",
+      "boundary": "针对收到 Event 为 xcap-diff 且带 application/resource-lists+xml 的续订，用本次入站 PAI URI 为认证身份。单目标无变更订阅权限时回 SIP 403 并停止；不推混合许可的处理或初订的失败码。"
+    },
+    {
+      "id": "mcs-server-notified-https-uri-fetch",
+      "question": "业务服务器收到配置更新 NOTIFY，怎样用 CSC-5 取目标 XML，能沿用 SIP 的授权结论吗？",
+      "start": "topics/identity/mcs-server-service-config.md",
+      "boundary": "文档自服务器保存当前版本后已有更新时，用 NOTIFY 中的 HTTPS URI 取文。经 CSC-5 取文用指向目标 XML 且含适用 AUID 的 HTTP GET，此取文条款没有把收到 NOTIFY 写成通用前提。CMS 用本次 HTTP 发送方身份授权，不凭 SIP 清单或通知判断已取文。"
+    },
+    {
+      "id": "mcptt-server-global-org-config",
+      "question": "MCPTT 某个组织的业务配置放在 users 树还是 global 树？多个组织共用根怎么办？",
+      "start": "topics/identity/mcs-server-service-config.md",
+      "boundary": "MCPTT 业务配置每个任务关键组织一份，在 global 树，常规用户只读，读写限该组织系统管理员；原文给单组织根及共根时组织子目录例，不是 users 档或单次 HTTP 授权证明。"
     }
   ]
 }
