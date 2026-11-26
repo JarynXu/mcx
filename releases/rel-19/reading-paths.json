@@ -298,6 +298,10 @@
         {
           "condition": "问 MCPTT 用户发起含 IWF 的层级组广播建呼，按广播组定义侧查各条请求、接收方应答或主叫收到的建呼结果。查规范无需抓包。若问既有普通子组释放、本次广播结束、预配置重组广播、LMR 用户发起或原生单组广播，另查对应分支。",
           "read": "topics/interworking/group-broadcast-setup.md"
+        },
+        {
+          "condition": "问已经在进行、含 IWF 的层级组广播在发起者完成传输后如何结束这次广播，查 §10.3.4.4–.5 的各腿释放与发起端结果。查规范无需抓包。普通／既有子组的释放、建呼、成员退出、预配置重组撤销、私呼或紧急组状态取消另查。",
+          "read": "topics/interworking/group-broadcast-release.md"
         }
       ],
       "boundary": "Bounded Stage2 interworking procedures; underlying security and full call state machine not verified."
@@ -3325,9 +3329,37 @@
         {
           "condition": "要的是不含本 IWF 层级流程的原生普通未重组组的在网按需广播信令",
           "read": "topics/groups/broadcast-ondemand-signalling.md"
+        },
+        {
+          "condition": "要判断的是已经在进行的同一组广播在发起者完成传输后如何释放及向发起者回执，不是建呼前的旧子组释放",
+          "read": "topics/interworking/group-broadcast-release.md"
         }
       ],
       "boundary": "仅 TS 23.283 V19.5.0 Stage 2 §10.3.4.1–.3 MCPTT 起呼的两个图示场景：A 已有非 MCPTT 紧急的 MCPTT 组呼，主叫属另一子组 X。按广播组定义系统分路；MCPTT 定义的 8a/8b 与 LMR 定义的可选 7a/7b 不通用，server 回主叫另判。查规范无需运行记录。不由建呼结果判全员收件、话权或媒体，不扩 §10.3.4.4–.6、LMR 起呼或原生 SIP。"
+    },
+    {
+      "id": "iwf-group-broadcast-release",
+      "question": "互通组广播结束：哪一笔释放应答才回到发起端？",
+      "start": "topics/interworking/group-broadcast-release.md",
+      "next_if": [
+        {
+          "condition": "问本次含 IWF 的层级组广播如何建立，而不是发起者传输结束",
+          "read": "topics/interworking/group-broadcast-setup.md"
+        },
+        {
+          "condition": "问普通预安排互通组呼的全组释放，或广播建立之前已有普通子组的释放",
+          "read": "topics/interworking/group-call-release.md"
+        },
+        {
+          "condition": "问 MCPTT 定义支的实际 IWF 代表归属和逐人归属",
+          "read": "topics/interworking/affiliation-representation.md"
+        },
+        {
+          "condition": "要判断同次事务是已建立的互通私呼结束，不是组广播结束",
+          "read": "topics/interworking/private-release.md"
+        }
+      ],
+      "boundary": "仅 TS 23.283 V19.5.0 Stage 2 §10.3.4.4–.5 中已进行、实际有发起与接收客户端和 IWF 的互通层级组广播；发起者结束传输，按广播组实际定义侧选支。MCPTT 定义 3a/5a、3b/5b、2/6 分开；LMR 定义 6/7 后由另一腿 7a 触发 8，不套建呼的可选应答。查规范无需运行记录。结束结果不表示每端资源已清或 RTP 实际停止，不补 §10.3.4.6 撤销重组、私呼、紧急状态取消或原生 SIP。"
     }
   ]
 }
