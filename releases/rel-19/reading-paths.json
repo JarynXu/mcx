@@ -124,8 +124,12 @@
           "read": "topics/location/reporting.md"
         },
         {
-          "condition": "问题涉及用户触发覆盖",
+          "condition": "问题是用户触发可覆盖哪些规则、覆盖期间保存什么或取消后恢复什么，按 TS 23.280 V19.10.1 单 MC 系统 Stage 2 读。",
           "read": "topics/location/trigger-override.md"
+        },
+        {
+          "condition": "问更改另一用户位置配置的 HTTP 请求、授权或应答与目标投递。查标准无需已有事务记录。",
+          "read": "topics/location/lms-target-configuration-change.md"
         },
         {
           "condition": "只有问题转为 TS 23.280 V19.10.1 Stage 2 的单 MC 系统初始/更新配置来源、用户档例外、配置触发上报或 CSC‑14/15 分工时才读。不能把 HTTP 注册或回调的状态码当成本条所称事件；仅查 HTTP 报文或固定其他版号时不走此入口。",
@@ -2499,6 +2503,10 @@
         {
           "condition": "只有问题转为 TS 23.280 V19.10.1 Stage 2 的单 MC 系统初始/更新配置来源、用户档例外、配置触发上报或 CSC‑14/15 分工时才读。不能把 HTTP 注册或回调的状态码当成本条所称事件；仅查 HTTP 报文或固定其他版号时不走此入口。",
           "read": "topics/location/reporting.md"
+        },
+        {
+          "condition": "问发起方如何请求 LMS 改另一用户的位置配置，或如何从这笔 HTTP 应答追到另一次目标回调。",
+          "read": "topics/location/lms-target-configuration-change.md"
         }
       ],
       "boundary": "限 TS 24.283 V19.3.0 Stage 3。注册看实际同一 LMC→LMS 注册集合 POST（/lms-reporting/v1/registrations）的匹配 201 Location。发送看 LMS 实际另发独立的 ConfigurationNotify POST，目的为已注册 LMC 的 locationConfigUri，正文为 LocationConfiguration。收件看这笔回调的实际匹配 LMC 204，或该 LMC 实收这份配置的独立证据。已能独立核实回调不要求同一份日志含此前的 201。 LMS 可在注册成功分支发起配置通知，条款不规定每次必推、首次下发期限或两事务到达顺序。发送不确认收件；匹配回调 204 不证明配置已执行或已报位置。IMS REGISTER、其他事务的 201/204、配置 GET 的 200 不替代回调。不把本笔 HTTP 注册、配置回调映射为另版 Stage 2 上报事件，也不以此闭合续期／注销、订阅或报告上送。"
@@ -2584,6 +2592,26 @@
         {
           "condition": "实际资源在 LMS_Information /subscriptions 或只问位置订阅更新、取消或通知。",
           "read": "topics/location/lms-subscription-notification.md"
+        }
+      ]
+    },
+    {
+      "id": "lms-target-configuration-change",
+      "question": "A 要改 B 的位置上报规则：POST /configrequest 的 200、201 和 B 的回调 204 各确认什么？",
+      "start": "topics/location/lms-target-configuration-change.md",
+      "boundary": "查 TS 24.283 V19.3.0 Stage 3 请求改另一用户配置的 HTTP 方法、接收方、许可和应答边界，无需先有抓包。 POST /lms-information/v1/configrequest 的入站 mcServiceId 指目标 B。LMC 凭全部适用 Bearer 令牌识别 A，任何一项校验失败回 401 停止；过程 200 在目标许可之前。获准成功才按策略生成另笔 ConfigurationNotify，正文识别发起方 A，发送到 B 已注册 LMC 的 locationConfigUri。匹配的目标回调 204 或实际收件证据仅确认收件。 保留过程 200、API/附录 201、响应体、网络发起方与 history 字段差异。不从请求应答、收件或孤立事件判断目标已执行、已报告或续期。该接口未定义临时到期、取消恢复、多终端分配或完整网络方响应，不借 Stage 2 覆盖/取消流程或注册/订阅 expTime 补入。",
+      "next_if": [
+        {
+          "condition": "问题是 Stage 2 中原触发如何覆盖、保留、取消与恢复，不是给这项 HTTP 请求找时限。",
+          "read": "topics/location/trigger-override.md"
+        },
+        {
+          "condition": "问题是本机注册、注册或服务端主动配置通知、独立核对目标收件；不以独立通知证明存在配置变更请求。",
+          "read": "topics/location/lms-registration-configuration.md"
+        },
+        {
+          "condition": "只问目标有没有实际把位置报告提交给 LMS；不凭收到配置推已报告。",
+          "read": "topics/location/lms-location-report-publish.md"
         }
       ]
     }
