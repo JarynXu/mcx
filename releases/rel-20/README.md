@@ -1,9 +1,10 @@
 # Release 20
 
-仅收录 TS 22.179 V20.0.0 的两处 MCPTT Stage 1 需求。其他规范、这份规范的其他条款，以及 Stage 2 和 Stage 3 尚未整理到本版本。 目录状态是 **局部覆盖**，不是标准全文或实现验收。
+按问题选入口。当前收录两类局部条款：Stage 1 讲业务需要支持什么；Stage 3 讲伙伴系统迁移中终端怎样选择和使用配置。后者不是前一类通话需求的协议实现。
 
-- [MCPTT 通话需求](topics-calls.json)：环境监听碰到私呼或组呼时的处理；ad hoc 组呼的转发条件和发起者通知。
-- [阅读路径](reading-paths.json)：先选业务问题，再查对应条款。查需求不需要先提供日志。
+- [MCPTT 通话需求](topics-calls.json)：TS 22.179 V20.0.0。环境监听碰到私呼或组呼时的处理；ad hoc 组呼的转发条件和发起者通知。
+- [身份与用户配置](topics-identity.json)：TS 24.484 V20.1.0。从主系统给的配置档选伙伴和认证地址，区分两次业务授权，查伙伴侧订阅及本地副本更新。
+- [阅读路径](reading-paths.json)：先选问题，再查对应条款。查标准不需要先提供日志。
 - [覆盖范围](coverage.md) · [来源与版本](sources.json) · [收录状态](status.json)
 
-本批固定在 [3GPP TS 22.179 V20.0.0](https://portal.3gpp.org/desktopmodules/Specifications/SpecificationDetails.aspx?specificationId=623)（Rel-20，Stage 1）。较新 Release 的同号规范不替代此版。Stage 1 说明业务需要支持什么，不提供 SIP 或媒体实现步骤。
+本版是局部覆盖。两份规范均固定在上述版本，不代表全版或设备实现通过验收。

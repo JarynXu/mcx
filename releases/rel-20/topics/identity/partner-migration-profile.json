@@ -1,0 +1,244 @@
+{
+  "topic_id": "r20-identity-partner-migration-profile",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3；MCS UE 在线配置中的伙伴 MC 系统迁移。比较主系统、直接订阅或 MCPTT 专用字段时，只在对应 claim 的范围内使用。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "primary-provisions-partner-entries",
+      "clause": "4.2.2.1.2.1",
+      "conditions": [
+        "终端需要迁入伙伴 MC 系统；主系统配置了至少一份包含可迁入伙伴信息的用户配置档。"
+      ],
+      "conclusion": "伙伴清单的每个条目给出伙伴标识与该伙伴的 MCS UE 初始配置。终端先选伙伴系统，再选主系统提供且适用于已选伙伴的配置档。当前注册 PLMN 改变仅是需要迁移的示例；不能用域名可达替代条目匹配。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.2.1.2.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "network-and-conditional-slice",
+      "clause": "4.2.2.1.2.2.2",
+      "conditions": [
+        "从主系统配置的一份用户配置档中的一个条目判断伙伴系统是否合格。"
+      ],
+      "conclusion": "该伙伴标识和当前注册 PLMN 码必须同在该条目。若该 PLMN 码关联 S-NSSAI 且 UE 经 5GS 注册，则所关联的 S-NSSAI 必须属于 Allowed NSSAI；否则忽略切片条件，仍须匹配 PLMN。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.2.1.2.2.2"
+          ],
+          "items": [
+            "1–3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "automatic-or-manual",
+      "clause": "4.2.2.1.2.2.1",
+      "conditions": [
+        "从满足同一条目标识、注册 PLMN 和条件式切片检查的伙伴中选伙伴。"
+      ],
+      "conclusion": "UE 应提供自动和手动模式切换。默认自动；无用户输入或由手动转为自动时，从合格伙伴中选，多项的取舍由实现决定。切换至手动时，显示全部且仅合格的伙伴标识，按用户选定的标识选择；若有多个，显示次序由实现决定。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.2.1.2.2.1",
+            "4.2.2.1.2.2.2",
+            "4.2.2.1.2.2.3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "select-primary-profile-for-the-selected-partner",
+      "clause": "4.2.2.1.2.3",
+      "conditions": [
+        "伙伴系统已经选定；再检查来自主系统的候选用户配置档。"
+      ],
+      "conclusion": "档中已选伙伴自己的条目须包含当前注册 PLMN。仅当该 PLMN 关联 S-NSSAI 且经 5GS 注册时，再要求关联的切片在 Allowed NSSAI 中。另一个伙伴条目的匹配不能借用。多份合格档案由实现选一；这些条款未指定零匹配时的回退行为。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.2.1.2.3",
+            "4.2.2.1.2.2.2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "address-and-credentials",
+      "clause": "4.2.2.1.2.1",
+      "conditions": [
+        "已选主系统配置的用户配置档及其中符合条件的伙伴条目。"
+      ],
+      "conclusion": "从该条目内的伙伴 UE 初始配置取 IdMS 的 HTTPS URI，使用主系统 IdMS 取得的安全令牌联系伙伴 IdMS，按 TS 24.482 进行伙伴用户认证；成功后取得伙伴访问令牌。主系统自身的在线配置从其 UE 初始配置取址，是另一过程。端点存在或联系尝试都不足以证明伙伴令牌已取得。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.2.1.2.1",
+            "4.2.2.1.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "migration-authorization",
+      "clause": "4.2.2.1.2.1",
+      "conditions": [
+        "UE 通过伙伴用户认证取得伙伴访问令牌，并已从主系统配置的档案中选好一份。"
+      ],
+      "conclusion": "迁移业务授权使用该伙伴访问令牌和选中的主系统用户配置档，不以之后从伙伴订阅的配置档替代；这里没有指定整档须放入某一条线上报文。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.2.1.2.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ordinary-partner-authorization",
+      "clause": "4.2.2.1.2.1",
+      "conditions": [
+        "迁移业务授权已完成。"
+      ],
+      "conclusion": "UE 再办理伙伴 MC 系统的常规 MCS 业务授权，使用伙伴用户认证所得的访问令牌，或另外联系伙伴 IdMS 获得的新访问令牌。另取令牌不是必做步骤；迁移业务授权不能代替此授权。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.2.1.2.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "partner-document-subscriptions",
+      "clause": "4.2.2.1.2.1",
+      "conditions": [
+        "在伙伴系统办理常规 MCS 业务授权后，§4.2.2.1.2.1 将订阅所用访问令牌表述为在伙伴用户认证或伙伴 MCS 业务授权时取得。"
+      ],
+      "conclusion": "对每项已启用的 MCS 业务，使用 CMS 订阅代理订阅 UE 配置、用户配置档及业务配置。后来订阅的用户配置档不同于接入时选中的主系统用户配置档；订阅的 UE 配置也不是提供伙伴 IdMS 地址的 UE 初始配置。图的业务配置标签特指离网，正文按已启用业务叙述，不能据图添加仅限离网的前提。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.2.1.2.1"
+          ],
+          "figures": [
+            "4.2.2.1.2-1"
+          ],
+          "notes": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cms-proxy-initial-request",
+      "clause": "6.3.13.2.2",
+      "conditions": [
+        "CMC 按本流程使用 CMS 代理同时订阅多个文档；辨认初始 SIP SUBSCRIBE。"
+      ],
+      "conclusion": "Request-URI 是配置好的 CMS 订阅代理公共业务标识（PSI）。application/resource-lists+xml 为每个要订阅的文档或元素列一个带相对路径引用的条目；初始 SUBSCRIBE 的 c 项指明 application/vnd.3gpp.mcptt-info+xml 的 mcptt-access-token 值取自 TS 24.482 认证过程。§4.2.2.1.2.1 的流程来源和这一字段描述应分别保留，不推定伙伴业务授权签发新令牌或两个来源一定是同一串值。IdMS HTTPS URI 不是这个目的地址；以 CMSXCAPRootURI 为基并带 auid 参数的 SIP URI 属于直接订阅分支。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.2.2",
+            "4.2.2.1.2.1"
+          ],
+          "items": [
+            "§6.3.13.2.2 initial SUBSCRIBE a–c"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "changed-local-copy",
+      "clause": "4.2.2.1.2.1",
+      "conditions": [
+        "被订阅的文档相对于 UE 的本地版本已有更新。"
+      ],
+      "conclusion": "按本流程 UE 会收到与该订阅对应、包含 XCAP Diff 的 SIP NOTIFY，CMC 更新其本地文档副本。对运行情况须对准目标文档；发出订阅或收到其他订阅、其他文档的通知不能证明目标文档已变，收到匹配通知也不是副本已更新的现场证据，副本更新不证明业务已采用。伙伴业务使用期间仍可收到变更通知。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.2.1.2.1",
+            "6.3.13.2.2"
+          ],
+          "notes": [
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "id": "group-document-separate",
+      "clause": "4.2.2.1.2.1",
+      "conditions": [
+        "伙伴侧接入后需要订阅或取回 MC 组文档。"
+      ],
+      "conclusion": "按 TS 24.481 订阅组文档，并按该规范使用通知给出的 HTTPS URI 取回。不能将组文档并入三类普通配置的 CMS 代理订阅，也不能凭 URI 就认定取回已成功。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.2.1.2.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-entry-encoding-difference",
+      "clause": "8.3.2.1",
+      "conditions": [
+        "只比较 MCPTT 用户配置档中可迁入伙伴条目的结构、XML Schema 与字段语义。"
+      ],
+      "conclusion": "§8.3.2.1 的 10(g)(xii)(A)–(B) 在 PartnerMCPTTSystemId 下写 uri-entry，并以 AccessInformationForPartnerMCPTTSystem 包住初始配置。§8.3.2.3 的 MigratablePartnerMCPTTSystemInfoEntryType 将标识直接声明为 xs:anyURI，直接引用 mcpttiup:mcptt-UE-initial-configuration。§8.3.2.7 解释可迁入伙伴标识和 §7.2 初始配置的含义；不能据此认定两种 XML 可互换、给出线上编码，或推广至其他业务。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.1",
+            "8.3.2.3",
+            "8.3.2.7"
+          ],
+          "items": [
+            "§8.3.2.1 10(g)(xii)(A)–(B)",
+            "§8.3.2.3 MigratablePartnerMCPTTSystemInfoEntryType",
+            "§8.3.2.7 PartnerMCPTTSystemId / MigratablePartnerMCPTTSystemInfo"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "只覆盖本版配置流程；不还原认证交换或各业务授权报文，不把旧档当作后来订阅的伙伴档。",
+    "代理订阅、匹配文档的通知、本地副本更新和业务采用分别判断。组文档按 TS 24.481；图中的离网标签不限定正文中每项已启用的业务。",
+    "不覆盖各业务迁移授权、伙伴认证的完整消息，未验证 TS 24.481 组文档取回、业务采用新配置或实际互通；没有裁定 MCPTT XML 层级差异在网络上的编码。"
+  ],
+  "related": [],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
