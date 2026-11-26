@@ -809,6 +809,14 @@
 
 入口：[MCPTT 用户取消 LMR 定义组的紧急状态：发起端确认等哪一笔？](topics/interworking/emergency-group-state-cancel-mcptt-origin-lmr-defined.md)。
 
+### LMR 用户取消互通紧急告警：两种回执怎样区分？
+
+- **能回答：**查 TS 23.283 V19.5.0 §10.6.5.1：LMR 用户发起互通紧急告警取消，组可定义在 MC 或 LMR。同一告警请求还可附带清组状态，主请求类型不变。查规范无需抓包。
+- **只到条件或接口：**LMR 用户此前经 IWF 成功发起告警；步骤 1 仍针对 IWF 曾代表该用户成功送出告警请求的同一组。IWF 已掌握组信息且配置两类身份映射，图中两个 MC service 客户端已归属；LMR 用户显式或隐式归属是可能动作，不是必需。2 回原 1，3 面向已归属成员，NOTE 3 允许 2、3 任一先。5 只回收到的 3，组播呼叫场景不发 5，不跳过 IWF 的 2 或成员处理。
+- **尚未建立的结论：**不从附带指示或 IWF 回执推出组状态或本人告警已清、成员收件或全员通知。总表第二个 MCPTT ID 标 O，取消他人时须带该 ID；不是本节的第三方授权。原请求为组状态取消、MC 用户发起的告警取消、原生 Stage 3 另查；不补 LMR 内部、拒绝、重试或固定消息数。
+
+入口：[LMR 用户取消互通紧急告警：两种回执怎样区分？](topics/interworking/emergency-alert-cancel-lmr-origin.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)
