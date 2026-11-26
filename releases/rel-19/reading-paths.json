@@ -197,7 +197,7 @@
     },
     {
       "id": "iwf-call-lifecycle",
-      "question": "互通组呼加入、媒体和释放",
+      "question": "互通组呼建呼、加入、媒体和释放",
       "select_one_by_question": [
         {
           "condition": "预安排组呼框架下的晚加入、归属触发与话权状态",
@@ -234,6 +234,10 @@
         {
           "condition": "granted/taken/idle、请求取消与话权释放、单播stop/resume",
           "read": "topics/interworking/floor-signals.md"
+        },
+        {
+          "condition": "问已知 MCPTT 用户发起到 LMR 定义互通组的紧急建呼、两组 IWF 请求或其响应；查标准无需运行记录。",
+          "read": "topics/interworking/emergency-group-setup-mcptt-to-lmr.md"
         }
       ],
       "boundary": "Bounded Stage2 interworking procedures; underlying security and full call state machine not verified."
@@ -2668,6 +2672,26 @@
         {
           "condition": "问 A 请求 LMS 改 B 的配置或 B 实收了哪次变更通知，而不是 GET 自己的适用配置。",
           "read": "topics/location/lms-target-configuration-change.md"
+        }
+      ]
+    },
+    {
+      "id": "iwf-emergency-group-setup-mcptt-to-lmr",
+      "question": "MCPTT 用户在 LMR 定义的紧急互通组发起呼叫：IWF 哪两条腿？原请求应答要等逐人响应吗？",
+      "start": "topics/interworking/emergency-group-setup-mcptt-to-lmr.md",
+      "boundary": "可查 TS 23.283 V19.5.0 Stage 2 中 MCPTT 发起、LMR 定义互通组的两组请求与应答、按归属发送的粒度和主控。查规范无需抓包。 看实际发起者、组定义、MCPTT 已归属成员和 IWF 接入授权与身份映射。§10.6.2.2.4 的 MCPTT server→IWF 步骤 3 对 IWF→server 步骤 8；逐已归属 MCPTT 成员的 IWF→server 步骤 4 对反向步骤 7。NOTE 5 不要求步骤 8 等所有逐人应答。组定义在 LMR 则 LMR 主控。 保留 §10.6.2.1 端点字面差异，并仅对照同为 MCPTT 发起但组定义在 MCPTT 的 .2.2（配置前提及 server→IWF 归属粒度不同）。响应名、紧急或隐式话权指示不证明全员建呼、媒体、告警或授话权；不补 LMR 内部、SIP、失败或紧急状态取消。",
+      "next_if": [
+        {
+          "condition": "问普通 IWF 组呼字段与加入前条件，不问紧急互通建呼。",
+          "read": "topics/interworking/group-call-request.md"
+        },
+        {
+          "condition": "问已建组呼中的覆盖/话权，请选适用的进行中场景。",
+          "read": "topics/interworking/floor-override.md"
+        },
+        {
+          "condition": "问整体组呼释放，而不是这两条建呼腿或紧急状态取消。",
+          "read": "topics/interworking/group-call-release.md"
         }
       ]
     }

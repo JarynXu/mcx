@@ -721,6 +721,14 @@
 
 入口：[互通自动私呼](topics/interworking/private-automatic.md)。
 
+### MCPTT 发起、组定义在 LMR：IWF 两向请求怎么对？
+
+- **能回答：**可查 TS 23.283 V19.5.0 Stage 2 中 MCPTT 发起、LMR 定义互通组的两组请求与应答、按归属发送的粒度和主控。查规范无需抓包。
+- **只到条件或接口：**看实际发起者、组定义、MCPTT 已归属成员和 IWF 接入授权与身份映射。§10.6.2.2.4 的 MCPTT server→IWF 步骤 3 对 IWF→server 步骤 8；逐已归属 MCPTT 成员的 IWF→server 步骤 4 对反向步骤 7。NOTE 5 不要求步骤 8 等所有逐人应答。组定义在 LMR 则 LMR 主控。
+- **尚未建立的结论：**保留 §10.6.2.1 端点字面差异，并仅对照同为 MCPTT 发起但组定义在 MCPTT 的 .2.2（配置前提及 server→IWF 归属粒度不同）。响应名、紧急或隐式话权指示不证明全员建呼、媒体、告警或授话权；不补 LMR 内部、SIP、失败或紧急状态取消。
+
+入口：[MCPTT 发起、组定义在 LMR：IWF 两向请求怎么对？](topics/interworking/emergency-group-setup-mcptt-to-lmr.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)
