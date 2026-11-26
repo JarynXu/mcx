@@ -727,6 +727,14 @@
 
 入口：[LMS 注册与位置配置回调：201 和 204 各确认什么？](topics/location/lms-registration-configuration.md)。
 
+### LMS_Information 订阅创建与通知收件
+
+- **能回答：**查 TS 24.283 V19.3.0 Stage 3 的 LMS_Information 订阅创建、发通知和收件。查规范无需已有抓包。
+- **只到条件或接口：**实际创建看同一 LMC→LMS 订阅集合 POST 对应的 LMS 201 Location。判断实际通知时，另查 LMS→该订阅方 LMC 的 LocationInfoNotify HTTP POST；目标按正文和表核对该订阅请求的 locationNotificationUri（A.3 另有差异），LocationNotification 的 subscriptionID 因订阅通知时必带，并要和本订阅相符。收件看该 LMC 实收这笔通知，或该 LMC 对这笔 POST 的实际匹配收件应答。不要求同一份记录也有历史创建的 201；同用户、同 URI、只有出站、中间节点状态或不同事务的 201/204 不证明这次实收。匹配的错误响应不是收件确认。 §6.3.2.4.2 的应答写 201，表 7.2.5.2.3.1-2 和 Annex A.3 写 204；A.3 订阅回调表达式引用 subscriptionResponseUri，正文、回调表和请求 schema 给 locationNotificationUri，同一 schema 未定义前一字段。不设别名或 URI 回退，也不要求实现接受两个成功码。
+- **尚未建立的结论：**创建不证明后续仍有效、通知已发或已收；收件不证明应用使用、显示或新测量，也不证明 LMS 收到 LMC 的应答。不套 Stage 2、LMS_Reporting 注册/配置、SIP 组动态订阅、一次性查询或终端上报；不闭合更新、取消或到期竞态。
+
+入口：[位置订阅的 201，和位置通知的收件应答有什么区别？](topics/location/lms-subscription-notification.md)。
+
 ## 网络策略与QoS
 
 [查看本域全部主题](topics-network-policy.json)

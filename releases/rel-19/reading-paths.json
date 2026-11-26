@@ -2494,6 +2494,26 @@
         }
       ],
       "boundary": "限 TS 24.283 V19.3.0 Stage 3。注册看实际同一 LMC→LMS 注册集合 POST（/lms-reporting/v1/registrations）的匹配 201 Location。发送看 LMS 实际另发独立的 ConfigurationNotify POST，目的为已注册 LMC 的 locationConfigUri，正文为 LocationConfiguration。收件看这笔回调的实际匹配 LMC 204，或该 LMC 实收这份配置的独立证据。已能独立核实回调不要求同一份日志含此前的 201。 LMS 可在注册成功分支发起配置通知，条款不规定每次必推、首次下发期限或两事务到达顺序。发送不确认收件；匹配回调 204 不证明配置已执行或已报位置。IMS REGISTER、其他事务的 201/204、配置 GET 的 200 不替代回调。不把本笔 HTTP 注册、配置回调映射为另版 Stage 2 上报事件，也不以此闭合续期／注销、订阅或报告上送。"
+    },
+    {
+      "id": "lms-subscription-notification",
+      "question": "LMS 订阅创建成功了吗，还是 LMC 已收到一份位置通知？V19.3.0 回调写 201 还是 204？",
+      "start": "topics/location/lms-subscription-notification.md",
+      "boundary": "查 TS 24.283 V19.3.0 Stage 3 的 LMS_Information 订阅创建、发通知和收件。查规范无需已有抓包。 实际创建看同一 LMC→LMS 订阅集合 POST 对应的 LMS 201 Location。判断实际通知时，另查 LMS→该订阅方 LMC 的 LocationInfoNotify HTTP POST；目标按正文和表核对该订阅请求的 locationNotificationUri（A.3 另有差异），LocationNotification 的 subscriptionID 因订阅通知时必带，并要和本订阅相符。收件看该 LMC 实收这笔通知，或该 LMC 对这笔 POST 的实际匹配收件应答。不要求同一份记录也有历史创建的 201；同用户、同 URI、只有出站、中间节点状态或不同事务的 201/204 不证明这次实收。匹配的错误响应不是收件确认。 §6.3.2.4.2 的应答写 201，表 7.2.5.2.3.1-2 和 Annex A.3 写 204；A.3 订阅回调表达式引用 subscriptionResponseUri，正文、回调表和请求 schema 给 locationNotificationUri，同一 schema 未定义前一字段。不设别名或 URI 回退，也不要求实现接受两个成功码。 创建不证明后续仍有效、通知已发或已收；收件不证明应用使用、显示或新测量，也不证明 LMS 收到 LMC 的应答。不套 Stage 2、LMS_Reporting 注册/配置、SIP 组动态订阅、一次性查询或终端上报；不闭合更新、取消或到期竞态。",
+      "next_if": [
+        {
+          "condition": "只有问题转成 TS 23.280 V19.9.0 Stage 2 的单系统动态组目标、通知或取消的业务流程时才读。",
+          "read": "topics/location/subscription-lifecycle.md"
+        },
+        {
+          "condition": "若实际另查 TS 24.283 V19.3.0 的 LMS_Reporting 注册创建或配置回调、而非该位置订阅的通知，走注册与配置。",
+          "read": "topics/location/lms-registration-configuration.md"
+        },
+        {
+          "condition": "若实际问题是 TS 23.280 V19.10.1 Stage 2 的 CSC‑15 组动态数据与位置参考点区别，不给 HTTP 回调补规则。",
+          "read": "topics/location/reporting.md"
+        }
+      ]
     }
   ]
 }

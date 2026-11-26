@@ -1,0 +1,566 @@
+{
+  "topic_id": "r19-location-lms-subscription-notification",
+  "release": 19,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "位置订阅的 201，和位置通知的收件应答有什么区别？",
+  "common_conditions": [
+    "TS 24.283 V19.3.0 Stage 3 的 LMS_Information；本主题限定请求者为 LMC 的位置订阅创建和由该订阅触发的位置通知。",
+    "问规范时可直接查；给一次实际事务下结论，按消息类型、请求和应答匹配、实际角色与同一订阅判断。"
+  ],
+  "condition_rule": "真实事务的结论须命中相应声明；接收条件不传给发送，注册或订阅创建结果不传给通知。不同来源的写法按所引位置单独保留。",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.283-v19.3.0",
+  "claims": [
+    {
+      "id": "creation-201-location",
+      "conditions": [
+        "实际辨明 LMC 发给 LMS 的 LMS_Information 订阅集合 POST。",
+        "若判断该事务已成功创建，见这笔请求的实际匹配 LMS 201 与 Location。"
+      ],
+      "conclusion": "服务端成功创建订阅资源，并在该创建事务的 Location 返回资源 URI。LMS 在成功分支生成订阅标识。已知的资源 URI 用实际响应确认，不从互异的印刷示例拼接。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.3.1–.2"
+          ],
+          "printed_pages": [
+            26,
+            27,
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.1"
+          ],
+          "printed_pages": [
+            60,
+            61
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.3.3.2–.3.1"
+          ],
+          "printed_pages": [
+            63,
+            64
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 /subscriptions POST"
+          ],
+          "printed_pages": [
+            90
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不等于 notification callback URI；不证明以后仍有效、发出通知、终端收到或使用。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "actual-notification-role-address",
+      "conditions": [
+        "实际辨认由本订阅引出的独立 LocationInfoNotify。"
+      ],
+      "conclusion": "LMS 向请求订阅的 LMC 发独立 HTTP POST，正文是 LocationNotification。正文和目标表取该订阅请求所给的 locationNotificationUri；Annex A.3 表达式有独立不一致，按专门声明读。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.3.1–.2"
+          ],
+          "printed_pages": [
+            26,
+            27,
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.4.2"
+          ],
+          "printed_pages": [
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.5.2.2–.3.1"
+          ],
+          "printed_pages": [
+            69
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.6.2.4–.5"
+          ],
+          "printed_pages": [
+            71
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "这不是注册 Location、注册 profile 的 locationConfigUri、目标终端上报或组动态数据 SIP。仅目标地址或出站发送不足定收件；不把一次性查询与持续订阅合并。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "subscription-id-correspondence",
+      "conditions": [
+        "实际判断是因订阅而发出的 LocationNotification。"
+      ],
+      "conclusion": "表 7.2.6.2.4-1 的正文将 subscriptionID 标成一般可选，表注明确因订阅发送时必带。用它与所问订阅及接收 LMC 对照；同一用户、URI 或 HTTP 状态不能替代这次关联。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.3.1–.2"
+          ],
+          "printed_pages": [
+            26,
+            27,
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.4.2"
+          ],
+          "printed_pages": [
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.6.2.4–.5"
+          ],
+          "printed_pages": [
+            71
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 LocationNotification"
+          ],
+          "printed_pages": [
+            95
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "看不到 ID 若因只捕获部分正文，不证明实际缺项、就是一次性查询或送达失败；也不能从 ID 决定当前订阅仍有效。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "intended-receiver-matched-evidence",
+      "conditions": [
+        "实际关联本订阅发给应收 LMC 的同一 LocationInfoNotify POST。",
+        "可核实目标 LMC 实收这份通知，或核实该 LMC 对这笔 POST 发出的实际匹配收件应答。"
+      ],
+      "conclusion": "实收记录或本笔实际匹配收件应答可作为这份通知的收件证据。已另证这笔通知的订阅、接收方和事务，不要求同一份记录也含历史创建 201。匹配的错误响应不是收件确认。实际收件与响应是否符合具体的 API 定义应分开判断。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.4.2"
+          ],
+          "printed_pages": [
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.5.2.2–.3.1"
+          ],
+          "printed_pages": [
+            69
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.6.2.4–.5"
+          ],
+          "printed_pages": [
+            71
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 subscriptionNotification"
+          ],
+          "printed_pages": [
+            91
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 /subscriptions/{subscriptionId} PUT and DELETE"
+          ],
+          "printed_pages": [
+            91,
+            92
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "不是创建、配置回调或较早通知的确认；不证明位置已显示或被应用、目标新测量、LMS 收到回包或所有订阅目标都出现在通知里。",
+        "同用户、同 URI 或同一订阅的另一份通知不作替代；只知道一个中间节点传出状态，不能认定应答真实来自目标 LMC。",
+        "若仅看到 LMC 发出收件应答，尚不能证明 LMS 已收到；没有应答证据也不等于通知送达失败。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "same-edition-callback-response-disagreement",
+      "conditions": [
+        "问题是同一通知回调的 HTTP 响应定义，而非 LMS 对订阅创建的 201。"
+      ],
+      "conclusion": "§6.3.2.4.2 的接收方步骤写 LMC 收到后回 201；API 响应表与 Annex A.3 的订阅回调写 204。A.1 给附录的优先范围是本 API 信息元素和方法编码，按 A.3 核对接口响应定义见 204，并保留正文 201 的矛盾。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.4.2"
+          ],
+          "printed_pages": [
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.5.2.2–.3.1"
+          ],
+          "printed_pages": [
+            69
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 subscriptionNotification"
+          ],
+          "printed_pages": [
+            91
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不裁决哪种通用实现行为，不称两种响应必兼容、都合规或必须都接受；实际哪个应答关联本通知单独查。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "same-edition-callback-pointer-disagreement",
+      "conditions": [
+        "核对同一版本 Annex A.3 /subscriptions 的 subscriptionNotification，而不是 /requests 的一次性回调。"
+      ],
+      "conclusion": "A.3 的订阅回调表达式字面引用 subscriptionResponseUri；请求 schema 则定义并要求 locationNotificationUri，没有定义前一字段。正文和回调表也用 locationNotificationUri。A.1 的优先规则不提供缺失成员的取值。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.3.2.4.2"
+          ],
+          "printed_pages": [
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.2.5.2.2–.3.1"
+          ],
+          "printed_pages": [
+            69
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 subscriptionNotification"
+          ],
+          "printed_pages": [
+            91
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 LocationSubscriptionRequest"
+          ],
+          "printed_pages": [
+            94
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 /requests POST locationRequestResponse"
+          ],
+          "printed_pages": [
+            89,
+            90
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "不把两名当别名，不借 /requests 的表达式改写订阅 callback，不补 URI 回退、实现兼容或真实部署结果。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "limitations": [
+    "仅核本版 LMS_Information 的 LMC 订阅创建、这一订阅的位置通知及收件。未核完整取消、更新/到期、授权、跨 LMS 或网络实体请求。",
+    "同版正文、表和 A.3 不一致时保留来源边界，不给实现补别名、回退或双接受策略。取证不替代合规判断或实际应用结果。"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.3.2.3.1–.2"
+      ],
+      "printed_pages": [
+        26,
+        27,
+        28
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.2.1"
+      ],
+      "printed_pages": [
+        60,
+        61
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.2.3.3.2–.3.1"
+      ],
+      "printed_pages": [
+        63,
+        64
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.3.2.4.2"
+      ],
+      "printed_pages": [
+        28
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.2.5.2.2–.3.1"
+      ],
+      "printed_pages": [
+        69
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.2.6.2.4–.5"
+      ],
+      "printed_pages": [
+        71
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.1"
+      ],
+      "printed_pages": [
+        73
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.3 /subscriptions POST"
+      ],
+      "printed_pages": [
+        90
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.3 subscriptionNotification"
+      ],
+      "printed_pages": [
+        91
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.3 LocationSubscriptionRequest"
+      ],
+      "printed_pages": [
+        94
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.3 LocationNotification"
+      ],
+      "printed_pages": [
+        95
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.3 /requests POST locationRequestResponse"
+      ],
+      "printed_pages": [
+        89,
+        90
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.3 /subscriptions/{subscriptionId} PUT and DELETE"
+      ],
+      "printed_pages": [
+        91,
+        92
+      ],
+      "usage": "comparison-only"
+    }
+  ],
+  "related": [
+    {
+      "topic": "r19-location-subscription-lifecycle",
+      "relation": "separate-stage2-subscribe-notify-cancel",
+      "required": false
+    },
+    {
+      "topic": "r19-location-reporting",
+      "relation": "separate-stage2-group-dynamic-data-sip",
+      "required": false
+    },
+    {
+      "topic": "r19-location-lms-registration-configuration",
+      "relation": "separate-lms-reporting-registration-and-config",
+      "required": false
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  }
+}
