@@ -2045,6 +2045,10 @@
         {
           "condition": "若订阅方是 MCPTT 客户端，查参与功能和控制功能处理组动态数据订阅的程序。",
           "read": "topics/groups/group-dynamic-data.md"
+        },
+        {
+          "condition": "仅当要查在网同系统单项业务的实际客户端显式归属或解除，所涉组定义在服务客户端的系统内，且业务服务器将对应组的 5b 或 4b 状态更新送给已订阅的 GMS 时，查原客户端 EAR 是否随该更新转交。只见订阅答复、普通动态通知或名单变化，不能判这两条来源证据。",
+          "read": "topics/security/explicit-group-affiliation-ear.md"
         }
       ],
       "boundary": "限公共 Stage 2 中的组管理服务器订阅；业务服务器属于定义该组的 MC 系统。名单按业务列已归属成员，不是设备清单。"
@@ -3077,6 +3081,10 @@
         {
           "condition": "若要确认 GMS 如何订阅、收到归属变更，请查归属状态订阅。",
           "read": "topics/groups/gms-affiliation-subscription.md"
+        },
+        {
+          "condition": "若组定义在服务客户端的同一 MC 系统、只查同一项业务，且客户端实际发起显式解除，GMS 已订阅该组状态，查原请求第 1 步的客户端 EAR，或业务服务器给该 GMS 同笔解除更新 4b 该复制哪份实际收到的客户端 EAR。不能以 4a、出区、服务器主动解除或伙伴系统的更新代替。",
+          "read": "topics/security/explicit-group-affiliation-ear.md"
         }
       ],
       "boundary": "在网组的两项地理配置可以在发请求前判读：先分未归属和已归属，查该位置属于哪块区域。若已经有客户端解除请求，再区分本系统与伙伴系统的授权和记录处理；本页不把位置当作已发请求，也不把解除归属当作删除组、移除成员或释放呼叫。 Stage 2 解读按发起者、接收方、服务间的目标系统和逐组结果区分；不由一个未关联具体组的成功、载体或未捕获的请求判令所有组解除或判定通知类型。"
@@ -6901,6 +6909,10 @@
         {
           "condition": "若实际看到在网 MCPTT 的 PF 给客户端发组地理区域通知，核对进出标记、通知确认或相应解除入口，不能把它当成这里的客户端请求。",
           "read": "topics/groups/group-geographic-area-notification.md"
+        },
+        {
+          "condition": "若组定义在服务客户端的同一 MC 系统、只查同一项业务，且客户端实际发起显式归属，GMS 已订阅该组状态，查原请求第 1 步的客户端 EAR，或业务服务器给该 GMS 同笔归属更新 5b 该复制哪份实际收到的客户端 EAR。5a、位置变化、取到组配置或普通 SIP 200 都不是 5b。",
+          "read": "topics/security/explicit-group-affiliation-ear.md"
         }
       ],
       "boundary": "只涉及本系统单项业务 Stage 2。显式客户端触发可由地理事件引起；5a/5b 两个观察点及逐组字段各自核对，无固定先后。无 SIP 或跨系统拓扑保证。"
@@ -12436,6 +12448,30 @@
         }
       ],
       "boundary": "只讲 TS 24.581 V16.9.0 普通在网预安排组的直接客户端控制接口 U。先核对本端、实际带载荷 RTP 和 U Idle/Taken；Idle 还须上一许可态实收 End。已进入无许可仍发送态后，实际 End 独立查当前 G；仅凭 #3 不判来源或交付。不套 NCF、抢占等待、其他 G 状态或信令释放。"
+    },
+    {
+      "id": "r16-security-explicit-group-affiliation-ear",
+      "question": "同系统一项业务中，客户端自己显式发起归属或解除；业务服务器收到原客户端 EAR 后，5b 或 4b 该转哪份，服务器自己的能代替吗？ 只看到客户端 5a 或 4a、业务服务器发了更新，或 GMS 实收了更新和 EAR，各自能判到授权还是状态？ 取完 C-5 配置，只有 SIP 200、令牌或 MIKEY，能确认客户端来源已传给 GMS、授权已通过吗？",
+      "start": "topics/security/explicit-group-affiliation-ear.md",
+      "next_if": [
+        {
+          "condition": "若查在网同系统单项业务的客户端实际发起显式归属，核对业务服务器的组策略、用户订阅、N2、保存和逐组答复；5a/5b 无固定先后，EAR 不替代业务检查。",
+          "read": "topics/groups/same-system-explicit-affiliation.md"
+        },
+        {
+          "condition": "若查在网同系统单项业务的客户端实际发起显式解除，核对业务服务器的原已归属、解除权限、移除记录、4a 答复与 4b 更新；非服务器主动或伙伴系统分支。",
+          "read": "topics/groups/client-group-deaffiliation.md"
+        },
+        {
+          "condition": "若查 GMS 向定义该组的系统内的业务服务器订阅状态，或实际收到所订组的变化通知及回复，按订阅与通知分开判断；名单的业务 ID 不指明哪台终端。",
+          "read": "topics/groups/gms-affiliation-subscription.md"
+        },
+        {
+          "condition": "若查主系统已由 IdMS 认证的用户，终端可安全访问 CMS 且实际取同一业务的档，或终端实收该份档后由组管理客户端按其中成员信息向宿主 GMS 取配置，读 C-4、C-5 的范围和验证方。取配并非 5b/4b，不能据此增设 C-6。",
+          "read": "topics/identity/configuration-and-group-authorization.md"
+        }
+      ],
+      "boundary": "共通安全条款 TS 33.180 V16.13.0 §9.6.5.2.2；TS 23.280 V16.7.0 Stage 2 只对齐业务事件。 在网、同一 MC 系统的一项业务：所涉组定义在服务该客户端的系统，业务客户端实际发起显式归属或解除，GMS 已向定义该组的系统内的业务服务器订阅该组归属状态。 第 1 步应附客户端 EAR。业务服务器实收本笔原请求的客户端 EAR 后，办理对应更新时应复制同一份客户端 EAR；可以另附用于认证自身的 EAR，不作替代。 5b 是归属更新，4b 是解除更新；两者都是业务服务器向已订阅的 GMS 发送。5a、4a 是另给客户端的答复，不必先于对应更新。 GMS 实收匹配更新及其中的客户端 EAR 只提供本次授权所需的信息，不证明检查通过、授权、已写组状态、其他组结果或客户端实收。 已发不等于实收；只见 5a、4a、配置/令牌、信令钥或普通 SIP 200 都不替代。排除伙伴、服务器主动和隐式流程。不是 C-6，不从通用 EAR 正文确定 SIP 方法、失败码或重试。"
     }
   ]
 }
