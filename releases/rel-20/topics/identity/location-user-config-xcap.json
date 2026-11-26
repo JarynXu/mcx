@@ -1,0 +1,170 @@
+{
+  "topic_id": "r20-identity-location-user-config-xcap",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3；§7.4 位置用户配置文档与本版明确引用关系。不合并其他 Release 的 LMS 流程。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "location-document-applicability-and-one-active",
+      "clause": "7.4.1.1",
+      "conditions": [
+        "在一台 MC UE 上判定生效业务用户档所引用的位置用户配置。"
+      ],
+      "conclusion": "位置用户配置可用于所有 MCS，也可专用于某一 MCS；多业务共用另有引用和授权要求。一台 MC UE 同一时点只生效并使用一份。即使一个 MC 业务 ID 名下存在多个不同文件索引，生效业务用户档也只指向其中一份；保存多份不等于同时生效。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.4.1.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shared-doc-exact-reference-and-authenticated-identities",
+      "clause": "7.4.1.1",
+      "conditions": [
+        "同一位置用户配置文档供多个 MC 业务使用。"
+      ],
+      "conclusion": "不同业务的生效用户档须指向同一文档。策略须保证以 MC 用户认证时提供的任一 MC 业务 ID 取回共用文档；§7.4.2.11 另要求允许所有可使用该文档的 MC 业务 ID 访问。不能从共用或 ID 已认证推出无关 ID 也能读，也不推出令牌、内部复制或别名规则。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.4.1.1",
+            "7.4.2.11"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "same-xcap-uri-with-user-and-file-selectors",
+      "clause": "7.4.1.2",
+      "conditions": [
+        "MC 服务客户端访问 §7.4 的位置用户配置，不是访问自身业务用户档。"
+      ],
+      "conclusion": "§7.4.1.2 标题指 LMC，访问式直接指 MC 服务客户端。原文说专用与共用情形使用同一 XCAP URI，所给格式为 CMSXCAPROOTURI/org.3gpp.mcs.location-user-config/users/sip:<MCSERVICEID>/location-user-config-<INDEX>.xml，用户目录以已认证 MC 业务 ID 为 XCAP 身份，文档以与业务 ID 对应的文件名保存在该目录下。不能把 ID 目录换成任意身份，不能由这句裁定独立文档的 URI 必须一样或实际存储别名。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.4.1.2",
+            "7.4.1.1",
+            "7.4.2.2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "filename-index-is-not-a-profile-index-or-version",
+      "clause": "7.4.2.8",
+      "conditions": [
+        "按同一个 MC 业务 ID 在用户目录下选择现有位置文档。"
+      ],
+      "conclusion": "文件名按固定前缀 location-user-config- + 索引 + .xml，索引 3 的例为 location-user-config-3.xml。位置文件索引不是 MCPTT 用户档的 user-profile-index 或时间版本，不可取最大值代替生效引用。§7.4.2.8 称 <index> attribute，但 §7.4.2.3 没有单列根类型的命名 index 属性，保留属性通配，不能据此添加根属性必填规则或宣告 index 一概不允许。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.4.2.8",
+            "7.4.1.1",
+            "7.4.2.3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "optional-mcs-profile-location-uri",
+      "clause": "7.4.1.1",
+      "conditions": [
+        "核对 MCPTT、MCVideo 或 MCData 生效业务用户档里的位置文档引用。"
+      ],
+      "conclusion": "三个业务的用户档结构均允许 Common / anyExt 下有一个可选的 LocationUserProfileURI，类型 anyURI，指向 §7.4.1.2 的位置用户配置文档。§7.4.1.1 说明生效用户档与位置文档的引用关系，不把该元素改成必填，也没有从缺项推出默认文件、回退、自动取档或重新注册。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.4.1.1",
+            "8.3.2.1",
+            "8.3.2.7",
+            "9.3.2.1",
+            "9.3.2.7",
+            "10.3.2.1",
+            "10.3.2.7",
+            "7.4.1.2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "valid-service-id-metadata-not-access-policy",
+      "clause": "7.4.2.1",
+      "conditions": [
+        "核位置文档内容的有效业务 ID，并区分文档元数据和访问控制。"
+      ],
+      "conclusion": "结构文字要求至少一个 mc-service-id，列出该位置用户配置适用的业务 ID；Schema 根类型的选择组和 mc-service-id 元素却允许零次。不能用 Schema 零次来取消结构文字要求，也不把列出的 ID 元数据当成授权政策或访问成功的证据。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.4.2.1",
+            "7.4.2.3",
+            "7.4.2.11"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "xcappointer-vs-inner-default-location-uri",
+      "clause": "7.4.2.1",
+      "conditions": [
+        "区分终端在线引导时从 CMS 获取的位置用户配置与 LMC 默认位置配置。"
+      ],
+      "conclusion": "§4.2.1 的在线引导路径中，MCS UE 用初始配置 MO 中的 CMS URI，为每项已启用业务获取对应的位置用户配置。已启用是这份清单的适用条件，不是启用动作触发取档。该文档内部可另有 default-location-config-URI，指向 LMC 默认位置配置，与上层用户档的 LocationUserProfileURI 不同。默认 URI 的定义仅指向 TS 24.283 §7.1.3.4；没有核对其正文、默认应用或缺项行为。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.4.2.1",
+            "7.4.2.7",
+            "4.2.1",
+            "7.4.1.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "xcap-document-change-subscription-not-lms-workflow",
+      "clause": "7.4.2.12",
+      "conditions": [
+        "讨论 §7.4 位置用户配置文档应用用法，不是订阅实时位置或配置 LMS。"
+      ],
+      "conclusion": "§7.4.2.12 规定支持按 §6.3.13.3 订阅该 XCAP 文档变化。其后一句把 XCAP URI 的条款号写成 §7.4.1.1，显式公式实际在 §7.4.1.2；保留出处差异。这不证明订阅、下发或应用已发生，不给出 LMS 注册、位置上报配置或某次推送的条件。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.4.2.12",
+            "7.4.1.2",
+            "7.4.1.1"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "不规定地址别名、配置切换的时序或实现行为。TS 24.283 仅保留引用，不能推出 LMS 注册、位置报告触发、下发或实际应用，也不把其他版 LMS 流程拿来补齐。",
+    "本页仅核 TS 24.484 同版本正文，TS 24.283 §7.1.3.4 保留已读正文内的指针，不是对目标条款的核验。"
+  ],
+  "related": [],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
