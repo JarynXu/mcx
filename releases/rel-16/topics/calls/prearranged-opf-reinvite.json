@@ -1,0 +1,346 @@
+{
+  "topic_id": "r16-calls-prearranged-opf-reinvite",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "普通预安排组呼已建立：O-PF 收到 re-INVITE，用哪份 SDP、回哪笔应答？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.379-v16.14.0",
+  "condition_rule": "所有声明继承本页收到现有预安排组呼更新的范围，分别按 O-PF 的实际入向请求、本地检查及实际匹配的出向应答读；不以整条链已成功作公共前提。应答以 O-PF 实际收到自己这笔出向 re-INVITE 的匹配应答为入口；另一事务、另一腿、CF 仅发出的回复或终端先前收到的结果都不能替代。",
+  "common_conditions": [
+    "TS 24.379 V16.14.0，Release 16 Stage 3。限同一 MC 系统内、直接组身份、普通在网预安排组呼。",
+    "O-PF 实际收到所服务终端在涉及现有组会话的对话内发来的 re-INVITE；组里已有呼叫、终端已有旧对话或网络其他角色实收，不能代替该入口。",
+    "§10.1.1.3.1.3 开头同时列按需与预建立，接收入句仍写识别按需预安排组会话。用实际来件的会话及其同组关联分第 5、6 项；不把规则扩给任意预建立对话。"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.3.1.3 开头及第 1 项：现有预安排组会话、实际从所服务客户端接收、按需与预建立文字、可选资源拒绝"
+      ],
+      "printed_pages": [
+        236,
+        237
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.3.1.3 第 2–8 项及注 2–3：语音与媒体门槛、出向更新、两类 offer、发起用户和优先级字段"
+      ],
+      "printed_pages": [
+        237
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.3.1.3 实收匹配 2xx 段第 1–6 项：只列的 answer 回指、实际 200 字段、本地发送再媒体"
+      ],
+      "printed_pages": [
+        237
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "10.1.1.3.1.3 实收匹配 403 段第 1–5 项：有来向正文才复制、Warning、本地发送再媒体及印刷回指差异"
+      ],
+      "printed_pages": [
+        237
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.1.1.1, on-demand SDP offer composition items 1–2 and NOTE 2: conditional stream address and port replacement, control channel if present, and same-server exception"
+      ],
+      "printed_pages": [
+        83
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.1.1.2 用预建立初建已协商的语音及适用控制参数构造 offer"
+      ],
+      "printed_pages": [
+        83,
+        84
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.1.9 按来向实际存在的资源列表、MCPTT 信息和位置 MIME 生成再邀请"
+      ],
+      "printed_pages": [
+        92
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.1.2.1, composing an SDP answer for an on-demand session (originating participating function boundary)"
+      ],
+      "printed_pages": [
+        84
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.379-v16.14.0",
+      "clauses": [
+        "6.3.2.1.5.1 full;6.3.2.1.5.2 full"
+      ],
+      "printed_pages": [
+        86,
+        87
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "id": "prearranged-ongoing-opf-reinvite-local-gates",
+      "title": "为何既有组会话的更新仍会在 O-PF 回 500 或 488",
+      "conditions": [
+        "O-PF 实际接收所服务终端的本次组会话内 re-INVITE；分别按本地资源判断或实际到达的第 2 项处理。"
+      ],
+      "conclusion": "缺资源而无法处理或有拥塞风险时 O-PF 可回本地 500、可带 Retry-After，选择拒绝就不走余项。到第 2 项时，实际来向 offer 的媒体参数必须可接受且提供 MCPTT 语音编解码；任一不满足回 488。来件记录不全，不能当作未提供编解码。",
+      "normative_strength": "资源原因 500 和 Retry-After 为 MAY；选本地拒绝不继续。进入第 2 项，两条媒体条件均必须满足，否则 488。",
+      "limitations": [
+        "第 2 项两条件不能以已有业务、资源码、另一条 SIP 请求或初始准入代替。预建立两段相同是注 2 预期，不据注设新的拒绝条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.3 开头及第 1 项：现有预安排组会话、实际从所服务客户端接收、按需与预建立文字、可选资源拒绝"
+          ],
+          "printed_pages": [
+            236,
+            237
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.3 第 2–8 项及注 2–3：语音与媒体门槛、出向更新、两类 offer、发起用户和优先级字段"
+          ],
+          "printed_pages": [
+            237
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "prearranged-ongoing-opf-reinvite-calling-user-and-copy",
+      "title": "发给控制侧的更新怎样填发起用户和来向字段",
+      "conditions": [
+        "适用来件已经进入继续构造，且所查的是这次 O-PF 对应的出向 re-INVITE。"
+      ],
+      "conclusion": "O-PF 用 §6.3.2.1.9；来向实际有带受邀 MCPTT 用户 ID 的资源列表、MCPTT 信息 MIME 或 MCPTT 位置 MIME，各按通则复制。组程序写本条所称发起用户的 mcptt-calling-user-id；来向有 Resource-Priority 才复制其内容，CF 判断有效。",
+      "normative_strength": "构造、写发起用户、适用的条件复制和出向发送为 SHALL。",
+      "limitations": [
+        "第 4 项文字写 SIP INVITE，不据此发第二份初始请求。不是私呼 PAI 查询、优先级授权、初始位置逻辑或实际已收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.3 第 2–8 项及注 2–3：语音与媒体门槛、出向更新、两类 offer、发起用户和优先级字段"
+          ],
+          "printed_pages": [
+            237
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.9 按来向实际存在的资源列表、MCPTT 信息和位置 MIME 生成再邀请"
+          ],
+          "printed_pages": [
+            92
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "prearranged-ongoing-opf-reinvite-offer-basis",
+      "title": "按需来件和可用的预建立来件，哪份 offer 作依据",
+      "conditions": [
+        "已进入继续分支，且分清此来件实际在按需会话或同组关联而适用本条的预建立会话内。"
+      ],
+      "conclusion": "继续时另向控制侧生成出向 re-INVITE。按需从本次来向 SDP offer 构造，适用且关联同组的预建立来件从此前协商的 SDP 构造；不把预建立两段媒体相同的预期变成新拒绝规则。",
+      "normative_strength": "各自的 offer 依据为 SHALL；两类预建立媒体级描述一致为注 2 的预期。",
+      "limitations": [
+        "不是旧对话存在即关联，不把这两个 offer 依据移给应答，更不推断媒体参数已采用。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.3 开头及第 1 项：现有预安排组会话、实际从所服务客户端接收、按需与预建立文字、可选资源拒绝"
+          ],
+          "printed_pages": [
+            236,
+            237
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.3 第 2–8 项及注 2–3：语音与媒体门槛、出向更新、两类 offer、发起用户和优先级字段"
+          ],
+          "printed_pages": [
+            237
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.1.1, on-demand SDP offer composition items 1–2 and NOTE 2: conditional stream address and port replacement, control channel if present, and same-server exception"
+          ],
+          "printed_pages": [
+            83
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.1.2 用预建立初建已协商的语音及适用控制参数构造 offer"
+          ],
+          "printed_pages": [
+            83,
+            84
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "prearranged-ongoing-opf-reinvite-actual-matched-success",
+      "title": "哪份 2xx 进入 O-PF 本地 200，Warning、PAI 和 answer 从哪读",
+      "conditions": [
+        "O-PF 实际收到它所发这笔更新的匹配 2xx，不以 CF 出站或其他腿状态替代。Warning、PAI 和条件正文来自本次实际入向 200。"
+      ],
+      "conclusion": "成功段起句写匹配 2xx；这里另造客户端 200，SDP answer 仅回指 §6.3.2.1.2.1，不为预建立另列 answer，不套聊天组的既有协商 SDP answer。Warning 和 P-Asserted-Identity 取实际来向 200；来向 200 含 MCPTT 信息正文才按辅助条款复制。不能从其他 2xx 补出 200 的字段或正文。先向所服务终端发 200，再与媒体面交互。",
+      "normative_strength": "收到对应成功响应时，构造、按字面回指处理、写所收项目、发送、媒体交互按列项；实收 200 才确认其字段来源。",
+      "limitations": [
+        "印刷 237 页两段回指第 7 项，但第 7 项处理 Resource-Priority，第 8 项才发；第 4 项和 403 段文字写 SIP INVITE。照原文保留这些差异，按这次已发更新匹配响应，不补一笔初始 INVITE。",
+        "不能把生成或发出 200 当作终端实收、承载实际更新或媒体交互完成。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.3 第 2–8 项及注 2–3：语音与媒体门槛、出向更新、两类 offer、发起用户和优先级字段"
+          ],
+          "printed_pages": [
+            237
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.3 实收匹配 2xx 段第 1–6 项：只列的 answer 回指、实际 200 字段、本地发送再媒体"
+          ],
+          "printed_pages": [
+            237
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.2.1, composing an SDP answer for an on-demand session (originating participating function boundary)"
+          ],
+          "printed_pages": [
+            84
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "6.3.2.1.5.1 full;6.3.2.1.5.2 full"
+          ],
+          "printed_pages": [
+            86,
+            87
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "prearranged-ongoing-opf-reinvite-actual-matched-403",
+      "title": "匹配的 403 怎样回终端，是否先处理媒体",
+      "conditions": [
+        "O-PF 实际收到本次出向会话更新的匹配 403，来向正文与 Warning 分别取实收。"
+      ],
+      "conclusion": "对应 403 则另造客户端 403。来向实际有 MCPTT 信息 MIME 才复制它，并带实际收到的 Warning；先向终端发 403，再与媒体面交互。不补造指示值，不套其他失败码。",
+      "normative_strength": "另造 403、实收时复制指定 MIME、附所收 Warning、发送再与媒体交互按列项。",
+      "limitations": [
+        "印刷 237 页两段回指第 7 项，但第 7 项处理 Resource-Priority，第 8 项才发；第 4 项和 403 段文字写 SIP INVITE。照原文保留这些差异，按这次已发更新匹配响应，不补一笔初始 INVITE。",
+        "不是本地 500、媒体门槛 488、其他 4xx、终端实收或优先状态变化的证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.3 第 2–8 项及注 2–3：语音与媒体门槛、出向更新、两类 offer、发起用户和优先级字段"
+          ],
+          "printed_pages": [
+            237
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.379-v16.14.0",
+          "clauses": [
+            "10.1.1.3.1.3 实收匹配 403 段第 1–5 项：有来向正文才复制、Warning、本地发送再媒体及印刷回指差异"
+          ],
+          "printed_pages": [
+            237
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-calls-prearranged-server-admission-routing",
+    "r16-calls-chat-preestablished-refer-outcome",
+    "r16-calls-private-server-admission-routing",
+    "r16-mcptt-rejoin-late-entry",
+    "r16-calls-preestablished-group-rejoin",
+    "r16-calls-prearranged-preestablished-priority-confirmation"
+  ],
+  "limitations": [
+    "不套初始组呼、主动重入或晚入、终接侧、NCF、聊天组、私呼或既有优先级变更。不凭生成请求、头字段或某腿的结果断言终端实收、媒体交互完成、话权或整场会话状态。查规范可按条件读，不必先有抓包。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  }
+}
