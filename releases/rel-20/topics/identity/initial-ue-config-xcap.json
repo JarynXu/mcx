@@ -1,0 +1,166 @@
+{
+  "topic_id": "r20-identity-initial-ue-config-xcap",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3；共同的 MCS UE 初始配置文档。MCPTT 业务 UE 配置和用户配置档仅作同版 URI 对照。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "mcs-initial-admin-template-and-device-selection",
+      "clause": "7.2.1.0",
+      "conditions": [
+        "MCS 管理员为任务关键组织配置共同的 MCS UE 初始配置文档。"
+      ],
+      "conclusion": "主模板存于 MCS 管理员的用户目录。没有 mcptt-UE-id 筛选元素的默认主模板名为 DEFAULT-MCPTT-INITIAL-UE.xml，适用范围是该组织的 MCS 终端。特定设备的选档按实例 ID 对照筛选条件；如列出 Instance-ID-URN，则用实例 ID 相等判定该条。历史命名含 MCPTT，不把共同文档限定于 MCPTT。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.1.0"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcs-initial-terminal-uri-and-cms-generation",
+      "clause": "7.2.1.1",
+      "conditions": [
+        "MCS 客户端按 XCAP 访问原文所述的该 UE 的共同初始配置文档。"
+      ],
+      "conclusion": "使用 CMSXCAPROOTURI/org.3gpp.mcptt.ue-init-config/users/sip:MCSUEID/MCSUEID。users 树的 XCAP 用户键与末段资源名都用 UE ID；专配或适用主模板时 URI 不变。若管理员未专配该 UE 的文档，CMS 须从主模板生成具体文档，在其中设置该客户端的 UE ID；主模板文件名不是本条的设备资源名。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.1.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcs-initial-selector-document-vs-mo",
+      "clause": "7.2.2.7",
+      "conditions": [
+        "区分 TS 24.484 初始配置文档和配置给终端的 TS 24.483 初始配置 MO。"
+      ],
+      "conclusion": "CMS 生成的具体文档须设置客户端 UE ID。另见 §7.2.1.0：与 CMS 共置的设备管理服务器用初始配置文档作模板生成 MO。用于筛选的初始配置文档含 mcptt-UE-id 时，文档和对应 MO 都只适用所标识的 MCS UE；该文档无此元素时，两者都适用该域所有 MCS UE。筛选项可见于上传给 CMS 或管理员下载的文档；两种范围下都不出现在配置给终端的 TS 24.483 初始配置 MO。只从 MO 看不到此字段不能推出适用范围，也不能判定 CMS 未按设备选档或未生成文档。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.7"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.1.0"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.1.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcs-initial-selector-schema-casing",
+      "clause": "7.2.2.3",
+      "conditions": [
+        "按固定 DOCX 的结构、内嵌 XSD 与正文判断元素拼写。"
+      ],
+      "conclusion": "生成段写 MCPTT-UE-id；结构、Schema 和语义写 mcptt-UE-id。Schema 按 MCPTTUEIDType 复杂类型声明后者。生成段没有给出序列化示例；不从这处大小写差异推导第二个字段或服务端容错规则。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.1.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7.2.2.7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-xcap-service-ue-vs-user-profile-comparison",
+      "clause": "8.2.1",
+      "conditions": [
+        "对照 MCPTT 业务 UE 文档和用户配置档；对业务 UE 文档，MCPTT 用户用该 UE 认证且获授权在该 UE 使用 MCPTT。"
+      ],
+      "conclusion": "业务 UE 文档按 CMSXCAPROOTURI/org.3gpp.mcptt.ue-config/users/sip:MCPTTID/MCSUEID 定位，users 下为已认证 MCPTT ID、尾段是设备 ID（MCSUEID）。用户配置档按 CMSXCAPROOTURI/org.3gpp.mcptt.user-profile/users/sip:MCPTTID/mcptt-user-profile-INDEX.xml 定位，users 下亦为已认证 MCPTT ID、尾段对应档案索引。两者地址都不能代替授权证据。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.2.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.2.1A"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.1A"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "不从设备路径推出授权通过、403/404 后切换模板、多个匹配文档的优先级或终端下载时机。TS 24.483 仅用本版正文明确区分管理对象，不核目标正文。",
+    "在此使用的是共同初始配置文档的 URI，不把它当成 TS 24.483 MO 下载报文或 CMS 可访问任意用户的证据。"
+  ],
+  "related": [
+    "r20-identity-primary-ue-online-configuration",
+    "r20-identity-mcptt-user-profile-xcap-validation"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
