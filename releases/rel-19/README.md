@@ -18,7 +18,7 @@
 | [身份、注册与配置](topics-identity.json) | 身份认证、SIP 注册、服务授权、令牌、HTTP 身份、伙伴系统迁移和用户配置取得/更新/切换。各步骤的成功不能互相代替；主系统已注册且已有token时，MCPTT另查[PUBLISH服务授权与设置](topics/identity/mcptt-publish-service-authorization.md)，不以通用安全授权或INVITE绑定检查替代。 |
 | [安全与密钥](topics-security.json) | 接入保护、KMS、私呼/组密钥、成员变化、保存清理及信令/媒体保护。取得密钥不等于业务准入或媒体连通；[离网两用户私呼密钥](topics/security/offnetwork-private-key-protection.md)按独立分发与验证入口读取，不套在线登录或组GMK步骤。 |
 | [MCX 与 LMR 互通](topics-interworking.json) | IWF 范围、组配置与归属、重组、组呼/私呼、SDS 映射、话权和位置。Stage 2 信息流不是原生 MCX Stage 3 消息配方。 |
-| [位置服务](topics-location.json) | 公共位置获取、报告、订阅、取消、历史补报与传播权限，按各主题Stage和固定来源读取。MCData本地直接ID请求的Stage 3身份、许可与报告入口见[MCData域](topics-mcdata.json)；跨MC/LMR位置到互通域。当前归属、测量时间和报告可用信息分别判断。 |
+| [位置服务](topics-location.json) | 公共位置获取、报告、订阅、取消、历史补报与传播权限，按各主题Stage和固定来源读取。MCData本地直接ID请求的Stage 3身份、许可与报告入口见[MCData域](topics-mcdata.json)；跨MC/LMR位置到互通域。当前归属、测量时间和报告可用信息分别判断。 [V19.10.1 Stage 2](topics/location/reporting.md)区分配置与上报，公共 [V19.3.0 Stage 3 LMS_Reporting](topics/location/lms-registration-configuration.md)区分注册 201、配置通知发送和独立收件；不要互当同一流程。 |
 | [网络策略与 QoS](topics-network-policy.json) | EPS 信令、Rx 重试与 MCData 预建立共享边界、5GS 的 QFI/5QI/ARP、GBR 通知、MCPTT 资源模型和通用 N5 创建、更新、终止及GBR目标变化通知。资源结果不是话权或媒体交付结果；[MCData 预建立共享](topics/network-policy/mcdata-preestablished-resource-sharing-boundary.md)的注册、Rx绑定和执行证据也须分开。 |
 | [SIP 路由](topics-signalling.json) | 注册器寻找及用户绑定、对话标识、remote target 与 route set。RFC 基线不等于完整 MCX SIP profile。 |
 | [紧急与优先状态](topics-emergency.json) | 通用紧急要求、MCPTT 私呼升级/降级，以及[已建组呼紧急升级](topics/emergency/group-inprogress-upgrade.md)与[取消紧急状态](topics/emergency/group-inprogress-cancel.md)各自的条件入口；没有正在进行的组通话时，已归属用户另查 [DedicatedGroup 独立告警](topics/emergency/standalone-group-alert.md)的请求、分发与确认边界；MCData、MCVideo 的专有告警与取消须回到各自业务域，不跨业务搬用规则。 [独立 MESSAGE 告警取消](topics/emergency/standalone-alert-cancellation.md)另分客户端与 CF 入口；无通话纯取消的 CF caller 未闭合，不接成发起后的必经链。 [已有组呼迫近危险请求与反馈](topics/emergency/group-imminent-request-feedback.md)分别读取升级、取消和状态反馈，保留许可回指及取消入口疑义。 |
@@ -44,6 +44,7 @@ Stage 1 是业务要求，Stage 2 是架构或信息流，Stage 3 是协议程�
 | --- | --- |
 | 通用、视频及数据业务要求 | TS 22.280 V19.7.0；TS 22.281 V19.0.0；TS 22.282 V19.0.0 |
 | 公共架构与位置 | TS 23.280 V19.9.0、V19.10.1，按各主题分别适用，不以较新版本覆盖较旧结论 |
+| 公共位置登记与配置接口 | TS 24.283 V19.3.0 Stage 3，仅 LMS_Reporting 本题所列操作 |
 | MCX/LMR 互通 | TS 23.283 V19.5.0 |
 | MCPTT 通话与媒体控制 | TS 24.379 V19.4.0；TS 24.380 V19.1.0 |
 | 组文档与 HTTP 身份 | TS 24.481 V19.3.0；TS 24.482 V19.0.0 |

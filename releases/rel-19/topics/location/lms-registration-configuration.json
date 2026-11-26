@@ -1,0 +1,553 @@
+{
+  "topic_id": "r19-location-lms-registration-configuration",
+  "release": 19,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "LMS 注册与位置配置回调：201 和 204 各确认什么？",
+  "common_conditions": [
+    "Rel‑19 TS 24.283 V19.3.0 Stage 3；不继承 TS 23.280 或其他版本的规则。",
+    "归因实际结果时区分请求发送、对端实收与关联响应；按已知的操作、实际角色和同一事务选择。"
+  ],
+  "condition_rule": "每条声明继承 common_conditions 后按自己的操作及实际证据条件读取。实际注册结果、配置发送、对端配置收件和执行各自判断。查规范可直接按条件读，不以已经抓包为前提。",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.283-v19.3.0",
+  "claims": [
+    {
+      "id": "registration-resource",
+      "conditions": [
+        "该 LMC 对该 LMS 发 LMS_Reporting 注册集合 POST。",
+        "判断成功资源时，实际看到该注册的匹配 201 Created 及 Location。"
+      ],
+      "conclusion": "请求建立 LMC 的登记。成功分支由 LMS 创建资源，回本笔 201，Location 表示创建资源的 URI。只看到 POST 发出不确认创建；匹配 201 但报文捕获没有看到 Location 时，不能还原资源 URI。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "4.2"
+          ],
+          "printed_pages": [
+            12
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.2.2"
+          ],
+          "printed_pages": [
+            17,
+            18
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.1"
+          ],
+          "printed_pages": [
+            32
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.3.2"
+          ],
+          "printed_pages": [
+            34,
+            35
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1–A.2"
+          ],
+          "printed_pages": [
+            73,
+            74
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.3.5.3.1"
+          ],
+          "printed_pages": [
+            39,
+            40
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      },
+      "limitations": [
+        "Location 不是 `locationConfigUri`；201 或其他操作的 201 不确认配置送达。",
+        "§7.1.3.2.3.1 的 201 说明要求 Location，所附响应头小表却列 n/a；规范性附录 A.2 要求 Location，编码按 A.1–A.2。完整实际 201 缺头与资料没抓到头不是同一情况；均不补造 URI。"
+      ]
+    },
+    {
+      "id": "registration-refusal",
+      "conditions": [
+        "实际匹配同一次注册 POST 的 401。"
+      ],
+      "conclusion": "匹配 401 是这笔注册被拒。独立核实有访问令牌未通过这笔注册的校验时，条款的具体分支要求 LMS 回 401 并停止这笔请求的后续步骤。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.2.2"
+          ],
+          "printed_pages": [
+            17,
+            18
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      },
+      "limitations": [
+        "不从 401 单独反推校验失败细节，不判断该 LMC 是否有其他登记。"
+      ]
+    },
+    {
+      "id": "configuration-dispatch",
+      "conditions": [
+        "成功注册分支可选择发起通知，或 LMS 在 LMC 注册期间决定通知。",
+        "识别实际发送时，关联已注册 LMC 与该登记提供的 locationConfigUri；动作是 LMS 发起新的 ConfigurationNotify POST，带 LocationConfiguration。"
+      ],
+      "conclusion": "LMS 可以在成功分支发起配置通知；在注册期间决定通知时，按条款向该 LMC 的配置回调地址发独立 POST。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.2.2"
+          ],
+          "printed_pages": [
+            17,
+            18
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.5.2"
+          ],
+          "printed_pages": [
+            20
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.5.1"
+          ],
+          "printed_pages": [
+            40
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.5.2.2–.3.1"
+          ],
+          "printed_pages": [
+            40,
+            41
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1–A.2"
+          ],
+          "printed_pages": [
+            73,
+            74
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      },
+      "limitations": [
+        "不规定每次注册必推、首次推送的固定时限、需先让 LMC 收到 201、或两个事务的实际到达顺序。发送不是收件，locationRequestUri 不是该操作。"
+      ]
+    },
+    {
+      "id": "configuration-receipt",
+      "conditions": [
+        "已辨明该 LMS→注册 LMC 的 ConfigurationNotify，见该 LMC 对同一回调的实际匹配 204；或有该 LMC 实收这份配置的独立证据。"
+      ],
+      "conclusion": "匹配 204 是协议中的配置收件确认。可凭独立 LMC 实收证据认定收到，不要求同一抓包还包含旧注册成功响应。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.5.2"
+          ],
+          "printed_pages": [
+            20
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.5.2.2–.3.1"
+          ],
+          "printed_pages": [
+            40,
+            41
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1–A.2"
+          ],
+          "printed_pages": [
+            73,
+            74
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.3.3.3.1"
+          ],
+          "printed_pages": [
+            35,
+            36
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.6.2"
+          ],
+          "printed_pages": [
+            21
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.5.3.2–.3.1"
+          ],
+          "printed_pages": [
+            41,
+            42
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.3.5.3.1"
+          ],
+          "printed_pages": [
+            39,
+            40
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      },
+      "limitations": [
+        "仅见发出、匹配不明、续期 PUT 的 204、拉取配置 GET 的 200 都不能替代此回调的收件确认。缺 ACK 不能直接判失败。",
+        "LocationReportRequest 使用登记的 locationRequestUri 和 LocationRequest；不是 ConfigurationNotify。位置上送也另有 201；不以响应码替操作。"
+      ]
+    },
+    {
+      "id": "receiver-processing-obligation",
+      "conditions": [
+        "该 LMC 实际收到这份 LocationConfiguration 时。"
+      ],
+      "conclusion": "条文要求按配置范围处理和保存、设置触发条件并启动最短上报间隔计时器。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.5.2"
+          ],
+          "printed_pages": [
+            20
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      },
+      "limitations": [
+        "该计时器不是 LMS 的推送期限；不能用 201、204 或发送日志证明 LMC 已执行处理、触发、计时或产生实际位置报告。"
+      ]
+    }
+  ],
+  "limitations": [
+    "只覆盖同一已辨认 LMC、LMS 的 LMS_Reporting 注册创建、配置通知及收件，不包括续期、注销、订阅、位置报告上送、完整安全或部署。",
+    "相邻操作仅用来避免把不同事务的状态码、URI 或先后当作本题证据。这里不将任何 Stage 2 例子映射到该 HTTP 事务，也不确定两份规范的互通关系。"
+  ],
+  "boundary_comparisons": [
+    {
+      "question": "201 的 Location 是否必需？",
+      "boundary": "条文和表中 201 描述要求它，规范性 Annex A.2 的 201 header 亦必需；§7.1.3.2.3.1 的 201 header 小表列 n/a 时，编码按 Annex A.1–A.2。201 的捕获缺口不是证明服务端遗漏，完整实际消息省略则不能当作完整的标准成功报文。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.2.2"
+          ],
+          "printed_pages": [
+            17,
+            18
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.3.2"
+          ],
+          "printed_pages": [
+            34,
+            35
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1–A.2"
+          ],
+          "printed_pages": [
+            73,
+            74
+          ],
+          "usage": "comparison-only"
+        }
+      ]
+    },
+    {
+      "question": "同状态码、不同操作呢？",
+      "boundary": "续期 PUT、拉取配置 GET、报告发布和索要报告分别辨别；不用本稿回答这些流程的后续步骤。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.3.3.3.1"
+          ],
+          "printed_pages": [
+            35,
+            36
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.6.2"
+          ],
+          "printed_pages": [
+            21
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.3.5.3.1"
+          ],
+          "printed_pages": [
+            39,
+            40
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.5.3.2–.3.1"
+          ],
+          "printed_pages": [
+            41,
+            42
+          ],
+          "usage": "comparison-only"
+        }
+      ]
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "4.2"
+      ],
+      "printed_pages": [
+        12
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.2.2.2.2"
+      ],
+      "printed_pages": [
+        17,
+        18
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.1"
+      ],
+      "printed_pages": [
+        32
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.3.2"
+      ],
+      "printed_pages": [
+        34,
+        35
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.3.3.3.1"
+      ],
+      "printed_pages": [
+        35,
+        36
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.2.2.5.2"
+      ],
+      "printed_pages": [
+        20
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.2.2.6.2"
+      ],
+      "printed_pages": [
+        21
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.5.1"
+      ],
+      "printed_pages": [
+        40
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.5.2.2–.3.1"
+      ],
+      "printed_pages": [
+        40,
+        41
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.5.3.2–.3.1"
+      ],
+      "printed_pages": [
+        41,
+        42
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.3.5.3.1"
+      ],
+      "printed_pages": [
+        39,
+        40
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.1–A.2"
+      ],
+      "printed_pages": [
+        73,
+        74
+      ],
+      "usage": "primary"
+    }
+  ],
+  "related": [
+    {
+      "topic": "r19-location-reporting",
+      "relation": "separate-stage2-config-and-report-event",
+      "required": false
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  }
+}

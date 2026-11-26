@@ -126,6 +126,10 @@
         {
           "condition": "问题涉及用户触发覆盖",
           "read": "topics/location/trigger-override.md"
+        },
+        {
+          "condition": "只有问题转为 TS 23.280 V19.10.1 Stage 2 的单 MC 系统初始/更新配置来源、用户档例外、配置触发上报或 CSC‑14/15 分工时才读。不能把 HTTP 注册或回调的状态码当成本条所称事件；仅查 HTTP 报文或固定其他版号时不走此入口。",
+          "read": "topics/location/reporting.md"
         }
       ],
       "boundary": "Privacy requirements are clause-checked Stage1; linked Stage2 explanations remain editorial summaries."
@@ -2466,6 +2470,30 @@
       "question": "跨PF位置查询如何区分请求分派、目标许可与报告回程？",
       "start": "topics/mcdata/cross-pf-location.md",
       "boundary": "在网直接ID列表，目标位置由不同PF管理；每个handler依实际收到的有效输入和本身守卫适用，拒绝与异常剥离不继承其他角色成功前提。 有效输入不证明必达；请求者PAI映射、完整OR/AND剥离守卫、刷新RequestId映射和配置PAI回程缺失或陈旧四项缺口保留。两个200不证明全部目标定位成功，不借本地owner闭合完整跨PF链。"
+    },
+    {
+      "id": "r19-location-v191001-config-versus-report-event",
+      "question": "TS 23.280 V19.10.1 Stage 2：SIP 注册、位置配置、上报事件和 CSC‑14/15 怎么区分？",
+      "start": "topics/location/reporting.md",
+      "next_if": [
+        {
+          "condition": "只有问题转为 TS 24.283 V19.3.0 Stage 3 的 LMS_Reporting 注册 POST、配置通知或其匹配应答时才读；判读实况要确认实际角色、操作和同一事务。不是解释 Stage 2 初次注册事件、CSC 参考点、旧版采集、MCData PF 配置或位置订阅。",
+          "read": "topics/location/lms-registration-configuration.md"
+        }
+      ],
+      "boundary": "限 TS 23.280 V19.10.1 Stage 2。单 MC 系统内，LMS 提供初始规则或更新；走消息分支则 LMS 发给 LMC，可单播或用 MBMS 组消息。适用用户档已经包含这份配置时不用另发。适用规则确实配置了初次注册或收到配置，且同一 LMC 的对应事件实际发生，才按该事件上报 LMS 指定且可取得的信息。实际 SIP 层注册由信令 UA 向 SIP 核心做；可选第三方注册是对 MC 业务服务器。CSC‑14 的 LMC/LMS 用 HTTP‑1/HTTP‑2 参考点；CSC‑15 的 LMS 与业务服务器之间仅组动态数据订阅/通知用 SIP‑2，其他信令用 HTTP‑1/HTTP‑2。参考点名称不是 HTTP 版本，也不排除条款所列 MBMS 组配置。 不把初次注册命名为 IMS SIP、LMS HTTP 登记或 MC 业务授权，也不把它当作自动推配置触发。只见 SIP 注册、LMS 发出配置或某个状态码，不证明目标实收、上报、HTTP 登记、配置时限或 Stage 3 方法。没有把 V19.9.0 原有采集或订阅换版。"
+    },
+    {
+      "id": "lms-registration-configuration",
+      "question": "TS 24.283 V19.3.0 Stage 3：注册 201 Location、配置 POST 和匹配回调 204 各确认什么？",
+      "start": "topics/location/lms-registration-configuration.md",
+      "next_if": [
+        {
+          "condition": "只有问题转为 TS 23.280 V19.10.1 Stage 2 的单 MC 系统初始/更新配置来源、用户档例外、配置触发上报或 CSC‑14/15 分工时才读。不能把 HTTP 注册或回调的状态码当成本条所称事件；仅查 HTTP 报文或固定其他版号时不走此入口。",
+          "read": "topics/location/reporting.md"
+        }
+      ],
+      "boundary": "限 TS 24.283 V19.3.0 Stage 3。注册看实际同一 LMC→LMS 注册集合 POST（/lms-reporting/v1/registrations）的匹配 201 Location。发送看 LMS 实际另发独立的 ConfigurationNotify POST，目的为已注册 LMC 的 locationConfigUri，正文为 LocationConfiguration。收件看这笔回调的实际匹配 LMC 204，或该 LMC 实收这份配置的独立证据。已能独立核实回调不要求同一份日志含此前的 201。 LMS 可在注册成功分支发起配置通知，条款不规定每次必推、首次下发期限或两事务到达顺序。发送不确认收件；匹配回调 204 不证明配置已执行或已报位置。IMS REGISTER、其他事务的 201/204、配置 GET 的 200 不替代回调。不把本笔 HTTP 注册、配置回调映射为另版 Stage 2 上报事件，也不以此闭合续期／注销、订阅或报告上送。"
     }
   ]
 }

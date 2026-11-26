@@ -711,6 +711,22 @@
 
 所列入口的来源：3GPP TS 22.280 V19.7.0；3GPP TS 23.280 V19.9.0。具体Stage、条款及跨源差异以各主题为准。
 
+### V19.10.1：配置从哪来，初次注册何时触发上报
+
+- **能回答：**区分 TS 23.280 V19.10.1 Stage 2 的配置下发、终端上报触发及相关参考点。可判断主系统 SIP 注册成功是不是发配置的证据。
+- **只到条件或接口：**限 TS 23.280 V19.10.1 Stage 2。单 MC 系统内，LMS 提供初始规则或更新；走消息分支则 LMS 发给 LMC，可单播或用 MBMS 组消息。适用用户档已经包含这份配置时不用另发。适用规则确实配置了初次注册或收到配置，且同一 LMC 的对应事件实际发生，才按该事件上报 LMS 指定且可取得的信息。实际 SIP 层注册由信令 UA 向 SIP 核心做；可选第三方注册是对 MC 业务服务器。CSC‑14 的 LMC/LMS 用 HTTP‑1/HTTP‑2 参考点；CSC‑15 的 LMS 与业务服务器之间仅组动态数据订阅/通知用 SIP‑2，其他信令用 HTTP‑1/HTTP‑2。参考点名称不是 HTTP 版本，也不排除条款所列 MBMS 组配置。
+- **尚未建立的结论：**不把初次注册命名为 IMS SIP、LMS HTTP 登记或 MC 业务授权，也不把它当作自动推配置触发。只见 SIP 注册、LMS 发出配置或某个状态码，不证明目标实收、上报、HTTP 登记、配置时限或 Stage 3 方法。没有把 V19.9.0 原有采集或订阅换版。
+
+入口：[位置报告与组目标：SIP 注册与位置配置边界](topics/location/reporting.md)。
+
+### LMS HTTP 注册与配置回调
+
+- **能回答：**可查同一 LMC 的 LMS_Reporting 注册资源创建、配置通知方向和收件证据。
+- **只到条件或接口：**限 TS 24.283 V19.3.0 Stage 3。注册看实际同一 LMC→LMS 注册集合 POST（/lms-reporting/v1/registrations）的匹配 201 Location。发送看 LMS 实际另发独立的 ConfigurationNotify POST，目的为已注册 LMC 的 locationConfigUri，正文为 LocationConfiguration。收件看这笔回调的实际匹配 LMC 204，或该 LMC 实收这份配置的独立证据。已能独立核实回调不要求同一份日志含此前的 201。
+- **尚未建立的结论：**LMS 可在注册成功分支发起配置通知，条款不规定每次必推、首次下发期限或两事务到达顺序。发送不确认收件；匹配回调 204 不证明配置已执行或已报位置。IMS REGISTER、其他事务的 201/204、配置 GET 的 200 不替代回调。不把本笔 HTTP 注册、配置回调映射为另版 Stage 2 上报事件，也不以此闭合续期／注销、订阅或报告上送。
+
+入口：[LMS 注册与位置配置回调：201 和 204 各确认什么？](topics/location/lms-registration-configuration.md)。
+
 ## 网络策略与QoS
 
 [查看本域全部主题](topics-network-policy.json)
