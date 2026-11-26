@@ -2702,6 +2702,22 @@
       ]
     },
     {
+      "id": "lms-adaptive-location-trigger-time-distance",
+      "question": "AdaptiveTrigger：终端越过位置距离门槛后，何时走距离分支或计时分支？",
+      "start": "topics/location/lms-location-report-publish.md",
+      "boundary": "查 TS 24.283 V19.3.0 Stage 3 的已适用 adaptiveTrigger，查规范无需抓包。距离以最近一次实际发送位置报告时的所在位置为参照：初次严格超过 minDistance，等 persistencePeriod 后复查至少达到。没有按距离发报告时，按上一次报告起算三个时间参数；minPeriod 是等待下限。仅在 UE 同时处于 RRC_INACTIVE 且接收 MBS 时读已配置的对应变体。minimumReportInterval 的事件发布检查与实际 POST/应答另看，不从阈值或触发 ID 推网络发送或采样。",
+      "next_if": [
+        {
+          "condition": "问实际 LMS→已注册 LMC 索要报告或该目标应答；不是用这项触发推索要到达。",
+          "read": "topics/location/lms-location-report-request.md"
+        },
+        {
+          "condition": "问 LMS 的位置配置通知实际是否到 LMC；其收件不证明触发已应用或已发布位置。",
+          "read": "topics/location/lms-registration-configuration.md"
+        }
+      ]
+    },
+    {
       "id": "lms-registration-maintenance",
       "question": "LMC 已经向 LMS 注册：PUT 何时算续期，超过生效 expTime 或 DELETE 204 各说明什么？",
       "start": "topics/location/lms-registration-maintenance.md",

@@ -722,6 +722,308 @@
         "independent_source_review": false,
         "independent_usage_acceptance": false
       }
+    },
+    {
+      "id": "adaptive-trigger-eligible-config-and-separate-siblings",
+      "conditions": [
+        "查 TS 24.283 V19.3.0 已适用的 LocationConfiguration；实例判断按 LMC、MC UE 当时状态与生效配置。"
+      ],
+      "conclusion": "adaptiveTrigger 是所在状态的 TriggeringCriteria 中可选的时间和距离组合触发。MC UE 紧急和非紧急分别读 emergencyTriggeringCriteria 与 triggeringCriteria。组合触发不替代独立 travelledDistance、periodicReport，亦不是 LMS 向目标 LMC 直接索要报告。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.3–.4 Tables 7.1.6.2.3-1 and 7.1.6.2.4-1"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.34 Table 7.1.6.2.34-1"
+          ],
+          "printed_pages": [
+            51,
+            52,
+            53
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 TriggeringCriteria and AdaptiveTrigger"
+          ],
+          "printed_pages": [
+            78,
+            79
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.32 Table 7.1.6.2.32-1"
+          ],
+          "printed_pages": [
+            50
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.1–.2"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "只有适用并实际配置的 adaptiveTrigger 才按本主题的参数或其缺省值判断，不因缺省值开启整个触发。实际收到配置与已应用不同。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "adaptive-trigger-distance-reference-and-two-checks",
+      "conditions": [
+        "已辨明生效 adaptiveTrigger 的 minDistance 和 persistencePeriod，并有上一次实际报告发送的参照位置。"
+      ],
+      "conclusion": "以当前位置距上次发送位置报告时所在的位置为距离。初次检测要严格超过 minDistance；从这次检测起等 persistencePeriod，再查看更新后的当前位置距同一参照是否至少达到 minDistance。复查为正才满足距离判断；在首次和复查时恰等于阈值，结论不同。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.34 Table 7.1.6.2.34-1"
+          ],
+          "printed_pages": [
+            51,
+            52,
+            53
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 TriggeringCriteria and AdaptiveTrigger"
+          ],
+          "printed_pages": [
+            78,
+            79
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "参照不是报告所携历史测量点、HTTP 状态时间、轨迹累计里程，也不用第一笔测量代复查。本节未规定测距算法、需要连续超出阈值、首次无上一报告、途中回落或重入如何调度。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "adaptive-trigger-parameter-bounds-and-time-fallback",
+      "conditions": [
+        "正常参数的语义限该项 adaptiveTrigger 已适用；读时间分支时厘清上一次实际报告和是否已因距离发出。"
+      ],
+      "conclusion": "minPeriod 规定两份连续报告的最短等待，与距离变化无关；minPeriod、persistencePeriod 是非负整数秒，省略时 0。minDistance 是正整数米，省略时按无穷大；additionalTime 是正整数秒，省略时 1。若没按距离发报告，时间分支从上一次报告起算 minPeriod + persistencePeriod + additionalTime。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.34 Table 7.1.6.2.34-1"
+          ],
+          "printed_pages": [
+            51,
+            52,
+            53
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 TriggeringCriteria and AdaptiveTrigger"
+          ],
+          "printed_pages": [
+            78,
+            79
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不从检测或复查时刻起算上述总和，不用先前越界代替实际发送。不补与最短等待、其他触发、并发事件或其他发布计时器的协调/优先级，也不保证界线时刻网络发包。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "adaptive-trigger-rrc-inactive-mbs-variant",
+      "conditions": [
+        "UE 一边在 RRC_INACTIVE 状态一边实际接收 MBS 流量；按这项 adaptiveTrigger 中配置的对应参数。"
+      ],
+      "conclusion": "rrcInactiveMinPeriod、rrcInactiveMinDistance、rrcInactivePersistencePeriod、rrcInactiveadditionalTime 是四个可选变体；描述说按对应参数的语义与行为用于在 RRC_INACTIVE 接收 MBS 的 UE。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.34 Table 7.1.6.2.34-1"
+          ],
+          "printed_pages": [
+            51,
+            52,
+            53
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 TriggeringCriteria and AdaptiveTrigger"
+          ],
+          "printed_pages": [
+            78,
+            79
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不凭单有 RRC 状态、MBS 支持能力、其他状态下收到 MBS 或抽象的组播事实应用变体。没有在此规定部分配置如何与普通字段混合，也不从本条推通用停止位置上报。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "adaptive-trigger-id-and-schema-limits",
+      "conditions": [
+        "对照 V19.3.0 印刷 AdaptiveTrigger 表、A.2 及实际报告中的触发标识时，用准确的操作和字段。"
+      ],
+      "conclusion": "印刷表 7.1.6.2.34-1 将 triggerId 列 M、1，要求唯一值并回到位置报告；A.2 的 AdaptiveTrigger 模型未列 required，参数的边界和缺省在说明里。表 7.1.6.2.49-1 对位置报告的整个 triggerId 数组另标可选。A.1 优先限信息元素与方法编码，程序和适用条件另读。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.34 Table 7.1.6.2.34-1"
+          ],
+          "printed_pages": [
+            51,
+            52,
+            53
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 TriggeringCriteria and AdaptiveTrigger"
+          ],
+          "printed_pages": [
+            78,
+            79
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.49 Table 7.1.6.2.49-1"
+          ],
+          "printed_pages": [
+            56
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不以 schema 未列边界、缺省或必需清单决定接收或程序合规。单个 ID、缺少或不完整的 ID 捕获，不证明该项唯一触发、成功发送、LMS 接收或新测量。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "adaptive-trigger-result-separate-from-publish-timer",
+      "conditions": [
+        "比较配置中 adaptiveTrigger 的 minPeriod 和 §6.2.2.8.1 实际事件发布分支；若判断实况，验同一 LMC、适用触发、发送状态和相应 HTTP 事务。"
+      ],
+      "conclusion": "事件触发时若 minimumReportInterval 在跑，LMC 等它到期，届时任一上报触发仍为真才按该路径发送。这个通用发布检查不由 adaptiveTrigger 的 minPeriod 替代；LMC 实收 LMS 的 LocationReportRequest 另有发布分支，不能拿这项距离判断证明它发生。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.34 Table 7.1.6.2.34-1"
+          ],
+          "printed_pages": [
+            51,
+            52,
+            53
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.1–.2"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.5.2"
+          ],
+          "printed_pages": [
+            20
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "不是两个时间参数的合并算法。不规定计时器原本未运行如何处理、本项失败时其他触发均停、报告已经网络发出、已被接受或实际采样。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
@@ -917,6 +1219,81 @@
         87
       ],
       "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.3–.4 Tables 7.1.6.2.3-1 and 7.1.6.2.4-1"
+      ],
+      "printed_pages": [
+        43,
+        44
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.34 Table 7.1.6.2.34-1"
+      ],
+      "printed_pages": [
+        51,
+        52,
+        53
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 TriggeringCriteria and AdaptiveTrigger"
+      ],
+      "printed_pages": [
+        78,
+        79
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.32 Table 7.1.6.2.32-1"
+      ],
+      "printed_pages": [
+        50
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.2.2.8.1–.2"
+      ],
+      "printed_pages": [
+        22,
+        23
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.49 Table 7.1.6.2.49-1"
+      ],
+      "printed_pages": [
+        56
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.2.2.5.2"
+      ],
+      "printed_pages": [
+        20
+      ],
+      "usage": "comparison-only"
     }
   ],
   "related": [
@@ -938,6 +1315,11 @@
     {
       "topic": "r19-location-report-acquisition",
       "relation": "separate-single-system-stage2-triggers",
+      "required": false
+    },
+    {
+      "topic": "r19-location-lms-location-report-request",
+      "relation": "separate-lms-report-request-target-evidence",
       "required": false
     }
   ],
