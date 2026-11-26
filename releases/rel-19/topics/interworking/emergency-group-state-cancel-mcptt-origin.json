@@ -1,0 +1,642 @@
+{
+  "topic_id": "r19-iwf-emergency-group-state-cancel-mcptt-origin",
+  "release": 19,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCPTT 定义的互通组取消紧急状态：会清告警吗？谁确认？",
+  "common_conditions": [
+    "TS 23.283 V19.5.0 Rel-19 Stage 2 §10.6.2.3.2；除标明比较外限 MCPTT 用户请求取消 MCPTT 定义互通组的进行中紧急状态。",
+    "另一 MCPTT 客户端已归属，IWF 已接入并获准互通，已配置组和用户身份映射；发起用户的本组取消授权另查。",
+    "查规范不需要抓包；结束通话不等于取消组状态。实际信令、状态、承载和媒体分别取证。"
+  ],
+  "condition_rule": "继承本场景和本条条件；不叠加另种紧急状态、其他组定义、其他发起侧或 Stage 3 的设定。",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "mcptt-canceller-mcptt-defined-group-entry",
+      "conditions": [
+        "选择 TS 23.283 V19.5.0 §10.6.2.3.2 的取消发起者、组定义和目前组状态。"
+      ],
+      "conclusion": "MCPTT 用户发起取消；互通组定义在 MCPTT，实际仍处进行中紧急状态，另一 MCPTT 客户端已归属（图 client 2）。IWF 已接入且获准互通，组和用户身份映射已配置。仅存在 IWF 或组员名单不满足这些入口；图的单 server 代表用户本属与组托管角色，不规定同机。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.3.2 preconditions and NOTES 1–3"
+          ],
+          "printed_pages": [
+            129
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.3.2 steps 1–9 and NOTES 4–5",
+            "Figure 10.6.2.3.2-1"
+          ],
+          "printed_pages": [
+            130
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "ended-call-does-not-cancel-group-and-not-current-media-gate",
+      "conditions": [
+        "问原紧急呼叫结束、无媒体观察或当前组状态。"
+      ],
+      "conclusion": "NOTE 3 指原 MCPTT 紧急组呼结束不清组紧急状态，需获授权者明确取消。本支的进行中指组状态，不另要求正在通话或 RTP；仍要核实际组状态及其他前提，不把通话结束当已取消或必可取消。§10.6.2.1 的建呼/释放并列表述不替代本支触发和授权。查条款无需抓包。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.3.2 preconditions and NOTES 1–3"
+          ],
+          "printed_pages": [
+            129
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.3.2 steps 1–9 and NOTES 4–5",
+            "Figure 10.6.2.3.2-1"
+          ],
+          "printed_pages": [
+            130
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.1"
+          ],
+          "printed_pages": [
+            121
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "cancelling-client-step-2-and-specific-authorization-step-3",
+      "conditions": [
+        "对照 client 1 发步骤 2 和 server 认证这次组状态取消权限。"
+      ],
+      "conclusion": "步骤 2 是取消发起端 client 1→server 的 MCPTT 请求，步骤 3 验发起者是否获准取消该组紧急状态。本支未列 client 1 曾发起原紧急通话的条件；不借 §10.6.3.4 的 client 1 先前发起前提。不能凭发出、现有归属、IWF 授权或是原主叫来代替本次取消许可。该节没给拒绝码或回滚。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.3.2 preconditions and NOTES 1–3"
+          ],
+          "printed_pages": [
+            129
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.3.2 steps 1–9 and NOTES 4–5",
+            "Figure 10.6.2.3.2-1"
+          ],
+          "printed_pages": [
+            130
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.3.4 preconditions and NOTES 1, 5–7",
+            "Figure 10.6.3.4-1"
+          ],
+          "printed_pages": [
+            137,
+            138,
+            139
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "step-4-state-reset-and-optional-cancelling-user-alert",
+      "conditions": [
+        "按成功流程，看请求是否额外指定取消发起者本人的告警。"
+      ],
+      "conclusion": "步骤 4 在 MCPTT server 清组紧急状态；请求还指定取消发起者本人的紧急告警时才一并清本人的告警。步骤 2 的本人告警取消指示可选；无此指示不从这条流程推出自动清告警、有该指示也不处理他人的告警或保证下游收件。单独的紧急告警取消是另一信息流，不拿其目标用户字段补本支。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.3.2 steps 1–9 and NOTES 4–5",
+            "Figure 10.6.2.3.2-1"
+          ],
+          "printed_pages": [
+            130
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.1.11",
+            "Table 10.6.1.11-1"
+          ],
+          "printed_pages": [
+            120
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.1.9 Table 10.6.1.9-1",
+            "10.6.5.1",
+            "10.6.5.2"
+          ],
+          "printed_pages": [
+            120,
+            142,
+            143
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "step-5-bearer-adjustment-not-global-priority-or-media-outcome",
+      "conditions": [
+        "读步骤 5 在已清除组紧急状态后的承载动作。"
+      ],
+      "conclusion": "MCPTT server 调整底层承载优先级，此组紧急状态不再要求优先处理；不说明其他原因的优先级必撤、不规定实际优先级数值、停止或继续媒体或释放话权。不得由计划调整、请求发送或回包名实证承载结果。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.3.2 steps 1–9 and NOTES 4–5",
+            "Figure 10.6.2.3.2-1"
+          ],
+          "printed_pages": [
+            130
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-steps-6-7-direction-and-general-affiliation-granularity",
+      "conditions": [
+        "核本支 IWF 取消腿，区分图单数与总则按实际 LMR 归属。"
+      ],
+      "conclusion": "步骤 6 server→IWF 发请求；步骤 7 IWF→server 回对应确认。具体正文用单数、图只画一根箭头；同版 §10.6.2.1 对 MCPTT 定义组的归属粒度是 IWF 实际代表所有 LMR 用户一次归属则一条、收到逐人归属则按每名已归属 LMR 用户向 IWF 各发一条，按主系统及伙伴 MCPTT 行为。不按静态名单、MCPTT 人数或未知归属计算。NOTE 4 不详述 IWF 怎么取消；不从应答推 LMR 内部收件或应用。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.3.2 steps 1–9 and NOTES 4–5",
+            "Figure 10.6.2.3.2-1"
+          ],
+          "printed_pages": [
+            130
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.1"
+          ],
+          "printed_pages": [
+            121
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.1.12",
+            "Table 10.6.1.12-1"
+          ],
+          "printed_pages": [
+            120,
+            121
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "optional-alert-indicator-and-response-table-do-not-add-result",
+      "conditions": [
+        "逐字段读 IWF 取消请求及应答表。"
+      ],
+      "conclusion": "表 10.6.1.11-1 请求和表 10.6.1.12-1 应答均必带取消者 MCPTT ID 及组 ID；请求可带 Alert indicator，只指取消者告警。步骤 6 不规定将 2 的指示自动复制到 IWF。应答表没有 Result、告警指示或被通知 LMR 用户 ID。组 ID 的说明重复印 in-progress，不据此添加字段。总表双向，但本支按 6/7，逐人腿同组同取消者不能单独配对。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.1.11",
+            "Table 10.6.1.11-1"
+          ],
+          "printed_pages": [
+            120
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.1.12",
+            "Table 10.6.1.12-1"
+          ],
+          "printed_pages": [
+            120,
+            121
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.3.2 steps 1–9 and NOTES 4–5",
+            "Figure 10.6.2.3.2-1"
+          ],
+          "printed_pages": [
+            130
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "step-8-affiliated-mcptt-notification-without-defined-ack",
+      "conditions": [
+        "核本支成员处理，而非 IWF 或发起端的确认。"
+      ],
+      "conclusion": "步骤 8 是 MCPTT server 面向已归属 MCPTT 客户端处理取消请求，文字引用 TS 23.379 §10.6.2.6.1.3，图为通知框；本节没另列成员 ACK 或组播例外。发送/处理不等于成员实际收到；不要借 §10.6.3.4 的组播例外、成员确认步骤或等待条件，也不宣布成员必无 ACK。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.3.2 steps 1–9 and NOTES 4–5",
+            "Figure 10.6.2.3.2-1"
+          ],
+          "printed_pages": [
+            130
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.3.4 preconditions and NOTES 1, 5–7",
+            "Figure 10.6.3.4-1"
+          ],
+          "printed_pages": [
+            137,
+            138,
+            139
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "step-9-confirms-2-note-5-lower-bound-after4",
+      "conditions": [
+        "判断步骤 9 的真正请求及 NOTE 5 所述发出条件。"
+      ],
+      "conclusion": "server 发 9 给 client 1，确认其步骤 2。NOTE 5 给出的时序是 9 可在步骤 4 后发生，依继续呼叫的条件；不等于可无条件跳过该次条件。图放在 5、6/7、8 之后，不能由图规定每次必须等承载调整、IWF 回包或成员处理，更不能从 9 推全员收件或重试算法。迫近危险取消的发起端应答 11 是步骤 5 后，另支另用。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.3.2 steps 1–9 and NOTES 4–5",
+            "Figure 10.6.2.3.2-1"
+          ],
+          "printed_pages": [
+            130
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.3.4 preconditions and NOTES 1, 5–7",
+            "Figure 10.6.3.4-1"
+          ],
+          "printed_pages": [
+            137,
+            138,
+            139
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "independent-actual-signaling-and-separate-application-media",
+      "conditions": [
+        "查实际 2/9 或 6/7 的同次收件，以及本地状态、下游或媒体结果。"
+      ],
+      "conclusion": "查规范不需要抓包。实际接收按同次取消、组、取消者、事务、端点和方向核；接收端确实发出的匹配确认支持原请求已到，不能证明原发送端实际收到该回包。信令取证无需媒体；需判断 server 已清状态或告警、IWF 和 LMR 应用、承载优先级、媒体继续或停止、话权释放，各自核对实际证据，不从 7 或 9 一并推出。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.3.2 steps 1–9 and NOTES 4–5",
+            "Figure 10.6.2.3.2-1"
+          ],
+          "printed_pages": [
+            130
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.1.12",
+            "Table 10.6.1.12-1"
+          ],
+          "printed_pages": [
+            120,
+            121
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "separate-role-home-and-emergency-kind",
+      "conditions": [
+        "按发起侧、组定义、紧急类型和所问行为区别入口。"
+      ],
+      "conclusion": "只核 §10.6.2.3.2：MCPTT 用户发起且组定义在 MCPTT 的组紧急状态取消；LMR 发起或 LMR 定义组到相邻 .3.1/.3/.4，不移植步骤和理由。迫近危险取消、紧急建呼、单独告警取消、整体组呼释放和原生 MCPTT 处理各自有入口；不把这里的 IWF、承载或确认写成其既定时序。这里没有定义 SIP 编码、状态码、LMR 内部处理或完整失败流程。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.3.2 preconditions and NOTES 1–3"
+          ],
+          "printed_pages": [
+            129
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.3.2 steps 1–9 and NOTES 4–5",
+            "Figure 10.6.2.3.2-1"
+          ],
+          "printed_pages": [
+            130
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.3.4 preconditions and NOTES 1, 5–7",
+            "Figure 10.6.3.4-1"
+          ],
+          "printed_pages": [
+            137,
+            138,
+            139
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.3.1",
+            "10.6.2.3.3",
+            "10.6.2.3.4"
+          ],
+          "printed_pages": [
+            128,
+            129,
+            130,
+            131,
+            132
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.1.9 Table 10.6.1.9-1",
+            "10.6.5.1",
+            "10.6.5.2"
+          ],
+          "printed_pages": [
+            120,
+            142,
+            143
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.6.2.3.2 preconditions and NOTES 1–3"
+      ],
+      "printed_pages": [
+        129
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.6.2.3.2 steps 1–9 and NOTES 4–5",
+        "Figure 10.6.2.3.2-1"
+      ],
+      "printed_pages": [
+        130
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.6.2.1"
+      ],
+      "printed_pages": [
+        121
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.6.3.4 preconditions and NOTES 1, 5–7",
+        "Figure 10.6.3.4-1"
+      ],
+      "printed_pages": [
+        137,
+        138,
+        139
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.6.1.11",
+        "Table 10.6.1.11-1"
+      ],
+      "printed_pages": [
+        120
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.6.1.9 Table 10.6.1.9-1",
+        "10.6.5.1",
+        "10.6.5.2"
+      ],
+      "printed_pages": [
+        120,
+        142,
+        143
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.6.1.12",
+        "Table 10.6.1.12-1"
+      ],
+      "printed_pages": [
+        120,
+        121
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.6.2.3.1",
+        "10.6.2.3.3",
+        "10.6.2.3.4"
+      ],
+      "printed_pages": [
+        128,
+        129,
+        130,
+        131,
+        132
+      ],
+      "usage": "comparison-only"
+    }
+  ],
+  "related": [
+    {
+      "topic": "r19-iwf-imminent-peril-group-state-cancel",
+      "relation": "separate-imminent-peril-cancellation",
+      "required": false
+    },
+    {
+      "topic": "r19-iwf-emergency-group-setup-mcptt-to-mcptt",
+      "relation": "separate-emergency-setup",
+      "required": false
+    },
+    {
+      "topic": "r19-iwf-group-call-release",
+      "relation": "separate-whole-group-call-release",
+      "required": false
+    },
+    {
+      "topic": "r19-iwf-affiliation-representation",
+      "relation": "separate-affiliation-representation",
+      "required": false
+    },
+    {
+      "topic": "r19-emergency-group-inprogress-cancel",
+      "relation": "separate-native-stage3-emergency-group-state",
+      "required": false
+    },
+    {
+      "topic": "r19-emergency-standalone-alert-cancellation",
+      "relation": "separate-native-emergency-alert-cancel",
+      "required": false
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  }
+}

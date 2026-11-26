@@ -777,6 +777,14 @@
 
 入口：[LMR 普通组呼遇到已有迫近危险状态：为什么 IWF 收到不同类型的应答？](topics/interworking/imminent-peril-group-call-lmr-origin.md)。
 
+### MCPTT 定义的互通组取消紧急状态：会清告警吗？谁确认？
+
+- **能回答：**查 TS 23.283 V19.5.0 §10.6.2.3.2：MCPTT 用户明确请求取消 MCPTT 定义互通组的进行中紧急状态。只有同一请求另指定，才一并清发起者本人的告警。结束通话不自动清组状态，查规范无需抓包。
+- **只到条件或接口：**组有进行中紧急状态，另有 MCPTT 客户端已归属。IWF 已接入并获准互通，组和用户身份映射已配置，发起者另验本组取消权限。步骤 4 清组状态、5 调承载、6/7 是 IWF 腿、8 面向 MCPTT 成员；NOTE 5 说发起端应答 9 可在 4 后按继续呼叫的条件发生。
+- **尚未建立的结论：**IWF 请求告警指示可选，响应表无 Result；不能用 IWF 实收或 client 1 应答替全组已应用或媒体结果。只取消告警、不改组状态，不走本支。不套迫近危险取消的 5 后/成员 ACK，也不涵盖 LMR 定义或发起的其他取消、整体释放或 Stage 3。
+
+入口：[MCPTT 定义的互通组取消紧急状态：会清告警吗？谁确认？](topics/interworking/emergency-group-state-cancel-mcptt-origin.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)
