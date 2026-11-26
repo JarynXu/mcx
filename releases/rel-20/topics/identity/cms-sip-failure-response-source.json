@@ -1,0 +1,136 @@
+{
+  "topic_id": "r20-identity-cms-sip-failure-response-source",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。主规则是配置管理服务器的 SIP 失败共用分支；CMC、业务服务器和 HTTP 只在各自对照中单独核适用条件，不以任一订阅当作通用发头前提。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "cms-may-insert-role-source-on-own-sip-failure-for-a-received-sip-request",
+      "clause": "6.2.4.2",
+      "conditions": [
+        "CMS 已收到某 SIP 请求，并为该请求自行发起 SIP 失败响应。"
+      ],
+      "conclusion": "CMS 可以根据运营商策略插入 SIP Response-Source；按这条插入时 role 参数值为 cms，过程指向 TS 24.229 §5.7.1.0。此处是可选而非必填，适用于任一这样的 SIP 请求，不以 SUBSCRIBE、403 或某类订阅者为前提。§6.2.1 总述提到 HTTP，不改变本小节明确的 SIP 失败对象。本条不规定 SIP 成功、转发、HTTP、接收方动作或完整线格式。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.2.4.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.2.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.2.4.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "received-header-presence-nor-absence-is-transaction-provenance-or-failure-cause",
+      "clause": "6.2.4.2",
+      "conditions": [
+        "排查收到的一条 SIP 失败响应；观察到 role=cms，或没有 Response-Source。"
+      ],
+      "conclusion": "role=cms 仅体现报文的 CMS 角色标记，不凭它核实实际响应节点、实例、授权身份或哪条错误条件。未观察到该字段也不能排除 CMS 或倒推运营商策略；仅看到转发不等于自行发起。应对同一 SIP 请求与生成失败的处理记录，可和分支、拒绝代码独立核对；不推定该头应触发某客户端动作。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.2.4.2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cmc-initial-proxy-example-403-obligation-is-separate-from-marker",
+      "clause": "6.3.13.3.2.2",
+      "conditions": [
+        "仅对照 §6.3.13.3.2.2：CMS 实收初始 SIP SUBSCRIBE，已核匹配 CMC 代理收包条件；资源列表只有一项。"
+      ],
+      "conclusion": "CMS 按该分支从访问令牌确定 MCPTT ID，作为认证身份做授权；该身份对唯一项无订阅变更权限时，须回 SIP 403 并不继续流程。不能从一条 403 反推已命中分支，不补混合许可结果。是否加角色头另按 §6.2.4.2，不是选择拒绝响应的条件。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.2.4.2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcs-actual-renewal-example-403-obligation-is-separate-from-marker",
+      "clause": "6.3.13.3.2.4",
+      "conditions": [
+        "仅对照 §6.3.13.3.2.4：CMS 已实收业务服务器的 SIP re-SUBSCRIBE，Event 为 xcap-diff，且含 application/resource-lists+xml 正文；列表只有一项文档或元素。"
+      ],
+      "conclusion": "CMS 按本次 P-Asserted-Identity 的 URI 作认证身份；该身份对唯一项无订阅变更权限时，须回 SIP 403 并不继续。初订通过不替代该次授权，部分获准的清单不据这一例裁定。失败头按自己的条件处理，不据此双向推断。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.4"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.2.4.2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "http-request-sender-authenticated-identity-not-from-sip-role-marker",
+      "clause": "6.2.4.1",
+      "conditions": [
+        "仅对照真正处理的一次 HTTP 请求（如取配置）。"
+      ],
+      "conclusion": "按 §6.2.4.1，CMS 须按所引 TS 24.482 确定本次请求发送方，用作授权判断的已认证身份。SIP Response-Source 不是 HTTP 发送方身份或授权结果的证据，也不证明已返回或收到文档。不推断凭据格式或另一个规范的正文。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.2.4.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.2.4.2"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "不从有无角色头推断本次实际来源、授权原因或状态码，不套给 SIP 成功、转发或 HTTP；未核目标规范的头字段完整语法和接收侧规则。",
+    "§6.2.4.2 没有新增统一故障状态码、客户端行为或来源验证；这里只核引用定位，不取得 TS 24.229/24.482 目标条文。"
+  ],
+  "related": [
+    "r20-identity-cmc-subscription-notify-fetch",
+    "r20-identity-mcs-server-service-config"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
