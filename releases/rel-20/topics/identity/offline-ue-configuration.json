@@ -1,0 +1,217 @@
+{
+  "topic_id": "r20-identity-offline-ue-configuration",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3；主体为 MCS UE 通过外部设备的离线配置。在线段仅用于区分对象和范围。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "offline-provisioning-needs-no-mcs-network-and-external-ip",
+      "clause": "3.1",
+      "conditions": [
+        "判断 UE 是否在执行本规范的 Offline Configuration。"
+      ],
+      "conclusion": "UE 未连接任何 MCS 网络，配置通过具有到该 UE 的 IP 连接的外部设备完成。笔记本及 USB、WLAN、蓝牙只是例子；没公共互联网或有线插上不单独满足定义，也不能从外设连通判断终端已采用配置。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "3.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "off-network-operation-is-not-evidence-of-offline-provisioning",
+      "clause": "3.1",
+      "conditions": [
+        "判断 UE 的业务运行连接，而非是否正在由外设配置。"
+      ],
+      "conclusion": "离网运行指连不上 MCS 网络，即使经中继也没有这种连通；经中继与 MCS 网络连通仍是在网运行。离网运行或无直连本身不证明有外设及 IP 配置动作。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "3.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "online-or-external-bootstrap-no-discovery-or-fallback-algorithm",
+      "clause": "4.2.1",
+      "conditions": [
+        "核对 MCS UE 启动时获取配置的路径。"
+      ],
+      "conclusion": "该节并列网络在线配置与经外设离线配置，未给出选择先后、在线 CMS 不可达即切离线、定时或回退。在线/离线 CMS 的寻找方式取决于配置管理 MO 所用的协议，本规范不规定其发现机制。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "offline-cms-on-external-device-configures-four-mo-categories",
+      "clause": "4.2.1",
+      "conditions": [
+        "UE 走 §4.2.1 项 2 的离线配置路径，核对 2(a) 的离线 CMS 角色。"
+      ],
+      "conclusion": "外设上的离线 CMS 为 UE 配 MCS UE 初始配置 MO 和适用的 UE 配置 MO、用户配置档 MO、业务配置 MO。组 MO 由同外设中的另一个逻辑角色负责；本清单不带入在线每个启用服务的位置用户配置文档，未列不代表整个离线业务禁止任何位置配置。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "offline-gms-on-external-device-configures-group-mo",
+      "clause": "4.2.1",
+      "conditions": [
+        "UE 走 §4.2.1 项 2 的离线配置路径，核对 2(b) 的离线 GMS 角色。"
+      ],
+      "conclusion": "外设上的离线 GMS 配 MCS 组 MO。它和离线 CMS 是同一离线路径的不同角色，不是二选一，不因此要求拆成两台外设。不用在线 GMS URI 取组文档的操作替代本分支。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "offline-cms-accepts-administrator-target-mcs-user-identities",
+      "clause": "4.2.3.1",
+      "conditions": [
+        "对 MCS UE 做离线配置。"
+      ],
+      "conclusion": "离线 CMS 需支持管理员提供所配置的 MCS 用户的一项或多项身份，以便 MO 能带对应 MCPTT 用户配置数据。不是管理员自己的身份，也不证明线上 IdMS 认证或本地身份校验通过。编辑注将身份元素寻址留待研究，不从此段补字段地址。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.3.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "offline-conditional-default-reference-needs-prior-matching-profile-mo",
+      "clause": "4.2.3.1",
+      "conditions": [
+        "MCPTT 业务管理员在 MCS UE 初始配置 MO 包含 DefaultUserProfile 元素。"
+      ],
+      "conclusion": "§4.2.3.1 注写明，需要先在离线 CMS 创建至少一份用户配置档 MO，该同一实例同时含默认引用中对应的 MCPTTUserID 和 UserProfileIndex。两字段只各自在不同档里出现或只有一项匹配，不满足这个条件。无引用不触发该注，又不等于无需用户档。不得用在线 XCAP 字段名、校验或错误码代替。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.3.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "offline-format-pointer-to-24-483-not-online-group-doc-24-481",
+      "clause": "4.2.3.1",
+      "conditions": [
+        "核对 TS 24.484 对 MCPTT UE 离线初始、组及 MCPTT 配置 MO 的格式引用。"
+      ],
+      "conclusion": "离线时的 MCS UE 初始配置 MO、MCS 组 MO 和 MCPTT 的 UE 配置、用户档、业务 MO 格式指 TS 24.483；主系统在线组文档格式指 TS 24.481。都是引用，不认定目标的 MO 结构、协议、运行、兼容性或下载成功。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.3.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.3.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.2.1.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "scope-names-csc11-csc12-without-role-pairing",
+      "clause": "1",
+      "conditions": [
+        "核对本规范为 MCS 离线配置列了哪些参考点。"
+      ],
+      "conclusion": "§1 把 CSC-11 与 CSC-12 同列为离线配置参考点；这里不从编号顺序或 §4.2.1 两个角色的数量推断两者一一绑定、传输协议、服务发现或认证。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "offline-role-overview-not-online-server-db-procedure",
+      "clause": "4.4",
+      "conditions": [
+        "用 §4.4 查离线 CMS 或 GMS 内部如何做配置。"
+      ],
+      "conclusion": "§4.4 正文给在线 CMS，注将离线配置的 CMS/GMS 功能排除在本规范范围。这不否定 §4.2.1 的外设角色分工或 §4.2.3.1 的输入和默认档提示；不搬用在线读库、订阅或文档取回规则，亦不推断设备管理端点、凭据或握手。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.4"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.2.3.1"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "不规定线上失败后的自动回退、离线 CMS 发现协议、离线服务器内部操作或端点实际采用；TS 24.483、TS 24.481 只核格式引用，不核其内容。",
+    "外设 IP 连通、外设上管理对象已准备、UE 收到配置和业务应用分别取证。只核所列 MCPTT 格式指向，不从相邻其他业务格式或原文称谓推导设备支持。"
+  ],
+  "related": [
+    "r20-identity-primary-ue-online-configuration",
+    "r20-identity-default-profile-reference-xcap",
+    "r20-identity-online-cms-user-profile-database"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
