@@ -286,6 +286,10 @@
         {
           "condition": "问 MC 用户发起的互通紧急告警取消：原请求即使附带清组状态指示，仍查 §10.6.5.2 的发起端、IWF 归属粒度和成员确认。若原请求是组紧急状态取消，或告警由 LMR 用户发起，另查。查规范无需抓包。",
           "read": "topics/interworking/emergency-alert-cancel-mc-origin.md"
+        },
+        {
+          "condition": "问 LMR 用户发起互通紧急告警：区分位置不可用指示、代表用户的组授权、IWF 回执与成员确认，或 MC 定义组的隐式归属。同次另有紧急呼叫请求，告警仍在本支；查建呼另读建呼流程。取消告警、MC 用户发起告警或原生 Stage 3 另查。查规范无需抓包。",
+          "read": "topics/interworking/emergency-alert-init-lmr-origin.md"
         }
       ],
       "boundary": "Bounded Stage2 interworking procedures; underlying security and full call state machine not verified."
@@ -3094,6 +3098,10 @@
         {
           "condition": "若原请求仍是紧急告警取消，但发起方为 MC 用户而非 LMR，含附带清组状态指示，改查 §10.6.5.2。",
           "read": "topics/interworking/emergency-alert-cancel-mc-origin.md"
+        },
+        {
+          "condition": "同为 LMR 用户，但所问是发起互通紧急告警而非取消，读 §10.6.4.1；另有紧急呼叫请求不改变告警流程。",
+          "read": "topics/interworking/emergency-alert-init-lmr-origin.md"
         }
       ]
     },
@@ -3118,6 +3126,30 @@
         {
           "condition": "实际查原生 MCPTT 的告警取消，而非互通 IWF 信息流。",
           "read": "topics/emergency/standalone-alert-cancellation.md"
+        }
+      ]
+    },
+    {
+      "id": "iwf-emergency-alert-init-lmr-origin",
+      "question": "LMR 用户发起互通紧急告警时，IWF 没拿到位置怎么报？IWF 回执与成员回执怎样分？",
+      "start": "topics/interworking/emergency-alert-init-lmr-origin.md",
+      "boundary": "TS 23.283 V19.5.0 §10.6.4.1：LMR 用户发起互通告警，组可定义在 MC 或 LMR。步骤 2 缺位置时要明确指示，不等同位置字段省略。查规范无需抓包。 组已在管理服务器定义、两个 MC service 客户端已归属；IWF 已接入并获准互通，掌握组信息并配置组与用户身份映射。步骤 3 另查代表该 LMR 用户的 MC service 用户 ID 对指定组的告警权限。4 回原 IWF 请求 2，5/7 是成员腿。仅 MC 定义组在步骤 8 条件下隐式归属，NOTE 4 最早在 3 后、最迟在 7 后立即；一次代理配置用 IWF ID，不按个人登记。 IWF 总表 Location O 不取消本支缺位置指示；不补编码或推成员侧已有实际位置。确认不保证实际送达、授权结果、组态、用户紧急状态或媒体。只告警且未请求紧急呼叫，不会把组置为进行中紧急状态；同时请求也不证明已建呼。不搬告警取消的组播 ACK、紧急建呼、MC 发起告警或 Stage 3 的规则。",
+      "next_if": [
+        {
+          "condition": "同为 LMR 用户，但原请求是取消紧急告警，而非发起这笔告警。",
+          "read": "topics/interworking/emergency-alert-cancel-lmr-origin.md"
+        },
+        {
+          "condition": "所问是 LMR 用户向 MCPTT 定义组发起紧急组呼（不是该次告警），即使另有告警。",
+          "read": "topics/interworking/emergency-group-setup-lmr-to-mcptt.md"
+        },
+        {
+          "condition": "所问是 LMR 用户向 LMR 定义组发起紧急组呼（不是该次告警），即使另有告警。",
+          "read": "topics/interworking/emergency-group-setup-lmr-to-lmr.md"
+        },
+        {
+          "condition": "实际问原生 MCPTT 告警，不是互通 IWF 信息流。",
+          "read": "topics/emergency/standalone-group-alert.md"
         }
       ]
     }
