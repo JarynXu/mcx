@@ -1,0 +1,278 @@
+{
+  "topic_id": "r20-calls-late-call-entry-kpi",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 22.179 V20.0.0，Release 20，Stage 1。主体为 §6.15.4 在网进行中 MCPTT 组呼迟入；引用 §6.15.3.1、§7.11.2.2 与资料性附录 A 仅作比较。涉及测量要求时适用 §6.15.4.1 的语音与 §6.15.4.2-001/-002/-002a 的公共条件。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-22.179-v20.0.0",
+  "standard_stage": 1,
+  "claims": [
+    {
+      "id": "late-entry-same-receive-user-to-speaker-clock",
+      "clause": "6.15.4.1",
+      "conditions": [
+        "迟入的是已在进行的组呼，测试目标是该接听用户的本地等待时间。"
+      ],
+      "conclusion": "KPI 4a/4b 的计时边界相同：接听方决定监听该组呼，到这台 UE 扬声器开始播放声音。图 6.15.4.1.1 中应用服务器批准迟入是中间标记，之后还有网络与终端处理；起始话音可能丢失。不能用 SIP 应答、首包、PTT 发话许可或发话方发声到接听方播放的口到耳计时替代。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.4.1"
+          ],
+          "printed_pages": [
+            53,
+            54
+          ],
+          "figures": [
+            "6.15.4.1.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.3.1"
+          ],
+          "printed_pages": [
+            51,
+            52
+          ]
+        }
+      ]
+    },
+    {
+      "id": "late-entry-existing-affiliation-group-activity-and-voice",
+      "clause": "6.15.4.1",
+      "requirements": [
+        "R-6.15.4.2-002a"
+      ],
+      "conditions": [
+        "接听方进入其他已归属成员已经活跃的进行中 MCPTT 组呼。"
+      ],
+      "conclusion": "用户已经归属，或已经由网络归属，且此迟入由已归属组的活动引起；入会时已有正在传送的语音，才适用该迟入性能要求。空闲或静默的进行中组呼不能作为这一批测试的迟入样本。-002a 的注把 UE 移动、失去覆盖并重新建立覆盖的情形排除在外。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.4.1"
+          ],
+          "printed_pages": [
+            53,
+            54
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.4.2"
+          ],
+          "printed_pages": [
+            54
+          ],
+          "requirements": [
+            "R-6.15.4.2-002a"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "terrestrial-same-network-each-node-load-at-most-70",
+      "clause": "6.15.4.2",
+      "requirements": [
+        "R-6.15.4.2-001",
+        "R-6.15.4.2-002"
+      ],
+      "conditions": [
+        "判断 §6.15.4.2 KPI 的网络侧适用性。"
+      ],
+      "conclusion": "须为同一网络覆盖下的地面 3GPP 接入。注排除卫星 3GPP 接入，空对地用地面接入可在范围内。每个 3GPP 网络节点负载不得超过自身容量的 70%（允许等于）；不能用全网平均值或一个节点的负载替代其余节点。同网覆盖不自动等于同一 MCPTT 系统。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.4.2"
+          ],
+          "printed_pages": [
+            54
+          ],
+          "requirements": [
+            "R-6.15.4.2-001",
+            "R-6.15.4.2-002"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kpi4a-without-app-layer-encryption-requests-strict",
+      "clause": "6.15.4.2",
+      "requirements": [
+        "R-6.15.4.2-003"
+      ],
+      "conditions": [
+        "符合公共适用条件且在同一 MCPTT 系统内的未使用应用层加密呼叫。"
+      ],
+      "conclusion": "KPI 4a：全部迟入请求中的 95% 耗时须严格小于 150 ms。恰为 150 ms 的单样本不计作达标，不是用平均值或每次都小于替代。是否有应用层加密不能用网络层保护的存在推定。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.4.2"
+          ],
+          "printed_pages": [
+            54
+          ],
+          "requirements": [
+            "R-6.15.4.2-003"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kpi4b-encrypted-entries-should-and-shall-separate",
+      "clause": "6.15.4.2",
+      "requirements": [
+        "R-6.15.4.2-004",
+        "R-6.15.4.2-005"
+      ],
+      "conditions": [
+        "符合公共适用条件且在同一 MCPTT 系统内的应用层加密呼叫。"
+      ],
+      "conclusion": "KPI 4b 有两条：-004 宜达到未加密呼叫的 KPI 4 要求，-005 另要求应用层加密呼叫全部迟入中的 95% 耗时须严格小于 350 ms。350 ms 的硬门槛和未加密目标不能合成一条，恰为 350 ms 的单样本不计作达标。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.4.2"
+          ],
+          "printed_pages": [
+            54
+          ],
+          "requirements": [
+            "R-6.15.4.2-004",
+            "R-6.15.4.2-005"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sample-objects-and-informative-table-not-test-protocol",
+      "clause": "6.15.4.2",
+      "requirements": [
+        "R-6.15.4.2-003",
+        "R-6.15.4.2-005"
+      ],
+      "conditions": [
+        "设计本版同一 MCPTT 系统样本集，或查资料性汇总。"
+      ],
+      "conclusion": "4a 口径是全部迟入请求，4b 口径是全部进入加密呼叫的迟入，不能把它们用同一种分母静默合并。附录 A 表 A.1 只复列 <150 ms 和 <350 ms，并指回 §6.15.4.2；它不是替代样本描述或适用条件的验收条款。本节未给试次最小量、超时、失败及重试归类或分位数估计的默认规程。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.4.2"
+          ],
+          "printed_pages": [
+            54
+          ],
+          "requirements": [
+            "R-6.15.4.2-003",
+            "R-6.15.4.2-005"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "Annex A"
+          ],
+          "printed_pages": [
+            69
+          ],
+          "tables": [
+            "A.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "non3gpp-encrypted-interwork-target-excludes-peer-delay",
+      "clause": "6.15.4.2",
+      "requirements": [
+        "R-6.15.4.2-006"
+      ],
+      "conditions": [
+        "加密呼叫与其他非 3GPP PTT 系统互通。"
+      ],
+      "conclusion": "迟入时间宜达到同一 MCPTT 系统内应用层加密呼叫的 KPI 4b。-006 的注说该 KPI 不计非 3GPP PTT 系统引起的额外时延。这不是包含对端时延的端到端硬上限，也不等同于 -007 的附加时间要求。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.4.2"
+          ],
+          "printed_pages": [
+            54
+          ],
+          "requirements": [
+            "R-6.15.4.2-006"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "non3gpp-app-encrypted-extra-bounded-by-system-difference",
+      "clause": "6.15.4.2",
+      "requirements": [
+        "R-6.15.4.2-007"
+      ],
+      "conditions": [
+        "MCPTT UE 迟入与其他非 3GPP PTT 系统互通的应用层加密呼叫。"
+      ],
+      "conclusion": "附加迟入时间不得超过该互通系统加密与未加密迟入时间的差值，允许等于该差值。这项上限不是固定的 350−150=200 ms，也不由 -006 免除，不确定具体分段计时或一次端到端结果。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.15.4.2"
+          ],
+          "printed_pages": [
+            54
+          ],
+          "requirements": [
+            "R-6.15.4.2-007"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "late-entry-offnetwork-ffs-not-the-onnetwork-numbers",
+      "clause": "7.11.2.2",
+      "conditions": [
+        "读者试图把同一 Release 的在网 KPI 数值用于离网。"
+      ],
+      "conclusion": "离网 §7.11.2.2 的注把迟入 KPI 留为 FFS（留待研究）。在网阈值不能据此当离网需求，不能从该范围补写 Stage 2/Stage 3 消息、计量工具或设备结果。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "7.11.2.2"
+          ],
+          "printed_pages": [
+            67
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "不等同于建呼、话权接入、口到耳或离网 KPI。这里没有按样本数、超时失败、重试或 RAN/网关分段给出实测规程。",
+    "本页复核业务要求和原图，不验证设备及一段流量日志。严格阈值、推荐语气、网络负载和互通差值分别应用。"
+  ],
+  "related": [],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
