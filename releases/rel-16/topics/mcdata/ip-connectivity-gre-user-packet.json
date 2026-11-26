@@ -1,0 +1,407 @@
+{
+  "topic_id": "r16-mcdata-ip-connectivity-gre-user-packet",
+  "release": 16,
+  "standard_stage": 3,
+  "state": "draft",
+  "title": "在网一对一 MCData IP 互通：GRE 的 Protocol Type 为什么发出时置零、接收时忽略？",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.582-v16.3.0",
+  "condition_rule": "先限本版在网一对一 IP 互通的本段实际 GRE 用户包。发送格式与接收实体实收后的 Type 字段动作分别读取；不能把另一侧证据当共同前提。",
+  "common_conditions": [
+    "限 TS 24.582 V16.3.0 在网一对一 MCData IP 互通。查本段 GRE 隧道中同一个用户包的实际发送封装或本跳接收实体的实际收件；应用接口上的普通 IP、其他段或其他包、仅知隧道已建或仅见业务答复，不能替代本次记录。不套通用 GRE、离网或组 IP 互通。"
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "4.1.4, first and final paragraphs: on-network one-to-one scope and capability after media-plane establishment"
+      ],
+      "printed_pages": [
+        11
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "13.1.2, final paragraph: originating client relay, capability after establishment and direction of encapsulation"
+      ],
+      "printed_pages": [
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "13.1.3, final paragraph: terminating client relay, capability after establishment and direction of encapsulation"
+      ],
+      "printed_pages": [
+        45
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "13.2, first to third sentences: participating function tunnel endpoints, order and GRE"
+      ],
+      "printed_pages": [
+        45
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "13.3, both endpoints and controlling function inter-tunnel relay"
+      ],
+      "printed_pages": [
+        45
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "13.1.2, GRE Key session association and NOTE on client setting the session identifier"
+      ],
+      "printed_pages": [
+        44
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "13.1.3, GRE Key session association and NOTE on client setting the session identifier"
+      ],
+      "printed_pages": [
+        45
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "13.2, final two sentences: GRE Key identifies payload session and participating function relays IP traffic between its tunnels"
+      ],
+      "printed_pages": [
+        45
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "13.4, figure 13.4-1 and table 13.4-1: eight-octet GRE header and one user data packet"
+      ],
+      "printed_pages": [
+        45
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "13.4, figure 13.4-2 and table 13.4-2: C/K/S, Protocol Type, Key, Reserved0 and Ver fields"
+      ],
+      "printed_pages": [
+        45,
+        46
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "13.4, table 13.4-2 Protocol Type row: sender sets octets 3–4 to zero"
+      ],
+      "printed_pages": [
+        46
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "13.4, table 13.4-2 NOTE: receiving entity ignores Protocol Type value"
+      ],
+      "printed_pages": [
+        46
+      ]
+    },
+    {
+      "source_id": "3gpp-ts-24.582-v16.3.0",
+      "clauses": [
+        "13.4, table 13.4-2 Key row: octets 5–8 contain the IP connectivity session identifier associated with the IP packet"
+      ],
+      "printed_pages": [
+        46
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "id": "ipcon-gre-this-hop-role-and-packet",
+      "title": "哪条记录可以用于判断本跳 GRE？",
+      "conditions": [
+        "已确认是本版在网一对一 MCData IP 互通；区分本段 GRE 隧道、所查实体及实际收发的那个用户包。"
+      ],
+      "conclusion": "客户端对应用来的 IP 作封装，对隧道来的 IP 解封装后再交应用。参与功能在本侧客户端和控制功能两段间中继；控制功能在两侧参与功能之间中继。查一次已有记录时，用本段实发或接收实体本段实收，分开判断。",
+      "normative_strength": "客户端的封装、解封装和相关功能的中继是各自条款的 SHALL；证据归属是应用这些角色条件的判读。",
+      "limitations": [
+        "应用侧普通 IP、其他段、其他包、仅建连、业务答复或只看见发出，不能证明该接收实体实收这次 GRE 包。",
+        "未核实实际事件时仍可给条件式规则，但不写本次已发送或处理。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "4.1.4, first and final paragraphs: on-network one-to-one scope and capability after media-plane establishment"
+          ],
+          "printed_pages": [
+            11
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "13.1.2, final paragraph: originating client relay, capability after establishment and direction of encapsulation"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "13.1.3, final paragraph: terminating client relay, capability after establishment and direction of encapsulation"
+          ],
+          "printed_pages": [
+            45
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "13.2, first to third sentences: participating function tunnel endpoints, order and GRE"
+          ],
+          "printed_pages": [
+            45
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "13.3, both endpoints and controlling function inter-tunnel relay"
+          ],
+          "printed_pages": [
+            45
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "13.4, figure 13.4-1 and table 13.4-1: eight-octet GRE header and one user data packet"
+          ],
+          "printed_pages": [
+            45
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "ipcon-gre-egress-header-and-single-packet",
+      "title": "本跳发送怎样封装？",
+      "conditions": [
+        "本范围内的发送实体封装本段 GRE 用户包；判断一次实际发出是否符合时，须有发送端本笔相应字段或载荷证据。"
+      ],
+      "conclusion": "图表定义字节 1–8 为 GRE 头、字节 9 至末尾为一个用户 IP 包。头字节 1 的 C=0、K=1、S=0；图表分别标出 Reserved0 和 Ver。字节 3–4 为 Protocol Type，置零；字节 5–8 的 Key 是这个 IP 包关联的会话标识。",
+      "normative_strength": "§13.4 图表的规定编码；不把 Reserved0、Ver 的 RFC 引用扩大成通用 GRE 算法。",
+      "limitations": [
+        "只见 Type 为零，不能补全其余头字段和载荷。抓包截断不等于包在线上实际被截短。",
+        "两个用户包聚合为一个此类载荷，或已确认发送 K=0，不符合所列的发送布局；本段不定义接收处置。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "13.4, figure 13.4-1 and table 13.4-1: eight-octet GRE header and one user data packet"
+          ],
+          "printed_pages": [
+            45
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "13.4, figure 13.4-2 and table 13.4-2: C/K/S, Protocol Type, Key, Reserved0 and Ver fields"
+          ],
+          "printed_pages": [
+            45,
+            46
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "13.4, table 13.4-2 Protocol Type row: sender sets octets 3–4 to zero"
+          ],
+          "printed_pages": [
+            46
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "13.4, table 13.4-2 Key row: octets 5–8 contain the IP connectivity session identifier associated with the IP packet"
+          ],
+          "printed_pages": [
+            46
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "ipcon-gre-egress-protocol-type-zero",
+      "title": "在发送端看到非零，怎么判？",
+      "conditions": [
+        "在已确认的本段真实发送封装中观察到本次包的 Protocol Type，或检查发送端该字段的编码规则。"
+      ],
+      "conclusion": "发送端须把 Protocol Type 置零。实发非零不符合本字段的发送规则；实发零只核准这一字段。",
+      "normative_strength": "表 13.4-2 的 Protocol Type 行明确字段值应置零；接收规则另列在 NOTE。",
+      "limitations": [
+        "不因收件端忽略 Type 而允许发送非零；不从本次 Type 值推整包符合、接收端实际处置或应用交付。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "13.4, table 13.4-2 Protocol Type row: sender sets octets 3–4 to zero"
+          ],
+          "printed_pages": [
+            46
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "13.4, table 13.4-2 NOTE: receiving entity ignores Protocol Type value"
+          ],
+          "printed_pages": [
+            46
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "ipcon-gre-ingress-ignore-protocol-type",
+      "title": "接收端遇到非零，是否因它拒收？",
+      "conditions": [
+        "接收实体在已确定的适用本段实收此 GRE 用户数据；以这次接收为对象，不用发送端或其他段的副本。"
+      ],
+      "conclusion": "表 13.4-2 的 NOTE 明写接收实体要忽略 Protocol Type 的值。字段零和非零适用同一规则，不凭它选载荷 IP 类型或拒收。只确认实收和该字段时，这条规则不等待另证发送置零、Key、余下头部或载荷。",
+      "normative_strength": "按固定版的表注措辞保留 shall ignore，不把该注扩大成接收整包或通用 GRE 的规则。",
+      "limitations": [
+        "缺 Type 字段记录就不能判它的实际值。没有本段实收记录，不能说本段已经执行该处理。",
+        "其他字段、载荷和会话关联的处理用各自证据；表注不证明已接受、已拒绝、已解封装或已向应用交付。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "13.4, table 13.4-2 NOTE: receiving entity ignores Protocol Type value"
+          ],
+          "printed_pages": [
+            46
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "13.4, table 13.4-2 Protocol Type row: sender sets octets 3–4 to zero"
+          ],
+          "printed_pages": [
+            46
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "ipcon-gre-key-session-vs-sample",
+      "title": "同 Key 如何归属，可以当相同包或跨段收件吗？",
+      "conditions": [
+        "在本范围内可以取得这个 GRE 用户包的 Key，并按本段会话上下文判断它的关联。"
+      ],
+      "conclusion": "字节 5–8 的 Key 填该 IP 包关联的会话标识。客户端怎么设置标识由实现决定。同一会话的多份用户包可以共用同一标识；认定应用实收仍需匹配那一个数据包的本地收件证据。",
+      "normative_strength": "表 13.4-2 的 Key 编码和 §13.1.2/.3、§13.2 的会话归属，保留客户端设值的实现边界。",
+      "limitations": [
+        "不能从数字独立推断部署中的比对方式、两段 Key 相同、包内容相同、用户身份、完整性、加密或应用收件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "13.4, table 13.4-2 Key row: octets 5–8 contain the IP connectivity session identifier associated with the IP packet"
+          ],
+          "printed_pages": [
+            46
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "13.1.2, GRE Key session association and NOTE on client setting the session identifier"
+          ],
+          "printed_pages": [
+            44
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "13.1.3, GRE Key session association and NOTE on client setting the session identifier"
+          ],
+          "printed_pages": [
+            45
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.582-v16.3.0",
+          "clauses": [
+            "13.2, final two sentences: GRE Key identifies payload session and participating function relays IP traffic between its tunnels"
+          ],
+          "printed_pages": [
+            45
+          ]
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "related": [
+    "r16-mcdata-ip-connectivity-media-roles"
+  ],
+  "limitations": [
+    "Key 只说明本包的会话关联，不证明身份、安全、样本相同或两段 Key 相等。表注不规定其他字段和载荷的处置，不以 Type 推载荷的 IP 类型，也不改变发送侧的置零要求。"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  }
+}
