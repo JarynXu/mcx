@@ -3936,6 +3936,26 @@
           "read": "topics/location/lms-location-report-request.md"
         }
       ]
+    },
+    {
+      "id": "lms-non-emergency-group-private-call-trigger-vs-report",
+      "question": "非紧急组呼或私呼怎样触发 LMC 上报？呼叫类别、终端状态以及报告里的 ID 能互相代替吗？",
+      "start": "topics/location/lms-location-report-publish.md",
+      "boundary": "TS 24.283 V19.3.0 Stage 3。查规则无需已发生通话；核实况按同一 LMC 事件时生效配置，MC UE 紧急查 emergencyTriggeringCriteria，非紧急查 triggeringCriteria。通话类别另判：signallingEvent.groupCallNonEmergency 对应非紧急组呼，privateCallNonEmergency 对应非紧急私呼；配置两种终端状态都用 TriggeringCriteria；NonEmergency 是呼叫限定，不限外层状态，也不保证 UE 能建立某类呼叫。晚来的 reportType 不倒推。两个各自可选对象只定义 triggerId，表 M、1，A.2 未列 required，不是开关/筛某一组或被叫。不从本段指定建立或接听的某一 SIP、发言权或媒体节点为通用触发。根层 MCUELocation.triggerId 对事件时生效的同 LMC 规则只能认报告列了哪项；locTimestamp 是测量时间，报告的 reportId 用于关联索要请求，不是通话 ID。事件触发时若 minimumReportInterval 在运行，等到期且任一触发仍为真；发送和接受分别核本次 LMC→LMS 发布 POST，及匹配 LMS 201。",
+      "next_if": [
+        {
+          "condition": "实际是 LMS 主动索要当前或历史位置，不是这次通话触发；注意同名历史筛选不是生效配置。",
+          "read": "topics/location/lms-location-report-request.md"
+        },
+        {
+          "condition": "实际触发是初次登录或收到配置，不是非紧急通话。",
+          "read": "topics/location/lms-registration-configuration.md#初次登录和收到配置怎样区分这两种上报触发"
+        },
+        {
+          "condition": "实际业务事件是功能别名激活或停用而不是呼叫。",
+          "read": "topics/location/lms-location-report-publish.md#功能别名激活或停用何时触发位置报告"
+        }
+      ]
     }
   ]
 }

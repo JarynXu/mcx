@@ -3005,6 +3005,225 @@
         "independent_source_review": false,
         "independent_usage_acceptance": false
       }
+    },
+    {
+      "id": "non-emergency-call-signalling-ue-state-and-event-kind-separate",
+      "conditions": [
+        "可独立查这两类配置与事件的对应关系，无需先有报告。判一次实际匹配，分别核同一 LMC 事件时生效的配置、MC UE 当时是否紧急、以及实际通话自己的类别。"
+      ],
+      "conclusion": "紧急状态的 MC UE 查 emergencyTriggeringCriteria，非紧急查 triggeringCriteria。两分支均可引用 TriggeringCriteria，内层 signallingEvent.groupCallNonEmergency 对应非紧急组呼，signallingEvent.privateCallNonEmergency 对应非紧急私呼。终端状态选配置分支，通话类别确定候选触发，两者不是同一判断。只配置一种呼叫项，另一种呼叫不匹配该项。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.3–.4 Tables 7.1.6.2.3-1 and 7.1.6.2.4-1"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.40, .44–.45 Tables 7.1.6.2.40-1, 7.1.6.2.44-1 and 7.1.6.2.45-1"
+          ],
+          "printed_pages": [
+            54,
+            55
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 TriggeringCriteria, SignallingEvent, GroupCallNonEmergency, PrivateCallNonEmergency and TriggerId"
+          ],
+          "printed_pages": [
+            78,
+            83,
+            84,
+            85
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.1–.2 LocationReportPublish trigger waiting and report properties"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不因名称 NonEmergency 断这两键只能放非紧急配置，也不据配置许可推终端在该状态一定能建立非紧急呼叫。普通呼叫、终端状态、报告发送时的 reportType 各读自己的事实。此段不选触发的业务角色或定义通用的 SIP 建立/接听、发言权授权、媒体或测量节点；单条此类动作不凭本段充作统一触发点。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "non-emergency-call-signalling-object-shapes-and-trigger-id",
+      "conditions": [
+        "只查两个配置对象的印刷表、A.2 结构或与历史请求同名对象的区别，不需要观测通话、位置测量或报告。"
+      ],
+      "conclusion": "groupCallNonEmergency、privateCallNonEmergency 是 signallingEvent 下两个各自可选的对象。表 .44-1 和 .45-1 各只定义 triggerId，M、1，唯一并回报。A.2 引用字符串 TriggerId，两个对象未列 required。配置通知在已定义其 ID 的子项上复用已有有效值，否则分配新的唯一 ID。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.3–.4 Tables 7.1.6.2.3-1 and 7.1.6.2.4-1"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.40, .44–.45 Tables 7.1.6.2.40-1, 7.1.6.2.44-1 and 7.1.6.2.45-1"
+          ],
+          "printed_pages": [
+            54,
+            55
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 TriggeringCriteria, SignallingEvent, GroupCallNonEmergency, PrivateCallNonEmergency and TriggerId"
+          ],
+          "printed_pages": [
+            78,
+            83,
+            84,
+            85
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1 precedence limited to encoding of API information elements and methods"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.5.2 triggerId reuse or allocation where the trigger criterion defines it"
+          ],
+          "printed_pages": [
+            20
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LocationRequest, RequestedLocationHistory and TriggeringCriteria (history-selection comparison)"
+          ],
+          "printed_pages": [
+            78,
+            85,
+            86
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "不是布尔开关，也没定义用来选择具体呼叫、组、被叫或发言权状态的字段。不能以 false、null、缺项或缺 ID 作停报配置或推接收结果；A.1 优先限 API 信息元素及方法编码。A.2 LocationRequest.requestLocationHistory.triggerCriteria.signallingEvent 下的同名对象属于历史选择，不等于当前生效触发。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "non-emergency-call-report-attribution-not-call-state-or-submission",
+      "conditions": [
+        "可单查报告结构、触发归因和通用发送条件，不需要先有报告。把某份实际报告归给本类已配置规则，才查同一 LMC 事件发生时生效的紧急或非紧急分支及其报告根层 ID；未知事件状态不以 reportType 倒推。实际发送、接受另核本次发布 POST 和匹配 LMS 201。"
+      ],
+      "conclusion": "根层 MCUELocation.triggerId 是通用字符串数组，表 .49-1 标 O、1..N；正文为已触发项列 ID。数组项与事件时生效的组呼或私呼对象 ID 匹配，只识别该报告列了哪条规则。reportType 的命名值 EMERGENCY、NONEMERGENCY 描述发报告时 MC UE 是否紧急，不是呼叫类别；locTimestamp 是测量时刻，报告为关联索要请求的 reportId 不是通话标识。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.3–.4 Tables 7.1.6.2.3-1 and 7.1.6.2.4-1"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.40, .44–.45 Tables 7.1.6.2.40-1, 7.1.6.2.44-1 and 7.1.6.2.45-1"
+          ],
+          "printed_pages": [
+            54,
+            55
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.1–.2 LocationReportPublish trigger waiting and report properties"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.49 Table 7.1.6.2.49-1; Annex A.2 MCUELocation"
+          ],
+          "printed_pages": [
+            56,
+            86
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.3.4 Table 7.1.6.3.4-1; Annex A.2 ReportType"
+          ],
+          "printed_pages": [
+            59,
+            88
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不从匹配 ID 或报告时间推通话成立、实际触发时点、唯一原因、发送或 LMS 接受。若事件触发时 minimumReportInterval 在运行，等到期且尚有任一上报触发为真才按这条路径发，不必原本那项。这里不补通话条件怎样持续、合并或计数，也不补计时器未运行的路径。实收 LMS 的 LocationReportRequest 是另一发布起因。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
@@ -3822,6 +4041,41 @@
         86
       ],
       "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.40, .44–.45 Tables 7.1.6.2.40-1, 7.1.6.2.44-1 and 7.1.6.2.45-1"
+      ],
+      "printed_pages": [
+        54,
+        55
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 TriggeringCriteria, SignallingEvent, GroupCallNonEmergency, PrivateCallNonEmergency and TriggerId"
+      ],
+      "printed_pages": [
+        78,
+        83,
+        84,
+        85
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.3.4 Table 7.1.6.3.4-1; Annex A.2 ReportType"
+      ],
+      "printed_pages": [
+        59,
+        88
+      ],
+      "usage": "primary"
     }
   ],
   "related": [
