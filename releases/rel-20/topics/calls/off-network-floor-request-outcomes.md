@@ -19,6 +19,6 @@
 
 **私呼为何容易查错？** [普通在网话权](ordinary-floor-request-outcomes.md)的 R-6.2.3.2-008 对同类带话权私呼列的是“拒绝或排队”；离网 R-7.3.2-006 只列拒绝。这里能确定的是这两条要求的**提示内容**，不是离网私呼的全部排队能力。只看到离网组呼的“已排队”提示，不知道它排在第几，也不能认定后来获准。-004 没有规定排位、排序或队列配置，不能拿在网要求补齐。
 
-还不能确认这通呼叫走哪条路时，先看[离网直通与网侧信令](off-network-direct-path.md)。本页不查离网抢占、发话停止和空闲拆话，也不规定话权报文、界面提示形式或设备表现。
+还不能确认这通呼叫走哪条路时，先看[离网直通与网侧信令](off-network-direct-path.md)。要查整通呼叫为何因不活动结束，读[离网呼叫终止](off-network-inactivity-call-termination.md)。本页不查离网抢占或停止发话，也不规定话权报文、界面提示形式或设备表现。
 
 [3GPP 原文归档](https://www.3gpp.org/ftp/Specs/archive/22_series/22.179/22179-k00.zip) · [来源与版本](../../sources.json) · [结构化记录](off-network-floor-request-outcomes.json)
