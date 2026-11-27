@@ -1,0 +1,137 @@
+{
+  "topic_id": "r20-identity-mcvideo-mcdata-service-config-validation",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。这里查 §9.4.2.6 的 MCVideo 和 §10.4.2.6 的 MCData 业务配置文档，按条选择业务、根下参数块或在网文件配置字段。查规范不以已经发出请求或抓到响应为前提；单个片段不证明整份文档缺项。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "video-data-service-config-requires-params-and-at-least-one-scope-block",
+      "clause": "9.4.2.6",
+      "conditions": [
+        "查 MCVideo 或 MCData 整份业务配置文档，判断根下参数块是否缺失，或参数块存在但其中三类业务范围元素都没有。"
+      ],
+      "conclusion": "根为 service-configuration-info，子元素是 service-configuration-params。根下没有参数块，或参数块存在但没有 common、on-network、off-network 中任何一种，§9.4.2.6 和 §10.4.2.6 均要求 CMS 返回 HTTP 409（Conflict）并含 XCAP constraint-failure；若含 phrase，建议 mandatory element is missing。不是缺任一类就必须报缺项；单独一类也在七种之内。空块也不符合七种组合；这些句子不规定重叠时错误的顺序或唯一 phrase。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.6",
+            "10.4.2.6"
+          ],
+          "items": [
+            "根元素、缺参数块及三类都缺的 409 句"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "video-data-service-config-params-seven-scope-combinations",
+      "clause": "9.4.2.6",
+      "conditions": [
+        "查 MCVideo 或 MCData 的 service-configuration-params 中 common、on-network、off-network 三类具名子元素的组合。"
+      ],
+      "conclusion": "允许的七种组合是只含某一类的一个元素、任意两类各一个，或三类各一个。重复一种不在这七种内。组合不符时，§9.4.2.6 和 §10.4.2.6 均要求 CMS 返回 HTTP 409（Conflict）并含 XCAP constraint-failure；若含 phrase，建议 semantic error。只数三类具名元素，不用这七种排除 Schema 声明的扩展或忽略 Schema 的顺序。重复元素另有同节校验；重叠时没有给检查顺序或唯一 phrase。符合组合不等于完整文档、授权或请求通过。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.6",
+            "10.4.2.6",
+            "9.4.2.3",
+            "10.4.2.3"
+          ],
+          "items": [
+            "七种组合及语义错误；比较同节重复元素/属性及 §.3 扩展声明"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "video-data-service-config-presence-rules-add-to-xml-schema",
+      "clause": "9.4.2.6",
+      "conditions": [
+        "查两类文档的结构要求，或已读 Schema 声明，想确认能否只按出现次数声明判定通过。"
+      ],
+      "conclusion": "§9.4.2.6、§10.4.2.6 各自要求业务配置文档符合 §.3 的 XML Schema。两份 Schema 都为 service-configuration-params 声明 minOccurs=\"0\"，并为 common、on-network、off-network 各自声明 minOccurs=\"0\" 和 maxOccurs=\"unbounded\"。即使这些声明不阻止缺项或重复，仍须核 §.6 缺参数、三类都缺及七种组合。两层条件并存，不能以 Schema 验证合格替代 §.6，或以组合符合保证其他 Schema/字段、URI 或请求通过；不规定如何实现或排错误先后。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.6",
+            "10.4.2.6",
+            "9.4.2.3",
+            "10.4.2.3"
+          ],
+          "items": [
+            "Schema 一致要求；根类型和参数类型对应的出现次数"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcdata-service-config-missing-default-file-availability-conflict",
+      "clause": "10.4.2.6",
+      "conditions": [
+        "查 MCData 业务配置文档的 default-file-availability 缺项规则；已知完整文档在适用位置缺该字段，或只查规范。"
+      ],
+      "conclusion": "缺 default-file-availability，§10.4.2.6 要求 CMS 返回 HTTP 409（Conflict）并含 XCAP constraint-failure；若含 phrase，建议 default file availability not provided。§10.4.2.7 在网项 5 指其位于 file-availability 下，在始发客户端未明确请求时长时给文件可下载的默认时长；这不是 §.6 缺项句附加的触发条件。§.6 对默认项缺失的句子未另列条件。字段位置按 §10.4.2.3 和 §10.4.2.7 的在网 file-availability；§10.4.2.1 在网项 1(e)、1(f) 把这两项列在 tx-and-rx-control 下，不当作第二条合规路径。单独离网块只通过七种组合项，不据此免掉其他检查、不把该字段放入离网，也不将规则移给 MCVideo。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.6",
+            "10.4.2.7",
+            "10.4.2.3",
+            "10.4.2.1",
+            "9.4.2.6"
+          ],
+          "items": [
+            "默认项缺失；在网数据语义项 5 和 Schema 位置；§10.4.2.1 在网项 1(e)、1(f) 与 MCVideo 仅比较"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcdata-service-config-omitted-max-file-availability-no-upper-limit",
+      "clause": "10.4.2.6",
+      "conditions": [
+        "查 MCData 业务配置文档的 max-file-availability 缺项含义，区别于默认可用时间或其他业务。"
+      ],
+      "conclusion": "§10.4.2.6 规定 max-file-availability 省略时不施加文件可用时长上限。§10.4.2.7 在网项 6 是 file-availability 下可供下载的最长时长；§10.4.2.3 该子项 minOccurs=\"0\"。§10.4.2.1 的 tx-and-rx-control 写法不另作一条合规路径。不把缺最大值当缺默认值、免除同页其他检查，或推断实际保留时长、永久留存或请求成功。MCVideo §9.4.2.6 没有这两条 MCData 文件规则。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.6",
+            "10.4.2.7",
+            "10.4.2.3",
+            "10.4.2.1",
+            "9.4.2.6"
+          ],
+          "items": [
+            "省略最大值；在网数据语义项 6 和可选声明；§10.4.2.1 在网项 1(e)、1(f) 与 MCVideo 仅比较"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "只覆盖整份业务配置文档的参数块、三类组合与 MCData 文件可用时长的缺项分支。AUID/XUI、域、字段取值及时长另核；同一 409 或部分报文不判实际触发条件。",
+    "409 与 constraint-failure 是各失败分支的要求；phrase 若带才建议取值。相同响应不证明唯一出错原因，重叠条件未规定先后。七种组合不规定扩展、其他约束、协议实现或最终请求结果。"
+  ],
+  "related": [
+    "r20-identity-mcvideo-mcdata-org-service-config-documents",
+    "r20-identity-cmc-config-document-put",
+    "r20-identity-ad-hoc-broadcast-hang-time"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
