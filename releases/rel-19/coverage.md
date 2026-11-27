@@ -993,6 +993,14 @@
 
 入口：[预配置用户重组：MCPTT 与 IWF 怎样取消？](topics/interworking/preconfigured-user-regroup-cancellation.md)。
 
+### 互通紧急呼叫：哪一段有紧急优先？
+
+- **能回答：**查紧急私呼到 LMR 的分段优先，或不跟踪组紧急的 LMR 当前发言 UE 与 MCPTT 紧急组发言的不同条件。
+- **只到条件或接口：**TS 23.283 V19.5.0 Stage 2 §10.6.2.6/.7。LMR 明确不支持私呼紧急处理才命中该项负规则；组呼的 MCPTT 段看发言和组紧急，LMR 限制看不跟踪组紧急及发言 UE 自态。这两条里，只有私呼条文明列 LTE EPS。
+- **尚未建立的结论：**不从另一侧优先、能力/组配置、指示、告警或说话者之外的 UE 状态推出实际抢占、已应用优先、QoS 值或媒体送达；不补其他承载。
+
+入口：[互通紧急呼叫：哪一段有紧急优先？](topics/interworking/emergency-priority-by-segment.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)

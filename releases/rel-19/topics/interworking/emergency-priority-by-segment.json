@@ -1,0 +1,223 @@
+{
+  "topic_id": "r19-iwf-emergency-priority-by-segment",
+  "release": 19,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "互通紧急呼叫：哪一段有紧急优先？",
+  "common_conditions": [
+    "TS 23.283 V19.5.0，Rel‑19 Stage 2。这里只判断 §10.6.2.6/.7 互通紧急处理在各承载部分及发言者的分界，不是建呼、撤销组态或话权协议。",
+    "单查规范不需实际抓包；若判断现网各段是否已应用，具体状态、发言者和实现证据不能相互替代。"
+  ],
+  "condition_rule": "先分问的是 .6 紧急私呼还是 .7 紧急组及不跟踪组紧急的 LMR，再分哪一承载段。私呼看 LMR 是不是被叫与该 LMR 私呼紧急处理能力；只查 MCPTT / LTE EPS 无需先核后一项。组呼在 MCPTT 段看实际发言及该组当时的组态。在 LMR 段查不跟踪组紧急的限制时，看当前发言 UE 的自身状态，不以该组同时紧急作为此处前件。",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "iwf-emergency-priority-private-called-lmr-and-segment",
+      "conditions": [
+        "可单查规范规则；实际选择 .6 要识别紧急私呼、LMR 用户是被叫及所问承载段。只问 MCPTT / LTE EPS 段，不要求先知道 LMR 是否支持私呼紧急处理。"
+      ],
+      "conclusion": "呼向 LMR 用户的紧急私呼，MCPTT 系统和 LTE EPS 所承载的部分有紧急优先。若该 LMR 系统不支持私呼的紧急处理，LMR 侧不给这项优先处理。MCPTT / LTE EPS 的规则不因此失效。",
+      "limitations": [
+        "不把“主叫在 LMR”代被叫为 LMR，也不补主叫一定为 MCPTT。LMR 支持或未知不满足明确的“不支持”条件，不推出该侧一定获得、一定不得或已实施。不是说无普通优先，不定义 QoS 值或证明呼叫已建立。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.6 (emergency private call to an LMR user)"
+          ],
+          "printed_pages": [
+            133
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-emergency-priority-lmr-non-tracking-current-talker-ue",
+      "conditions": [
+        "可单查 .7 的 LMR 侧规则；应用到一笔实际通话，先辨明它是互通且所问 LMR 不跟踪组紧急状态，核该段当前发言 UE 与发言时其自身紧急状态。组是否紧急不是该限制额外列的条件。"
+      ],
+      "conclusion": "该互通 LMR 不跟踪组紧急状态时，LMR 侧这项紧急优先只给正在发言且自身处于紧急状态的 UE；组紧急或另一台 UE 紧急不能代替当前发言 UE 自身紧急。",
+      "limitations": [
+        "静默、已加入或待机的紧急 UE 不代实际发言。当前 UE 紧急只满足本句区分条件，不证明现场实际已应用；LMR 已知跟踪或未知是否跟踪，不从这句推具体处理或取其反命题。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.7 (group emergency tracking and talker / bearer priority)"
+          ],
+          "printed_pages": [
+            133
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-emergency-priority-mcptt-emergency-group-current-talk",
+      "conditions": [
+        "可单查 .7 的 MCPTT 侧原句；判断该段的实际场景，要识别用户正在本组发言及该组当时处于紧急状态，不要求该发言 UE 自身紧急。不要把前一句 LMR 的能力判断借作 MCPTT 侧组态证据。"
+      ],
+      "conclusion": "在 .7 所述互通语境，MCPTT 系统跟踪每个组的紧急状态。无论哪个用户，只要在紧急组上发言，MCPTT 系统承载的部分有紧急优先，即使该 UE 自己不紧急。该句只列 MCPTT 承载部分，没列 .6 的 LTE EPS。",
+      "limitations": [
+        "默认紧急组配置、收到告警、已加入或 UE 自身状态都不替本组紧急与实际发言。不能从 .7 没列 LTE EPS 推 LTE EPS 一定没有优先；不据本句扩大到其他系统和承载技术。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.7 (group emergency tracking and talker / bearer priority)"
+          ],
+          "printed_pages": [
+            133
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.5 (default emergency group selection and alert, comparison only)"
+          ],
+          "printed_pages": [
+            133
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-emergency-priority-capabilities-and-observed-application",
+      "conditions": [
+        "可分别查两个能力条件是否等价，或查规范优先与行为证据的界限；判断某笔实际优先，先定位同一次呼叫及所问段；组呼才按所问段分别取该次发言与该组或发言 UE 所需状态。另核本段优先实际应用。"
+      ],
+      "conclusion": "私呼紧急处理能力与是否跟踪组紧急状态是不同输入；一项未知、支持或不支持不能给另一条件赋值。规范优先、承载参数配置、实际应用、话权与媒体是不同判断：一侧应用不能代另一侧，优先指示也不等于本端已施加优先。",
+      "limitations": [
+        "此处不是实际端到端优先、配置值（QCI / ARP）、成功抢占、获话权、告警交付或媒体证明。需要的是对应段和对象在同次业务中的证据，而非仅看到能力配置或另一侧记录。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.6 (emergency private call to an LMR user)"
+          ],
+          "printed_pages": [
+            133
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.7 (group emergency tracking and talker / bearer priority)"
+          ],
+          "printed_pages": [
+            133
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.13.1/.2 (legacy priority indication, comparison only)"
+          ],
+          "printed_pages": [
+            164,
+            165
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.6.2.6 (emergency private call to an LMR user)"
+      ],
+      "printed_pages": [
+        133
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.6.2.7 (group emergency tracking and talker / bearer priority)"
+      ],
+      "printed_pages": [
+        133
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.6.2.5 (default emergency group selection and alert, comparison only)"
+      ],
+      "printed_pages": [
+        133
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.13.1/.2 (legacy priority indication, comparison only)"
+      ],
+      "printed_pages": [
+        164,
+        165
+      ],
+      "usage": "comparison-only"
+    }
+  ],
+  "related": [
+    {
+      "topic": "r19-iwf-legacy-lmr-capability-boundary",
+      "required": false,
+      "meaning": "若问题是传统 LMR 是否提供优先指示而不是哪段按标准有优先，查该页。"
+    },
+    {
+      "topic": "r19-iwf-floor-override",
+      "required": false,
+      "meaning": "仅实际是 MCPTT 主控、已配置双发送且旧 LMR 发言者不能收到话权变化的覆盖场景，查谁获得话权与媒体；不能从紧急优先跳到此条件。"
+    },
+    {
+      "topic": "r19-iwf-emergency-group-state-cancel-mcptt-origin",
+      "required": false,
+      "meaning": "若实际是 MCPTT 发起且组定义在 MCPTT 的紧急组状态取消，查相应承载调整和信令步骤；不把取消步骤当所有组态规则。"
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  },
+  "limitations": [
+    "只核分段适用条件，未描述完整 IWF 或 LMR 实现、QoS 配置值、SIP、抢占、媒体状态或其他 Release。"
+  ]
+}
