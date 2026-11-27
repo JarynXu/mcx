@@ -1,0 +1,187 @@
+{
+  "topic_id": "r19-iwf-losing-audio-classification",
+  "release": 19,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "LMR 用户不能被抢占时，losing audio 是什么？",
+  "common_conditions": [
+    "TS 23.283 V19.5.0，Rel‑19 Stage 2。主条是 §10.6.2.4 的 IWF 音频识别；§10.5 回指及示例各有自身前提。",
+    "查规则不需完整会话证据。查实况分别取证于系统/用户能力、IWF 分类、某节点的信令发送或接收、及实际媒体。"
+  ],
+  "condition_rule": "先问是否在查用户不能被抢占的 LMR 中 IWF 如何识别音频，或是否在查 §10.5 的哪种话权过程。紧急和非紧急都能按 .2.4 回指；只有采用 .5.4 示例才另核 MCPTT 定义组、主控、已建双发与旧终端无法被通知。不要用某个消息名、图中箭头或收者配置代 IWF 分类与收音。",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "iwf-losing-audio-classification-for-non-preemptible-lmr-user",
+      "conditions": [
+        "可只查 §10.6.2.4 的识别规则，无需看过一次覆盖或其后媒体。要判实况，确认该 LMR 系统下的这名用户确实不能被抢占，另查 IWF 对相关音频的识别。"
+      ],
+      "conclusion": "对用户不能被抢占的 LMR 系统，IWF 向系统把相关音频识别为 losing audio。识别不是丢包、停发、静音或接收失败。一次争抢失败、授予别人或没见某条通知，都不单独证明这个条件或 IWF 已识别。",
+      "limitations": [
+        "本节没指定 IWF 向哪个具体接口、用何消息/字段或 RTP 标记，不判已标识音频的具体后续处理，亦不从其他可抢占或未知能力反推本条处置。不能仅凭有一次新旧覆盖就断流属于哪类。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.4 Losing audio (classification and scope)"
+          ],
+          "printed_pages": [
+            133
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-losing-audio-floor-pointer-emergency-and-non-emergency",
+      "conditions": [
+        "可独立查紧急和非紧急两种 losing audio 是否回指话权控制；要选具体 §10.5 子流程，再按私呼/组呼、话权设置、实际主控及该子流程前提读。"
+      ],
+      "conclusion": "§10.6.2.4 明列紧急与非紧急呼叫中的 losing audio 均适用 §10.5。§10.5.1 总体包括互通私呼与组呼；这不是规定每通私呼必须启用话权，不将 §10.5.4 的 MCPTT 组呼覆盖当成所有 losing audio 情形。",
+      "limitations": [
+        "问题仅是 IWF 分类或条款适用，不用先有 §10.5.4 的双发配置、MCPTT 定义组、实际覆盖或不能收到通知；不能将旧发言者 B 在该图中的具体情况变成主条全部前提。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.4 Losing audio (classification and scope)"
+          ],
+          "printed_pages": [
+            133
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.1 (interworking floor control for private and group call)"
+          ],
+          "printed_pages": [
+            103
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.4, Figure 10.5.4-1, Steps 5a/5b, 6b, 7 and NOTES 1–3 (conditional MCPTT group illustration)"
+          ],
+          "printed_pages": [
+            108,
+            109
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-losing-audio-floor-override-signal-vs-media-destination",
+      "conditions": [
+        "可单查 §10.5.4 例示与 NOTE 的语义；应用到本次通话，要求 MCPTT 定义的互通组、MCPTT server 主控，已建且进行中、配置允许双方同发、IWF 代表的旧 B 原有话权且发语音、旧电台不能收到话权被占用/撤销的通知。"
+      ],
+      "conclusion": "在该示例，5a 是 server 授权 A，7 是 A 开始发媒体；5b 的 Floor Taken 图示发向 IWF，NOTE 1 写未画出的其他本次组呼话权参与者收到消息而获知新获权话者。6b 在图落在 IWF 一边，正文明确是被代表的 B 不能收这次状态通知并继续发。NOTE 2 的配置决定哪些话权参与者接收 A、B 或两路。覆盖何时授回另查原 NOTE 3 的 A 停止且 B 仍发条件。",
+      "limitations": [
+        "IWF 图上方向不证明实收；B 未收到不表示 IWF 或其他参与者都没收到，也不把 Floor Taken 当给 B 的许可。实际判定各端需同次对应证据：发送、知悉新话者、A/B 继续发与某端实收/播放是不同事情；配置不能证明具体终端已收或混音。不能把示例 B 的所有包自动判成 losing audio 或推中断/授回已执行。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.4, Figure 10.5.4-1, Steps 5a/5b, 6b, 7 and NOTES 1–3 (conditional MCPTT group illustration)"
+          ],
+          "printed_pages": [
+            108,
+            109
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.4 Losing audio (classification and scope)"
+          ],
+          "printed_pages": [
+            133
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.6.2.4 Losing audio (classification and scope)"
+      ],
+      "printed_pages": [
+        133
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.5.1 (interworking floor control for private and group call)"
+      ],
+      "printed_pages": [
+        103
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.5.4, Figure 10.5.4-1, Steps 5a/5b, 6b, 7 and NOTES 1–3 (conditional MCPTT group illustration)"
+      ],
+      "printed_pages": [
+        108,
+        109
+      ],
+      "usage": "primary"
+    }
+  ],
+  "related": [
+    {
+      "topic": "r19-iwf-floor-override",
+      "required": false,
+      "meaning": "已识别 .5.4 MCPTT 主控组的特定覆盖时，可继续查原参与者话权与授回 NOTE 3；该示例不替 losing audio 分类。"
+    },
+    {
+      "topic": "r19-iwf-floor-control-owner",
+      "required": false,
+      "meaning": "问题已是互通私呼并启用话权控制，按实际 MCPTT server 或 LMR/IWF 主控读相应流程，不套这张组呼图。"
+    },
+    {
+      "topic": "r19-iwf-emergency-priority-by-segment",
+      "required": false,
+      "meaning": "问紧急呼叫分段优先或发言者 UE/组状态，按 .6/.7 条件查，不从 IWF 的分类推出。"
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  },
+  "limitations": [
+    "不展开全 §10.5、编码、混音、播放器、用户实际收听或其他 Release。旧覆盖和私呼 owner 继续维护自己的事实。"
+  ]
+}

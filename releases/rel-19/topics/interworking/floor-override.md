@@ -16,4 +16,6 @@ ETSI正式发布的TS23.283 V19.5.0，Release19，Stage2。
 
 仅针对允许双发送且不能通知旧发言者的特定覆盖配置，不替代普通revoked流程。
 
+若先问 LMR 用户不能被抢占时为何标为 [losing audio](losing-audio-classification.md)，或紧急和非紧急如何查话权，不先套本例的共同前提。
+
 [话权状态](floor-signals.md) · [主控](floor-control-owner.md) · [发言者位置](talker-location.md) · [结构化条件](floor-override.json)

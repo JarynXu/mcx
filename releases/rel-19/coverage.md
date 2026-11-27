@@ -1009,6 +1009,14 @@
 
 入口：[互通紧急事件：选哪个组，要不要另发告警？](topics/interworking/default-emergency-group-selection.md)。
 
+### LMR 用户不能被抢占时，losing audio 是什么？
+
+- **能回答：**查 LMR 系统里用户不能被抢占时 IWF 对音频的识别，区分 §10.5.4 的新话者通知、旧端继续发与听到的新旧语音。
+- **只到条件或接口：**TS 23.283 V19.5.0 Stage 2 §10.6.2.4 回指 §10.5 适于紧急与非紧急。只有满足 §10.5.4 本例的组定义、主控、会话、允许双发和不能通知旧发言者前提才看其步骤；NOTE 2 按配置安排媒体接收者。
+- **尚未建立的结论：**不由 losing audio 推已丢包、停止发语音、RTP 字段或实际接收/播放；不因 IWF 方向、Floor Taken 或接收名单猜全员收音、混音、立即授回或媒体优先。
+
+入口：[LMR 用户不能被抢占时，losing audio 是什么？](topics/interworking/losing-audio-classification.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)
