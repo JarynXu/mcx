@@ -40,6 +40,391 @@
         "停止或恢复指定通信对指定客户端的单播媒体"
       ],
       "conclusion": "stop表示该单播媒体不需再发给指定客户端；resume由话权控制服务器请求恢复向该客户端发送。作用域不是停止整个组呼或撤销所有参与者话权。"
+    },
+    {
+      "id": "iwf-queue-cancel-info-flows-both-directions-by-role",
+      "clause": "10.5.1; 10.5.2.1; 10.5.2.5–.7; 10.5.2.12",
+      "conditions": [
+        "看同一互通话权信息流中排队取消请求、应答、通知及确认，而非某个组或私呼的仲裁算法。"
+      ],
+      "conclusion": "三类取消信息流及通用确认均列 IWF→MCPTT floor control server 及反向。不能用发送方向替代消息类型或字段角色，server 触发的通知不等于只可 server→IWF。依互通方式和实际消息源/目的解释 MCPTT ID 及相应别名代表 LMR 用户、IWF 或 MCPTT 用户；查规范无需抓包。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.1",
+            "10.5.2.1"
+          ],
+          "printed_pages": [
+            103
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.5",
+            "Table 10.5.2.5-1"
+          ],
+          "printed_pages": [
+            104
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.6",
+            "Table 10.5.2.6-1"
+          ],
+          "printed_pages": [
+            104
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.7",
+            "Table 10.5.2.7-1"
+          ],
+          "printed_pages": [
+            104,
+            105
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.12",
+            "10.5.2.12 NOTE",
+            "Table 10.5.2.12-1"
+          ],
+          "printed_pages": [
+            106
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-queue-cancel-request-requester-vs-target-list",
+      "clause": "10.5.2.5",
+      "conditions": [
+        "实际是 IWF floor request cancel，要取消队列中的话权请求。"
+      ],
+      "conclusion": "请求者 MCPTT ID（M）和被要求取消者的 List of MCPTT IDs（M）分开；别名（O）属取消请求者。表只在这三类取消流的请求中列目标列表，不能从请求者 ID、别名、方向代填。Source identifier（O）用于识别通信，仅媒体复用时出现；复用仍不使其必选，不拿它当取消事务 ID。请求表没有 Acknowledgement required，不等于没有单独的业务回应。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.5",
+            "Table 10.5.2.5-1"
+          ],
+          "printed_pages": [
+            104
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.6",
+            "Table 10.5.2.6-1"
+          ],
+          "printed_pages": [
+            104
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.7",
+            "Table 10.5.2.7-1"
+          ],
+          "printed_pages": [
+            104,
+            105
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.1",
+            "10.5.2.1"
+          ],
+          "printed_pages": [
+            103
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-queue-cancel-response-original-initiator-no-result-table",
+      "clause": "10.5.2.6",
+      "conditions": [
+        "收到或查看与本次排队取消请求匹配的 IWF floor request cancel response。"
+      ],
+      "conclusion": "MCPTT ID（M）是原取消请求发起者，别名（O）是请求者的别名，不随应答发送方向改成发送人或某个被取消者。Source identifier（O）只在媒体复用时出现；Acknowledgement required（O）只说明是否要求确认。本表没有目标列表、逐目标结果、取消成功/失败或拒绝原因。不能借 .4 floor rejected 的可选 Rejection cause 给 .6 补字段，也不能把响应等同目标排队条目已移除。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.6",
+            "Table 10.5.2.6-1"
+          ],
+          "printed_pages": [
+            104
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.4",
+            "Table 10.5.2.4-1"
+          ],
+          "printed_pages": [
+            104
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.5",
+            "Table 10.5.2.5-1"
+          ],
+          "printed_pages": [
+            104
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-queue-cancel-notify-admin-identity-not-request-response",
+      "clause": "10.5.2.7",
+      "conditions": [
+        "实际是 IWF floor request cancel notify；区分通知触发和表里的身份角色。"
+      ],
+      "conclusion": "正文说话权请求由管理员或话权控制服务器取消；表把 MCPTT ID（M）和别名（O）都写成管理员的。发出者是服务器不等于字段是服务器 ID、原发起者或被取消者；本条没有替服务器生成管理员 ID 的规则。Source identifier（O）只在媒体复用时出现，Acknowledgement required（O）另看是否要求确认。本表无目标列表和原请求结果；通知报告取消，不能当 .6 应答或独立证明实际移除对象和状态。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.7",
+            "Table 10.5.2.7-1"
+          ],
+          "printed_pages": [
+            104,
+            105
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.6",
+            "Table 10.5.2.6-1"
+          ],
+          "printed_pages": [
+            104
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.1",
+            "10.5.2.1"
+          ],
+          "printed_pages": [
+            103
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-floor-ack-actual-required-not-response-or-target-state",
+      "clause": "10.5.2.5–.7; 10.5.2.12 and NOTE",
+      "conditions": [
+        "核实际通用话权确认或收到 .6、.7 以及其他话权控制信息流需确认的条件。"
+      ],
+      "conclusion": "§10.5.2.12 用于收到的控制消息实际要求确认的场合，正反向均列；NOTE 只说话权控制服务器可在每条带要求确认指示的控制信息流之后发送，不限于取消、也不能反成只允许服务器发送。.6/.7 的可选字段必须确实指示要求，只有字段、消息名称或发送方事件不足；.5 表没有该字段，但与 .6 业务应答独立。确认表只列确认发送者 MCPTT ID（M）与其别名（O），没有 Source identifier、被取消者列表、结果或明确的事务关联字段。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.12",
+            "10.5.2.12 NOTE",
+            "Table 10.5.2.12-1"
+          ],
+          "printed_pages": [
+            106
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.5",
+            "Table 10.5.2.5-1"
+          ],
+          "printed_pages": [
+            104
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.6",
+            "Table 10.5.2.6-1"
+          ],
+          "printed_pages": [
+            104
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.7",
+            "Table 10.5.2.7-1"
+          ],
+          "printed_pages": [
+            104,
+            105
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-queue-cancel-wire-event-not-observed-queue-removal",
+      "clause": "10.5.2.5–.7; 10.5.2.12–.14",
+      "conditions": [
+        "需要从互通话权侧的实际观测确定请求、应答、通知或确认能证明什么。"
+      ],
+      "conclusion": "分别关联本次通信、操作、方向和各自身份；局部日志未知不补必选列表或把同名字段当目标。发送、相应消息实收和队列实际移除分开。.6 response 或 .12 确认不证明全部目标移除；.7 报告取消也不以管理员 ID 推定被移除对象。位置查询/位置通知、当前持有人 release/revoked、普通话权拒绝和整通释放均不是排队取消，不据此补错误码、等待/重试、排队算法或 Stage 3。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.5",
+            "Table 10.5.2.5-1"
+          ],
+          "printed_pages": [
+            104
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.6",
+            "Table 10.5.2.6-1"
+          ],
+          "printed_pages": [
+            104
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.7",
+            "Table 10.5.2.7-1"
+          ],
+          "printed_pages": [
+            104,
+            105
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.12",
+            "10.5.2.12 NOTE",
+            "Table 10.5.2.12-1"
+          ],
+          "printed_pages": [
+            106
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.13–.14"
+          ],
+          "printed_pages": [
+            106,
+            107
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.9",
+            "10.5.2.11"
+          ],
+          "printed_pages": [
+            105,
+            106
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.4",
+            "Table 10.5.2.4-1"
+          ],
+          "printed_pages": [
+            104
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
