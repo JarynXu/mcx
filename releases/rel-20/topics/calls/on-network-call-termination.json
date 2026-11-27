@@ -1,0 +1,199 @@
+{
+  "topic_id": "r20-calls-on-network-call-termination",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 22.179 V20.0.0，Release 20，Stage 1。第 6 章在网，§6.2.4 呼叫终止；各条按其所写呼叫类型和条件，不统一加组呼限制。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-22.179-v20.0.0",
+  "standard_stage": 1,
+  "limitations": [
+    "R-6.2.4-004 在本版为 Void；资料性附录 A1 在 §6.2.4 只列 NA（页 75），不补迁移编号或目标正文。",
+    "§6.2.1、§6.2.3.4/.5、§6.4.9、§6.8.6.2 与 §7.4 只分流；不使用阶段 1 推断默认配置、协议、实际通知到达或呼叫结束。"
+  ],
+  "claims": [
+    {
+      "id": "preempted-group-call-participant-end-or-continuation-indication",
+      "clause": "6.2.4",
+      "requirements": [
+        "R-6.2.4-001"
+      ],
+      "conditions": [
+        "一通在网 MCPTT 组呼的参与者被抢占；不是仅有发话许可被撤。"
+      ],
+      "conclusion": "服务须结束整通呼叫，或继续并向正在发话的参与者提示一个或多个接收参与者被抢占。条文用参与者被抢占作为触发，以接收参与者被抢占作为续呼提示的内容；不能把触发缩成仅有接收者被抢占，也不补双方角色或分支选择策略。该提示不替代 -002 给被移出用户的容量原因通知。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.2.4"
+          ],
+          "printed_pages": [
+            40
+          ],
+          "requirements": [
+            "R-6.2.4-001"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "capacity-preempted-users-receive-removal-reason",
+      "clause": "6.2.4",
+      "requirements": [
+        "R-6.2.4-002"
+      ],
+      "conditions": [
+        "原文为进行中的 MCPTT 呼叫。因容量不足、无法让这些 MCPTT 用户继续参加，他们被抢占移出；不是仅看到容量不足或发话结束。"
+      ],
+      "conclusion": "服务须确保被移出的 MCPTT 用户收到通知，内容为因容量不足被移出呼叫。只见发出不证明收到，也不从移出推整通已结束。若同一组呼继续且也满足 -001，给发话者的提示不能替代本条给被移出用户的通知。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.2.4"
+          ],
+          "printed_pages": [
+            40
+          ],
+          "requirements": [
+            "R-6.2.4-002"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "on-network-call-terminates-after-hang-time-expires",
+      "clause": "6.2.4",
+      "requirements": [
+        "R-6.2.4-003"
+      ],
+      "conditions": [
+        "已核是在网呼叫且 Hang Time 已到期，不是单次发话时限或整通总时限。"
+      ],
+      "conclusion": "服务须在 Hang Time 到期后结束呼叫。§3.1 是同一呼叫连续两次传输之间可配置的静默上限。§4.3 的组呼概述描述前次传输结束起计；下一次传输在静默期间内开始时，停表并复位，在该次传输结束时再起计；发话申请或许可不能替代实际传输开始。组处在进行中的应急或紧迫险情状态时，概述把不活动期视为概念上无限，并保留资源抢占例外；不把普通静默时长套进去，也不据此裁定与总时限如何协调。§7.4 离网适用不同。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.2.4"
+          ],
+          "printed_pages": [
+            41
+          ],
+          "requirements": [
+            "R-6.2.4-003"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "3.1"
+          ],
+          "printed_pages": [
+            10
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "4.3"
+          ],
+          "printed_pages": [
+            16
+          ]
+        }
+      ]
+    },
+    {
+      "id": "configurable-lead-indication-to-participants-before-call-time-limit",
+      "clause": "6.2.4",
+      "requirements": [
+        "R-6.2.4-005"
+      ],
+      "conditions": [
+        "在网呼叫距整通时限进入可配置的提前量，尚未达到时限。"
+      ],
+      "conclusion": "服务须向参与者提示呼叫已进入距总时限的提前量内。可配置的是该提前量；本条不规定总时限默认值、从何种报文起计或提示次数。快到提示不能替代到时提示或释放。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.2.4"
+          ],
+          "printed_pages": [
+            41
+          ],
+          "requirements": [
+            "R-6.2.4-005"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "release-whole-call-and-indicate-reached-time-limit-to-participants",
+      "clause": "6.2.4",
+      "requirements": [
+        "R-6.2.4-006",
+        "R-6.2.4-007"
+      ],
+      "conditions": [
+        "在网呼叫已经达到整通时限，而非只进入提前量或单次发话到时。"
+      ],
+      "conclusion": "服务须释放整通呼叫，并向参与者提示已达呼叫时限。两项都是要求，不因已发快到提示而免除到时提示；条文不规定释放与提示先后。该上限不用于撤单次发话许可的判断，也不证明某条提示实际送达或拆话完成。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.2.4"
+          ],
+          "printed_pages": [
+            41
+          ],
+          "requirements": [
+            "R-6.2.4-006",
+            "R-6.2.4-007"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "group-call-release-on-applicable-end-condition-or-insufficient-present-affiliated-members",
+      "clause": "6.2.4",
+      "requirements": [
+        "R-6.2.4-008"
+      ],
+      "conditions": [
+        "在网 MCPTT 组呼。核任一适用的终止条件是否成立，或在场的已归属 MCPTT 组成员是否不足最低数；这是两个独立条件。"
+      ],
+      "conclusion": "任一终止条件满足，或在场的已归属 MCPTT 组成员少于最低数，服务须释放组呼。末位、倒数第二位或发起者离开是终止条件示例，不是一律采用的默认条件。统计对象是实际在场且已归属的成员，不能用终端、发话者、登记名单或建呼确认数量替代。够最低数只排除此人数原因，不能排除其他终止条件。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.2.4"
+          ],
+          "printed_pages": [
+            41
+          ],
+          "requirements": [
+            "R-6.2.4-008"
+          ]
+        }
+      ]
+    }
+  ],
+  "related": [
+    "r20-calls-on-network-call-access-priority-and-preemption",
+    "r20-calls-floor-permission-end-and-transmit-limit",
+    "r20-calls-off-network-inactivity-call-termination",
+    "r20-calls-group-call-setup-acknowledgement",
+    "r20-identity-ad-hoc-broadcast-hang-time"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
