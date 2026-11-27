@@ -15,6 +15,6 @@ TS 22.179 V20.0.0，Release 20，Stage 1。这里的插话（audio cut-in）是�
 
 这是同一组内的话权，不是[另一呼叫打断环境监听](ambient-listening-interruption.md)，也不是[非 3GPP 互通私呼抢占](interworking-private-call-override.md)。
 
-做一次验收时，把该组生效配置、实际同组请求、谁获准与原请求是否结束对到同一次事件。§6.2.3.6.1 的概述称最新请求立即获得话权，但没有给出毫秒门槛。本页不定义 SIP/话权报文、UI 样式、请求的精确排序时钟或音频交付，也不套用到离网组。
+做一次验收时，把该组生效配置、实际同组请求、谁获准与原请求是否结束对到同一次事件。§6.2.3.6.1 的概述称最新请求立即获得话权，但没有给出毫秒门槛。本页不定义 SIP/话权报文、UI 样式、请求的精确排序时钟或音频交付，也不套用到离网组；离网时查[话权抢占条件和撤权](off-network-floor-override.md)。
 
 [3GPP 原文归档](https://www.3gpp.org/ftp/Specs/archive/22_series/22.179/22179-k00.zip) · [来源与版本](../../sources.json) · [结构化记录](group-audio-cut-in.json)
