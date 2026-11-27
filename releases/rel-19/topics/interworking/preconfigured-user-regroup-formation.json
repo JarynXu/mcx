@@ -1,0 +1,392 @@
+{
+  "topic_id": "r19-iwf-preconfigured-user-regroup-formation",
+  "release": 19,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "预配置用户重组：MCPTT 与 IWF 怎样建组？",
+  "common_conditions": [
+    "TS 23.283 V19.5.0，Rel‑19 Stage 2。范围为 §10.3.8.1/.2.1/.2.2 的预配置用户重组成形，非组成组重组、通话建立或取消执行。",
+    "查规则无需实际完整会话；实况须分请求、发件、收件、确认、归属和后续呼叫。"
+  ],
+  "condition_rule": "按本次发起角色与 §10.3.8.2 实际重组组由谁托管来选分支；查某条信息流或前件不先要求后续步骤。实际配对才核同一次和对应发送方向。先分用户名单和组成组名单，配置来源组与实际重组组分别定位。",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "iwf-user-regroup-template-group-vs-created-group",
+      "conditions": [
+        "可独立查来源组、确切实际重组 ID 或配置前件，不要求已有请求、成功归属或通话。"
+      ],
+      "conclusion": "这个流程把用户放进新重组组，使用另一个已预配 MCPTT 组的配置。相关用户事先取得配置；来源组只提供配置，可提供给一项或多项用户重组。实际重组的 MCPTT 组 ID 在重组时由获授权发起用户或发起 IWF 提供。专用来源组标记回指 TS 23.280；NOTE 2 的替代来源组需已在所有相关 MCPTT 用户的 profile，且拟重组用户中有本属 IWF 的用户时，还须在 IWF 配同一来源组。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.8.1 and NOTES 1–2 (source group, users and regroup identity)"
+          ],
+          "printed_pages": [
+            84,
+            85
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "2 Reference [5] and non-specific 3GPP references (TS 23.280 pointer)"
+          ],
+          "printed_pages": [
+            11
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "配置组不是新组，不用来源组 ID 代新组，也不由一人 profile 或已配置一侧推已备齐。用户本属哪个系统不是已归属新组；新组还没形成也要按本属判断前置配置。未核 TS 23.280 标记或数据正文；§2 未指定版本回指同 Release 的该 TS 最新版。无确切 ID 分配、传输或密钥方案；不把 .2.1 示例 IWF 用户数加成本节所有场景的通用前提。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-user-regroup-mcptt-origin-authorization-and-actual-affiliation",
+      "conditions": [
+        "按实际 MCPTT 系统发起和实际重组组由 MCPTT server 托管 识别 .2.1；可先查其规范步骤，不要求已有配齐记录、通过本次授权或所有端回复。"
+      ],
+      "conclusion": "前提：client 2/3 已注册 MCPTT 业务，二者与 IWF 都预配来源组并收相关安全信息；client 1 已获授权并知道适用来源组。Step 1 获授权用户指定要重组的用户（示例 client 2/3 和一个或多个 IWF 用户）与实际新组、来源组 ID；2 client 1→server 发带用户名单的请求，3 由 server 检查本次授权。4a/b server 分别发两客户端，5a/b 在图为各自的本地用户通知，正文第 5 步指回 4a/b。7 server→IWF，8 IWF→server。9 的正文写组归属（affiliate）：把重组的 MCPTT 客户端和 IWF 归属至新组，图框只写 MCPTT 客户端；10 server 另给 client 1 发应答。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.8.2.1, Figure 10.3.8.2.1-1, Steps 1–10 and NOTES 1–2"
+          ],
+          "printed_pages": [
+            85,
+            86,
+            87
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.8.1 and NOTES 1–2 (source group, users and regroup identity)"
+          ],
+          "printed_pages": [
+            84,
+            85
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "7/8 是 IWF 腿而非 6a/b 客户端确认。既有授权条件不替本次验权、通知、实际收件或归属；不把图的两个 MCPTT 客户端及示例 IWF 用户数视为通用上限或逐 LMR 邀请策略。Step 9 是网关及所述客户端归属，不证明每个网关后用户已经实收、确认、归属或已有媒体。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-user-regroup-iwf-origin-list-and-reverse-response",
+      "conditions": [
+        "按实际 IWF 发起和实际重组组由 IWF 托管 识别 .2.2；可单查规范，不要求先观察另一方向的 Step 9。"
+      ],
+      "conclusion": "示意只画一个接收 MCPTT client。前提为它已注册 MCPTT 业务，MCPTT client 与 IWF 已配置来源组，正文写 MCPTT client 收到相关安全信息。1 是 IWF→server 请求，只列要重组且本属 MCPTT 系统的用户，不是新组全员名单；2 server→client 发请求，3 客户端通知其用户，4 客户端可以回确认，但不对组播发出的重组请求回此确认，5 server→IWF 回 IWF pre-configured regroup response。图的 5 省 IWF 前缀，不替正文和箭头。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.8.2.2, Figure 10.3.8.2.2-1, Steps 1–5 and NOTES 1–2"
+          ],
+          "printed_pages": [
+            87
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.8.1 and NOTES 1–2 (source group, users and regroup identity)"
+          ],
+          "printed_pages": [
+            84,
+            85
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不把另支的预授权与验权 3 或归属 9 复制来，也不由此断无授权、无归属、IWF 不需安全或只有一个接收端。名单不排除新组另有本属 IWF 的用户。不能从发件或已知名单推出每个接收端已收到或用户已确认。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-user-regroup-request-two-group-ids-and-only-user-list",
+      "conditions": [
+        "单查已定位为 .2.1 Step 7 或 .2.2 Step 1 的 IWF 请求即可用表 .14；说两条消息相配，才另外核本次重组与发送方向。"
+      ],
+      "conclusion": "表 10.3.2.14-1 是 IWF↔MCPTT server 的请求：请求者 MCPTT ID、实际重组组 ID、来源组 ID 各 M。MCPTT ID list（用户）和 MCPTT group ID list（组成组）在各行是 O，但 NOTE 要求有且只有一个；本用户重组取前者。确认 .2.2 Step 1 的列表只列本属 MCPTT 系统的拟重组用户，不是新组全员名单，也不照搬 .2.1 Step 1 的示例名单。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.14 Table 10.3.2.14-1 (IWF pre-configured regroup request)"
+          ],
+          "printed_pages": [
+            39
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.8.2.1, Figure 10.3.8.2.1-1, Steps 1–10 and NOTES 1–2"
+          ],
+          "printed_pages": [
+            85,
+            86,
+            87
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.8.2.2, Figure 10.3.8.2.2-1, Steps 1–5 and NOTES 1–2"
+          ],
+          "printed_pages": [
+            87
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.8.1 and NOTES 1–2 (source group, users and regroup identity)"
+          ],
+          "printed_pages": [
+            84,
+            85
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "该表不套 client 1→server Step 2 或 server→接收客户端的原生请求。不能由有请求者 ID 推通过授权、由列表推收件；不定二列表都给或都缺时的具体拒绝／错误码。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-user-regroup-optional-ack-distinct-from-iwf-result",
+      "conditions": [
+        "查终端确认规则、单条 IWF 应答或给 MCPTT 发起者的应答可分开读；判断实际归属、实际收件或响应配对，另按本次动作、端点及方向核对应证据。"
+      ],
+      "conclusion": "MCPTT 发起 6a/b 和 IWF 发起 4 均是客户端可发回的确认，不作为对组播发出重组请求的应答；用户通知先另看。IWF 应答表 10.3.2.15-1 用于 .2.1 的 8 IWF→server 和 .2.2 的 5 server→IWF，请求者 MCPTT ID、实际重组组 ID、Result 各 M。不是客户端确认或 MCPTT 发起分支的 10；没有逐用户状态、来源组或 Result 具体码。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.8.2.1, Figure 10.3.8.2.1-1, Steps 1–10 and NOTES 1–2"
+          ],
+          "printed_pages": [
+            85,
+            86,
+            87
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.8.2.2, Figure 10.3.8.2.2-1, Steps 1–5 and NOTES 1–2"
+          ],
+          "printed_pages": [
+            87
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.15 Table 10.3.2.15-1 (IWF pre-configured regroup response)"
+          ],
+          "printed_pages": [
+            39
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不能从流程图中确认箭头的位置推出等待所有客户端、无须等待、超时或特定聚合策略，也不由请求的限制推出确认的传输格式。应答发出≠对端实际收到；实际收到对应 Result 或 client 1 的 Step 10，也不补全员确认、实际归属或组呼建立。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-user-regroup-lifetime-and-simultaneous-context",
+      "conditions": [
+        "查两条已形成的预配置用户重组在建呼前后的目的、允许同时参加与何时结束；不是查取消过程细节、媒体或另一种组成组重组。"
+      ],
+      "conclusion": "两条成形流程都发生在组呼建立前。两分支 NOTE 1 允许 MCPTT 客户端与本属 IWF 的用户同时参与多个用户、组重组；不复用组重组的拒绝规则。各自 NOTE 2 说完成后持续，直到显式取消：MCPTT 分支回指 .3.1，IWF 分支回指 .3.2。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.8.2.1, Figure 10.3.8.2.1-1, Steps 1–10 and NOTES 1–2"
+          ],
+          "printed_pages": [
+            85,
+            86,
+            87
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.8.2.2, Figure 10.3.8.2.2-1, Steps 1–5 and NOTES 1–2"
+          ],
+          "printed_pages": [
+            87
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.7.1 group regroup, not the user formation branches"
+          ],
+          "printed_pages": [
+            72,
+            73
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "不从一次通话结束、应答或用户确认推本组已取消。只保留取消指针，不展开失败、重试、资源释放、通话或话权，也不是按名单建立一个 ad hoc 组呼。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.8.1 and NOTES 1–2 (source group, users and regroup identity)"
+      ],
+      "printed_pages": [
+        84,
+        85
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.8.2.1, Figure 10.3.8.2.1-1, Steps 1–10 and NOTES 1–2"
+      ],
+      "printed_pages": [
+        85,
+        86,
+        87
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.8.2.2, Figure 10.3.8.2.2-1, Steps 1–5 and NOTES 1–2"
+      ],
+      "printed_pages": [
+        87
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.2.14 Table 10.3.2.14-1 (IWF pre-configured regroup request)"
+      ],
+      "printed_pages": [
+        39
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.2.15 Table 10.3.2.15-1 (IWF pre-configured regroup response)"
+      ],
+      "printed_pages": [
+        39
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "2 Reference [5] and non-specific 3GPP references (TS 23.280 pointer)"
+      ],
+      "printed_pages": [
+        11
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.7.1 group regroup, not the user formation branches"
+      ],
+      "printed_pages": [
+        72,
+        73
+      ],
+      "usage": "comparison-only"
+    }
+  ],
+  "related": [
+    {
+      "topic": "r19-iwf-preconfigured-regroup",
+      "required": false,
+      "meaning": "若实际重组的是若干组成组或看 .3.7 的更新、冲突／广播规则，不把它们套给用户重组成形。"
+    },
+    {
+      "topic": "r19-iwf-group-call-request",
+      "required": false,
+      "meaning": "实际是在已配互通组上建立组呼才读本流程相邻的通话条款，不以重组应答为已建呼。"
+    },
+    {
+      "topic": "r19-iwf-adhoc-group-explicit-list-mcptt-origin",
+      "required": false,
+      "meaning": "明确是 MCPTT 按名单建立互通 ad hoc 组呼才读其步骤；不把重组成形当逐个 LMR 邀请。"
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  },
+  "limitations": [
+    "只核公开 Stage 2 的角色、前提、消息与证据。没有核 TS 23.280 的具体配置、取消过程、SIP、媒体或实现。"
+  ]
+}

@@ -20,6 +20,8 @@ TS23.283 §10.3.7.1 的 MCPTT 预配置重组，非完整形成协议。
 
 只核验所列互通条款；TS23.280/23.379 引用的配置字段、隐私策略及基础过程未独立核验，不能据此形成完整实现。
 
+如果输入是用户名单、要查实际新组怎样在 MCPTT 或 IWF 侧形成，另读[预配置用户重组成形](preconfigured-user-regroup-formation.md)（§10.3.8），不把下面的组成组规则替入。
+
 [跨系统组重组边界](regroup-boundaries.md) · [重组后的媒体兼容](regroup-media.md) · [互通组配置](group-configuration.md) · [结构化知识](preconfigured-regroup.json)
 
 ## 漏收重组通知后按下 PTT
