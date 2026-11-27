@@ -4140,6 +4140,22 @@
       "start": "topics/interworking/location-query.md",
       "boundary": "TS 23.283 V19.5.0 Stage 2 §10.11.4.2.1/.2。MC 查 LMR（.1.1）：1 原 MC service server/LMC→本地 LMS，2 LMS 按情况与配置核许、3 辨 LMR 目标，4 LMS→IWF（.4.1.2），IWF 5 可选择授权。两条 7：IWF→LMS 的 report 回 .4.1.1；LMS→原本地发起方是另一次转发，不用 IWF 表。IWF 发出、LMS 实收、LMS 转发与原发起方实收分别判断。反向 IWF 查 MC（.1.2）：3 IWF→LMS 请求，LMS 4 授权／5 确定位置，6 LMS→IWF 正文 report 回 .4.1.1、图 response 不添另一答复。同一方向还可能是 .4.2.2 对应通知 2（发送方 1 决定已有可通知位置、.4.1.5）。单查一条无需全链；真正跨腿归因才核同一请求、目标和端点。收件、授权、位置是否新测量以及订阅状态分别取证；不补 TS 23.280 的表体。",
       "next_if": []
+    },
+    {
+      "id": "iwf-current-talker-location-privacy-vs-recipients-and-floor-taken",
+      "question": "互通组呼里发言者的位置该给谁？一条 Floor Taken 能证明位置已经发到吗？",
+      "start": "topics/interworking/talker-location.md#发言者的位置该给谁只有一条-floor-taken-怎么判断",
+      "boundary": "Rel‑19 Stage 2 TS 23.283 V19.5.0 §10.11.1–.3（印刷页 152–154）。两支先按进行中互通组呼的实际当前发言者分：.2 客户端 1 发言，server 已取得其位置；.3 IWF 代表 LMR 用户发言，server 如何取得其位置明确不在范围，题名不补 IWF→server 取位消息。话权不代权限；第 2 步由 MCPTT server 查当前发言用户的位置共享策略，不查接收者或网关来替代。.2 允许时常规与可选 Floor Taken 均列客户端 2 与 IWF；.3 常规是 server 向客户端 1 与客户端 2 提供，图 10.11.3-1 不含 IWF，正文可选句却写客户端 2 与 IWF，不替原文裁可选去向，也不因 .3 第 3 步没重写许可而跳过检查。单查规则无需抓包；单查实况一条消息或一端实收无需另一腿。实际携带本次位置、server 发出、各端实收分别取证。仅有话权、消息名、发言者 ID 或位置值相同不证明披露，不从收到倒推取位方式、测量时刻或许可检查。.1 只指 TS 23.379 §10.6.2.7。",
+      "next_if": [
+        {
+          "condition": "实际要查另一笔 LMS 与 IWF 的按需位置请求、报告或事件通知，不是本轮组呼发言者位置提供。",
+          "read": "topics/interworking/location-query.md"
+        },
+        {
+          "condition": "实际只查 LMR 发言者标识晚到后在同一次传输内怎么更新，并非位置披露或传输。",
+          "read": "topics/interworking/late-talker-id.md"
+        }
+      ]
     }
   ]
 }

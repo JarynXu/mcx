@@ -26,6 +26,172 @@
         "LMR用户通过IWF作为当前发言者"
       ],
       "conclusion": "IWF取得话权后，服务器检查当前IWF用户的位置共享隐私策略，以决定能否提供给其他MCPTT用户。服务器如何获取LMR用户位置不在此条款范围，不能把该过程补写成自动测量。"
+    },
+    {
+      "id": "iwf-current-talker-location-choose-by-current-talker-not-acquisition-leg",
+      "conditions": [
+        "可单查 §10.11.1 的一般入口、.2 或 .3 的前提及服务器取位范围，不要求位置报告或现场抓包。选择实况分支时，先看这轮实际发言的是 MCPTT 客户端还是 IWF 所代表的 LMR 用户；判断完整前提时核该组呼；只有 .2 明列 server 已取得该客户端位置。"
+      ],
+      "conclusion": "§10.11.1 只指 TS 23.379 §10.6.2.7。两条互通示例的前提均是客户端 1、客户端 2 和 IWF 已在进行中的组呼。.2 是客户端 1 正发言，明确要求 MCPTT server 已取得客户端 1 的位置；.3 是 LMR 用户通过 IWF 正发言，NOTE 说 server 如何取得 LMR 用户位置不在范围内。标题 IWF to MCPTT server 不是一条取位消息。",
+      "limitations": [
+        "不凭组号、IWF 参与或任意 Floor Taken 识别发言者。不能把 .2 明写的“已取得”前提移成 .3 的原句，也不从 .3 的 NOTE 推出位置无需取得、已取、实时获取、某种接口或自动测量。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.11.1 (general TS 23.379 10.6.2.7 reference only)"
+          ],
+          "printed_pages": [
+            152
+          ],
+          "usage": "dependency"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.11.2 introduction, preconditions, Figure 10.11.2-1 and Steps 1–3 (MCPTT talker)"
+          ],
+          "printed_pages": [
+            152,
+            153
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.11.3 introduction, preconditions, NOTE, Figure 10.11.3-1 and Steps 1–3 (IWF-represented LMR talker)"
+          ],
+          "printed_pages": [
+            153,
+            154
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-current-talker-location-floor-vs-policy-subject",
+      "conditions": [
+        "可单查任一方向的隐私规则或话权步骤；若判断某次实际有权提供该位置，要核这一轮发言者及对应策略的实际判断，不要求先有位置传送。"
+      ],
+      "conclusion": ".2 第 1 步客户端 1 取得话权，.3 第 1 步 IWF 取得话权。两支第 2 步均由 MCPTT server 查当前发言用户的位置共享策略：.2 查当前 MCPTT 用户，.3 查 IWF 所代表的当前发言用户，目的是判断能否给通话中其他 MCPTT 用户。.2 第 3 步的常规提供与可选 Floor Taken 都明写策略许可；.3 第 3 步没重写这个条件，但不能据此越过第 2 步的能否提供判断。",
+      "limitations": [
+        "话权不授予位置公开许可；IWF 或接收者自身的配置不能代当前说话者的政策。TS 23.379 附录 A.3 是策略定义回指，不在这里补授权算法或证明某次实际使用过策略。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.11.2 introduction, preconditions, Figure 10.11.2-1 and Steps 1–3 (MCPTT talker)"
+          ],
+          "printed_pages": [
+            152,
+            153
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.11.3 introduction, preconditions, NOTE, Figure 10.11.3-1 and Steps 1–3 (IWF-represented LMR talker)"
+          ],
+          "printed_pages": [
+            153,
+            154
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-current-talker-location-ordinary-recipient-vs-optional-floor-taken-words",
+      "conditions": [
+        "可查 .2 或 .3 的常规对象、可选 Floor Taken 句子之一或比较图文，不要求另一支已发生。实况要把已知位置提供动作和当次发言者对齐，仅凭某接收者或一种消息名不判分支。"
+      ],
+      "conclusion": ".2 的位置共享策略允许时，常规第 3 步由 MCPTT server 提供客户端 1 的位置给客户端 2 与 IWF，图 10.11.2-1 的位置框不覆盖客户端 1；可选 Floor Taken 句也列客户端 2 与 IWF，且明写策略许可。.3 的第 2 步由 server 按当前发言用户的策略判断能否提供，第 3 步没有复述 .2 的许可措辞。常规第 3 步由 server 提供 IWF 后方发言用户的位置给客户端 1 与客户端 2，图 10.11.3-1 的位置框不覆盖 IWF；可选句却仍写客户端 2 与 IWF。保留两种字面，不替换对象或合并名单，也不由常规图框判定 .3 可选句的精确接收集合。",
+      "limitations": [
+        "常规位置提供回指 TS 23.280 §10.9.3.6、可选载体回指 TS 23.379 §10.9.1.3.1，不核其表体或线上编码。可选不等于另发一份、必带位置、禁止其中一个端收到或全组实收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.11.2 introduction, preconditions, Figure 10.11.2-1 and Steps 1–3 (MCPTT talker)"
+          ],
+          "printed_pages": [
+            152,
+            153
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.11.3 introduction, preconditions, NOTE, Figure 10.11.3-1 and Steps 1–3 (IWF-represented LMR talker)"
+          ],
+          "printed_pages": [
+            153,
+            154
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-current-talker-location-message-location-vs-one-receiver-and-provenance",
+      "conditions": [
+        "单查已知消息承载或某一个端的实收无需先闭合全链；只有把几条实际记录连成同一次提供时才核同一组呼、发言轮次、发言者和相应端点。"
+      ],
+      "conclusion": "话权、政策判断、消息携带本轮发言者位置、server 实际发出及指定端实际收到是不同证据。已识别一条带位置的消息可以据实判它带了什么；仅知 server 发出或客户端 2 实收，不等于 IWF 或客户端 1 等另一端实收。",
+      "limitations": [
+        "仅见 Floor Taken、发言者 ID、静态成员或位置值相同不证明该消息披露当前发言者位置。接收到位置也不能证明发生了哪次政策查询、采样时刻或取位方式；不将这两支套成 §10.11.4 的 LMS/IWF 查询、订阅或通知。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.11.2 introduction, preconditions, Figure 10.11.2-1 and Steps 1–3 (MCPTT talker)"
+          ],
+          "printed_pages": [
+            152,
+            153
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.11.3 introduction, preconditions, NOTE, Figure 10.11.3-1 and Steps 1–3 (IWF-represented LMR talker)"
+          ],
+          "printed_pages": [
+            153,
+            154
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
