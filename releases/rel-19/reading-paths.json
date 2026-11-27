@@ -4228,6 +4228,22 @@
           "read": "topics/interworking/floor-signals.md#查谁的位置哪条消息要求确认"
         }
       ]
+    },
+    {
+      "id": "iwf-floor-idle-release-taken-revoked-and-ack",
+      "question": "IWF 的空闲、交还、占用、撤销怎么区分？可以申请话权就能发送吗？",
+      "start": "topics/interworking/floor-signals.md#空闲交还他人获授和撤销下一步能做什么",
+      "boundary": "Rel‑19 Stage 2，TS 23.283 V19.5.0 §10.5.2.8–.11。四流均列 IWF↔MCPTT floor control server 双向。.8 Idle 报无人获授，无 MCPTT ID/别名，只有两项 O；.9 Release 报媒体传输完成及话权已释放，M ID 与 O 别名是交还方，不是整个呼叫终止；.10 Taken 报另一人获授，M ID、O 别名与 O Location 是获授方，O Permission to request the floor 才针对接收方是否可申请，不能当接收方获授、可发媒体或缺项默认；.11 Revoked 从当前持有者撤销，M ID 与 O 别名是被撤销方，不是下一个人。四表 Source identifier O，仅媒体复用时才出现，不能凭未核实值推复用或配对。.8/.10/.11 可带确认指示，.9 没列；按实际实收本条且明示需要查 .12，ACK 身份是确认发送者。单看任一表或消息不需整链；匹配与现时、实际媒体各自取证。",
+      "next_if": [
+        {
+          "condition": "实际是普通申请的本端授予、允许发送时长或拒绝原因，要区分 Granted 与 Taken。",
+          "read": "topics/interworking/floor-signals.md#普通话权请求授予拒绝字段能说明什么"
+        },
+        {
+          "condition": "实际要区分取消队列中的请求而不是交还已获话权，或要查通用确认的字段和 NOTE。",
+          "read": "topics/interworking/floor-signals.md#排队取消的三类消息和确认"
+        }
+      ]
     }
   ]
 }
