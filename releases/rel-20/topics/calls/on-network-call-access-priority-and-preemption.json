@@ -3,7 +3,7 @@
   "release": 20,
   "state": "clause-checked",
   "common_conditions": [
-    "3GPP TS 22.179 V20.0.0，Release 20，Stage 1。在网第 6 章，两条主规则分别是主叫发起尝试的接入优先级与应用层停呼；周边条款、概述和资料性映射只作对照。"
+    "3GPP TS 22.179 V20.0.0，Release 20，Stage 1。在网第 6 章，两条主规则分别是主叫发起尝试的接入优先级与应用层停呼；带话权紧急私呼按 §6.8.7.2 所列专项条件另查；其余周边条款、概述和资料性映射只作对照。"
   ],
   "condition_rule": "Inherit common_conditions and add claim conditions.",
   "source_catalog": "../../sources.json",
@@ -252,7 +252,7 @@
       "conditions": [
         "问题专指在网带话权紧急私呼的优先级，或只观察到紧急标记。"
       ],
-      "conclusion": "在本版 §6.8.7.2 查专用优先级范围和例外。不能照搬通用的可选停呼规则来解释这些例外，或由紧急标记推定即时抢占、已经停呼或一张适用全业务的排序表。",
+      "conclusion": "带话权紧急私呼，包括呼叫内容和信令，须对所有其他类型 MCPTT 呼叫拥有抢占优先级；System Calls、MCPTT 紧急组呼以及其他带话权紧急私呼三类除外。System Call 是 §3.1 的广播组呼特例，不是任意系统发起或任意广播组呼。例外表示本条不授予相对该类的抢占优先级，不反排哪类一定更高或判一律禁止。不能照搬通用的可选停呼规则来解释这些例外。只看到紧急标记，不足以确认此次呼叫属于该类，也不能推定即时抢占、已经停呼或一张适用全业务的排序表。不规定承载、停呼/建立结果或相对优先的执行顺序。",
       "source_references": [
         {
           "source_id": "3gpp-ts-22.179-v20.0.0",
@@ -276,6 +276,15 @@
           ],
           "requirements": [
             "R-6.8.6.2-004"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "3.1"
+          ],
+          "printed_pages": [
+            11
           ]
         }
       ]
@@ -379,16 +388,67 @@
           ]
         }
       ]
+    },
+    {
+      "id": "floor-controlled-emergency-private-call-ranks-over-other-mcptt-private-calls",
+      "clause": "6.8.7.2",
+      "requirements": [
+        "R-6.8.7.2-001"
+      ],
+      "conditions": [
+        "在网带话权 MCPTT 紧急私呼。所查比较对象是其他 MCPTT 私呼，不是全业务的呼叫类型排序。"
+      ],
+      "conclusion": "服务须保证该类带话权紧急私呼相对所有其他 MCPTT 私呼处在最高优先级。不是对两通同类带话权紧急私呼的裁决，也不单据本条给组呼或系统呼叫排名，不等于已经抢占。跨呼叫类型的抢占优先级另按 R-6.8.7.2-004 的对象和例外核。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.8.7.2"
+          ],
+          "printed_pages": [
+            49
+          ],
+          "requirements": [
+            "R-6.8.7.2-001"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "service-can-request-increased-priority-for-emergency-private-call-participants",
+      "clause": "6.8.7.2",
+      "requirements": [
+        "R-6.8.7.2-002"
+      ],
+      "conditions": [
+        "在网 §6.8.7.2 标题限定的带话权 MCPTT 紧急私呼。对象是这通紧急私呼的参与者，动作主体是 MCPTT 服务。"
+      ],
+      "conclusion": "服务须具备为这些参与者请求提高优先级的能力。本条没把参与者限成主叫或指定某一种承载、接入或应用层优先级；不强制每次请求。能请求、实际发出请求、请求获准和优先级已提高要分别核；也不能由此判断个人进入紧急状态、发出告警、组状态变化或进行中私呼已转换。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.8.7.2"
+          ],
+          "printed_pages": [
+            49
+          ],
+          "requirements": [
+            "R-6.8.7.2-002"
+          ]
+        }
+      ]
     }
   ],
   "limitations": [
-    "不从优先接入或条件成立推定本次停呼、停呼原因或新呼已建成；不定义通用排序、承载阈值、话权抢占、离网或 SIP 流程。",
+    "不从优先接入或条件成立推定本次停呼、停呼原因或新呼已建成；不定义通用排序、承载阈值、话权抢占、离网或 SIP 流程。 §6.8.7.2-003 的转换能力仍见旧紧急私呼状态主题，本页不建立第二主张。附录 A1 页 78 对本地 §6.8.7.2 标 NA，不使印刷页 49 的活条变为 Void，也不把同页另一路映射当成本节。",
     "据本版条文只确认业务要求和定位指针，未核 TS 22.280 目标正文。"
   ],
   "related": [
     "r20-calls-ordinary-floor-request-outcomes",
     "r20-calls-group-audio-cut-in",
-    "r20-calls-emergency-private-call-state"
+    "r20-calls-emergency-private-call-state",
+    "r20-calls-on-network-call-termination"
   ],
   "verification": {
     "original_clauses_checked": true,
