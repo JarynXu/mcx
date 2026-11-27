@@ -21,3 +21,5 @@ IWF请求服务器，服务器转MC客户端；收到客户端确认后再确认
 LMR端如何通知用户不在范围内；不提供超时值、丢包重传或SIP编码。
 
 [private-manual](private-manual.md) · [private-encryption](private-encryption.md) · [结构化条件](private-release.json)
+
+查[IWF 结束请求和应答里的主被叫 ID、应答方 ID 或附加数据](private-call-ringing-and-end-elements.md)，按本腿信息流读，不把它当终端收件或资源已释放。

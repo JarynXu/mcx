@@ -1,0 +1,333 @@
+{
+  "topic_id": "r19-iwf-private-call-ringing-and-end-elements",
+  "release": 19,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "IWF 私呼振铃与结束：两个用户 ID 分别指谁？",
+  "common_conditions": [
+    "TS 23.283 V19.5.0，Rel‑19 Stage 2，IWF‑1 上 IWF 与 MCPTT server 的私呼信息流。"
+  ],
+  "condition_rule": "查规范或识别一条消息不要求整条链。将几条实况归到同一次才核当事角色、端点和对应动作。各 claim 继承 common_conditions。",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "iwf-private-ringing-end-scope-separate-actual-leg-and-message-type",
+      "conditions": [
+        "可直接查一个信息流的适用接口、方向或字段，不要求先有请求／应答两边。若要将若干实况配成同次操作，核已识别的消息类型、同一呼叫、适用端点及能配对的事务证据。"
+      ],
+      "conclusion": "§10.4.1.1 区分 IWF‑1 与其他参考点。IWF 与 MCPTT server 的 .4 振铃、.5 私呼结束请求、.6 结束应答，每条导语均列两个方向。.4 和 .5 都列主叫、被叫各一个必带 ID，方向或相同 ID 对不能决定是哪条，也不代这次的实际配对。",
+      "limitations": [
+        "这三张表不是 MCPTT 客户端↔server 的消息；其他参考点回指 TS 23.379，不确认线级字段、SIP 状态、关联键或传输实现。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.1 (IWF-1 scope; other reference points TS 23.379 pointer only)"
+          ],
+          "printed_pages": [
+            89
+          ],
+          "usage": "dependency"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.4, Table 10.4.1.4-1 (IWF ringing)"
+          ],
+          "printed_pages": [
+            91
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.5, Table 10.4.1.5-1 and NOTE (IWF call end request and optional LMR application data)"
+          ],
+          "printed_pages": [
+            91
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.6, Table 10.4.1.6-1 (IWF call end response, responding party)"
+          ],
+          "printed_pages": [
+            92
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-private-ringing-end-ringing-caller-called-vs-two-manual-waiting-legs",
+      "conditions": [
+        "可单查 .4 表的两个用户身份、可选指示，或查 §10.4.3.1/.2 中哪个是 IWF‑1 振铃。判断现场某端是否向应用提示或已接听，要该端的实际结果，不由发送另一条振铃推定。"
+      ],
+      "conclusion": "表 10.4.1.4‑1：主叫、被叫 MCPTT ID 各 M。Ringing indication O，是给主叫的指示，不是根据该条即时网元收件人改写双方角色。手动私呼 MCPTT 主叫时，§10.4.3.1 步骤 7 由 IWF 向 server 发 IWF ringing，8 是 server 向主叫客户端发送的另一条 MCPTT ringing；LMR 主叫时，§10.4.3.2 步骤 7 为客户端向 server 的振铃，8 才是 server→IWF 的 IWF ringing。两支振铃时在等接受；实际接受后的应答和媒体建立是后续而非同一步。",
+      "limitations": [
+        "缺可选指示不改变已识别信息流；不能据一端已发、报文名或可选指示判主叫已实收、听到回铃、被叫已接受或媒体已建立。没有看到振铃也不确定实际开始模式。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.4, Table 10.4.1.4-1 (IWF ringing)"
+          ],
+          "printed_pages": [
+            91
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.3.1 and 10.4.3.2 Steps 7–11 (actual manual ringing legs and subsequent acceptance)"
+          ],
+          "printed_pages": [
+            97,
+            99
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-private-ringing-end-end-request-two-party-ids-and-optional-app-data",
+      "conditions": [
+        "可单查 .5 私呼结束请求的两个 ID、附加应用数据或与建呼应答/组呼释放对照；不需要完整释放流程。要判断某次是否带附加数据，核这条完整匹配请求的实际内容。"
+      ],
+      "conclusion": "表 10.4.1.5‑1 的两个 M 是该私呼主叫和被叫的 MCPTT ID，不是本次谁决定结束或谁回应。server 决定结束这通已在进行的私呼时，两项身份仍为 M；不套普通组呼表 10.3.2.12‑1 对可选发起成员 ID 的省略规则。Additional application specific data O；NOTE 写 LMR 系统使用该项时可以携带，列 GSM‑R 的 UUI 为例。建呼私呼应答表 .3‑1 同样列这一可选项，且主叫 ID M、被叫 ID O、Result M、SDP answer M，不能用附加数据出现选请求或应答。",
+      "limitations": [
+        "例子不令 GSM‑R 或 UUI 成为必带/唯一选择。缺附加数据不证明没有结束原因，实际出现不单证所用 LMR 技术、数据格式、原字节向终端转发、终端动作或处理成功。UUI 的 ETSI TS 103 389 与 TS 102 610 只作回指。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.5, Table 10.4.1.5-1 and NOTE (IWF call end request and optional LMR application data)"
+          ],
+          "printed_pages": [
+            91
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.3, Table 10.4.1.3-1 and NOTE (setup response comparison)"
+          ],
+          "printed_pages": [
+            91
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.12, Table 10.3.2.12-1 and NOTE (different server-initiated group call release)"
+          ],
+          "printed_pages": [
+            38
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.4.1 Steps 3–6, 10.4.4.2 Steps 2a, 2b, 4–5 and 10.4.4.3 Steps 2–7 plus Figure 10.4.4.3-1 (actual IWF end and independent client leg)"
+          ],
+          "printed_pages": [
+            100,
+            101,
+            102
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-private-ringing-end-end-response-responding-party-and-single-leg-ack",
+      "conditions": [
+        "可单查表 .6 所列的应答方字段，或查已辨认的一条私呼结束确认属于哪腿。断言某端已收到确认才需要该端实际收件；断言几条记录属于同次才核配对，不等候媒体证据。"
+      ],
+      "conclusion": "表 10.4.1.6‑1 只有应答方 MCPTT ID M，不固定为原主叫、被叫或物理网关，也没有单独的 Result、SDP answer 或附加数据。已识别且对上该次释放时，可解释为本腿确认：§10.4.4.1 步骤 4 IWF→server；.4.2 步骤 4 有 IWF 和客户端两条；.4.3 步骤 5 是客户端→server，6 才是 server→IWF，图 10.4.4.3‑1 标作 IWF call end response。",
+      "limitations": [
+        "它不是建呼接受/Result，也不由某一端发出或实收证明其他端也确认、用户已被提示、整通资源已清理或媒体实际停止。不从发送端网络地址解出该字段。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.6, Table 10.4.1.6-1 (IWF call end response, responding party)"
+          ],
+          "printed_pages": [
+            92
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.3, Table 10.4.1.3-1 and NOTE (setup response comparison)"
+          ],
+          "printed_pages": [
+            91
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.4.1 Steps 3–6, 10.4.4.2 Steps 2a, 2b, 4–5 and 10.4.4.3 Steps 2–7 plus Figure 10.4.4.3-1 (actual IWF end and independent client leg)"
+          ],
+          "printed_pages": [
+            100,
+            101,
+            102
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.4.1.1 (IWF-1 scope; other reference points TS 23.379 pointer only)"
+      ],
+      "printed_pages": [
+        89
+      ],
+      "usage": "dependency"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.4.1.4, Table 10.4.1.4-1 (IWF ringing)"
+      ],
+      "printed_pages": [
+        91
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.4.1.5, Table 10.4.1.5-1 and NOTE (IWF call end request and optional LMR application data)"
+      ],
+      "printed_pages": [
+        91
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.4.1.6, Table 10.4.1.6-1 (IWF call end response, responding party)"
+      ],
+      "printed_pages": [
+        92
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.4.1.3, Table 10.4.1.3-1 and NOTE (setup response comparison)"
+      ],
+      "printed_pages": [
+        91
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.2.12, Table 10.3.2.12-1 and NOTE (different server-initiated group call release)"
+      ],
+      "printed_pages": [
+        38
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.4.3.1 and 10.4.3.2 Steps 7–11 (actual manual ringing legs and subsequent acceptance)"
+      ],
+      "printed_pages": [
+        97,
+        99
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.4.4.1 Steps 3–6, 10.4.4.2 Steps 2a, 2b, 4–5 and 10.4.4.3 Steps 2–7 plus Figure 10.4.4.3-1 (actual IWF end and independent client leg)"
+      ],
+      "printed_pages": [
+        100,
+        101,
+        102
+      ],
+      "usage": "primary"
+    }
+  ],
+  "related": [
+    {
+      "topic": "r19-iwf-private-manual",
+      "required": false,
+      "meaning": "想查手动私呼何时振铃、被叫实际接受及后续建立时查本流程，不把 O 指示拿作接受。"
+    },
+    {
+      "topic": "r19-iwf-private-release",
+      "required": false,
+      "meaning": "查已建私呼实际由谁发起结束、等待哪一腿确认或释放资源时去该过程。"
+    },
+    {
+      "topic": "r19-iwf-private-automatic",
+      "required": false,
+      "meaning": "查自动私呼的建立应答、Result 和 SDP answer，不用结束应答代替。"
+    },
+    {
+      "topic": "r19-iwf-group-call-operation-elements",
+      "required": false,
+      "meaning": "实际是 IWF 的非广播组呼释放时看组呼表的身份与 server NOTE，不用于私呼 .5。"
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  },
+  "limitations": [
+    "不补原生 MCPTT 或 LMR 终端接口、SIP、UUI 编码、设备处理和完整呼叫状态。"
+  ]
+}

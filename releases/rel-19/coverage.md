@@ -1041,6 +1041,14 @@
 
 入口：[IWF 组呼的 join、leave 和 release：用户 ID 指谁？](topics/interworking/group-call-operation-elements.md)。
 
+### IWF 私呼振铃与结束：两个用户 ID 分别指谁？
+
+- **能回答：**查 IWF‑1 私呼振铃、结束请求和结束应答；区分原私呼主被叫、应答方及同一身份对下的不同消息。
+- **只到条件或接口：**TS 23.283 V19.5.0 Stage 2 §10.4.1.1/.4–.6。振铃指示可选且面向主叫；结束请求附加应用数据可选；实际匹配的结束应答只确认对应腿。
+- **尚未建立的结论：**不由字段或网关方向推出已接听、应用处理、所有确认已收、资源释放或 SIP/LMR 线级实现。
+
+入口：[IWF 私呼振铃与结束：两个用户 ID 分别指谁？](topics/interworking/private-call-ringing-and-end-elements.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)
