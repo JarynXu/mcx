@@ -3,7 +3,7 @@
   "release": 20,
   "state": "clause-checked",
   "common_conditions": [
-    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。这里查 §9.4.2.6 的 MCVideo 和 §10.4.2.6 的 MCData 业务配置文档，按条选择业务，区分请求 URI 标识、文档参数块及其组织域、在网文件配置字段。查规范不以已经发出请求或抓到响应为前提；单个片段不证明整份文档缺项。"
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。这里查 §9.4.2.6 的 MCVideo 和 §10.4.2.6 的 MCData 业务配置文档，按条选择业务，区分请求 URI 标识、文档参数块及其组织域、未知与重复的 XML 项、在网文件配置字段。查规范不以已经发出请求或抓到响应为前提；单个片段不证明整份文档缺项。"
   ],
   "condition_rule": "Inherit common_conditions and add claim conditions.",
   "source_catalog": "../../sources.json",
@@ -211,12 +211,57 @@
           ]
         }
       ]
+    },
+    {
+      "id": "video-data-service-config-unknown-xml-element-or-attribute-is-ignored",
+      "clause": "9.4.2.6",
+      "conditions": [
+        "查 MCVideo 或 MCData 业务配置文档；已确定某个元素或属性为未知项，查处理该项的规则。不把未知仅按同名、命名空间或是否重复判定。"
+      ],
+      "conclusion": "§9.4.2.6、§10.4.2.6 都写业务配置服务器（service configuration server）忽略未知元素和未知属性；两节仍要求文档符合各自 §.3 的 XML Schema。两份 Schema 在根和参数类型均有 namespace=\"##other\" 的 xs:any、namespace=\"##any\" 的 xs:anyAttribute，处理均写 lax；这些声明不意味着所有未知项都可置入任意位置。§.6 注 1 另写 ##any 并分别提 mcvideo-info、mcdata-info，不用它替换 §.3 这两个类型的声明。未知项不能顶替必需块、免除重复校验或证明文档已接受。忽略不规定是否删掉或写回，也不裁定同遇未知和重复时先怎样处理。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.6",
+            "10.4.2.6",
+            "9.4.2.3",
+            "10.4.2.3"
+          ],
+          "items": [
+            "忽略未知项与文档符合 Schema 的两句及注 1 的写法；根和参数类型的通配声明"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "video-data-service-config-cms-receives-duplicate-xml-element-or-attribute-conflict",
+      "clause": "9.4.2.6",
+      "conditions": [
+        "查 MCVideo 或 MCData 业务配置文档，确认配置管理服务器收到重复的元素或属性，不凭出现两个同名元素直接判重复。"
+      ],
+      "conclusion": "§9.4.2.6、§10.4.2.6 规定 CMS 收到重复元素或属性须返回 HTTP 409（Conflict），含 XCAP constraint-failure；若带 phrase，建议 duplicate attribute or element received。不以去掉一项、保留最先或最后值代替这条响应。§.3 的 functional-alias-entry 声明可出现多次，不单凭同名认定重复或决定同一业务别名可写多次。重复的具名范围元素也可能违反七种组合；同时不符时未规定先报哪项或哪个短语唯一。未知项的忽略规则不等于提前处理它或给重复情况豁免，不推 XML 解析器、具体判重算法、合法重复用法、实际落盘或请求结果。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.6",
+            "10.4.2.6",
+            "9.4.2.3",
+            "10.4.2.3"
+          ],
+          "items": [
+            "收到重复元素或属性的 409 分支；参数组合及功能别名列表的 Schema 次数作为对照"
+          ]
+        }
+      ]
     }
   ],
   "limitations": [
-    "覆盖请求 AUID/XUI、文档组织域、参数块和三类组合，以及 MCData 文件可用时长的缺项；其他字段取值及时长另核。同一 409 或部分报文不判实际触发条件。",
+    "覆盖请求 AUID/XUI、文档组织域、参数块和三类组合、未知与重复 XML 项，以及 MCData 文件可用时长的缺项；其他字段取值及时长另核。同一 409 或部分报文不判实际触发条件。",
     "409 与 constraint-failure 是各失败分支的要求；phrase 若带才建议取值。相同响应不证明唯一出错原因，重叠条件未规定先后。七种组合不规定扩展、其他约束、协议实现或最终请求结果。",
-    "不借 URI 示例构造 XUI 或判部署、身份和授权；不从部分文档、一个 409 或 DNS 结果给域值归因，不补域名识别方式、比较算法或缺少可核标识时的诊断。"
+    "不借 URI 示例构造 XUI 或判部署、身份和授权；不从部分文档、一个 409 或 DNS 结果给域值归因，不补域名识别方式、比较算法或缺少可核标识时的诊断。",
+    "未知与重复按两条原文核对，不从一次响应、同名、命名空间或多个条款同时不符推实际识别、先后、写回、请求获准或服务进程部署；忽略不是放弃 Schema。"
   ],
   "related": [
     "r20-identity-mcvideo-mcdata-org-service-config-documents",
