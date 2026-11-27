@@ -58,6 +58,21 @@
 
 **印刷表与 A.2 分开读。** 对进入或退出项，表 7.1.6.2.7-1 要求至少出现一个名单，并把列出的名单标为 `1..N`。A.2 的 `anyOf` 只查两键至少一键存在，不排斥同时存在，也没给名单 `minItems`。印刷表将小区项的 ID 和所指小区列为必须；A.2 在这些对象中未列 `required`。印刷表的 E‑UTRAN 名单和条目说明提到 NR；按其类型列，`eutranCells` 的每个 `EutranCell` 条目用 `Ecgi`，`NrCell` 条目用 `Ncgi`。A.2 也分别定义这两类条目。不要用空名单或省略 ID 当作有效触发，也不由 schema 单独推服务端一定接受、拒绝或怎样检测切换。邻区数组若给出，表 .50-1 也印为 `1..N`，A.2 未列 `minItems`；空数组不提供邻区数据。A.1 的优先限 API 信息元素和方法的编码，不取消未写入 schema 的程序条件。[印刷页 44–45、57；A.1–A.2，页 73、79–80、87](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=80)。
 
+### PLMN 或跟踪区变化：先问进入还是退出
+
+**进入看新去处，退出看实际离开的地方。** 查同一 LMC 的 MC UE 在变化**当时**所处状态及生效配置：紧急用 `emergencyTriggeringCriteria`，非紧急用 `triggeringCriteria`。报告后来标的 `reportType` 不倒推当时状态。[配置模型，印刷页 43–44（PDF 第 44–45 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=44)。
+
+| 变化对象 | 任意变化 | 指定进入 | 指定退出 |
+| --- | --- | --- | --- |
+| `plmnChange` | 生效的 `anyPlmnChange` 对象对应任意实际 PLMN 变化 | `enterSpecificPlmnArea` 比对实际进入的 PLMN | `exitSpecificPlmnArea` 比对实际离开的 PLMN |
+| `trackingAreaChange` | 生效的 `anyTrackingAreaChange` 对象对应任意实际跟踪区变化 | `enterSpecificTrackingArea` 比对实际进入的跟踪区 | `exitSpecificTrackingArea` 比对实际离开的跟踪区 |
+
+例如，只配“进入 PLMN B”，A→B 命中，B→A 不命中；只配“退出 B”则相反。跟踪区也按各自方向判断。任意变化项用对象，不是布尔开关或当前位置值。只有当前 PLMN 或 TAC，或只见同一 UE 换了小区、RAT，不能补实际进出。PLMN 变化也不自动等于跟踪区变化；跨 PLMN 看到同一个 TAC 值，单凭它不能判跟踪区必同或必异。本段不定义比较算法或任何组合的优先级。[表 7.1.6.2.24–.31，印刷页 48–50（PDF 第 49–51 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=49)。
+
+**配置层的条目不是报告字段。** 指定 PLMN 查 `plmnIds[].plmn`（`PlmnId`）；指定跟踪区查 `trackingAreas[].trackingArea`（`Tac`）。后者不是本地定义的 TAI（PLMN 和 TAC 的复合标识）对象，不补外部 TS 29.571 的格式。印刷表的指定列表为 M、`1..N`；每条的标识和 `triggerId` 各 M、1，任意变化对象自身的 `triggerId` 也 M、1。表和 A.2 的 ID 说明写唯一、返回在报告中。A.2 没给这些对象列 `required`，两个列表也没列 `minItems`。不因此把空名单、`null` 或缺 ID 当有效配置，不能猜接收方会怎样处理。A.1 的附录优先限 API 信息元素和方法的编码；没编码进去的程序条件仍适用。[复用类型及印刷表，印刷页 42、48–50（PDF 第 43、49–51 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=43)；[A.1，印刷页 73（PDF 第 74 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=74)；[A.2 PLMN 模型，印刷页 82–83（PDF 第 83–84 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=83)；[A.2 跟踪区及 ID，印刷页 84–85（PDF 第 85–86 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=85)。
+
+**报告里的 `triggerId` 只能用于归因。** 看对应 LMC 当时生效的子对象或名单条目，能辨认该报告列出的规则，不能代替实际变化，也不证明唯一原因。生成报告正文列已触发的 ID，表 .49-1 将数组列为可选，A.2 未列 `required`。该版 `LocationInfo` 没单列 `plmn` 或 `trackingArea`；这不排除外部小区类型内部携带 PLMN，也不能由当前位置单样本重建进出。若事件发生时 `minimumReportInterval` 正在运行，要等到期且届时仍有任一上报触发为真；本段不补特定边界条件怎样持续、几项命中要发几份。实际上报看对应的 LMC 发布 POST，接受看匹配 LMS 201。[发布，印刷页 22–23（PDF 第 23–24 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=23)；[报告数据表，印刷页 56–57（PDF 第 57–58 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=57)；[A.2 发布报告，印刷页 86–87（PDF 第 87–88 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=87)。
+
 ### 4G、5G 切换时，什么会触发上报？报告能写哪个方向？
 
 **配置管“要不要因切换而报”，报告管“这次切换是什么方向”。** 看同一 LMC 在变化发生时生效的配置：MC UE 紧急时查 `emergencyTriggeringCriteria`，非紧急时查 `triggeringCriteria`。其中 `ratTypeChange` 配有 `anyRatTypeChange`，任意实际跨无线接入技术（RAT）的变化都符合这项触发。只在 5G 内换小区，或只在 LTE 内从组播改成单播，不算跨 RAT。只见当前是 5G，或后来报告才标成紧急，也不足以判定这次变化。[状态和触发项，印刷页 43–44](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=44)；[表 7.1.6.2.37-1、.38-1，印刷页 53](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=54)。

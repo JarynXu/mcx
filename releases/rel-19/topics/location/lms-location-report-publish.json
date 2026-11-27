@@ -1989,6 +1989,207 @@
         "independent_source_review": false,
         "independent_usage_acceptance": false
       }
+    },
+    {
+      "id": "plmn-ta-trigger-direction-type-and-effective-state",
+      "conditions": [
+        "查 PLMN 或跟踪区触发规则，或判断实际变化是否命中。判断实况用同一 LMC 对应 MC UE 在变化时的紧急或非紧急状态，以及当时生效的配置和实际同类变化。"
+      ],
+      "conclusion": "MC UE 在变化时处于紧急状态，查 emergencyTriggeringCriteria；非紧急查 triggeringCriteria。可选的 plmnChange 与 trackingAreaChange 各自有三类：已生效的 anyPlmnChange / anyTrackingAreaChange 对象匹配各自的任意实际变化；enterSpecificPlmnArea / enterSpecificTrackingArea 看实际进入的目标，exitSpecificPlmnArea / exitSpecificTrackingArea 看实际离开的原处，并按本项名单比对。只配进入 B，A→B 符合，B→A 不符合这一进入项；换成退出 B 才看后者。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.3–.4 Tables 7.1.6.2.3-1 and 7.1.6.2.4-1"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.24–.27 Tables 7.1.6.2.24-1 through 7.1.6.2.27-1"
+          ],
+          "printed_pages": [
+            48,
+            49
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.28–.31 Tables 7.1.6.2.28-1 through 7.1.6.2.31-1"
+          ],
+          "printed_pages": [
+            49,
+            50
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "任意变化项是对象，不是布尔值或当前 PLMN／Tac 的槽位。不用报告发出时的 reportType 倒推变化时的状态；仅当前值或小区、RAT 发生变化不补实际 PLMN 或跟踪区进出。",
+        "已知 PLMN 变化不等于已经证实跟踪区变化；同一个 TAC 值跨 PLMN 不说明物理跟踪区必同或必不同。这里不定义 TAC/PLMN 的比较、等价、跨网、检测或多条同时命中的顺序。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "plmn-ta-trigger-leaf-ids-and-annex-vs-printed-bounds",
+      "conditions": [
+        "只查同版的 PLMN／跟踪区配置模型、条目字段、A.2 的编码声明及相应印刷表时，不要求已发生变化或已收到报告。"
+      ],
+      "conclusion": "指定 PLMN 用 plmnIds[].plmn，叶类型 PlmnId；指定跟踪区用 trackingAreas[].trackingArea，叶类型 Tac，而不是本地定义的 TAI（PLMN 和 TAC 复合）对象。A.2 引到 TS29571_CommonData.yaml 的对应类型。印刷表指定列表 M、1..N，每项的标识和 triggerId 各 M、1；任意变化对象自身的 triggerId 也 M、1。印刷表及 A.2 的 TriggerId 说明要求唯一，报告返回。进入与退出的路径各自保存自己的条目。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.24–.27 Tables 7.1.6.2.24-1 through 7.1.6.2.27-1"
+          ],
+          "printed_pages": [
+            48,
+            49
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.28–.31 Tables 7.1.6.2.28-1 through 7.1.6.2.31-1"
+          ],
+          "printed_pages": [
+            49,
+            50
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 TriggeringCriteria, PLMN change, tracking-area change and TriggerId schemas"
+          ],
+          "printed_pages": [
+            78,
+            82,
+            83,
+            84,
+            85
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1 precedence limited to encoding of API information elements and methods"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.1 Table 7.1.6.1-2 (PlmnId/Tac imports only)"
+          ],
+          "printed_pages": [
+            42
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "A.2 未给这些变化包装对象、any 对象、具体列表容器或条目列 required；plmnIds、trackingAreas 两数组未列 minItems。保留印刷表和 schema 的两层；不把空列表、空对象、null 或缺 ID 当成有效配置，也不从未宣告 required 或 minItems 推服务一定接受／拒绝。A.1 的优先限 API 信息元素及方法的编码，未编码的程序条件仍适用。不展开 TS 29.571 的格式、等价规则或字段验证。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "plmn-ta-trigger-id-is-attribution-not-observed-transition-or-submit",
+      "conditions": [
+        "以下问题可分别查：只问本版报告模型是否单列 PLMN／跟踪区字段以及 triggerId 数组的结构、是否必选，不需要已观察到报告；也可单查变化触发和发送条件。只有把某笔实际发布归给一条 PLMN／跟踪区规则，才核该份报告的 triggerId 与同一 LMC 当时生效的 any 子对象或指定条目相配。"
+      ],
+      "conclusion": "已配置 ID 对上报告 triggerId 数组的一项，可识别报告列举的触发。§6.2.2.8.2 写按已触发项列 ID，表 .49-1 列 triggerId 为 O；A.2 在 MCUELocation 中声明这一数组，未列 required。LocationInfo 的本地报告表及 A.2 未单列 plmn 或 trackingArea；不代表外部 Ecgi／Ncgi 等内部一定不含 PLMN。报告字段或 ID 不替实际变化、变化时状态及这次发布的证据。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.24–.27 Tables 7.1.6.2.24-1 through 7.1.6.2.27-1"
+          ],
+          "printed_pages": [
+            48,
+            49
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.28–.31 Tables 7.1.6.2.28-1 through 7.1.6.2.31-1"
+          ],
+          "printed_pages": [
+            49,
+            50
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 TriggeringCriteria, PLMN change, tracking-area change and TriggerId schemas"
+          ],
+          "printed_pages": [
+            78,
+            82,
+            83,
+            84,
+            85
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.1–.2 LocationReportPublish trigger waiting and report properties"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.49–.50 Tables 7.1.6.2.49-1 and 7.1.6.2.50-1; Annex A.2 MCUELocation and LocationInfo"
+          ],
+          "printed_pages": [
+            56,
+            57,
+            86,
+            87
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "如果 minimumReportInterval 当时在运行，§6.2.2.8.1 要等到期且至少任一上报触发仍为真才走事件发布；不只看最初那项，不补 PLMN／跟踪区条件如何延续到期、定义优先级、或几个命中必发几份。实际发送用该 LMC 的 POST，接受用匹配 LMS 201；两者分别取证。没有报告或另有 LMS 索要报告请求时不补该变化、唯一触发或发送原因。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
@@ -2490,6 +2691,86 @@
         79
       ],
       "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.24–.27 Tables 7.1.6.2.24-1 through 7.1.6.2.27-1"
+      ],
+      "printed_pages": [
+        48,
+        49
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.28–.31 Tables 7.1.6.2.28-1 through 7.1.6.2.31-1"
+      ],
+      "printed_pages": [
+        49,
+        50
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 TriggeringCriteria, PLMN change, tracking-area change and TriggerId schemas"
+      ],
+      "printed_pages": [
+        78,
+        82,
+        83,
+        84,
+        85
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.1 precedence limited to encoding of API information elements and methods"
+      ],
+      "printed_pages": [
+        73
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.1 Table 7.1.6.1-2 (PlmnId/Tac imports only)"
+      ],
+      "printed_pages": [
+        42
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.2.2.8.1–.2 LocationReportPublish trigger waiting and report properties"
+      ],
+      "printed_pages": [
+        22,
+        23
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.49–.50 Tables 7.1.6.2.49-1 and 7.1.6.2.50-1; Annex A.2 MCUELocation and LocationInfo"
+      ],
+      "printed_pages": [
+        56,
+        57,
+        86,
+        87
+      ],
+      "usage": "primary"
     }
   ],
   "related": [

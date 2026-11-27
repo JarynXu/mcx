@@ -3832,6 +3832,22 @@
           "read": "topics/mcdata/sds-disposition-timing.md"
         }
       ]
+    },
+    {
+      "id": "plmn-tracking-area-trigger-direction-vs-location-publish",
+      "question": "LMC 的 PLMN 或跟踪区变化，何时命中任意变化、指定进入或退出？能只看当前值、TAC 或报告 ID 吗？",
+      "start": "topics/location/lms-location-report-publish.md",
+      "boundary": "TS 24.283 V19.3.0 Stage 3。按同一 LMC 对应 MC UE 的变化时状态读紧急 emergencyTriggeringCriteria 或非紧急 triggeringCriteria；不以晚到的 reportType 倒推。PLMN（plmnChange）和跟踪区（trackingAreaChange）分别看实际同类变化。生效的 anyPlmnChange / anyTrackingAreaChange 是对象；进入名单 enterSpecificPlmnArea／enterSpecificTrackingArea 查实际进入的目标，退出名单 exitSpecificPlmnArea／exitSpecificTrackingArea 查实际离开的原处。A.2 条目 plmnIds[].plmn 为 PlmnId，trackingAreas[].trackingArea 为 Tac，不是本地复合 TAI；不同 PLMN 的相同 TAC 不足以判两地跟踪区等同或不同。表的 1..N 和条目、any triggerId 必选与 A.2 未列 required/minItems 分开，不推接收行为。报告 root triggerId 对当时有效的子对象或名单条目仅用于归因，不补实际变化或判唯一。计时器在运行时等 minimumReportInterval 到期且仍有任一上报触发为真；发送看 LMC 实际发布 POST，接受看匹配的 LMS 201。",
+      "next_if": [
+        {
+          "condition": "实际要区分配置何时到 LMC 或增量 UPDATE 与 FULL，非从报告反推。",
+          "read": "topics/location/lms-registration-configuration.md"
+        },
+        {
+          "condition": "实际是 LMS 主动索要报告，而非已配置的事件触发。",
+          "read": "topics/location/lms-location-report-request.md"
+        }
+      ]
     }
   ]
 }
