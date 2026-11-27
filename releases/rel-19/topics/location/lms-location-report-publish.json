@@ -2563,6 +2563,226 @@
         "independent_source_review": false,
         "independent_usage_acceptance": false
       }
+    },
+    {
+      "id": "geographical-area-configured-direction-and-observed-boundary-crossing",
+      "conditions": [
+        "单查地理区域触发的分支与方向时不要求报告。判某次实际跨界，要看同一 LMC 对应 MC UE 在该事件时的状态、当时生效的配置以及相对该项所列区域的真实进出。"
+      ],
+      "conclusion": "MC UE 事件时紧急用 emergencyTriggeringCriteria，非紧急用 triggeringCriteria。geographicalAreaChange 是可选对象。按属性名把进出分开：进入项核所列区域的外到内，退出项核所列区域的内到外。表 .10-1 两项同样写到进入或退出，不能把共用描述理解成每一键都双向触发。没有本类的任意区域变化对象。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.3–.4 Tables 7.1.6.2.3-1 and 7.1.6.2.4-1"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.10 and 7.1.6.2.36 Tables 7.1.6.2.10-1 and 7.1.6.2.36-1"
+          ],
+          "printed_pages": [
+            45,
+            53
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 TriggeringCriteria, GeographicalAreaChange and SpecificArea"
+          ],
+          "printed_pages": [
+            78,
+            80
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.49–.50 Tables 7.1.6.2.49-1 and 7.1.6.2.50-1; Annex A.2 MCUELocation and LocationInfo"
+          ],
+          "printed_pages": [
+            56,
+            57,
+            86,
+            87
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "仅当前报告坐标、服务或邻小区、PLMN、广播区域或后来 reportType 不能代实际跨界或跨界当时状态。未定义边界点判定、测量误差处理、轨迹内插或区域重叠时的事件合并。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "geographical-area-printed-names-schema-list-and-external-shape",
+      "conditions": [
+        "可单查地理区域分支的印刷表／A.2 字面、区列表和形状依赖，也可单查历史请求中的同名路径，不需要实际跨界、发包或报告。"
+      ],
+      "conclusion": "表 .10-1 的 enterSpecificArea / exitSpecificArea 在 A.2 分别写成 enterSpecifcArea / exitSpecifcArea；两方向各用可选的 SpecificArea 对象。表 .36-1 的 geoAreas 为 M、1..N，元素印作 GeographicArea。A.2 同样用 geoAreas 数组，叶指向 TS29572_Nlmf_Location.yaml#/components/schemas/GeographicArea。通用类型表另印 GeographicalArea，注释 Polygon 或 EllipsoidArc。TS 29.572 在 §2 [16] 是未指定版本引用，适用本 Release 的最新版本；这里没有核该依赖的内部形状定义。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.10 and 7.1.6.2.36 Tables 7.1.6.2.10-1 and 7.1.6.2.36-1"
+          ],
+          "printed_pages": [
+            45,
+            53
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 TriggeringCriteria, GeographicalAreaChange and SpecificArea"
+          ],
+          "printed_pages": [
+            78,
+            80
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1 precedence limited to encoding of API information elements and methods"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "2 [16]; 7.1.6.1 Table 7.1.6.1-2 (TS 29.572 reference and local type naming)"
+          ],
+          "printed_pages": [
+            10,
+            42
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 CurrentCoordinate.geographicalCoordinate (GeographicalCoordinates reference)"
+          ],
+          "printed_pages": [
+            87
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LocationRequest, RequestedLocationHistory and TriggeringCriteria (history-selection comparison)"
+          ],
+          "printed_pages": [
+            78,
+            85,
+            86
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "A.2 两个配置对象未列 required，geoAreas 未列 minItems。不会把无列表、空列表或印刷键当成已验证可接受的配置，不发明别名、兼容或拒绝策略。A.1 的优先限 API 信息元素及方法的编码。配置形状 GeographicArea 不是当前点所引用的 GeographicalCoordinates。",
+        "A.2 LocationRequest.requestLocationHistory.triggerCriteria.geographicalAreaChange 是历史选择，不等于当前 LocationConfiguration 中生效的触发。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "geographical-area-no-local-trigger-id-mapping-to-report",
+      "conditions": [
+        "可单查本版围栏配置是否定义 triggerId、位置报告能否指明具体围栏或方向、事件发送应查哪些条件；不要求已经有实际报告。判一次实际的跨界、发送或接纳，各自核该事件、本 LMC 的发布 POST 和匹配 LMS 201。"
+      ],
+      "conclusion": "表及 A.2 的 GeographicalAreaChange 与 SpecificArea 都没有本地 triggerId 字段；geoAreas[] 直接引用外部形状，未另设本地的逐区域或逐方向标识包装。§6.2.2.5.2 仅为已定义 triggerId 的子项复用或分配。报告根层 MCUELocation.triggerId 是通用字符串数组，表 .49-1 标 O、1..N；没有本项配置到某个报告 ID、区域或方向的标准映射。locationData.currentCoordinate 是当前位置数据，不是越界标记。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.10 and 7.1.6.2.36 Tables 7.1.6.2.10-1 and 7.1.6.2.36-1"
+          ],
+          "printed_pages": [
+            45,
+            53
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 TriggeringCriteria, GeographicalAreaChange and SpecificArea"
+          ],
+          "printed_pages": [
+            78,
+            80
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.5.2 triggerId reuse or allocation where the trigger criterion defines it"
+          ],
+          "printed_pages": [
+            20
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.1–.2 LocationReportPublish trigger waiting and report properties"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.49–.50 Tables 7.1.6.2.49-1 and 7.1.6.2.50-1; Annex A.2 MCUELocation and LocationInfo"
+          ],
+          "printed_pages": [
+            56,
+            57,
+            86,
+            87
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "没有本地 ID 定义不是宣告外部形状所有子字段，也不禁止其他触发在同一报告列 ID。不能借小区／PLMN 的每项 ID，或把当前坐标、同值 ID 或孤立 201 当跨界和成功发布证据。",
+        "若触发时 minimumReportInterval 在运行，等到期且仍有任一上报触发为真才走事件发布；不只看原围栏项。本段不补它怎样持续到期、怎么合并或计时器未运行如何发送。实收 LMS 的 LocationReportRequest 是独立发布起因，不证明发生地理跨界。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
@@ -3276,6 +3496,71 @@
         55,
         56,
         86
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.10 and 7.1.6.2.36 Tables 7.1.6.2.10-1 and 7.1.6.2.36-1"
+      ],
+      "printed_pages": [
+        45,
+        53
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 TriggeringCriteria, GeographicalAreaChange and SpecificArea"
+      ],
+      "printed_pages": [
+        78,
+        80
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "2 [16]; 7.1.6.1 Table 7.1.6.1-2 (TS 29.572 reference and local type naming)"
+      ],
+      "printed_pages": [
+        10,
+        42
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 LocationRequest, RequestedLocationHistory and TriggeringCriteria (history-selection comparison)"
+      ],
+      "printed_pages": [
+        78,
+        85,
+        86
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.2.2.5.2 triggerId reuse or allocation where the trigger criterion defines it"
+      ],
+      "printed_pages": [
+        20
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 CurrentCoordinate.geographicalCoordinate (GeographicalCoordinates reference)"
+      ],
+      "printed_pages": [
+        87
       ],
       "usage": "comparison-only"
     }

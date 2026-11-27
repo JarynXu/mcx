@@ -78,6 +78,23 @@
 
 **印刷表与 A.2 分开读。** 对进入或退出项，表 7.1.6.2.7-1 要求至少出现一个名单，并把列出的名单标为 `1..N`。A.2 的 `anyOf` 只查两键至少一键存在，不排斥同时存在，也没给名单 `minItems`。印刷表将小区项的 ID 和所指小区列为必须；A.2 在这些对象中未列 `required`。印刷表的 E‑UTRAN 名单和条目说明提到 NR；按其类型列，`eutranCells` 的每个 `EutranCell` 条目用 `Ecgi`，`NrCell` 条目用 `Ncgi`。A.2 也分别定义这两类条目。不要用空名单或省略 ID 当作有效触发，也不由 schema 单独推服务端一定接受、拒绝或怎样检测切换。邻区数组若给出，表 .50-1 也印为 `1..N`，A.2 未列 `minItems`；空数组不提供邻区数据。A.1 的优先限 API 信息元素和方法的编码，不取消未写入 schema 的程序条件。[印刷页 44–45、57；A.1–A.2，页 73、79–80、87](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=80)。
 
+### 地理围栏：报告里的位置能证明进出吗？
+
+**不能只看一个位置。** 对照同一 LMC 在终端实际跨界时生效的配置：MC UE 当时紧急用 `emergencyTriggeringCriteria`，非紧急用 `triggeringCriteria`，不能用后来上报的 `reportType` 倒推。两分支下的 `geographicalAreaChange` 分别可选。按进出键的名字分流：进入查该项列出的区域是否实际从外到内，退出查是否实际从内到外。例如只配进入区域 A，从 A 内到 A 外是退出，不是进入项的证据；只知报告坐标在 A 内，也不能确认此前在 A 外。小区、PLMN 或广播区域的 ID 不能代替这项几何证据。[配置表 .3-1、.4-1，印刷页 43–44（PDF 第 44–45 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=44)；[进出表 .10-1，印刷页 45（PDF 第 46 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=46)。
+
+| 读到的方向 | 印刷表 .10-1 | A.2 键名 |
+| --- | --- | --- |
+| 进入所列区域 | `enterSpecificArea` | `enterSpecifcArea` |
+| 退出所列区域 | `exitSpecificArea` | `exitSpecifcArea` |
+
+表的两行描述都提到进入或退出，方向分读来自键名，不是表为每一键各规定双向触发，也不是另有“任意地理区域变化”对象。两项各是可选的 `SpecificArea`，同项的 `geoAreas` 是区域列表。表 .36-1 把列表标为 M、`1..N`；A.2 的两个对象未列 `required`，数组未列 `minItems`。A.1 的优先限 API 信息元素及方法编码。不把印刷拼法当别名，不用 schema 缺项推出空列表有效或接收方一定接受、拒绝。[表 .36-1，印刷页 53（PDF 第 54 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=54)；[A.2，印刷页 80（PDF 第 81 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=81)；[A.1，印刷页 73（PDF 第 74 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=74)。
+
+**形状定义另查所引标准。** 本版通用表把 `GeographicalArea` 概括为 Polygon 或 EllipsoidArc；表 .36-1 的叶类型却印作 `GeographicArea`，A.2 的 `geoAreas[]` 也指向 TS 29.572 的 `TS29572_Nlmf_Location.yaml#/components/schemas/GeographicArea`。这是围栏形状，不是报告当前点的 `GeographicalCoordinates`。这里只保留本版的字面与依赖：不据此补外部形状内部字段、边界点算内还是外、定位误差如何处理或多个区域重叠怎么计事件。对 TS 29.572 的引用未写具体版本，继续查按 §2 取同一 Release 的最新版本。本版 A.2 的历史请求也能出现 `LocationRequest.requestLocationHistory.triggerCriteria.geographicalAreaChange`，但该路径属于历史选择，不是当前生效的位置配置。[通用类型表 .1-2，印刷页 42（PDF 第 43 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=43)；[§2 [16]，印刷页 10（PDF 第 11 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=11)；[A.2，印刷页 80、86–87（PDF 第 81、87–88 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=81)。
+
+**这里没有给每个围栏配置触发 ID。** 表和 A.2 都未给 `GeographicalAreaChange`、`SpecificArea` 或本地的区域列表条目定义 `triggerId`；配置通知只在已定义 ID 的触发子项复用或分配 ID。报告根层的 `MCUELocation.triggerId` 是通用数组，本模型没有给它到这项围栏、某个区域或进出方向的映射。不借小区／PLMN 的 ID 结构，不用报告里的 `locationData.currentCoordinate`、同名 ID 或测量时刻替实际跨界。[§6.2.2.5.2，印刷页 20（PDF 第 21 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=21)；[表 .49-1、.50-1，印刷页 56–57（PDF 第 57–58 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=57)；[A.2 报告模型，印刷页 86–87（PDF 第 87–88 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=87)。
+
+跨界、提交、接受要分别看。触发时若 `minimumReportInterval` 正在运行，LMC 等到期且当时仍有**任一**上报触发为真才按事件路径发送；不据此补本项怎样持续或多项命中怎样合并。发送看这笔发布 POST，接受看匹配 LMS 201。实收 LMS 的 `LocationReportRequest` 另有发布分支，不证明发生了围栏跨界。[§6.2.2.8.1–.2，印刷页 22–23（PDF 第 23–24 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=23)。
+
 ### PLMN 或跟踪区变化：先问进入还是退出
 
 **进入看新去处，退出看实际离开的地方。** 查同一 LMC 的 MC UE 在变化**当时**所处状态及生效配置：紧急用 `emergencyTriggeringCriteria`，非紧急用 `triggeringCriteria`。报告后来标的 `reportType` 不倒推当时状态。[配置模型，印刷页 43–44（PDF 第 44–45 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=44)。

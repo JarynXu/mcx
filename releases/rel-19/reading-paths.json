@@ -3888,6 +3888,34 @@
           "read": "topics/mcdata/local-location-configuration.md"
         }
       ]
+    },
+    {
+      "id": "geographical-area-lms-trigger-directions-vs-location-publish",
+      "question": "LMC 地理围栏配置怎样区分进入、退出和两种拼法？一个报告坐标或触发 ID 能证明跨界吗？",
+      "start": "topics/location/lms-location-report-publish.md",
+      "boundary": "TS 24.283 V19.3.0 Stage 3。地理围栏按同一 LMC 当时生效的 geographicalAreaChange：MC UE 在跨界时紧急查 emergencyTriggeringCriteria，非紧急查 triggeringCriteria；不以晚到 reportType 倒推。进入比所列形状的实际外到内，退出比内到外；此分流按键名，印刷两行共用进出描述。表 enterSpecificArea／exitSpecificArea，A.2 enterSpecifcArea／exitSpecifcArea，不当别名。SpecificArea.geoAreas 的表是 M、1..N，A.2 未列 required/minItems；叶指 TS 29.572 GeographicArea，不是当前点 GeographicalCoordinates。不从单点、无线区域 ID 或历史请求路径判断当前规则或实际跨界。本地类型无逐区域或逐方向 triggerId，报告根层 MCUELocation.triggerId 不映射本项或方向。事件触发时 timer 在运行则等 minimumReportInterval 到期且任一触发仍为真，实际发送看本次 LMC 发布 POST，接受看匹配 LMS 201。",
+      "next_if": [
+        {
+          "condition": "实际查服务小区、邻区或小区进出，不是地理形状的跨界。",
+          "read": "topics/location/lms-location-report-publish.md#报告列了某个小区能认定触发了进入或退出吗"
+        },
+        {
+          "condition": "实际查 PLMN 或跟踪区的进入退出，不是地理形状的跨界。",
+          "read": "topics/location/lms-location-report-publish.md#plmn-或跟踪区变化先问进入还是退出"
+        },
+        {
+          "condition": "实际是 LMS 主动索要当前或历史报告；历史触发描述不等于给终端更新当前生效配置。",
+          "read": "topics/location/lms-location-report-request.md"
+        },
+        {
+          "condition": "实际是 LMS→LMC 索要位置，要核本次回包中的坐标和精度。若只对比共用模型字段，只作字段对照，不把索要回包的 200／204 套到发布。",
+          "read": "topics/location/lms-location-report-request.md#坐标已经返回能确认精度是多少吗"
+        },
+        {
+          "condition": "实际是 LMC→LMS 的位置发布，要辨认当前位置或测量时刻；接受看本次发布 POST 的匹配 LMS 201，不用索要回包替代。",
+          "read": "topics/location/lms-location-report-publish.md#这份报告是谁发的是什么时候测的"
+        }
+      ]
     }
   ]
 }
