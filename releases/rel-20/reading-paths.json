@@ -1261,6 +1261,24 @@
       "question": "MCVideo、MCData 有 XUI 不匹配 409，MCPTT 的业务配置也照用这一条吗？",
       "start": "topics/identity/mcptt-service-target-domain-validation.md",
       "boundary": "TS 24.484 V20.1.0：MCPTT 业务配置 §8.4.2.6 明列 AUID 与两项 domain 检查，没有 §9.4.2.6、§10.4.2.6 那句 XUI 比较。不要移植那一条，也不因此推 MCPTT 全局免验 XUI；MCPTT 用户配置档 §8.3.2.6 比较正文根元素 XUI-URI 与文档 URI 的 XUI。仅凭 HTTP 409、constraint-failure 或诊断文字，不确定整份文档和请求。"
+    },
+    {
+      "id": "mcptt-off-network-pqi-allowed-values-and-409",
+      "question": "MCPTT 离网私呼的默认 PQI 填了哪些数会命中 409？",
+      "start": "topics/identity/mcptt-service-off-network-priority-values.md",
+      "boundary": "TS 24.484 V20.1.0 §8.4.2.6：先定位 default-pqi，不以同名的信令或媒体子项猜父块。任一子元素值不在 21–26、55–61、90–93（含端点）任一区间时，CMS 须返回 HTTP 409 + XCAP constraint-failure；若带 phrase，建议 element value out of range。xs:unsignedShort 类型不等于本数值集合；未命中这项不能判整文档通过或已应用。"
+    },
+    {
+      "id": "mcptt-off-network-prose-literal-both-comparisons",
+      "question": "MCPTT 的 ProSe 逐包优先级填 0 或 9，能按本版判定 409 吗？",
+      "start": "topics/identity/mcptt-service-off-network-priority-values.md",
+      "boundary": "TS 24.484 V20.1.0 §8.4.2.6 原句要求同一 default-prose-per-packet-priority 子元素的同一值小于 1 且大于 8；若条件成立，CMS 须 HTTP 409 + XCAP constraint-failure；若带 phrase，建议 element value out of range。一个数不能同时满足两边，两个子项分别满足一边也不是命中；不能改 OR 或据此判实际必收或必拒。注 2 的高值更高优先只见于该 ProSe 信令/媒体段，不套 PQI 或话权。"
+    },
+    {
+      "id": "mcptt-off-network-prose-vs-pqi-parent-and-schema",
+      "question": "两类离网优先级配置的信令和媒体子项同名，怎么区分？",
+      "start": "topics/identity/mcptt-service-off-network-priority-values.md",
+      "boundary": "TS 24.484 V20.1.0 §8.4.2.1/.3/.7：看父项 default-pqi 或 default-prose-per-packet-priority；两父项及四个具名普通/紧急私呼信令/媒体子项均可选，具名子项类型都是 xs:unsignedShort。§.3 摘录的 default-pqi 名末尾空格不当作第二个报文字段；未写缺项默认或解析结果。§C.4.2 说 5GS 的 PQI（PC5-5QI）对应逐包优先级配置，不是逐值换算、自动补齐或回退。"
     }
   ]
 }

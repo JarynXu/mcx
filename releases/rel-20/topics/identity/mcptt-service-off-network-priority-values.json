@@ -1,0 +1,156 @@
+{
+  "topic_id": "r20-identity-mcptt-service-off-network-priority-values",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。仅核 MCPTT 业务配置文档 off-network 中的逐包优先级和 PQI，关心的是该文档的字段与 CMS 校验，不以已发生通话为前提。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "mcptt-off-network-default-pqi-value-set-requires-409",
+      "clause": "8.4.2.6",
+      "conditions": [
+        "已确定查 MCPTT 业务配置文档的离网 default-pqi 块；有同一块中实际存在的子元素值可核，不以某个子名称或零散片段猜外层字段。"
+      ],
+      "conclusion": "如任一 default-pqi 子元素的值不属于 21–26、55–61、90–93 三个含端点区间中的任何一个，配置管理服务器须返回 HTTP 409（Conflict），含 XCAP <constraint-failure>；若带 phrase，建议用 element value out of range。基本类型通过不等于命中所列集合。子项缺席与已有值超范围不同；值在集合内只不触发这一项，不证明授权、整档被接受或实际已应用。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "default-pqi allowed value groups; mandatory response and conditional phrase"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "default-pqiType: four declared optional xs:unsignedShort elements"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "off-network item 11: private and emergency private signalling and media"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-off-network-prose-packet-priority-retains-and",
+      "clause": "8.4.2.6",
+      "conditions": [
+        "已确定是离网 default-prose-per-packet-priority 块内的数值，不是 default-pqi 或离网话权抢占。对一个子元素的一个数值核原文两个比较。"
+      ],
+      "conclusion": "原句写 less than 1 and greater than 8：若同一值两项都成立，配置管理服务器须返回 HTTP 409（Conflict），含 XCAP <constraint-failure>；若带 phrase，建议用 element value out of range。一个数不能同时小于 1 且大于 8；0、9 或两个子元素各填一边都不满足该句，不能改用 OR 或凭此断言 CMS 必收或必拒。注 2 的高值对应更高信令或媒体优先级仅指本块，不套 PQI 或话权。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "literal conjunctive comparison; mandatory response and conditional phrase; NOTE 2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "default-prose-per-packet-priorityType: four declared optional xs:unsignedShort elements"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "off-network item 9: private and emergency private signalling and media"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-off-network-priority-types-share-four-optional-names",
+      "clause": "8.4.2.3",
+      "conditions": [
+        "核 MCPTT 业务配置 off-network 内两种父块和各自具名子元素的声明；缺某项只有在查到对应配置而非只见片段时才有意义。"
+      ],
+      "conclusion": "两块均可选，分别声明 mcptt-private-call-signalling、mcptt-private-call-media、mcptt-emergency-private-call-signalling、mcptt-emergency-private-call-media 为可选的 xs:unsignedShort，四项的 Schema 声明未给缺项默认值。§8.4.2.3 摘录的 name=\"default-pqi \" 有末尾空格，§8.4.2.1/.6/.7 写 default-pqi；不据此另立报文元素或断言实现行为。§C.4.2 中 5GS 的 default-pqi（PC5-5QI）是离网 ProSe 逐包优先级的对应配置，不建立逐值映射，不把一组数值校验用到另一组。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "off-networkType, default-prose-per-packet-priorityType and default-pqiType"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1"
+          ],
+          "items": [
+            "off-network items 6 and 8: optional blocks named in structure prose"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "the two constraint predicates use the prose names"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "off-network items 9 and 11; shared categories, not value mapping"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "C.4.2"
+          ],
+          "items": [
+            "5GS PC5-5QI corresponding configuration; comparison only"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "同一 409 与 phrase 不足以判定唯一起因、处理顺序或接受结果。仅保留 ProSe 原文 AND 和 PQI 集合；不填实际 CMS 的判定、无线优先级或缺项运用。",
+    "两块的 5GS 对应关系不推出相同取值、逐值映射、回退、互斥或实际配置选择。TS 24.483 仅核引用；不覆盖组呼、在网接入、离网话权或外设离线配置。"
+  ],
+  "related": [
+    "r20-identity-mcptt-service-target-domain-validation",
+    "r20-identity-offline-ue-configuration",
+    "r20-calls-off-network-floor-override"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
