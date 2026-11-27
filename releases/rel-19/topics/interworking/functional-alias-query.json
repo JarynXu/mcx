@@ -1,0 +1,378 @@
+{
+  "topic_id": "r19-iwf-functional-alias-query",
+  "release": 19,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "IWF 查询功能别名：查谁的别名，还是查别名对应谁？",
+  "common_conditions": [
+    "TS 23.283 V19.5.0 Rel‑19 Stage 2 §10.14.3.2 及匹配信息流；支持 IWF 功能别名功能，发起者是 IWF 归属用户。",
+    "区分按被查用户 MC service ID 取其激活别名、按明确 Functional alias 反查对应 MC service ID 及状态；查规范无需运行记录。"
+  ],
+  "condition_rule": "继承共同条件和本条条件；比较条款仅用于选流程，不把其他操作的条件或状态搬入本查询。",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "query-scope-iwf-homed-requester-feature-optional",
+      "conditions": [
+        "问 IWF 归属用户用互通信息流查询一个用户的激活别名或按一个明确别名反查。"
+      ],
+      "conclusion": "IWF 归属用户以代表该 LMR 用户的 MC service ID 表示；这不是物理终端位置或 IWF 本身的身份。§10.14.1 说功能别名对支持 TS 22.179 的系统是可选特性，不能从存在标准流程断言系统已部署特性。查规则无需抓包。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "3.1",
+            "10.14.1"
+          ],
+          "printed_pages": [
+            12,
+            170
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.3.2",
+            "Figure 10.14.3.2-1",
+            "10.14.3.2 steps 1–3"
+          ],
+          "printed_pages": [
+            173
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "query-request-role-and-selector-not-self-default",
+      "conditions": [
+        "读图 10.14.3.2-1 步骤 1 与表 10.14.2.1-1；已区分请求者及题目要查的目标。"
+      ],
+      "conclusion": "请求为 IWF→MC service server。请求者 MC service ID 必选（M）；被查者 MC service ID 和被查 Functional alias 各为可选（O）。步骤 1 用被查用户 ID 或别名选目标，别名不能代替请求者 ID。表不定义两项都没有时的对象或都带时的优先和组合；仅有请求者 ID 不等于自查。名字相同也不能交换两个 MC service ID 的角色。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.2.1",
+            "Table 10.14.2.1-1"
+          ],
+          "printed_pages": [
+            170
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.3.2",
+            "Figure 10.14.3.2-1",
+            "10.14.3.2 steps 1–3"
+          ],
+          "printed_pages": [
+            173
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "query-server-authorizes-actual-requester-before-retrieval",
+      "conditions": [
+        "收到本次 IWF 信息查询请求；不要用其他操作或别名结果补核权。"
+      ],
+      "conclusion": "步骤 2 是 MC service server 检查该 IWF 归属请求者对本次查询的权限，通过后才按对应 MC service ID 或 Functional alias 检索。IWF 连通或请求已发不能替代核权。响应表将结果信息来源写为功能别名管理服务器；图没有直接访问它的请求者消息，也未给出服务器之间的访问协议。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.3.2",
+            "Figure 10.14.3.2-1",
+            "10.14.3.2 steps 1–3"
+          ],
+          "printed_pages": [
+            173
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.2.2",
+            "Table 10.14.2.2-1"
+          ],
+          "printed_pages": [
+            170,
+            171
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "query-result-user-to-activated-aliases-vs-alias-to-ids-and-status",
+      "conditions": [
+        "按原请求的已知目标读与之匹配的 IWF functional alias information query response。"
+      ],
+      "conclusion": "按被查者 MC service ID 取的是该用户已激活的功能别名标识列表；按被查 Functional alias 取的是对应 MC service ID 及状态，不预设只有一名用户、每一项均已激活或状态编码。响应中请求者 MC service ID 和 Query result 必选（M），被查者 ID 和被查别名各可选（O）。可选的目标回显不是 Query result；省略回显不自动等于失败。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.2.2",
+            "Table 10.14.2.2-1"
+          ],
+          "printed_pages": [
+            170,
+            171
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.3.2",
+            "Figure 10.14.3.2-1",
+            "10.14.3.2 steps 1–3"
+          ],
+          "printed_pages": [
+            173
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "query-response-actual-send-receive-and-unknown-outcomes",
+      "conditions": [
+        "核对一次运行事实：图中 server→IWF 与正文对 IWF 归属发起用户的结果是同一个步骤 3 描述。"
+      ],
+      "conclusion": "按原请求、发起者和目标、动作及方向关联实际回应。图没有额外的 IWF 到用户腿或确认；server 发出、IWF 实收和请求者实际看到分别取证。请求没附目标、拒权、目标找不到、结果为空和没看到应答不是同一件事；这几处未给具体错误码、空或缺失的处理规则，也没有定义线上关联字段。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.2.1",
+            "Table 10.14.2.1-1"
+          ],
+          "printed_pages": [
+            170
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.2.2",
+            "Table 10.14.2.2-1"
+          ],
+          "printed_pages": [
+            170,
+            171
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.3.2",
+            "Figure 10.14.3.2-1",
+            "10.14.3.2 steps 1–3"
+          ],
+          "printed_pages": [
+            173
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "query-not-ownership-change-notification-or-directory",
+      "conditions": [
+        "区分这笔查询与收到实际状态通知或接管响应、开启观察、联系人或用户配置、或按别名建立私呼。"
+      ],
+      "conclusion": "查询只取得结果，不是激活、停用、接管或持续订阅。§10.14.2.7 状态通知及 §§10.14.2.8–.9 接管请求/应答不是查询消息；不从结果推唯一所有权、修改许可或状态以后有效。结果也不是用户名、通讯录、用户配置或呼叫应答。此 Stage 2 小节不提供 SIP/HTTP 编码；其他场景的 Contact、SIP SUBSCRIBE、响应码或订阅期限不能补本流程。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.2.1",
+            "Table 10.14.2.1-1"
+          ],
+          "printed_pages": [
+            170
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.2.2",
+            "Table 10.14.2.2-1"
+          ],
+          "printed_pages": [
+            170,
+            171
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.3.2",
+            "Figure 10.14.3.2-1",
+            "10.14.3.2 steps 1–3"
+          ],
+          "printed_pages": [
+            173
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "Tables 10.14.2.7-1 to 10.14.2.9-1",
+            "10.14.3.5",
+            "Figure 10.14.3.5-1"
+          ],
+          "printed_pages": [
+            172,
+            175,
+            176
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "3.1",
+        "10.14.1"
+      ],
+      "printed_pages": [
+        12,
+        170
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.14.2.1",
+        "Table 10.14.2.1-1"
+      ],
+      "printed_pages": [
+        170
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.14.2.2",
+        "Table 10.14.2.2-1"
+      ],
+      "printed_pages": [
+        170,
+        171
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.14.3.2",
+        "Figure 10.14.3.2-1",
+        "10.14.3.2 steps 1–3"
+      ],
+      "printed_pages": [
+        173
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "Tables 10.14.2.7-1 to 10.14.2.9-1",
+        "10.14.3.5",
+        "Figure 10.14.3.5-1"
+      ],
+      "printed_pages": [
+        172,
+        175,
+        176
+      ],
+      "usage": "comparison-only"
+    }
+  ],
+  "limitations": [
+    "未规定未授权/无目标/空结果或缺失消息的具体处理、线上编码、关联字段或到达用户界面的路径。",
+    "不含激活、停用、接管、通知或持续订阅过程，也不提供唯一所有权、通讯录、配置及后续呼叫的证据。"
+  ],
+  "related": [
+    {
+      "topic": "r19-interworking-scope",
+      "required": false,
+      "meaning": "区分代表 LMR 用户的 MC service ID 与 IWF 结构或部署位置。"
+    },
+    {
+      "topic": "r19-functional-alias-policy",
+      "required": false,
+      "meaning": "如果问共享和接管要求而非本次查询，另读 Stage 1。"
+    },
+    {
+      "topic": "r19-mcdata-functional-alias-observation",
+      "required": false,
+      "meaning": "原生 MCData 查询或设置后续观察，另按该业务的 Stage 3 条件查。"
+    },
+    {
+      "topic": "r19-calls-functional-alias-selection",
+      "required": false,
+      "meaning": "问按别名发起 MCPTT 私呼、Contact 或 300 选择的才进入建呼条件。"
+    },
+    {
+      "topic": "r19-identity-profile-acquisition",
+      "required": false,
+      "meaning": "问 CMS 用户配置的取得、全部配置或迁移时另读，不以别名结果代替。"
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  }
+}

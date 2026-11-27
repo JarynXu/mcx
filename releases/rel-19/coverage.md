@@ -881,6 +881,14 @@
 
 入口：[LMR 发言者标识晚到：什么时候更新，谁会收到？](topics/interworking/late-talker-id.md)。
 
+### IWF 查询功能别名：查谁的别名，还是查别名对应谁？
+
+- **能回答：**IWF 归属用户主动查某 MC service 用户激活的别名，或按一个别名反查对应 MC service ID 及状态。查规范无需抓包。
+- **只到条件或接口：**TS 23.283 V19.5.0 Stage 2：请求者 ID 必选，两个目标字段各可选；MC service server 核权后取结果。匹配的响应中发起者 ID 和 Query result 必选，目标回显可选；发出与实际收件各核。
+- **尚未建立的结论：**不以仅有请求者 ID 默认查自己，不补两个目标同现的规则、错误码或最终收件。查询不证明唯一所有权、接管、订阅、用户名/通讯录、用户配置或 SIP/HTTP 编码。
+
+入口：[IWF 查询功能别名：查谁的别名，还是查别名对应谁？](topics/interworking/functional-alias-query.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)
