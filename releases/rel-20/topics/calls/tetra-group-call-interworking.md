@@ -23,6 +23,6 @@ MCPTT 服务须支持与符合 **ETSI TETRA 标准**的非 3GPP PTT 系统互通
 - **-006：获授权用户。**互通须给获授权用户提供发起混合 PTT 组呼抢占的手段。原文没指明该用户的端型，不能改成“只限 MCPTT 用户”，也不能从本条列出更多端型。
 - **-007：获授权的 TETRA 移动台或控制台。**互通另须给这两种端型提供发起这类组呼抢占的手段。这里是移动台**或**控制台；不要求同一通呼叫同时有两种端型。
 
-这里写的是**发起混合 PTT 组呼抢占**，不是实际已抢占、撤掉谁的话权或接收方播放哪路。这两条没指定由谁授予权限、怎样授权。别套用 [P25 组呼的 MCPTT 管理员授权机制](p25-group-call-interworking.md)；要查 [TETRA 带话权私呼的抢占](interworking-private-call-override.md)，也要换到私呼条款。重组、用户标识和其他 TETRA 条款不在本页范围。
+这里写的是**发起混合 PTT 组呼抢占**，不是实际已抢占、撤掉谁的话权或接收方播放哪路。这两条没指定由谁授予权限、怎样授权。别套用 [P25 组呼的 MCPTT 管理员授权机制](p25-group-call-interworking.md)；要查 [TETRA 带话权私呼的抢占](interworking-private-call-override.md)，也要换到私呼条款。另查 TETRA [重组与用户标识](tetra-regrouping-and-user-ids.md)或[私呼加密与编解码协调](tetra-private-call-encryption-and-codec-reconciliation.md)。
 
 [3GPP 原文归档](https://www.3gpp.org/ftp/Specs/archive/22_series/22.179/22179-k00.zip) · [来源与版本](../../sources.json) · [结构化记录](tetra-group-call-interworking.json)
