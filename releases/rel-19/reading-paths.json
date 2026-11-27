@@ -3608,6 +3608,22 @@
           "read": "topics/location/lms-registration-configuration.md"
         }
       ]
+    },
+    {
+      "id": "lms-report-request-bearing-speed-current-history-notify",
+      "question": "向目标 LMC 索要航向和速度时，bearingAndSpeed 为 false、null 或缺键怎么读？怎样区分本次报告、历史条目和查询通知？",
+      "start": "topics/location/lms-location-report-request.md",
+      "boundary": "TS 24.283 V19.3.0：在 LMS 向已注册目标 LMC 发的 LocationReportRequest 中，requestedLocationInfo.bearingAndSpeed 是可空布尔选择项，按键出现表示索要；不能用 false/null 表示不索要，缺键也不禁止回报。不从键出现推获接纳或已取到数据。查 LMS 实收同一目标 LMC 对该请求的匹配 200 和可读 MCUELocation 正文，顶层 locationData.currentCoordinate.bearingAndSpeed 与历史事件内同路径分别核对；顶层和历史事件各用自己的 locTimestamp。缺值不当成速度为零。查询通知须另查请求端 LMC 实际收到的匹配通知及目标条目的 locationInfo；条目未定义报告顶层的 locTimestamp，不从目标应答推通知交付，也不用通知到达时刻代替测量时刻。",
+      "next_if": [
+        {
+          "condition": "问 LMS 是否已收到目标 LMC 独立发出的 /locationreports POST 或实际回 201。",
+          "read": "topics/location/lms-location-report-publish.md"
+        },
+        {
+          "condition": "问另一次 LocationInfoNotify 通知能否归到实际查询，以及哪位目标的位置到了请求端。",
+          "read": "topics/location/lms-one-time-location-request.md"
+        }
+      ]
     }
   ]
 }
