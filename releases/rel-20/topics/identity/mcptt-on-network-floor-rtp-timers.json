@@ -1,0 +1,142 @@
+{
+  "topic_id": "r20-identity-mcptt-on-network-floor-rtp-timers",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只核 MCPTT 业务配置的在网话权 RTP 计时字段。查字段含义不要求先观察到通话或抓包；判断某次运行要另外取证。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "mcptt-fc-t1-max-rtp-interpacket-gap",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "核 MCPTT 业务配置 on-network/fc-timers-counters 下名为 T1-end-of-rtp-media 的字段，所问是 RTP 媒体包之间的时长。"
+      ],
+      "conclusion": "在网项 12 把 T1 定义为 RTP 媒体包之间允许的最大间隔。它不是在网项 7 的 transmit-time/time-limit，也不是整通呼叫的挂起或发话总时长。配置定义不证明实际媒体流存在、被转发或持权发生。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network item 12 RTP media packet gap; item 7 transmission duration as comparison"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-fc-t3-rtp-forwarding-after-revocation",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "核在网 T3-stop-talking-grace；这里计的是已撤销发送 RTP 媒体许可之后的话权控制服务器转发，不是某次发话申请未获准。"
+      ],
+      "conclusion": "在网项 13 把 T3 定为撤销 RTP 媒体发送许可后话权控制服务器转发 RTP 媒体包的最长时间。不把上限写成每次须持续转发到满的时长，也不据此恢复发送许可。项 15 T8 的 Floor Revoke 至收到 Floor Release 的重发间隔是另一个字段；不能从 T3 推信令消息、接收端行为或实际转发。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network item 13 floor control server RTP-forwarding maximum after sending permission is revoked",
+            "item 15 Floor Revoke retransmission interval until Floor Release, contrast only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-fc-t11-interrupting-participant-rtp-gap",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "核 on-network/fc-timers-counters 的 T11-end-of-RTP-dual；对象是双话权操作中打断发话的参与者的 RTP 媒体包。"
+      ],
+      "conclusion": "在网项 16 把 T11 定为该参与者 RTP 媒体包之间允许的最大间隔。不是被打断者的间隔、打断者的全部发话时长或撤权后的转发。本项没有相邻 T12 那个明写的在网组呼限定；不从这一点推广到所有在网私呼，也不从配置判断实际已进入双话权。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network item 16 RTP packet gap of interrupting participant during dual floor operations; item 17 comparison only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-fc-t12-interrupting-participant-transmit-limit",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "核 on-network/fc-timers-counters 的 T12-stop-talking-dual，实际所问对象为双话权操作中的在网组呼，参与者是打断发话的一方。"
+      ],
+      "conclusion": "在网项 17 把 T12 定为该参与者的发话时限。不是同一参与者 RTP 媒体包之间的 T11，也不是给被打断者计的时限；没有从本字段推到在网私呼、通用 transmit-time/time-limit、报文顺序、许可撤回或运行时计时起止。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network item 17 transmit time limit for the interrupting participant in an on-network group during dual floor operation",
+            "item 16 gap and item 7 generic transmission-time field, contrast only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-fc-four-rtp-duration-fields-are-listed",
+      "clause": "8.4.2.3",
+      "conditions": [
+        "已定位 MCPTT 业务配置的在网 fc-timers-countersType，查这四个精确名字的声明与 §8.4.2.6 的具名时长清单。"
+      ],
+      "conclusion": "在网 fc-timers-counters 内有必需的 T1-end-of-rtp-media、T3-stop-talking-grace、T11-end-of-RTP-dual、T12-stop-talking-dual，都是 xs:duration，声明没有给默认值。§8.4.2.6 的清单项 10、11、14、15 明列它们；格式与秒值错误的规则查同版既有时长主题。不靠 T 字母或 xs:duration 判其他字段已入清单，不把要求搬到仅离网档，不从 XML 配置推实际定时。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "on-networkType and fc-timers-countersType; exact element names, casing and xs:duration declarations"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1"
+          ],
+          "items": [
+            "on-network item 7 and children a,b,e,f"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "duration validation list items 10, 11, 14, 15"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "不从四个字段重建协议流程、计时启动或重置、默认值、到期动作和实际运行，不给其他计时器或离网模式套用本结论。",
+    "同版 TS 22.179 V20.0.0 Stage 1 单次发话上限只作对照；不把它改名为本规范的 T1。具名时长校验的详细诊断和私呼挂起另有主要维护位置。"
+  ],
+  "related": [
+    "r20-calls-floor-permission-end-and-transmit-limit",
+    "r20-identity-ad-hoc-broadcast-hang-time",
+    "r20-identity-mcptt-private-call-service-timers"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
