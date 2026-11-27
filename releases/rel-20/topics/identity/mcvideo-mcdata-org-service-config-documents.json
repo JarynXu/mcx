@@ -3,7 +3,7 @@
   "release": 20,
   "state": "clause-checked",
   "common_conditions": [
-    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。适用 §9.4.2.2/.8/.9、§10.4.2.2/.8/.9 的 MCVideo、MCData 组织业务配置文档；§.11 仅定位引用的授权策略。"
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。适用 §9.4.2.2/.8/.9、§10.4.2.2/.8/.9 的 MCVideo、MCData 组织业务配置文档；§.11 核对操作授权策略的合规要求与引用，不核 OMA 目标正文。 §9.4.2.12、§10.4.2.12 同页只核两种业务配置文档的应用用法变更订阅支持。"
   ],
   "condition_rule": "Inherit common_conditions and add claim conditions.",
   "source_catalog": "../../sources.json",
@@ -113,17 +113,95 @@
           ]
         }
       ]
+    },
+    {
+      "id": "mcvideo-org-service-document-manipulation-authorization-policy",
+      "clause": "9.4.2.11",
+      "conditions": [
+        "查操作 MCVideo 组织业务配置文档时应遵循的授权策略，不查某次访问结果。"
+      ],
+      "conclusion": "§9.4.2.11 要求操作该业务配置文档的授权策略须符合 OMA-TS-XDM_Core-V2_1-20120403-A [2] §5.1.5 “Authorization”。这里只有策略合规要求和原文引用，未核 OMA 目标正文；不从它补凭据、策略实现、响应码、订阅许可或某次授权结果，也不替换 §9.4.2.9 的用户与本组织系统管理员读写范围。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.11",
+            "2",
+            "9.4.2.9"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-org-service-document-requires-change-subscription-support",
+      "clause": "9.4.2.12",
+      "conditions": [
+        "查 MCVideo 组织业务配置文档的应用用法须支持什么；不要求已经发出订阅或收到内容。"
+      ],
+      "conclusion": "§9.4.2.12 要求该业务配置文档的应用用法支持按 §6.3.13.3 所定 CMS 程序订阅变更，不是给某个用户、终端或服务器订阅许可、要求必定发订阅，或确认已订阅、通知、经 HTTP 取文或应用。文档操作授权策略另按 §9.4.2.11，不把文档读写规则或 HTTP 授权等同于 SIP 订阅授权。§6.3.13.2.1 的服务器概述原写 MCPTT，不用该句补 MCVideo 发端消息，也不据此否定本节支持。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.12",
+            "6.3.13.3",
+            "9.4.2.11",
+            "6.3.13.2.1",
+            "6.2.4.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcdata-org-service-document-manipulation-authorization-policy",
+      "clause": "10.4.2.11",
+      "conditions": [
+        "查操作 MCData 组织业务配置文档时应遵循的授权策略，不查某次访问结果。"
+      ],
+      "conclusion": "§10.4.2.11 要求操作该业务配置文档的授权策略须符合 OMA-TS-XDM_Core-V2_1-20120403-A [2] §5.1.5 “Authorization”。这里只有策略合规要求和原文引用，未核 OMA 目标正文；不从它补凭据、策略实现、响应码、订阅许可或某次授权结果，也不替换 §10.4.2.9 的用户与本组织系统管理员读写范围。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.11",
+            "2",
+            "10.4.2.9"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcdata-org-service-document-requires-change-subscription-support",
+      "clause": "10.4.2.12",
+      "conditions": [
+        "查 MCData 组织业务配置文档的应用用法须支持什么；不要求已经发出订阅或收到内容。"
+      ],
+      "conclusion": "§10.4.2.12 要求该业务配置文档的应用用法支持按 §6.3.13.3 所定 CMS 程序订阅变更，不是给某个用户、终端或服务器订阅许可、要求必定发订阅，或确认已订阅、通知、经 HTTP 取文或应用。文档操作授权策略另按 §10.4.2.11，不把文档读写规则或 HTTP 授权等同于 SIP 订阅授权。§6.3.13.2.1 的服务器概述原写 MCPTT，不用该句补 MCData 发端消息，也不据此否定本节支持。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.12",
+            "6.3.13.3",
+            "10.4.2.11",
+            "6.3.13.2.1",
+            "6.2.4.1"
+          ]
+        }
+      ]
     }
   ],
   "limitations": [
     "组织与业务两个范围分别判断；每一组织在每种业务中一份业务配置文档，不是两业务共用一份，不是每用户或每终端一份，也不规定运行副本、缓存、服务进程、URI 标准化或物理部署。",
     "这四个地址只是原文例子；区分 root 和 global 组织子目录，不能凭 AUID、文件名、用户 ID 或 global 单独认定目标组织、地址、凭据、HTTP 方法、成功或当前版本。",
-    "用户只读和组织系统管理员才允许读写是文档规则；不据此判实际账号身份、组数据权限、权限配置或任一请求结果，不将其他角色或 MCPTT 例子的标识套入。"
+    "用户只读和组织系统管理员才允许读写是文档规则；不据此判实际账号身份、组数据权限、权限配置或任一请求结果，不将其他角色或 MCPTT 例子的标识套入。",
+    "§9.4.2.11、§10.4.2.11 对相应业务配置文档的操作授权策略要求符合 OMA-TS-XDM_Core-V2_1-20120403-A [2] §5.1.5；未核目标正文。两条 §.12 要求按 §6.3.13.3 CMS 程序支持变更订阅，不是特定主体必然获准或实际发起、接受、通知、取回或应用。保留 §6.3.13.2.1 服务器概述的原写 MCPTT，不从它补两业务发送报文或否定支持；HTTP 发端身份和授权另查 §6.2.4.1。"
   ],
   "related": [
     "r20-identity-mcvideo-mcdata-ue-server-config-formats",
     "r20-identity-mcs-server-service-config",
-    "r20-identity-mcvideo-mcdata-admin-configuration"
+    "r20-identity-mcvideo-mcdata-admin-configuration",
+    "r20-identity-cmc-subscription-notify-fetch"
   ],
   "verification": {
     "original_clauses_checked": true,
