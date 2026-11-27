@@ -4156,6 +4156,38 @@
           "read": "topics/interworking/late-talker-id.md"
         }
       ]
+    },
+    {
+      "id": "iwf-group-join-leave-release-id-and-matched-leg",
+      "question": "IWF 的组呼 join、leave 和 release：同样两个 ID，能判断是哪条消息吗？",
+      "start": "topics/interworking/group-call-operation-elements.md",
+      "boundary": "TS 23.283 V19.5.0 Stage 2 §10.3.2.1/.8–.13。IWF↔MCPTT server 上六条表各列双向；不按方向或两 ID 猜消息、配对。Join .8 请求的 M 用户 ID 指发起者，M SDP offer；.9 应答的 M 用户 ID 仍指请求发起者，M SDP answer；两者的 M 组 ID 都指本次请求通信的组，不凭归属状态取其他组；代理 NOTE 只述 IWF 代表 LMR 系统自行作组归属所配置的 ID。.8 的隐式话权请求是 O，只有发起客户端请求话权才含；§10.3.5.9 步骤 1 的 IWF 加入进行中 MCPTT 定义 chat 组呼另写有发送请求则带该指示，带指示时位置可选，不能把 .8 未列 Location 当作该步禁止。Leave .10/.11 同列 M 离开成员 ID 与组 ID，不以相同字段猜请求／应答；单人 leave 不是整组释放。非广播 release（也可用于已识别出这两个信息流的 chat 释放）.12 请求组 ID M，发起成员 ID 与 Release reason O；server 发起时省略发起成员 ID，反向不成立，缺省不推出 server 或超时。.13 应答组 ID 与目标成员 ID M，无列原因／Result。单查一条不用另一条；配对、实收、话权和参加或资源状态另核实际动作和证据。",
+      "next_if": [
+        {
+          "condition": "实际是初始 IWF group call request，而非加入、退出或释放。",
+          "read": "topics/interworking/group-call-request.md"
+        },
+        {
+          "condition": "实际想查互通 chat 组呼的加入与回覆盖，而非本腿字段。",
+          "read": "topics/interworking/chat-entry.md"
+        },
+        {
+          "condition": "实际要查取消组归属造成的逐用户退出动作。",
+          "read": "topics/interworking/deaffiliation-exit.md"
+        },
+        {
+          "condition": "实际想查预安排互通组呼全体释放的主控、触发或请求粒度。",
+          "read": "topics/interworking/group-call-release.md"
+        },
+        {
+          "condition": "实际想查 chat 组呼的释放程序、可选确认或释放后的归属状态，不只问这条 IWF‑1 消息字段。",
+          "read": "topics/interworking/chat-release.md"
+        },
+        {
+          "condition": "实际是 group-broadcast group call release，不按非广播 release 的 .12/.13 判字段。",
+          "read": "topics/interworking/group-broadcast-release.md"
+        }
+      ]
     }
   ]
 }

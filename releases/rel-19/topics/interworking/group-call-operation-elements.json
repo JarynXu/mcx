@@ -1,0 +1,395 @@
+{
+  "topic_id": "r19-iwf-group-call-operation-elements",
+  "release": 19,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "IWF 组呼的 join、leave 和 release：用户 ID 指谁？",
+  "common_conditions": [
+    "TS 23.283 V19.5.0、Rel‑19 Stage 2，IWF‑1 上 IWF 与 MCPTT server 的组呼信息流。"
+  ],
+  "condition_rule": "查规范不需抓包；运行中查哪条就核哪条类型或角色，只有要关联多个动作时才看它们是否属本次呼叫和事务。各 claim 继承 common_conditions。",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "iwf-group-call-ie-identify-iwf-one-flow-before-pairing",
+      "conditions": [
+        "可单查 IWF‑1 的适用范围或 §§10.3.2.8–.13 的哪一条；运行记录中辨认任一已识别的信息流，不要求拿到来回两条。要归为同一呼叫动作或同次请求／应答，才核实际类型、角色、端点及能对应的上下文。"
+      ],
+      "conclusion": "§10.3.2.1 限 IWF‑1，IWF 与 MCPTT server 之间的 join 请求／应答、leave 请求／应答、release 请求／应答，各自导语都列两个方向。方向、MCPTT ID 和组 ID 不能替消息类型或证明已配对；先认动作及其请求还是应答。",
+      "limitations": [
+        "别把终端↔server 那一腿、初始组呼、广播专用释放或 ad hoc 释放套进此处。其他参考点只指 TS 23.379，不给本页增加 Stage 3 字段、关联键或路由。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.1 (IWF-1 scope; TS 23.379 for other reference points only a pointer)"
+          ],
+          "printed_pages": [
+            35
+          ],
+          "usage": "dependency"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.8, Table 10.3.2.8-1 and NOTES 1–2 (join request)"
+          ],
+          "printed_pages": [
+            37
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.9, Table 10.3.2.9-1 and NOTE (join response)"
+          ],
+          "printed_pages": [
+            37,
+            38
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.10–.11, Tables 10.3.2.10-1 and 10.3.2.11-1 (leave request and response)"
+          ],
+          "printed_pages": [
+            38
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.12, Table 10.3.2.12-1 and NOTE (release request)"
+          ],
+          "printed_pages": [
+            38
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.13, Table 10.3.2.13-1 (release response)"
+          ],
+          "printed_pages": [
+            39
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-group-call-ie-join-originator-offer-answer-and-proxy-identity",
+      "conditions": [
+        "可独立查 join 请求、应答、其 NOTE，或与初始建呼的身份项对照。现场如要认定某个值来自 IWF 代表 LMR 系统自行作归属的配置，核本次实际代理方式与该 ID 的来源；不用把此条件设为查 join 表的前提。"
+      ],
+      "conclusion": "表 .8‑1：MCPTT ID M 指请求发起者，功能别名 O 指 calling party；MCPTT group ID M；SDP offer M，是发起者媒体参数。表 .9‑1：MCPTT ID M 仍指请求发起者，另有 MCPTT group ID M 及选定媒体参数的 SDP answer M。两张表的组 ID 都指这次请求通信的组，不是任一已归属的组。两个 NOTE 都为 IWF 代表 LMR 系统给自己作组归属时说明配置的 MCPTT ID。初始建呼 .2‑1 在从 LMR 发起且 LMR 没提供主叫身份时可用预留 ID，与此不是同一条件；初始应答 .3‑1 的 ID 指目标成员，非 .9‑1 的请求发起者。",
+      "limitations": [
+        "不因消息的方向便把应答 ID 改成应答者或实际设备的身份。不以代理 ID、配置存在、offer 或 answer 推断本次可识别具体 LMR 用户、组归属成功、媒体已流通或节点已实收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.8, Table 10.3.2.8-1 and NOTES 1–2 (join request)"
+          ],
+          "printed_pages": [
+            37
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.9, Table 10.3.2.9-1 and NOTE (join response)"
+          ],
+          "printed_pages": [
+            37,
+            38
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.2–.3, Tables 10.3.2.2-1 NOTE 1 and 10.3.2.3-1 (initial call ID comparison)"
+          ],
+          "printed_pages": [
+            35,
+            36
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-group-call-ie-join-implicit-floor-only-if-requested",
+      "conditions": [
+        "可单查表 .8‑1 的隐式话权规则、.9‑1 是否列该项，以及 §10.3.5.9 步骤 1 的特定条件，不要求先有整条 join 链。实际字段可单读；只有要断言从字段得出规范蕴含时，才需要确定符合该表。"
+      ],
+      "conclusion": "表 .8‑1 的 Implicit floor request 是 O，NOTE 2 写仅在发起客户端请求话权时才包含。已知符合此表且字段存在，可读出发起客户端请求话权；通用表单独未规定反向条件。表 .9‑1 未列此项。若实际走 §10.3.5.9 的 IWF 加入正在进行的 MCPTT 定义 chat 组呼，步骤 1 规定有发送请求时携带隐式话权请求，携带时位置可选。表 .8‑1 未列 Location，不把此缺项读成禁止这个步骤带位置，也不为通用表增列。",
+      "limitations": [
+        "即使已辨认有申请，也不证明话权已授或实际发言。只知没有抓到某项不能判断这项是否在线上、是否存在发送请求或是否满足特定加入分支。勿按聊天步骤的前提改写所有一般 join。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.8, Table 10.3.2.8-1 and NOTES 1–2 (join request)"
+          ],
+          "printed_pages": [
+            37
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.9, Table 10.3.2.9-1 and NOTE (join response)"
+          ],
+          "printed_pages": [
+            37,
+            38
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.5.9 preconditions and Step 1 (IWF joins ongoing chat group call, implicit floor and optional location)"
+          ],
+          "printed_pages": [
+            69
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-group-call-ie-leave-same-required-identity-pair-not-phase-or-effect",
+      "conditions": [
+        "可单查表 .10‑1 或 .11‑1 字段，也可比较两张表。不必存在实际应答才解释请求，或存在实际请求才解释已识别应答。若要关联两条实况，才查同次呼叫及成员、方向与步骤。"
+      ],
+      "conclusion": "IWF group call leave 请求和应答均只列两个 M：MCPTT ID 指正在离开的组成员，MCPTT group ID 指其离开的组。两表同列这两个角色，没有单独的 Result。",
+      "limitations": [
+        "相同身份对不足以区分请求、应答、另一动作或证明已配对。单成员 leave 不是整组呼叫被释放，也不由字段本身认定终端已退出、全代理用户已退出或组归属已改变。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.10–.11, Tables 10.3.2.10-1 and 10.3.2.11-1 (leave request and response)"
+          ],
+          "printed_pages": [
+            38
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-group-call-ie-release-request-optional-initiator-vs-response-mandatory-target",
+      "conditions": [
+        "可只查已识别的一条 release 请求、应答或表 .12‑1 的 server 发起条件；也可查 chat 使用这两个 IWF‑1 消息名的步骤；比较字段无需实际收齐两条。要把实况应答归给某个释放动作时，再核同次组呼、角色、端点与事务证据。"
+      ],
+      "conclusion": "表 .12‑1 的请求：MCPTT ID O 指发起释放的组成员，MCPTT group ID M 指释放所在组；Release reason O。NOTE 写 server 发起（例如超时）时不含此 MCPTT ID。表 .13‑1 的应答：MCPTT ID M 指目标组成员，MCPTT group ID M，没有列 Release reason 或 Result。不能拿 .12 的可选项或发起身份当 .13 的目标身份。§10.3.5.4 步骤 1／5 与 §10.3.5.5 步骤 2／5 的 chat 释放也用这两个消息名；判断该 IWF‑1 腿的字段不排除已辨明的 chat 场景。",
+      "limitations": [
+        "缺 MCPTT ID 不证明 server 发起，更不证明超时；已知合规的 .12 若带此项，只能排除 NOTE 所述的 server 发起，不足以识别实际链路发件人。反过来只见 server 发出不证明 server 发起此次释放。未确认消息合规、日志不全或只见同组，不能判断字段为何没出现、匹配哪次释放、整组实际完成或对端已收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.12, Table 10.3.2.12-1 and NOTE (release request)"
+          ],
+          "printed_pages": [
+            38
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.13, Table 10.3.2.13-1 (release response)"
+          ],
+          "printed_pages": [
+            39
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.5.4 Steps 1 and 5; 10.3.5.5 Steps 2 and 5 (chat IWF release scope only)"
+          ],
+          "printed_pages": [
+            66,
+            67
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.2.1 (IWF-1 scope; TS 23.379 for other reference points only a pointer)"
+      ],
+      "printed_pages": [
+        35
+      ],
+      "usage": "dependency"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.2.2–.3, Tables 10.3.2.2-1 NOTE 1 and 10.3.2.3-1 (initial call ID comparison)"
+      ],
+      "printed_pages": [
+        35,
+        36
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.2.8, Table 10.3.2.8-1 and NOTES 1–2 (join request)"
+      ],
+      "printed_pages": [
+        37
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.2.9, Table 10.3.2.9-1 and NOTE (join response)"
+      ],
+      "printed_pages": [
+        37,
+        38
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.2.10–.11, Tables 10.3.2.10-1 and 10.3.2.11-1 (leave request and response)"
+      ],
+      "printed_pages": [
+        38
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.2.12, Table 10.3.2.12-1 and NOTE (release request)"
+      ],
+      "printed_pages": [
+        38
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.2.13, Table 10.3.2.13-1 (release response)"
+      ],
+      "printed_pages": [
+        39
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.5.9 preconditions and Step 1 (IWF joins ongoing chat group call, implicit floor and optional location)"
+      ],
+      "printed_pages": [
+        69
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.5.4 Steps 1 and 5; 10.3.5.5 Steps 2 and 5 (chat IWF release scope only)"
+      ],
+      "printed_pages": [
+        66,
+        67
+      ],
+      "usage": "comparison-only"
+    }
+  ],
+  "related": [
+    {
+      "topic": "r19-iwf-group-call-request",
+      "required": false,
+      "meaning": "实际是初始 IWF group call request 时回 §10.3.2.2，不把 join 的 NOTE 用来解释初始主叫。"
+    },
+    {
+      "topic": "r19-iwf-chat-entry",
+      "required": false,
+      "meaning": "问互通 chat 加入及回覆盖的触发和流程时走 §10.3.5.8–.10，不用字段推现网加入。"
+    },
+    {
+      "topic": "r19-iwf-deaffiliation-exit",
+      "required": false,
+      "meaning": "实际是取消归属导致单用户退出时走 §10.3.6。"
+    },
+    {
+      "topic": "r19-iwf-group-call-release",
+      "required": false,
+      "meaning": "实际问预安排互通组呼全体释放条件、主控与逐用户发送粒度时走 §10.3.3.8。"
+    },
+    {
+      "topic": "r19-iwf-chat-release",
+      "required": false,
+      "meaning": "实际想查 chat 呼叫释放、可选确认与归属状态时走 §10.3.5.4–.5；字段仍凭实际 IWF‑1 消息类型。"
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  },
+  "limitations": [
+    "这里不定义终端接口的报文编码、呼叫过程、实际实现或状态机。"
+  ]
+}

@@ -9,3 +9,5 @@
 隐式话权请求仅在发起客户端请求话权时才包含（注2）；不能因正在建组呼就默认附带。
 
 这不是完整建呼状态机，不给出 SIP 编码、应答/失败处理或话权授予结果。[来源](../../sources.json) · [结构化条件](group-call-request.json) · [IWF 身份模型](scope.md)
+
+查 [IWF join、leave 与非广播 release 的字段及用户 ID](group-call-operation-elements.md) 时，先区分信息流；不把本页的初始组呼请求表套给它们。

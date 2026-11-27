@@ -1033,6 +1033,14 @@
 
 入口：[预配置组重组被拒绝：谁拒绝，原因回给谁？](topics/interworking/preconfigured-group-regroup-rejection.md)。
 
+### IWF 组呼的 join、leave 和 release：用户 ID 指谁？
+
+- **能回答：**区分 IWF‑1 join、leave、非广播 release 的请求与应答及用户 ID 的角色；核相同身份对、字段必带与注释条件。
+- **只到条件或接口：**TS 23.283 V19.5.0 Stage 2 §10.3.2.1/.8–.13。Join SDP offer/answer、代理条件、隐式话权及特定 chat 步骤；leave 单用户；release 请求的可选发起者与应答的必带目标。
+- **尚未建立的结论：**字段共现、方向、应答名及静态身份不证明本次匹配、实收、话权、组归属、参加或整组释放。不补报文编码、超时或终端程序。
+
+入口：[IWF 组呼的 join、leave 和 release：用户 ID 指谁？](topics/interworking/group-call-operation-elements.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)
