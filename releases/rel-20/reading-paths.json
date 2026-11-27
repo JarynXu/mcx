@@ -547,6 +547,12 @@
       "question": "要取命名空间绑定而不是 XML 属性时，CMC、MCS 服务器怎么发 GET，CMS 收端核什么，谁必须支持？",
       "start": "topics/identity/cmc-mcs-config-get-target.md",
       "boundary": "看 §6.3.12 的绑定对象，不套 XML 属性取值。GC 指向 RFC 4825 Fetch Namespace Bindings；CMC、MCS 服务器各执行对应 GC，Request-URI 标识 XML 文档的命名空间绑定，带相应用法的 auid。这里未写配置根公式或 CSC-5，不补 URI 语法。CMS §6.3.12.3 明列实收 CMC GET，实际 URI 标识相应用法的 XML 文档的绑定；这一收端段未另写 auid 或第 7 章，不能据此判发送端可省参数，也不从未列 MCS 判允许或禁止。§5.1 CMC 可支持（选用时仍遵循其程序），§5.2/.3 CMS 接收程序与 MCS 服务器发送程序各须支持；支持不证明收包、授权、返回或读库。"
+    },
+    {
+      "id": "cmc-initial-direct-subscribe-root-vs-proxy-psi-and-mcs-psi",
+      "question": "CMC 初次直接订阅时应发到哪里？CMS 为何在 CMC 直订条款检查授权 MCS 服务器身份，跟代理和业务服务器初订怎么分？",
+      "start": "topics/identity/cmc-subscription-notify-fetch.md",
+      "boundary": "初始直订按 §6.3.13.2.2 a：CMC 发 SIP SUBSCRIBE，Request-URI 的 SIP URI 基址是其配置的 CMSXCAPRootURI，带标识配置文档应用用法的 auid，通用初订字段按 c 到 f（d 仅身份隐藏时）。CMS §6.3.13.3.2.3 虽题为 CMC 发起，实际入站仍查 Event=xcap-diff、基址为自身 XCAP 根、PAI 存在且含已列入授权 MCS 服务器清单的一项身份、P-Asserted-Service 的 MCPTT ICSI，然后按 RFC 5875 作通知方。代理 §6.3.13.3.2.2 查整个 Request-URI 为自身代理 PSI、存在但不含清单身份的 PAI 及两个指定正文；业务服务器 §6.3.13.3.2.4 查 CMS PSI 基址及含清单身份的 PAI。缺 PAI 不等于存在但不在清单。不补 CMC 到入站 PAI 的身份映射、不把发端 auid 或令牌添成直订接收字段，不从这一段推出 200、通知正文、取文或续订结果。"
     }
   ]
 }

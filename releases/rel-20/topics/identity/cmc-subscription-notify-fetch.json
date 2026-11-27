@@ -3,7 +3,7 @@
   "release": 20,
   "state": "clause-checked",
   "common_conditions": [
-    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3；从主系统 MCPTT UE 的 CMC 多文档代理订阅和配置取文观察。只核直接相关的通用条款；附录 A.2.2 是资料性示例，不补写普遍的协议行为。"
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3；从主系统 MCPTT UE 的 CMC 初订与配置取文观察。代理、直订和业务服务器初订对照各按本条范围核对。附录 A.2.2 只作明确对应的多文档代理案例，不据此写直接订阅或其他场景的通用协议结果。"
   ],
   "condition_rule": "Inherit common_conditions and add claim conditions.",
   "source_catalog": "../../sources.json",
@@ -184,6 +184,84 @@
           "items": [
             "informative step 7 referring to A.2.2-7 / literal caption A.2.3-7",
             "informative step 12 heading, prose, caption and figure"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cmc-direct-initial-send-root-and-auid",
+      "clause": "6.3.13.2.2",
+      "conditions": [
+        "CMC 选择直接订阅配置文档；只核这次初始 SIP SUBSCRIBE 的发送程序。"
+      ],
+      "conclusion": "§6.3.13.2.2 a 要求 SIP Request-URI 的基址取终端配置的 CMSXCAPRootURI，并用 auid 标识配置文档的应用用法，不替成代理 PSI 或业务服务器的 CMS PSI。c、e、f 是初订通用要求：认证取得的 mcptt-access-token 放在 application/vnd.3gpp.mcptt-info+xml，P-Preferred-Service 和 Contact 的 g.3gpp.icsi-ref 分别带相同 MCPTT ICSI urn:urn-7:3gpp-service.ims.icsi.mcptt。d 仅身份隐藏时按原分支核。多项代理 b 的资源清单义务不是直订 a 的字段，不能推直订禁止带清单。这里未写终端构造 PAI 或从令牌映射入站身份，也不证明 CMS 已实际收到。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.2.2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cms-direct-initial-receive-root-and-listed-pai",
+      "clause": "6.3.13.3.2.3",
+      "conditions": [
+        "CMS 实际收到初始 SIP SUBSCRIBE，核 §6.3.13.3.2.3 明列的直接初订接收分支。"
+      ],
+      "conclusion": "同一入站须满足四项：Event 是 xcap-diff；Request-URI 的基址等于 CMS 的 XCAP 根；存在 P-Asserted-Identity 且其中含授权 MCS 服务器清单的一项身份；P-Asserted-Service 携 MCPTT ICSI urn:urn-7:3gpp-service.ims.icsi.mcptt。标题写 CMC 发起，第三项仍照原样查，不改判为代理或业务服务器分支。清单属 §6.2.4.1 的 MCS 服务器 PSI；它不是说明 PAI 由 CMC 如何产生的映射。匹配时 CMS 须依 RFC 5875 作通知方；这一段没有另外列入站 auid 或正文内容作为第五条件，不据此抛开发送条件。不能单凭本段宣称已获准、某个响应码、首通知正文、收到配置或续订结果。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.2.4.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.2.2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "initial-cmc-direct-proxy-and-mcs-branch-neighbors",
+      "clause": "6.3.13.3.2.3",
+      "conditions": [
+        "只对照 CMS 的三个初订入站分支，相关 Request-URI、PAI、Event 和 ICSI 各按实际同一请求核对。"
+      ],
+      "conclusion": "直订 §6.3.13.3.2.3 查 CMS XCAP 根基址及含清单身份的 PAI。代理 §6.3.13.3.2.2 查整个 Request-URI 为 CMS 代理 PSI、PAI 存在而不含清单身份，另查指定令牌正文和资源清单。缺 PAI 不等于头在但没有清单身份。业务服务器初订 §6.3.13.3.2.4 也要求 PAI 含清单身份，基址查 CMS PSI；不把它的发送方规则或续订鉴权移用给直订。不能只凭白名单、名字或一个 PSI 字符串认定现场分支；这三段没有给这些边界之外的统一失败、顺序或回退规则。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.4"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.2.3"
           ]
         }
       ]
