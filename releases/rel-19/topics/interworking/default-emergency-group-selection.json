@@ -1,0 +1,221 @@
+{
+  "topic_id": "r19-iwf-default-emergency-group-selection",
+  "release": 19,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "互通紧急事件：选哪个组，要不要另发告警？",
+  "common_conditions": [
+    "TS 23.283 V19.5.0，Rel‑19 Stage 2。范围是 §10.6.2.5 的选组、是否附带发警选择和参数约束；相邻告警步骤及 TS 23.379 指针只作分流。",
+    "查规范无需抓包；查一次事件时，区分触发前的组选择、告警决定/组配置、用户权限及实际消息。"
+  ],
+  "condition_rule": "先按是 MCPTT 用户 profile 选组还是 IWF 与相连 LMR 作本侧决定分开读；目标组选择、是否另外发告警、该实际目标组的配置、对所指组的用户告警权限和实际收发各看自己的条件。只查某条规则不要求已有告警。不能用下游某个组 ID 判发起时分支。",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "iwf-default-emergency-group-profile-selected-vs-configured-default",
+      "conditions": [
+        "可独立查 MCPTT 的选组规范，无需实际请求；只判断这次适用哪个分支，核当时生效的用户 profile，不要求两个候选都已配置或已知。问该分支指向哪个组，再核对应候选的组 ID；要比较两个候选是否同号才查两者。实际发送另核。"
+      ],
+      "conclusion": "MCPTT 由用户 profile 决定：在用户当前所选组还是配置的默认紧急组发起紧急事件。单独存在默认组配置不能说明此次用了它；该用户当前所选与配置的默认恰好都为 D 时，报文只出现相同的 D 也不等于认出了 profile 的选择分支。",
+      "limitations": [
+        "没定义 profile 字段、未设置默认值/所选组时的回退、两种候选谁优先或抢占规则；不拿 IWF/LMR 的选择或下游成员消息组 ID 代这个判断。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.5 (selected or default emergency group, IWF/LMR decision, and emergency parameter enforcement)"
+          ],
+          "printed_pages": [
+            133
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-default-emergency-group-iwf-connected-lmr-group-and-alert-choice",
+      "conditions": [
+        "可独立查互通侧由谁选组、由谁判断是否另发告警，不要求已观察一笔告警；查 MCPTT 的规范约束时，区分 IWF 是不是代表映射到 MCPTT 的用户。"
+      ],
+      "conclusion": "IWF 与它连接的 LMR 系统决定在哪个组发起紧急事件，以及是否还要发告警。以 MCPTT 视角，IWF 代表映射到 MCPTT 的用户的紧急行为须符合 TS 23.379。§2 的 [7] 是非特指引用，指向同 Release 的该规范最新版本。",
+      "limitations": [
+        "选定一组并不命令必发告警。未规定 IWF 与 LMR 如何分工、必须按哪个 profile、何时相对发出或哪组必选，不能从此补 TS 23.379 字段或把这项特指条件扩成所有 LMR 本地事件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.5 (selected or default emergency group, IWF/LMR decision, and emergency parameter enforcement)"
+          ],
+          "printed_pages": [
+            133
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "2, Reference [7], 3GPP TS 23.379 non-specific reference (edition rule only)"
+          ],
+          "printed_pages": [
+            11
+          ],
+          "usage": "dependency"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-default-emergency-group-target-group-alert-configuration-vs-authorization",
+      "conditions": [
+        "可单查对哪一个组发告警的必要配置，或选组/授权/实际送达的差别，不要求已经有报文。判断本次告警按实际目标 MC service 组和相应发警用户分别取证。"
+      ],
+      "conclusion": "要在某个 MC service 组发紧急告警，实际目标组须在 MC service 组管理系统配置紧急告警。另一组已配、配置为默认紧急组、IWF 获准互通或用户已映射都不替这项配置。组已配也不代 §10.6.4.1/.2 Step 3 对所指组的 MC service 用户 ID 告警权限核验；更不等于作出发送决定、已发或已送达。",
+      "limitations": [
+        "只说明向该组发告警的必要条件。未配告警不等于紧急组呼或私呼被禁止，不推出自动改到默认组、实际不可能发违规报文，或组紧急状态已改变。成员侧组 ID 分别在 .4.1 Step 5/.4.2 Step 7 按组配置，不能由这个字段倒推事件最初按什么 profile 或 IWF/LMR 选择。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.5 (selected or default emergency group, IWF/LMR decision, and emergency parameter enforcement)"
+          ],
+          "printed_pages": [
+            133
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.4.1 Steps 3 and 5 (LMR-origin alert authorization and downstream selected/dedicated group ID)"
+          ],
+          "printed_pages": [
+            140
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.4.2 Steps 3 and 7 (MC-origin alert authorization and downstream selected/dedicated group ID)"
+          ],
+          "printed_pages": [
+            141
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-default-emergency-group-parameter-enforcement-methods",
+      "conditions": [
+        "可纯查实现需要遵守哪些紧急参数以及原文列哪些执行方法，不要求实际告警；若判断部署，定位是正确配置哪两侧或 IWF 运行时执行及其实际边界。"
+      ],
+      "conclusion": "实现须确保遵守组呼或私呼的紧急相关参数。§10.6.2.5 给出两种执行办法：正确配置 LMR 和 MCPTT 两侧，或者由 IWF 在运行时执行。不要求两种叠加，没规定二者互斥。运行时执行仍执行这些条件，不代实际目标 MC service 组的告警配置。",
+      "limitations": [
+        "不把正确配置两侧缩为只配置任一侧就满足这一办法，不把运行时执行当作越过组参数或授权；本段未规定运行时是否修改配置、拒绝响应、策略字段或调度算法。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.6.2.5 (selected or default emergency group, IWF/LMR decision, and emergency parameter enforcement)"
+          ],
+          "printed_pages": [
+            133
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.6.2.5 (selected or default emergency group, IWF/LMR decision, and emergency parameter enforcement)"
+      ],
+      "printed_pages": [
+        133
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "2, Reference [7], 3GPP TS 23.379 non-specific reference (edition rule only)"
+      ],
+      "printed_pages": [
+        11
+      ],
+      "usage": "dependency"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.6.4.1 Steps 3 and 5 (LMR-origin alert authorization and downstream selected/dedicated group ID)"
+      ],
+      "printed_pages": [
+        140
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.6.4.2 Steps 3 and 7 (MC-origin alert authorization and downstream selected/dedicated group ID)"
+      ],
+      "printed_pages": [
+        141
+      ],
+      "usage": "comparison-only"
+    }
+  ],
+  "related": [
+    {
+      "topic": "r19-iwf-emergency-alert-init-lmr-origin",
+      "required": false,
+      "meaning": "实际由 LMR 用户发起互通告警，查 IWF→server、Step 3 的对应用户/组的权限与 Step 5 对成员的消息。"
+    },
+    {
+      "topic": "r19-iwf-emergency-alert-init-mc-origin",
+      "required": false,
+      "meaning": "实际是 MC 用户发互通告警，查 Step 3 的权限及分别向 IWF 和成员发的消息；不代两侧选组。"
+    },
+    {
+      "topic": "r19-iwf-emergency-priority-by-segment",
+      "required": false,
+      "meaning": "问题是组已有实际紧急状态、当前发言或不同承载优先才读 .6/.7，不由默认配置代。"
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  },
+  "limitations": [
+    "不展开 TS 23.379 正文、组或 profile 字段、Stage 3、运行时拒绝/回退、紧急组态和实际承载；不从告警推呼叫建立或媒体。"
+  ]
+}

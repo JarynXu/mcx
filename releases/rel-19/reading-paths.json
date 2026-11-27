@@ -4016,6 +4016,26 @@
           "read": "topics/interworking/emergency-group-state-cancel-mcptt-origin.md"
         }
       ]
+    },
+    {
+      "id": "iwf-default-emergency-group-alert-choice-and-parameters",
+      "question": "紧急事件是用当前所选还是默认组，IWF 能决定在哪组及是否发告警吗？",
+      "start": "topics/interworking/default-emergency-group-selection.md",
+      "boundary": "TS 23.283 V19.5.0 Stage 2 §10.6.2.5。MCPTT 用户 profile 选当前所选组或配置的默认紧急组；默认存在不等于本次用它，二者同为 D 时看到组 ID D 也辨不出选择，没有缺配置自动回退规则。IWF 与相连 LMR 决定在哪组发起及是否另发告警，选中不等于一定发。IWF 代表映射到 MCPTT 的用户的紧急行为须符合 TS 23.379（§2 [7] 非特指、同 Release 最新）；实现须遵守组/私呼紧急参数。要在实际目标 MC service 组发告警，须在 MC service 组管理系统为该组配告警；别组配置、默认身份、映射不代，本组已配也不替所指组的用户告警权限或实际发送/送达。不把组告警配置当组呼/私呼的通用准入。可正确配置 LMR 与 MCPTT 两侧，或由 IWF 运行时执行，不要求叠加，也不能绕过目标组配置。成员 Step 5/7 的下游组 ID 按组配置，不能反认最初选择。",
+      "next_if": [
+        {
+          "condition": "实际由 LMR 用户发互通告警，问 IWF 到 MC service server 的请求、映射用户权限或 Step 5 成员通知。",
+          "read": "topics/interworking/emergency-alert-init-lmr-origin.md"
+        },
+        {
+          "condition": "实际由 MC 用户发互通告警，问 Step 3 权限、对 IWF 分发或 Step 7 成员通知。",
+          "read": "topics/interworking/emergency-alert-init-mc-origin.md"
+        },
+        {
+          "condition": "实际问紧急私呼或互通组呼在哪段应用优先、当前发言或组已有紧急状态，而不是选组/告警。",
+          "read": "topics/interworking/emergency-priority-by-segment.md"
+        }
+      ]
     }
   ]
 }

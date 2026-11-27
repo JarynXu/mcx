@@ -1001,6 +1001,14 @@
 
 入口：[互通紧急呼叫：哪一段有紧急优先？](topics/interworking/emergency-priority-by-segment.md)。
 
+### 互通紧急事件：选哪个组，要不要另发告警？
+
+- **能回答：**按 MCPTT profile 或 IWF/相连 LMR 分选组，区分是否还发告警、目标组配置与实际用户授权。
+- **只到条件或接口：**TS 23.283 V19.5.0 Stage 2 §10.6.2.5。IWF 代表映射到 MCPTT 的用户执行的紧急行为须符合所引 TS 23.379。组上发告警需同一实际目标 MC service 组在组管理系统配置告警，执行可用 LMR 和 MCPTT 两侧正确配置或 IWF 运行时处理。
+- **尚未建立的结论：**默认组配置、下游组 ID、IWF 互通许可或组启用告警均不证最初选择、用户权限、已发送、组态或分段优先。不填回退、实现字段和协议。
+
+入口：[互通紧急事件：选哪个组，要不要另发告警？](topics/interworking/default-emergency-group-selection.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)
