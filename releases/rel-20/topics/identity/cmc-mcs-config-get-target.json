@@ -3,7 +3,7 @@
   "release": 20,
   "state": "clause-checked",
   "common_conditions": [
-    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。主规则是配置管理文档、元素或属性的 HTTP GET，各按实际对象和发送、接收或角色支持匹配条件；对照流程只按各条自身场景，不以收到通知或读库作为所有 GET 的附加前提。"
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。主规则是配置管理文档、元素、属性或命名空间绑定的 HTTP GET，各按实际对象和发送、接收或角色支持匹配条件；对照流程只按各条自身场景，不以收到通知或读库作为所有 GET 的附加前提。"
   ],
   "condition_rule": "Inherit common_conditions and add claim conditions.",
   "source_catalog": "../../sources.json",
@@ -268,7 +268,7 @@
       "id": "get-required-support-not-outcome",
       "clause": "5.1",
       "conditions": [
-        "对照三个角色的合规支持要求，或用实际请求排查配置 GET；按各自证据核对。"
+        "只对照整份文档、元素及属性 GET 的三个角色的合规支持，或用这三种实际请求排查；不含命名空间绑定。各自证据分别核对。"
       ],
       "conclusion": "§5.1 的 CMC 三项 GET 必须支持；另列 CMC 三项 DELETE 可支持。§5.2 的 CMS 三项处理必须支持，§5.3 的 MCS 服务器三项发送程序必须支持；这些不是任意部署已实现证明，不推出任一应用用法的授权。不能据支持、发送或收到请求证明取到内容；要确认取回，应核同一请求的实际返回与内容，不补固定 HTTP 状态码或应用结果。",
       "source_references": [
@@ -304,6 +304,160 @@
           "source_id": "3gpp-ts-24.484-v20.1.0",
           "clauses": [
             "4.4"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "namespace-binding-get-gc-and-cmc-send",
+      "clause": "6.3.12.2.2",
+      "conditions": [
+        "按 §6.3.12 取 XML 文档的命名空间绑定，检查通用 GC 程序或 CMC 采用它的发送程序。"
+      ],
+      "conclusion": "GC 须发送 HTTP GET，指向 RFC 4825 Fetch Namespace Bindings。CMC 须执行 §6.3.12.2.1 的 GC 程序，构造实际 Request-URI 标识该 XML 文档的命名空间绑定，并带相应用法的 auid。GC 是所用程序，不是前置的另一笔请求。本节没有配置根公式，也不据此补选择器。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.12.2.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.12.2.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.12.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "namespace-binding-get-mcs-send",
+      "clause": "6.3.12.2.3",
+      "conditions": [
+        "MCS 服务器取 XML 文档的命名空间绑定，检查该发送程序。"
+      ],
+      "conclusion": "MCS 服务器须执行 §6.3.12.2.1 的 GC 程序，并用实际 Request-URI 标识该 XML 文档的命名空间绑定，带相应用法的 auid；后句主语原写 MCS sserver。这里不是 §6.3.8.2.3/.11.2.3 后句的 identify the XML document，也没有明写 CSC-5。保留各自字面，不推这里必在或必不在 CSC-5，也不推 CMS 已实收或接受。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.12.2.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.12.2.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.12.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.8.2.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.11.2.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.3.2.3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "namespace-binding-get-cms-explicit-cmc-ingress",
+      "clause": "6.3.12.3",
+      "conditions": [
+        "CMS 实收同一笔 CMC HTTP GET；该请求的 Request-URI 标识相应用法的 XML 文档的命名空间绑定。"
+      ],
+      "conclusion": "§6.3.12.3 要求 CMS 支持此请求的 RFC 4825 GET Handling。收端说相应用法，未像属性收端那样另写 auid 或明引第 7 章；不把这一段补成字面相同的规则，也不据此消去发送端 auid 要求。不从未点名 MCS 服务器推断允许或禁止，不判权限、状态码、已取回或读库。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.12.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.12.2.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.12.2.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.11.3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "namespace-binding-get-cmc-may-mcs-and-cms-must",
+      "clause": "5.1",
+      "conditions": [
+        "核取命名空间绑定的程序支持强度；各角色独立核对，不要求先有抓包。"
+      ],
+      "conclusion": "§5.1 的 CMC 支持 §6.3.12.2.2 是可选项，不是整份文档、元素与属性那三项必支持 GET 的延伸；CMC 选用该程序时仍须执行 GC，并构造相应请求。§5.2 的 CMS 接收 §6.3.12.3 必须支持，§5.3 的 MCS 服务器发送 §6.3.12.2.3 也必须支持。不得把一侧的支持要求当作另一侧收到、授权、已返回绑定或用户库读过的证据。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "5.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "5.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "5.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.12.2.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.12.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.12.2.3"
           ]
         }
       ]
