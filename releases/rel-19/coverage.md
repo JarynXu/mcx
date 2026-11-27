@@ -921,6 +921,14 @@
 
 入口：[MCPTT 发起互通 First-to-answer：怎样看应答、重试与媒体建立？](topics/interworking/first-to-answer-mcptt-origin.md)。
 
+### LMR 发起互通 First-to-answer：IWF 何时能按新参数重来？
+
+- **能回答：**LMR 发起互通 first-to-answer，查初始 IWF 请求、被叫接收许可、实际两腿应答和 IWF 重来条件。
+- **只到条件或接口：**TS 23.283 V19.5.0 Stage 2。实际步骤 5 到 IWF 后按返回参数判断：变化且可接受时 IWF 可重从 1；原文分别写不可接受则失败、无变化继续 6，两者重叠时未给优先次序。继续流程不等于媒体已建立。
+- **尚未建立的结论：**保留相邻方向开场/图注、重来消息名和话权主体字面。无变化不确认成功，不从通用取消表推出本次实际清理、SIP 或选中候选。 候选名单不证明逐候选发出，本段未定等待时限或超时分支。
+
+入口：[LMR 发起互通 First-to-answer：IWF 何时能按新参数重来？](topics/interworking/first-to-answer-lmr-origin.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)

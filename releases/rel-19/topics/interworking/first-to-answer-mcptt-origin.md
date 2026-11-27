@@ -4,7 +4,7 @@
 
 这里只读 **Rel‑19 Stage 2，MCPTT 用户发起，经 IWF 到 LMR 用户**。前提是主叫选了 first-to-answer、客户端已注册 MCPTT 服务、server 已向本 MC 系统的功能别名控制服务器订阅激活/去激活更新。就算本次用直接 ID，前提也没有变。查规范不需要抓包；判某次通信须先对上主叫、尝试与消息方向。[§10.15.1，印刷页 176（PDF 第 177 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=177)；[§10.15.3.1 前提与图 10.15.3.1-1，印刷页 178（PDF 第 179 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=179)。
 
-**先分发起方。** 若实际是 LMR 用户发起、第一笔 IWF 请求由 **IWF → MCPTT server**，去核 §10.15.3.2，不是本页 server→IWF 的步骤 3。相邻段的开场和图注写成 MCPTT 发起，但前提 1 写 LMR，图上第 1 箭头与步骤 1 都是 IWF→server。按实际角色和方向分流，不拿开场或图注换掉方向。[§10.15.3.2 开场、前提与图，印刷页 179（PDF 第 180 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=180)；[相邻分支步骤 1，印刷页 180（PDF 第 181 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=181)。
+**先分发起方。** 若实际是 LMR 用户发起、第一笔 IWF 请求由 **IWF → MCPTT server**，去核 [§10.15.3.2 的 LMR 发起过程](first-to-answer-lmr-origin.md)，不是本页 server→IWF 的步骤 3。相邻段的开场和图注写成 MCPTT 发起，但前提 1 写 LMR，图上第 1 箭头与步骤 1 都是 IWF→server。按实际角色和方向分流，不拿开场或图注换掉方向。[§10.15.3.2 开场、前提与图，印刷页 179（PDF 第 180 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=180)；[相邻分支步骤 1，印刷页 180（PDF 第 181 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=181)。
 
 ## 谁发请求，哪些参数能转给 IWF？
 

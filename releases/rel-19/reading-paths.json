@@ -3666,6 +3666,26 @@
         {
           "condition": "对象实际是一般互通自动私呼的响应和媒体，而非 first-to-answer。",
           "read": "topics/interworking/private-automatic.md"
+        },
+        {
+          "condition": "实际由 LMR 用户发起，首笔 IWF→MCPTT server；读 .3.2 的被叫应答和 IWF 参数判断。",
+          "read": "topics/interworking/first-to-answer-lmr-origin.md"
+        }
+      ]
+    },
+    {
+      "id": "iwf-first-to-answer-lmr-origin-parameter-branch",
+      "question": "LMR 发起的 first-to-answer，IWF 收到哪些参数时可从步骤 1 重来，哪些条件只继续媒体步骤？",
+      "start": "topics/interworking/first-to-answer-lmr-origin.md",
+      "boundary": "TS 23.283 V19.5.0 Stage 2 §10.15.3.2：按实际 LMR 主叫与 IWF→server 的步骤 1 分流，开场/图注的 MCPTT 字面不改变前提和箭头。2 核被叫接收权；若有 LMR 主叫别名则另查可用且已激活。3 server→MCPTT 被叫客户端，提供原始媒体或其中一部分；4 被叫 MCPTT client→server 说支持媒体及成败；5 server→IWF 沿用第 4 步媒体。判断参数走向看 IWF 实收同一尝试的步骤 5：不可接受失败；有变化且可接受，IWF 可从 1 按新参数另发；原文另列无变化继续 6，不等于结果成功或媒体已建；若同时明确不可接受，未规定失败与继续 6 的优先次序，不能判必进 6、成功或媒体已建。不能用被叫成功替代 IWF 实收。重来句的 IWF private call 字面不改成另一流程。步骤 6 的话权主体原文为 MCPTT system initiating the call，不从发起方向映射到 IWF 或 LMR；通用取消表不证明这次实际取消。候选 ID 集合不证明逐候选已发邀请；本段未列等待时限或超时分支，不从缺步骤 5 推失败或取消。",
+      "next_if": [
+        {
+          "condition": "实际是 MCPTT 用户经 IWF 发起，步骤 3 server→IWF，后续向 MCPTT 发起方传结果。",
+          "read": "topics/interworking/first-to-answer-mcptt-origin.md"
+        },
+        {
+          "condition": "找原生 MCPTT 的 SIP 邀请、先应答者及未选分支清理，而非本次互通 Stage 2。",
+          "read": "topics/calls/first-to-answer-selection.md"
         }
       ]
     }
