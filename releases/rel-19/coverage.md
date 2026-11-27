@@ -945,6 +945,14 @@
 
 入口：[MCPTT 按条件发起互通 ad hoc 组呼：谁选人，何时发 IWF 请求？](topics/interworking/adhoc-group-criteria-mcptt-origin.md)。
 
+### LMR 按条件发起互通 ad hoc 组呼：谁选人，IWF 收到哪一步？
+
+- **能回答：**LMR 用户通过 IWF 按条件起呼，MCPTT server 授权并定邀请名单；在同次呼叫中区分 3 返回、8 建呼应答、9 通知和 10 媒体/话权资源。
+- **只到条件或接口：**TS 23.283 V19.5.0 Stage 2 §10.17.3.2。IWF 作为 MCPTT client，1/8 的字段仅核 IWF-1；Step 8 Result 与实际 IWF 收件分开。Step 7 被叫响应、Step 9 通知、IWF 收件和 LMR 终端实际状态均需分辨。
+- **尚未建立的结论：**不按画图顺序推 Step 8 等齐/无需等待、9 的触发/载荷、逐人加入或媒体到达。TS 23.379 §10.19.3.1.1 仅回指；不套 MCPTT 发起、显式名单超时、释放或原生 SIP。
+
+入口：[LMR 按条件发起互通 ad hoc 组呼：谁选人，IWF 收到哪一步？](topics/interworking/adhoc-group-criteria-lmr-origin.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)

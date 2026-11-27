@@ -1,6 +1,6 @@
 # MCPTT 按条件发起互通 ad hoc 组呼：谁选人，何时发 IWF 请求？
 
-**主叫给条件，MCPTT server 确定邀请名单。** 选完后，server 就可以向 IWF 发请求，不必等本侧被叫的响应。这里是 TS 23.283 V19.5.0、Rel‑19 Stage 2 §10.17.3.1，限 MCPTT client 1 的用户按条件邀请 MCPTT 和 LMR 用户。如果由 IWF 代表 LMR 用户发首请求，查 §10.17.3.2；如果 MCPTT client 1 已直接给出双方参与者的 MCPTT ID 名单，查 §10.17.3.5。后者的逐 LMR 用户请求和有条件的应答超时，不套进本页。[LMR 按条件发起，印刷页 186–187（PDF 第 187–188 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=187)；[MCPTT 直接给名单，印刷页 189–190（PDF 第 190–191 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=190)。
+**主叫给条件，MCPTT server 确定邀请名单。** 选完后，server 就可以向 IWF 发请求，不必等本侧被叫的响应。这里是 TS 23.283 V19.5.0、Rel‑19 Stage 2 §10.17.3.1，限 MCPTT client 1 的用户按条件邀请 MCPTT 和 LMR 用户。如果由 IWF 代表 LMR 用户发首请求，查 [§10.17.3.2 的 LMR 发起路径](adhoc-group-criteria-lmr-origin.md)；如果 MCPTT client 1 已直接给出双方参与者的 MCPTT ID 名单，查 §10.17.3.5。后者的逐 LMR 用户请求和有条件的应答超时，不套进本页。[LMR 按条件发起，印刷页 186–187（PDF 第 187–188 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=187)；[MCPTT 直接给名单，印刷页 189–190（PDF 第 190–191 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=190)。
 
 ## 先选人，再发 IWF 请求
 
