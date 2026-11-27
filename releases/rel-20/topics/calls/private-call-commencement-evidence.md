@@ -16,6 +16,6 @@
 
 两类私呼的 UE 都须支持手动和自动开始（R-5.6.3-010 / R-6.7.4-009）；支持不说明一次呼叫实际用了哪个模式。§5.6.1 说，自动开始时，如果被叫可用且能接受该来电，就会立即加入并处理主叫音频。这段概述没有取消收件确认的要求。
 
-**先查同一通呼叫的模式和证据，再判所处步骤。** 这些要求不指定 SIP ACK、200 OK、话权许可或终端界面应当怎样对应。若查的是发起端计时在哪个事件停止，读[接入 KPI](mcptt-access-clock.md)；若主叫指定多个候选用户，读[首应答规则](private-call-first-to-answer.md)。
+**先查同一通呼叫的模式和证据，再判所处步骤。** 这些要求不指定 SIP ACK、200 OK、话权许可或终端界面应当怎样对应。若查的是发起端计时在哪个事件停止，读[接入 KPI](mcptt-access-clock.md)；若主叫指定多个候选用户，读[首应答规则](private-call-first-to-answer.md)。 若被叫拒接或忽略，或参与者要结束已建私呼，读[带话权私呼的三个动作](private-call-user-termination.md)。
 
 [3GPP 原文归档](https://www.3gpp.org/ftp/Specs/archive/22_series/22.179/22179-k00.zip) · [来源与版本](../../sources.json) · [结构化记录](private-call-commencement-evidence.json)
