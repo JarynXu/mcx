@@ -4244,6 +4244,22 @@
           "read": "topics/interworking/floor-signals.md#排队取消的三类消息和确认"
         }
       ]
+    },
+    {
+      "id": "iwf-regroup-result-notification-vs-actual-release",
+      "question": "IWF 重组成功、临时组通知和撤组通知的应答分别确认什么？什么时候必带临时组 ID？",
+      "start": "topics/interworking/regroup-boundaries.md#重组的应答成立通知和撤组通知分别证明什么",
+      "boundary": "TS 23.283 V19.5.0 §10.2.1.1–.7，Rel‑19 Stage 2 IWF‑1 GMS↔IWF，两向均列。先认类型：.4 重组请求仅 M 组成组列表；.5 应答 M 组成组列表与接纳／拒绝 Result，临时组 ID 表标 O、但 NOTE 要求成功必带，否则不得带，缺抓包不反推失败。临时组通知 .6、应答 .7 都 M 组成组列表与临时组 ID；临时组 Priority/Security 在 .6 O、.7 M，.7 没 Result，不给默认、回显或实际保护结论。撤组通知 .2 只有 M 被撤临时组 ID，.3 同 ID+Result 均 M，Result 报通知成功或失败，不是 .5 重组接纳、.7 或整通呼叫释放结果。.8 的组信息请求也能只有组 ID，不按字段形状判型。辨认单条／表不需整链；跨条关联才核同次操作、实际组、角色与端点。发出与实收另查，不把报告当某端已启用、存储或删除的证明。",
+      "next_if": [
+        {
+          "condition": "实际是 MCPTT 专用预配置组重组及其状态，而非 §10.2.1 的通用组管理信息流。",
+          "read": "topics/interworking/preconfigured-regroup.md"
+        },
+        {
+          "condition": "实际要问普通互通组呼整通释放，不是临时组撤组通知。",
+          "read": "topics/interworking/group-call-release.md"
+        }
+      ]
     }
   ]
 }

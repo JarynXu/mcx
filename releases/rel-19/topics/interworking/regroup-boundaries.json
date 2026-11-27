@@ -47,6 +47,216 @@
         "Temporary group created by regroup"
       ],
       "conclusion": "The GMS performing the regroup owns the temporary group."
+    },
+    {
+      "id": "iwf-regroup-tables-scope-named-flow-vs-direction-and-matching-receipt",
+      "conditions": [
+        "可直接查 IWF‑1 范围、任一信息流或任一已经辨认的现场消息，无需同时观察对应回复。判实际几条消息是否对应，才核消息类型、组、角色、端点和可配对的上下文。"
+      ],
+      "conclusion": "§10.2.1.1 限 IWF‑1 组管理。§10.2.1.2–.7 的六条信息流均列 GMS→IWF 与反向，按实际类型分为重组申请、临时组通知和撤组通知三组。.2 与 .8 组信息请求都只列单个组 ID，不能凭字段形状把 .8 认成撤组。不同表的 MC service group ID、Result、方向、同组或发送先后仍不代消息类型或配对。",
+      "limitations": [
+        "其他参考点回指 TS 23.280；不把通用重组、MCPTT 预配置组／用户重组、临时 ad hoc 呼叫或整组呼叫释放并成一套表。不补线级编码、唯一事务键或完整过程。发出与对端实收另查。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.1 (IWF-1 scope; other reference points TS 23.280 pointer only)"
+          ],
+          "printed_pages": [
+            23
+          ],
+          "usage": "dependency"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.2–.3, Tables 10.2.1.2-1 and 10.2.1.3-1 (teardown notification vs its result)"
+          ],
+          "printed_pages": [
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.4–.5, Tables 10.2.1.4-1 and 10.2.1.5-1, NOTE (regroup acceptance and temporary ID conditional presence)"
+          ],
+          "printed_pages": [
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.6–.7, Tables 10.2.1.6-1 and 10.2.1.7-1, NOTE (priority and security presence by flow)"
+          ],
+          "printed_pages": [
+            24
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.8 Table 10.2.1.8-1 (single group ID information-request shape only)"
+          ],
+          "printed_pages": [
+            24
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-regroup-tables-formation-response-success-requires-temporary-id-otherwise-absent",
+      "conditions": [
+        "可独立查 .4 请求字段、.5 应答本身或其中表注。检查在某个声明 Result 下这项是否合规时，看完整的本笔 .5 上的 Result 和临时组 ID；不先要求同时见到通知或对向消息。"
+      ],
+      "conclusion": "表 10.2.1.4‑1 只列 M 的 MC service group ID list，是组成组标识的列表。表 10.2.1.5‑1 列 M 的组成组列表和表示重组被接纳或拒绝的 Result；单个 MC service group ID 是临时组，表面标 O，NOTE 规定 Result 表示重组成功必须带，否则不得带。不要把组成组列表或已知临时组配置写进缺失的响应字段。",
+      "limitations": [
+        "表注不是允许成功任意省略。未核实或不完整记录缺该 ID，不能据此确定失败；只见 ID 不代实际 Result 或整笔合规。§10.2.2.2 的 MC 发起示例分别写 IWF 回应（4）和 GMS 创建并保存（5）；不猜分配时点。匹配的接纳应答不证明 GMS 已保存、另发组通知、用户归属或已有媒体；仅见发出也不证明对方实收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.4–.5, Tables 10.2.1.4-1 and 10.2.1.5-1, NOTE (regroup acceptance and temporary ID conditional presence)"
+          ],
+          "printed_pages": [
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.6–.7, Tables 10.2.1.6-1 and 10.2.1.7-1, NOTE (priority and security presence by flow)"
+          ],
+          "printed_pages": [
+            24
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.2.2 Steps 4–5 (different declared response and creation/storage actions only)"
+          ],
+          "printed_pages": [
+            27,
+            28
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-regroup-tables-group-notification-priority-security-mandatory-in-response-only",
+      "conditions": [
+        "可独立问 .6、.7 中的任一字段、通知与应答的差别或实际哪条包含值，不要求先看到另一个方向或一个授权／重组结果。"
+      ],
+      "conclusion": "表 10.2.1.6‑1 与 .7‑1 均列 M 的组成组 ID 列表和临时组 ID。Priority level、Security level 指临时组要求的级别；在通知 .6 中都是 O，在通知应答 .7 中都是 M。.7 不列 Result；不把 .6 可省略的状态带到 .7，也不把 .5 接纳的 Result 加到 .7。Security level 的 .6 表注回指 TS 23.280 的媒体与话权控制保护参数配置。",
+      "limitations": [
+        "不能由是否存在 .7 或其两项级别证明重组接纳、全员归属或保护实际启用。表未写 .7 两字段如何选择、是否逐值回显、缺值补救或默认值；§10.2.2.2 步骤 5 的级别规则按具体过程和条件，不填作 .7 表缺值时的默认值。不解读 TS 23.280 字段体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.6–.7, Tables 10.2.1.6-1 and 10.2.1.7-1, NOTE (priority and security presence by flow)"
+          ],
+          "printed_pages": [
+            24
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.4–.5, Tables 10.2.1.4-1 and 10.2.1.5-1, NOTE (regroup acceptance and temporary ID conditional presence)"
+          ],
+          "printed_pages": [
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.2.2 Steps 4–5 (different declared response and creation/storage actions only)"
+          ],
+          "printed_pages": [
+            27,
+            28
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-regroup-tables-teardown-notification-result-not-new-membership-or-call-stop",
+      "conditions": [
+        "可单查已知的 .2 撤组通知、.3 应答字段及 Result 所述范围，不要求先有组成组清单、对向消息或现场媒体。要把某次 .3 归给实际通知并断言通知方已收到应答，分别核关联和实际收件。"
+      ],
+      "conclusion": "表 10.2.1.2‑1 的 IWF group regroup teardown notification 只有 M 的 MC service group ID，是被撤临时组。表 10.2.1.3‑1 的通知应答列这个身份与 Result，均 M。.3 的 Result 报告撤组通知成功或失败；并不要求先看见另一条才能解读这个字段。只有宣称对应哪次实际通知时才需配对。它不是 .5 对新重组的接纳、.7 的通知应答字段，也不是整通呼叫释放或逐人取消归属的结果。",
+      "limitations": [
+        "不从 D 或通知应答成功推组成组已经被删、谁实际离开、媒体停止或其他端已收到。表没有组成组列表、逐人状态、超时或转发规则；不把它解释成要求某用户退出的请求。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.2–.3, Tables 10.2.1.2-1 and 10.2.1.3-1 (teardown notification vs its result)"
+          ],
+          "printed_pages": [
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.4–.5, Tables 10.2.1.4-1 and 10.2.1.5-1, NOTE (regroup acceptance and temporary ID conditional presence)"
+          ],
+          "printed_pages": [
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.6–.7, Tables 10.2.1.6-1 and 10.2.1.7-1, NOTE (priority and security presence by flow)"
+          ],
+          "printed_pages": [
+            24
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
