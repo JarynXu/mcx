@@ -2190,6 +2190,215 @@
         "independent_source_review": false,
         "independent_usage_acceptance": false
       }
+    },
+    {
+      "id": "travelled-distance-uses-optional-object-with-integer-metres-and-id",
+      "conditions": [
+        "查独立距离触发的配置、字段和编码，无需实测或报告。判某次用哪份配置，查同一 LMC 对应 MC UE 在事件时的状态及当时实际生效的配置。"
+      ],
+      "conclusion": "紧急用 emergencyTriggeringCriteria，非紧急用 triggeringCriteria，不以事后 reportType 倒推。各 TriggeringCriteria 可选名为 travelledDistance 的对象。米数是内层 travelledDistance（例如 triggeringCriteria.travelledDistance.travelledDistance），同层 triggerId 是本项标识。表 .32-1 两叶均 M、1，距离为整数米，ID 唯一并在位置报告中返回；A.2 声明 integer、TriggerId（字符串），该对象未列 required。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.3–.4 Tables 7.1.6.2.3-1 and 7.1.6.2.4-1"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.32 Table 7.1.6.2.32-1"
+          ],
+          "printed_pages": [
+            50
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LocationConfiguration, TriggeringCriteria, TravelledDistance and TriggerId"
+          ],
+          "printed_pages": [
+            78,
+            84,
+            85
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1 precedence limited to encoding of API information elements and methods"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不要把外层当米数标量，或把里程键放进 adaptiveTrigger。A.2 的整数没有声明 minimum、maximum、default 或 nullable；未列约束不证明 0、负数、空值或缺项一定是有效配置，也不推断定会接收、拒绝或某错误码。A.1 优先限 API 信息元素与方法编码，不覆盖未写进模型的程序条件。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "travelled-distance-does-not-inherit-adaptive-reference-or-comparison",
+      "conditions": [
+        "独立问 travelledDistance 怎样计算、何时算达到，或与同一 TriggeringCriteria 的 adaptiveTrigger 比较，不需要实际收到报告。判断某次是否触发，应先确认该次有效配置选的是哪一项。"
+      ],
+      "conclusion": "表 .32-1 和 A.2 只为独立 travelledDistance 定义所需的整数米值，不定义距离基准、累计路程或两点间距离、等号或重新计算／清零的规则。自适应项才定义从上次发报告的位置算起，先超过 minDistance 后再复查至少达到门槛；不把这套条件或缺省值借给独立项。比如配置 100 米、终端往返走了 120 米但回到原处，仅凭独立项标准文字不能定该次触发与否。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.3–.4 Tables 7.1.6.2.3-1 and 7.1.6.2.4-1"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.32 Table 7.1.6.2.32-1"
+          ],
+          "printed_pages": [
+            50
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LocationConfiguration, TriggeringCriteria, TravelledDistance and TriggerId"
+          ],
+          "printed_pages": [
+            78,
+            84,
+            85
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.34 Table 7.1.6.2.34-1; Annex A.2 AdaptiveTrigger"
+          ],
+          "printed_pages": [
+            51,
+            52,
+            53,
+            78,
+            79
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "A.2 TravelledDistance 说明末尾的残句 “shall be sent.” 不提供基准、判断或立即发送规则。并列字段不定义同时命中时的优先级、合并或上报次数。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "travelled-distance-interval-and-report-evidence-are-separate",
+      "conditions": [
+        "可单查配置中的最短间隔、定期周期与运行计时器的区别，也可单查通用事件发布检查或报告如何表示距离和触发 ID，都不要求已发生事件或已有报告。给某笔实际报告归因才需核报告中的 ID 与同一 LMC 当时生效的距离触发配置相配；查实际发送、接受则分别核该笔 POST 和匹配 LMS 201。"
+      ],
+      "conclusion": "RequestedLocationInfo.minimumIntervalLength 是位置报告之间的最短间隔（整数秒），不是 travelledDistance 对象内的米值，也不是 periodicReport 定期触发配置的报告周期。给定最短间隔不要求每隔该时间必报，也不证明计时器正在运行。事件触发时若 minimumReportInterval 在运行，LMC 等到期、且当时任一上报触发仍为真才按该路径发送；不必是最初那项。正文要求 MCUELocation 列出已触发项的 ID；表 .49-1 将数组列 O、1..N，A.2 定义根层 MCUELocation.triggerId 为字符串数组。与生效配置 ID 相配只能确认报告列了哪项；MCUELocation、LocationInfo 未定义专门回传独立项米数的字段。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.32 Table 7.1.6.2.32-1"
+          ],
+          "printed_pages": [
+            50
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LocationConfiguration, TriggeringCriteria, TravelledDistance and TriggerId"
+          ],
+          "printed_pages": [
+            78,
+            84,
+            85
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.1–.2 LocationReportPublish trigger waiting and report properties"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.33 Table 7.1.6.2.33-1; Annex A.2 RequestedLocationInfo.minimumIntervalLength"
+          ],
+          "printed_pages": [
+            50,
+            85
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.49–.50 Tables 7.1.6.2.49-1 and 7.1.6.2.50-1; Annex A.2 MCUELocation and LocationInfo"
+          ],
+          "printed_pages": [
+            56,
+            57,
+            86,
+            87
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.23 Table 7.1.6.2.23-1; Annex A.2 PeriodicReport"
+          ],
+          "printed_pages": [
+            48,
+            82
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "不从配置、单个 ID、样本或截断数据推已发生事件、实测了多少米、只有一个触发、已发送或被接受。没有给出本项到计时器到期时如何保持为真、计时器原本未运行的发送规则或历史取样算法。LMC 实收 LMS 的 LocationReportRequest 是独立的发布分支，不由这项门槛决定。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
@@ -2771,6 +2980,64 @@
         87
       ],
       "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.32 Table 7.1.6.2.32-1"
+      ],
+      "printed_pages": [
+        50
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 LocationConfiguration, TriggeringCriteria, TravelledDistance and TriggerId"
+      ],
+      "printed_pages": [
+        78,
+        84,
+        85
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.34 Table 7.1.6.2.34-1; Annex A.2 AdaptiveTrigger"
+      ],
+      "printed_pages": [
+        51,
+        52,
+        53,
+        78,
+        79
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.33 Table 7.1.6.2.33-1; Annex A.2 RequestedLocationInfo.minimumIntervalLength"
+      ],
+      "printed_pages": [
+        50,
+        85
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.23 Table 7.1.6.2.23-1; Annex A.2 PeriodicReport"
+      ],
+      "printed_pages": [
+        48,
+        82
+      ],
+      "usage": "comparison-only"
     }
   ],
   "related": [

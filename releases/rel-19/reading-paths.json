@@ -3848,6 +3848,26 @@
           "read": "topics/location/lms-location-report-request.md"
         }
       ]
+    },
+    {
+      "id": "lms-travelled-distance-trigger-vs-adaptive-and-publish",
+      "question": "LMC 的独立 travelledDistance 怎么填、怎样区别 adaptiveTrigger，又能不能从报告确认走了多少米？",
+      "start": "topics/location/lms-location-report-publish.md",
+      "boundary": "TS 24.283 V19.3.0 Stage 3。按同一 LMC 当时生效配置和实际 MC UE 紧急或非紧急状态，查 emergencyTriggeringCriteria 或 triggeringCriteria；不能以报告发送时的 reportType 倒推。可选 travelledDistance 是对象，本项米值是 travelledDistance.travelledDistance（integer 米），对象的 triggerId 是独立标识。两叶表列 M、1，A.2 未列 required 或数值界限，不推接收策略。§7.1.6.2.32 不定取距基准、累计或净距、等号或清零，也不借 adaptiveTrigger 的上次发报告位置及两次比较。minimumIntervalLength 是位置报告之间的最短间隔（整数秒），不是 periodicReport 的报告周期；配置这个数不要求定期发送，也不证明计时器正在运行。若事件触发时 minimumReportInterval 正在运行，等到期且任一触发仍为真。报告的 MCUELocation.triggerId 属根层数组，只供配置匹配归因；没有专门回传该项米数的字段。实际发送看 LMC 发布 POST，接受看匹配 LMS 201。",
+      "next_if": [
+        {
+          "condition": "问的是 adaptiveTrigger 的 minDistance、首次越界或延迟复查，不是独立 travelledDistance。",
+          "read": "topics/location/lms-location-report-publish.md#走过距离门槛就会发位置报告吗"
+        },
+        {
+          "condition": "实际是 LMS 主动索要报告或报告历史，不是这项已配置的事件触发。",
+          "read": "topics/location/lms-location-report-request.md"
+        },
+        {
+          "condition": "需要确认这项配置是否实际到达目标 LMC、按 FULL／UPDATE 生效，而非仅见 LMS 发出。",
+          "read": "topics/location/lms-registration-configuration.md"
+        }
+      ]
     }
   ]
 }
