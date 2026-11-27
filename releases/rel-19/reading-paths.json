@@ -3636,6 +3636,22 @@
           "read": "topics/location/lms-one-time-location-request.md"
         }
       ]
+    },
+    {
+      "id": "lms-report-broadcast-area-snapshot-and-change",
+      "question": "MBMS 服务区、MBSFN 区和 5G MBSFSA 的报告字段怎么认？只看一个区域值能判断进出或收到媒体吗？",
+      "start": "topics/location/lms-location-report-publish.md",
+      "boundary": "查 TS 24.283 V19.3.0 的 LMC→LMS 位置发布。locationData.mbmsSaiId、locationData.mbsfnArea 和 locationData.nr5GMbsfsaArea 是报告中的三种区域数据，不是邻区、媒体收件或实际进出。mbmsSaiId 在印刷表为 string，A.2 为整数 0..65535；不作兼容推断。LMS 索要时，requestedLocationInfo.mbmsSaiId、requestedLocationInfo.mbsfnArea 和 requestedLocationInfo.nr5GmbsfsaArea 按键出现选择内容，是可空布尔，不是报告值。最后一项请求小 m、报告大 M。命中本类规则须核同一 LMC 当时生效的配置和实际区域变化，MC UE 变化时紧急查 emergencyTriggeringCriteria、非紧急查 triggeringCriteria，不用后报 reportType 倒推。任意变化不查名单，指定进入查新进区，指定退出查原退出区。5G 指定列表内 A.2 的 mbsfnAreaIdentity 仍是 MbsFsaId，不是 MBSFN 规则。触发、实际 POST、匹配 201 各查。 若用 adaptiveTrigger 的 RRC_INACTIVE 变体，另核同一 UE 同时处于 RRC_INACTIVE 且实际接收 MBS 流量；区域号不替收流证据。两项按实证满足，也不证明变体已配置、达到门槛或已经上报。",
+      "next_if": [
+        {
+          "condition": "实际要查 LMS 向目标索要报告的请求和对应收件、正文；不要拿选择项当成区域结果。",
+          "read": "topics/location/lms-location-report-request.md"
+        },
+        {
+          "condition": "实际要核 adaptiveTrigger 的 RRC_INACTIVE 变体及时间或距离参数。",
+          "read": "topics/location/lms-location-report-publish.md#走过距离门槛就会发位置报告吗"
+        }
+      ]
     }
   ]
 }

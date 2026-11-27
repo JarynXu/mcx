@@ -1646,6 +1646,349 @@
         "independent_source_review": false,
         "independent_usage_acceptance": false
       }
+    },
+    {
+      "id": "broadcast-area-report-paths-and-sample",
+      "conditions": [
+        "同一 LMC 的 LocationReportPublish POST，已对上这笔实际报告及其位置测量，或查这类报告的规范字段；不把配置或请求当报告。"
+      ],
+      "conclusion": "在 MCUELocation 的 locationData 中分别读 mbmsSaiId（MBMS 服务区）、mbsfnArea（MBSFN 区）、nr5GMbsfsaArea（5G MBS 频率选择区）。这是报告里的区域位置数据，不是上一次所在区、检测到的邻区、服务小区 ID 或媒体接收记录；测量时刻读这份报告的 locTimestamp。三者都是 LocationInfo 内可选的不同字段，不能因字面 ID 相同互填。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.1–.2"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.49–.50 Tables 7.1.6.2.49-1 and 7.1.6.2.50-1"
+          ],
+          "printed_pages": [
+            56,
+            57
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 MCUELocation and LocationInfo"
+          ],
+          "printed_pages": [
+            86,
+            87
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.34 Table 7.1.6.2.34-1"
+          ],
+          "printed_pages": [
+            52,
+            53
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 TriggeringCriteria and AdaptiveTrigger"
+          ],
+          "printed_pages": [
+            79
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "只看到根层同名值、配置中同名值、一个邻区或一个时刻的区域信息，不据此认某种区域变化触发或方向。只报其中一项不是证明已配置进出条件、终端实际收到 MBMS/MBS 媒体或达到测量质量。",
+        "若用 adaptiveTrigger 的 RRC_INACTIVE 变体，另核同一 UE 同时处于 RRC_INACTIVE 且实际接收 MBS 流量；区域号不替收流证据。两项按实证满足，也不证明变体已配置、达到门槛或已经上报。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "broadcast-area-report-sai-encoding-and-request-selector",
+      "conditions": [
+        "只比较本版发布报告的 LocationInfo 编码、所引类型及 LMS 索要报告的选择键；三个区域对象各按本身所在消息分支读。"
+      ],
+      "conclusion": "表 7.1.6.2.50-1 的 mbmsSaiId 是 string；A.2 的 LocationInfo.mbmsSaiId 是 integer、最小 0、最大 65535。报告的 mbsfnArea 与 nr5GMbsfsaArea 在 A.2 分别引用 TS 29.571 的 MbsfnArea 与 MbsFsaId，不借用配置条目的 MbsfnAreaId.mbsfnArea 的 0..255 来解释整个报告字段。A.2 的请求中，requestedLocationInfo.mbmsSaiId、requestedLocationInfo.mbsfnArea、requestedLocationInfo.nr5GmbsfsaArea 都是可空布尔选择项，说明按键出现；第三个选择键小 m，而报告 locationData.nr5GMbsfsaArea 大 M。选择项不是区域标识，不证明所要数据已返回。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.1–.2"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.1 Table 7.1.6.1-2 MbsfnArea and MbsFsaId"
+          ],
+          "printed_pages": [
+            42
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.49–.50 Tables 7.1.6.2.49-1 and 7.1.6.2.50-1"
+          ],
+          "printed_pages": [
+            56,
+            57
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 MCUELocation and LocationInfo"
+          ],
+          "printed_pages": [
+            86,
+            87
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.7.2"
+          ],
+          "printed_pages": [
+            21,
+            22
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.33 Table 7.1.6.2.33-1"
+          ],
+          "printed_pages": [
+            50
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 RequestedLocationInfo MBMS and MBS area selectors"
+          ],
+          "printed_pages": [
+            85
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "A.1 附录优先限 API 信息元素和方法的编码；业务程序仍适用。不把数字字符串转作整数合规、不给字段大小写或异名设别名，不推断读到另一写法时实现接纳、拒绝或规定错误。不展开所引 CommonData 的内部结构、长度或编码。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "broadcast-area-trigger-actual-direction-and-effective-state",
+      "conditions": [
+        "判某次入区、出区或任意变化是否命中；须核同一 LMC 在变化时生效的配置、MC UE 在该时刻所处状态，以及发生了哪种实际区域变化。"
+      ],
+      "conclusion": "紧急时查 emergencyTriggeringCriteria，非紧急时查 triggeringCriteria。mbmsSaChange、mbsfnAreaChange、nr5GMbsfsaAreaChange 各定义任意变化、指定进入与指定退出。启用本类任意变化项时，本类实际改变即符合此触发，无需指定列表；指定进入查新进入区，指定退出查原退出区，按本类各自条目匹配。若只配进入 MBMS 服务区 B，则 A→B 会命中，B→A 不命中该进入项；报告只列 B 或同一小区还不足以判断。后报的 reportType 指发送时，不代替变化当时的状态。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.3–.4 Tables 7.1.6.2.3-1 and 7.1.6.2.4-1"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.11–.22 Tables 7.1.6.2.11-1 through 7.1.6.2.22-1"
+          ],
+          "printed_pages": [
+            46,
+            47,
+            48
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 TriggeringCriteria and MBSFN, MBMS SA and NR 5G MBSFSA change schemas"
+          ],
+          "printed_pages": [
+            78,
+            80,
+            81,
+            82
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.1–.2"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.49–.50 Tables 7.1.6.2.49-1 and 7.1.6.2.50-1"
+          ],
+          "printed_pages": [
+            56,
+            57
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "没有此规则、方向不对或区域类型不对，只能排除这条触发，不否定其他规则。未指定同时变化时的触发优先级、是否合并或无线侧如何判切换；不由报告推接收 MBS/MBMS 媒体。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "broadcast-area-trigger-entry-encoding-and-publish-evidence",
+      "conditions": [
+        "核某类已配置的广播区域触发对象、它的 triggerId 与报告发出、LMS 实际应答的证据；不把触发配置当 LocationInfo。"
+      ],
+      "conclusion": "特定区列表项分别是 mbmsSaIdentities[].mbmsSaIdentity（整数 0..65535）、mbsfnAreas[].mbsfnArea（整数 0..255）和 nr5GMbsFsaIdentities[] 的 MbsFsaId 字段；第三项印刷表 .22-1 写 mbsfsaAreaIdentity，A.2 写 mbsfnAreaIdentity，虽名似 MBSFN，仍是 5G 分支。任意 MBSFN 变化的属性在表和 A.2 都写 anyMbfsnAreaChange。印刷任意分支和指定列表项均要求唯一 triggerId；列表写 M、1..N，A.2 相应对象未列 required，数组未列 minItems。把报告里的 triggerId 与当时适用的配置对照可作归因，不能代替对实际区域变化的核实。事件分支若计时器在运行，等 minimumReportInterval 到期且至少一个上报触发仍为真才发；是否已发、LMS 是否已接受分别看实际 POST 和匹配的 201。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.11–.22 Tables 7.1.6.2.11-1 through 7.1.6.2.22-1"
+          ],
+          "printed_pages": [
+            46,
+            47,
+            48
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 TriggeringCriteria and MBSFN, MBMS SA and NR 5G MBSFSA change schemas"
+          ],
+          "printed_pages": [
+            78,
+            80,
+            81,
+            82
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.5.2"
+          ],
+          "printed_pages": [
+            20
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.1–.2"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.49–.50 Tables 7.1.6.2.49-1 and 7.1.6.2.50-1"
+          ],
+          "printed_pages": [
+            56,
+            57
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 MCUELocation and LocationInfo"
+          ],
+          "printed_pages": [
+            86,
+            87
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不以缺 required/minItems 否定印刷业务条件，也不认空列表为命中。不推来源拼法的兼容性，不从 ID、计时器、另一次索要报告或配置收件推出实际发布、LMS 接受、下游收件或媒体接收。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
@@ -2049,6 +2392,104 @@
         88
       ],
       "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.49–.50 Tables 7.1.6.2.49-1 and 7.1.6.2.50-1"
+      ],
+      "printed_pages": [
+        56,
+        57
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.1 Table 7.1.6.1-2 MbsfnArea and MbsFsaId"
+      ],
+      "printed_pages": [
+        42
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.2.2.7.2"
+      ],
+      "printed_pages": [
+        21,
+        22
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.33 Table 7.1.6.2.33-1"
+      ],
+      "printed_pages": [
+        50
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 RequestedLocationInfo MBMS and MBS area selectors"
+      ],
+      "printed_pages": [
+        85
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.11–.22 Tables 7.1.6.2.11-1 through 7.1.6.2.22-1"
+      ],
+      "printed_pages": [
+        46,
+        47,
+        48
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 TriggeringCriteria and MBSFN, MBMS SA and NR 5G MBSFSA change schemas"
+      ],
+      "printed_pages": [
+        78,
+        80,
+        81,
+        82
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.34 Table 7.1.6.2.34-1"
+      ],
+      "printed_pages": [
+        52,
+        53
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 TriggeringCriteria and AdaptiveTrigger"
+      ],
+      "printed_pages": [
+        79
+      ],
+      "usage": "comparison-only"
     }
   ],
   "related": [

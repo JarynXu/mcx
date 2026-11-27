@@ -75,6 +75,28 @@
 
 要问**报告把这次上报归给哪条规则**，看报告的 `triggerId` 与这台 LMC 当时的生效配置。方向值本身不证明是这条规则，更不证明只有这一个原因；要核实无线侧实际切换，另看同一终端切换前后。`AnyRatTypeChange` 的印刷表要求唯一 ID 并在报告中返回；A.2 声明这个属性但没列 `required`。发布正文按已触发的规则列 ID，报告表把 ID 数组标为可选。A.1 的附录优先限编码。命中触发时，若最短上报间隔计时器在运行，要等到期，而且届时至少一项上报触发仍为真才按这条路径发。要确认**已经发出**，看 LMC 的实际发布 POST；要确认 LMS 接受，再看匹配的 201。[事件与发布程序，印刷页 22–23](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=23)；[A.1，印刷页 73](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=74)；[A.2 触发对象，印刷页 78、83](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=84)及[报告对象，印刷页 86](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=87)。
 
+### 报告里写了广播区域，能判定终端进了哪个区吗？
+
+**单份报告只说明它报了哪个区。** 看同一 LMC 的这份 `MCUELocation`，时刻用 `locTimestamp`。这三种区域不是服务小区 `ecgi`／`ncgi`，也不是检测到的邻区。区域标识不证明终端进入或退出，更不证明它收到了该区的媒体。
+
+| 位置报告的字段 | 读到什么 | 配置里查哪类变化 |
+| --- | --- | --- |
+| `locationData.mbmsSaiId` | MBMS 服务区。印刷表 .50-1 写 `string`；A.2 写整数，范围 0–65535。 | `mbmsSaChange` |
+| `locationData.mbsfnArea` | MBSFN 区，A.2 引用 TS 29.571 的 `MbsfnArea`。不能拿配置条目里的整数 0–255 判断报告的 `MbsfnArea` 结构。 | `mbsfnAreaChange` |
+| `locationData.nr5GMbsfsaArea` | 5G MBS 频率选择区，A.2 引用 TS 29.571 的 `MbsFsaId`。 | `nr5GMbsfsaAreaChange` |
+
+例如，A.2 的报告 `mbmsSaiId: 42` 和 `mbmsSaiId: "42"` 不是同一种编码。保留表与附录的写法，不规定转换、兼收或错误码。A.1 的附录优先限 API 编码，没有抹掉正文里的程序条件。[生成报告，印刷页 22–23（PDF 第 23–24 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=23)；[复用类型，印刷页 42（PDF 第 43 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=43)；[报告数据表 .49-1、.50-1，印刷页 56–57（PDF 第 57–58 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=57)；[A.1 的编码优先，印刷页 73（PDF 第 74 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=74)；[A.2 的报告模型，印刷页 86–87（PDF 第 87–88 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=87)。
+
+LMS 向目标索要报告时另有 `requestedLocationInfo`。其中 `mbmsSaiId`、`mbsfnArea`、`nr5GmbsfsaArea` 是 A.2 的可空布尔选择项，按键出现，不是区域值。注意请求第三个键是小写 `m`，报告的 `nr5GMbsfsaArea` 是大写 `M`。不能把请求值抄入报告；见[索要报告与回调](lms-location-report-request.md)。[选择项表 .33-1，印刷页 50（PDF 第 51 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=51)；[A.2 选择项，印刷页 85（PDF 第 86 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=86)。
+
+**要判断哪条进出规则命中，看实际变化和变化时生效的配置。** 同一 LMC 对应的 MC UE 当时在紧急状态，查 `emergencyTriggeringCriteria`；非紧急则查 `triggeringCriteria`。三类变化各有任意、指定进入、指定退出：任意变化项是配置对象，不是请求里的布尔选择；启用时查本类是否实际变化。指定进入看新进哪一区，指定退出看从哪一区离开。比如只配「进入 MBMS 服务区 B」，A→B 命中，而 B→A 不命中该项。只见 B 的样本不知道先前在哪；稍后发报告时的 `reportType` 也不能倒推变化时处于哪种状态。[状态配置，印刷页 43–44（PDF 第 44–45 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=44)；[触发模型 .11–.22，印刷页 46–48（PDF 第 47–49 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=47)。
+
+A.2 指定列表各自的标识为 `mbmsSaIdentities[].mbmsSaIdentity`、`mbsfnAreas[].mbsfnArea` 和 `nr5GMbsFsaIdentities[].mbsfnAreaIdentity`。最后一个在印刷表 .22-1 写 `mbsfsaAreaIdentity`，查的是 5G 的 `MbsFsaId`，不因 A.2 的拼法变成 MBSFN 区。任意 MBSFN 变化的属性写 `anyMbfsnAreaChange`，保留原字面。任意分支和指定列表条目的 `triggerId` 在印刷表里都是必带且唯一；列表也要求至少有一项。A.2 不为这些对象列 `required`，不为这些列表列 `minItems`。这不把空列表或缺 ID 当成满足程序条件。[A.2 触发模型，印刷页 78、80–82（PDF 第 79、81–83 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=81)。
+
+报告的 `triggerId` 可以同生效规则对照，不能替代见到实际变化。若 `minimumReportInterval` 正在运行，等到期且仍有任一上报触发为真，才按事件分支发。是否已发看实际发布 POST；是否已交 LMS 看这一笔的匹配 201。报告到达不等于终端收到广播媒体。[事件与发布，印刷页 22–23（PDF 第 23–24 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=23)。
+
+如果是在选 [自适应触发的 RRC_INACTIVE 变体](#走过距离门槛就会发位置报告吗)，同一 UE 必须同时处于 `RRC_INACTIVE` 并实际接收 MBS 流量。区域标识不能替代收流证据。两项都能证实，也只说明满足这里的状态和流量前件；还是要查适用的配置和门槛，不能说报告已发。[表 7.1.6.2.34-1，印刷页 52–53（PDF 第 53–54 页）](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=53)。
+
 ## 读这一笔发布的 201 或 401
 
 | 实际记录 | 能判断什么 |
