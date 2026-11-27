@@ -1105,6 +1105,18 @@
       "question": "MCData 业务配置缺默认或最长文件可用时间，CMS 都要拒绝吗？能照搬到 MCVideo？",
       "start": "topics/identity/mcvideo-mcdata-service-config-validation.md",
       "boundary": "§10.4.2.6：缺 default-file-availability，CMS 须返回 HTTP 409 含 constraint-failure，若带 phrase 建议 default file availability not provided；缺 max-file-availability，不施加文件可用时长上限。§10.4.2.3/.7 把两字段放在在网 file-availability 下；§10.4.2.1 的 tx-and-rx-control 写法不是第二条合规路径，不把字段放入离网，也不推永久留存。只看节点片段不证整档缺项；§9.4.2.6 未列这两条 MCData 文件规则。"
+    },
+    {
+      "id": "mcvideo-mcdata-service-config-request-auid-vs-xui",
+      "question": "业务配置的节点请求用了另一业务 AUID，或 XUI 和文档 URI 不同，CMS 各查哪两处？",
+      "start": "topics/identity/mcvideo-mcdata-service-config-validation.md",
+      "boundary": "§9.4.2.6、§10.4.2.6 都查 Request-URI 中的文档 URI 或节点 URI。AUID 与已确认业务在 §.2 的指定值比，不匹配，若带 phrase 建议 invalid application id used。XUI 与该业务配置文档 URI 的 XUI 值比，不匹配，若带 phrase 建议 invalid XUI。两条都要求 CMS 返回 HTTP 409 含 XCAP constraint-failure。不能从 global 示例猜实际 XUI，也不用正文标识或 SIP 身份代替目标 URI 的值；只看一个响应不判原因、先后或授权。"
+    },
+    {
+      "id": "mcvideo-mcdata-service-config-domain-syntax-vs-unknown",
+      "question": "业务配置报域名错误：该查 Request-URI 主机名还是文档 domain？语法正确也会判未知吗？",
+      "start": "topics/identity/mcvideo-mcdata-service-config-validation.md",
+      "boundary": "§9.4.2.6、§10.4.2.6 查正文 service-configuration-params 的 domain 组织域。未包含语法正确的域名，若带 phrase 建议 syntactically incorrect domain name；包含未知域名，若带 phrase 建议 unknown domain name。两条都要求 CMS 返回 HTTP 409 含 XCAP constraint-failure。§.3 声明必填 xs:anyURI，语法正确不等于已知；不凭 URI 主机名、DNS 或缺整个属性认定任一诊断，不定顺序。"
     }
   ]
 }

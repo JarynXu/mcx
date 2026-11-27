@@ -1,8 +1,30 @@
-# MCVideo、MCData 业务配置：缺哪一项会报 409？
+# MCVideo、MCData 业务配置：哪些校验会报 409？
 
-查完整的业务配置文档。MCVideo 和 MCData 都要求有参数块，块内至少有一类业务范围配置。MCData 还规定：缺文件的默认可用时间会报错，缺最长可用时间不会设置这个上限。
+先分清报错对象：XCAP 请求目标里的 AUID、XUI，还是业务配置文档里的组织域名、参数块或 MCData 文件可用时间。只看到 HTTP 409，不能分辨触发了哪项。
 
-依据：3GPP TS 24.484 V20.1.0（Release 20，Stage 3），MCVideo §9.4.2.6、MCData §10.4.2.6；Schema 见两节各自的 §.3，MCData 文件可用时间的语义见 §10.4.2.7 在网项 5、6。
+依据：3GPP TS 24.484 V20.1.0（Release 20，Stage 3），MCVideo §9.4.2.6、MCData §10.4.2.6。AUID 见各自 §.2，Schema 见 §.3，组织域见 §.7；MCData 文件可用时间见 §10.4.2.7 在网项 5、6。
+
+## 请求 URI 的应用用法和 XUI，比的是两个条件
+
+先确认正在查 MCVideo 还是 MCData 业务配置，不凭可能填错的 AUID 来选业务。两节都检查 `Request-URI` 中的文档 URI 或节点 URI：
+
+| 检查项 | 何时命中 | 带 `phrase` 时建议写 |
+| --- | --- | --- |
+| AUID（应用用法标识） | URI 中的 AUID 不等于该业务 §.2 的值。MCVideo 是 `org.3gpp.mcvideo.service-config`；MCData 是 `org.3gpp.mcdata.service-config` | `invalid application id used` |
+| XUI | URI 中的 XUI 值与这份业务配置文档 URI 的 XUI 值不匹配 | `invalid XUI` |
+
+命中其中一条，配置管理服务器（CMS）须返回 HTTP 409（Conflict），含 XCAP `<constraint-failure>`。`phrase` 可以不带。XUI 这一条比较的是两处 URI 的对应值，不是整条 URI，也不是把请求里的 XUI 和 XML 正文、SIP 身份或 AUID 比较。§9.4.2.9、§10.4.2.9 的示例把业务配置文档放在 `global` 下；不能从是否有组织子目录、文件名或该示例推一个 XUI 值，也不按这几句裁定 URI 没有可确认 XUI 时应怎样比较。正确的 AUID 或 XUI 不代替另一项，也不等于获准。
+
+## 组织域名：语法错误和未知是两项检查
+
+查文档中 `<service-configuration-params>` 的 `domain` 属性。两处 §.7 说它存放任务关键组织的域名；不是从 `Request-URI` 的主机名取值，也不从 `global` 下的目录名补值。两份 Schema 都把这个属性声明为必填的 `xs:anyURI`。通过该类型检查不能代替 §.6 的域名检查。
+
+| 已核到正文的 `domain` | CMS 必须返回 | 带 `phrase` 时建议写 |
+| --- | --- | --- |
+| 未包含语法正确的域名 | HTTP 409（Conflict），含 XCAP `<constraint-failure>` | `syntactically incorrect domain name` |
+| 包含未知域名 | HTTP 409（Conflict），含 XCAP `<constraint-failure>` | `unknown domain name` |
+
+语法正确的域名仍可能是未知的。两句未规定验证算法、如何判断域名已知、去哪里查或先查哪项；看见 DNS 失败不足以确认正文域名属于这条的未知情形。缺整个 `domain` 属性与看到属性值不合要求是不同证据，参照 Schema 的必填声明，不能先给缺属性指定上表某个 `phrase`。多项约束可同时不符，不能凭一个响应反推出唯一原因或其他检查已经通过。
 
 ## 少了参数块，还是配错了块的组合？
 
@@ -17,7 +39,7 @@
 
 文档还须符合各自的 XML Schema。§9.4.2.3 和 §10.4.2.3 给参数块声明 `minOccurs="0"`，三个业务范围元素也声明 `minOccurs="0" maxOccurs="unbounded"`。不能只看这些声明就略过 §.6 对缺项和组合的检查；符合七种之一也不等于 Schema、其他业务约束或本次请求已经通过。
 
-错误码和错误元素是要求，`phrase` 不必带；表中的字符串是在带它时的建议。空参数块也不符合七种组合，重复元素另有同节的拒绝规则，条款未在这些句子里规定重叠时先查哪项、报哪句建议。另有 URI 标识等失败也可返回同一 409 和错误元素。只有 409、截取的 XML 或一个局部节点请求，不能据此认定整份文档到底少了什么。
+错误码和错误元素是要求，`phrase` 不必带；表中的字符串是在带它时的建议。空参数块也不符合七种组合，重复元素另有同节的拒绝规则，条款未在这些句子里规定重叠时先查哪项、报哪句建议。上面的 URI 标识和组织域名检查也会用同样的状态码与错误元素。只有 409、截取的 XML 或一个局部节点请求，不能据此认定整份文档到底少了什么。
 
 ## MCData：默认可用时间和最长可用时间分开看
 

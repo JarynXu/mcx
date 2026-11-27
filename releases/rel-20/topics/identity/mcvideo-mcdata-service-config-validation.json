@@ -3,7 +3,7 @@
   "release": 20,
   "state": "clause-checked",
   "common_conditions": [
-    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。这里查 §9.4.2.6 的 MCVideo 和 §10.4.2.6 的 MCData 业务配置文档，按条选择业务、根下参数块或在网文件配置字段。查规范不以已经发出请求或抓到响应为前提；单个片段不证明整份文档缺项。"
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。这里查 §9.4.2.6 的 MCVideo 和 §10.4.2.6 的 MCData 业务配置文档，按条选择业务，区分请求 URI 标识、文档参数块及其组织域、在网文件配置字段。查规范不以已经发出请求或抓到响应为前提；单个片段不证明整份文档缺项。"
   ],
   "condition_rule": "Inherit common_conditions and add claim conditions.",
   "source_catalog": "../../sources.json",
@@ -119,11 +119,104 @@
           ]
         }
       ]
+    },
+    {
+      "id": "video-data-service-config-request-uri-auid-mismatch-conflict",
+      "clause": "9.4.2.6",
+      "conditions": [
+        "查 MCVideo 或 MCData 业务配置，比较 Request-URI 中文档 URI 或节点 URI 的 AUID 与该业务的 §.2。核实某次请求时，不仅凭可疑 AUID 判定目标业务。"
+      ],
+      "conclusion": "AUID 不等于该业务 §.2 指定值时，§9.4.2.6、§10.4.2.6 都要求 CMS 返回 HTTP 409（Conflict），含 XCAP constraint-failure；带 phrase 才建议 invalid application id used。应有的值：MCVideo org.3gpp.mcvideo.service-config（§9.4.2.2），MCData org.3gpp.mcdata.service-config（§10.4.2.2）。目标业务已确定时，不能换用另一业务的 AUID；不能拿 XML 数据、文件名、XUI 或 SIP 事件参数代替这处 Request-URI 的 AUID，也不从 AUID 匹配推请求获准。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.6",
+            "10.4.2.6",
+            "9.4.2.2",
+            "10.4.2.2"
+          ],
+          "items": [
+            "各业务 §.6 首个校验句；实际应比较的 §.2 AUID"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "video-data-service-config-request-uri-xui-mismatch-conflict",
+      "clause": "9.4.2.6",
+      "conditions": [
+        "查 MCVideo 或 MCData 业务配置文档；比较 Request-URI 中文档 URI 或节点 URI 的 XUI 值与该业务配置文档 URI 的 XUI 值。"
+      ],
+      "conclusion": "两处 URI 的 XUI 值不匹配时，§9.4.2.6、§10.4.2.6 要求 CMS 返回 HTTP 409（Conflict），含 XCAP constraint-failure；带 phrase 才建议 invalid XUI。该条比较 XUI 值，不是比较整条地址，不用正文标识、请求者身份、AUID 或文件名顶替。§9.4.2.9、§10.4.2.9 的 global 示例只作组织业务文档的路径对照；不由示例猜 XUI，也不推未核到其中一个 XUI 时的比较、相等算法或返回结果。值匹配不证明授权。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.6",
+            "10.4.2.6",
+            "9.4.2.9",
+            "10.4.2.9"
+          ],
+          "items": [
+            "§.6 逐条比较 URI 的 XUI；§.9 global 示例仅对照"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "video-data-service-config-document-domain-syntax-conflict",
+      "clause": "9.4.2.6",
+      "conditions": [
+        "查 MCVideo 或 MCData 业务配置文档中 service-configuration-params 的 domain 属性值；比较是否包含语法正确的组织域名。"
+      ],
+      "conclusion": "§9.4.2.6、§10.4.2.6：该 domain 属性未包含语法正确的域名时，CMS 须返回 HTTP 409（Conflict），含 XCAP constraint-failure；带 phrase 才建议 syntactically incorrect domain name。各 §.7 指这是任务关键组织的域名，不是 Request-URI 主机名、XUI、AUID 或组织目录名。各 §.3 在参数类型中把 domain 声明成必填 xs:anyURI，不能以类型校验代替语法要求，也不要将整个属性缺失直接定成该建议诊断。不规定实际域名校验算法。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.6",
+            "10.4.2.6",
+            "9.4.2.3",
+            "10.4.2.3",
+            "9.4.2.7",
+            "10.4.2.7"
+          ],
+          "items": [
+            "§.6 域名语法分支；§.3 参数类型属性；§.7 组织域语义"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "video-data-service-config-document-domain-unknown-conflict",
+      "clause": "9.4.2.6",
+      "conditions": [
+        "查 MCVideo 或 MCData 业务配置文档中 service-configuration-params 的 domain 属性是否包含未知域名；不拿请求主机或 URI 标识代替。"
+      ],
+      "conclusion": "§9.4.2.6、§10.4.2.6：domain 属性包含未知域名时，CMS 须返回 HTTP 409（Conflict），含 XCAP constraint-failure；带 phrase 才建议 unknown domain name。语法正确仍可能未知；两条分别列约束，不指定先后或把语法检查结果写成未知分支的额外条件。原文没有说明 CMS 如何判域名已知，不能凭 DNS、域名写法或权限判断直接确定。缺整个属性另查各 §.3 的必填声明，不能直接用此诊断。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.6",
+            "10.4.2.6",
+            "9.4.2.3",
+            "10.4.2.3",
+            "9.4.2.7",
+            "10.4.2.7"
+          ],
+          "items": [
+            "§.6 未知域名分支；与另列的语法分支区分"
+          ]
+        }
+      ]
     }
   ],
   "limitations": [
-    "只覆盖整份业务配置文档的参数块、三类组合与 MCData 文件可用时长的缺项分支。AUID/XUI、域、字段取值及时长另核；同一 409 或部分报文不判实际触发条件。",
-    "409 与 constraint-failure 是各失败分支的要求；phrase 若带才建议取值。相同响应不证明唯一出错原因，重叠条件未规定先后。七种组合不规定扩展、其他约束、协议实现或最终请求结果。"
+    "覆盖请求 AUID/XUI、文档组织域、参数块和三类组合，以及 MCData 文件可用时长的缺项；其他字段取值及时长另核。同一 409 或部分报文不判实际触发条件。",
+    "409 与 constraint-failure 是各失败分支的要求；phrase 若带才建议取值。相同响应不证明唯一出错原因，重叠条件未规定先后。七种组合不规定扩展、其他约束、协议实现或最终请求结果。",
+    "不借 URI 示例构造 XUI 或判部署、身份和授权；不从部分文档、一个 409 或 DNS 结果给域值归因，不补域名识别方式、比较算法或缺少可核标识时的诊断。"
   ],
   "related": [
     "r20-identity-mcvideo-mcdata-org-service-config-documents",
