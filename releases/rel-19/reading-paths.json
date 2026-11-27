@@ -114,6 +114,10 @@
         {
           "condition": "发起者归属 IWF，问一次跨侧查某 MC service 用户的激活别名，或按明确别名查对应用户和状态；不是共享/接管或原生状态订阅。",
           "read": "topics/interworking/functional-alias-query.md"
+        },
+        {
+          "condition": "IWF 归属用户请求激活或停用自己的功能别名，或读这两种操作的逐项应答、可接管选项或共享者状态通知；不是查当前列表、执行接管或原生状态订阅。",
+          "read": "topics/interworking/functional-alias-activation-deactivation.md"
         }
       ],
       "boundary": "Identity concepts and bounded requirements/elements; no complete authentication or registration implementation."
@@ -3524,6 +3528,26 @@
         }
       ],
       "boundary": "限 TS 23.283 V19.5.0 Stage 2 §10.14.3.2 的 IWF 归属用户主动信息查询；查规则无需抓包。按被查者 ID 或某个别名分清两个方向；请求者 ID 必选、server 核权、响应结果和实际收件分开。真实状态通知、接管、通讯录、原生查询或呼叫不套该应答；不补两个可选目标的缺失/同时出现处理或 Stage 3。"
+    },
+    {
+      "id": "iwf-functional-alias-activation-deactivation",
+      "question": "IWF 功能别名：激活、停用和逐项结果",
+      "start": "topics/interworking/functional-alias-activation-deactivation.md",
+      "next_if": [
+        {
+          "condition": "只查某用户已激活的别名或按某别名反查相关用户及状态，没有激活或停用请求",
+          "read": "topics/interworking/functional-alias-query.md"
+        },
+        {
+          "condition": "问一般共享或接管的 Stage 1 要求，不是执行本次 IWF 激活或停用",
+          "read": "topics/identity/functional-alias.md"
+        },
+        {
+          "condition": "原生 MCData 客户端发起当次变更、续期、停用，不是 IWF 信息流",
+          "read": "topics/mcdata/functional-alias-change-request.md"
+        }
+      ],
+      "boundary": "限 TS 23.283 V19.5.0 Stage 2 §§10.14.3.3–.4 的 IWF 归属用户激活或停用；查规则无需抓包。按操作区分服务器前提、核权/状态处理、Step4 匹配逐别名应答和 Step5 共享者状态通知。可接管选项不是接管执行，后者另查 §10.14.3.5。不移用查询可选字段、原生协议或错误码。"
     }
   ]
 }
