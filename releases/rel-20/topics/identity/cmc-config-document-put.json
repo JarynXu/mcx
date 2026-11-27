@@ -1,0 +1,282 @@
+{
+  "topic_id": "r20-identity-cmc-config-document-put",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。主规则是 CMC 整份配置文档创建和更新的 HTTP PUT；发送、CMS 接收与能力义务各按本条判断，不把相邻节点或在线用户库对照当成统一前提。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "whole-document-create-cmc-put",
+      "clause": "6.3.2.2",
+      "conditions": [
+        "执行 §6.3.2 的整份配置文档创建的 CMC 发送程序。"
+      ],
+      "conclusion": "§6.3.2.1 写管理员创建场景，指向 TS 23.280，不据此判定现场请求身份或授权。CMC 须创建相应用法的 XML 文档并发送 HTTP PUT，不能替成 POST。Request-URI 按原文设到 TS 24.483 配置的 CMSXCAPRootURI，并带第 7 章相应用法的 auid；指向 RFC 4825 Create or Replace a Document。整文档创建小节未单列 GC；根与 auid 不足以构成完整对象地址。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.2.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.2.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "whole-document-create-cms-receives-xml",
+      "clause": "6.3.2.3",
+      "conditions": [
+        "§6.3.2 场景下核 CMS 接收范围：实际入站 HTTP PUT 的实际 Request-URI 标识 XML 文档、auid 对应应用用法，收到的是该应用用法的 XML 文档。"
+      ],
+      "conclusion": "CMS 须支持按 RFC 4825 PUT Handling 接收这一范围的 XML 文档，写的是第 7 章相应用法。该接收句没有列出另一个发送方名录，不据此判定已认证、获准、写成功或其他实体是否可采用本程序。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.2.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "whole-document-update-cmc-put",
+      "clause": "6.3.4.2",
+      "conditions": [
+        "CMC 选用 §6.3.4 的整份配置文档更新发送程序。"
+      ],
+      "conclusion": "CMC 须准备相应用法的 XML 文档并发送 HTTP PUT；原文也写 create an XML document，准备 XML 不证明 CMS 已新建或已写入。指向 RFC 4825 Create or Replace a Document。Request-URI 按原文设到所配置的 CMSXCAPRootURI，仍要求相应用法的 auid；此句未明引第 7 章。不从同一方法、配置根或正文倒推出执行分支。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.4.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.4.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "whole-document-update-cms-receives-xml",
+      "clause": "6.3.4.3",
+      "conditions": [
+        "§6.3.4 场景下核 CMS 接收范围：实际入站 HTTP PUT 的实际 Request-URI 标识 XML 文档、auid 对应应用用法，收到的是该应用用法的 XML 文档。"
+      ],
+      "conclusion": "CMS 须支持按 RFC 4825 PUT Handling 接收匹配的 XML 文档。此句未明引第 7 章，但仍要求相应用法的 auid，并未另列发送方名录。条文不证明已收到、校验通过或写成功；实际接收需另核。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.4.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.4.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "create-update-support-is-role-specific",
+      "clause": "5.1",
+      "conditions": [
+        "评估整份配置创建或更新能力；按被评估角色和所选程序分别核对。"
+      ],
+      "conclusion": "CMC 在 §5.1 下创建程序须支持，更新程序可支持；选用更新时仍须按 §6.3.4.2 履行其中的发送要求。§5.2 下 CMS 的两条接收程序均须支持。不能把 CMC 的可选支持移用到 CMS，也不把能力要求当作本次请求的结果。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "5.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "5.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.4.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.2.2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "element-put-comparator",
+      "clause": "6.3.6.2.1",
+      "conditions": [
+        "仅对照 §6.3.6 的实际元素写入，GC、CMC 或 CMS 分别按所用本端程序核。"
+      ],
+      "conclusion": "GC 发引用具体元素的 HTTP PUT，指向 RFC 4825 Create or Replace an Element。CMC 采用该程序，以配置的 CMSXCAPRootURI 为相对路径的根、带相应用法的 auid；不把另一个 GC 作为先发请求的角色。CMS 实收 CMC 的元素 PUT，URI 指具体元素且 auid 相应时，适用 §6.3.6.3 的支持处理要求。不能当作整份文档地址。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.6.2.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.6.2.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.6.3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "attribute-put-literal-element-comparator",
+      "clause": "6.3.9.2.1",
+      "conditions": [
+        "仅对照 §6.3.9 的属性写入，发送侧与 CMS 侧分别核。"
+      ],
+      "conclusion": "§6.3.9.2.1 的 GC 动作和指针为创建或替换属性，但 URI 字面却写 references the element。CMC 执行该 GC 程序，以配置的根作相对路径的根，带相应用法的 auid。§6.3.9.3 CMS 条文写要写入的 XML 属性；对来自 CMC 的匹配 PUT，属性的对应应用用法明引第 7 章。保存字面差异，不按源句把属性改成元素，不补属性选择器或应用权限。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.9.2.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.9.2.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.9.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "whole-put-observation-not-authorization-validation-or-result",
+      "clause": "6.3.2.2",
+      "conditions": [
+        "按 §6.3.2/.4 排查整份配置文档 PUT，或比较它与相邻读、删程序。"
+      ],
+      "conclusion": "仅凭 PUT、URI 与 XML 区分不了创建和更新。GET、DELETE 不能充作本笔写入；不从 GET 的接收方列表推出 MCS 服务器有写权限。这两节说明对象、XML 与用途要求，不补通用 Content-Type，也不把特殊对象的校验套给所有 PUT。不能根据发送或 CMS 实收证明写成，不补固定成功状态码、授权或应用结果。具体约束查相应文档。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.2.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.4.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.2.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.4.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.3.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.5.2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "online-user-db-store-after-actual-profile-write",
+      "clause": "4.4",
+      "conditions": [
+        "§4.4 对照：用于在线配置的 CMS；相应 MCS 用户档配置文档已由 MCS UE 实际创建或更新。"
+      ],
+      "conclusion": "在线 CMS 使用所引 TS 29.283 流程，将该文档作为 MCS 用户档存入 MC 业务用户数据库。只看到配置 PUT、收到 XML 或管理员创建请求，不证明服务器已接受该用户档，也不证明已触发或已完成存库。管理员场景不能替代 MCS UE 已创建或更新的条件；不补前端 URI 到后端的固定映射。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.4"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "不凭 PUT 或管理员场景断定授权、操作结果、通用 Content-Type、响应码、专用校验或库写入。不从相邻规范和指针补选择语法或前端到库的映射。",
+    "TS 23.280、TS 24.483、RFC 4825、TS 29.283 只保留本处指针。节点案例只是相邻对象的程序边界，不将其说明成通用规则。"
+  ],
+  "related": [
+    "r20-identity-cmc-mcs-config-get-target",
+    "r20-identity-cmc-config-delete-target",
+    "r20-identity-online-cms-user-profile-database",
+    "r20-identity-default-profile-reference-xcap",
+    "r20-identity-initial-ue-tls-tunnel-validation",
+    "r20-identity-mcptt-user-profile-xcap-validation"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
