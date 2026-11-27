@@ -1,6 +1,6 @@
 # LMR 按条件发起互通 ad hoc 组呼：谁选人，IWF 收到哪一步？
 
-**IWF 代 LMR 用户发请求；MCPTT server 按请求的条件确定邀请名单。** 这里是 TS 23.283 V19.5.0、Rel‑19 Stage 2 §10.17.3.2。IWF 在 MCPTT 侧按一个 MCPTT client 行事。如果实际主叫是 [MCPTT 用户且按条件选人](adhoc-group-criteria-mcptt-origin.md)，查 §10.17.3.1；MCPTT 主叫给出显式名单查 [§10.17.3.5](adhoc-group-explicit-list-mcptt-origin.md)，已建呼释放查 §10.17.3.3/.4。首次请求、选人输入比后续是否出现 IWF 更能区分分支。[§10.17.3.2 前提，印刷页 186（PDF 第 187 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=187)；[§10.17.3.5 显式名单，印刷页 189–190（PDF 第 190–191 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=190)。
+**IWF 代 LMR 用户发请求；MCPTT server 按请求的条件确定邀请名单。** 这里是 TS 23.283 V19.5.0、Rel‑19 Stage 2 §10.17.3.2。IWF 在 MCPTT 侧按一个 MCPTT client 行事。如果实际主叫是 [MCPTT 用户且按条件选人](adhoc-group-criteria-mcptt-origin.md)，查 §10.17.3.1；MCPTT 主叫给出显式名单查 [§10.17.3.5](adhoc-group-explicit-list-mcptt-origin.md)，已建呼释放查 [§10.17.3.3/.4](adhoc-group-release.md)。首次请求、选人输入比后续是否出现 IWF 更能区分分支。[§10.17.3.2 前提，印刷页 186（PDF 第 187 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=187)；[§10.17.3.5 显式名单，印刷页 189–190（PDF 第 190–191 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=190)。
 
 ## IWF 发起，server 验权和选人
 

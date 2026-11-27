@@ -22,4 +22,6 @@ IWF 按呼叫中每个 MCPTT 用户发释放请求，server 转发；客户端�
 
 [组配置](group-configuration.md) · [组呼请求字段](group-call-request.md) · [互通范围](scope.md) · [结构化知识](group-call-release.json)
 
+若是互通 ad hoc 组呼，按[本次释放的起点及临时组终态](adhoc-group-release.md)查 §10.17.3.3/.4，不套本页的普通组粒度。
+
 若问题涉及 chat 的可选响应或释放后归属状态，另读 [chat 释放](chat-release.md)；若只是取消归属导致单用户离开，读 [de-affiliation 退出](deaffiliation-exit.md)。

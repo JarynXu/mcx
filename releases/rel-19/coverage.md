@@ -961,6 +961,14 @@
 
 入口：[MCPTT 按名单发起互通 ad hoc 组呼：逐个回什么，确认超时算谁？](topics/interworking/adhoc-group-explicit-list-mcptt-origin.md)。
 
+### 互通 ad hoc 组呼如何释放：谁发请求，组何时消失？
+
+- **能回答：**按本次释放从 MC 或 LMR 侧发起分流，区分授权、双向请求、回执、用户通知与实际结束。
+- **只到条件或接口：**TS 23.283 V19.5.0 Stage 2 §10.17.3.3/.4；释放应答表只 IWF→server，不套反向 Step 7。只有 MC 侧分支 Step 3 明说临时组消失，不从 LMR Step 9 的资源释放图猜组状态。
+- **尚未建立的结论：**不闭合 LMR 触发条件、反向应答字段、TS 23.379 回指、SIP 或完整终端清理；不以应答、通知或单端清理推全组完成。
+
+入口：[互通 ad hoc 组呼如何释放：谁发请求，组何时消失？](topics/interworking/adhoc-group-release.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)

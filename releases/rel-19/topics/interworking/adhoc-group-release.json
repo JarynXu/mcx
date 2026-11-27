@@ -1,0 +1,405 @@
+{
+  "topic_id": "r19-iwf-adhoc-group-release",
+  "release": 19,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "互通 ad hoc 组呼如何释放：谁发请求，组何时消失？",
+  "common_conditions": [
+    "TS 23.283 V19.5.0、Rel‑19 Stage 2。主范围为 §10.17.3.3/.4 已建互通 ad hoc 组呼的释放，不混普通组呼释放、建呼、入会、单人退出或 floor-only。",
+    "查规范不要求观测完整链路；判断实况分别关联该次释放、源/目的端和各段消息或资源证据。"
+  ],
+  "condition_rule": "按本次释放的起点选分支，不按当初谁建呼。MC 系统开始释放用 .3.3，server→IWF 2a，IWF→server 2b；LMR 系统因本侧条件、由获授权 LMR 用户经 IWF 请求用 .3.4，IWF→server 2、server→IWF 7。方向和消息身份可以先辨，授权、实际收件与资源终态各自核验。",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "iwf-adhoc-release-mc-system-two-trigger-paths-and-legs",
+      "conditions": [
+        "按本次释放由 MC 系统发起判断 §10.17.3.3，不按原来从哪一侧建呼。该呼叫是 IWF 互通 ad hoc 组呼。"
+      ],
+      "conclusion": "Step 1 有两个替代入口：MCPTT server 因释放条件满足而发起，回指 TS 23.379 §10.19.3.1.2；或获授权用户发起，回指 §10.19.3.1.2a。两条前提原文逐字重复，都是 IWF 已配置两系统组与用户 ID 映射，不添第二个不同条件。经过 IWF 的两系统信令由 IWF 转换身份和协议。互通新增 2a 由 MCPTT server 向 IWF 请求释放，2b 由 IWF 回 MCPTT server。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.3 pre-conditions and Figure 10.17.3.3-1 / Steps 1–3"
+          ],
+          "printed_pages": [
+            187,
+            188
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "2 Reference [7] and non-specific 3GPP references"
+          ],
+          "printed_pages": [
+            11
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "不要求两种触发同时成立，不把获授权用户限为原主叫或扩成任一成员。配置的映射不证明本次释放条件或授权成立。不把 2a 发出、IWF 实收、2b 发出、server 实收或双方完成清资源合并。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-adhoc-release-lmr-system-authorized-origin-and-figure-legs",
+      "conditions": [
+        "原操作来自 LMR 系统的释放条件、已有同次互通 ad hoc 组呼；图示通过 IWF 向 MCPTT server 发释放请求的是获授权 LMR 用户。"
+      ],
+      "conclusion": "§10.17.3.4 NOTE 1 不定义 LMR 侧释放条件。前提另要求请求者是 TS 23.379 §10.19.3.1.2a 的获授权 LMR 用户，且 IWF 已配置两系统组、用户 ID 映射。图 Step 2 IWF → server，3 由 server 对本请求验权并生成释放。4a/4b 是 server 向示例 client 2/3 的释放请求，5a/5b 是各客户端提示用户，6b/6c 由 client 2/3 各回 server。7 是 server → IWF 的释放应答，8 是 IWF 侧的用户通知动作，9 另画资源释放。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.4 pre-conditions and Note 1; Figure 10.17.3.4-1 and TS 23.379 reference"
+          ],
+          "printed_pages": [
+            188,
+            189
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "2 Reference [7] and non-specific 3GPP references"
+          ],
+          "printed_pages": [
+            11
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "图的 IWF 泳道标有“authorized user”，不是说授权对象换成网关，也不免 server 的 Step 3。LMR 内部触发与实际授权不能由映射、发件或对端响应推得。保留 6b、6c，不补 6a、把图画的两个端当全组、按纵向顺序裁定 7 必须等齐或无需等待。IWF 侧 8 的提示不证明特定用户实际收到。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-adhoc-release-bidirectional-request-identity",
+      "conditions": [
+        "已经单独识别出 §10.17.3.3 Step 2a 或 §10.17.3.4 Step 2 的 IWF-1 释放请求；不要求先看到应答才能读请求表。"
+      ],
+      "conclusion": "§10.17.2.4 的标题列 MCPTT server ↔ IWF 双向请求，表前的方向说明连写两个方向。表 10.17.2.4-1 两个 M 是获授权释放者的 MCPTT ID 和要释放的 MCPTT ad hoc group ID。获授权请求者功能别名是 O，可选的应用专用数据按所述 LMR 系统使用情况；请求者身份字段不代验权。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.3 pre-conditions and Figure 10.17.3.3-1 / Steps 1–3"
+          ],
+          "printed_pages": [
+            187,
+            188
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.4 pre-conditions and Note 1; Figure 10.17.3.4-1 and TS 23.379 reference"
+          ],
+          "printed_pages": [
+            188,
+            189
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.2.1 and 10.17.2.4 / Table 10.17.2.4-1 (IWF-1 release request)"
+          ],
+          "printed_pages": [
+            181,
+            183
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "MC 系统由 server 自动触发时仍保留表的 M；本段没有说明该场景从哪里选取获授权释放者 ID，不能填原主叫、网关/服务身份或把 M 改成 O。表不适用于 4a/4b 等原生 MCPTT 客户端腿，也不定组 ID 分配、回收或身份转换细节。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-adhoc-release-response-scope-participant-id-and-reverse-gap",
+      "conditions": [
+        "先判释放应答的实发方向：§10.17.3.3 Step 2b IWF → server；§10.17.3.4 图 Step 7 server → IWF。任一可以单独辨识，配对时才要求同次释放及相应腿。"
+      ],
+      "conclusion": "表 10.17.2.5-1 明列 IWF → server，用来核 .3.3 的 2b。两个 M 是该组呼参与者的 MCPTT ID 和被释放呼叫的 ad hoc group ID；功能别名及应用专用数据 O。不把参与者 ID 自动等同请求中的获授权释放者 ID。该释放应答表没有 Result 或 SDP；不能复制建呼应答字段。.3.4 图 7 的反向应答保留，不能把此表反用来确定 7 的字段。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.2.5 / Table 10.17.2.5-1 (IWF→MCPTT server release response)"
+          ],
+          "printed_pages": [
+            183,
+            184
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.3 pre-conditions and Figure 10.17.3.3-1 / Steps 1–3"
+          ],
+          "printed_pages": [
+            187,
+            188
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.4 pre-conditions and Note 1; Figure 10.17.3.4-1 and TS 23.379 reference"
+          ],
+          "printed_pages": [
+            188,
+            189
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.2.3 / Table 10.17.2.3-1 (setup response only)"
+          ],
+          "printed_pages": [
+            182,
+            183
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "未在本段表列 Step 7 的反向应答字段，不据此判反向应答禁止，也不改图的方向。Step 2b 或 Step 7 发件和实际收件是两件事；应答名称或表中无 Result 均不证明所有终端释放成功。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-adhoc-release-receipt-not-resource-cleanup-or-group-lifetime",
+      "conditions": [
+        "判断的对象已从请求或应答，切换为同一次呼叫的各端实际资源释放和同一个临时组的后续状态。"
+      ],
+      "conclusion": "在 .3.3 Step 3 成功完成时，呼叫已终止，client 1、client 2 和 LMR 用户释放对应话权控制与媒体面资源，临时组不再存在，不能在同一个 ad hoc 组上再起呼。图用释放过程横条，正文给出成功后的终态。.3.4 图 Step 9 只画释放关联话权/媒体资源；这段不写相同的临时组终态，也不能反推组保留或可复用。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.3 pre-conditions and Figure 10.17.3.3-1 / Steps 1–3"
+          ],
+          "printed_pages": [
+            187,
+            188
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.4 pre-conditions and Note 1; Figure 10.17.3.4-1 and TS 23.379 reference"
+          ],
+          "printed_pages": [
+            188,
+            189
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.2.5 / Table 10.17.2.5-1 (IWF→MCPTT server release response)"
+          ],
+          "printed_pages": [
+            183,
+            184
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "单端清理、server 实收匹配 2b、IWF 实收匹配 7 或 IWF 侧提示 Step 8，都不替代各端释放的证据。缺接收、资源或组状态记录是未知，不能判失败、已清理或仍可用。“不能用同一个组”也不是永不允许重发同字面 ID、永久保留或删除条目的规则。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-adhoc-release-stage-two-external-anchors-only",
+      "conditions": [
+        "查本段之外的授权条件、执行细节或协议层消息。"
+      ],
+      "conclusion": "§10.17.3.3 在原生 MCPTT client / server 交互分别回指 TS 23.379 [7] §10.19.3.1.2（server 侧条件）及 .2a（获授权用户）；§10.17.3.4 对 LMR 用户与 server 的交互回指同规范 .2a。§10.17.2.1 只给 IWF-1 信息流，其他参考点查 TS 23.379。按 §2，非指定 [7] 回引用同 Release 的该标准最新版本。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.3 pre-conditions and Figure 10.17.3.3-1 / Steps 1–3"
+          ],
+          "printed_pages": [
+            187,
+            188
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.4 pre-conditions and Note 1; Figure 10.17.3.4-1 and TS 23.379 reference"
+          ],
+          "printed_pages": [
+            188,
+            189
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.2.1 and 10.17.2.4 / Table 10.17.2.4-1 (IWF-1 release request)"
+          ],
+          "printed_pages": [
+            181,
+            183
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "2 Reference [7] and non-specific 3GPP references"
+          ],
+          "printed_pages": [
+            11
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "这只是本版的回指，不代被引原文或构造 SIP BYE/200、底层身份映射、完整失败/重试、资源清理次序。它是临时组整次呼叫释放，不是普通组定义侧的释放粒度规则、入会/重入、单人退出、单次发言结束或已建呼升级。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.17.3.3 pre-conditions and Figure 10.17.3.3-1 / Steps 1–3"
+      ],
+      "printed_pages": [
+        187,
+        188
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.17.3.4 pre-conditions and Note 1; Figure 10.17.3.4-1 and TS 23.379 reference"
+      ],
+      "printed_pages": [
+        188,
+        189
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.17.2.1 and 10.17.2.4 / Table 10.17.2.4-1 (IWF-1 release request)"
+      ],
+      "printed_pages": [
+        181,
+        183
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.17.2.5 / Table 10.17.2.5-1 (IWF→MCPTT server release response)"
+      ],
+      "printed_pages": [
+        183,
+        184
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.17.2.3 / Table 10.17.2.3-1 (setup response only)"
+      ],
+      "printed_pages": [
+        182,
+        183
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "2 Reference [7] and non-specific 3GPP references"
+      ],
+      "printed_pages": [
+        11
+      ],
+      "usage": "comparison-only"
+    }
+  ],
+  "related": [
+    {
+      "topic": "r19-iwf-group-call-release",
+      "required": false,
+      "meaning": "若问双方已知组配置、按组定义侧的普通互通组释放，分流至 §10.3.3.8；不套它的请求粒度。"
+    },
+    {
+      "topic": "r19-iwf-adhoc-group-criteria-lmr-origin",
+      "required": false,
+      "meaning": "实际是 LMR 用户按条件发起建呼、而非释放已建呼，按 §10.17.3.2。"
+    },
+    {
+      "topic": "r19-calls-group-participant-leave",
+      "required": false,
+      "meaning": "原生普通预安排组呼的单人退出，另读 Stage 3；不等于本页的全次临时组呼释放。"
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  },
+  "limitations": [
+    "反向 release response 字段、外部授权/释放规则、LMR 私有条件及底层资源/组清理没有闭合；图里的消息顺序不代完整强制时序。"
+  ]
+}
