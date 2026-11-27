@@ -1,0 +1,540 @@
+{
+  "topic_id": "r19-iwf-late-talker-id",
+  "release": 19,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "LMR 发言者标识晚到：什么时候更新，谁会收到？",
+  "common_conditions": [
+    "TS 23.283 V19.5.0 Rel‑19 Stage 2 §§10.13.3.1–.2；传统模拟 FM LMR 用户发起互通组呼，首发不知实际发言者 ID，IWF 在传输开始后可取得。",
+    "依实际组定义侧、适用组配置和 IWF 映射、用户注册授权和实际归属读该支；查规则无需抓包。运行判断使用对应动作、传输、对象和收发证据。"
+  ],
+  "condition_rule": "继承共同条件与本条条件；仅把明确标为对照的其他条款用于分辨，不自发补阶段或数据。",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "late-id-scenario-actual-group-definition-not-origin-or-general-requirement",
+      "conditions": [
+        "按 §10.13.3.1 或 .2 选两条传统模拟 FM 的 LMR 用户起呼示例。"
+      ],
+      "conclusion": "两示例从传统模拟 FM LMR 起互通组呼、首发时还不知道实际发言者 ID 出发；选择 MCPTT/LMR 分支依据互通组实际定义侧。两侧已掌握组信息，IWF 配组/用户映射，图示 MCPTT 客户端已注册、用户已认证并获准使用，参与用户已归属。总述说该机制可用于文中其他 MCPTT 媒体传输，不是要求所有 LMR 系统/已知初始 ID 的呼叫都这样。查规范无需抓包。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.13.3 and preceding 10.13.2 NOTES 2–3"
+          ],
+          "printed_pages": [
+            165,
+            166
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.13.3.1",
+            "Figure 10.13.3.1-1",
+            "10.13.3.1 NOTES 1–7"
+          ],
+          "printed_pages": [
+            166,
+            167,
+            168
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.13.3.2",
+            "Figure 10.13.3.2-1",
+            "10.13.3.2 NOTES 1–5"
+          ],
+          "printed_pages": [
+            168,
+            169,
+            170
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "preconfigured-iwf-id-in-initial-request-and-no-contender-gate",
+      "conditions": [
+        "首发不知道发言者 ID，读两支的建呼请求、媒体面与首次话权信令。"
+      ],
+      "conclusion": "两支建呼请求 1 使用预配置 IWF MCPTT ID，带隐式话权请求；LMR 定义支给每名已归属 MCPTT 用户各一条请求。先有媒体面建立（MCPTT 定义支 6、LMR 定义支 5），初始话权的例示又有隐式请求及无其他用户请求的条件，不能用媒体面就绪替实际授权或已经开始传输。预配置 IWF ID 不是已知的个人标识。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.13.3.1",
+            "Figure 10.13.3.1-1",
+            "10.13.3.1 NOTES 1–7"
+          ],
+          "printed_pages": [
+            166,
+            167,
+            168
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.13.3.2",
+            "Figure 10.13.3.2-1",
+            "10.13.3.2 NOTES 1–5"
+          ],
+          "printed_pages": [
+            168,
+            169,
+            170
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.2",
+            "Table 10.3.2.2-1",
+            "10.5.2.10",
+            "10.5.3"
+          ],
+          "printed_pages": [
+            35,
+            105,
+            108
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcptt-defined-initial-grant-and-taken-vs-same-transmission-id-replacement",
+      "conditions": [
+        "互通组实际定义于 MCPTT，MCPTT 系统主控，按已发生的初始/后续事件分开。"
+      ],
+      "conclusion": "步骤 7 是 server→IWF Granted 与 server→已归属 MCPTT 用户的带预配置 IWF MCPTT ID 的 Floor Taken，并非同一应答。实际媒体开始后 IWF 知道标识（9），以 IWF Talker ID Update（10）向 server 发新 ID，不释放话权；server 的 11 向已归属 MCPTT 用户发携新 ID 的 Floor Taken。10 不是新建呼叫或独立重新授予，也不是 11 的实际终端收件。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.13.3.1",
+            "Figure 10.13.3.1-1",
+            "10.13.3.1 NOTES 1–7"
+          ],
+          "printed_pages": [
+            166,
+            167,
+            168
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.2",
+            "Table 10.3.2.2-1",
+            "10.5.2.10",
+            "10.5.3"
+          ],
+          "printed_pages": [
+            35,
+            105,
+            108
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "mcptt-defined-two-optional-lmr-fanouts-each-requires-other-individual-affiliates",
+      "conditions": [
+        "MCPTT 定义支，要判首次 8 或后来 12 的 server→IWF LMR 通知。"
+      ],
+      "conclusion": "8 或 12 均另核：有主叫以外的已归属 LMR 用户，且 server 实际收到这些用户的逐人归属；满足时按实际归属发所列逐人 IWF Floor Taken。8 和 12 的条件要分别核，不以只见第一次或后一次通知补另一次。只有主叫、仅 IWF 代理、静态名单或单个虚线箭头，不能推这些逐人通知；末句逐已归属发不额外规定向主叫另发一份。NOTE 7 说同组呼的其他话权参与者，也不是静态全员、代理汇总或下游确实收到的证据。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.13.3.1",
+            "Figure 10.13.3.1-1",
+            "10.13.3.1 NOTES 1–7"
+          ],
+          "printed_pages": [
+            166,
+            167,
+            168
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-defined-initial-taken-is-per-affiliated-mcptt-not-server-grant",
+      "conditions": [
+        "互通组实际定义于 LMR，先核媒体面、隐式请求和无其他竞争请求。"
+      ],
+      "conclusion": "该支 LMR 主控。IWF 初次用 6 向 server 告知 IWF 持有话权；对每名已归属 MCPTT 用户一条，不是向 IWF 发 server 授予。server→目标 MCPTT 用户的 7 报的是预配置 IWF MCPTT ID。逐人数量看实际 MCPTT 归属，不拿 LMR 人数或一张图示例两人推全程。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.13.3.2",
+            "Figure 10.13.3.2-1",
+            "10.13.3.2 NOTES 1–5"
+          ],
+          "printed_pages": [
+            168,
+            169,
+            170
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.2",
+            "Table 10.3.2.2-1",
+            "10.5.2.10",
+            "10.5.3"
+          ],
+          "printed_pages": [
+            35,
+            105,
+            108
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "lmr-defined-late-id-per-affiliate-and-message-term-discrepancy",
+      "conditions": [
+        "LMR 定义支 IWF 在实际媒体传输开始后取得 talker ID（8），核后两腿。"
+      ],
+      "conclusion": "IWF→server 的 9 对每名已归属 MCPTT 用户发 IWF Floor Taken，含有更新发言者标识的作用，不释放话权；server→目标 MCPTT 用户的 10 发新 ID。图 9a/9b 与步骤 9 字面是 Floor Taken，步骤 10 正文回称 new ID contained in IWF talker ID update；保留两用语，不加另一条 Update，不把 .1 的类型名字、LMR fanout 或另一次授话套入。NOTE 5 限这次组呼其他话权参与者，不是对未归属者的常规送达。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.13.3.2",
+            "Figure 10.13.3.2-1",
+            "10.13.3.2 NOTES 1–5"
+          ],
+          "printed_pages": [
+            168,
+            169,
+            170
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.13.3.1",
+            "Figure 10.13.3.1-1",
+            "10.13.3.1 NOTES 1–7"
+          ],
+          "printed_pages": [
+            166,
+            167,
+            168
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "late-learned-id-media-start-knowledge-send-and-receipt-distinct",
+      "conditions": [
+        "同次媒体内取证，或只有 IWF 取得实际标识／只听到声音／只见下游 ID。"
+      ],
+      "conclusion": "媒体面建立不是实际开始传输。两个例子在实际媒体传输开始后才由 IWF 得知标识。IWF 实际得知、新通知发出、server 实收、server 转告或目标实收须分别匹配同次呼叫、传输、对象和方向；仅标识改变不证明换了实际说话人、媒体交付、另起话权或整组到达。NOTE 指 IWF 怎么得知在范围外，一些系统到呼叫结束才可得知，不从没有中途更新判故障，也不补结束时重发、时限或迟到回放。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.13.3 and preceding 10.13.2 NOTES 2–3"
+          ],
+          "printed_pages": [
+            165,
+            166
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.13.3.1",
+            "Figure 10.13.3.1-1",
+            "10.13.3.1 NOTES 1–7"
+          ],
+          "printed_pages": [
+            166,
+            167,
+            168
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.13.3.2",
+            "Figure 10.13.3.2-1",
+            "10.13.3.2 NOTES 1–5"
+          ],
+          "printed_pages": [
+            168,
+            169,
+            170
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "generic-talker-update-table-and-no-wire-or-other-procedure-inference",
+      "conditions": [
+        "已核是通用的 IWF Floor Talker ID Update，或与普通 Floor Taken、起呼和位置问题区分。"
+      ],
+      "conclusion": "表 10.5.2.17-1 的使用话权一方 MCPTT ID 必带，功能别名可选，Source identifier 可选且只在媒体复用时出现。不用表改写 .2 步骤 9，不把可选别名/源标识当成重新授予、具体身份验证、媒体收件或分享位置授权。普通建呼、初次占用、同次媒体补标识、实际晚加入和后来另一次授予各按对应条件取证；本例不展开 LMR 内部识别或 Stage 3。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.17",
+            "Table 10.5.2.17-1"
+          ],
+          "printed_pages": [
+            107
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.2",
+            "Table 10.3.2.2-1",
+            "10.5.2.10",
+            "10.5.3"
+          ],
+          "printed_pages": [
+            35,
+            105,
+            108
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.13.3.2",
+            "Figure 10.13.3.2-1",
+            "10.13.3.2 NOTES 1–5"
+          ],
+          "printed_pages": [
+            168,
+            169,
+            170
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.3.7.1–.3"
+          ],
+          "printed_pages": [
+            48,
+            49,
+            50
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.11.2–.3"
+          ],
+          "printed_pages": [
+            152,
+            153,
+            154
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.13.3 and preceding 10.13.2 NOTES 2–3"
+      ],
+      "printed_pages": [
+        165,
+        166
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.13.3.1",
+        "Figure 10.13.3.1-1",
+        "10.13.3.1 NOTES 1–7"
+      ],
+      "printed_pages": [
+        166,
+        167,
+        168
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.13.3.2",
+        "Figure 10.13.3.2-1",
+        "10.13.3.2 NOTES 1–5"
+      ],
+      "printed_pages": [
+        168,
+        169,
+        170
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.5.2.17",
+        "Table 10.5.2.17-1"
+      ],
+      "printed_pages": [
+        107
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.2.2",
+        "Table 10.3.2.2-1",
+        "10.5.2.10",
+        "10.5.3"
+      ],
+      "printed_pages": [
+        35,
+        105,
+        108
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.3.7.1–.3"
+      ],
+      "printed_pages": [
+        48,
+        49,
+        50
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.11.2–.3"
+      ],
+      "printed_pages": [
+        152,
+        153,
+        154
+      ],
+      "usage": "comparison-only"
+    }
+  ],
+  "limitations": [
+    "两条示例不定义普通建呼、晚加入、底层识别、安全或隐私许可、SIP/RTCP 或媒体格式。",
+    "晚到标识不是改变话权或另一传输的充分证据；初始许可、同一传输、标识获得、更新信令和媒体各自核。"
+  ],
+  "related": [
+    {
+      "topic": "r19-iwf-group-call-request",
+      "required": false,
+      "meaning": "需要普通 IWF 组呼地址和主叫标识时，按普通建呼条件查。"
+    },
+    {
+      "topic": "r19-iwf-floor-signals",
+      "required": false,
+      "meaning": "问普通 Granted/Taken 等消息含义时查，不倒推该组呼正在更新标识。"
+    },
+    {
+      "topic": "r19-iwf-floor-control-owner",
+      "required": false,
+      "meaning": "另找通用组控制方或已建私呼控制，不以起呼者判断本支。"
+    },
+    {
+      "topic": "r19-iwf-late-entry",
+      "required": false,
+      "meaning": "新归属后加入已有通话时另查，不拿补发言者标识当加入证据。"
+    },
+    {
+      "topic": "r19-iwf-talker-location",
+      "required": false,
+      "meaning": "需要发言者位置传播/许可时另查，不把标识当位置。"
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  }
+}

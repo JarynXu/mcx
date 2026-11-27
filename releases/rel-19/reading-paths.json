@@ -310,6 +310,10 @@
         {
           "condition": "问 §10.3.4.6 专为一次互通广播形成的预配置重组：按 D 实际由 MCPTT server 或 IWF 托管选支，查注册、成员／归属／安全条件，以及广播结束后谁发起取消。查规范无需抓包。若问普通层级组广播建呼/释放、非广播重组、陈旧 PTT 或已有 D 的新归属，不从这支判断。",
           "read": "topics/interworking/preconfigured-regroup.md"
+        },
+        {
+          "condition": "问传统模拟 FM LMR 用户发起互通组呼、初始实际标识未知且在媒体开始后才知道时，按实际互通组定义侧查同次传输中的标识、发言者通知和实际归属。查规范无需抓包。普通建呼、变更话权、晚加入、私呼或位置分享另查。",
+          "read": "topics/interworking/late-talker-id.md"
         }
       ],
       "boundary": "Bounded Stage2 interworking procedures; underlying security and full call state machine not verified."
@@ -444,6 +448,10 @@
         {
           "condition": "问已建立且启用话权的互通私呼，按实际 LMR/IWF 或 MCPTT server 控制查打断、放弃话权、Granted/Taken/Revoked 或媒体证据。查规范无需抓包。若问自动/手动建呼、整通释放、单独消息含义或组呼本地筛选，另查各自分支。",
           "read": "topics/interworking/floor-control-owner.md"
+        },
+        {
+          "condition": "问传统模拟 FM LMR 用户发起互通组呼、初始实际标识未知且在媒体开始后才知道时，按实际互通组定义侧查同次传输中的标识、发言者通知和实际归属。查规范无需抓包。普通建呼、变更话权、晚加入、私呼或位置分享另查。",
+          "read": "topics/interworking/late-talker-id.md"
         }
       ],
       "boundary": "分清组/私呼、组归属地和过滤配置；示例胜者不构成通用调度算法。"
@@ -3464,6 +3472,30 @@
         }
       ],
       "boundary": "只读 TS 23.283 V19.5.0 Stage 2 §10.5.9/.10 的两条已建立且启用话权的互通私呼例：实际 LMR 经 IWF 控制且初始 MCPTT 持有，或实际 MCPTT server 控制且初始空闲。§10.5.3 的非主控方全部转交、不做过滤，主控不由起呼方推。NOTE 只限 2/3、8/9。查规范无需运行记录。不把拒绝发送者当裁决方，不从信令判媒体或整呼释放、不补组呼筛选、Stage 3。"
+    },
+    {
+      "id": "iwf-lmr-late-real-talker-id",
+      "question": "LMR 发言者标识晚到：什么时候更新，谁会收到？",
+      "start": "topics/interworking/late-talker-id.md",
+      "next_if": [
+        {
+          "condition": "只问普通互通组呼请求选用何种主叫身份或隐式话权，不问同次媒体迟到标识",
+          "read": "topics/interworking/group-call-request.md"
+        },
+        {
+          "condition": "只问消息 Floor Taken、Granted、Idle 或 Revoked 的含义，不知道是否同次媒体标识变化",
+          "read": "topics/interworking/floor-signals.md"
+        },
+        {
+          "condition": "实际是新成员归属并晚加入已有互通组呼，不是既有发言者的标识更新",
+          "read": "topics/interworking/late-entry.md"
+        },
+        {
+          "condition": "问发言者位置传播或隐私授权，不以已知标识证明",
+          "read": "topics/interworking/talker-location.md"
+        }
+      ],
+      "boundary": "限 TS 23.283 V19.5.0 Stage 2 §10.13.3.1/.2：实际媒体先开始，IWF 后得知真正的 LMR 发言者标识，同次传输更新不释放话权。按实际定义侧分读初始和后续通知；MCPTT 定义 8/12 各按其他已归属 LMR 用户实际逐人归属，LMR 定义 6/9 按实际已归属 MCPTT 用户。查规则无需运行记录。保留 .2 的 Floor Taken 与 talker ID update 用语，不补额外消息、重新授话、LMR 内部或 Stage 3。"
     }
   ]
 }
