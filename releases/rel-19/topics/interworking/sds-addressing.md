@@ -6,6 +6,25 @@ TS23.283 V19.5.0，Release19，Stage2。
 
 发往LMR用户时，目标是分配给该LMR用户的MCData ID；LMR用户发起时源地址使用其分配的MCData ID。IWF以对等MCData服务器角色参与，基础发送过程仍依赖TS23.282。 [§10.8.6–7](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf)
 
+## IWF-2 单人请求：地址、两种标识和负载怎样读？
+
+**同一张表管两个方向。** 表 10.8.2.2‑1 适用于 MCData server→IWF 和 IWF→MCData server 的 standalone 请求。两个 MCData ID 都必选（M），一个是**发送数据的用户**，另一个是**目标用户**；不随网元发送方向互换。向单个 LMR 用户发，用分配给该 LMR 用户的 MCData ID 作目标；IWF 代表 LMR 用户发，用分配给该 LMR 用户的 ID 作源。可选的 Functional alias 属于发送数据用户，不是 IWF 节点 ID 或回执发出者。
+
+| 另外查什么 | 表 10.8.2.2‑1 怎么写 |
+| --- | --- |
+| **Conversation Identifier 和 Transaction Identifier** | 两项各 M。NOTE 1 分别适用于两项：须定义保留值，表示发送者不支持该项。每个保留值都不是字段省略，也不是可用的会话或事务标识。一个字段用保留值，不表示另一个也不支持；未规定具体值或接收方如何处理。 |
+| **Payload Destination Type 和 Payload** | 两项各 M。前者分应用消费和 MCData 客户端消费，后者是 SDS 内容；都不是目标用户 ID。 |
+| **Application identifier** | 行标 O，标明预定消费负载的应用。文本、端口地址和 URI 是原文举例，不是清单。按 NOTE 2，符合本表的请求带此项，就只能是应用消费；应用消费仍可不带，客户端消费不能带。看实况就查同笔 Payload Destination Type，单看应用标识不能证实目的类型或合规。 |
+| **Reply Identifier 和 Disposition Type** | 两项各 O。Reply Identifier 说明当前事务在答复哪个原事务，不替当前 Transaction Identifier。Disposition Type 请求送达、已读或两者，不是实际处置结果；Reply Identifier 不替处置通知关联的原事务。 |
+
+例如，请求的当前事务是 T2，可选 Reply Identifier 指 T1。这不意味着 T1 是当前事务，也不能把对 T1 的一条处置通知当成对 T2 的报告。只见对 T2 请求送达或已读回执，不能说它已经送达或被读。日志摘录没显示某个 M 项，与已确认完整信息流缺项，是两种证据；本表不规定缺项时的线级响应。
+
+[§10.8.2.1/.2、表 10.8.2.2‑1 及 NOTES 1–2，印刷页 147（PDF 第 148 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=148)。
+
+**不要只凭两个用户 ID 猜是哪张表，也不要拿 Payload 或未列 SDP 断定传输面。** 本表的导语同时指向 TS 23.282 §7.4.2.2.2 与 §7.4.2.3.2；§10.8.6.1/.7.1 的单人信令控制面指 §7.4.2.2，§10.8.6.2/.7.2 的单人媒体面指 §7.4.2.3。先分本次确切流程，未核该外部正文，不从同名表补媒体步骤，不借组请求的 SDP offer、组 ID 或额外接收者字段。§2 [6] 未指定版本，按同一 Release 的该规范最新版本找。其他参考点不是这张 IWF-2 表的适用范围。
+
+[§10.8.6/.7，印刷页 150–151（PDF 第 151–152 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=151)；[§2 [6]，印刷页 11（PDF 第 12 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=12)。
+
 ## MC用户向包含LMR用户的MCData组发送SDS；使用信令控制面或媒体面，跨侧客户端位于已归属该组的IWF后
 
 消息寻址到MCData组ID。IWF可代表后方客户端回应disposition请求，给出精确值 disposition prevented by system；这种代理结果不是LMR终端已送达或已读的证明。 [§10.8.8](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf)

@@ -326,6 +326,155 @@
         "independent_source_review": false,
         "independent_usage_acceptance": false
       }
+    },
+    {
+      "id": "iwf2-single-sds-request-two-user-identities-and-plane-pointers",
+      "conditions": [
+        "可纯查单人 standalone 请求哪一方向和哪些身份，无需已见一来一回或实收；查实际表先确认是 IWF-2 的单人 standalone 请求，不把组请求、实际通知或其他参考点代入。"
+      ],
+      "conclusion": "§10.8.2.2 同一表适用 MCData server→IWF 与 IWF→MCData server。发送数据和目标用户的 MCData ID 分别 M；Functional alias 为发送数据用户的关联别名，O。MCData 发给单个 LMR 用户时，它被分配的 MCData ID 是目的；IWF 代表 LMR 用户发给单个 MCData 用户时，LMR 的被分配 ID 是源。表导语指 TS 23.282 §7.4.2.2.2 与 §7.4.2.3.2；.6.1/.7.1 信令控制面与 .6.2/.7.2 媒体面分别指 §7.4.2.2、§7.4.2.3。",
+      "limitations": [
+        "不能按消息发出网元或是否携别名调换两用户角色。只看到两个用户 ID、Payload 或未列 SDP，不能判这就是单人请求或某一传输面、填充媒体腿，或借组请求表补组 ID、SDP offer 或其他用户 ID。只核 TS 23.282 引用及同 Release 的非特指版本规则 [6]，不展开其正文、编码、实收或媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.8.2.1 (IWF-2 scope)"
+          ],
+          "printed_pages": [
+            147
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.8.2.2, Table 10.8.2.2-1, NOTES 1 and 2 (standalone single-user request)"
+          ],
+          "printed_pages": [
+            147
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.8.6.1/.2 and 10.8.7.1/.2 (one-to-one directions and plane pointers)"
+          ],
+          "printed_pages": [
+            150,
+            151
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "2 Reference [6] (TS 23.282 non-specific reference rule)"
+          ],
+          "printed_pages": [
+            11
+          ],
+          "usage": "dependency"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf2-single-sds-request-separate-mandatory-identifiers-and-unsupported-sentinels",
+      "conditions": [
+        "可单查会话及当前事务标识的表示，不要求实际报文或两字段均支持。核实况时分别确认结构已完整观察，以及每个字段是已识别的支持值、保留值还是未见。"
+      ],
+      "conclusion": "Conversation Identifier 和 Transaction Identifier 分别列 M，NOTE 1 对两项各适用：须定义表示发送者不支持该信息元素的保留值。保留值不是省略，也不是可用的该项关联；一项用保留值不说明另一项不支持。会话标识不代当前事务标识。",
+      "limitations": [
+        "没规定两个保留值相同、具体数字、接受/拒绝、能力协商、或能把保留值拿来关联。日志或截包未显示字段不能断完整实际信息流缺项；确认完整信息流缺 M 项才不符合表列条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.8.2.2, Table 10.8.2.2-1, NOTES 1 and 2 (standalone single-user request)"
+          ],
+          "printed_pages": [
+            147
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf2-single-sds-request-payload-consumer-and-only-if-application-identifier",
+      "conditions": [
+        "可单查负载与目的类型的必带项，或应用标识的含义和组合规则，无需实况。判断实际报文是否缺 M 项时核完整本笔；若要判本笔应用标识是否符合 NOTE 2，另看同笔 Payload Destination Type。"
+      ],
+      "conclusion": "Payload Destination Type 和 Payload 各 M；前者区分应用消费与 MCData client 消费，后者是 SDS 内容。Application identifier 行标 O，标明预定消费负载的应用（原文例举文本、端口地址、URI），不代目标用户 MCData ID。按 NOTE 2，符合本表的请求带此项，就只能是应用消费；MCData client 消费不带，应用消费不必带，缺此项不排除应用消费。",
+      "limitations": [
+        "本表不定义缺应用标识时如何路由、默认应用、拒绝规则、应用启动、实际消费或媒体传输。实况只显示或未显示应用标识，不能代替本笔 Payload Destination Type，也不能确认整笔合规或对端已处理。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.8.2.2, Table 10.8.2.2-1, NOTES 1 and 2 (standalone single-user request)"
+          ],
+          "printed_pages": [
+            147
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf2-single-sds-request-reply-vs-disposition-request-and-actual-notification",
+      "conditions": [
+        "可独立查已识别请求中的 Reply Identifier 或 Disposition Type，无需先有实际通知。只有要配一条实际处置通知时，才按所问请求及通知的原事务关联匹配，不将答复引用代当前事务。"
+      ],
+      "conclusion": "两项均 O：Reply Identifier 指当前事务答复的是哪个原 MCData 事务，不替当前 Transaction Identifier；Disposition Type 期望送达、已读或二者，不是终端送达/已读证据。对实际 .2.3 通知单看其原事务的 Disposition association 与实际状态，不用请求的 Reply Identifier、会话 ID 代它。",
+      "limitations": [
+        "若本请求的当前事务为 T2 而 Reply Identifier 是 T1，不能把 T1 当 T2，也不能用对 T1 的通知给 T2 定结果。缺通知不说明发送失败；实际通知的同次关联、送出、到端实收及终端消费另核。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.8.2.2, Table 10.8.2.2-1, NOTES 1 and 2 (standalone single-user request)"
+          ],
+          "printed_pages": [
+            147
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.8.2.3 and Table 10.8.2.3-1 (actual disposition notification, comparison only)"
+          ],
+          "printed_pages": [
+            147
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
