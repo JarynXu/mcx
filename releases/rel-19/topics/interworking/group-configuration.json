@@ -65,6 +65,209 @@
         "At least one MC service user is a member"
       ],
       "conclusion": "IWF provides configuration to MC GMS; MC GMS response confirms correct reception and storage."
+    },
+    {
+      "id": "iwf-group-information-request-response-directions-and-queried-group",
+      "conditions": [
+        "可单查 .8 或 .9 的接口、收发角色或组 ID，也可单读已辨认的一条消息，不需整条交换。只有判两条实际消息是不是同一次查询时，才核实际类型、所查组、端点和关联上下文；发送与实际收件分别核对。"
+      ],
+      "conclusion": "§10.2.1.1 限 IWF‑1。表 10.2.1.8‑1 的查询请求只列 M 的 MC service group ID（被查的 MC 服务组）；表 10.2.1.9‑1 的应答也列 M 的该组 ID。GMS→IWF 和 IWF→GMS 都能是请求或应答；已配对的一次是请求方索取、提供方反向应答，不因端点名称固定谁发请求。",
+      "limitations": [
+        "只见同方向、同组 ID 或单个 ID 的字段形状都不判消息类型／配对；.2 撤组通知也只列一个 M 组 ID。查询请求不列发起人、成员或服务选择；不从现有订阅或抓包外的配置补这些值。这里不指定线级编码或唯一配对键。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.1 (group management information flows on IWF-1)"
+          ],
+          "printed_pages": [
+            23
+          ],
+          "usage": "dependency"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.8, Table 10.2.1.8-1 (bidirectional group information request and the queried group ID)"
+          ],
+          "printed_pages": [
+            24
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.9, Table 10.2.1.9-1 and NOTES 1–2 (returned group ID, conditional configuration and failure reason)"
+          ],
+          "printed_pages": [
+            24
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.2, Table 10.2.1.2-1 (single group-ID shape of regroup teardown notification only)"
+          ],
+          "printed_pages": [
+            23
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.10–.12, Tables 10.2.1.10-1/.11-1/.12-1 (provision request and response; service selector on subscribe only in these tables)"
+          ],
+          "printed_pages": [
+            24,
+            25
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-group-information-fulfilled-configuration-vs-unfulfilled-failure-reason",
+      "conditions": [
+        "可直接查 .9 表任一字段或两个 NOTE，不要求先有请求、配置存储证据或实况。判断已知情况的必带项是否满足时，用同一笔完整 .9 与已经确定的请求可满足性；未确认两者时不从抓包缺项推可满足性。"
+      ],
+      "conclusion": "表 10.2.1.9‑1 中组 ID 始终 M。MC service group provisioning information 标 O 但 NOTE 1 规定请求能满足时必带；信息取自 GMS，或在 IWF 承担提供时取自 IWF。Result 标 O 但 NOTE 2 规定请求不能满足时必带，语义是未能提供配置的原因，不是成功位。不满足对应必带项则不符合相应表注。",
+      "limitations": [
+        "两注分别规定一个条件下的必带项，没有明写另一项必须缺席或接收方怎样处理缺项、两项同见或空值。不据此宣称两项都出现必然合规，也不按字段存在或抓包遗漏倒推实际可满足性、现场值或对端实收。返回配置不证明对方实际保存、启用或再提供给成员。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.9, Table 10.2.1.9-1 and NOTES 1–2 (returned group ID, conditional configuration and failure reason)"
+          ],
+          "printed_pages": [
+            24
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-group-information-select-pull-provider-with-reverse-figure-literal-provision",
+      "conditions": [
+        "可独立查两条拉取流程的任一分支或图与正文；实况要选哪支，核同一组的实际定义侧、相应成员、请求方缺这组已存配置，和 .5 所需的 MC 侧 IWF 组管理寻址。只问图名、箭头或条文无需现网。"
+      ],
+      "conclusion": "§10.2.3.3：组由 MC 定义、至少一位 LMR 成员且 IWF 没有已存配置时，IWF 向该组 primary MC 系统的 GMS 拉取，GMS 提供；图 .3‑1 对应 IWF group information request／response。§10.2.3.5：组由 IWF 定义、至少一位 MC 服务用户为成员、MC 的 GMS 没有已存配置且 MC 已配置 IWF 组管理寻址时，正文是 MC 向 IWF 组管理功能索取、IWF 提供。图的 GMS→IWF 与反向同正文，但图 .5‑1 箭头字面是 IWF group Information provision request／response。两图图注都用了 partner／primary MC；看正文与端点，不以图注更换请求方或提供方。",
+      "limitations": [
+        "不把 .5 图字面无声改为 .8/.9；也不凭 provision 一词把正文变成主动推送，或给该步填 .10/.11 字段。要读某条实际报文的字段需辨认该条类型和方向，不拿终端主系统/服务用户替代组定义侧。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.3.3 and 10.2.3.5, Figures 10.2.3.3-1/.5-1 (group definition, request parties, and the reverse figure’s literal provision labels)"
+          ],
+          "printed_pages": [
+            30,
+            31,
+            32
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.8, Table 10.2.1.8-1 (bidirectional group information request and the queried group ID)"
+          ],
+          "printed_pages": [
+            24
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.9, Table 10.2.1.9-1 and NOTES 1–2 (returned group ID, conditional configuration and failure reason)"
+          ],
+          "printed_pages": [
+            24
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.10–.12, Tables 10.2.1.10-1/.11-1/.12-1 (provision request and response; service selector on subscribe only in these tables)"
+          ],
+          "printed_pages": [
+            24,
+            25
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-group-information-retrieval-separate-from-provision-and-subscribe-result",
+      "conditions": [
+        "可单查已识别的 .9 查组应答与 .10/.11 主动提供、.12 订阅请求的区别，或问本条是否证明保存或分发；多个实际事件的因果或配对只有在声称事件相关时才需核同一组、角色、端点和实际关联。"
+      ],
+      "conclusion": ".9 的 Result 是未能提供所查配置的原因。.10 主动提供请求列 M 的组 ID 和 MCPTT group configuration information；其 .11 应答 M 的 Result 报告配置接收、修改和保存的成功或失败（另有 M 的组 ID）。.12 订阅请求才列 O 的 MC services requested；不把这个选择器借给 .8。",
+      "limitations": [
+        "从查出的配置、该端生成或发出回复，不能确认另一端收到、保存、启用或已分发到组员。当事端的实际接收、处理、状态另核；取得配置也不是订阅成功。不将比较的几个字段扩成主动提供或订阅的整套步骤。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.8, Table 10.2.1.8-1 (bidirectional group information request and the queried group ID)"
+          ],
+          "printed_pages": [
+            24
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.9, Table 10.2.1.9-1 and NOTES 1–2 (returned group ID, conditional configuration and failure reason)"
+          ],
+          "printed_pages": [
+            24
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.10–.12, Tables 10.2.1.10-1/.11-1/.12-1 (provision request and response; service selector on subscribe only in these tables)"
+          ],
+          "printed_pages": [
+            24,
+            25
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [

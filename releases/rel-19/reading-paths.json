@@ -4260,6 +4260,26 @@
           "read": "topics/interworking/group-call-release.md"
         }
       ]
+    },
+    {
+      "id": "iwf-group-information-fields-can-fulfil-vs-provision",
+      "question": "IWF 向谁查组配置？查组应答何时必须带配置或失败原因，能否从图中的 provision 判断消息类型？",
+      "start": "topics/interworking/group-configuration.md#查组配置的应答带配置还是带失败原因",
+      "boundary": "TS 23.283 V19.5.0，Rel‑19 Stage 2 IWF‑1。.8 查组信息、.9 应答均可在 GMS↔IWF 两向。两表组 ID 都 M，.8 只查一个组。查 .9 时分两注：能满足必带组配置信息（取自 GMS，或由 IWF 提供时取自 IWF）；不能满足必带 Result（失败原因，不是成功标志）。两项表标 O，但不能无视注；也没有写另一项必缺或接收端如何处理。缺抓包不倒推，本端发出不是对端实收、保存或订阅。判单条可直接查表；要配对时才查实际类型、组、两端和关联上下文。.2 撤组通知也可只有组 ID。.3 对 MC 定义组，当 IWF 缺配置且组有 LMR 成员，IWF 向组的 primary MC GMS 拉取。.5 对 IWF 定义组，当 MC GMS 缺配置、组有 MC 服务用户且已配置对 IWF 组管理寻址，正文 MC→IWF 索取并由 IWF 提供；图箭头字面写 provision，不改成 .8/.9 或据图名填成 .10/.11 主动提供字段。",
+      "next_if": [
+        {
+          "condition": "实际问主动提供和对端确认保存的两个条件分支，或想比较是哪一方主动，不是查组应答的 Result。",
+          "read": "topics/interworking/group-configuration.md#主动提供不等于被请求获取"
+        },
+        {
+          "condition": "实际问持续订阅或通知，而非查一次配置。",
+          "read": "topics/interworking/configuration-updates.md"
+        },
+        {
+          "condition": "消息确认为撤组通知或其应答，不是查组配置。",
+          "read": "topics/interworking/regroup-boundaries.md#重组的应答成立通知和撤组通知分别证明什么"
+        }
+      ]
     }
   ]
 }
