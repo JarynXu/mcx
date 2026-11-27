@@ -937,6 +937,14 @@
 
 入口：[在网增强状态互通：谁请求分享，哪一侧查 IWF 归属？](topics/interworking/enhanced-status-on-network.md)。
 
+### MCPTT 按条件发起互通 ad hoc 组呼：谁选人，何时发 IWF 请求？
+
+- **能回答：**MCPTT 主叫按条件找 MCPTT 和 LMR 用户时，由 MCPTT server 定名单；Step 4 后可发 IWF 请求，不等本侧 7a/7b。区分 IWF 应答、主叫应答、成员与媒体。
+- **只到条件或接口：**TS 23.283 V19.5.0 Stage 2。只核 §10.17.3.1 及 IWF-1 请求/应答字段。通知给发起用户为可选；其他获授权且已配置的接收者按 MCPTT 用户迟到加入或离开触发。成员须已确认且已加入；LMR 确认通知不适用。
+- **尚未建立的结论：**不套 LMR 发起、显式名单逐用户发送或限时应答。未闭合 LMR 选人/邀请、Step 10 等待或聚合、ID 有效期或原生信令；IWF 成功和通知都不是实际媒体证据。
+
+入口：[MCPTT 按条件发起互通 ad hoc 组呼：谁选人，何时发 IWF 请求？](topics/interworking/adhoc-group-criteria-mcptt-origin.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)
