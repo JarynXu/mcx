@@ -1017,6 +1017,14 @@
 
 入口：[LMR 用户不能被抢占时，losing audio 是什么？](topics/interworking/losing-audio-classification.md)。
 
+### 互通组更换语音编解码：许可、应答与媒体怎么分？
+
+- **能回答：**查互通组共用 LMR 语音编解码与 IWF 转码的区别，以及更换的四个前提、组许可和请求／应答的角色与必带项。只查规范或一条消息无需整笔往返。
+- **只到条件或接口：**TS 23.283 V19.5.0 Stage 2 §10.7.1–.3。server 向所有已归属 MCPTT 客户端发步骤 3；客户端 4 与 server 回 IWF 的 5 不同。后续媒体见步骤 6，首次使用时间不在范围内。
+- **尚未建立的结论：**同组 ID、客户端接受、IWF Result 或图的顺序不能证明全员接受、实收、媒体已换或何时首用。未定汇总、超时、回退或 Stage 3 编码。
+
+入口：[互通组更换语音编解码：许可、应答与媒体怎么分？](topics/interworking/codec-reconciliation.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)

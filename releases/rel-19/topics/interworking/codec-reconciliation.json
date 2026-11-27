@@ -1,0 +1,301 @@
+{
+  "topic_id": "r19-iwf-codec-reconciliation",
+  "release": 19,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "互通组更换语音编解码：许可、应答与媒体怎么分？",
+  "common_conditions": [
+    "TS 23.283 V19.5.0，Rel‑19 Stage 2，MCPTT 与 LMR 的 IWF 语音互通。各条分别说明转码或更换条件。",
+    "查询规范不要求抓包。判断运行实况时，读所问的组、尝试、端点或媒体证据，不从一条消息推完流程。"
+  ],
+  "condition_rule": "先区分 IWF 转换两侧语音与互通组共用 LMR 编解码，再按问题查更换前提、某条请求或应答、组许可、客户端接受或后续媒体。查哪一条取该条前提；只有归同一次更换才需跨步骤配对。",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "iwf-codec-transcoding-mode-vs-configured-common-lmr-codec",
+      "conditions": [
+        "可独立比较 §10.7.2 和 §10.7.3.1 的做法，无需先有更换消息。要判该组采用哪种配置，查本组实际配置；要判这次语音是否经 IWF 转换，查对应语音的实际处理。"
+      ],
+      "conclusion": "§10.7.2 的转码方式可让 MCPTT、LMR 各用自己的语音编解码，由 IWF 转换两侧间传送的语音格式；规范不规定 LMR 一侧用哪种。§10.7.3.1 的互通组可配置共用 LMR 语音编解码，让两侧组员的语音端到端传送而不转码。",
+      "limitations": [
+        "能力、配置或两端声明同一编解码都不证明本次已转换、不转换、已开启端到端加密或已收音。不能给 §10.7.3 的流程添上强制转码或旧加密转码场景的密钥前提。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.7.2 (independent codecs and IWF voice-format conversion)"
+          ],
+          "printed_pages": [
+            145
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.7.3.1 description, preconditions 1–4 and NOTE 1 (shared codec and scope of double lack of support)"
+          ],
+          "printed_pages": [
+            145,
+            146
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-codec-lmr-trigger-and-group-permission",
+      "conditions": [
+        "可直接查 §10.7.3.1 列了哪些前提，或 NOTE 1 的例外；判断本次是否满足全部前提时，逐项核同组归属、此前协商、请求项支持及 LMR 的更换需要；单查某项无需先证其余。只问步骤 2 查什么，无需先确认全部流程。"
+      ],
+      "conclusion": "四个前提是两侧都有成员归属到此 MCPTT 组、已为 MCPTT 组员协商过一种获准的 LMR 语音编解码、MCPTT 组成员支持所请求的第二种 LMR 语音编解码，以及 LMR 系统需要换另一种。步骤 2 图称 Authorization check，正文是 MCPTT server 核查所请求编解码对该组是否允许，图的名称未另给用户或 IWF 节点验权规则。",
+      "limitations": [
+        "此前允许的编解码不证明此次所请项也获准，支持某项不证明实际核查通过。NOTE 1 只把 IWF 不支持转码且 MCPTT 客户端不支持所请 LMR 编解码的组合排在本规范范围外；一项缺支持或未知并不证明同时为真，也不证明可走通、回退或失败处置。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.7.3.1 description, preconditions 1–4 and NOTE 1 (shared codec and scope of double lack of support)"
+          ],
+          "printed_pages": [
+            145,
+            146
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.7.3.1, Figure 10.7.3.1-1 and Steps 1–5 (group permission, all affiliated clients, and distinct responses)"
+          ],
+          "printed_pages": [
+            146
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-codec-iwf-request-and-result-ies",
+      "conditions": [
+        "单查规范字段或只辨明步骤 1／5 中任一条时，即可按该条辨认，勿要求先拿到来回两条。只有把实际 Step 5 Result 归给某个 Step 1 请求时，需要同组、同次及对应端点方向的关联证据。"
+      ],
+      "conclusion": "表 10.7.1.1‑1 的 IWF→MCPTT server 请求含 M 的 MCPTT group ID 与 Codec type，指目标组和所请编解码；表 10.7.1.2‑1 的反向应答含 M 的 MCPTT group ID 与 Result，指该次所请更换的成功或失败。",
+      "limitations": [
+        "应答表不列 Codec type、事务标识或逐人结果，不能用同组加 Success 给同组两个请求选一条。两表不补 server 与客户端交互的步骤 3/4 字段，也不定义 Stage 3 编码。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.7.1.1, Table 10.7.1.1-1 (IWF request, group and requested codec)"
+          ],
+          "printed_pages": [
+            145
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.7.1.2, Table 10.7.1.2-1 (IWF-facing response, group and result)"
+          ],
+          "printed_pages": [
+            145
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.7.3.1, Figure 10.7.3.1-1 and Steps 1–5 (group permission, all affiliated clients, and distinct responses)"
+          ],
+          "printed_pages": [
+            146
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-codec-client-negotiation-vs-iwf-response",
+      "conditions": [
+        "可单查步骤 1–5 的角色、发送范围和回包含义。判断实际接受声明、该声明被 server 收到或步骤 5 被 IWF 收到，分别核所问节点和同一次对应消息；无需先有媒体证据。"
+      ],
+      "conclusion": "步骤 1 IWF 代表 LMR 请求，2 server 查所请求项的组许可。3 server 向所有已归属的 MCPTT 客户端发协商请求，图画一个而正文写全部；4 是该客户端回给 server、表示接受；发送声明与 server 实收另取各自证据。5 是 server 向 IWF 回应，Result 是所请求更换成功或失败，不等于某一客户端的第 4 步。",
+      "limitations": [
+        "第 4 步某个客户端接受不代表其他端接受；第 5 步仅见发送不等于 IWF 实收，即使实收匹配 Success，也不证明每一客户端实收或已接受。不能从 4、5 的图示顺序裁定要不要等全员，也不补汇总、超时或失败处理。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.7.3.1, Figure 10.7.3.1-1 and Steps 1–5 (group permission, all affiliated clients, and distinct responses)"
+          ],
+          "printed_pages": [
+            146
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.7.1.2, Table 10.7.1.2-1 (IWF-facing response, group and result)"
+          ],
+          "printed_pages": [
+            145
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-codec-subsequent-media-vs-first-use-time",
+      "conditions": [
+        "可只问步骤 6 或 NOTE 2 的规定；要判某次后续媒体或哪个发送方何时首次换编解码，须查对应时段与发送方的实际媒体。只读匹配应答，并不需要这份媒体证据。"
+      ],
+      "conclusion": "成功更换分支，步骤 6 的 MCPTT 组后续传输在媒体面使用新编解码。NOTE 2 把某个发送方首次用新编解码的时刻排在本规范范围之外。",
+      "limitations": [
+        "不要从客户端接受、IWF 应答发出或实收、图上顺序或其时间戳推出本次实际切换时刻、所有发送方同一时刻切换、给定终端实收或播放。未定义 SIP/SDP 或 RTP 报文字段；不把步骤 6 套到失败结果。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.7.3.1, Figure 10.7.3.1-1 and Steps 1–5 (group permission, all affiliated clients, and distinct responses)"
+          ],
+          "printed_pages": [
+            146
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.7.1.2, Table 10.7.1.2-1 (IWF-facing response, group and result)"
+          ],
+          "printed_pages": [
+            145
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.7.3.1 Step 6 and NOTE 2 (later group media and unspecified first use)"
+          ],
+          "printed_pages": [
+            146
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.7.1.1, Table 10.7.1.1-1 (IWF request, group and requested codec)"
+      ],
+      "printed_pages": [
+        145
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.7.1.2, Table 10.7.1.2-1 (IWF-facing response, group and result)"
+      ],
+      "printed_pages": [
+        145
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.7.2 (independent codecs and IWF voice-format conversion)"
+      ],
+      "printed_pages": [
+        145
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.7.3.1 description, preconditions 1–4 and NOTE 1 (shared codec and scope of double lack of support)"
+      ],
+      "printed_pages": [
+        145,
+        146
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.7.3.1, Figure 10.7.3.1-1 and Steps 1–5 (group permission, all affiliated clients, and distinct responses)"
+      ],
+      "printed_pages": [
+        146
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.7.3.1 Step 6 and NOTE 2 (later group media and unspecified first use)"
+      ],
+      "printed_pages": [
+        146
+      ],
+      "usage": "primary"
+    }
+  ],
+  "related": [
+    {
+      "topic": "r19-iwf-encrypted-transcoding",
+      "required": false,
+      "meaning": "若实际要核已建 MCPTT 会话内、按各端保护条件转换加密语音，查 §10.3.3.6；不把其前提加给 §10.7 更换。"
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  },
+  "limitations": [
+    "仅 §10.7 信息流和图示，不补本地 LMR 算法、完整失败处理、空口、Stage 3 编码或设备支持。"
+  ]
+}
