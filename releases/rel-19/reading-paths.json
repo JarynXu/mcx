@@ -3624,6 +3624,18 @@
           "read": "topics/location/lms-one-time-location-request.md"
         }
       ]
+    },
+    {
+      "id": "lms-position-accuracy-selection-axes-and-evidence",
+      "question": "向目标 LMC 要坐标能指定 10 米精度吗？报告只给水平精度，垂直精度和缺值怎样判断？",
+      "start": "topics/location/lms-location-report-request.md",
+      "boundary": "查 TS 24.283 V19.3.0，LMS 向已注册目标 LMC 索要的 LocationReportRequest。requestedLocationInfo 的 coordinate 选择坐标，本模型没有定义单独的水平／垂直精度键或米数阈值。核实际结果看 LMS 实收同一目标对此请求的匹配 200 及可读正文：本次报告的当前坐标读 locationData.currentCoordinate.horizontalaccuracy 与 locationData.currentCoordinate.verticalaccuracy，各轴的可选 Accuracy 均以米计。报告根层或历史里的同名值不算这两个当前坐标字段；不要把高度、坐标小数位数、另一轴、别的条目当作本轴精度。缺值或空值不补 0，也不把字面 0 当作缺字段。A.2 的 horizontalaccuracy 不和印刷表的 horizonalaccuracy 自动作别名。历史或另一次通知须按实际所在条目分开核。",
+      "next_if": [
+        {
+          "condition": "实际问位置通知送到了哪一个查询端且哪一目标有位置；去核实收的通知，而非目标端的 200。",
+          "read": "topics/location/lms-one-time-location-request.md"
+        }
+      ]
     }
   ]
 }

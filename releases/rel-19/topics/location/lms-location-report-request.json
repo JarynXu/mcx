@@ -1577,6 +1577,258 @@
         "independent_source_review": false,
         "independent_usage_acceptance": false
       }
+    },
+    {
+      "id": "report-accuracy-request-has-no-dedicated-axis-target",
+      "conditions": [
+        "问题针对 LMS 向已注册目标 LMC 发的 LocationReportRequest 中的 requestedLocationInfo，而非上游查询请求或其他接口的服务质量要求。"
+      ],
+      "conclusion": "表 7.1.6.2.33-1 与 A.2 RequestedLocationInfo 没有定义水平精度、垂直精度的选择键或米数门槛。coordinate 依该字段的出现选择坐标；A.2 声明为可空布尔，不是精度阈值，也不要求附带这两个精度值。minimumIntervalLength 是以秒计的最短上报间隔，不用来写精度米数。报告类型 CurrentCoordinate 中的 horizontalaccuracy 和 verticalaccuracy 是结果数据，不能当成这里的索要参数。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.7.2"
+          ],
+          "printed_pages": [
+            21,
+            22
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.33 Table 7.1.6.2.33-1"
+          ],
+          "printed_pages": [
+            50
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 RequestedLocationInfo and LocationRequest"
+          ],
+          "printed_pages": [
+            84,
+            85,
+            86
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.2"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.50–.51 Tables 7.1.6.2.50-1 and 7.1.6.2.51-1"
+          ],
+          "printed_pages": [
+            57
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LocationInfo and CurrentCoordinate"
+          ],
+          "printed_pages": [
+            87
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "只判断这个标准请求模型。没有定义这些键不等于某个接收端一定拒绝任意附加字段，不从字段缺失推出终端选用某种精度，也不补厂商扩展、失败码或其他接口能力。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "report-accuracy-optional-per-axis-and-local-units",
+      "conditions": [
+        "查 LMS 实收同一目标 LMC 对本笔 LocationReportRequest 的匹配 200 和可读 MCUELocation，或查该响应引用的报告模型；定位报告里要判断的那一个 CurrentCoordinate。"
+      ],
+      "conclusion": "§6.2.2.8.2 对生成报告的水平和垂直精度都写 may include，印刷表 7.1.6.2.51-1 各列 O、0..1。本节复用的 Accuracy 在表 7.1.6.1-2 是以米表示的浮点值。本次匹配 200 的当前坐标按 A.2 读 locationData.currentCoordinate.horizontalaccuracy 和 locationData.currentCoordinate.verticalaccuracy；报告根层、历史条目里的同名值不算当前坐标这两个字段。只收到水平精度，不等于收到垂直精度，也不能拿 altitude 的高度值或坐标的小数位数充当精度。报告可以分别提供一轴、两轴或不提供；这里没有给缺值的默认数。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.7.2"
+          ],
+          "printed_pages": [
+            21,
+            22
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.2"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.1 Table 7.1.6.1-2 Accuracy and Altitude"
+          ],
+          "printed_pages": [
+            42
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.50–.51 Tables 7.1.6.2.50-1 and 7.1.6.2.51-1"
+          ],
+          "printed_pages": [
+            57
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LocationInfo and CurrentCoordinate"
+          ],
+          "printed_pages": [
+            87
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "完整对象某轴缺键或该轴实际是 null，都没有拿到对应米数；缺键、null、字面 0 不互换，不从缺值判 0 米或合格／不合格。字段未抓全，不认定线上省略。只观察到字面 0 与缺键是两件事，不声称 TS 29.572 对 0 的接收、编码或准确含义。上报数值不保证实测误差、置信水平、测量方式或数据新鲜度。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "report-accuracy-name-and-same-coordinate-owner",
+      "conditions": [
+        "对上同一笔收到的报告和本次要读的坐标对象；对照历史或查询通知仅为辨别精度的归属，不把另一事务当本次回调。"
+      ],
+      "conclusion": "水平精度拼法沿用本页 report-coordinate-printed-and-a2-field-spellings 中的来源区分。按 A.2 检查时，只见印刷表写的 horizonalaccuracy、未见 A.2 写的 horizontalaccuracy，不据此认定已收到 A.2 该属性；verticalaccuracy 在三处同名。历史事件和 A.3 通知的目标条目通过 LocationInfo 复用这个坐标类型；精度只归提供该值的坐标对象，历史或通知里的同名值不补本次顶层对象，另一轴也不能互填。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.2"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.50–.51 Tables 7.1.6.2.50-1 and 7.1.6.2.51-1"
+          ],
+          "printed_pages": [
+            57
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LocationInfo and CurrentCoordinate"
+          ],
+          "printed_pages": [
+            87
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.49 Table 7.1.6.2.49-1"
+          ],
+          "printed_pages": [
+            56
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.52–.53 Tables 7.1.6.2.52-1 and 7.1.6.2.53-1"
+          ],
+          "printed_pages": [
+            57,
+            58
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 MCUELocation, LocationHistoryData and LocationHistoryEvent"
+          ],
+          "printed_pages": [
+            86,
+            87,
+            88
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.3 MCUserLocation and LocationNotification"
+          ],
+          "printed_pages": [
+            94,
+            95
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "保留各来源字面；不规定兼容别名、大小写宽容或未知键的拒绝／忽略规则。精度值不替地理坐标数据，A.2 未列 required 不撤掉正文的程序条件。别从同一字段名、同一用户或同一数值认定两份报告用了同一个位置样本。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "source_references": [
@@ -2002,6 +2254,28 @@
         95
       ],
       "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 RequestedLocationInfo and LocationRequest"
+      ],
+      "printed_pages": [
+        84,
+        85,
+        86
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.1 Table 7.1.6.1-2 Accuracy and Altitude"
+      ],
+      "printed_pages": [
+        42
+      ],
+      "usage": "primary"
     }
   ],
   "related": [
