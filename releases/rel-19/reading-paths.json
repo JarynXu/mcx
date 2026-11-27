@@ -4212,6 +4212,22 @@
           "read": "topics/interworking/group-call-operation-elements.md"
         }
       ]
+    },
+    {
+      "id": "iwf-floor-request-grant-reject-fields-and-ack",
+      "question": "IWF 普通话权请求、授予和拒绝分别看哪些字段？看到时长或确认就有媒体了吗？",
+      "start": "topics/interworking/floor-signals.md#普通话权请求授予拒绝字段能说明什么",
+      "boundary": "Rel‑19 Stage 2，TS 23.283 V19.5.0 §§10.5.2.1–.4。IWF↔MCPTT floor control server 三流各列双向，不按方向猜类型或仲裁方。MCPTT ID M 和别名 O 随各表业务角色：.2 请求者，Floor priority M 是申请优先级、Location O 是其位置；.3 获授者，Duration M 是允许发送的时长，不给单位或起点；.4 被拒方，Rejection cause O，缺原因仍报告拒绝。身份具体代表谁取决于互通方式及本腿源/目的。Source identifier O、仅媒体复用可出现，合规已确认+有字段才正推复用；不能用它配对。.3/.4 Acknowledgement required O；实收本条且值明确要求才看 .12，确认发送者的 ID 不能代获授或被拒者。.2 不列确认指示，不妨碍独立业务响应。单读类型、规范或实收无需整链；要跨腿归因才核同次通信、请求、对象与端点。允许发送、实际发语音、别人实收、队列与呼叫状态分开。",
+      "next_if": [
+        {
+          "condition": "实际问组或私呼哪一侧仲裁而不是看申请／结果的字段。",
+          "read": "topics/interworking/floor-control-owner.md"
+        },
+        {
+          "condition": "已识别消息是查询或通告队列位置，不是普通申请的授予或拒绝。",
+          "read": "topics/interworking/floor-signals.md#查谁的位置哪条消息要求确认"
+        }
+      ]
     }
   ]
 }
