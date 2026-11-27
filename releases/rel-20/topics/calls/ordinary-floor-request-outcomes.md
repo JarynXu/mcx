@@ -28,6 +28,6 @@
 
 [已配置组内插话](group-audio-cut-in.md)不支持话权排队，却仍有获准和开始发话的专用提示要求。不要把该组的“最新请求”规则套给普通组。若现场没有确认组的生效模式，先依据配置核对，不从队列提示反推模式。（§6.2.3.6.1/.2/.3，页 37–38；[多发话者组](group-multi-talker-control.md)另查）
 
-**排障时分开留证。**先核本次在网呼叫、组模式与成员归属，再把同一笔申请的结果和相应一侧提示对上。要查[发话结束或单次发话到期](floor-permission-end-and-transmit-limit.md)，不要用本页的开始提示代替。本页不规定 SIP 或话权报文、队列排序和提示的交付机制，不从一侧日志推断其他人已收到或应用已播放；不外推到离网或无话权私呼。
+**排障时分开留证。**先核本次在网呼叫、组模式与成员归属，再把同一笔申请的结果和相应一侧提示对上。要查[发话结束或单次发话到期](floor-permission-end-and-transmit-limit.md)，不要用本页的开始提示代替。本页不规定 SIP 或话权报文、队列排序和提示的交付机制，不从一侧日志推断其他人已收到或应用已播放；无话权私呼不适用。实际是离网通信时，看[离网组呼和私呼各自的申请结果](off-network-floor-request-outcomes.md)。
 
 [3GPP 原文归档](https://www.3gpp.org/ftp/Specs/archive/22_series/22.179/22179-k00.zip) · [来源与版本](../../sources.json) · [结构化记录](ordinary-floor-request-outcomes.json)

@@ -20,6 +20,6 @@ MCPTT 管理员和／或获授权用户为终端准备两类东西（印刷页 6
 - **为每位预期使用该终端离网操作的用户准备一份 MCPTT 用户档。** 档内包括用户的字母数字别名（最小长度记为 N3）、该用户可用的离网组、获准使用的离网组的字母数字别名、该用户获准与之私呼的离网用户，以及可获得时与预期用户或管理员关联的任务关键组织名称。
 - **认证密钥和端到端安全密钥。** 它们与用户档是两项。注 3 说明，终端既可在覆盖外配置，也可通过接入网络完成配置；不必等失去覆盖才准备。配过档或备有密钥，不证明随后那通呼叫用了直通，更不证明对方收到话音。
 
-本页核的是 **Release 20 Stage 1 的离网业务概述**，不是选路算法、切换时限或设备实测。若要查外设通过 IP 给终端配置，读[离线配置的 CMS/GMS 分工](../identity/offline-ue-configuration.md)；这是另一种操作，不是离网通话必须连接外设。若要查迟入者能否获得发话者位置，读[离网发话者位置与组呼位置更新的区别](imminent-peril-location-update.md)。
+本页核的是 **Release 20 Stage 1 的离网业务概述**，不是选路算法、切换时限或设备实测。若要查外设通过 IP 给终端配置，读[离线配置的 CMS/GMS 分工](../identity/offline-ue-configuration.md)；这是另一种操作，不是离网通话必须连接外设。若要查迟入者能否获得发话者位置，读[离网发话者位置与组呼位置更新的区别](imminent-peril-location-update.md)。若要查离网时谁可发话、谁该收到什么提示，读[离网话权申请结果](off-network-floor-request-outcomes.md)。
 
 [3GPP 原文归档](https://www.3gpp.org/ftp/Specs/archive/22_series/22.179/22179-k00.zip) · [来源与版本](../../sources.json) · [结构化记录](off-network-direct-path.json)
