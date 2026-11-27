@@ -118,6 +118,10 @@
         {
           "condition": "IWF 归属用户请求激活或停用自己的功能别名，或读这两种操作的逐项应答、可接管选项或共享者状态通知；不是查当前列表、执行接管或原生状态订阅。",
           "read": "topics/interworking/functional-alias-activation-deactivation.md"
+        },
+        {
+          "condition": "归属 IWF 的用户已决定接管某一被使用的功能别名，问真正接管请求、该请求的应答、旧持有者撤销或共享者通知；不是仅有激活中的可接管结果、一般 Stage 1 政策或查询。",
+          "read": "topics/interworking/functional-alias-takeover.md"
         }
       ],
       "boundary": "Identity concepts and bounded requirements/elements; no complete authentication or registration implementation."
@@ -3545,9 +3549,33 @@
         {
           "condition": "原生 MCData 客户端发起当次变更、续期、停用，不是 IWF 信息流",
           "read": "topics/mcdata/functional-alias-change-request.md"
+        },
+        {
+          "condition": "激活只给可接管选项；要查用户另发实际 IWF 接管请求、结果和通知，或判断某撤销流是不是该次接管步骤 3 时另读。",
+          "read": "topics/interworking/functional-alias-takeover.md"
         }
       ],
       "boundary": "限 TS 23.283 V19.5.0 Stage 2 §§10.14.3.3–.4 的 IWF 归属用户激活或停用；查规则无需抓包。按操作区分服务器前提、核权/状态处理、Step4 匹配逐别名应答和 Step5 共享者状态通知。可接管选项不是接管执行，后者另查 §10.14.3.5。不移用查询可选字段、原生协议或错误码。"
+    },
+    {
+      "id": "iwf-functional-alias-takeover",
+      "question": "IWF 功能别名接管：应答、旧持有者撤销和共享者通知",
+      "start": "topics/interworking/functional-alias-takeover.md",
+      "next_if": [
+        {
+          "condition": "实际操作只是激活/停用，或只有激活的 can be taken over 选项而未决定另发接管请求",
+          "read": "topics/interworking/functional-alias-activation-deactivation.md"
+        },
+        {
+          "condition": "只查某用户激活的别名或按某个别名反查，不要求变更",
+          "read": "topics/interworking/functional-alias-query.md"
+        },
+        {
+          "condition": "问一般共享或接管的 Stage 1 规则，不是 IWF 实际接管流程",
+          "read": "topics/identity/functional-alias.md"
+        }
+      ],
+      "boundary": "限 TS 23.283 V19.5.0 Stage 2 §10.14.3.5：已有可接管选项且归属 IWF 的用户决定实际接管一个别名；查规范无需抓包。分步骤 3 旧 MC service client 1 撤销、步骤 5 原请求接管结果和各自实际收件。步骤 6 通知共享同一别名的其他 MC service 用户；步骤 7 通知共享同一别名的所有 IWF 归属用户。步骤 7 没写排除请求者，也不能仅凭接管应答判定请求者符合共享条件或实际已收到。§10.14.2.10 的 server→IWF 撤销是对照，不能替步骤 3；不从一条通用 IWF 角色线推同实例、最终状态或接管已完成。"
     }
   ]
 }

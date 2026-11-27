@@ -1,0 +1,408 @@
+{
+  "topic_id": "r19-iwf-functional-alias-takeover",
+  "release": 19,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "IWF 功能别名接管：应答、旧持有者撤销和共享者通知",
+  "common_conditions": [
+    "TS 23.283 V19.5.0 Rel‑19 Stage 2 §10.14.3.5 接管归属 IWF 的用户所选一个功能别名；满足文中先前激活、当时可接管并实际决定接管的条件。",
+    "以该次操作、原请求者、别名、消息类型、方向和实际对象解释证据；查规范无需抓包。表 10.14.2.10 仅用来区分另一撤销信息流。"
+  ],
+  "condition_rule": "继承共同条件和本条条件；对照只作辨别，不替换实际操作的对象或证据。",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "takeover-prior-offer-is-not-a-request-or-authorization",
+      "conditions": [
+        "归属 IWF 的用户从前一笔激活得知某已被使用的别名可接管，现要决定或判断实际接管。"
+      ],
+      "conclusion": "§10.14.3.5 前提是图中的 MC service client 1 已执行激活过程，归属 IWF 的请求者因前一笔激活得知哪项别名已被使用但可接管，并决定接管。激活表 can be taken over 是选项，不是接管请求、这笔授权或已接管；查规范无需抓包。发起者的 MC service ID 表示该 LMR 用户，别名能力须已支持。只查询状态或只做激活/停用不是此接管。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "3.1",
+            "10.14.1"
+          ],
+          "printed_pages": [
+            12,
+            170
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.2.4",
+            "Table 10.14.2.4-1",
+            "10.14.3.3 step 3"
+          ],
+          "printed_pages": [
+            171,
+            174
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.3.5 pre-conditions"
+          ],
+          "printed_pages": [
+            175
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "takeover-step-one-one-functional-alias-m-requester-id",
+      "conditions": [
+        "已识别实际 IWF functional alias take over request（步骤 1）。"
+      ],
+      "conclusion": "IWF→MC service server 的请求要带必选（M）的请求者 MC service ID 和一个拟接管的 Functional alias。不套激活或停用的 Functional alias list，不用旧持有者 ID 代替请求者，也不因选项或通知出现多项就说一步接管多项。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.3.5",
+            "Figure 10.14.3.5-1",
+            "10.14.3.5 steps 1–7"
+          ],
+          "printed_pages": [
+            175,
+            176
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.2.8",
+            "Table 10.14.2.8-1"
+          ],
+          "printed_pages": [
+            172
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.2.4",
+            "Table 10.14.2.4-1",
+            "10.14.3.3 step 3"
+          ],
+          "printed_pages": [
+            171,
+            174
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "takeover-server-checks-conflicts-authorizes-and-stores-status",
+      "conditions": [
+        "处理这笔实际接管请求，区别图 10.14.3.5-1 的本地动作及正文。"
+      ],
+      "conclusion": "图步骤 2 写基于功能别名策略、用户订阅等核权，正文步骤 2 写检查接管冲突，步骤 3 发送撤销的条件是该请求者有接管授权。步骤 4 存所请求别名的状态，不等同已经通知、请求者实收或某个持久化结果。不要从其他操作的授权或前次选项补本次核权，也不虚构拒绝原因或错误分支。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.3.5",
+            "Figure 10.14.3.5-1",
+            "10.14.3.5 steps 1–7"
+          ],
+          "printed_pages": [
+            175,
+            176
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "takeover-step-three-native-former-holder-not-iwf-revoke-table",
+      "conditions": [
+        "在 §10.14.3.5 的授权分支核步骤 3 的实际方向和对象，或比较实际 server→IWF 的撤销消息。"
+      ],
+      "conclusion": "步骤 3 MC service server→原先使用此别名的 MC service client 1，正文通知该客户端用户别名已撤销、不再为其激活。另有 §10.14.2.10 是 server→IWF 的撤销信息流，表 10.14.2.10-1 两项必选：字面为请求 MC service 用户身份的 MC service ID，以及被撤销的 Functional alias。表没把该 ID 定义成收件者或旧持有者，也没有接管结果。不能互替两个方向或推步骤 3 额外必发 IWF 撤销；图没给旧客户确认或须等它实收才存储/应答的条件。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.3.5",
+            "Figure 10.14.3.5-1",
+            "10.14.3.5 steps 1–7"
+          ],
+          "printed_pages": [
+            175,
+            176
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.2.10",
+            "Table 10.14.2.10-1"
+          ],
+          "printed_pages": [
+            172,
+            173
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "takeover-step-five-response-matching-one-alias-not-activation-outcome",
+      "conditions": [
+        "只按能匹配本人、该别名、操作、方向的实际接管应答取证。"
+      ],
+      "conclusion": "步骤 5 从 MC service server 回归属 IWF 的原请求者，图画 server→IWF。表 10.14.2.9-1 的请求者 MC service ID、一个拟接管的 Functional alias、Activation status per functional alias 三项必选（M）；该状态虽称 Activation，语义是接管 accepted/rejected，不能用激活的可接管或状态通知替代。实际匹配 accepted 表示本次请求报接受；server 发出、对应 IWF 实收和请求者看到分开。收到匹配的接管应答也不证明步骤 3 实收、别名持续独占或别的共享者已更新。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.3.5",
+            "Figure 10.14.3.5-1",
+            "10.14.3.5 steps 1–7"
+          ],
+          "printed_pages": [
+            175,
+            176
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.2.9",
+            "Table 10.14.2.9-1"
+          ],
+          "printed_pages": [
+            172
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.2.4",
+            "Table 10.14.2.4-1",
+            "10.14.3.3 step 3"
+          ],
+          "printed_pages": [
+            171,
+            174
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "takeover-step-six-seven-sharers-and-iwf-notification-fields",
+      "conditions": [
+        "实际观察步骤 6/7 或问接管时通知哪些共享者，保持同一别名与各自角色。"
+      ],
+      "conclusion": "步骤 6 是普通状态通知给共享同一别名的其他 MC service 用户；步骤 7 是 IWF 状态通知给共享同一别名的 IWF 归属用户。表 10.14.2.7-1 的发起变更用户 MC service ID、至少一个别名的列表、逐别名 Operational status 都必选，是 IWF 状态通知而非步骤 5（该 ID 不是接收者），不由其定义步骤 6 的原生编码。图 5 和 7 用一条通用 IWF 角色线，不判实际收件实例相同或不同。即使同一网关/同一方向/同别名仍分别取证；不同实例的实收不得互替，实例未知不据图补齐。实际状态通知不能作为原请求接受、步骤 3 撤销收件或所有共享者实收的证明。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.3.5",
+            "Figure 10.14.3.5-1",
+            "10.14.3.5 steps 1–7"
+          ],
+          "printed_pages": [
+            175,
+            176
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.2.7",
+            "Table 10.14.2.7-1"
+          ],
+          "printed_pages": [
+            172
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.14.2.9",
+            "Table 10.14.2.9-1"
+          ],
+          "printed_pages": [
+            172
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "3.1",
+        "10.14.1"
+      ],
+      "printed_pages": [
+        12,
+        170
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.14.2.4",
+        "Table 10.14.2.4-1",
+        "10.14.3.3 step 3"
+      ],
+      "printed_pages": [
+        171,
+        174
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.14.3.5 pre-conditions"
+      ],
+      "printed_pages": [
+        175
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.14.3.5",
+        "Figure 10.14.3.5-1",
+        "10.14.3.5 steps 1–7"
+      ],
+      "printed_pages": [
+        175,
+        176
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.14.2.8",
+        "Table 10.14.2.8-1"
+      ],
+      "printed_pages": [
+        172
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.14.2.9",
+        "Table 10.14.2.9-1"
+      ],
+      "printed_pages": [
+        172
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.14.2.10",
+        "Table 10.14.2.10-1"
+      ],
+      "printed_pages": [
+        172,
+        173
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.14.2.7",
+        "Table 10.14.2.7-1"
+      ],
+      "printed_pages": [
+        172
+      ],
+      "usage": "primary"
+    }
+  ],
+  "limitations": [
+    "不因单个网关、字段或通知证明其它消息到达；不补 IWF 实例、应用显示、持续独占或所有人状态。",
+    "不补 Stage 3 编码、未给出的错误码、重试、确认或收件排序。"
+  ],
+  "related": [
+    {
+      "topic": "r19-iwf-functional-alias-activation-deactivation",
+      "required": false,
+      "meaning": "只判断前一笔激活的可接管选项、其它逐项结果或停用时仍用原主题。"
+    },
+    {
+      "topic": "r19-iwf-functional-alias-query",
+      "required": false,
+      "meaning": "要查某用户的激活别名，或按别名反查用户和状态时另查查询。"
+    },
+    {
+      "topic": "r19-functional-alias-policy",
+      "required": false,
+      "meaning": "问一般共享和接管要求时另读 Stage 1，而非把它当成本次流程已执行。"
+    },
+    {
+      "topic": "r19-interworking-scope",
+      "required": false,
+      "meaning": "区分 IWF 代表的用户身份和背后的 LMR 或具体部署。"
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  }
+}

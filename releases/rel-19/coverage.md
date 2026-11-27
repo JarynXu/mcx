@@ -897,6 +897,14 @@
 
 入口：[IWF 功能别名：激活、停用和逐项结果](topics/interworking/functional-alias-activation-deactivation.md)。
 
+### IWF 功能别名接管：应答、旧持有者撤销和共享者通知
+
+- **能回答：**IWF 归属用户已决定接管一个被用别名时，查一笔接管请求、原应答、旧持有者撤销和共享者通知。查规范无需抓包。
+- **只到条件或接口：**TS 23.283 V19.5.0 Stage 2：可接管选项与实际请求不同，server 查授权和冲突。步骤 3 面向旧 MC service client 1，非对照表 server→IWF；5 回本次请求的 accepted/rejected；6/7 各按同一别名和原生用户/IWF 归属用户区分。
+- **尚未建立的结论：**未从应答或通知推其他消息实收、网关同实例或唯一/持续持有；不把可接管选项当已接管，不补线上字段、错误码、收件排序或 Stage 3。
+
+入口：[IWF 功能别名接管：应答、旧持有者撤销和共享者通知](topics/interworking/functional-alias-takeover.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)
