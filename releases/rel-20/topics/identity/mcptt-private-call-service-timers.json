@@ -1,0 +1,155 @@
+{
+  "topic_id": "r20-identity-mcptt-private-call-service-timers",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只核 MCPTT 业务配置文档的私呼时长、同一运行方式块下的警告和单次发话字段。off-network 不等于外设离线配置；不从这些字段推实际话权、计时和拆话流程。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "private-call-duration-fields-follow-network-and-floor-mode",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "已定位 MCPTT 业务配置文档内的 on-network/private-call 或 off-network/private-call；查配置字段的含义，不以已采样的运行时呼叫为前提。"
+      ],
+      "conclusion": "在网项 3 与注 1 把 hang-time 用于同一在网私呼两次连续 MCPTT 发话之间的最大静默时长，项 4、5 分别把 max-duration-with-floor-control 与 max-duration-without-floor-control 用于带话权与无话权私呼的整通上限。离网项 3、4 分别写离网私呼的挂起计时值及带话权私呼整通上限，对 TS 24.483 §7.2.13 HangTime 和 §7.2.12 MaxDuration 仅作指向。不能把不同分支的值互用、用静默时长代替整通，也不从这些字段推实际计时和释放。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network items 3–5, NOTE 1",
+            "off-network items 3–4"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1"
+          ],
+          "items": [
+            "on-network item 2(a)–(c)",
+            "off-network item 2(a)–(b)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shared-private-call-schema-declares-optional-durations-without-values",
+      "clause": "8.4.2.3",
+      "conditions": [
+        "查在网和离网这两个 private-call 的 Schema 声明，而不是拿一个片段判整份文档合格。"
+      ],
+      "conclusion": "on-networkType 和 off-networkType 下两个可选 private-call 都引用 mcpttsc:private-callType。该类型的 hang-time、max-duration-with-floor-control、max-duration-without-floor-control 都是 xs:duration 且 minOccurs=\"0\"，各自无 default 或 fixed。在相应完整块中缺某项，不能据这些声明自动填 0、无限、另一字段或另一运行方式的值；出现某项不证明语义生效、整档有效或 XCAP 已接受。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "on-networkType/private-call",
+            "off-networkType/private-call",
+            "private-callType three optional xs:duration children"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "off-network-no-floor-duration-ignore-does-not-enable-support",
+      "clause": "8.4.2.6",
+      "conditions": [
+        "实际目标是在 MCPTT 业务配置文档的 off-network/private-call 里发现 max-duration-without-floor-control；不是外设离线配置过程，也不是 on-network/private-call。"
+      ],
+      "conclusion": "§8.4.2.1 的在网项列出无话权上限，离网项未列。§8.4.2.6 对离网 private-call 含该子项的情形写 it shall be ignored。不能把这个子项当离网生效的无话权上限或功能启用证据。原句没有另行明确整个块、其他子项的删除或存储结果，也未规定与 XSD 或其余校验的执行顺序或整档响应。同名项放在在网分支不触发这个离网例外，仍要按该场景核其他要求。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "off-network private-call with max-duration-without-floor-control, it shall be ignored"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1"
+          ],
+          "items": [
+            "on-network item 2(c) vs off-network item 2(a)–(b)"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "shared private-callType"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network item 5 vs off-network items 3–4"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "transmission-and-hang-warnings-track-their-own-timers",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "查 MCPTT 业务配置内相应 on-network 或 off-network 分支下的 transmit-time 和 hang-time-warning；不把私呼专用项套组。"
+      ],
+      "conclusion": "transmit-time/time-limit 是该运行方式下组呼或私呼的单次发话时限，time-warning 为这项时限达到前的警告时长。hang-time-warning 是网络方式配置块下与 private-call、transmit-time 并列的项，为达到 Hang Time 前的警告时长，不属于 private-call 子项或发话时限预警。两项警告字段均不证明实际告警已触发、已送达或整通已拆除。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network items 7–9",
+            "off-network items 6–8"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "on-networkType and off-networkType siblings: private-call, transmit-time, hang-time-warning"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "不把私呼字段套在 ad hoc 组呼的同名字段。不推同名时长的继承、具体呼叫何时启停、发放或撤销话权、计时到期或网络通知。",
+    "只核本版已定位的 Schema 声明、校验句与语义条目；不保证整档接受，不读取借引的 TS 24.483 正文，不填服务器实际处理。"
+  ],
+  "related": [
+    "r20-identity-offline-ue-configuration",
+    "r20-identity-ad-hoc-broadcast-hang-time",
+    "r20-calls-private-call-administration",
+    "r20-calls-floor-permission-end-and-transmit-limit",
+    "r20-calls-off-network-inactivity-call-termination"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
