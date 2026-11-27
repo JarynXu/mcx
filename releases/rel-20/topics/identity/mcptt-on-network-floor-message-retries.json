@@ -1,0 +1,123 @@
+{
+  "topic_id": "r20-identity-mcptt-on-network-floor-message-retries",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只核 MCPTT 业务配置的在网 fc-timers-counters 内三个消息重发计时字段与两项计数。配置含义可查标准；某次的报文、匹配和运行结果另取证。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "mcptt-fc-t7-c7-floor-idle-retry",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "核 MCPTT 在网话权空闲时 Floor Idle 的重发间隔或 C7-floor-idle 的计数定义；查的是字段含义，不要求已有一次重发的记录。"
+      ],
+      "conclusion": "在网项 14：T7-floor-idle 为话权空闲时 Floor Idle 消息的重发间隔，C7-floor-idle 控制最多重发次数。在网项 27：C7 为 Floor Idle 最多发送次数。两处分别用重发与发送，不用 n 或 n+1 断言实际发送次数，不推初发是否计入、默认、零的运行效果或重发何时启动。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network item 14 Floor Idle retransmission interval when the floor is idle and maximum number of retransmissions controlled by C7",
+            "item 27 C7 contains the maximum number of times Floor Idle shall be sent"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-fc-t8-floor-revoke-retry-until-release",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "核在网 T8-floor-revoke 的 Floor Revoke 消息重发；若问当次是否收到本项列出的终止消息，单独核 Floor Release 的实际接收。"
+      ],
+      "conclusion": "在网项 15：T8-floor-revoke 为 Floor Revoke 的重发间隔，直到收到 Floor Release。对端发出不等于已收到；本项未列配对计数器，不断言无限重发、报文关联或整通释放。只问撤销 RTP 发送许可后话权控制服务器转发时长上限要查 T3（项 13），它不是重发间隔。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network item 15 Floor Revoke retransmission interval until Floor Release received",
+            "item 13 T3 stop-talking grace, contrast only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-fc-t20-c20-floor-granted-retry",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "核在网话权控制服务器重发 Floor Granted 的等待时间或 C20-floor-granted 的计数定义；若问某次停止条件，分别核 Floor Request 实收与其他报文。"
+      ],
+      "conclusion": "在网项 21：T20-floor-granted 是话权控制服务器重发 Floor Granted 之前的等待时间，直到收到 Floor Request，C20-floor-granted 控制发送次数。项 29 将 C20 写为最多重发次数。两处分别用发送与重发；不把 Floor Request 写成另一个 ACK，不将对端发出当成本端收到，不推初发计入、固定次数或实际授予/重发。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network item 21 floor control server waits before retransmitting Floor Granted until Floor Request is received; C20 controls number of times sent",
+            "item 29 C20 maximum times Floor Granted shall be retransmitted"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-fc-retransmission-timer-and-counter-declarations",
+      "clause": "8.4.2.3",
+      "conditions": [
+        "已定位 MCPTT 业务配置已选的 on-network/fc-timers-counters；查五个精确字段的必需性、类型或是否列入具名时长校验。"
+      ],
+      "conclusion": "在网 fc-timers-countersType 中 T7-floor-idle、T8-floor-revoke、T20-floor-granted 都是必需的 xs:duration；C7-floor-idle、C20-floor-granted 是必需的 xs:unsignedShort。各声明未给默认值。§8.4.2.6 的具名时长项 12、13、19 明列这三个 T 字段，不含这两个 C 字段。格式和秒值的详细校验查同版具名时长主题，不据 XML 类型推协议默认、现场计数或这些声明适用于只有离网块的配置。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "on-networkType and fc-timers-countersType; exact five names and distinct XSD types"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1"
+          ],
+          "items": [
+            "on-network item 7 and children c,d,j,m,o"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "named duration list items 12, 13, 19"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "保留项 14/27 与 21/29 各自的“发送/重发”字面，不从这些配置义项推导初发计入、零的运行效果、默认值或协议状态机。",
+    "T3 的 RTP 转发及具名时长详细校验各有现存主入口；不套到离网，也不据此裁定整通呼叫结束。"
+  ],
+  "related": [
+    "r20-identity-mcptt-on-network-floor-rtp-timers",
+    "r20-identity-ad-hoc-broadcast-hang-time"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
