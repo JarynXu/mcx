@@ -1,0 +1,491 @@
+{
+  "topic_id": "r19-iwf-first-to-answer-mcptt-origin",
+  "release": 19,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCPTT 发起互通 First-to-answer：怎样看应答、重试与媒体建立？",
+  "common_conditions": [
+    "TS 23.283 V19.5.0，Rel‑19 Stage 2，§10.15.3.1 的 MCPTT 用户发起，经 IWF 到 LMR 用户的 first-to-answer。§10.15.2 只用于比较相应信息腿；不套 LMR 发起和原生 Stage 3。",
+    "查规则无需抓包；判断某次通信看对应呼叫尝试、实际端点、方向、请求、应答/收件与媒体证据。"
+  ],
+  "condition_rule": "按共同条件和该条条件读；区分原提议、IWF 应答、转回发起端的结果、新尝试、媒体与话权。",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "fta-mcptt-origin-preconditions-and-requesting-hop",
+      "conditions": [
+        "查 §10.15.3.1 的 MCPTT 用户发起；所选场景是经 IWF 到 LMR 用户的 first-to-answer，不是 LMR 发起、普通自动或手动私呼。"
+      ],
+      "conclusion": "三个前提分别是主叫选了 first-to-answer，MCPTT client 已注册 MCPTT service，MCPTT server 已向本 MC 系统的功能别名控制服务器订阅别名激活/去激活更新。前提 3 未因使用直接 ID 而省略。步骤 1 是主叫客户端→MCPTT server；原请求包括主叫身份、被叫候选 MCPTT ID（可构成一组）或功能别名、含一个或多个媒体类型的 SDP offer，并给出加密算法、加密模式、是否请求话权以及全/半双工（是否建立话权控制）的选择。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.15.1"
+          ],
+          "printed_pages": [
+            176
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.15.3.1 Pre-conditions and Figure 10.15.3.1-1"
+          ],
+          "printed_pages": [
+            178
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.15.3.1 step 1"
+          ],
+          "printed_pages": [
+            178
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不从同一用户存在某个别名推出已订阅、该主叫别名可用、别名必须随请求附带或实际转发。话权请求不是获话权；加密选项不证明协商完成。步骤 1 的请求话权短语有重复，不增加另一参数。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "fta-request-auth-alias-location-and-media-subset",
+      "conditions": [
+        "MCPTT server 实际接到步骤 1 的请求。若使用主叫功能别名则另外核该别名；所称 IWF 请求是步骤 3，不是步骤 1 或 IWF 背后的 LMR 内部请求。"
+      ],
+      "conclusion": "步骤 2 先检查主叫是否获准发起；如果给了主叫别名，核该别名可用且已为该主叫激活。授权通过才在步骤 3 由 MCPTT server→IWF 发 IWF 请求，转交原参数，提供原提议的媒体类型或其子集，是否含主叫位置取决于向 IWF 转发的隐私检查。表 10.15.2.1-1 为双方之间的通用信息腿，主叫 MCPTT ID 与 Use floor control indication 必带，主叫别名可选；表注要求被叫 MCPTT ID 或被叫别名至少有一种：ID 可以成组，若给被叫别名须是单个；多个候选 ID 不等于组标识。SDP offer、Implicit floor request 和 Location information 在该表一般可选；这不改变步骤 1 自身的 SDP offer，也不将是否使用话权等同于是否隐式请求话权。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.15.3.1 step 1"
+          ],
+          "printed_pages": [
+            178
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.15.3.1 steps 2–3 and NOTE"
+          ],
+          "printed_pages": [
+            179
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.15.2.1 Table 10.15.2.1-1 and NOTE"
+          ],
+          "printed_pages": [
+            176,
+            177
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.15.3.1 Pre-conditions and Figure 10.15.3.1-1"
+          ],
+          "printed_pages": [
+            178
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不从主叫别名检查推出被叫别名的解析位置、被叫列表的筛选/排序或两类被叫字段同时存在时的优先次序。授权不等于准许共享位置；不补拒绝响应、IWF 向 LMR 的转发或增加未提出的媒体类型。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "fta-actual-response-direction-result-and-table-fields",
+      "conditions": [
+        "核 MCPTT 发起这一次、对应同一尝试的应答；查规范不必先有抓包，判实际结果需分该台 server 的 IWF 腿和发起客户端腿。"
+      ],
+      "conclusion": "步骤 4 的 IWF→MCPTT server 应答说明 IWF 支持所请求的一种媒体类型，流程仍明写成功或失败。失败可以附一个或多个替代参数。步骤 5 由 MCPTT server→发起 MCPTT client 转交 MCPTT 应答。表 10.15.2.2-1 的通用 IWF 应答列主叫和被叫 MCPTT ID、SDP answer 必带，两方功能别名可选；这个表未列 Result 行，步骤 4/5 仍按实际结果分支。只看到支持一种媒体、SDP answer 或被叫 ID，不证明成功、不确认哪一位 LMR 用户实际上先接听。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.15.3.1 Pre-conditions and Figure 10.15.3.1-1"
+          ],
+          "printed_pages": [
+            178
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.15.3.1 steps 4–5"
+          ],
+          "printed_pages": [
+            179
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.15.2.2 Table 10.15.2.2-1"
+          ],
+          "printed_pages": [
+            177
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "不把通用表的双向说明改成当前过程的应答逆向；不因未列 Result 推无结果，也不补线上 Result 字段编码、SIP 码、选择赢家的时刻或分支排序。步骤 4 已发并不证明步骤 5 已发或客户端已收；被叫 ID 不能代替实接或媒体已通。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "fta-result-success-vs-optional-new-client-attempt",
+      "conditions": [
+        "MCPTT client 已获取本次对应的步骤 5 响应。区分明确成功、带可接受替代参数的失败、替代参数不可接受，以及只知道缺少实际最终结果。"
+      ],
+      "conclusion": "结果成功走步骤 6。失败时若返回的参数可接受，MCPTT client 可以按新参数另发一笔 MCPTT first-to-answer 请求，也可不继续；用户可能收到参数变化的提示，例如不使用话权，并可选择结束。替代参数不可接受，这次呼叫失败。替代建议不将之前的失败变成成功；另一次尝试按它自己的请求和应答判断。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.15.3.1 steps 4–5"
+          ],
+          "printed_pages": [
+            179
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.15.3.1 Pre-conditions and Figure 10.15.3.1-1"
+          ],
+          "printed_pages": [
+            178
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.15.3.1 step 6"
+          ],
+          "printed_pages": [
+            179
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "没有替代参数、只看到建议或客户端未继续，不据此编自动或同笔重试、不保证一定出现提示，不假定所有失败均可恢复。仅走向步骤 6 还不证明媒体面已建立。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "fta-mcptt-initiating-system-and-actual-media",
+      "conditions": [
+        "本次过程已实际完成步骤 6 的 MCPTT client 至 IWF 媒体建立；话权责任另看此呼叫是否使用话权控制。"
+      ],
+      "conclusion": "步骤 6 描述客户端与 IWF 的媒体面成功建立后，两端可传送媒体；使用话权控制时，发起呼叫的 MCPTT 系统负责话权授予、竞争处理、发送撤销指示。哪个用户获话权、实际包发送和对端接收分别核，不能从成功结果、媒体建立或请求了隐式话权直接推出。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.15.3.1 step 1"
+          ],
+          "printed_pages": [
+            178
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.15.2.1 Table 10.15.2.1-1 and NOTE"
+          ],
+          "printed_pages": [
+            176,
+            177
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.15.3.1 Pre-conditions and Figure 10.15.3.1-1"
+          ],
+          "printed_pages": [
+            178
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.15.3.1 steps 4–5"
+          ],
+          "printed_pages": [
+            179
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.15.3.1 step 6"
+          ],
+          "printed_pages": [
+            179
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不把 server 的应答、IWF 支持媒体或任何身份字段当成实际 Media plane。没有把 IWF 背后的 LMR 最终收听、时刻、同时发送能力或其他发起场景的话权分配补进本节。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "fta-generic-cancel-table-not-procedure-or-sip-cleanup",
+      "conditions": [
+        "只为区分 §10.15.3.1 实际流程与同小节组的通用 IWF 信息表，未对另一发起方向或协议层做映射。"
+      ],
+      "conclusion": "§10.15.2.3/.4 的取消请求、取消应答是通用 MCPTT server↔IWF 信息腿。取消请求列主叫和被叫 MCPTT ID；取消应答表只有被叫 MCPTT ID，表题写 MCPTT first-to-answer call cancel response。这不是步骤 4 的 IWF first-to-answer call response，后者有双方 ID 和 SDP answer。§10.15.3.1 图文步骤 1–6 未列取消步骤。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.15.3.1 Pre-conditions and Figure 10.15.3.1-1"
+          ],
+          "printed_pages": [
+            178
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.15.3.1 steps 2–3 and NOTE"
+          ],
+          "printed_pages": [
+            179
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.15.3.1 steps 4–5"
+          ],
+          "printed_pages": [
+            179
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.15.3.1 step 6"
+          ],
+          "printed_pages": [
+            179
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.15.2.2 Table 10.15.2.2-1"
+          ],
+          "printed_pages": [
+            177
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.15.2.3–.4 Tables 10.15.2.3-1 and 10.15.2.4-1"
+          ],
+          "printed_pages": [
+            177,
+            178
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "通用取消定义不证明本次已取消任何候选或应采用某个 SIP CANCEL、BYE、ACK、最终响应码和清理次序，不否定规范其他分支可能定义取消。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.15.1"
+      ],
+      "printed_pages": [
+        176
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.15.3.1 Pre-conditions and Figure 10.15.3.1-1"
+      ],
+      "printed_pages": [
+        178
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.15.3.1 step 1"
+      ],
+      "printed_pages": [
+        178
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.15.3.1 steps 2–3 and NOTE"
+      ],
+      "printed_pages": [
+        179
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.15.2.1 Table 10.15.2.1-1 and NOTE"
+      ],
+      "printed_pages": [
+        176,
+        177
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.15.3.1 steps 4–5"
+      ],
+      "printed_pages": [
+        179
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.15.2.2 Table 10.15.2.2-1"
+      ],
+      "printed_pages": [
+        177
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.15.3.1 step 6"
+      ],
+      "printed_pages": [
+        179
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.15.2.3–.4 Tables 10.15.2.3-1 and 10.15.2.4-1"
+      ],
+      "printed_pages": [
+        177,
+        178
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.15.3.2 heading, introductory sentence, pre-condition 1, Figure 10.15.3.2-1 and step 1 (direction contrast only)"
+      ],
+      "printed_pages": [
+        179,
+        180
+      ],
+      "usage": "comparison-only"
+    }
+  ],
+  "related": [
+    {
+      "topic": "r19-calls-first-to-answer-selection",
+      "required": false,
+      "meaning": "实际问原生 MCPTT SIP 的邀请、选中或其他分支清理时另查 Stage 3，不映射到本次 IWF 流程。"
+    },
+    {
+      "topic": "r19-iwf-private-automatic",
+      "required": false,
+      "meaning": "问题实际是普通互通自动私呼时查其不同的步骤和应答。"
+    },
+    {
+      "topic": "r19-iwf-private-manual",
+      "required": false,
+      "meaning": "问题实际是手动私呼的振铃和被叫接受时查对应流程。"
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  },
+  "limitations": [
+    "只收入 MCPTT-origin Stage 2 过程：不推 LMR 侧转发、地址映射、精确先应答竞争算法、实际媒体交付或 Stage 3 清理。"
+  ]
+}

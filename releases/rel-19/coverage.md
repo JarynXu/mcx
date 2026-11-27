@@ -913,6 +913,14 @@
 
 入口：[排队取消的三类消息和确认](topics/interworking/floor-signals.md#排队取消的三类消息和确认)。
 
+### MCPTT 发起互通 First-to-answer：怎样看应答、重试与媒体建立？
+
+- **能回答：**MCPTT 用户经 IWF 发起 first-to-answer 时，查被叫范围、授权、IWF 应答、替代参数与媒体建立。
+- **只到条件或接口：**TS 23.283 V19.5.0 Stage 2 §10.15.3.1。核前提和同次 3→4→5，再看成功才继续的媒体步骤；失败的替代参数可接受时，客户端可另发新请求，用户可选择结束；不能把旧应答当成功。
+- **尚未建立的结论：**不从媒体支持、SDP answer、被叫 ID 或通用取消表推接通、选中谁、清理其他分支、SIP 行为或 LMR 内部传输。
+
+入口：[MCPTT 发起互通 First-to-answer：怎样看应答、重试与媒体建立？](topics/interworking/first-to-answer-mcptt-origin.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)
