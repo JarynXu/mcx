@@ -2399,6 +2399,170 @@
         "independent_source_review": false,
         "independent_usage_acceptance": false
       }
+    },
+    {
+      "id": "periodic-report-optional-criteria-object-with-seconds-and-id",
+      "conditions": [
+        "可独立查公共 LMS 定期配置的结构与编码，也可单查历史请求中同名的周期或间隔字段、它们是否属于当前配置。两种查法均不需要现网报告。判某次用哪份配置，查同一 LMC 对应 MC UE 在事件时的状态及当时实际生效的配置。"
+      ],
+      "conclusion": "MC UE 紧急用 emergencyTriggeringCriteria，非紧急用 triggeringCriteria，不以事后 reportType 倒推。periodicReport 是可选的 PeriodicReport 对象；periodicReport.periodicReport 是配置的报告周期，整数秒，同层的 periodicReport.triggerId 是此项的唯一标识。例如非紧急可读 triggeringCriteria.periodicReport.periodicReport。表 .23-1 两叶 M、1；A.2 声明两键的 integer／TriggerId（字符串），对象未列 required。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.3–.4 Tables 7.1.6.2.3-1 and 7.1.6.2.4-1"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.23 Table 7.1.6.2.23-1; Annex A.2 PeriodicReport"
+          ],
+          "printed_pages": [
+            48,
+            82
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 LocationConfiguration, TriggeringCriteria and TriggerId for PeriodicReport"
+          ],
+          "printed_pages": [
+            78,
+            85
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1 precedence limited to encoding of API information elements and methods"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.5.2 ConfigurationNotify received, FULL/UPDATE and minimumReportInterval"
+          ],
+          "printed_pages": [
+            20
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.47–.48 Tables 7.1.6.2.47-1 and 7.1.6.2.48-1; Annex A.2 RequestedLocationHistory"
+          ],
+          "printed_pages": [
+            55,
+            56,
+            86
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "外层不是周期标量或布尔开关。A.2 整数未列 minimum、maximum、default 或 nullable；不把 0 当停报值，不把 0、负数、空值或缺项判为已验证有效、已接收或确定会报错。应用 UPDATE 时省略此项不证明既有项已删除。A.1 的优先限 API 信息元素及方法的编码。",
+        "A.2 LocationRequest.requestLocationHistory.triggerCriteria.periodicReport 是历史选择对象，不是当时生效的 LocationConfiguration。历史对象自己的 minimumIntervalLength 也不是当前发布计时器。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "periodic-report-cadence-vs-minimum-timer-and-report-evidence",
+      "conditions": [
+        "可独立查定期配置、最短间隔、实际计时器、发布先决条件及报告数组定义，无须已有事件、抓包或报告。若判断实际运行，用同一 LMC 当时有效的周期项与计时器；给某份报告归因时才核根层数组的 ID 是否对应该 LMC 生效配置。实际发送与接受分别核该笔发布 POST 与匹配 LMS 201。"
+      ],
+      "conclusion": "周期 periodicReport.periodicReport 和最短间隔 RequestedLocationInfo.minimumIntervalLength 都用整数秒，含义不同。定期触发发生且 minimumReportInterval 正在运行时，LMC 先等该计时器到期；届时有任一上报触发仍为真才按事件路径发，不必是原先那项。已收并处理配置、发发布 POST、索要报告正文回包时的计时器启动或重置针对最短间隔，不定周期的首次起算。LMC 实收 LocationReportRequest 是独立的发布起因。报告根层 MCUELocation.triggerId 是字符串数组，表 .49-1 标 O、1..N；正文写入已触发项 ID。与有效的定期项 ID 匹配，只说明该份报告列了它。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.23 Table 7.1.6.2.23-1; Annex A.2 PeriodicReport"
+          ],
+          "printed_pages": [
+            48,
+            82
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.33 Table 7.1.6.2.33-1; Annex A.2 RequestedLocationInfo.minimumIntervalLength"
+          ],
+          "printed_pages": [
+            50,
+            85
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.5.2 ConfigurationNotify received, FULL/UPDATE and minimumReportInterval"
+          ],
+          "printed_pages": [
+            20
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.7.2 LocationReportRequest response processing and minimumReportInterval reset"
+          ],
+          "printed_pages": [
+            22
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.1–.2 LocationReportPublish trigger waiting and report properties"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.49 Table 7.1.6.2.49-1; Annex A.2 MCUELocation"
+          ],
+          "printed_pages": [
+            56,
+            86
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "本段未定义周期的相位、复位、错过后的补发、合并、与其他触发的优先级，也未另写计时器原本未运行如何发送。不能从所配秒数、ID、样本的 locTimestamp或孤立状态码推定精确节奏、触发时刻、只有这一原因、实际发送或接受。 索要请求可带 requestId；该请求触发的报告在有该值时回填 reportId。两字段都不替报告根层 triggerId。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
@@ -3036,6 +3200,82 @@
       "printed_pages": [
         48,
         82
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.23 Table 7.1.6.2.23-1; Annex A.2 PeriodicReport"
+      ],
+      "printed_pages": [
+        48,
+        82
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 LocationConfiguration, TriggeringCriteria and TriggerId for PeriodicReport"
+      ],
+      "printed_pages": [
+        78,
+        85
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.2.2.5.2 ConfigurationNotify received, FULL/UPDATE and minimumReportInterval"
+      ],
+      "printed_pages": [
+        20
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.2.2.7.2 LocationReportRequest response processing and minimumReportInterval reset"
+      ],
+      "printed_pages": [
+        22
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.33 Table 7.1.6.2.33-1; Annex A.2 RequestedLocationInfo.minimumIntervalLength"
+      ],
+      "printed_pages": [
+        50,
+        85
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.49 Table 7.1.6.2.49-1; Annex A.2 MCUELocation"
+      ],
+      "printed_pages": [
+        56,
+        86
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.47–.48 Tables 7.1.6.2.47-1 and 7.1.6.2.48-1; Annex A.2 RequestedLocationHistory"
+      ],
+      "printed_pages": [
+        55,
+        56,
+        86
       ],
       "usage": "comparison-only"
     }

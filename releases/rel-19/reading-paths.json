@@ -3868,6 +3868,26 @@
           "read": "topics/location/lms-registration-configuration.md"
         }
       ]
+    },
+    {
+      "id": "lms-periodic-report-configured-interval-vs-actual-publish",
+      "question": "LMC 的 periodicReport 周期怎么填？60 秒的周期等于每 60 秒一定发一份位置报告吗？",
+      "start": "topics/location/lms-location-report-publish.md",
+      "boundary": "TS 24.283 V19.3.0 Stage 3 公共 LMS。定期事件按同一 LMC 当时有效的配置，查其终端事件发生时的 emergencyTriggeringCriteria（紧急）或 triggeringCriteria（非紧急），不用报告发送时的 reportType。外层 periodicReport 是可选对象，内层 periodicReport.periodicReport 是整数秒周期，periodicReport.triggerId 是该触发项的唯一标识；表 .23-1 两叶 M、1，A.2 未列 required 或周期缺省。0 不是指定的停报编码。LocationRequest.requestLocationHistory.triggerCriteria.periodicReport 在历史请求里不启用当前定期触发；历史对象自己的 minimumIntervalLength 不当当前发布计时器。RequestedLocationInfo.minimumIntervalLength 是报告之间的最短间隔，不是周期；minimumReportInterval 的启动或重置不给定周期起点。事件触发时若最短间隔计时器正在运行，等到期且任一触发仍为真；不能从两个秒值精确推首次、补发或发包节奏，也不补未运行规则。根层 MCUELocation.triggerId 要和同一 LMC 当时有效的定期配置相配才认定这份报告列了本项；不补真实触发时刻、独因或每周期一份。查实际发送及接受分别看该笔发布 POST、匹配的 LMS 201。",
+      "next_if": [
+        {
+          "condition": "实际是 LMS 主动索要报告，按相应方向及实际 LMC 收件核对，不等定期触发。",
+          "read": "topics/location/lms-location-report-request.md"
+        },
+        {
+          "condition": "问 FULL／UPDATE、生效配置或配置到达，不从表中的周期值断言已在运行。",
+          "read": "topics/location/lms-registration-configuration.md"
+        },
+        {
+          "condition": "实际配置是经 MCData PF 的本地直接 ID 位置配置，不是公共 LMS_Reporting HTTP。",
+          "read": "topics/mcdata/local-location-configuration.md"
+        }
+      ]
     }
   ]
 }
