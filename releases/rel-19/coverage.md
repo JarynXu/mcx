@@ -1025,6 +1025,14 @@
 
 入口：[互通组更换语音编解码：许可、应答与媒体怎么分？](topics/interworking/codec-reconciliation.md)。
 
+### 预配置组重组被拒绝：谁拒绝，原因回给谁？
+
+- **能回答：**组名单形成请求遭拒时，可按本次由 MCPTT 或 IWF 发起，查权限、拒绝方向、两条所报原因和拒绝表。
+- **只到条件或接口：**TS 23.283 V19.5.0 Stage 2 §10.3.7.4.1/.2；MCPTT 发起的 IWF 步骤 5 与客户端步骤 6 各自核，IWF 发起则看 server 查自己托管的组并确定本次所请至少一组已被另一流程重组，以及反向步骤 3。IWF-1 表 10.3.2.18‑1 拒绝含拟形成组 ID D 和 Reject reason。
+- **尚未建立的结论：**不由 D 或原因推出配对、具体冲突组、客户端／IWF 实收、以前重组结束或新组建成。不套形成或取消 Result，未核线级映射。
+
+入口：[预配置组重组被拒绝：谁拒绝，原因回给谁？](topics/interworking/preconfigured-group-regroup-rejection.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)
