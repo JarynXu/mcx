@@ -1,0 +1,186 @@
+{
+  "topic_id": "r20-identity-mcptt-service-config-structure-and-extensions-validation",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只核 MCPTT 业务配置文档的正文结构、已选分支里面的基本 Schema 边界和未知/重复项；不是用户档、实际无线操作或管理员权限。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "mcptt-service-config-missing-params-or-all-scopes-requires-409",
+      "clause": "8.4.2.6",
+      "conditions": [
+        "核 MCPTT 业务配置 XML 的根及直接参数块，须有足够文档证据判断相应内容是否缺失；节点片段中没展示不是整档缺项。"
+      ],
+      "conclusion": "根 service-configuration-info 下没有 service-configuration-params，或参数块存在但没有 common、on-network、off-network 中的任何一个，分别要求 CMS 返回 HTTP 409（Conflict），含 XCAP <constraint-failure>；若带 phrase，建议 mandatory element is missing。零类范围也不在七种组合内；不由重叠推顺序或唯一短语。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "root, parameters as a child and the two distinct mandatory-element conditions"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "root declaration and optional parameters particle versus validation prose"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-service-config-seven-nonempty-scope-shapes",
+      "clause": "8.4.2.6",
+      "conditions": [
+        "已辨明 MCPTT 参数块的 common、on-network、off-network 三类范围元素，问其出现次数及组合，不用子项或扩展项名字代替范围元素。"
+      ],
+      "conclusion": "允许一种范围一个、任意两种各一个、或三种各一个，共七种非空组合；只含一个 off-network，或者 on-network 与 off-network 各一个而无 common，也在其内。超出这些组合，CMS 须返回 HTTP 409（Conflict）并含 XCAP <constraint-failure>；若带 phrase，建议 semantic error。不能由这项通过推任意元素顺序、分支内部或整档通过；空参数块可同时命中缺项句。多个同类范围一定不符合此计数，不是用来判列表内一切同名项。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "numbered scope combinations 1 through 7 and response when no combination matches"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "named scope particle counts and sequence"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-service-config-scope-shape-does-not-resolve-branch-schema",
+      "clause": "8.4.2.3",
+      "conditions": [
+        "以实际选中的结构分支为对象，分开问 Schema 结构或 §8.4.2.6 的组合规则；不以当前是否有在网呼叫代替所查文档的分支。"
+      ],
+      "conclusion": "§8.4.2.3 根下 params 为 minOccurs=\"0\"，三类范围元素在 xs:sequence 里均为 minOccurs=\"0\" maxOccurs=\"unbounded\"；§8.4.2.6 同时要求符合 Schema 及另列的范围限制。一份只含一个 on-network 的文档通过了组合计数，仍须检查其块里的 fc-timers-counters 和 emergency-resource-priority、imminent-peril-resource-priority、normal-resource-priority 四个必需子项。这四项的缺失不等同于 §8.4.2.6 的两个外层缺项条件。只含 off-network 不能被加上这四项；两块的 private-call 都可选，缺它不等于缺少范围元素或私呼禁用。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "root/parameter sequence; on-networkType and off-networkType child declarations"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1"
+          ],
+          "items": [
+            "on-network items 2,7,9–11 and off-network item 2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "required XSD conformance distinct from seven scope combinations"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-service-configuration-server-ignores-unknown-items",
+      "clause": "8.4.2.6",
+      "conditions": [
+        "已判明对象是此 MCPTT 业务配置里的未知元素或未知属性，问对它的处理；仅凭陌生名字、前缀或另一个已知属性的值不足以分类。"
+      ],
+      "conclusion": "原文的业务配置服务器（service configuration server）忽略未知元素和未知属性。忽略不代替对文档的 Schema 校验，不表示删除、写回或接受。注 1 指 mcptt-info 的 ##any 元素粒子；§8.4.2.3 根和参数类型为 ##other 元素通配及 ##any 属性通配（lax），不能把两处当同一条根声明，也不靠通配推识别规则或请求结果。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "separate service configuration server ignores unknown element or attribute wording; Note 1 and XSD conformance"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "root and parameter element/attribute wildcard scope"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1"
+          ],
+          "items": [
+            "structure extensibility statement, comparison only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-cms-receives-duplicate-items-requires-409",
+      "clause": "8.4.2.6",
+      "conditions": [
+        "核配置管理服务器收到并被判明为重复的 MCPTT 业务配置元素或属性；区分客户端看到的内容、实际收端证据和 Schema 所许的同名列表。"
+      ],
+      "conclusion": "配置管理服务器收到重复元素或属性须返回 HTTP 409（Conflict），含 XCAP <constraint-failure>；若带 phrase，建议 duplicate attribute or element received。同名不是单独的判重依据：§8.4.2.3 的功能别名列表允许多个 functional-alias-entry。条文没有给出识别、解析、先后、保留哪项或其他实际行为；不把未知项忽略或形状通过当成已处置重复项。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "configuration management server receives duplicate element or attribute; required response and conditional phrase"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "functional-alias-listType allows multiple same-named entries"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "409 和 XCAP constraint-failure 是所列失败分支的要求，诊断 phrase 只在附带时有建议值。没有指定检查顺序、重叠时的唯一响应或实际 CMS 处理。",
+    "不借 MCVideo、MCData 的分支字段，也不从同名、前缀、零散片段或若干检查命中推写入、应用或部署角色的对应。请求标识、域名、PQI/ProSe、私呼及广播时长由既有主题维护。"
+  ],
+  "related": [
+    "r20-identity-mcptt-service-target-domain-validation",
+    "r20-identity-mcptt-service-off-network-priority-values",
+    "r20-identity-mcptt-private-call-service-timers",
+    "r20-identity-mcvideo-mcdata-service-config-validation"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}

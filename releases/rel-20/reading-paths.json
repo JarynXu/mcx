@@ -1279,6 +1279,24 @@
       "question": "两类离网优先级配置的信令和媒体子项同名，怎么区分？",
       "start": "topics/identity/mcptt-service-off-network-priority-values.md",
       "boundary": "TS 24.484 V20.1.0 §8.4.2.1/.3/.7：看父项 default-pqi 或 default-prose-per-packet-priority；两父项及四个具名普通/紧急私呼信令/媒体子项均可选，具名子项类型都是 xs:unsignedShort。§.3 摘录的 default-pqi 名末尾空格不当作第二个报文字段；未写缺项默认或解析结果。§C.4.2 说 5GS 的 PQI（PC5-5QI）对应逐包优先级配置，不是逐值换算、自动补齐或回退。"
+    },
+    {
+      "id": "mcptt-service-config-missing-params-vs-empty-scope",
+      "question": "MCPTT 业务配置缺整个参数块，和参数块存在但没有范围子项，都是哪种 409？",
+      "start": "topics/identity/mcptt-service-config-structure-and-extensions-validation.md",
+      "boundary": "TS 24.484 V20.1.0 §8.4.2.6：根 service-configuration-info 下缺 service-configuration-params，与参数块存在但 common、on-network、off-network 都没有，是两条不同条件。CMS 均须 HTTP 409 + XCAP constraint-failure；若带 phrase，建议 mandatory element is missing。只看到节点片段不能判整档缺项。零类也不满足七种组合，不据此推先查哪项或唯一短语。"
+    },
+    {
+      "id": "mcptt-service-config-seven-scope-shapes-vs-branch-schema",
+      "question": "MCPTT 的 common、on-network、off-network 哪些组合有效？只配一个在网或离网块还需查什么？",
+      "start": "topics/identity/mcptt-service-config-structure-and-extensions-validation.md",
+      "boundary": "TS 24.484 V20.1.0 §8.4.2.6：三种单项、任意两种各一和三种各一。组合不匹配，CMS 须 HTTP 409 + XCAP constraint-failure；若带 phrase，建议 semantic error。§8.4.2.3 的 minOccurs/maxOccurs 声明不能替代组合；xs:sequence 不是随意排序。只含一个在网块通过计数，不代替审在网 fc-timers-counters 和三类 resource-priority 必需项，不给这些子项套外层缺项短语；只选离网块不套在网要求，private-call 在两支均可选。"
+    },
+    {
+      "id": "mcptt-service-config-unknown-vs-received-duplicate-items",
+      "question": "MCPTT 业务配置的未知项和已被 CMS 收到的重复项，是忽略还是 409？",
+      "start": "topics/identity/mcptt-service-config-structure-and-extensions-validation.md",
+      "boundary": "TS 24.484 V20.1.0 §8.4.2.6：业务配置服务器忽略未知元素或属性；配置管理服务器收到重复元素或属性则须 HTTP 409 + XCAP constraint-failure，若带 phrase，建议 duplicate attribute or element received。忽略不免除 Schema；同名、前缀或客户端片段不证明分类、实收、判定顺序或整档接受。§8.4.2.3 有可重复的 functional-alias-entry；注 1 的 mcptt-info/##any 不能替代根和参数类型的 ##other 元素、##any 属性声明。"
     }
   ]
 }
