@@ -1,0 +1,234 @@
+{
+  "topic_id": "r20-identity-cmc-config-delete-target",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。主范围是 CMC 的配置管理 HTTP DELETE 及 CMS 各接收程序；发送、接收和功能实体要求各按本条条件单独判断。在线 CMS 的用户库删除只作 §4.4 条款对照。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "delete-document-cmc-sends",
+      "clause": "6.3.5.2",
+      "conditions": [
+        "CMC 执行 §6.3.5 的整份配置文档删除程序。"
+      ],
+      "conclusion": "CMC 须发送 HTTP DELETE。原文措辞是 Request-URI 设到按 TS 24.483 配置的 CMSXCAPRootURI，并带要删除的 XML 文档对应应用用法的 auid，操作指向 RFC 4825 “Delete a Document”。本节没有单列 GC 步骤；不能据此把根和 auid 当作完整路径。这里只核发送要求，不把发端记录视为 CMS 已收。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.5.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.5"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "delete-document-cms-supports",
+      "clause": "6.3.5.3",
+      "conditions": [
+        "CMS 处理从 CMC 发来的实际 HTTP DELETE；该请求的 Request-URI 以相应用法的 auid 标识整份 XML 文档。"
+      ],
+      "conclusion": "CMS 须支持这个整份文档请求的 RFC 4825 “DELETE Handling”。仅凭方法、XCAP 根或 auid 不能选分支；支持处理不等于该笔删除成功。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.5.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.5"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "delete-element-gc-and-cmc-send",
+      "clause": "6.3.7.2.1",
+      "conditions": [
+        "执行 XML 元素删除的通用客户端程序，或 CMC 采用这一程序删除配置文档中的元素。"
+      ],
+      "conclusion": "§6.3.7.2.1 要求 GC 发 HTTP DELETE，Request-URI 引用待删元素，并指向 RFC 4825 “Delete an Element”。在 CMC 分支，CMC 须执行 §6.3.7.2.1 的 GC 程序，以配置的 CMSXCAPRootURI 为相对路径的根，带相应用法的 auid。CMC 遵循的是同一个发送程序，不是两个发送角色先后各发一次；不把 GC 描述当其他实体已获准。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.7.2.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.7.2.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "delete-element-cms-supports",
+      "clause": "6.3.7.3",
+      "conditions": [
+        "CMS 处理从 CMC 发来的实际 HTTP DELETE；该请求的 Request-URI 标识具体 XML 元素，并带相应用法的 auid。"
+      ],
+      "conclusion": "CMS 须支持这个元素请求的 RFC 4825 “DELETE Handling”。不能把该元素当成整份文档或其中某个属性；实际处理分支不证明删除成功。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.7.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "delete-attribute-gc-and-cmc-send",
+      "clause": "6.3.10.2.1",
+      "conditions": [
+        "执行 XML 属性删除的通用客户端程序，或 CMC 采用这一程序删除配置文档中的属性。"
+      ],
+      "conclusion": "§6.3.10.2.1 要求 GC 发 HTTP DELETE，实际 Request-URI 引用待删属性，并指向 RFC 4825 “Delete an Attribute”。在 CMC 分支，CMC 须执行 §6.3.10.2.1 的 GC 程序，以配置的 CMSXCAPRootURI 为相对路径的根并带相应用法的 auid。只看到元素目标不符合属性目标；不把 GC 描述当其他实体已获准。不把发端记录视为 CMS 已收。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.10.2.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.10.2.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.10"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "delete-attribute-cms-supports",
+      "clause": "6.3.10.3",
+      "conditions": [
+        "CMS 处理从 CMC 发来的实际 HTTP DELETE；该请求的 Request-URI 标识具体 XML 属性，并带相应用法的 auid。"
+      ],
+      "conclusion": "CMS 须支持这个属性请求的 RFC 4825 “DELETE Handling”。本收端条文明引第 7 章的对应应用用法；不给第 7 章之外的应用补删权限，不定义统一 auid 值或选择器语法，也不证明执行成功。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.10.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.10"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cmc-may-support-cms-shall-support",
+      "clause": "5.1",
+      "conditions": [
+        "比较删除程序的实现支持，或排查同一已知的配置 HTTP DELETE；各角色独立核对。"
+      ],
+      "conclusion": "§5.1 是 CMC 的可选支持项（§6.3.5.2、§6.3.7.2.2、§6.3.10.2.2）；选择支持并执行相应程序时，程序中的 shall 不变。§5.2 列为 CMS 必须支持（§6.3.5.3、§6.3.7.3、§6.3.10.3）。发送不证明 CMS 实收，收到或支持处理不等于该笔删除成功。不据此推断响应码、幂等性或后续联动，不能借 GET、PUT 或订阅推断这次 DELETE。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "5.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "5.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.5.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.7.2.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.10.2.2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "online-ue-user-profile-db-delete-is-separate",
+      "clause": "4.4",
+      "conditions": [
+        "§4.4 对照：在线 CMS 处理实际适用的 MCS UE 删除 MCS 用户档请求。"
+      ],
+      "conclusion": "在线 CMS 使用所引 TS 29.283 程序从 MC 业务用户数据库删除该用户档。仅见 HTTP DELETE 不证明已命中此分支或库操作已完成；本对照不提供前端 URI 到后端操作的固定映射，不证明级联、版本或通知联动。程序细节走在线用户档维护，不外推到离线 CMS 或其他配置对象。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.4"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "不从根或 auid 推目标，不从发送、接收或支持义务推完成、响应码、重复请求结果或级联；被引的 RFC 4825、TS 24.483、TS 29.283 只作定位，不展开选择器语法、配置或后端映射。",
+    "GC 是两种节点删除的通用程序，不能据此确认发送身份、授权或第二笔请求。本页不改写邻接的文档读取、续订、写入或在线用户档维护。"
+  ],
+  "related": [
+    "r20-identity-online-cms-user-profile-database",
+    "r20-identity-cmc-subscription-notify-fetch",
+    "r20-identity-cmc-subscription-refresh",
+    "r20-identity-initial-ue-config-xcap"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}

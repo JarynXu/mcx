@@ -481,6 +481,24 @@
       "question": "SIP 失败响应的 Response-Source 能证明 HTTP 取配置的发送方或授权吗？",
       "start": "topics/identity/cms-sip-failure-response-source.md",
       "boundary": "SIP 失败的可选角色头不是 §6.2.4.1 的 HTTP 身份材料。CMS 处理这次 HTTP 请求时，按所引条款确定发送方，并把它用作授权的已认证身份；不从 SIP 角色推出 HTTPS 已获准、已返回文档或应用。"
+    },
+    {
+      "id": "cmc-delete-wire-object",
+      "question": "同样的 CMC HTTP DELETE 怎么从实际 Request-URI 区分是删配置文档、XML 元素还是属性？GC 和 CMS 各核什么？",
+      "start": "topics/identity/cmc-config-delete-target.md",
+      "boundary": "先核 CMC 的 HTTP DELETE 和实际 Request-URI。文档查 §6.3.5（CMC 发；本节未单列 GC），元素查 §6.3.7，属性查 §6.3.10（CMC 后两项遵循对应 GC，请求以配置的 CMSXCAPRootURI 为相对路径根、带相应用法的 auid；不是再发一条）。CMS 各按从 CMC 实际收到的目标与相应 auid 查自己的收端分支；属性收端明引第 7 章的应用用法。方法、根或 auid 单独不决定资源层级；GET、PUT、业务服务器其他程序不能替代。"
+    },
+    {
+      "id": "cmc-delete-support-vs-actual-result",
+      "question": "CMC 和 CMS 都必须支持三种配置 DELETE 吗？CMS 收到请求能证明已经删除吗？",
+      "start": "topics/identity/cmc-config-delete-target.md",
+      "boundary": "TS 24.484 §5.1：CMC 可支持这三项删除程序，执行所选程序时遵循其 shall。§5.2：CMS 须支持相应三项处理。只看到发送不证明 CMS 实收；发送、收到或必须支持均不证明实际完成。不据这些条款补响应码、重复请求结局或联动。"
+    },
+    {
+      "id": "cmc-delete-vs-online-cms-userdb",
+      "question": "看到配置 HTTP DELETE，能不能证实在线 CMS 删除了 MC 业务用户库的 MCS 用户档？",
+      "start": "topics/identity/cmc-config-delete-target.md",
+      "boundary": "按 §4.4，MCS UE 实际请求删除 MCS 用户档时，在线 CMS 按所引 TS 29.283 从 MC 业务用户数据库删除用户档。这不是 §6.3.5、§6.3.7、§6.3.10 中通用 DELETE 目标判断；不从一笔配置 DELETE 推后端已删、固定的 URI 触发映射或级联。查在线用户档维护走其独立入口。"
     }
   ]
 }
