@@ -953,6 +953,14 @@
 
 入口：[LMR 按条件发起互通 ad hoc 组呼：谁选人，IWF 收到哪一步？](topics/interworking/adhoc-group-criteria-lmr-origin.md)。
 
+### MCPTT 按名单发起互通 ad hoc 组呼：逐个回什么，确认超时算谁？
+
+- **能回答：**MCPTT 显式名单建呼：每个 LMR 用户一组 4a/b；区分网关 Result 与 MCPTT 的建呼确认时限和两种通知。
+- **只到条件或接口：**TS 23.283 V19.5.0 Stage 2 §10.17.3.5。只有发起者要求确认、必需 MCPTT 在配置时限内没确认齐才读所述继续/放弃、未齐告知。另可列时限内未确认请求的所有 MCPTT 用户；不报告 LMR 用户未确认。该名单脱离前述条件的单独触发未在本节定义。
+- **尚未建立的结论：**不从单个 IWF 4b、Step 5/6 发件或图示顺序推全员确认、具体关联键、等待规则、实际接收或媒体。TS 23.379 仅回指，不移植按条件或原生 Stage 3 行为。
+
+入口：[MCPTT 按名单发起互通 ad hoc 组呼：逐个回什么，确认超时算谁？](topics/interworking/adhoc-group-explicit-list-mcptt-origin.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)

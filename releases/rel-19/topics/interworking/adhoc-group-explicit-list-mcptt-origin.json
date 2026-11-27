@@ -1,0 +1,476 @@
+{
+  "topic_id": "r19-iwf-adhoc-group-explicit-list-mcptt-origin",
+  "release": 19,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "MCPTT 按名单发起互通 ad hoc 组呼：逐个回什么，确认超时算谁？",
+  "common_conditions": [
+    "TS 23.283 V19.5.0、Rel‑19 Stage 2。主范围是 §10.17.3.5 的 MCPTT 显式名单发起 IWF 互通 ad hoc 组呼；按条件或原生步骤只作分流。",
+    "查规范不要求有抓包；判实况先对上同次尝试、实际首请求及该段角色，避免用网关结果代终端。"
+  ],
+  "condition_rule": "先按实际首请求分流：MCPTT client 1 直接用 MCPTT 和 LMR 参与者的已知 ID 名单，查 §10.17.3.5，不要求已观测 4a/b 或超时。每个 LMR 对象的 4a/b 与被邀 MCPTT 用户的时限内建呼确认是两类证据。",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "iwf-adhoc-explicit-list-mcptt-origin-entry-and-leg-scope",
+      "conditions": [
+        "用实际首请求的发起角色和选人输入分流；这里是 MCPTT client 1 的用户按已知 MCPTT ID 名单发起，名单包括 MCPTT 和 LMR 用户。"
+      ],
+      "conclusion": "§10.17.3.5 的前提是 client 1、client 2 已注册，各自用户已认证并获准使用 MCPTT；不从这些资格自动判该次 Step 2 授权。图中 1 是 client 1 → server 的发起请求，2 在 server 一侧，3a/3b/3c 是 server → client 2 的请求、client 2 本地提示和 client 2 → server 的回应。两系统间经 IWF 的信令由 IWF 转换身份和协议。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.5 pre-conditions and Note 1"
+          ],
+          "printed_pages": [
+            189
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.5 Figure 10.17.3.5-1, Steps 1–5 and Note 2"
+          ],
+          "printed_pages": [
+            190
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.1 Figure 10.17.3.1-1, Note 3 and Step 11/Note 5 (MCPTT criteria branch)"
+          ],
+          "printed_pages": [
+            184,
+            185,
+            186
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.2 Figure 10.17.3.2-1 and initiating-role boundary (LMR criteria branch)"
+          ],
+          "printed_pages": [
+            186,
+            187
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "名单已知不代表被邀者已实收、已确认或已加入；注册/使用授权不能替代本次请求处理。无需先观察全部后续消息才能定位本分支。",
+        "若实际是 MCPTT 主叫提供条件、由 server 决定邀请名单，查 §10.17.3.1；若首请求由 IWF 代 LMR 用户按条件发起，查 §10.17.3.2。不能按消息里出现 IWF 或表里 criteria 字段是否可选来代替这个区分。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-adhoc-explicit-list-per-lmr-request-and-independent-receipt",
+      "conditions": [
+        "§10.17.3.5 本次名单有 LMR 被邀对象；要理解某条 4a 或 4b，先看 IWF-1 消息角色；要归因给某个 LMR 用户，再关联至该用户的具体请求。"
+      ],
+      "conclusion": "对名单中的每个 LMR 用户，MCPTT server 在 4a 向 IWF 发 IWF ad hoc group call request，IWF 在 4b 回 server。图只画一对及一个 IWF，逐 LMR 用户的规定仍适用；不据此规定 IWF 个数。NOTE 2 允许 IWF 朝 LMR 用户当普通组呼处理。只见 server 的 4a 出站、IWF 的 4b 出站、server 实收匹配 4b，各只证明那一段；后两者也不等于该 LMR 终端实际回应、加入或收到媒体。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.5 pre-conditions and Note 1"
+          ],
+          "printed_pages": [
+            189
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.5 Figure 10.17.3.5-1, Steps 1–5 and Note 2"
+          ],
+          "printed_pages": [
+            190
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.2.1–.2 and Table 10.17.2.2-1 (IWF-1 request)"
+          ],
+          "printed_pages": [
+            181,
+            182
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.2.3 and Table 10.17.2.3-1 (IWF-1 response)"
+          ],
+          "printed_pages": [
+            182,
+            183
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "同一 IWF 上有两个 LMR 用户，一条 4b 不能同时当作两人的应答。没有对上某个目标的事务，不借其他目标、前次呼叫或只有 sender 出口的记录补其结果；未见接收不等于失败。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-adhoc-explicit-list-iwf-table-identities-and-result-matching",
+      "conditions": [
+        "已辨明 4a IWF-1 请求或 4b IWF-1 应答，任一可单独查该消息表；要判某个 LMR 目标的配对应答，再核同次尝试与单笔请求关联。"
+      ],
+      "conclusion": "表 10.17.2.2-1 的 4a 要主叫 MCPTT ID、当次 ad hoc group ID 和 SDP offer；另一行被邀者 MCPTT ID 是 O，预配置组 ID 也是 O，与当次临时组不同。表 10.17.2.3-1 的 4b 要主叫 MCPTT ID、当次 ad hoc group ID、Result（success 或 failure）；未列被邀者 ID。SDP answer 标 O，说明在 Result 成功时出现。§10.17.2.3 表前引导写 request，按标题、表和 4b 方向辨认为 response。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.5 Figure 10.17.3.5-1, Steps 1–5 and Note 2"
+          ],
+          "printed_pages": [
+            190
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.2.1–.2 and Table 10.17.2.2-1 (IWF-1 request)"
+          ],
+          "printed_pages": [
+            181,
+            182
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.2.3 and Table 10.17.2.3-1 (IWF-1 response)"
+          ],
+          "printed_pages": [
+            182,
+            183
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "同一主叫和临时组可对应多笔 4a；相同主叫 ID 和组 ID 不足以相关某目标的 4b。不要把请求可选的被邀者 ID 强加给回包或猜线级关联键。只见 SDP answer 不补必选 Result，结果为 success 不补未见字段、对端实收或终端状态；不从这里推组 ID 的分配或寿命。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-adhoc-explicit-list-required-mcptt-acknowledgement-timeout",
+      "conditions": [
+        "判断 Step 6 的确认不全分支：发起 MCPTT 用户要求被邀 MCPTT 用户确认；按用户 profile 的 ad hoc 组呼策略认出本次必需确认对象，并核实际配置时限内并未覆盖所有必需 MCPTT 用户。"
+      ],
+      "conclusion": "Step 6 原文允许 server 继续或放弃通话，随后通知发起用户确认未覆盖所有必需成员，按所述 ad hoc 组呼策略读。不把它改成无条件必继续、必放弃或必发通知。这里核 MCPTT 的 call setup acknowledgement；时限是 acknowledged call setup timeout，不认作通话保持时间或 SIP ACK。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.5 Figure 10.17.3.5-1, Steps 1–5 and Note 2"
+          ],
+          "printed_pages": [
+            190
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.5 Steps 6–7 and Note 3"
+          ],
+          "printed_pages": [
+            190
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.1 Figure 10.17.3.1-1, Note 3 and Step 11/Note 5 (MCPTT criteria branch)"
+          ],
+          "printed_pages": [
+            184,
+            185,
+            186
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "只有非必需 MCPTT 用户没确认、只有 LMR 回复未见，或只是观察窗口短/没有确认日志，不能据此触发该分支。即使见到图中 3c、IWF 4b、终端提示或媒体，也不能由本节把那些消息等同这次有效的、在时限内的 MCPTT 建呼确认。该段未规定默认时长、起计点或精确边沿处理。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-adhoc-explicit-list-incomplete-notice-vs-optional-missing-mcptt-list",
+      "conditions": [
+        "查 Step 6 的两个通知含义和实际收件；以同次呼叫及配置时限为准。前句的不全分支用其原有两个条件。"
+      ],
+      "conclusion": "在同一步，server 另可通知发起用户所有在配置时限内未确认 ad hoc 组呼请求的 MCPTT 用户。这个可选名单不是只列必需确认者，也不同于前句通知“确认未覆盖全部必需成员”。原文紧接这份可选名单说，通话中 MCPTT 用户加入或离开时，它可以向发起用户重复发送。NOTE 3 限定通知内容：发给发起 MCPTT 用户的这种通知不能报告 LMR 用户未确认。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.5 Figure 10.17.3.5-1, Steps 1–5 and Note 2"
+          ],
+          "printed_pages": [
+            190
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.5 Steps 6–7 and Note 3"
+          ],
+          "printed_pages": [
+            190
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.1 Figure 10.17.3.1-1, Note 3 and Step 11/Note 5 (MCPTT criteria branch)"
+          ],
+          "printed_pages": [
+            184,
+            185,
+            186
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "图只画一条 Step 6，不把两种信息要求解释成两个必须独立报文，或认定未满足前句条件时后一句有独立触发规则。前一句说建呼确认，后一句说未确认组呼请求，本节不规定线级 ACK 映射。通知资格、server 发出与发起用户实际收到要分别取证；不因 LMR 无此通知判一概不能应答、未加入或已通过网关确认。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-adhoc-explicit-list-figure-order-results-and-source-boundaries",
+      "conditions": [
+        "判断图 10.17.3.5-1 的跨腿次序、主叫结果及后续资源；现场证据分别关联同次呼叫、对应角色和阶段。"
+      ],
+      "conclusion": "图把一组 4a/4b 插在原生 3a/3b/3c 之间，之后画 server → 原 client 1 的 Step 5 response，再以实线画 Step 6 notify 和 Step 7 资源建立。逐 LMR 用户只从 4a/b 正文取规则；图不是等待所有 3c/4b、严格串行、或每次都要走 6/7 的依据。Step 7 正文列 client 1、client 2、LMR 用户建立媒体面和话权资源；图横条跨 IWF，不等同终端状态。§10.17.3.5 总述、Steps 1–3 和 5 指 TS 23.379 [7] §10.19.3.1.1；同 Release 最新版本规则，当前只核此回指。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.5 Figure 10.17.3.5-1, Steps 1–5 and Note 2"
+          ],
+          "printed_pages": [
+            190
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.5 Steps 6–7 and Note 3"
+          ],
+          "printed_pages": [
+            190
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.2.1–.2 and Table 10.17.2.2-1 (IWF-1 request)"
+          ],
+          "printed_pages": [
+            181,
+            182
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "2 Reference [7] and non-specific 3GPP references"
+          ],
+          "printed_pages": [
+            11
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.1 Figure 10.17.3.1-1, Note 3 and Step 11/Note 5 (MCPTT criteria branch)"
+          ],
+          "printed_pages": [
+            184,
+            185,
+            186
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.17.3.2 Figure 10.17.3.2-1 and initiating-role boundary (LMR criteria branch)"
+          ],
+          "printed_pages": [
+            186,
+            187
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "只见 server 发 5 或 6，不能判原 client 1 已实收；有任意一笔 3c/4b 或通知不能补 Step 5、全员确认、实际加入、语音已听或已授话权。Step 6 若放弃不能按图推 Step 7 仍必须执行。未核被引 TS 23.379 的汇总、超时或原生信令，不套条件选人 §10.17.3.1 NOTE 3、Step 11 名单或 §10.17.3.2 的回包。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.17.3.5 pre-conditions and Note 1"
+      ],
+      "printed_pages": [
+        189
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.17.3.5 Figure 10.17.3.5-1, Steps 1–5 and Note 2"
+      ],
+      "printed_pages": [
+        190
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.17.3.5 Steps 6–7 and Note 3"
+      ],
+      "printed_pages": [
+        190
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.17.2.1–.2 and Table 10.17.2.2-1 (IWF-1 request)"
+      ],
+      "printed_pages": [
+        181,
+        182
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.17.2.3 and Table 10.17.2.3-1 (IWF-1 response)"
+      ],
+      "printed_pages": [
+        182,
+        183
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.17.3.1 Figure 10.17.3.1-1, Note 3 and Step 11/Note 5 (MCPTT criteria branch)"
+      ],
+      "printed_pages": [
+        184,
+        185,
+        186
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.17.3.2 Figure 10.17.3.2-1 and initiating-role boundary (LMR criteria branch)"
+      ],
+      "printed_pages": [
+        186,
+        187
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "2 Reference [7] and non-specific 3GPP references"
+      ],
+      "printed_pages": [
+        11
+      ],
+      "usage": "comparison-only"
+    }
+  ],
+  "related": [
+    {
+      "topic": "r19-iwf-adhoc-group-criteria-mcptt-origin",
+      "required": false,
+      "meaning": "MCPTT 主叫实际提供选人条件而不是名单时查 §10.17.3.1。"
+    },
+    {
+      "topic": "r19-iwf-adhoc-group-criteria-lmr-origin",
+      "required": false,
+      "meaning": "IWF 实际代 LMR 首发且按条件选人时查 §10.17.3.2。"
+    },
+    {
+      "topic": "r19-groups-adhoc-explicit-list-establishment",
+      "required": false,
+      "meaning": "原生普通 MCPTT 显式名单的 Stage 3 另读，不补 IWF 步骤。"
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  },
+  "limitations": [
+    "不闭合底层 4a/b 事务关联、原生 Step 5 汇总、确认传输/计时、IWF 到 LMR 的信令或实际媒体。"
+  ]
+}
