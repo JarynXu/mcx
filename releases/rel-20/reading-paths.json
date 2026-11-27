@@ -1243,6 +1243,24 @@
       "question": "MCPTT 的 time-limit、time-warning 和 hang-time-warning 各计什么，字段放在哪？",
       "start": "topics/identity/mcptt-private-call-service-timers.md",
       "boundary": "TS 24.484 V20.1.0 §8.4.2.3/.7：在网项 7–9、离网项 6–8。相应运行方式块下 transmit-time/time-limit 是组或私呼的一次发话时限，time-warning 是达到这项时限前的警告时长。与 transmit-time、private-call 并列的 hang-time-warning 警告的是 Hang Time。都不等于整通通话上限、已发提示、已撤话权或已拆话。"
+    },
+    {
+      "id": "mcptt-service-config-request-uri-auid-vs-document-identifiers",
+      "question": "MCPTT 业务配置的哪个 AUID 必须匹配？整文档和节点 URI 都查吗？",
+      "start": "topics/identity/mcptt-service-target-domain-validation.md",
+      "boundary": "TS 24.484 V20.1.0 §8.4.2.2/.6：先确认目标是 MCPTT 业务配置。Request-URI 的 document URI 或 node URI 中 AUID 若不是 org.3gpp.mcptt.service-config，CMS 须返回 HTTP 409 + XCAP constraint-failure；若带 phrase，建议 invalid application id used。不拿 SIP SUBSCRIBE auid、XML 名空间、XUI、文件名或组织域替代，也不以错值反推目标服务。"
+    },
+    {
+      "id": "mcptt-service-config-organization-domain-syntax-vs-unknown",
+      "question": "MCPTT 业务配置提示组织域名有误：是格式不对、未知，还是正文缺了 domain？",
+      "start": "topics/identity/mcptt-service-target-domain-validation.md",
+      "boundary": "TS 24.484 V20.1.0 §8.4.2.3/.6/.7：domain 是 service-configuration-params 的必填 xs:anyURI 属性，记任务关键组织域，不由 URI 主机名或目录补出。值不含语法正确域名和包含未知域名分别要求 CMS 返回 409 + XCAP constraint-failure；若带 phrase，建议分别用 syntactically incorrect domain name 和 unknown domain name。缺属性不等同任一值问题，DNS 失败不证明未知，不推检查顺序、唯一原因或写入成功。"
+    },
+    {
+      "id": "mcptt-service-config-xui-comparison-is-not-global-exemption",
+      "question": "MCVideo、MCData 有 XUI 不匹配 409，MCPTT 的业务配置也照用这一条吗？",
+      "start": "topics/identity/mcptt-service-target-domain-validation.md",
+      "boundary": "TS 24.484 V20.1.0：MCPTT 业务配置 §8.4.2.6 明列 AUID 与两项 domain 检查，没有 §9.4.2.6、§10.4.2.6 那句 XUI 比较。不要移植那一条，也不因此推 MCPTT 全局免验 XUI；MCPTT 用户配置档 §8.3.2.6 比较正文根元素 XUI-URI 与文档 URI 的 XUI。仅凭 HTTP 409、constraint-failure 或诊断文字，不确定整份文档和请求。"
     }
   ]
 }

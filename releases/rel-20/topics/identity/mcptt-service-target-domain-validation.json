@@ -1,0 +1,156 @@
+{
+  "topic_id": "r20-identity-mcptt-service-target-domain-validation",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只核 MCPTT 业务配置文档 §8.4.2.6 的 Request-URI AUID、参数块 domain 语法及未知域三项；区分 MCPTT 用户档和 MCVideo、MCData 业务文档。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "mcptt-service-config-request-uri-auid-mismatch-requires-409",
+      "clause": "8.4.2.6",
+      "conditions": [
+        "已按业务、目标文档或节点核实是在查 MCPTT 业务配置；比较 Request-URI 中的文档 URI 或节点 URI 的 AUID，不从可能有误的 AUID 反选业务。"
+      ],
+      "conclusion": "§8.4.2.2 要求 org.3gpp.mcptt.service-config。目标 URI 的 AUID 与此不同时，配置管理服务器须返回 HTTP 409（Conflict），含 XCAP <constraint-failure>；若带 phrase 属性，建议为 invalid application id used。不是比 SIP SUBSCRIBE 的 auid、XML 命名空间、文件名、组织域或 XUI。MCVideo 和 MCData 各自 §.6 明列 XUI 比较，MCPTT 业务配置 §8.4.2.6 无该对应句；这不是对 MCPTT 的其他文档或用法免检，也不证明实际请求已获准。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "MCPTT Request-URI document or node AUID condition"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.2"
+          ],
+          "items": [
+            "MCPTT service configuration application unique ID"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.9"
+          ],
+          "items": [
+            "global service document location, comparison only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.6"
+          ],
+          "items": [
+            "MCVideo service configuration XUI comparison only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.6"
+          ],
+          "items": [
+            "MCData service configuration XUI comparison only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.6"
+          ],
+          "items": [
+            "MCPTT user profile XUI validation, comparison only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-service-config-domain-invalid-syntax-requires-409",
+      "clause": "8.4.2.6",
+      "conditions": [
+        "查该 MCPTT 业务配置文档的 service-configuration-params/@domain；已核其属性值不包含语法正确的域名。"
+      ],
+      "conclusion": "配置管理服务器须返回 HTTP 409（Conflict），含 XCAP <constraint-failure>；若带 phrase，建议为 syntactically incorrect domain name。这个属性按 §8.4.2.3 是必填的 xs:anyURI，按 §8.4.2.7 存放任务关键组织域名。通过类型检查不是语法规则已满足，也不从 URI 主机、global 下目录取该值。缺属性与属性值的语法问题分开；本句不把此诊断建议规定为缺属性时的短语。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "domain value does not contain a syntactically correct domain name"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "service-configuration-params-Type required xs:anyURI domain attribute"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "mission critical organization domain data meaning"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-service-config-unknown-domain-requires-409",
+      "clause": "8.4.2.6",
+      "conditions": [
+        "查同一个 service-configuration-params/@domain；已知属性值包含条文所说的未知域名，不以客户端一次 DNS 失败替代这一事实。"
+      ],
+      "conclusion": "配置管理服务器须返回 HTTP 409（Conflict），含 XCAP <constraint-failure>；若带 phrase，建议为 unknown domain name。语法正确仍可以未知。本句没说明已知的来源、DNS、目录或查询算法；不额加必须先通过语法检查的条件，也不指定重叠时的检查顺序或唯一原因。即使域名已知，也不能推出整档验证、授权或写入成功。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "domain value contains an unknown domain name"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "mission critical organization domain data meaning"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "三项是配置管理服务器的要求；HTTP 409 与 XCAP constraint-failure 是必需的，诊断 phrase 只在含此属性时有建议值。不能据响应已出现或没带短语推唯一起因。",
+    "未定义全协议 XUI 豁免、域名算法、先后、授权、实际接收或整档写入；未在此收录 §8.4.2.6 其它正文约束。"
+  ],
+  "related": [
+    "r20-identity-mcs-server-service-config",
+    "r20-identity-mcvideo-mcdata-service-config-validation",
+    "r20-identity-mcptt-user-profile-xcap-validation"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
