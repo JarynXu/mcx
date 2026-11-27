@@ -1389,6 +1389,263 @@
         "independent_source_review": false,
         "independent_usage_acceptance": false
       }
+    },
+    {
+      "id": "inter-rat-trigger-state-and-actual-radio-change",
+      "conditions": [
+        "查 TS 24.283 V19.3.0 的 ratTypeChange。判断某次变化是否命中，须核同一 LMC 当时生效的配置、对应 MC UE 在变化时的紧急或非紧急状态及实际无线接入技术变化。"
+      ],
+      "conclusion": "紧急用 emergencyTriggeringCriteria，非紧急用 triggeringCriteria。在适用规则的 ratTypeChange 中配置了 anyRatTypeChange 时，任意实际跨无线接入技术（RAT）的变化都符合本触发；这里没有按报告内四个方向选值的配置项。只换同一 RAT 内的小区、只改同一 RAT 内的组播/单播不满足跨 RAT 条件。只有 ratTypeChange 外层对象、没有生效的 anyRatTypeChange 项，也不等于启用。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.3–.4 Tables 7.1.6.2.3-1 and 7.1.6.2.4-1"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.37–.38 Tables 7.1.6.2.37-1 and 7.1.6.2.38-1"
+          ],
+          "printed_pages": [
+            53
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 TriggeringCriteria, RatTypeChange and AnyRatTypeChange"
+          ],
+          "printed_pages": [
+            78,
+            83
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.5.2"
+          ],
+          "printed_pages": [
+            20
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.1"
+          ],
+          "printed_pages": [
+            22
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.2"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不从单个时刻的 NR 或 LTE 小区、另一终端的观测或后报的 reportType 推出切换发生或当时适用的状态；不因本项没触发就否定其他上报原因。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "inter-rat-report-optional-direction-enumeration",
+      "conditions": [
+        "读同一目标 LMC 发布的 MCUELocation 报告；解读的是其可选 interRatType，不是配置、位置数据字段或终端切换操作。"
+      ],
+      "conclusion": "报告在 MCUELocation 顶层用可选的单一 interRatType 描述切换方向。V19.3.0 的四个已定义值是 5G_MBS_TO_LTE_MBMS、5G_MBS_TO_LTE_UNICAST、LTE_MBMS_TO_5G_MBS、LTE_MBMS_TO_5G_UNICAST。前两者必须从 5G MBS 出发，后两者从 LTE MBMS 出发；仅知从 5G 到 LTE 或只知目的端用单播，都不足以选值。LTE 单播到 5G MBS 是另一方向，不是 5G_MBS_TO_LTE_UNICAST，也没有本版对应的命名值。A.2 的另一字符串分支只为未来扩展，不用于编码本版定义的内容。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.2"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.49 Table 7.1.6.2.49-1"
+          ],
+          "printed_pages": [
+            56
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.3.5 Table 7.1.6.3.5-1"
+          ],
+          "printed_pages": [
+            59
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 MCUELocation interRatType and triggerId"
+          ],
+          "printed_pages": [
+            86
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 InterRatType"
+          ],
+          "printed_pages": [
+            88
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "没有本版命名值不等于没有跨 RAT 事件、不能报告位置或须伪造枚举。完整报告可省略 interRatType；未见该值也不能证明未切换。未知字符串不证明本版定义了该方向；这里不规定实现的接受、丢弃或状态码。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "inter-rat-attribution-trigger-id-vs-direction-and-submit",
+      "conditions": [
+        "判断某份发布报告为什么发及走到了哪一步时，分别核对应实例、适用的触发配置、报告正文和该次 POST/应答。"
+      ],
+      "conclusion": "AnyRatTypeChange 印刷表把唯一 triggerId 标为 M、1，并说在报告中返回。发布正文按发生的触发列 ID，报告表把 triggerId 数组标为 O、1..N；A.2 声明触发对象的 triggerId，但未列 required。报告的触发 ID 可与当时已生效的配置对照作归因，不编码制式方向；interRatType 是可选的方向值。单看这个值，既不能证明跨 RAT 规则触发过，也不能证明它是唯一上报原因。LMC 实收 LMS 的 LocationReportRequest 也会触发独立发布；这项请求可以与跨 RAT 事件并存。两个字段都不能替代 locationData。命中本项后仍按事件发布程序检查 minimumReportInterval：正在运行则等到期，届时任一上报触发仍为真才按该分支发。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.37–.38 Tables 7.1.6.2.37-1 and 7.1.6.2.38-1"
+          ],
+          "printed_pages": [
+            53
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.5.2"
+          ],
+          "printed_pages": [
+            20
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 TriggeringCriteria, RatTypeChange and AnyRatTypeChange"
+          ],
+          "printed_pages": [
+            78,
+            83
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.1"
+          ],
+          "printed_pages": [
+            22
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.2"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.49 Table 7.1.6.2.49-1"
+          ],
+          "printed_pages": [
+            56
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 MCUELocation interRatType and triggerId"
+          ],
+          "printed_pages": [
+            86
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不从单一字段推断原始无线切换日志、已发送、LMS 已接受或其他客户端已收件。不补多个事件的优先次序、不由 schema 未列 required 推出允许省略业务必需 ID 或固定错误处理。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
@@ -1741,6 +1998,57 @@
         23
       ],
       "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.37–.38 Tables 7.1.6.2.37-1 and 7.1.6.2.38-1"
+      ],
+      "printed_pages": [
+        53
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 TriggeringCriteria, RatTypeChange and AnyRatTypeChange"
+      ],
+      "printed_pages": [
+        78,
+        83
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.3.5 Table 7.1.6.3.5-1"
+      ],
+      "printed_pages": [
+        59
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 MCUELocation interRatType and triggerId"
+      ],
+      "printed_pages": [
+        86
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 InterRatType"
+      ],
+      "printed_pages": [
+        88
+      ],
+      "usage": "primary"
     }
   ],
   "related": [

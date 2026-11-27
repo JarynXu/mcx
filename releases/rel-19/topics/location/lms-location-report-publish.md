@@ -58,6 +58,23 @@
 
 **印刷表与 A.2 分开读。** 对进入或退出项，表 7.1.6.2.7-1 要求至少出现一个名单，并把列出的名单标为 `1..N`。A.2 的 `anyOf` 只查两键至少一键存在，不排斥同时存在，也没给名单 `minItems`。印刷表将小区项的 ID 和所指小区列为必须；A.2 在这些对象中未列 `required`。印刷表的 E‑UTRAN 名单和条目说明提到 NR；按其类型列，`eutranCells` 的每个 `EutranCell` 条目用 `Ecgi`，`NrCell` 条目用 `Ncgi`。A.2 也分别定义这两类条目。不要用空名单或省略 ID 当作有效触发，也不由 schema 单独推服务端一定接受、拒绝或怎样检测切换。邻区数组若给出，表 .50-1 也印为 `1..N`，A.2 未列 `minItems`；空数组不提供邻区数据。A.1 的优先限 API 信息元素和方法的编码，不取消未写入 schema 的程序条件。[印刷页 44–45、57；A.1–A.2，页 73、79–80、87](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=80)。
 
+### 4G、5G 切换时，什么会触发上报？报告能写哪个方向？
+
+**配置管“要不要因切换而报”，报告管“这次切换是什么方向”。** 看同一 LMC 在变化发生时生效的配置：MC UE 紧急时查 `emergencyTriggeringCriteria`，非紧急时查 `triggeringCriteria`。其中 `ratTypeChange` 配有 `anyRatTypeChange`，任意实际跨无线接入技术（RAT）的变化都符合这项触发。只在 5G 内换小区，或只在 LTE 内从组播改成单播，不算跨 RAT。只见当前是 5G，或后来报告才标成紧急，也不足以判定这次变化。[状态和触发项，印刷页 43–44](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=44)；[表 7.1.6.2.37-1、.38-1，印刷页 53](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=54)。
+
+报告里可选的 `MCUELocation.interRatType` 描述方向，不是配置开关。本版只为以下四种方向命名；先看从哪里来，再看去了哪里。
+
+| 从 | 到 | `interRatType` |
+| --- | --- | --- |
+| 5G MBS | LTE MBMS | `5G_MBS_TO_LTE_MBMS` |
+| 5G MBS | LTE 单播 | `5G_MBS_TO_LTE_UNICAST` |
+| LTE MBMS | 5G MBS | `LTE_MBMS_TO_5G_MBS` |
+| LTE MBMS | 5G 单播 | `LTE_MBMS_TO_5G_UNICAST` |
+
+例如，从 **LTE 单播到 5G MBS** 确实跨了 RAT，命中已生效的上述触发，但本版没有对应的命名值。不能反用表中第二行，也不必为上报位置造一个方向值；`interRatType` 可以省略，不能代替报告里的 `locationData`。A.2 在这四值之外保留字符串分支，明说只用于未来扩展，不能把任意字符串解释成本版定义的方向。[报告正文 §6.2.2.8.2，印刷页 22–23](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=24)；[报告表 .49-1，印刷页 56](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=57)；[方向表 7.1.6.3.5-1，印刷页 59](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=60)；[A.2 枚举，印刷页 88](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=89)。
+
+要问**报告把这次上报归给哪条规则**，看报告的 `triggerId` 与这台 LMC 当时的生效配置。方向值本身不证明是这条规则，更不证明只有这一个原因；要核实无线侧实际切换，另看同一终端切换前后。`AnyRatTypeChange` 的印刷表要求唯一 ID 并在报告中返回；A.2 声明这个属性但没列 `required`。发布正文按已触发的规则列 ID，报告表把 ID 数组标为可选。A.1 的附录优先限编码。命中触发时，若最短上报间隔计时器在运行，要等到期，而且届时至少一项上报触发仍为真才按这条路径发。要确认**已经发出**，看 LMC 的实际发布 POST；要确认 LMS 接受，再看匹配的 201。[事件与发布程序，印刷页 22–23](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=23)；[A.1，印刷页 73](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=74)；[A.2 触发对象，印刷页 78、83](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=84)及[报告对象，印刷页 86](https://www.etsi.org/deliver/etsi_ts/124200_124299/124283/19.03.00_60/ts_124283v190300p.pdf#page=87)。
+
 ## 读这一笔发布的 201 或 401
 
 | 实际记录 | 能判断什么 |
