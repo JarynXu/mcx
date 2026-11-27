@@ -553,6 +553,12 @@
       "question": "CMC 初次直接订阅时应发到哪里？CMS 为何在 CMC 直订条款检查授权 MCS 服务器身份，跟代理和业务服务器初订怎么分？",
       "start": "topics/identity/cmc-subscription-notify-fetch.md",
       "boundary": "初始直订按 §6.3.13.2.2 a：CMC 发 SIP SUBSCRIBE，Request-URI 的 SIP URI 基址是其配置的 CMSXCAPRootURI，带标识配置文档应用用法的 auid，通用初订字段按 c 到 f（d 仅身份隐藏时）。CMS §6.3.13.3.2.3 虽题为 CMC 发起，实际入站仍查 Event=xcap-diff、基址为自身 XCAP 根、PAI 存在且含已列入授权 MCS 服务器清单的一项身份、P-Asserted-Service 的 MCPTT ICSI，然后按 RFC 5875 作通知方。代理 §6.3.13.3.2.2 查整个 Request-URI 为自身代理 PSI、存在但不含清单身份的 PAI 及两个指定正文；业务服务器 §6.3.13.3.2.4 查 CMS PSI 基址及含清单身份的 PAI。缺 PAI 不等于存在但不在清单。不补 CMC 到入站 PAI 的身份映射、不把发端 auid 或令牌添成直订接收字段，不从这一段推出 200、通知正文、取文或续订结果。"
+    },
+    {
+      "id": "cmc-direct-renewal-cms-calling-user-id-and-403",
+      "question": "CMC 直接续订缺少 mcptt-calling-user-id 就一定回 403 吗？CMS 用谁作认证身份，跟代理或 MCS 续订怎么区分？",
+      "start": "topics/identity/cmc-subscription-refresh.md",
+      "boundary": "先定位 CMC 直接续订，再按 §6.3.13.3.2.3 核 CMS 实收同一笔 SIP re-SUBSCRIBE，Event=xcap-diff。a：只有这笔 application/vnd.3gpp.mcptt-info+xml 含 mcptt-calling-user-id 才以其值作认证身份，a.2 在这里查无权订阅任何文档变更时回 SIP 403 并停止。b 另列同一拒绝判据；缺元素不直接等于拒绝或获准，本段不指定缺项时的身份来源。不套初订名单/基址/断言业务或代理、MCS 续订的列表和 PAI URI；未因拒绝停止才看 c 的通知方行为，不从条文推本次响应或部分授权结果。"
     }
   ]
 }

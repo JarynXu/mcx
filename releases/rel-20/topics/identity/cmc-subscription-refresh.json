@@ -3,7 +3,7 @@
   "release": 20,
   "state": "clause-checked",
   "common_conditions": [
-    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。主体是终端配置管理客户端（CMC）与配置管理服务器（CMS）的配置文档订阅；换清单、初订关联通知及直接订阅对照按各自条件阅读，不适用业务服务器分支。"
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。主体是终端配置管理客户端（CMC）与配置管理服务器（CMS）的配置文档订阅。改清单、初订关联通知和已定位的直接续订各核本条；业务服务器只用于区分相邻分支。"
   ],
   "condition_rule": "Inherit common_conditions and add claim conditions.",
   "source_catalog": "../../sources.json",
@@ -153,6 +153,78 @@
           "source_id": "3gpp-ts-24.484-v20.1.0",
           "clauses": [
             "6.3.13.3.2.2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "direct-cmc-renewal-cms-same-inbound-event-and-conditional-calling-id",
+      "clause": "6.3.13.3.2.3",
+      "conditions": [
+        "已定位 CMC 直接续订分支；CMS 实际收到这笔 SIP re-SUBSCRIBE，Event 为 xcap-diff。"
+      ],
+      "conclusion": "只在该入站的 application/vnd.3gpp.mcptt-info+xml 正文里确有 mcptt-calling-user-id 时，a.1 才要求以其值作认证身份来做授权；不能用其他正文、PAI、历史消息中同名字段或发端记录替代。该元素不等于已授权。未报或没看到该字段并不证明这里必须拒绝或可以接受；本段未给没有该元素时的认证身份来源，不推初订身份继承、PAI 或令牌映射。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.2.2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "direct-cmc-renewal-a2-b-no-document-authorized-403-stop-before-c",
+      "clause": "6.3.13.3.2.3",
+      "conditions": [
+        "已定位 CMC 直接续订，CMS 实收该 SIP re-SUBSCRIBE，Event 为 xcap-diff；分别判断 a.2 和外层 b。"
+      ],
+      "conclusion": "a.2 位于该笔 application/vnd.3gpp.mcptt-info+xml 正文含 mcptt-calling-user-id 的 a 项内；对 a.1 使用的认证身份，若无权订阅任何文档的变更通知，须回 SIP 403 并停止。b 在 a 项外，对认证身份另写相同无权判据和 SIP 403 并停止，不要求重复拒绝。不能以缺元素或未知身份当成确认无权，亦不从某一文档无权或不完整证据推全拒和混合许可的分支。未按前项终止时，c 要求按 RFC 5875 作通知方；不从条文推本次一定收到某状态、续成、已通知或取文。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "direct-cmc-renewal-do-not-borrow-initial-proxy-or-mcs-rx",
+      "clause": "6.3.13.3.2.3",
+      "conditions": [
+        "分流时只对照已经核明的 UE 直订初订、直订续订、CMC 代理续订或业务服务器续订，不能仅凭 Event 或单个字段选分支。"
+      ],
+      "conclusion": "直订续订的该接收段只列实收 SIP re-SUBSCRIBE 加 xcap-diff，不重列直订初订的基址、授权 MCS 清单和 P-Asserted-Service。CMC 改清单的发端直订另有配置根与第 7 章相应用法 auid；发端不能代 CMS 实收或认证身份。代理续订与业务服务器续订各有实收 Event 和资源清单正文要求；业务服务器续订才按其条款以 PAI 的 URI 作认证身份，代理的地址返回也有自己的条件，不移作 CMC 直订的条件或结果。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.2.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.13.3.2.4"
           ]
         }
       ]
