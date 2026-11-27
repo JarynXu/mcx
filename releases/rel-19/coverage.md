@@ -985,6 +985,14 @@
 
 入口：[预配置用户重组：MCPTT 与 IWF 怎样建组？](topics/interworking/preconfigured-user-regroup-formation.md)。
 
+### 预配置用户重组：MCPTT 与 IWF 怎样取消？
+
+- **能回答：**按实际取消起方和 D 的组 ID 分流；查 MCPTT 侧验权、终端通知与可选确认、IWF 两向请求和应答、Step 9 的图文差异。
+- **只到条件或接口：**TS 23.283 V19.5.0 Stage 2 §10.3.8.3.1/.2、IWF-1 表 10.3.2.16-1/.17-1。已形成 D 后显式取消；组播取消请求不回该客户端确认。MCPTT 起方的 8 与 IWF 起方的 5 反向，MCPTT 起方的 10 另回 client 1。
+- **尚未建立的结论：**不以来源组、呼叫结束、应答发出或收到某条 Result 判本次已取消、各端已收到/确认或各个用户已经退归属。两支未定义全部确认门槛或 SIP 映射，不能裁 Step 9 图文对 IWF 的适用结果。
+
+入口：[预配置用户重组：MCPTT 与 IWF 怎样取消？](topics/interworking/preconfigured-user-regroup-cancellation.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)

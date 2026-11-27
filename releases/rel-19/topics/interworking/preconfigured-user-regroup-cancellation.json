@@ -1,0 +1,396 @@
+{
+  "topic_id": "r19-iwf-preconfigured-user-regroup-cancellation",
+  "release": 19,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "预配置用户重组：MCPTT 与 IWF 怎样取消？",
+  "common_conditions": [
+    "TS 23.283 V19.5.0，Rel‑19 Stage 2。只核预配置用户重组的显式取消及相应 IWF-1 信息流，非成形、组成组重组或原生 SIP。",
+    "查规范的某一步、前提或字段不要求先有抓包、完整流程或实际成功；判断一次实际事务须区分发件、实收、用户通知/确认、操作结果和执行。"
+  ],
+  "condition_rule": "先按本次起方分 .3.1（MCPTT client 1 用户发起）与 .3.2（IWF 发起）。.3.1 的获权前提与 Step 3 本次验权另核；没有验权记录或后续应答，不妨碍查这一支的规范。取消目标是用来源组配置的实际 D。查实况前提才另外核该 MCPTT client 与至少一名本属 IWF 的用户是否已被重组进同一 D。单条已识别的 IWF 消息可读相应表；实际配对才核同次取消。",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "iwf-user-regroup-cancel-target-and-initial-role",
+      "conditions": [
+        "可单查标准所述前提、目标 ID 和哪一条发起路径，不要求观察实际请求、验权已过、终端应答或退归属；若查现网是否进入流程，按本次 D 与发起方取证。"
+      ],
+      "conclusion": "两支的前提都是 MCPTT 客户端和至少一个本属 IWF 的用户已被重组进同一个实际 D，.3.1 明指 client 2，另列 client 1 已获权取消。MCPTT 起方 .3.1 是获权用户经 client 1→server 指定 D；IWF 起方 .3.2 由 IWF→server 指定同类实际 D 的 MCPTT 组 ID。已建成的用户重组保持至明确取消，形成 NOTE 2 各自指回两支。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.8.2.1 and 10.3.8.2.2 NOTES 2 (explicit cancellation pointers)"
+          ],
+          "printed_pages": [
+            87
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.8.3.1, Figure 10.3.8.3.1-1, preconditions and Steps 1–10"
+          ],
+          "printed_pages": [
+            88,
+            89
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.8.3.2, Figure 10.3.8.3.2-1, precondition and Steps 1–5"
+          ],
+          "printed_pages": [
+            89
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "来源组 P 只是 D 的配置来源，不代 D；用户本属 IWF、已有配置和过去单笔请求不证明已重组。组呼结束不替显式取消；形成指针不证明本次已发起或授予跨方向代取消。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-user-regroup-cancel-mcptt-legs-and-step-nine",
+      "conditions": [
+        "可查 .3.1 的 MCPTT 起方或任一已识别的腿；现场识别 client 1 的实际起方请求，不先要求观察验权已过、第 6 或第 8 步已收或第 9 步已执行。"
+      ],
+      "conclusion": "1 获权 client 1 用户发起，2 client 1→server 指定 D，3 server 检查取消权限。4 server→接收 client 2 发请求，5 client 2 通知其用户，6 client 2 可回确认但不对组播发出的这次请求回确认。7 server→IWF 发 IWF 取消请求，8 IWF→server 回 IWF 取消应答。9 是 server 退归属：正文写 client 2 与 3，图框写 MCPTT clients 与 IWF（仅画接收 client 2）。10 是 server→发起 client 1 的另一条应答。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.8.3.1, Figure 10.3.8.3.1-1, preconditions and Steps 1–10"
+          ],
+          "printed_pages": [
+            88,
+            89
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "事先授权及发出请求不能代本次验权。图与正文各保留，不能裁 IWF 一定退或不退归属、只有一个接收 client，或已完成任何特定个人的退归属。先后箭头也不定义全量下发、等待全部、超时或聚合。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-user-regroup-cancel-iwf-legs-and-no-mirror",
+      "conditions": [
+        "可查 .3.2 的 IWF 起方或任一已识别的腿；现场按 IWF 实际向 server 发指定 D 的取消请求定位，不要求观察客户端确认或 server 的后续应答。"
+      ],
+      "conclusion": "1 IWF→server 发取消请求并指 D；图标 IWF 取消请求，正文消息名省 IWF 前缀但不改起点。2 server→接收 client 发取消请求，3 client 通知其用户，4 client→server 可回确认，但不对组播发送的这次请求回确认。5 server→IWF 发 IWF 取消应答，与 .3.1 的 8 方向相反。图仅示一个接收端。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.8.3.2, Figure 10.3.8.3.2-1, precondition and Steps 1–5"
+          ],
+          "printed_pages": [
+            89
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.8.3.1, Figure 10.3.8.3.1-1, preconditions and Steps 1–10"
+          ],
+          "printed_pages": [
+            88,
+            89
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.7.3.2, Figure 10.3.7.3.2-1 and Steps 5–6 (separate group regroup cancellation)"
+          ],
+          "printed_pages": [
+            77,
+            78
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "未写 .3.1 的 MCPTT 发起者验权或 Step 9，不能借用为本支义务，也不意味着免验权或没有退归属。不能拿 §10.3.7.3.2 组成组分支的退归属 5、应答 6 改读本支 Step 5。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-user-regroup-cancel-client-ack-vs-local-notice",
+      "conditions": [
+        "可单查客户端确认的强度和组播分界；判断某端实际是否确认，先配对该端这次收到的取消请求及其发送方式与后续确认，不靠其他消息的传输方式。"
+      ],
+      "conclusion": "MCPTT 起方 4/5/6、IWF 起方 2/3/4：先分 server 发取消请求、client 通知本地用户，以及 client→server 的可选确认。组播发送该取消请求时，不回这条确认；单播也不是必须回。server 发件、client 实收、通知动作、用户实际知悉、本地确认发出、server 实收要分别取证。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.8.3.1, Figure 10.3.8.3.1-1, preconditions and Steps 1–10"
+          ],
+          "printed_pages": [
+            88,
+            89
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.8.3.2, Figure 10.3.8.3.2-1, precondition and Steps 1–5"
+          ],
+          "printed_pages": [
+            89
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "没见这条确认不证明没通知、取消失败或没有 IWF 应答；不据组播限制拦掉 IWF 的 8/5 或另给发起者的 10。两个图的确认先后不定义等待所有、必等一个或超时。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-user-regroup-cancel-request-response-ies-by-identified-leg",
+      "conditions": [
+        "已经识别哪一条 IWF 请求或应答就能查对应表；可纯查结构，不要求看见另一条。若要认定两笔同一次取消，才核对应方向及实际关联。"
+      ],
+      "conclusion": "IWF-1 的双向表 .16/.17 按消息类型分。MCPTT 起方 7（server→IWF）或 IWF 起方 1（IWF→server）用表 10.3.2.16-1，请求者 MCPTT ID 和实际 D 组 ID 各 M；MCPTT 起方 8（IWF→server）或 IWF 起方 5（server→IWF）用表 10.3.2.17-1，请求取消者 MCPTT ID、D 组 ID、取消操作的 Result 各 M。两表不列来源组 ID 或名单。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.1 (IWF-1 information flow scope)"
+          ],
+          "printed_pages": [
+            35
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.16 and Table 10.3.2.16-1 (IWF pre-configured regroup cancel request)"
+          ],
+          "printed_pages": [
+            39,
+            40
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.17 and Table 10.3.2.17-1 (IWF pre-configured regroup cancel response)"
+          ],
+          "printed_pages": [
+            40
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.8.3.1, Figure 10.3.8.3.1-1, preconditions and Steps 1–10"
+          ],
+          "printed_pages": [
+            88,
+            89
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.8.3.2, Figure 10.3.8.3.2-1, precondition and Steps 1–5"
+          ],
+          "printed_pages": [
+            89
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "不是 client 发来、发给 client、或 .3.1 的 10 的表；不拿发消息的 IWF 网元 ID 或接收 client ID 代请求者 MCPTT ID。不由表补结果码、逐用户结果、事务唯一键或 SIP 消息分类。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-user-regroup-cancel-result-vs-observed-execution",
+      "conditions": [
+        "可查证明力而无需完整会话；判断一笔实际 IWF 8/5 或原生 Step 10，必须按本次尝试、实际两端及消息区分所观察者，另查要判定的操作对象。"
+      ],
+      "conclusion": "取消应答写了 Result、发送端实际送出、正确接收端收到同一次应答、终端确认、server 退归属/某个用户退出及 D 状态都是不同证据。只有 IWF 8/5 用 .17 的 Result，MCPTT 起方的 Step 10 另回发起 client 1；发出任何一腿不证对端实收，知道对端实收也不证明其他腿实收、全端确认或实际退归属。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.8.3.1, Figure 10.3.8.3.1-1, preconditions and Steps 1–10"
+          ],
+          "printed_pages": [
+            88,
+            89
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.8.3.2, Figure 10.3.8.3.2-1, precondition and Steps 1–5"
+          ],
+          "printed_pages": [
+            89
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.2.17 and Table 10.3.2.17-1 (IWF pre-configured regroup cancel response)"
+          ],
+          "printed_pages": [
+            40
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "别拿 6/4 确认当 IWF Result，别用 Result 自动宣布本次 D 已撤销、IWF 后方具体用户已退出、媒体或话权释放。两支没有定义固定等待/结果汇总；组成组重组、IWF ad hoc 释放和原生 SIP 不是本条的替代规则。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.8.2.1 and 10.3.8.2.2 NOTES 2 (explicit cancellation pointers)"
+      ],
+      "printed_pages": [
+        87
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.8.3.1, Figure 10.3.8.3.1-1, preconditions and Steps 1–10"
+      ],
+      "printed_pages": [
+        88,
+        89
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.8.3.2, Figure 10.3.8.3.2-1, precondition and Steps 1–5"
+      ],
+      "printed_pages": [
+        89
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.2.1 (IWF-1 information flow scope)"
+      ],
+      "printed_pages": [
+        35
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.2.16 and Table 10.3.2.16-1 (IWF pre-configured regroup cancel request)"
+      ],
+      "printed_pages": [
+        39,
+        40
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.2.17 and Table 10.3.2.17-1 (IWF pre-configured regroup cancel response)"
+      ],
+      "printed_pages": [
+        40
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "10.3.7.3.2, Figure 10.3.7.3.2-1 and Steps 5–6 (separate group regroup cancellation)"
+      ],
+      "printed_pages": [
+        77,
+        78
+      ],
+      "usage": "comparison-only"
+    }
+  ],
+  "related": [
+    {
+      "topic": "r19-iwf-preconfigured-user-regroup-formation",
+      "required": false,
+      "meaning": "问来源组与实际 D 怎样准备、名单、谁形成重组，查 .8.1/.2；形成 NOTE 2 是取消导航，不是取消实况。"
+    },
+    {
+      "topic": "r19-groups-preconfigured-regroup-removal",
+      "required": false,
+      "meaning": "只在问题确为同版 TS 24.379 原生预配置重组移除时另读 SIP MESSAGE、CF/T-PF 与 200；不是本 IWF 消息的解释。"
+    },
+    {
+      "topic": "r19-iwf-adhoc-group-release",
+      "required": false,
+      "meaning": "仅实际为 IWF 互通 ad hoc 组呼释放时读其双向分支；不把临时组通话结束当预配置用户重组取消。"
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  },
+  "limitations": [
+    "Stage 2 文字和示意图，不建立完整协议、SIP 字段/时限、所有节点或个人是否已清理，以及实际话权媒体。未把其他 Release 或其他类型的取消规则补入。"
+  ]
+}
