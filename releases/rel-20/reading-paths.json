@@ -499,6 +499,24 @@
       "question": "看到配置 HTTP DELETE，能不能证实在线 CMS 删除了 MC 业务用户库的 MCS 用户档？",
       "start": "topics/identity/cmc-config-delete-target.md",
       "boundary": "按 §4.4，MCS UE 实际请求删除 MCS 用户档时，在线 CMS 按所引 TS 29.283 从 MC 业务用户数据库删除用户档。这不是 §6.3.5、§6.3.7、§6.3.10 中通用 DELETE 目标判断；不从一笔配置 DELETE 推后端已删、固定的 URI 触发映射或级联。查在线用户档维护走其独立入口。"
+    },
+    {
+      "id": "config-get-wire-target",
+      "question": "配置 HTTP GET 如何从实际 Request-URI 区分整份、元素和属性？CMC 与通用客户端怎么选目标？",
+      "start": "topics/identity/cmc-mcs-config-get-target.md",
+      "boundary": "先核实际 HTTP GET、Request-URI 对象与相应用法的 auid，不能凭方法、根或 auid 判断范围。整份 §6.3.3 的 CMC 措辞是设到配置根并带 auid；元素 §6.3.8、属性 §6.3.11 把该根作为相对路径的根。三项各执行对应 GC 程序，不是先由 GC 发；属性 CMS 收端明引第 7 章。文档 GC 写 document to be updated 仍是 GET，不从相邻 PUT 或 DELETE 提取动作，也不补完整 URI 或选择器。"
+    },
+    {
+      "id": "config-get-mcs-send-vs-cms-receive",
+      "question": "MCS 服务器能发送元素或属性 GET 吗？CMS 收端是否像整份 GET 一样明列 MCS，三个角色分别须支持什么？",
+      "start": "topics/identity/cmc-mcs-config-get-target.md",
+      "boundary": "整份 §6.3.3.2.3 写经 CSC-5 的 MCS 发送，§6.3.3.3 明列 CMS 支持处理 CMC 或 MCS 服务器的文档 GET。元素 §6.3.8.2.3 和属性 §6.3.11.2.3 各有 MCS 发送，并指向对应 GC；后句同时写 identify the XML document，各有 MCPTT sserver 与 MCS sserver 字样。两条节点 CMS 收端只明列来自 CMC 的匹配 GET；不从这里没列推禁令、获准或响应，不移用整份取文的 CSC-5 字样。§5.1/.2/.3 各要求支持相应程序，不把发送方支持变成收端角色范围。"
+    },
+    {
+      "id": "config-get-vs-response-and-user-db",
+      "question": "抓到配置 HTTP GET 或 NOTIFY 能证明已经取到正文，或证明在线 CMS 读了 MC 业务用户数据库吗？",
+      "start": "topics/identity/cmc-mcs-config-get-target.md",
+      "boundary": "现场要确认同笔实际应答和内容，HTTP GET 发送、CMS 实收与客户端取到内容分别核；通知也不证明内容已到。§4.4 为向 MCS UE 下发或支持它更新 MCS 用户档而读库是在线 CMS 的独立后端情形，按所引 TS 29.283。普通 GET 不能证实后端实际读库或把这个步骤扩给其他对象，不给定 HTTP 状态、授权或配置已应用。"
     }
   ]
 }

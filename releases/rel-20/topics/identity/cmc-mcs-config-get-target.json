@@ -1,0 +1,326 @@
+{
+  "topic_id": "r20-identity-cmc-mcs-config-get-target",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。主规则是配置管理文档、元素或属性的 HTTP GET，各按实际对象和发送、接收或角色支持匹配条件；对照流程只按各条自身场景，不以收到通知或读库作为所有 GET 的附加前提。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "document-get-gc-and-cmc",
+      "clause": "6.3.3.2.1",
+      "conditions": [
+        "整份配置文档读取，检查通用 GC 程序或 CMC 所用的发送程序。"
+      ],
+      "conclusion": "GC 须发 HTTP GET，并用 Request-URI 引用文档，指向 RFC 4825 Retrieve a Document。保留 document to be updated 的字样；本段的动作仍是取文 GET，不是 PUT 更新。CMC 执行该 GC 程序处理同一笔请求，不另要求一个 GC 节点先发；原文写设置到按 TS 24.483 配置的 CMSXCAPRootURI 并带相应用法的 auid。不能从根加 auid 得出完整目标地址。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.3.2.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.3.2.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "document-get-mcs-csc5",
+      "clause": "6.3.3.2.3",
+      "conditions": [
+        "MCS 服务器经 CSC-5 取整份配置文档，检查该发送程序。"
+      ],
+      "conclusion": "MCS 服务器须执行 §6.3.3.2.1 的 GC 程序，按配置让实际 Request-URI 标识要取的 XML 文档，带相应用法的 auid。组织档变更通知另见 §4.3.1；该通知不是所列通用 GET 的前提，不能从通知推出实际取回。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.3.2.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.3.2.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.3.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "document-get-cms-cmc-or-mcs",
+      "clause": "6.3.3.3",
+      "conditions": [
+        "CMS 实收一笔发自 CMC 或 MCS 服务器的 HTTP GET；Request-URI 标识整份 XML 文档，auid 与所取应用用法相应。"
+      ],
+      "conclusion": "§6.3.3.3 明确要求 CMS 支持处理两个来源各自的匹配文档 GET，按 RFC 4825 GET Handling；并非同笔同时由两者发送。不能单用方法、根或 auid 选对象；同样也不能据发送侧确认本段入站、匹配响应或已取到内容。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.3.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "element-get-gc-and-cmc",
+      "clause": "6.3.8.2.1",
+      "conditions": [
+        "取配置文档中的 XML 元素，核对通用 GC 程序或采用它的 CMC 发送。"
+      ],
+      "conclusion": "GC 须发送 HTTP GET，实际 Request-URI 指向待取元素，并指向 RFC 4825 Fetch an Element。CMC 执行该 GC 程序，以按 TS 24.483 配置的 CMSXCAPRootURI 为相对路径的根，带相应用法的 auid；不补通用选择器语法。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.8.2.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.8.2.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.8.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "element-get-cms-explicit-cmc",
+      "clause": "6.3.8.3",
+      "conditions": [
+        "CMS 实收从 CMC 发来的 HTTP GET；该 Request-URI 标识具体 XML 元素，auid 相应用法。"
+      ],
+      "conclusion": "CMS 须支持匹配元素的 RFC 4825 GET Handling。此处收端明列 CMC，与整份条款不同；不把这处未列解释成 MCS 服务器禁令、必接受、某种状态或下一个动作。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.8.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.8.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.3.3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "attribute-get-gc-and-cmc",
+      "clause": "6.3.11.2.1",
+      "conditions": [
+        "取配置文档中的 XML 属性，核对通用 GC 程序或采用它的 CMC 发送。"
+      ],
+      "conclusion": "GC 须发送 HTTP GET，实际 Request-URI 指向待取属性，并指向 RFC 4825 Fetch an Attribute。CMC 执行该 GC 程序，以按 TS 24.483 配置的 CMSXCAPRootURI 为相对路径的根，带相应用法的 auid；不把元素目标当属性，不补通用选择器语法。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.11.2.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.11.2.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.11.1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "attribute-get-cms-explicit-cmc",
+      "clause": "6.3.11.3",
+      "conditions": [
+        "CMS 实收从 CMC 发来的 HTTP GET；该 Request-URI 标识具体 XML 属性，auid 与所取应用用法相应。"
+      ],
+      "conclusion": "CMS 须支持匹配属性的 RFC 4825 GET Handling，CMS 此处只明列 CMC。本收端条文明引第 7 章，不把章指针外推给整份文档或元素收端的字面，不据此判 MCS 服务器一定获准、被禁或应回何码。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.11.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.11.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "7"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.8.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.3.3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "element-and-attribute-get-mcs-sender-literal",
+      "clause": "6.3.8.2.3",
+      "conditions": [
+        "分别核 MCS 服务器取元素或取属性的发送程序；按实际对象查对应分节。"
+      ],
+      "conclusion": "元素分支首句要求 MCS 服务器执行元素的 §6.3.8.2.1 GC 程序，属性分支首句要求执行属性的 §6.3.11.2.1 GC 程序。两个 .2.3 后句都写按配置 identify the XML document 和相应用法的 auid；元素主语原写 MCPTT sserver，属性主语原写 MCS sserver。不据拼写另立角色，不改判为只取整份，也不补精确 URI 语法；不把 CSC-5 自动移用，亦不据未列排除它。两项 CMS 收端另按实际请求及其明确角色核。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.8.2.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.11.2.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.8.2.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.11.2.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.8.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.11.3"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "6.3.3.2.3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "get-required-support-not-outcome",
+      "clause": "5.1",
+      "conditions": [
+        "对照三个角色的合规支持要求，或用实际请求排查配置 GET；按各自证据核对。"
+      ],
+      "conclusion": "§5.1 的 CMC 三项 GET 必须支持；另列 CMC 三项 DELETE 可支持。§5.2 的 CMS 三项处理必须支持，§5.3 的 MCS 服务器三项发送程序必须支持；这些不是任意部署已实现证明，不推出任一应用用法的授权。不能据支持、发送或收到请求证明取到内容；要确认取回，应核同一请求的实际返回与内容，不补固定 HTTP 状态码或应用结果。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "5.1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "5.2"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "5.3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "online-ue-user-profile-db-get-is-separate",
+      "clause": "4.4",
+      "conditions": [
+        "在线 CMS 向 MCS UE 下发或支持 MCS UE 更新该用户档，对照 §4.4。"
+      ],
+      "conclusion": "在线 CMS 按所引 TS 29.283 从 MC 业务用户数据库取该 MCS 用户档。抓到配置 GET 或其应答不能独自证明 CMS 为这次请求实际读库；不扩成所有文档、元素或属性的通用后端规则，不补后端线报文、缓存次数或具体 URI 映射。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "4.4"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "不把 MCS 发送条款或未点名写成 CMS 已明确接收、禁止或已授权，不补通用 URI、第三方规范或响应码；不从一次 GET、通知或支持要求推断已取回、已应用或后端已读。",
+    "RFC 4825、TS 24.483、TS 29.283 只作此处所引程序或配置的定位。具体订阅通知、业务服务器组织档、删除和在线用户库另读；本主题不补节点通用语法。"
+  ],
+  "related": [
+    "r20-identity-cmc-config-delete-target",
+    "r20-identity-cmc-subscription-notify-fetch",
+    "r20-identity-mcs-server-service-config",
+    "r20-identity-online-cms-user-profile-database"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
