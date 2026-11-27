@@ -1024,6 +1024,371 @@
         "independent_source_review": false,
         "independent_usage_acceptance": false
       }
+    },
+    {
+      "id": "publish-serving-cell-fields-vs-detected-neighbours",
+      "conditions": [
+        "查本操作的 MCUELocation.locationData 定义不要求抓包。判断实际发布报告样本时，发报告的 LMC 实例、根位置数据和 locTimestamp 要对应。"
+      ],
+      "conclusion": "ecgi 报告当前服务 E‑UTRAN 小区，ncgi 报告当前服务 NR 小区；neighbouringEcgi 和 neighbouringNcgi 分别列检测到的相应邻区。ID 只出现在邻区列表不能确认是服务小区。单次服务小区测量也不能给出先前状态或进入/退出方向。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.1–.2"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.49 Table 7.1.6.2.49-1"
+          ],
+          "printed_pages": [
+            56
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.50 Table 7.1.6.2.50-1"
+          ],
+          "printed_pages": [
+            57
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 MCUELocation and LocationInfo"
+          ],
+          "printed_pages": [
+            86,
+            87
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "locTimestamp 是测量时刻，不是 HTTP 到达时间；不拿历史条目、另一 LMC 或另一事务补当时的服务状态。缺字段不证明无邻区，不从小区 ID 推坐标、切换实现或采集权限。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "cell-trigger-effective-state-and-three-directions",
+      "conditions": [
+        "查适用 LocationConfiguration 的 cellChange；判断实际触发时，核同一 LMC 当时生效的配置、对应 MC UE 在小区变化发生时的紧急或非紧急状态，以及实际小区变化。"
+      ],
+      "conclusion": "小区变化发生时，MC UE 处于紧急状态用 emergencyTriggeringCriteria，非紧急用 triggeringCriteria。cellChange 可选；anyCellChange 对象出现时实际任意小区变化都符合该触发，无需名单。enterSpecificCell 按实际进入的目标检查该进入名单，exitSpecificCell 按实际退出的目标检查该退出名单。reportType 指发送报告时的状态，不代表变化时 MC UE 的状态。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.3–.4 Tables 7.1.6.2.3-1 and 7.1.6.2.4-1"
+          ],
+          "printed_pages": [
+            43,
+            44
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.5–.6 Tables 7.1.6.2.5-1 and 7.1.6.2.6-1"
+          ],
+          "printed_pages": [
+            44
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.7–.9 Tables 7.1.6.2.7-1, .8-1 and .9-1"
+          ],
+          "printed_pages": [
+            45
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 CellChange, AnyCellChange, SpecificCellChange, EutranCells, NrCells, EutranCell and NrCell"
+          ],
+          "printed_pages": [
+            79,
+            80
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.2 item 2 reportType"
+          ],
+          "printed_pages": [
+            22
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.49 Table 7.1.6.2.49-1 reportType"
+          ],
+          "printed_pages": [
+            56
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "配置收到或已发不等于配置生效。单个现时小区值、检测到邻区或未知状态不证明命中。没有指定进入/退出项不代表没有其他触发；不把地理区域、制式变化或其他无线事件套成这三种小区触发。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "cell-trigger-match-technology-target-and-actual-transition",
+      "conditions": [
+        "所问是具体进入/退出项，已知该项适用、同一 LMC 的实际变化方向及进入或退出的小区。"
+      ],
+      "conclusion": "按 eutranCells 中各 EutranCell 的 eutranCell（Ecgi）或 nrCells 中各 NrCell 的 nrCell（Ncgi）匹配相应类型和 ID；不能从数值或标签相同跨类型匹配。若只启用进入 NR 小区 B，实际 A→B 才是对进入 B 的检查，B→A 不匹配这个进入项。仅有 ncgi=B 或仅邻区含 B 尚无进入/退出的前后状态证据。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.5–.6 Tables 7.1.6.2.5-1 and 7.1.6.2.6-1"
+          ],
+          "printed_pages": [
+            44
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.7–.9 Tables 7.1.6.2.7-1, .8-1 and .9-1"
+          ],
+          "printed_pages": [
+            45
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 CellChange, AnyCellChange, SpecificCellChange, EutranCells, NrCells, EutranCell and NrCell"
+          ],
+          "printed_pages": [
+            79,
+            80
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.2 serving and neighbouring cells"
+          ],
+          "printed_pages": [
+            23
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "limitations": [
+        "不从两个无关联报告补出一次具体事件、不会因本项未命中断言没有报告，不定义蜂窝选择/切换算法、两类列表优先次序或触发合并行为。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "cell-trigger-reported-id-vs-event-and-publication",
+      "conditions": [
+        "归因时实际发布报告的 triggerId 与同一 LMC 当时有效的 cellChange 子项或具体小区条目相匹配。单查字段位置或 ID 规则时无需运行记录。"
+      ],
+      "conclusion": "印刷表的 anyCellChange 对象和具体进入/退出名单的每个小区条目各自带 triggerId（M、1）。对已定义 ID 的子项，配置通知按正文复用已有且有效的值，其余配新的唯一值。报告中匹配的 ID 可追溯所列触发，进、出同一小区的两项按各自配置辨认。触发 ID 不是 requestId 或 reportId。§6.2.2.8.2 列报告触发 ID 数组，表 .49-1 把整个数组标 O。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.5.2"
+          ],
+          "printed_pages": [
+            20
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "6.2.2.8.1–.2"
+          ],
+          "printed_pages": [
+            22,
+            23
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.5–.6 Tables 7.1.6.2.5-1 and 7.1.6.2.6-1"
+          ],
+          "printed_pages": [
+            44
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.7–.9 Tables 7.1.6.2.7-1, .8-1 and .9-1"
+          ],
+          "printed_pages": [
+            45
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.49 Table 7.1.6.2.49-1"
+          ],
+          "printed_pages": [
+            56
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 CellChange, AnyCellChange, SpecificCellChange, EutranCells, NrCells, EutranCell and NrCell"
+          ],
+          "printed_pages": [
+            79,
+            80
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 MCUELocation and LocationInfo"
+          ],
+          "printed_pages": [
+            86,
+            87
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "匹配 ID 不能代替实际小区变化的旧/新状态证据、运行中的 minimumReportInterval 到期及届时条件检查、HTTP 发送、同笔 LMS 201 或下游收件。不由孤立、无记录、不同实例或错配 ID 推唯一触发、排除其他触发或未上报。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "cell-trigger-lists-keys-are-not-items-api-and-printed-bounds",
+      "conditions": [
+        "核 TS 24.283 V19.3.0 同版印刷模型表、A.2 及 A.1；不替其他 API 或外部 CommonData 定义编码。"
+      ],
+      "conclusion": "每个已选的 SpecificCellChange 在表 .7-1 要求 eutranCells 或 nrCells 至少其一；列出名单时表印 1..N。A.2 anyOf 查至少一个键，可同时有两键，名单模型没有 minItems。印刷 AnyCellChange 的 triggerId 和指定条目的小区 ID/triggerId 标 M、1，而 A.2 对象仅声明这些属性、未列 required。印刷 E‑UTRAN 列表及条目说明提到 NR，其类型仍分别为 array(EutranCell) 和 Ecgi；NrCell 用 Ncgi，A.2 区分两类。邻区数组表 .50-1 标可选 1..N，A.2 未列 minItems。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.5–.6 Tables 7.1.6.2.5-1 and 7.1.6.2.6-1"
+          ],
+          "printed_pages": [
+            44
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.7–.9 Tables 7.1.6.2.7-1, .8-1 and .9-1"
+          ],
+          "printed_pages": [
+            45
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "7.1.6.2.50 Table 7.1.6.2.50-1"
+          ],
+          "printed_pages": [
+            57
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.1"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 CellChange, AnyCellChange, SpecificCellChange, EutranCells, NrCells, EutranCell and NrCell"
+          ],
+          "printed_pages": [
+            79,
+            80
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-24.283-v19.3.0",
+          "clauses": [
+            "Annex A.2 MCUELocation and LocationInfo"
+          ],
+          "printed_pages": [
+            86,
+            87
+          ],
+          "usage": "primary"
+        }
+      ],
+      "limitations": [
+        "A.1 的附录优先限编码，未表达的程序条件仍适用。空名单/缺 ID 不因此成为生效的匹配项；空邻区列表不提供邻区数据。不能从通过某个 schema 检查推出完整接口合规、LMS 接纳或固定拒绝码。"
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
@@ -1292,6 +1657,88 @@
       ],
       "printed_pages": [
         20
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.50 Table 7.1.6.2.50-1"
+      ],
+      "printed_pages": [
+        57
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 MCUELocation and LocationInfo"
+      ],
+      "printed_pages": [
+        86,
+        87
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.5–.6 Tables 7.1.6.2.5-1 and 7.1.6.2.6-1"
+      ],
+      "printed_pages": [
+        44
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.7–.9 Tables 7.1.6.2.7-1, .8-1 and .9-1"
+      ],
+      "printed_pages": [
+        45
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "Annex A.2 CellChange, AnyCellChange, SpecificCellChange, EutranCells, NrCells, EutranCell and NrCell"
+      ],
+      "printed_pages": [
+        79,
+        80
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.2.2.8.2 item 2 reportType"
+      ],
+      "printed_pages": [
+        22
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "7.1.6.2.49 Table 7.1.6.2.49-1 reportType"
+      ],
+      "printed_pages": [
+        56
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-24.283-v19.3.0",
+      "clauses": [
+        "6.2.2.8.2 serving and neighbouring cells"
+      ],
+      "printed_pages": [
+        23
       ],
       "usage": "comparison-only"
     }

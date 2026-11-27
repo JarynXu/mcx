@@ -2790,6 +2790,22 @@
       ]
     },
     {
+      "id": "lms-report-serving-neighbour-and-cell-change-trigger",
+      "question": "LMC 报了服务小区或邻区：怎样判断是否命中进入或退出指定小区的上报触发？",
+      "start": "topics/location/lms-location-report-publish.md",
+      "boundary": "查 TS 24.283 V19.3.0 Stage 3 的 LMC 发布报告字段和 cellChange 小区变化触发，查规范无需抓包。ecgi/ncgi 是报告里的服务小区，neighbouringEcgi/neighbouringNcgi 是检测到的邻区。判实际命中，核真实小区变化、同一 LMC 当时的生效配置和对应 MC UE 在变化发生时的紧急或非紧急状态；不拿报告发送时的 reportType 倒推。指定进出才查变化方向与对应类型的名单，anyCellChange 不要求命中名单。单份服务小区样本或邻区列表不证明进出；匹配 triggerId 是报告归因线索，不替实际事件、发布、匹配应答或下游收件。",
+      "next_if": [
+        {
+          "condition": "实际问 LMS 的配置 POST 成功收件、配置应用或触发项的 FULL/UPDATE，不拿上报内容反推收件。",
+          "read": "topics/location/lms-registration-configuration.md"
+        },
+        {
+          "condition": "实际问 LMS 向已注册 LMC 索要报告的回调、匹配应答或历史/坐标正文，区分该应答与这里的独立发布。",
+          "read": "topics/location/lms-location-report-request.md"
+        }
+      ]
+    },
+    {
       "id": "lms-registration-maintenance",
       "question": "LMC 已经向 LMS 注册：PUT 何时算续期，超过生效 expTime 或 DELETE 204 各说明什么？",
       "start": "topics/location/lms-registration-maintenance.md",
