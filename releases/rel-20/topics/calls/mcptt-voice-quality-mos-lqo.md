@@ -18,6 +18,6 @@
 
 注 2 把管理员设组首选编解码器指到 `R-6.4.9-006`，但本版正文该条是 `Void`（印刷页 43）。资料性附录 A1（印刷页 76）将它映射到 TS 22.280 的 `R-6.4.9-005`。这是来源指针，未核目标条文，不能据此补写配置权限、默认选型或协商流程。
 
-看见编解码能力、协商记录或发话接入时延，都不能替代所需的平均 MOS-LQO 测量。要核口到耳或发话接入时间，另见[发话接入与口到耳](mcptt-access-clock.md)。
+看见编解码能力、协商记录或发话接入时延，都不能替代所需的平均 MOS-LQO 测量。 要核 P25 系统间有没有协调手段，看[P25 互通的编解码要求](p25-interworking-codecs-and-losing-audio.md#编解码要求有协调手段不是每通都转码)。要核口到耳或发话接入时间，另见[发话接入与口到耳](mcptt-access-clock.md)。
 
 [3GPP 原文归档](https://www.3gpp.org/ftp/Specs/archive/22_series/22.179/22179-k00.zip) · [来源与版本](../../sources.json) · [结构化记录](mcptt-voice-quality-mos-lqo.json)
