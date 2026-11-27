@@ -18,6 +18,6 @@
 
 只有管理员能够授权，不能推出两侧已经授权；一侧获授权也不证明对侧获授权。这四条说的是**对混合 PTT 组呼发起抢占**。它们未规定具体比较哪些优先级、被抢占者是否已撤权、接收者播放哪路或本次是否发起成功。不要把[离网组活动发话的抢占](off-network-floor-override.md)拿来补这四条。
 
-若问互通的**带话权私呼**能否抢占，读[私呼按对端能力分支](interworking-private-call-override.md)，不能拿组呼授权来回答。本页不展开 P25 重组、广播、用户标识、编解码、Losing audio 或完整私呼；也不从组呼业务支持推断短数据、密钥分发、转码方法、网关信令或设备已经互通。
+若问互通的**带话权私呼**能否抢占，读[私呼按对端能力分支](interworking-private-call-override.md)，不能拿组呼授权来回答。要查 [P25 的重组、组广播和用户标识](p25-regrouping-broadcast-and-user-ids.md)，另读 -010 至 -013。本页不展开编解码、Losing audio 或完整私呼；也不从组呼业务支持推断短数据、密钥分发、转码方法、网关信令或设备已经互通。
 
 [3GPP 原文归档](https://www.3gpp.org/ftp/Specs/archive/22_series/22.179/22179-k00.zip) · [来源与版本](../../sources.json) · [结构化记录](p25-group-call-interworking.json)
