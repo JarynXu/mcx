@@ -23,4 +23,15 @@ TS 24.484 V20.1.0，Release 20。这里的离线配置指 **UE 没有连接任�
 
 对 MCPTT UE，§4.2.3.1/.2 将初始、组及 MCPTT 的 UE/用户档/业务 MO 格式指向 TS 24.483；主系统在线的组文档格式另指 TS 24.481（§4.2.2.1.1）。这里只核这些指向，不核目标格式、参考点与角色的逐一绑定或使用哪种设备管理协议。外设接通 IP 或建好默认档，也不证明终端已收到并采用了配置。
 
+## MCVideo、MCData 的离线管理对象查哪份规范？
+
+| TS 24.484 V20.1.0 条款 | 条款列的管理对象（MO） | 六句在两个小节中所写的接收方 | 格式出处 |
+| --- | --- | --- | --- |
+| §4.2.3.3 MCVideo | MCVideo UE 配置 MO、MCVideo 用户配置档 MO、MCVideo 业务配置 MO | 三句都是 MCPTT UE | TS 24.483 [4] |
+| §4.2.3.4 MCData | MCData UE 配置 MO、MCData 用户配置档 MO、MCData 业务配置 MO | 三句都是 MCPTT UE | TS 24.483 [4] |
+
+**对象的业务名称和句中的接收方要分开读。**两个小节按标题列 MCVideo 或 MCData 的 MO，但说的是离线配置时下载到 **MCPTT UE**。查对象格式仍按表中指向；不能把接收方改写成 MCVideo UE 或 MCData UE，也不能从这两段判定设备只能是 MCPTT、某个终端支持离线配置、或这次下载已发生。这里照录原文称谓，不判断是否应勘误。
+
+TS 24.483 [4] 没标具体版次；§2 的规则是查同一 Release 的最新版本。这里仅核格式指针，不核所引版本或正文，不补 MO 字段、传输、设备管理过程、CSC-11/12 对应关系或业务生效。外设 CMS 和 GMS 的分工仍按上面的 §4.2.1。要查[在线下载到 MCVideo 或 MCData UE 的配置文档](mcvideo-mcdata-ue-server-config-formats.md)，看 §4.2.2.3/.4 指的第 9/10 章；不要用它们替代这些离线 MO 的格式，或反过来改写离线小节的接收方。
+
 [3GPP 原文归档](https://www.3gpp.org/ftp/Specs/archive/24_series/24.484/24484-k10.zip) · [来源与版本](../../sources.json) · [结构化记录](offline-ue-configuration.json)
