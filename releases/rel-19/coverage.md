@@ -929,6 +929,14 @@
 
 入口：[LMR 发起互通 First-to-answer：IWF 何时能按新参数重来？](topics/interworking/first-to-answer-lmr-origin.md)。
 
+### 在网增强状态互通：谁请求分享，哪一侧查 IWF 归属？
+
+- **能回答：**区分 MCData 用户和 IWF 代 LMR 用户向 MCData 组请求分享在网增强状态；查接收者所在 IWF 的归属。
+- **只到条件或接口：**TS 23.283 V19.5.0 Stage 2。两方向 IWF 都是对等 MCData server；核接收 IWF 对同一目标组的实际归属。LMR 起始的 client 1 与接收 2…n 分开；不把接收归属条款外推给发起 IWF。
+- **尚未建立的结论：**不推发起 IWF 免归属、实例必同/必异、已接收或逐人送达。TS 23.282 基础过程与预设值仅回指；不套普通 SDS、离网或线级协议。
+
+入口：[在网增强状态互通：谁请求分享，哪一侧查 IWF 归属？](topics/interworking/enhanced-status-on-network.md)。
+
 ## 位置服务
 
 [查看本域全部主题](topics-location.json)
