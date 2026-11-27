@@ -3916,6 +3916,26 @@
           "read": "topics/location/lms-location-report-publish.md#这份报告是谁发的是什么时候测的"
         }
       ]
+    },
+    {
+      "id": "lms-functional-alias-signalling-trigger-vs-report-attribution",
+      "question": "LMC 怎样分别配置功能别名激活和停用触发？位置报告的别名 URI 或 triggerId 能确认什么？",
+      "start": "topics/location/lms-location-report-publish.md",
+      "boundary": "TS 24.283 V19.3.0 Stage 3 公共 LMS。查同一 LMC 事件时生效的配置：MC UE 紧急读 emergencyTriggeringCriteria，非紧急读 triggeringCriteria；不从后来 reportType 倒推。signallingEvent 的 functionalAliasActivation 与 functionalAliasDeactivation 各为可选对象，对应实际激活与停用。每对象只定义其 triggerId，表 M、1，A.2 未列 required；不是布尔开关或具体别名选择。只见操作请求、成功应答、当前状态或续期不确认变化。报告根 functionalAlias 是可选的 alias URI，正文关联触发测量的状态变化；它不编码方向。根 triggerId 数组匹配当时有效的对象 ID 只识别报告列了哪条规则，不补实际变化、唯一原因或 URI 与每项 ID 的一一对应。计时器在运行则等 minimumReportInterval 到期且任一触发仍真，实际发送、接受分别核本次 LMC→LMS 发布 POST、匹配 LMS 201。",
+      "next_if": [
+        {
+          "condition": "实际是 TS 24.282 的本地 MCData 逐用户功能别名操作或状态通知；按实际状态证据核，不以 LMS 的位置 POST 代替。",
+          "read": "topics/mcdata/functional-alias-state-evidence.md"
+        },
+        {
+          "condition": "实际问初次登录或收到位置配置的 signallingEvent，不将两项当功能别名事件。",
+          "read": "topics/location/lms-registration-configuration.md#初次登录和收到配置怎样区分这两种上报触发"
+        },
+        {
+          "condition": "实际是 LMS→LMC 索要本次或历史位置、索要请求的两个别名参数 或历史筛选，不是当前生效的触发配置。",
+          "read": "topics/location/lms-location-report-request.md"
+        }
+      ]
     }
   ]
 }
