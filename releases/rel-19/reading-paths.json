@@ -5140,6 +5140,58 @@
           "read": "topics/interworking/sds-addressing.md#iwf-代-lmr-向-mcdata-组发-sds找目标组再找接收-iwf"
         }
       ]
+    },
+    {
+      "id": "iwf-emergency-imminent-group-setup-request-response-elements",
+      "question": "IWF 紧急和迫近危险组呼的四张表，隐式话权、告警指示和 Result 怎样区分？",
+      "start": "topics/interworking/emergency-group-call-elements.md",
+      "boundary": "TS 23.283 V19.5.0 Rel‑19 Stage 2 §10.6.1.1–.4，印刷页 117–118。四表均 IWF↔MCPTT server，单查规范或已辨认一表无需全链。两请求主叫 MCPTT ID 和组 ID M，主叫别名及 Location（if available）O；紧急 .1 的 Emergency indicator M、Alert indicator O 指拟发告警，迫近危险 .3 的 Imminent peril indicator M、未列告警指示，不推出告警完成或全局禁止。Implicit floor request 均 O，.1 仅发起客户端请求的话权条件；.3 另有 client→server 且发起者请求的 NOTE，双向导语保留，不由 IWF→server 自动满足这条。满足条件仍非必带，缺项不反推；同笔已确认出现且有必要条件已被证伪可判局部不符，断缺项或全包合规才核完整。紧急 .2 和迫近危险 .4 应答主叫、组、Result 都 M，Result 描述可拒绝、未列结果值或 SDP answer。同形不能认家族。不套普通响应的目标组员 ID 与 SDP answer；§10.6.3.3 原普通请求可对应迫近危险应答。按真实消息配对，发／收、授权、状态、媒体和话权分别取证。",
+      "next_if": [
+        {
+          "condition": "实际为 MCPTT 主叫，紧急互通组定义在 MCPTT；查流程和逐人／代理腿。",
+          "read": "topics/interworking/emergency-group-setup-mcptt-to-mcptt.md"
+        },
+        {
+          "condition": "实际为 MCPTT 主叫，紧急互通组定义在 LMR；查另一个流程。",
+          "read": "topics/interworking/emergency-group-setup-mcptt-to-lmr.md"
+        },
+        {
+          "condition": "实际为 LMR 主叫，紧急互通组定义在 MCPTT；查原始与逐人腿。",
+          "read": "topics/interworking/emergency-group-setup-lmr-to-mcptt.md"
+        },
+        {
+          "condition": "实际为 LMR 主叫，紧急互通组定义在 LMR；查该流程。",
+          "read": "topics/interworking/emergency-group-setup-lmr-to-lmr.md"
+        },
+        {
+          "condition": "实际为 MCPTT 用户向指定组主动发起迫近危险组呼。",
+          "read": "topics/interworking/imminent-peril-group-call-mcptt-origin.md"
+        },
+        {
+          "condition": "实际为 LMR 普通起呼，组在 MCPTT 已有迫近危险状态；查不同类的原请求和应答。",
+          "read": "topics/interworking/imminent-peril-group-call-lmr-origin.md"
+        },
+        {
+          "condition": "已辨明是普通 IWF 组呼请求，查普通表的主叫 ID 和 SDP offer。",
+          "read": "topics/interworking/group-call-request.md"
+        },
+        {
+          "condition": "已辨明这是普通预安排 IWF 组呼应答、目标成员 ID 或需要区分几条对应消息。",
+          "read": "topics/interworking/prearranged-group-setup.md"
+        },
+        {
+          "condition": "实际为 MC 用户发起独立紧急告警，非建呼 Alert indicator。",
+          "read": "topics/interworking/emergency-alert-init-mc-origin.md"
+        },
+        {
+          "condition": "实际为 LMR 用户发起独立紧急告警，非建呼 Alert indicator。",
+          "read": "topics/interworking/emergency-alert-init-lmr-origin.md"
+        },
+        {
+          "condition": "实际要求清除已有迫近危险组状态，不套建呼 Result。",
+          "read": "topics/interworking/imminent-peril-group-state-cancel.md"
+        }
+      ]
     }
   ]
 }
