@@ -3,7 +3,7 @@
   "release": 19,
   "state": "clause-checked",
   "common_conditions": [
-    "TS23.283 §10.3.5.1–3 的初建路径；与已在进行中呼叫的新成员加入分开。"
+    "TS 23.283 V19.5.0，Rel‑19 Stage 2，§10.3.5.1–.3 的互通 chat 初建条款及其中明列的后续同组呼叫信令；不是加入一通已在进行的呼叫。"
   ],
   "condition_rule": "Inherit common_conditions and add claim conditions.",
   "source_catalog": "../../sources.json",
@@ -13,6 +13,7 @@
       "id": "mc-init",
       "clause": "10.3.5.2",
       "conditions": [
+        "TS23.283 §10.3.5.1–3 的初建路径；与已在进行中呼叫的新成员加入分开。",
         "组定义在 LMR，server 与 IWF 已知组配置，IWF 身份映射已配置",
         "MCPTT 用户发起 join"
       ],
@@ -22,6 +23,7 @@
       "id": "privacy",
       "clause": "10.3.5.2 steps 2–3",
       "conditions": [
+        "TS23.283 §10.3.5.1–3 的初建路径；与已在进行中呼叫的新成员加入分开。",
         "组定义在 LMR，server 与 IWF 已知组配置，IWF 身份映射已配置",
         "MCPTT 用户发起 join，且 join 携主叫位置"
       ],
@@ -31,10 +33,190 @@
       "id": "lmr-init",
       "clause": "10.3.5.3",
       "conditions": [
+        "TS23.283 §10.3.5.1–3 的初建路径；与已在进行中呼叫的新成员加入分开。",
         "组定义在 MCPTT，IWF 已知配置且身份映射已配置，MCPTT 用户已加入/归属",
         "LMR 用户发起 join"
       ],
       "conclusion": "IWF 向 server 请求 join；server 核验 MCPTT ID 的归属授权，未归属时生成隐式归属，接纳并选媒体参数。IWF 请求发言/发送媒体且媒体未建时，server 才建立媒体面。"
+    },
+    {
+      "id": "iwf-chat-current-call-floor-participants-vs-later-signalling",
+      "conditions": [
+        "可独立问 §10.3.5.2 步骤 7 或 .3 步骤 5 的两句范围，无需先有实际初建、释放或后续呼叫证据。判实况时先区分正在问本通，还是之后另一通同组呼叫；要断谁实际获话权或发了信令，另取当事端证据。"
+      ],
+      "conclusion": "两步第一句都规定，本通呼叫期间，各自的话权参与方继续使用话权控制：.2 是该 MCPTT 客户端和 IWF 所关联的话权参与方；.3 是 MCPTT 客户端 1、客户端 2 和 IWF 所关联的话权参与方。两步第二句另讲后续同组呼叫，只要仍有至少一位用户已归属，就使用带话权控制的媒体面信令。图末的信令条不另设参与方。",
+      "limitations": [
+        "不把第二句的阈值移为第一句所述话权归谁的条件；不要求留下原主叫或此前发言者。图示、信令类型或已归属不证明实际发送、授予话权、语音到达或媒体已保存。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.5.2, Figure 10.3.5.2-1 and Steps 1–7 (MCPTT-origin on LMR-defined group)"
+          ],
+          "printed_pages": [
+            63,
+            64
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.5.3, Figure 10.3.5.3-1 and Steps 1–5 (LMR-origin on MCPTT-defined group)"
+          ],
+          "printed_pages": [
+            64,
+            65
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-chat-later-same-group-one-affiliation-not-bearer-or-automatic-call",
+      "conditions": [
+        "可单查第二句阈值、零人时本段有没有规则，或仅比较成功释放与归属。把它用于现场某通后续呼叫时，核该呼叫及同一组在相应时段确实还有归属用户；规范比较不需要先观测完整前一通。"
+      ],
+      "conclusion": "§10.3.5.2 步骤 7 与 .3 步骤 5：之后的同组呼叫，在至少一位用户保有该组归属期间，继续用带话权控制的媒体面信令；没有指定是哪个用户、是否先前参加、发言或来自哪一侧。§10.3.5.4 步骤 6／.5 步骤 7 另列成功释放本通的媒体、话权资源不改变客户端归属；仍有一人归属与旧媒体已释放可以并存。",
+      "limitations": [
+        "组名单、已配置或过去曾归属不证明现在仍合条件；不能以其他组归属代本组。确认零人时这两句不给拆除、关闭话权或替代流程；一人也不覆盖各自释放条件，不自动建新呼叫，不证明前一通仍在、承载重用、当前已有媒体或后来用户实收。加入已经进行中的同一通呼叫 另看 .8–.10。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.5.2, Figure 10.3.5.2-1 and Steps 1–7 (MCPTT-origin on LMR-defined group)"
+          ],
+          "printed_pages": [
+            63,
+            64
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.5.3, Figure 10.3.5.3-1 and Steps 1–5 (LMR-origin on MCPTT-defined group)"
+          ],
+          "printed_pages": [
+            64,
+            65
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.5.4 Step 6 and 10.3.5.5 Step 7 (successful call release and unaffected affiliation)"
+          ],
+          "printed_pages": [
+            66,
+            67
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.5.8–.10 (already ongoing chat only)"
+          ],
+          "printed_pages": [
+            68,
+            69,
+            70
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-chat-first-join-response-speaker-request-and-media-setup",
+      "conditions": [
+        "可独立查两个初建分支的某条 join 应答、媒体建立条件或实际已辨认的一条；要核本次媒体建立，分别查该支提出发送请求的一方、原来是否已有媒体与实际事件。宣称多腿相关或原端已经收到才核同组同次及各端收件。"
+      ],
+      "conclusion": "§10.3.5.2：4 IWF→server 接纳并返回 IWF 选定参数；5 server→原 MCPTT 客户端转回。6 仅就此支写该客户端请求发送且媒体尚未建立时，server 建立媒体。§10.3.5.3：图和原文的 3 是 server→IWF 接纳及 server 选定参数；4 对 IWF 请求发送且媒体未建时，server 建立媒体。",
+      "limitations": [
+        "不把某条 join 应答直接当作发起端已经收到、实际建好媒体、实际发媒体或获话权。这两个初建建立条件不反推其他过程或后来每一通的媒体是否重建、何时建成；已有媒体不凭该步要求建第二次。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.5.2, Figure 10.3.5.2-1 and Steps 1–7 (MCPTT-origin on LMR-defined group)"
+          ],
+          "printed_pages": [
+            63,
+            64
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.5.3, Figure 10.3.5.3-1 and Steps 1–5 (LMR-origin on MCPTT-defined group)"
+          ],
+          "printed_pages": [
+            64,
+            65
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-chat-origin-specific-optional-location-and-privacy",
+      "conditions": [
+        "可直接查 .2 或 .3 步骤 1 的位置/隐式指示，或 .2 步骤 2–3 的实际前提、.3 步骤 2 的归属授权。实况判某一条加入请求可只查该条方向和字段；要断两腿位置如何变化或已获许可，另核同次请求及实际策略决定。"
+      ],
+      "conclusion": "§10.3.5.2 步骤 1：客户端请求发送时带隐式话权指示及按需的加入者位置；2 先看有无位置，实收原 join 含位置时查请求用户的隐私策略，3 按结果向 IWF 转有或无位置。§10.3.5.3 步骤 1 先写 IWF join 可含发送方位置，另句写请求发送时带隐式话权指示及按需的加入者位置；2 查对应 MCPTT ID 的归属授权，未归属才有该步所列隐式归属。",
+      "limitations": [
+        "不能把 .2 图的隐私框扩大为无条件检查，或把同一隐私步骤移到 .3。不能把 .3 第一条位置 MAY 变成必须有隐式指示，或将位置、隐式归属、隐式话权请求当成话权已授予。TS 23.379 Annex A.3 仅为指针，不推实际转发、编码错误或未授权失败分支。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.5.2, Figure 10.3.5.2-1 and Steps 1–7 (MCPTT-origin on LMR-defined group)"
+          ],
+          "printed_pages": [
+            63,
+            64
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.5.3, Figure 10.3.5.3-1 and Steps 1–5 (LMR-origin on MCPTT-defined group)"
+          ],
+          "printed_pages": [
+            64,
+            65
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
