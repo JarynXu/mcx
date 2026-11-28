@@ -1,0 +1,183 @@
+{
+  "topic_id": "r20-identity-mcdata-on-network-adhoc-group-data-config",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只查 MCData 在网业务档 on-network/anyExt/adhoc-group-data-comn 及其四项；区分整份适用配置、局部观察与标准定义，不要求现场消息才能查规范。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "mcdata-on-network-adhoc-group-data-extension-structure",
+      "clause": "10.4.2.3",
+      "conditions": [
+        "查 MCData 在网业务配置的 ad hoc 组数据通信块位置，分开结构正文列项与 XML Schema 的具名声明和出现次数。"
+      ],
+      "conclusion": "§10.4.2.1 在网项 4(g) 在 anyExt 内列出可选 adhoc-group-data-comn 及四个子项。§10.4.2.3 的 on-networkType 声明可选 anyExt；anyExtType 是 ##any、lax 通配，adhoc-group-data-comn 另作全局声明，不是在网具名直接子项。adhoc-group-comnType 按序声明必需的 allow-adhoc-group-data-comn-support（xs:boolean）、必需的 max-no-participants（xs:positiveInteger）、各自可选的 hang-time 和 max-duration-of-data-comn（xs:duration），四项均无 default 或 fixed。正文列四项不改变 Schema 出现次数；此处不判整个文档可被接受。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.1"
+          ],
+          "items": [
+            "on-network item 4(g), optional ad hoc inside anyExt; four listed children"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.3"
+          ],
+          "items": [
+            "on-networkType optional anyExt; named global adhoc-group-data-comn; adhoc-group-comnType sequence and four exact child declarations; anyExtType ##any/lax"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcdata-on-network-adhoc-group-data-support-default-vs-absence",
+      "clause": "10.4.2.6",
+      "conditions": [
+        "查支持语义时，区分适用配置已能确认整块缺失、块在但布尔子项缺失、明确 true 或 false，以及只能看到节选。"
+      ],
+      "conclusion": "§10.4.2.6 给 allow-adhoc-group-data-comn-support 正文默认值 true，指示启用；§10.4.2.7 在网项 20 指示启用或禁用，TS 24.483 §11.2.19 AllowAdhocGroupComn 仅指向。§10.4.2.3 则把该布尔子项声明为块内必需且无 XSD default/fixed，块在但子项缺失不能靠正文默认补足 Schema，明确 false 指示禁用。§10.4.2.6 另规定整块 adhoc-group-data-comn 缺失指示 MCData 系统不支持；不用 true 创建整块。节选看不到不证明缺项，已配置启用不证明实际建立通信。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.6"
+          ],
+          "items": [
+            "distinct prose true default on support leaf; known absence of whole ad hoc extension indicates not supported in MCData system"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.3"
+          ],
+          "items": [
+            "required xs:boolean child absent default/fixed, parent separate"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.7"
+          ],
+          "items": [
+            "on-network item 20 support indication, TS24.483 §11.2.19 AllowAdhocGroupComn pointer only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcdata-on-network-adhoc-group-data-allowed-participant-count",
+      "clause": "10.4.2.7",
+      "conditions": [
+        "查在网 ad hoc 组数据通信所允许的参与者人数、对应的元素或它的结构类型，不从当前人数反推配置。"
+      ],
+      "conclusion": "§10.4.2.7 在网项 21 的 max-no-participants 表示允许的参与者人数，对应 TS 24.483 §11.2.20 MaxNoParticipants（仅指向）。§10.4.2.3 在该块内要求 xs:positiveInteger；0 不满足声明，不表示不限。这里不定义参与者清点方法、实际人数、超额处理或该字段专用的 409 诊断。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.7"
+          ],
+          "items": [
+            "on-network item 21 allowed number of participants; TS24.483 §11.2.20 MaxNoParticipants pointer only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.3"
+          ],
+          "items": [
+            "adhoc-group-comnType required max-no-participants xs:positiveInteger; no default/fixed"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.6"
+          ],
+          "items": [
+            "schema conformity and later ad hoc duration list, comparison only; no participant-count-specific local error clause"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcdata-on-network-adhoc-group-data-hang-vs-whole-duration",
+      "clause": "10.4.2.7",
+      "conditions": [
+        "查同一次在网 ad hoc 组数据通信内连续 MCData 传输间的静默上限，或整次通信的时长上限。区分独立的共用计时和观察到的运行事件。"
+      ],
+      "conclusion": "§10.4.2.7 在网项 22 和注 3：hang-time 是同一次数据通信内两次连续 MCData 传输之间可配置的最长静默，对应 TS 24.483 §11.2.21 HangTime；项 23 的 max-duration-of-data-comn 是整次在网 ad hoc 组数据通信允许的最长时长，对应 TS 24.483 §11.2.22 MaxDurationOfComn。两者在 §10.4.2.3 分别可省略、无 default/fixed；不从缺项补零、无限或套另一个值。指向不引入计时起点、复位或结束动作，也不当成共用暂存等待或公告周期。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.7"
+          ],
+          "items": [
+            "on-network item 22, NOTE 3 and item 23, exact objects and TS24.483 §11.2.21/.22 pointers only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.3"
+          ],
+          "items": [
+            "two ordered optional xs:duration leaves, no default/fixed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcdata-on-network-adhoc-group-data-duration-format-vs-invalid-value",
+      "clause": "10.4.2.6",
+      "conditions": [
+        "查后段具名的 hang-time 和 max-duration-of-data-comn 的按秒表示、格式不符或实际收到无效秒值。查条款不要求有现场响应，套用结果要有匹配的条件。"
+      ],
+      "conclusion": "§10.4.2.6 后段点名 hang-time 和 max-duration-of-data-comn，要求按秒表示，表示式原写 PT<h>H<m>M<n>S，其中 <n> 是有效秒值；格式判断句另写 PT <n>S。注 5 的 300 ms 可写 PT0.3S 只举秒值小数例。一个值不符合原写结构，或收到无效 <n> 时，CMS 在各自条件均必须回 HTTP 409（Conflict）含 XCAP constraint-failure；带 phrase 时分别建议 invalid format for duration 与 invalid value for duration。原文不在此给 <n> 数值范围、诊断优先级或 H/M、空格的解析结果。缺可选项不是已收到格式错值；同码不证原因，本条不是共用时长清单。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.6"
+          ],
+          "items": [
+            "later named ad hoc duration pair, seconds representation and format-check literal, NOTE 5 fractional-second example, separate CMS responses and conditional phrase"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.3"
+          ],
+          "items": [
+            "optional duration elements; declaration not sufficient for whole-case application"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "TS 24.483 [4] §11.2.19、§11.2.20、§11.2.21、§11.2.22 只保留指向，不补引用正文。这里不验证入组、超额处理、计时起止、配置部署、CMS 解析或某次响应。"
+  ],
+  "related": [
+    "r20-identity-mcdata-common-tx-rx-duration-config",
+    "r20-identity-ad-hoc-broadcast-hang-time"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}

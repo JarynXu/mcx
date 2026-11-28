@@ -1639,6 +1639,36 @@
       "question": "MCData 共用时长收到无效秒值时，是否是同一个 409，怎么跟格式不符区分？",
       "start": "topics/identity/mcdata-common-tx-rx-duration-config.md",
       "boundary": "TS 24.484 V20.1.0 §10.4.2.6 对收到无效 <n> 要求 CMS 返回 HTTP 409 含 XCAP constraint-failure；如果带 phrase，建议 invalid value for duration。两种条件响应同码，不凭 409 归因；原文未列 <n> 数值范围、先后或重叠时优先级，不套 ad hoc 其他时长段。"
+    },
+    {
+      "id": "mcdata-on-network-adhoc-group-data-extension-structure",
+      "question": "MCData 在网 ad hoc 组数据配置放哪一层，块内哪几个字段必需？",
+      "start": "topics/identity/mcdata-on-network-adhoc-group-data-config.md",
+      "boundary": "TS 24.484 V20.1.0 §10.4.2.1 在网 4(g) 把可选块放在 on-network/anyExt。§.3 的 anyExt 可选且为 ##any/lax 通配，adhoc-group-data-comn 另有全局声明，不是 on-network 的具名直接子项。块内按序声明必需的支持 xs:boolean、必需的人数 xs:positiveInteger、两个各自可选的 xs:duration，均无 default/fixed；不由这部分判整档。"
+    },
+    {
+      "id": "mcdata-on-network-adhoc-group-data-support-default-vs-absence",
+      "question": "MCData 在网 ad hoc 支持开关正文默认 true，整块缺失、只缺开关和显式 false 各表示什么？",
+      "start": "topics/identity/mcdata-on-network-adhoc-group-data-config.md",
+      "boundary": "TS 24.484 V20.1.0 §10.4.2.6 给开关正文默认 true，又规定确认整块 adhoc-group-data-comn 缺失指示系统不支持。§.3 的 allow-adhoc-group-data-comn-support 是必需布尔项，无 XSD default/fixed，缺开关不靠正文默认补齐 Schema，不同于缺整块；显式 false 按 §.7 在网项 20 指示禁用。节选没看到不证缺项，不从配置推实际已建立通信。指向 TS 24.483 §11.2.19 AllowAdhocGroupComn。"
+    },
+    {
+      "id": "mcdata-on-network-adhoc-group-data-allowed-participant-count",
+      "question": "MCData 在网 ad hoc 组数据通信允许的人数看哪个字段，0 是无限制吗？",
+      "start": "topics/identity/mcdata-on-network-adhoc-group-data-config.md",
+      "boundary": "TS 24.484 V20.1.0 §10.4.2.7 在网项 21：max-no-participants 是允许的参与者人数，TS 24.483 §11.2.20 MaxNoParticipants 只作指向。§.3 块内必需 xs:positiveInteger，0 不满足而非不限；不从字段推当前人数、清点、超额动作或该字段专用 409。"
+    },
+    {
+      "id": "mcdata-on-network-adhoc-group-data-hang-vs-whole-duration",
+      "question": "MCData 在网 ad hoc 组数据通信的静默间隔和整次通信上限分别是哪项？",
+      "start": "topics/identity/mcdata-on-network-adhoc-group-data-config.md",
+      "boundary": "TS 24.484 V20.1.0 §10.4.2.7 在网项 22/注 3 的 hang-time 是同一次数据通信内连续 MCData 传输之间可配置的最长静默，指向 TS 24.483 §11.2.21 HangTime。项 23 的 max-duration-of-data-comn 是整次在网 ad hoc 组数据通信允许的最长时长，指向 §11.2.22 MaxDurationOfComn。§.3 两项各自可选且无 default/fixed；缺一项不补另一项、零或无限，不推计时起点、复位或结束动作；不是共用暂存等待或公告。"
+    },
+    {
+      "id": "mcdata-on-network-adhoc-group-data-duration-format-vs-invalid-value",
+      "question": "这两个 MCData 在网 ad hoc 时长的格式不合、收到无效秒值和注 5 小数例怎样分开？",
+      "start": "topics/identity/mcdata-on-network-adhoc-group-data-config.md",
+      "boundary": "TS 24.484 V20.1.0 §10.4.2.6 后段点名 hang-time、max-duration-of-data-comn，要求按秒表示，表示式 PT<h>H<m>M<n>S，其中 <n> 是有效秒值；格式句 PT <n>S；注 5 的 300 ms 为 PT0.3S 只举小数例。任一具名字段的值不合该结构，和收到无效 <n>，是两条条件：CMS 均须 HTTP 409 含 XCAP constraint-failure；带 phrase 分别建议 invalid format for duration、invalid value for duration。不从同码判断原因、<n> 范围、并错优先级或 H/M、空格的解析结果，不套共用清单；缺可选项不等于值错误。"
     }
   ]
 }
