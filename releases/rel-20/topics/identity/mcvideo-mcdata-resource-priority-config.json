@@ -1,0 +1,184 @@
+{
+  "topic_id": "r20-identity-mcvideo-mcdata-resource-priority-config",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只核 MCVideo、MCData 各自在网业务档的 Resource-Priority，不借 MCPTT 字段值、离网或其他版本，不从配置推通信结果。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "video-data-resource-priority-video-required-direct-blocks",
+      "clause": "9.4.2.3",
+      "conditions": [
+        "核 MCVideo 在网业务配置的三个 Resource-Priority 块与其子元素，不把定位套给 MCData。"
+      ],
+      "conclusion": "§9.4.2.1 在网项 3–5 要求 emergency-resource-priority、imminent-peril-resource-priority、normal-resource-priority 各有一份；§9.4.2.3 的 on-networkType 将三者列为直接且必需子元素，不能用外层 anyExt 同名项替代。每块的 mcvideosc:resource-priorityType 在序列中先 resource-priority-namespace 后 resource-priority-priority，两个 xs:string 都必填，其后还有可选扩展。结构正确不证明本次值合法或文档被接收。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.1"
+          ],
+          "items": [
+            "on-network items 3-5 each shall include one, and separate outer extension item 6"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.3"
+          ],
+          "items": [
+            "on-networkType three direct required children; mcvideosc:resource-priorityType two ordered required xs:string children before optional extensions"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "video-data-resource-priority-data-optional-extension-global-declarations",
+      "clause": "10.4.2.3",
+      "conditions": [
+        "核 MCData 在网业务配置的外层 anyExt、三个同名块的位置和各块类型；分文档结构正文与 Schema 声明。"
+      ],
+      "conclusion": "§10.4.2.1 在网项 4 的 on-network/anyExt 可选，正文在该扩展块内列三个 Resource-Priority 元素各一份。§10.4.2.3 在 on-networkType 中把 anyExt 声明为 minOccurs=0，三块在外面是全局声明，不是 on-network 的直接必需子元素。anyExtType 为 ##any/lax 的 0..unbounded 通配，未逐名设三块出现次数；不同于在网直接序列的 ##other。每个 mcdatasc:resource-priorityType 内仍先有必填的 namespace、再有必填的 priority，两子元素全名 resource-priority-namespace 与 resource-priority-priority，均为 xs:string，其后可有扩展。可省外层块不等于正文把块内各项写成可选；通配或全局声明不证明空块或整档合法、CMS 接收。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.1"
+          ],
+          "items": [
+            "on-network optional anyExt item 4(a)-(c), each named resource-priority block listed as one inside"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.3"
+          ],
+          "items": [
+            "on-networkType optional local anyExt, separate global declarations, ##any lax anyExtType wildcard vs outer sequence ##other, mcdatasc:resource-priorityType ordered children"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "video-data-resource-priority-validation-wording-normal-level-source-and-coordination",
+      "clause": "9.4.2.6",
+      "conditions": [
+        "对照在网 MCVideo 与 MCData 业务档三类资源的命名空间和等级限制，分别定位普通等级、顺序与商定说明。"
+      ],
+      "conclusion": "§9.4.2.6 明列 MCVideo 三块各取 RFC 8101 [20] 的 MCPTT 命名空间及规定等级，以较高或相等的等级表述两个比较。§10.4.2.6 写 MCData 各块的 MCPTT 命名空间，以及紧急、紧迫险情字段值的大于或等于和 RFC 等级；没有二次列普通等级，普通等级范围仍见 §10.4.2.1 在网项 4(c)(ii)。两侧紧急 ≥ 紧迫险情 ≥ 普通，允许相等；这不代替每块的值域或导出字符串比较。两节注 3 说该 RFC 等级适用于所有 MC 业务，不要求各档同值；注 4 各要求本业务运营方与网络运营方仔细商定，MCData 随后重复，没有规定两次审批。不由这些段落推专属 409/phrase、默认、确切 RFC 值或实际接收。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.6"
+          ],
+          "items": [
+            "all three namespaces and RFC level constraints, higher or equal priority comparisons, Notes 3 and 4"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.6"
+          ],
+          "items": [
+            "three namespaces, two explicit level paragraphs and value greater-or-equal wording; no following standalone normal priority paragraph; Notes 3/4 and repeated coordination"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.1"
+          ],
+          "items": [
+            "on-network item 4(c)(ii) normal level in RFC range"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "2"
+          ],
+          "items": [
+            "RFC 8101 [20] bibliographic pointer only; no referenced body imported"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "video-data-resource-priority-header-field-matches-business-emergency-case",
+      "clause": "9.4.2.7",
+      "conditions": [
+        "查在网 MCVideo 紧急或紧迫险情呼叫，或 MCData 相应通信，如何定位 Resource-Priority 的配置来源。"
+      ],
+      "conclusion": "MCVideo §9.4.2.7 在网项 5/6 用 on-network 直接的 emergency-resource-priority 或 imminent-peril-resource-priority，对应紧急或紧迫险情呼叫。MCData §10.4.2.7 在网项 9/10 用该业务 anyExt 中的同名块，对应紧急或紧迫险情通信。都按实际要问的业务类别选规范入口，配置值相等不改变入口。不凭档案推 SIP 消息已发送、头字面、接收方采用或抢占。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "on-network items 5 and 6, MCVideo calls with direct blocks"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.7"
+          ],
+          "items": [
+            "on-network items 9 and 10, MCData communications with anyExt children"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "video-data-resource-priority-normal-header-source-during-downgrade-from-either",
+      "clause": "9.4.2.7",
+      "conditions": [
+        "问从 MCVideo 紧急或紧迫险情呼叫、或 MCData 紧急或紧迫险情通信之一降到普通优先级时，条款如何选择填头配置。"
+      ],
+      "conclusion": "MCVideo §9.4.2.7 在网项 7 查 on-network 的 normal-resource-priority；MCData §10.4.2.7 在网项 11 查该业务 on-network/anyExt 下同名项。两项都写从各自业务的紧急或紧迫险情降到普通优先级时，两个来向用同一普通块；不是降级完成后才可查，不把初始普通或当前普通等同于发生了降级，也不据此禁止其他条款为普通业务填头。配置用途不规定触发、发送时机或实际完成。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "on-network item 7 while downgrading to normal priority from either MCVideo emergency or imminent-peril call"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.7"
+          ],
+          "items": [
+            "on-network item 11 same temporal scope for MCData communications and its anyExt source"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "RFC 8101 [20] 只保留指向，不核具体注册值、比较算法或 SIP 头的拼接；不同业务各自查配置证据。",
+    "区分结构正文、Schema 声明、业务等级约束和一次通信的实际头字段；无整档接受、专属错误或运行推断。"
+  ],
+  "related": [
+    "r20-identity-mcptt-on-network-resource-priority-config",
+    "r20-identity-mcvideo-mcdata-service-config-validation"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}

@@ -1519,6 +1519,36 @@
       "question": "normal-resource-priority 是所有普通呼叫的配置，还是只在某种降级时用这条？",
       "start": "topics/identity/mcptt-on-network-resource-priority-config.md",
       "boundary": "TS 24.484 V20.1.0 §8.4.2.7 在网项 37 只明写从 MCPTT 紧急呼叫或紧迫险情呼叫降到普通优先级时的 Resource-Priority 配置。当前普通不等于已知降级，也不据此禁止别处为普通呼叫填头。这里未定实际降级时机、发端、消息或结果。"
+    },
+    {
+      "id": "video-data-resource-priority-video-required-direct-blocks",
+      "question": "MCVideo 的三个 Resource-Priority 块是必填直系块，还是可塞进 anyExt 代用？",
+      "start": "topics/identity/mcvideo-mcdata-resource-priority-config.md",
+      "boundary": "TS 24.484 V20.1.0 §9.4.2.1 在网项 3–5 各要求一块；§9.4.2.3 三块直接位于 on-network，不能用 anyExt 的同名项代替。每块先必填 resource-priority-namespace、后必填 resource-priority-priority，都是 xs:string，后面可有声明的扩展。结构不等于业务值合法；MCData 布局另查。"
+    },
+    {
+      "id": "video-data-resource-priority-data-optional-extension-global-declarations",
+      "question": "MCData 三块在 on-network 下面还是 anyExt 里？三个全局声明算必填直系块吗？",
+      "start": "topics/identity/mcvideo-mcdata-resource-priority-config.md",
+      "boundary": "TS 24.484 V20.1.0 §10.4.2.1 在网项 4 的外层 on-network/anyExt 可省，正文在其中列三块各一份。§10.4.2.3 全局声明各块，非 on-network 直接必需项；anyExtType 的 ##any/lax 0..unbounded 无逐名出现次数，不是直接序列的 ##other。每块仍有顺序必填的 namespace 和 priority 两个 xs:string；不据通配判空块或整档接受。"
+    },
+    {
+      "id": "video-data-resource-priority-legal-values-nonstrict-order-and-literal-normal-gap",
+      "question": "两业务可用相等等级吗？MCData 普通等级没有在 .6 独立重写，查哪里？",
+      "start": "topics/identity/mcvideo-mcdata-resource-priority-config.md",
+      "boundary": "TS 24.484 V20.1.0 §9.4.2.6 比 MCVideo 的较高或相等等级，§10.4.2.6 比 MCData 对应字段值的大于或等于，均为紧急 ≥ 紧迫险情 ≥ 普通。各查 MCPTT 命名空间和 RFC 8101 允许等级；MCData .6 未独列普通等级，范围另见 §10.4.2.1 在网项 4(c)(ii)。注 3 不令各档同值；注 4 由对应业务运营方与网络运营方商定（MCData 重复说明）。不猜比较算法、确切注册值或专属 409。"
+    },
+    {
+      "id": "video-data-resource-priority-header-source-emergency-vs-imminent-peril",
+      "question": "MCVideo 呼叫或 MCData 通信是紧急／紧迫险情时，分别从哪块填 Resource-Priority？",
+      "start": "topics/identity/mcvideo-mcdata-resource-priority-config.md",
+      "boundary": "TS 24.484 V20.1.0 §9.4.2.7 在网项 5/6 取 MCVideo on-network 的 emergency-resource-priority／imminent-peril-resource-priority；§10.4.2.7 在网项 9/10 取 MCData on-network/anyExt 同名项，对应通信而非 MCVideo 呼叫。按业务和场景选，不按配置同值互换，不能确定现场头串、消息或是否已采用。"
+    },
+    {
+      "id": "video-data-resource-priority-normal-header-while-downgrading",
+      "question": "MCVideo 或 MCData 从紧急、紧迫险情降到普通时，怎么选 Resource-Priority 配置？",
+      "start": "topics/identity/mcvideo-mcdata-resource-priority-config.md",
+      "boundary": "TS 24.484 V20.1.0 §9.4.2.7 在网项 7（MCVideo 呼叫）查 on-network 的 normal-resource-priority；§10.4.2.7 在网项 11（MCData 通信）查 on-network/anyExt。两种来向都明写，语境是降到普通时，不以完成事件为规范查询前提。初始普通或只知当前普通不会证明此来向，也不据此禁止其他普通用法，不判现场消息。"
     }
   ]
 }
