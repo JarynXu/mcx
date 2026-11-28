@@ -1,0 +1,114 @@
+{
+  "topic_id": "r20-identity-mcptt-on-network-connect-disconnect-retry-counters",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只核 MCPTT 业务配置的在网 Connect/Disconnect 重发字段。查原文不要求先有报文或实例；此页不裁定部署行为。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "mcptt-fc-connect-disconnect-counter-references-differ",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "核 MCPTT 业务配置在网 fc-timers-counters 的 Connect 或 Disconnect 重发间隔与计数说明；一起查项 25/26 和 31/32，不按字段名猜归属。"
+      ],
+      "conclusion": "在网项 25：T55-connect 是 Connect 重发间隔，C56-disconnect 控制 Connect 重发次数；项 26：T56-disconnect 是 Disconnect 重发间隔，C55-connect 控制 Disconnect 重发次数。计数器自身的项 31：C55-connect 为 Connect 最多重发次数；项 32：C56-disconnect 为 Disconnect 最多重发次数。两组原文指向不同；保留“控制”与“最多”的陈述，不指定优先、勘误或共同控制，不从这四项推出唯一部署取值、初发计次、实际发送或整通呼叫状态。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network item 25 Connect interval and crossed C56 controlling count",
+            "item 26 Disconnect interval and crossed C55 controlling count",
+            "item 31 C55 standalone maximum retransmissions of Connect",
+            "item 32 C56 standalone maximum retransmissions of Disconnect"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-fc-t55-t56-duration-c55-c56-counter-types",
+      "clause": "8.4.2.3",
+      "conditions": [
+        "核所选 MCPTT 在网配置的 fc-timers-countersType 中四个精确名字、类型、声明默认与具名时长清单；这不是核运行取值。"
+      ],
+      "conclusion": "在网基础 fc-timers-counters 必需，T55-connect / T56-disconnect 为必需的 xs:duration，C55-connect / C56-disconnect 为必需的 xs:unsignedShort，声明均无默认值。§8.4.2.6 项 23、24 是这两个 T 字段，不含两个 C 字段。类型、名字或 XML 位置不解决 §8.4.2.7 两组计数指向；不把这套声明套到仅离网配置。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "on-networkType direct fc-timers-counters and exact four named field declarations"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1"
+          ],
+          "items": [
+            "on-network item 7 and children k/l/p/q"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "only the T fields in the named duration list items 23 and 24"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-fc-connect-disconnect-example-no-counter-resolution",
+      "clause": "A.2.3",
+      "conditions": [
+        "核同版附录 A 表 A.2.3-12（HTTP 响应示例）的四字段是否能证明默认或判定 §8.4.2.7 的计数器对应。"
+      ],
+      "conclusion": "示例 T55-connect 与 T56-disconnect 均为 PT2S；C55-connect 与 C56-disconnect 均为 3。两种对应在这组计数示例中无法区分；示例不是声明默认，也没有选择、修正或否定任一组在网语义。只要是配置值，不论相同还是不同，字段值本身无法解释计数归属。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "A.2.3"
+          ],
+          "items": [
+            "Table A.2.3-12 illustrative HTTP 200 response four field examples"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network items 25/26 versus 31/32 as the unresolved comparison"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "§8.4.2.7 两组原文分别写控制和最大次数，不能表示已核有勘误、原作者意图、选定的优先或联合规则。",
+    "Schema 只说明字段和类型；表 A.2.3-12 是示例，不给默认、实际重发、其他配置分支或完整消息过程。"
+  ],
+  "related": [
+    "r20-identity-mcptt-on-network-floor-message-retries",
+    "r20-identity-mcptt-on-network-mbms-mbs-timers",
+    "r20-identity-ad-hoc-broadcast-hang-time"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
