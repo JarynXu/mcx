@@ -268,6 +268,151 @@
         "independent_source_review": false,
         "independent_usage_acceptance": false
       }
+    },
+    {
+      "id": "iwf-group-provision-required-configuration-source",
+      "conditions": [
+        "可直接查 .10 任何字段、任一方向或组配置的来源，无需先有 .11 或现网证据。读已辨认的实际 .10，按本腿的类型、组和端点；把它与 .11 配对才需要同次操作的上下文。"
+      ],
+      "conclusion": "§10.2.1.1 限 IWF‑1。§10.2.1.10/.11 的提供请求与应答都列 GMS→IWF 及 IWF→GMS；同一笔中提供方发请求、接收方反向应答。.10 列 M 的 MC service group ID（所提供配置的组）与 M 的 MCPTT group configuration information；组配置取自 GMS，组定义在 IWF 的情况取自 IWF。",
+      "limitations": [
+        "不把 .9 按请求能否满足的字段条件借给 .10。应按所提供配置的同一组判断来源，不用发送方向、用户的本属／服务系统或代理地址替代组定义侧。字段表不规定实际收件、逐成员配置或存储。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.1 (IWF-1 scope only)"
+          ],
+          "printed_pages": [
+            23
+          ],
+          "usage": "dependency"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.10–.11, Tables 10.2.1.10-1/.11-1 (provision request and result)"
+          ],
+          "printed_pages": [
+            24,
+            25
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.8–.9, Tables 10.2.1.8-1/.9-1 (retrieval and failure reason only)"
+          ],
+          "printed_pages": [
+            24
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-group-provision-response-processing-result-vs-live-application",
+      "conditions": [
+        "可直接查 .11 的字段或单独读一条已辨认的 .11，无需先有 .10 或另一端记录。若说它是某次 .10 的回包或提供方已经收到，分别核同次消息类型、组、端点、上下文和提供方实收。"
+      ],
+      "conclusion": "表 10.2.1.11‑1 的组 ID 和 Result 均为 M。Result 是对配置的接收、修改和保存的成功或失败，不是逐阶段结果，也不带回组配置。.9 的 Result 是未能提供所查配置的原因；.13 的 Result 是订阅成败，不能按同组 ID 加 Result 判消息类型。",
+      "limitations": [
+        "已知匹配 .11 成功，只能读作对方报告上述操作成功。应答已发不证明提供方实收；实际存储、当前配置生效、通知或交付到成员要查对应节点的证据。表未给每阶段错误、回滚、重试、编码或状态后的默认行为。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.10–.11, Tables 10.2.1.10-1/.11-1 (provision request and result)"
+          ],
+          "printed_pages": [
+            24,
+            25
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.8–.9, Tables 10.2.1.8-1/.9-1 (retrieval and failure reason only)"
+          ],
+          "printed_pages": [
+            24
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.12–.13, Tables 10.2.1.12-1/.13-1 (primary system, selector and subscribe result)"
+          ],
+          "printed_pages": [
+            25
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-group-provision-two-procedures-and-caption-not-pull",
+      "conditions": [
+        "可独立查 .2 或 .4 的提供方向、各自前提或图正文；查实况时核同一组的实际定义侧与该支的成员、寻址／授权（仅 .2 明列后二项）。已知某箭头名也不必先假定一个正在发生的完整流程。"
+      ],
+      "conclusion": "§10.2.3.2：MC 定义组、有至少一位 LMR 成员、MC 配好 IWF 组管理寻址且获准向 IWF 提供时，MC GMS→IWF 提供，IWF 应答；NOTE 允许 IWF 的代理地址。§10.2.3.4：IWF 定义组且至少一位 MC 服务用户为成员，图箭头和正文都是 IWF→MC GMS 提供、GMS 回应；图 .4‑1 图注却写 MC→IWF。图注不反转该支。两段示例正文是收到并正确保存的肯定应答，通用 .11 另有失败语义。",
+      "limitations": [
+        "不把 .3/.5 拉取所需的本侧缺存储扩到 .2/.4 提供；.4 未列 .2 寻址和授权前提，不据遗漏断言无需权限。反向拉取 .5 图也写 provision，正文仍是 MC 向 IWF 索取；不从同名箭头／同方向自动判是主动提供或哪张表的字段。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.3.2 (including NOTE) and 10.2.3.4, Figures 10.2.3.2-1/.4-1 (two actual provision directions; .4 caption)"
+          ],
+          "printed_pages": [
+            30,
+            31
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.3.5 and Figure 10.2.3.5-1 (literal provision labels in reverse retrieval only)"
+          ],
+          "printed_pages": [
+            32
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.10–.11, Tables 10.2.1.10-1/.11-1 (provision request and result)"
+          ],
+          "printed_pages": [
+            24,
+            25
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [

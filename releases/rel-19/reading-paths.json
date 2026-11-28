@@ -4280,6 +4280,38 @@
           "read": "topics/interworking/regroup-boundaries.md#重组的应答成立通知和撤组通知分别证明什么"
         }
       ]
+    },
+    {
+      "id": "iwf-group-provision-information-and-result",
+      "question": "IWF 主动提供组配置：从哪侧取配置，谁回 Result，它确认哪个阶段及哪些动作？",
+      "start": "topics/interworking/group-configuration.md#主动提供的应答确认了什么",
+      "boundary": "TS 23.283 V19.5.0，Rel‑19 Stage 2。IWF‑1 两向：.10 提供请求，M 组 ID+组配置；配置取自 GMS，组定义在 IWF 时取自 IWF。.11 反向应答，M 组 ID+Result，报告接收、修改、保存的成功或失败，不是 .9 失败原因、逐阶段结果或 .13 订阅。实际路径按组与前提选：§10.2.3.2 MC 定义、LMR 成员、适当寻址且获准→GMS 发给 IWF；.4 IWF 定义且有 MC 服务用户为成员→IWF 发给 GMS，箭头和正文同向但图注反写。不要把 .5 反向拉取图中的 provision 字面当成 .4 主动提供。单查表/已识别消息不要求全交换；配对才核组、类型、端点和上下文。回报成功不证明提供方实收、当事端当前生效或成员已收到。",
+      "next_if": [
+        {
+          "condition": "实际是索取缺少的组配置，或要分辨 .5 图中的 provision，不当成本支主动提供。",
+          "read": "topics/interworking/group-configuration.md#查组配置的应答带配置还是带失败原因"
+        },
+        {
+          "condition": "实际是订阅按组跟踪，不是主动提供或收到所查配置。",
+          "read": "topics/interworking/configuration-updates.md#订阅请求发给谁成功应答说明什么"
+        }
+      ]
+    },
+    {
+      "id": "iwf-group-subscribe-primary-system-selector-and-result",
+      "question": "组配置订阅按谁是主系统发？MC services requested 和订阅 Result 分别表示什么？",
+      "start": "topics/interworking/configuration-updates.md#订阅请求发给谁成功应答说明什么",
+      "boundary": "TS 23.283 V19.5.0，Rel‑19 Stage 2 IWF‑1。同一组的主系统是 MC 时 .12 由 IWF→MC GMS，IWF 为主时由 MC GMS→IWF；.13 各自反向。.12 M 组 ID，O 的 MC services requested 可从 MCPTT、MCData 列一种或多种，省略没有这张表定义的默认。.13 M 组 ID+Result，报告订阅请求成败，不回显选择器、逐服务结果或配置。选现场过程还核 §10.2.3.6 MC 定义／LMR 定义成员、IWF 已从组的 primary MC GMS 收到信息，或 .8 LMR 定义／MC 定义成员、MC GMS 已从 IWF 收到；不把 LMR 定义等同 IWF 主系统。判单条可直接查表，关联和实际收件再分别核。取得配置和订阅成功各自举证，成功不等于后来通知已发、已收或新配置已生效。",
+      "next_if": [
+        {
+          "condition": "实问一次获取或主动提供及其处理结果，不是持续订阅。",
+          "read": "topics/interworking/group-configuration.md"
+        },
+        {
+          "condition": "已经在问后续组配置变更通知及其前提，而不是 .13 订阅应答。",
+          "read": "topics/interworking/configuration-updates.md"
+        }
+      ]
     }
   ]
 }

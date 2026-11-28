@@ -49,6 +49,164 @@
         "MC GMS received/stored new configuration, or IWF has new group information, respectively"
       ],
       "conclusion": "Provider notifies subscriber; receiver reports success/failure."
+    },
+    {
+      "id": "iwf-group-subscribe-directions-primary-system-vs-procedure-facts",
+      "conditions": [
+        "可直接查 .12 或 .13 的方向、主系统分支或任一订阅正文，不要求实际收包。实况依同组的主系统和实际消息类型判断表方向；要说某次符合 .6/.8 流程，再核该组的定义侧、成员以及哪端此前已从哪端收到该组信息。"
+      ],
+      "conclusion": "IWF‑1：同一组以 MC 系统为主时，.12 IWF→MC GMS、.13 反向；以 IWF 为主时，.12 MC GMS→IWF、.13 反向。§10.2.3.6 对 MC 定义组要求至少一位成员定义在 LMR，并且 IWF 已从该组 primary MC GMS 收到信息；.8 对 LMR 定义组要求至少一位成员定义在 MC，并且 MC GMS 已从 IWF 收到信息。",
+      "limitations": [
+        "不把表中的 IWF 主系统换成正文的 LMR 组定义，也不把二者互斥；不以用户本属或一条 GMS↔IWF 方向推定组主系统、先前实收或已经订阅。要配对实际消息再看实际类型、组、两端及上下文。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.1 (IWF-1 scope only)"
+          ],
+          "printed_pages": [
+            23
+          ],
+          "usage": "dependency"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.12–.13, Tables 10.2.1.12-1/.13-1 (primary system, selector and subscribe result)"
+          ],
+          "printed_pages": [
+            25
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.3.6 and 10.2.3.8, Figures 10.2.3.6-1/.8-1 (subscribe procedure, prior receipt and group definition)"
+          ],
+          "printed_pages": [
+            32,
+            33,
+            34
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-group-subscribe-service-selector-optional-without-default",
+      "conditions": [
+        "只查 .12 的组 ID、服务名、服务选择或省略规则时无需找 .13 或通知；判断一条现场消息是否带选择器，用已辨认的本条请求及其字段，未观察到不当成线上确实省略。"
+      ],
+      "conclusion": "表 10.2.1.12‑1：MC service group ID 是被订阅组，M。MC services requested 标 O，用来选所请求的组配置服务；出现时列 MCPTT、MCData 中的一种或多种。",
+      "limitations": [
+        "不从未观察到、明确省略或空值推默认全部、默认 MCPTT 或取消；此表未写这类默认或空值处理。不要把选项迁入 .8 拉取或 .10 主动提供，也不据此判其他消息、服务或整个部署的支持。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.12–.13, Tables 10.2.1.12-1/.13-1 (primary system, selector and subscribe result)"
+          ],
+          "printed_pages": [
+            25
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.8–.9, Tables 10.2.1.8-1/.9-1 (retrieval and failure reason only)"
+          ],
+          "printed_pages": [
+            24
+          ],
+          "usage": "comparison-only"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.10–.11, Tables 10.2.1.10-1/.11-1 (provision request and result)"
+          ],
+          "printed_pages": [
+            24,
+            25
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-group-subscribe-result-vs-notification-and-installation",
+      "conditions": [
+        "可单问 .13 字段或读已辨认的单条应答，无需先有 .12、变更或媒体证据。判断它是哪一次的结果及订阅方是否已实收，分别核实际消息关系与对应收件。"
+      ],
+      "conclusion": "表 10.2.1.13‑1 的 MC service group ID 和 Result 均 M，Result 报告该订阅请求成功或失败。表不列配置内容、MC services requested 的回显、逐服务结果或通知状态。.11 主动提供应答 Result 与此不是同一含义；.7/.9 的后续通知动作与订阅应答独立。",
+      "limitations": [
+        "收到组信息不代订阅成功。成功应答已生成或发出不等于订阅方实收；即使收到匹配成功应答，也不证明已产生变更、后续通知到达、已存储新配置或当前生效，不从表补定时器、逐服务验收或重试。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.12–.13, Tables 10.2.1.12-1/.13-1 (primary system, selector and subscribe result)"
+          ],
+          "printed_pages": [
+            25
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.3.6 and 10.2.3.8, Figures 10.2.3.6-1/.8-1 (subscribe procedure, prior receipt and group definition)"
+          ],
+          "printed_pages": [
+            32,
+            33,
+            34
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.10–.11, Tables 10.2.1.10-1/.11-1 (provision request and result)"
+          ],
+          "printed_pages": [
+            24,
+            25
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.3.7 and 10.2.3.9 (distinct notify decisions only)"
+          ],
+          "printed_pages": [
+            33,
+            34
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
