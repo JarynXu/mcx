@@ -1,0 +1,173 @@
+{
+  "topic_id": "r20-identity-mcptt-user-profile-private-call-any-peer",
+  "release": 20,
+  "state": "clause-checked",
+  "standard_stage": 3,
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只查 MCPTT 用户配置档给始发或终接参与式功能的任意私呼对端与名单，不以观察到呼叫、请求或结果为查条文的前提。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "claims": [
+    {
+      "id": "mcptt-user-profile-private-call-any-peer-action-placement",
+      "clause": "8.3.2.3",
+      "conditions": [
+        "读 MCPTT 用户配置档提纲和局部 Schema；核规则动作里的字段位置、声明与缺项语义，不要求先有一次呼叫。"
+      ],
+      "conclusion": "MCPTT 用户配置档 §8.3.2.1 项 11(b)(xxvii)在 ruleset/rule/actions 直属列始发 allow-private-call-to-any-user；11(b)(xxxviii)(K)在 ruleset/rule/actions/anyExt 列终接 allow-to-receive-private-call-from-any-user。§8.3.2.3 各声明一个全局 xs:boolean，无 default/fixed。表 27 和实际表 48 的缺项 false 是各自语义，不填回 XML、不推两个字段的关系或整档接受；§8.3.2.6 只有通用 Schema 要求适用于这两字段，本节无其具名 409。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.1"
+          ],
+          "items": [
+            "rule action item 11(b)(xxvii) direct child versus item 11(b)(xxxviii)(K) extension child"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.3"
+          ],
+          "items": [
+            "two separate global Boolean declarations without default or fixed"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.6"
+          ],
+          "items": [
+            "generic Schema requirement, no listed dedicated diagnostic for the two fields"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-user-profile-private-call-outgoing-any-recipient-permission",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "以同一用户的始发参与式功能和本字段为准。查条文不要求实际呼叫；判缺项须确认完整对应内容，不能拿片段、无效值或终接配置替查。"
+      ],
+      "conclusion": "MCPTT 用户配置档表 27 的 allow-private-call-to-any-user 面向为该用户执行始发参与式 MCPTT 功能的服务器。true 表示有权请求向任一 MCPTT 用户发起私呼，不限于原文 PrivateCall 元素的 entry 所列收件人；false 指示拒绝私呼请求，确认缺该元素也取自己的 false。拒绝未限定名单外，列名不能用来改写这条语义；不借私呼转接表 51，也不推当次已发、放行、拒绝或接收。TS 24.483 [4] §5.2.14 AuthorisedAny 和 TS 24.379 [9] 仅为指向。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "Table 27 originating role and its own false-on-absence; original <entry> of <PrivateCall> wording; MO/procedure pointers"
+          ],
+          "tables": [
+            "8.3.2.7-27"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-user-profile-private-call-incoming-any-caller-permission",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "以同一用户的终接参与式功能和本字段为准；只有确认该元素没出现才用缺项值，不拿始发字段、截取画面或无效布尔代替。"
+      ],
+      "conclusion": "MCPTT 用户配置档实际表 48 的 allow-to-receive-private-call-from-any-user 面向为该用户执行终接参与式 MCPTT 功能的服务器。true 表示用户获准接收来自任一 MCPTT 用户的私呼请求，不限于原文 IncomingPrivateCallList 元素的 entry 所列发起方；false 指示拒绝私呼请求，确认该元素缺项也取自身的 false。拒绝未限定名单外，列名不等于已准入，不推已接收、接听、终端响应或始发权限。TS 24.483 [4] §5.2.48X AuthorisedIncomingAny 和 TS 24.379 [9] 仅为指向。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "printed Table 48 terminating role and its own false-on-absence; original <entry> of <IncomingPrivateCallList> wording; MO/procedure pointers"
+          ],
+          "tables": [
+            "8.3.2.7-48"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-user-profile-private-call-outgoing-vs-incoming-peer-lists",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "分开核提纲、共享局部类型、两段条目释义及两表原文。案头定位不要求先给一份配置；若问名单命中或实际动作，要另有该方向的内容和过程证据。"
+      ],
+      "conclusion": "MCPTT 用户配置档出向用 Common/PrivateCall/PrivateCallList，.1 项 8(d)(i)写零个或多个所列子项，.7 中 PrivateCallURI 表示可呼叫的 MCPTT 用户 ID（TS 24.483 [4] §5.2.17 MCPTTID）；入向用 OnNetwork/anyExt/IncomingPrivateCallList，.1 项 10(g)(iii)写一个或多个所列子项，.7 中 PrivateCallURI 表示可以接收其私呼的 MCPTT 用户 ID（§5.2.48Y4 MCPTTID）。.3 共用 PrivateCallListEntryType 的局部 choice 0..unbounded 和 PrivateCallURI 的 EntryType，其中 uri-entry 为必需的 xs:anyURI，display-name 可省。共享类型还列 PrivateCallProSeUser，不将它或其他出向子项移植到入向提纲，不从类型推来话许可或整档接受。表 27 原写 PrivateCall 下的 entry，实际表 48 原写 IncomingPrivateCallList 下的 entry；不把 entry 和 PrivateCallURI 当 XML 别名、两张名单当成共用名单，或由一侧匹配推另一侧和实际许可。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.1"
+          ],
+          "items": [
+            "item 8(d)(i) Common/PrivateCall/PrivateCallList and item 10(g)(iii) OnNetwork/anyExt/IncomingPrivateCallList"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.3"
+          ],
+          "items": [
+            "distinct declarations sharing PrivateCallListEntryType; local choice and URI leaf"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "two PrivateCallURI entry meanings and two MCPTTID references; original entry clauses kept separate from Schema"
+          ],
+          "tables": [
+            "8.3.2.7-27",
+            "8.3.2.7-48"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-user-profile-private-call-incoming-table-number-mismatch",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "核同版 .7 导语原写、紧邻的实际标题和真正表 28 的标题；不以导语数字改正文，也不从邻表借许可。"
+      ],
+      "conclusion": "MCPTT 用户配置档 §8.3.2.7 对 allow-to-receive-private-call-from-any-user 的导语原印表 8.3.2.7-28，紧接的来话字段真实表题是 8.3.2.7-48。真正的表 8.3.2.7-28 写 allow-regroup，另属重组。来话许可和缺项 false 从实际表 48 的值读，不把导语改写成另一个版本的正文，不带入表 28、私呼参与表 29 或未确认组呼邀请用户信息表 49 的语义。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "incoming field introduction literally cites 28; actual incoming caption 48; actual 28 allow-regroup caption is a locator contrast only"
+          ],
+          "tables": [
+            "8.3.2.7-48"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "表 27 与实际表 48 各有自己元素的语义缺项 false，两者的拒绝都不以名单外为条件。不同角色和名单不互代，不补合并优先、XML 别名、整档接受或现场结果。TS 24.379 [9]、TS 24.483 [4] 只按本版指向使用。"
+  ],
+  "related": [
+    "r20-identity-mcptt-user-profile-private-call-forwarding",
+    "r20-calls-incoming-private-call-forwarding",
+    "r20-identity-mcptt-user-profile-private-call-transfer",
+    "r20-calls-private-call-administration",
+    "r20-calls-private-call-commencement-evidence",
+    "r20-calls-floor-controlled-private-call-basics"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
