@@ -198,6 +198,97 @@
         "independent_source_review": false,
         "independent_usage_acceptance": false
       }
+    },
+    {
+      "id": "iwf-identity-mapping-service-and-object-select-id-kind",
+      "conditions": [
+        "可以只查 §8.1 的任一标识类别，不要求有现网记录。判断某个已识别标识时，先辨认对应业务是 MCPTT 还是 MCData、对象是 LMR 用户还是 LMR 组，再按该条信息流里的角色取值。"
+      ],
+      "conclusion": "表示 LMR 用户，在 MCPTT 侧用 MCPTT ID，在 MCData 侧用 MCData ID；表示 LMR 组，分别用 MCPTT group ID、MCData group ID。它们是该业务一侧用于表示 LMR 对象的标识，IWF 可用它们得出 LMR 使用的对应标识。",
+      "limitations": [
+        "不要从字串相同推同一标识、同一人或同一组，也不要求不同业务的值必不同。用户 ID 不能替组 ID。通用映射不判本次信令的发起者、目标者、代理身份、组定义侧、已归属或授权；具体字段按该业务过程核。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "8.1 (identity kinds, central support, IWF-x identity pointer and signalling/media mapping)"
+          ],
+          "printed_pages": [
+            15
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-identity-mapping-mapping-capability-during-signalling-and-media",
+      "conditions": [
+        "可以独立查谁提供映射、能在什么交换中做映射，不需要先认某条消息。若要说某次或某条实际已映射，再核对应的两侧标识或确切转换记录，不要求为单查规范凑齐两段抓包。"
+      ],
+      "conclusion": "IWF 为 MCPTT 或 MCData 与 LMR 的互通提供集中支持，可在交换信令消息时做标识映射，也可在交换媒体消息时做，不要求同一次两类消息同时出现。§8.1 把 IWF-x 上的标识另指 TS 23.280 [5] §8。可在交换中映射，不是只在建呼、注册或者组配置阶段处理。",
+      "limitations": [
+        "不能把集中支持解释为独立物理盒或唯一数据库，不能把可映射理解成每条必转换。此处不规定字段编码、匹配算法、表的一对一、可反查、何时创建或实际是否已转换、对端是否收到。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "8.1 (identity kinds, central support, IWF-x identity pointer and signalling/media mapping)"
+          ],
+          "printed_pages": [
+            15
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-identity-mapping-assigned-mc-alias-can-map-role-addressing-not-deployment",
+      "conditions": [
+        "可以直接查 §8.1 续文中功能别名的归属、分配对象和映射目的。判断某个实际别名是否满足这条前提，才核它归 MC 系统及已分配给在 MC 侧代表该 LMR 用户的 IWF 归属身份；操作结果另查。"
+      ],
+      "conclusion": "MC 系统所属的功能别名分配给 User homed in the IWF，使对应的角色寻址映射可以进行，采用该 LMR 系统适用的基于角色寻址方式。这里的 User homed in the IWF 是在 MC 系统代表 LMR 用户的 MC service ID，不是 IWF 网元或群组，也不是终端的驻留位置。",
+      "limitations": [
+        "别名出现不能替代实际分配、激活、授权、映射成功、当前选定的地址或送达证据。这个条件只解释该条赋予的映射能力，不规定 LMR 别名语法、固定寻址格式、冲突处理、别名一对一或其他角色配置的许可。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "8.1 continuation (MC-system functional alias assignment and corresponding LMR role-based addressing)"
+          ],
+          "printed_pages": [
+            16
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "3.1 User homed in the IWF (identity definition only)"
+          ],
+          "printed_pages": [
+            12
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [

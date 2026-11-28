@@ -27,4 +27,19 @@
 
 IWF 与 LMS 的实际交互，按[索要和事件通知](location-query.md)、[订阅](location-subscription.md)或[取消订阅](location-unsubscribe.md)分流。不要用 IWF-4 的可选性替代[发言者位置的隐私判断](talker-location.md)。本节不决定 SIP、HTTP、端口、内部路由或物理部署。
 
+## LMR 的人和组在 MCPTT 和 MCData 分别用什么 ID？
+
+**先分业务，再分用户与组。** TS 23.283 V19.5.0 §8.1 规定的是互通时 MC 一侧如何表示 LMR 对象，不是给 LMR 端指定新身份。
+
+| 读哪一侧的业务 | 表示 LMR 用户 | 表示 LMR 组 |
+| --- | --- | --- |
+| **MCPTT** | **MCPTT ID** | **MCPTT group ID** |
+| **MCData** | **MCData ID** | **MCData group ID** |
+
+IWF 为这两种互通提供集中支持，可以用这些 MC 侧标识得出 LMR 中对应的标识，交换**信令消息**时可做系统间映射，交换**媒体消息**时也可做。不把这个能力限在建呼阶段，也不要求每条消息都做一次，或同一笔同时出现两类消息。同一个 LMR 用户在两种业务中的标识，不能只因字串相同就当成同一标识，或用来替组标识。原文不规定映射是一对一、可反查、怎样存储或查找，也不规定一个实体必须部署成一台设备。要判断某次用到了哪个映射，核业务、用户或组的角色、当时的关联标识或确切映射记录；不能只看即时网元或单个 ID。[§8.1，印刷页 15（PDF 第 16 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=16)。
+
+**给 IWF 归属用户分配 MC 系统的功能别名，可使用 LMR 系统中适用的对应角色寻址来映射。** 这句话的前提是别名属于 MC 系统，并分配给在 MC 侧代表 LMR 用户的那个身份（上文的 *User homed in the IWF*）。不是给任意组或 IWF 网元赋角色。别名单独出现不能证明分配、激活、角色对应地址、授权或实际送达；问别名是否已激活，读 [IWF 功能别名激活与停用](functional-alias-activation-deactivation.md)。[§8.1 续文，印刷页 16（PDF 第 17 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=17)；[§3.1，印刷页 12（PDF 第 13 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=13)。
+
+查规范不必有现网记录。要读已识别的具体字段，再按[组归属是逐用户还是代理](affiliation-representation.md)、[归属请求与逐组结果](affiliation-results.md)或 [IWF‑2 SDS 的寻址](sds-addressing.md)选相应消息，不把通用映射当作业务办理成功。§8.1 对 IWF-x 上的标识另指 TS 23.280 [5] §8，本页不从该指针补编码或内部实现。
+
 [来源](../../sources.json) · [结构化条件](scope.json)。本页解释范围与术语，不覆盖呼叫、媒体、安全或 SDS 流程。
