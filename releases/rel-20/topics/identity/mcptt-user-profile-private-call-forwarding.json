@@ -1,0 +1,187 @@
+{
+  "topic_id": "r20-identity-mcptt-user-profile-private-call-forwarding",
+  "release": 20,
+  "state": "clause-checked",
+  "standard_stage": 3,
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只查 MCPTT 用户配置档的私呼转发，包括规则动作和 OnNetwork/anyExt 两处；不以实际授权或转发为查规范的前提，不借其他业务或文档。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "claims": [
+    {
+      "id": "mcptt-user-profile-forwarding-split-permissions-and-on-network-settings",
+      "clause": "8.3.2.3",
+      "conditions": [
+        "查 MCPTT 用户配置档的结构提纲和 Schema，不以请求、配置下发或实际转发为前提；判断缺项须看相关完整配置。"
+      ],
+      "conclusion": "MCPTT 用户配置档 §8.3.2.1 项 11(b)(xxxviii)(O/P)在 ruleset/rule/actions/anyExt 列 allow-call-forwarding、allow-call-forward-manual-input；项 10(g)(vi/vii/viii/x/xi)在 OnNetwork/anyExt 列 call-forwarding-no-answer-timeout、call-forwarding-condition、call-forwarding-target、call-forwarding-on、forward-to-functional-alias。保留大小写，不用业务配置的 on-network 替换。§8.3.2.3 各给七个全局元素：四项 xs:boolean，条件 xs:string、时长 xs:duration、目标 xs:anyURI，均无 default/fixed。不从全局或通配推每项必填、次数或实际补值；§8.3.2.6 有通用 Schema 要求，无这七项的具名 409。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.1"
+          ],
+          "items": [
+            "profile OnNetwork item 10(g)(vi/vii/viii/x/xi) versus rule action 11(b)(xxxviii)(O/P)"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.3"
+          ],
+          "items": [
+            "seven named global declarations with no default/fixed, local OnNetwork/anyExt declaration separate"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.6"
+          ],
+          "items": [
+            "general Schema compliance, no field-specific response for the seven"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-user-profile-forwarding-terminating-permission-vs-enable",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "比较表 52 和 53；判某项缺失需要完整对应配置。不要用一个字段推另一个字段、实际授权或实发结果。"
+      ],
+      "conclusion": "MCPTT 用户配置档表 52 的 allow-call-forwarding 面向为该用户执行终止参与式 MCPTT 功能的服务器，true 授权用户请求即时和未应答两类私呼转发，false 指示拒绝这两类转发，缺该元素也取 false。表 53 的 call-forwarding-on 面向同类终止参与式功能，true 表示即时或未应答转发启用，false 表示禁用，该元素缺项也取自己的 false。许可、启用与这次请求结果分别判断；不能由一个 true 推另一个 true，或由两个值推优先次序、实际放行、拒绝或转发。TS 24.379 [9] 只作程序指向；TS 24.484 写这两项不在所指 TS 24.483 [4] 用户配置 MO 内。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "separate terminating-participating meanings and distinct false-on-absence"
+          ],
+          "tables": [
+            "8.3.2.7-52",
+            "8.3.2.7-53"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.3"
+          ],
+          "items": [
+            "separate global declarations, no XSD default/fixed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-user-profile-forwarding-condition-vs-no-answer-timer",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "查 MCPTT 用户档 OnNetwork/anyExt 的条件与时长，不从业务档上限或 Stage 1 来电条件添加现场触发。"
+      ],
+      "conclusion": "MCPTT 用户配置档 §8.3.2.7 的 call-forwarding-condition 以 immediate 表示即时转发、no-answer 表示未应答转发；§8.3.2.3 声明 xs:string，不是 Schema 枚举，也不承诺其他字符串可被接受。call-forwarding-no-answer-timeout 为 xs:duration，表示未应答计时的时长；不借业务档 max-immediate-forwardings 数次数，不设缺项时长、不推起止、到期执行或转发顺序。TS 24.484 说这两个字段不在所指 TS 24.483 [4] 用户配置 MO 内，只据本段，不导入目标正文。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "profile condition literals and timer semantics; both absent from cited user-profile managed object per this source"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.3"
+          ],
+          "items": [
+            "global string and duration declarations without XSD default/fixed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-user-profile-forwarding-target-uri-vs-identity-kind",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "查目标值与表 54 的目标种类。只在已知缺该种类元素时取其语义默认；不拿目标 URI 推启用、授权或已解析身份。"
+      ],
+      "conclusion": "MCPTT 用户配置档 OnNetwork/anyExt 的 call-forwarding-target 是 xs:anyURI，表示目标 MCPTT ID 或功能别名的值。表 54 的 forward-to-functional-alias 单独选择类型，true 为功能别名，false 为 MCPTT ID；缺该元素取 false，即 MCPTT ID。类型默认不补目标值，不开启或授权转发，不是进行中私呼转接允许名单，不证别名已解析、目标已接受或可达。TS 24.484 说这两项不在所指 TS 24.483 [4] 用户配置 MO 内，TS 24.379 [9] 只作程序指向。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "forwarding target URI and table 54 Boolean target type; distinct false-on-absence"
+          ],
+          "tables": [
+            "8.3.2.7-54"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.3"
+          ],
+          "items": [
+            "global anyURI target and Boolean selector without default/fixed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-user-profile-forwarding-originating-manual-input-permission",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "只查用户配置档的手动输入请求许可。不要把手动输入当作手动开始私呼或被叫拒接，也不以已经执行为查条文条件。"
+      ],
+      "conclusion": "MCPTT 用户配置档表 55 的 allow-call-forward-manual-input 面向为该用户执行始发参与式 MCPTT 功能的服务器：true 表示该用户获准请求按手动输入把私呼转发给任一 MCPTT 用户，false 指示拒绝此类请求。表 55 未给缺项默认，不能借表 52、53 或 54 的 false；也不从 true 断定实际转发、优先或绕过另一配置。TS 24.483 [4] §5.2.48T3 AllowedCallForwardManualInput 和 TS 24.379 [9] 只作指向。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "table 55 originating participating function, manual-input request to any MCPTT user, no absence default; exact MO/procedure pointers only"
+          ],
+          "tables": [
+            "8.3.2.7-55"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.3"
+          ],
+          "items": [
+            "global Boolean without default/fixed"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "TS 24.379 [9] 和 TS 24.483 [4] 只按 TS 24.484 中的程序、对象指向使用。表 52–54 各有缺项 false，表 55 未给缺项值；不推字段组合、优先、CMS 行为、实际 SIP 或结果。"
+  ],
+  "related": [
+    "r20-identity-mcptt-on-network-service-authorization-forwarding-caps",
+    "r20-calls-incoming-private-call-forwarding",
+    "r20-calls-ad-hoc-group-call-forwarding",
+    "r20-identity-mcptt-functional-alias-service-config",
+    "r20-identity-mcptt-user-profile-xcap-validation"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}

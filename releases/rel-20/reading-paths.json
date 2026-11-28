@@ -2095,6 +2095,36 @@
       "question": "MCPTT 在网的业务配置与用户配置档都写了同时业务授权上限，取谁？",
       "start": "topics/identity/mcptt-on-network-service-authorization-forwarding-caps.md",
       "boundary": "TS 24.484 V20.1.0 MCPTT 在网业务配置的 on-network/anyExt/max-simultaneous-authorizations（§8.4.2.7 项 45）和用户配置档的 OnNetwork/anyExt/user-max-simultaneous-authorizations（§8.3.2.7）是分别命名的正整数上限。后者也数该 MCPTT 用户的同时业务授权；路径大小写和配置档种类不能互换。这里没有终端实况或数值优先级的依据，也不能从并列字段推出取较小值、覆盖、合并或缺项回退。这不是逐别名激活上限。"
+    },
+    {
+      "id": "mcptt-user-profile-forwarding-split-permissions-and-on-network-settings",
+      "question": "MCPTT 用户配置档的私呼转发许可、启用、条件、计时、目标分别放在哪？",
+      "start": "topics/identity/mcptt-user-profile-private-call-forwarding.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档 §8.3.2.1 项 11(b)(xxxviii)(O/P)在 ruleset/rule/actions/anyExt 列 allow-call-forwarding、allow-call-forward-manual-input；项 10(g)(vi/vii/viii/x/xi)在 OnNetwork/anyExt 列 call-forwarding-no-answer-timeout、call-forwarding-condition、call-forwarding-target、call-forwarding-on、forward-to-functional-alias。保留大小写，不用业务配置的 on-network 替换。§8.3.2.3 各给七个全局元素：四项 xs:boolean，条件 xs:string、时长 xs:duration、目标 xs:anyURI，均无 default/fixed。不从全局或通配推每项必填、次数或实际补值；§8.3.2.6 有通用 Schema 要求，无这七项的具名 409。"
+    },
+    {
+      "id": "mcptt-user-profile-forwarding-terminating-permission-vs-enable",
+      "question": "MCPTT 用户配置档里允许请求私呼转发与已启用转发是同一个开关吗？缺项怎么读？",
+      "start": "topics/identity/mcptt-user-profile-private-call-forwarding.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档表 52 的 allow-call-forwarding 面向为该用户执行终止参与式 MCPTT 功能的服务器，true 授权用户请求即时和未应答两类私呼转发，false 指示拒绝这两类转发，缺该元素也取 false。表 53 的 call-forwarding-on 面向同类终止参与式功能，true 表示即时或未应答转发启用，false 表示禁用，该元素缺项也取自己的 false。许可、启用与这次请求结果分别判断；不能由一个 true 推另一个 true，或由两个值推优先次序、实际放行、拒绝或转发。TS 24.379 [9] 只作程序指向；TS 24.484 写这两项不在所指 TS 24.483 [4] 用户配置 MO 内。"
+    },
+    {
+      "id": "mcptt-user-profile-forwarding-condition-vs-no-answer-timer",
+      "question": "MCPTT 用户配置档的私呼转发条件与未应答计时怎样填？和即时转发次数有什么关系？",
+      "start": "topics/identity/mcptt-user-profile-private-call-forwarding.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档 §8.3.2.7 的 call-forwarding-condition 以 immediate 表示即时转发、no-answer 表示未应答转发；§8.3.2.3 声明 xs:string，不是 Schema 枚举，也不承诺其他字符串可被接受。call-forwarding-no-answer-timeout 为 xs:duration，表示未应答计时的时长；不借业务档 max-immediate-forwardings 数次数，不设缺项时长、不推起止、到期执行或转发顺序。TS 24.484 说这两个字段不在所指 TS 24.483 [4] 用户配置 MO 内，只据本段，不导入目标正文。"
+    },
+    {
+      "id": "mcptt-user-profile-forwarding-target-uri-vs-identity-kind",
+      "question": "MCPTT 用户配置档私呼转发的目标字段是什么？不写别名开关会指向哪种身份？",
+      "start": "topics/identity/mcptt-user-profile-private-call-forwarding.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档 OnNetwork/anyExt 的 call-forwarding-target 是 xs:anyURI，表示目标 MCPTT ID 或功能别名的值。表 54 的 forward-to-functional-alias 单独选择类型，true 为功能别名，false 为 MCPTT ID；缺该元素取 false，即 MCPTT ID。类型默认不补目标值，不开启或授权转发，不是进行中私呼转接允许名单，不证别名已解析、目标已接受或可达。TS 24.484 说这两项不在所指 TS 24.483 [4] 用户配置 MO 内，TS 24.379 [9] 只作程序指向。"
+    },
+    {
+      "id": "mcptt-user-profile-forwarding-originating-manual-input-permission",
+      "question": "MCPTT 用户配置档的按手动输入私呼转发由谁看许可？表 55 没写这个字段时是否也取 false？",
+      "start": "topics/identity/mcptt-user-profile-private-call-forwarding.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档表 55 的 allow-call-forward-manual-input 面向为该用户执行始发参与式 MCPTT 功能的服务器：true 表示该用户获准请求按手动输入把私呼转发给任一 MCPTT 用户，false 指示拒绝此类请求。表 55 未给缺项默认，不能借表 52、53 或 54 的 false；也不从 true 断定实际转发、优先或绕过另一配置。TS 24.483 [4] §5.2.48T3 AllowedCallForwardManualInput 和 TS 24.379 [9] 只作指向。"
     }
   ]
 }
