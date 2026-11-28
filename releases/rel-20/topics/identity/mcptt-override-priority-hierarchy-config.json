@@ -1,0 +1,181 @@
+{
+  "topic_id": "r20-identity-mcptt-override-priority-hierarchy-config",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只核 MCPTT 在网或离网业务配置的抢占优先级层级，不从配置名、数值或缺项推当次行为。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "mcptt-override-hierarchy-exact-names-and-inclusive-xsd-bounds",
+      "clause": "8.4.2.3",
+      "conditions": [
+        "核 MCPTT 在网或离网业务配置在文档结构、Schema 类型和数据语义中的字段名、出现约束或数值边界。"
+      ],
+      "conclusion": "§8.4.2.1 在网和离网项 3 都列短名 num-levels-hierarchy；§8.4.2.3 的模式内声明与 §8.4.2.7 的语义都用 num-levels-priority-hierarchy。两模式长名声明各 minOccurs=0，无 XSD 默认；共享 priorityhierarchyType 从 xs:unsignedShort 限制为 4 到 256，含两端。§8.4.2.6 要求符合 Schema，未给本字段单独错误响应。不把两个拼法认证为别名，不据此判实际服务识别、接受或返回哪个错误。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "on-networkType and off-networkType optional long-name declarations; exact priorityhierarchyType unsignedShort minInclusive 4 maxInclusive 256"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1"
+          ],
+          "items": [
+            "both mode-local item 3 short-name literal"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "both long-name items, on-network 6 and off-network 5"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "general requirement to conform to the schema; no dedicated named diagnostic for this field"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-override-hierarchy-mode-local-omission-uses-schema-minimum",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "核相应在网或离网模式块已存在，并确认该块的长名 num-levels-priority-hierarchy 缺失；不是整个块缺失、片段未见或拿短名当别名。"
+      ],
+      "conclusion": "在网项 6 和离网项 5 各说模式块里该长名字段缺失时，用 Schema 的最低值表示层级；结合 §8.4.2.3 的 minInclusive 可得 4。这是语义上的缺项规则，不是 XSD default，不推写回、文档获接收、值跨模式继承或设备实际使用。表 A.2.3-12 在网 HTTP 响应示例用 6，不定缺项，也不应用于离网。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network item 6 and off-network item 5 mode-local missing-field semantics"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "minimum value derived from exact Schema facet, not a default declaration"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "A.2.3"
+          ],
+          "items": [
+            "Table A.2.3-12 on-network example value 6, informative only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-override-hierarchy-size-vs-assigned-participant-priority",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "核 MCPTT 对活动发话的抢占配置，区分层级表示与在该层级下已分配给参与者的值。"
+      ],
+      "conclusion": "在网项 6 与离网项 5 的层级用于决定哪些参与者、参与者类型和紧急传输类型的抢占请求可获准。相邻注 2、注 4 说分配给参与者的值越高，抢占活动发话的优先级越高；层级配置值不是参与者已分配的值、并发人数或队列容量。不同模式的数字不可直接比较；未规定实际授予、抢占结果、并列裁决或执行机制。Stage 1 在网并发发话和离网至少四级仅作对照，不代替本字段的 Schema 或缺项判断。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network item 6 and Note 2; off-network item 5 and Note 4; active transmission, selection inputs and higher participant-assigned value"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.2.3.7.2"
+          ],
+          "printed_pages": [
+            39
+          ],
+          "requirements": [
+            "R-6.2.3.7.2-005",
+            "R-6.2.3.7.2-006",
+            "R-6.2.3.7.2-007"
+          ],
+          "items": [
+            "Stage 1 configured multi-talker group controls; comparison only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "7.3.3"
+          ],
+          "printed_pages": [
+            64
+          ],
+          "requirements": [
+            "R-7.3.3-002",
+            "R-7.3.3-003",
+            "R-7.3.3-004"
+          ],
+          "items": [
+            "Stage 1 off-network hierarchy requirement; comparison only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-override-hierarchy-off-network-pointer-only",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "核 TS 24.484 V20.1.0 离网项 5 对 TS 24.483 [4] 的对应名称和条款号。"
+      ],
+      "conclusion": "仅离网项 5 说 num-levels-priority-hierarchy 对应 TS 24.483 §7.2.17 的 NumLevelHierarchy；在网项 6 没列这一指向。目标正文和版次未核。两处文本的字段名、对应项与是否被设备装载是不同问题，不由此给在网配置、外设离线配置或运行补规定。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "off-network item 5 undated TS 24.483 [4] §7.2.17 NumLevelHierarchy pointer only; on-network item 6 contrast"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "保留 §8.4.2.1 与 §8.4.2.3/.7 的字段名差异；缺项语义、Schema 声明、实际服务和参与者分值彼此不替代。",
+    "匹配 TS 24.483 限离网文字指向，不读目标正文；TS 22.179 Stage 1 仅对照，表 A.2.3-12 仅在网示例。"
+  ],
+  "related": [
+    "r20-calls-group-multi-talker-control",
+    "r20-calls-off-network-floor-override"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
