@@ -4904,6 +4904,34 @@
           "read": "topics/interworking/scope.md"
         }
       ]
+    },
+    {
+      "id": "iwf-manual-private-early-result-accepted-response-and-media",
+      "question": "手动互通私呼的早期应答和被叫接受后的应答怎么区分，谁可带新参数重试，何时媒体面才成立？",
+      "start": "topics/interworking/private-manual.md#哪条是失败应答哪条是在被叫接受之后",
+      "boundary": "TS 23.283 V19.5.0 Stage 2 §10.4.3.1/.2，手动开始私呼，有或无话权。纯查步骤或一条已识别消息无需全链；判整支另核手动选择、MCPTT 客户端注册、server 订阅 MC 系统别名更新，.2 核 LMR 已发起给 MCPTT 用户。.1 MCPTT 主叫：早期 5 IWF 可报失败，可给替代参数；6 server 转给主叫客户端；Result 报失败即可放弃，无需有替代参数；替代参数可接受时客户端可带新参数另发，主叫依然可结束。该图两早期箭头都标 5，正文后腿 6。.2 LMR 主叫：早期 5 被叫 MCPTT 客户端可报失败，可给替代参数；6 server 转向 IWF（图标 IWF 应答，正文同一步用两个应答名称，不补额外发送）；Result 报失败时 IWF 可放弃，无需有替代参数；替代参数可接受时可带新参数另发，仍可结束；不凭未见 5 判成功。7/8 振铃只是等待；被叫接受后 .1 的 9 IWF→server／10 server→主叫客户端，.2 的 9 被叫客户端→server／10 图 server→IWF（正文 The MCPTT；9 次句 IWF 支持不可改成客户端能力）。11 两支都是 MCPTT 客户端与 IWF 间媒体面建立，不以任何回包代另一腿实收、媒体可用、首包或用户收听。",
+      "next_if": [
+        {
+          "condition": "只查已辨明 IWF 私呼请求／应答字段，别把媒体可接受或 Result 单独当作用户接听。",
+          "read": "topics/interworking/private-call-setup-elements.md"
+        },
+        {
+          "condition": "只查已辨明 IWF 振铃的字段、两个角色及实际振铃腿。",
+          "read": "topics/interworking/private-call-ringing-and-end-elements.md"
+        },
+        {
+          "condition": "实际由主叫选的是自动开始模式，分别核自动响应与媒体。",
+          "read": "topics/interworking/private-automatic.md"
+        },
+        {
+          "condition": "问已建立且启用话权控制的私呼由谁仲裁，不把手动示例当统一规则。",
+          "read": "topics/interworking/floor-control-owner.md"
+        },
+        {
+          "condition": "已建立后实际结束整通私呼，不把初建失败响应当释放。",
+          "read": "topics/interworking/private-release.md"
+        }
+      ]
     }
   ]
 }
