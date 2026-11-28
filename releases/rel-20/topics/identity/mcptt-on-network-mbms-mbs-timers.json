@@ -1,0 +1,137 @@
+{
+  "topic_id": "r20-identity-mcptt-on-network-mbms-mbs-timers",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只核 MCPTT 业务配置在网的 MBMS 承载与 MBS 会话/会话流字段。查配置含义不要求先有抓包；判断某次运行需另有证据。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "mcptt-fc-t15-t25-silence-before-subchannel-release",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "核 MCPTT 在网业务配置对组会话静默的定义，区分是否涉及 MBMS 承载或 MBS 会话；查字段含义不要求已观察到释放。"
+      ],
+      "conclusion": "在网项 18 的 T15-conversation 是涉及 MBMS 承载的组会话在须释放 MBMS 子信道前允许的最长静默；项 22 的 T25-mbs-conversation 是涉及 MBS 会话的组会话在须释放 MBS 子信道前允许的最长静默。不把子信道释放当作整通组呼、MBMS 承载或 MBS 会话本身已释放，也不给 T1 包间隔或私呼 hang-time 套这两个字段。不从配置证明某次发生释放。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network item 18 MBMS subchannel release after configured maximum silence in a group session involving an MBMS bearer",
+            "item 22 MBS subchannel release after configured maximum silence in a group session involving an MBS session",
+            "item 12 general RTP packet gap, contrast only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-fc-t16-t17-c17-mbms-bearer-map-unmap",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "核 MCPTT 在网基础 fc-timers-counters 内对 MBMS 承载的映射或解映射消息，区分重发间隔与次数。"
+      ],
+      "conclusion": "项 19 的 T16-map-group-to-bearer 是 Map Group To Bearer 的重发间隔；项 20 的 T17-unmap-group-to-bearer 是 Unmap Group To Bearer 的重发间隔；项 28 的 C17-unmap-group-to-bearer 是该解映射消息的最多重发次数。不把 C17 当作映射消息次数，也不补初发计入、响应、复位、实际送达或成功。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network item 19 Map Group To Bearer retransmission interval",
+            "item 20 Unmap Group To Bearer retransmission interval",
+            "item 28 maximum retransmissions of Unmap Group To Bearer"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-fc-t26-t27-c27-mbs-session-stream-map-unmap",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "核 MCPTT 在网 anyExt/R18-fc-timers-counters 内对 MBS 会话流的映射或解映射消息，区分重发间隔与次数。"
+      ],
+      "conclusion": "项 23 的 T26-map-group-to-session-stream 是 Map Group To Session Stream 的重发间隔；项 24 的 T27-unmap-group-from-session-stream 是 Unmap Group From Session Stream 的重发间隔；项 30 的 C27-unmap-group-from-session-stream 是这条解映射消息的最多重发次数。不把 From 改成 To，不用它给映射消息定次数，也不据此判断确认、实际收发、关联、重置或成功。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network item 23 Map Group To Session Stream retransmission interval",
+            "item 24 Unmap Group From Session Stream retransmission interval",
+            "item 30 maximum retransmissions of Unmap Group From Session Stream"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-fc-mbms-mbs-timer-blocks-and-typed-fields",
+      "clause": "8.4.2.3",
+      "conditions": [
+        "已定位 MCPTT 业务配置的在网块，核基础 fc-timers-counters 或可选 anyExt/R18-fc-timers-counters，以及对应计时器和计数器的声明。"
+      ],
+      "conclusion": "§8.4.2.1 在网项 7 g/h/i/n 和 §8.4.2.3：基础 fc-timers-counters 与其中 T15-conversation、T16-map-group-to-bearer、T17-unmap-group-to-bearer、C17-unmap-group-to-bearer 都必需。项 13 e 和 §8.4.2.3：可选 anyExt 可含可选 R18-fc-timers-counters；它不直接声明于 on-networkType，另有全局元素及自身类型，若该块出现，T25-mbs-conversation、T26-map-group-to-session-stream、T27-unmap-group-from-session-stream、C27-unmap-group-from-session-stream 均为其必需子项。每组三个 T 是 xs:duration，分别入 §8.4.2.6 项 16–18、20–22；C17/C27 是 xs:unsignedShort，不在具名时长清单。没有声明默认；附录 A 表 A.2.3-12 为示例，不补默认、实际支持或缺项诊断。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "on-networkType direct fc-timers-counters and optional anyExt; distinct globally declared R18-fc-timers-counters with its own type; anyExtType wildcard"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1"
+          ],
+          "items": [
+            "on-network item 7g/h/i/n and item 13e(i)–(iv)"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "named duration list items 16–18 and 20–22"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "A.2.3"
+          ],
+          "items": [
+            "Table A.2.3-12 example HTTP response, not an XML default declaration"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "各自子信道的释放不是整通呼叫、承载或会话释放；不从词义推实际发生、计时起止、协议流程、资源选择或哪条网络路径已使用。",
+    "C17/C27 只对应本条具名的解映射消息重发，不补映射次数或首次计次。没有 R18 扩展或样例值不能证明平台支持或默认值。"
+  ],
+  "related": [
+    "r20-identity-mcptt-on-network-floor-rtp-timers",
+    "r20-identity-mcptt-private-call-service-timers",
+    "r20-identity-mcptt-on-network-floor-message-retries",
+    "r20-identity-ad-hoc-broadcast-hang-time"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
