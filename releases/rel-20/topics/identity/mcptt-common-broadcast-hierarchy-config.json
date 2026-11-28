@@ -1,0 +1,164 @@
+{
+  "topic_id": "r20-identity-mcptt-common-broadcast-hierarchy-config",
+  "release": 20,
+  "state": "clause-checked",
+  "standard_stage": 3,
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只查 MCPTT 业务配置 common/broadcast-group 的组广播组 B1 与用户广播组 B2；common 供在网、离网共享，不要求两个模式块同时出现。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "claims": [
+    {
+      "id": "mcptt-broadcast-hierarchy-common-optional-shape",
+      "clause": "8.4.2.3",
+      "conditions": [
+        "查 MCPTT 业务配置的 common 下的局部 Schema。查规范不要求现场存在该块；判断本次是否缺项需有足以认定结构的配置证据。"
+      ],
+      "conclusion": "MCPTT §8.4.2.1 的 common 项 2 在可选 broadcast-group 中列 num-levels-group-hierarchy 和 num-levels-user-hierarchy。§8.4.2.3 把 broadcast-group 声明为 commonType 的具名可选直接子项；内层两个具名直接子项各为可选 xs:unsignedShort。父块及两个子项各 minOccurs=0，无 default/fixed。common 供在网、离网共享，不要求两个模式块同时出现。字段没写不等于填 0、4 或 6；局部可省略不证明整档通过校验。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1"
+          ],
+          "items": [
+            "common item 2(a/b): optional broadcast-group and two listed names"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "commonType and broadcast-groupType direct declarations, optional leaves and no default/fixed"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "common service configuration is shared by on- and off-network use"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-broadcast-hierarchy-b1-group-vs-b2-user-level-counts",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "查 MCPTT 业务配置 common/broadcast-group，区分组广播组与用户广播组；不需先查到某次实际广播或已分配的等级。涉及其他业务或抢占字段另查。"
+      ],
+      "conclusion": "MCPTT 共用广播配置中，B1 是 num-levels-group-hierarchy，§8.4.2.7 项 2 给组广播组的组层级数，指 TS 24.483 [4] §7.2.7 NumLevelGroupHierarchy；B2 是 num-levels-user-hierarchy，项 3 给用户广播组的用户层级数，指 §7.2.8 NumLevelUserHierarchy。§8.4.2.6 将 B1、B2 指向 TS 22.179 [3] 附录 A。均只作引用定位。两项数各自层级，不数广播组、用户或同时发话的人，不指某人已获的级别，也不套 MCVideo 同名字段的 Bc1/Bc2。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "common items 2/3: group-broadcast group / user-broadcast user hierarchy counts, MO pointers only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "B1 and B2 external variable references only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-broadcast-hierarchy-known-semantic-rejection-not-neighbor-ranges",
+      "clause": "8.4.2.6",
+      "conditions": [
+        "查规范响应看 B1 或 B2 的值语义无效这个条件；判断实际命中，另核字段和有效性证据，不以同码、短语、缺字段或无法读出数值代替。其他字段及整档条件各有适用范围。"
+      ],
+      "conclusion": "MCPTT 共用广播 B1 或 B2 中任一值语义无效时，§8.4.2.6 要求 CMS 返回 HTTP 409（Conflict），含 XCAP constraint-failure；如带 phrase 建议 semantic error。该句另列 N3 和在网话权队列 depth；同节范围块组合也用 semantic error。已知类型符合、字段缺项或只看到 409/短语，都不能单独确定 B1/B2 的值语义无效。没有由这条给出的 B1/B2 业务有效区间；不套仅 N3 的 >255 与 element value out of range，也不套抢占 num-levels-priority-hierarchy 的 4–256 和缺项取 4。不规定多项错误时顺序或实际响应。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "B1/B2 semantic-validity question, distinct N3 numeric branch, shared depth and separate allowed-scope diagnostic"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "plain unsignedShort declarations distinct from priorityhierarchyType"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-broadcast-hierarchy-http-examples-are-not-defaults",
+      "clause": "A.2.2",
+      "conditions": [
+        "查资料性附录 A 的两张 MCPTT 业务配置 HTTP 响应示例，区分显式样例、局部 Schema 和某次实际配置。"
+      ],
+      "conclusion": "MCPTT 共用广播的表 A.2.2-16 和 A.2.3-12 各明示 B1=6、B2=6。这是资料性附录 A 的两组显式字段值；§8.4.2.3 两个具名子项均无 default/fixed，不从示例推缺项默认、两数必须相等、在网或离网规定值，或当前配置及 CMS 处理结果。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "A.2.2"
+          ],
+          "items": [
+            "informative MCPTT business configuration: explicit B1=6 and B2=6"
+          ],
+          "tables": [
+            "A.2.2-16"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "A.2.3"
+          ],
+          "items": [
+            "informative MCPTT business configuration: explicit B1=6 and B2=6"
+          ],
+          "tables": [
+            "A.2.3-12"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "each named leaf independently optional, no default/fixed"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "TS 22.179 [3] 附录 A 与 TS 24.483 [4] §§7.2.7/.8 只作指向。不给 B1/B2 补取值或缺项默认，不据此判断某次广播、优先级分配、排队、授权、CMS 受理及错误选择顺序。"
+  ],
+  "related": [
+    "r20-identity-mcptt-mcvideo-minimum-alias-length-config",
+    "r20-identity-mcptt-on-network-floor-queue-config",
+    "r20-identity-mcptt-override-priority-hierarchy-config",
+    "r20-identity-mcvideo-service-priority-hierarchy-config",
+    "r20-identity-mcptt-service-config-structure-and-extensions-validation"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
