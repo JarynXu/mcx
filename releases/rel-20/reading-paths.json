@@ -1495,6 +1495,30 @@
       "question": "父块或保护字段没写、写空、写 false，有默认 true 后一样吗？",
       "start": "topics/identity/mcptt-on-network-signalling-protection-config.md",
       "boundary": "TS 24.484 V20.1.0 §8.4.2.3 两个在网父块和四个布尔子项各 minOccurs=0，只有这四个子项有 default=true。对有效出现但没有元素或字符内容的子项可用 XSD 默认；缺子项或缺整块时不会由该默认新建元素，显式 false 不改，片段未见不是确认缺失。不能据此定整档接收、写回或实际信令保护。"
+    },
+    {
+      "id": "mcptt-resource-priority-required-blocks-and-two-string-fields",
+      "question": "MCPTT 在网业务配置只需要当前呼叫的那类 Resource-Priority 吗？每一块该有哪些字段？",
+      "start": "topics/identity/mcptt-on-network-resource-priority-config.md",
+      "boundary": "TS 24.484 V20.1.0 §8.4.2.1 在网项 9–11 要求紧急、紧迫险情、普通三块各一份，都是 on-network 的直接子元素，不能以 on-network/anyExt 里的同名项代替；§8.4.2.3 逐块用 resource-priorityType，先 resource-priority-namespace 后 resource-priority-priority，两个 xs:string 都必填；其后可有声明的扩展。XML 顺序看 Schema，不按说明列表猜；上层范围组合或字符串类型未证明内部值合法。"
+    },
+    {
+      "id": "mcptt-resource-priority-allowed-values-and-nonstrict-order",
+      "question": "三个 Resource-Priority 级别允许相等吗？字符串类型、值域和 CMS 错误码怎样分？",
+      "start": "topics/identity/mcptt-on-network-resource-priority-config.md",
+      "boundary": "TS 24.484 V20.1.0 §8.4.2.6 各块分别查 RFC 8101 指定的 MCPTT 命名空间和许可等级，两处顺序都可相等：紧急 ≥ 紧迫险情 ≥ 普通。符合顺序不等于值域通过；这些句子不定字典序比较、相同命名空间、默认或专属 409。注 3 的取值需 MCPTT 运营方和网络运营方仔细商定；RFC 只保留原文引用，表 A.2.3-12 仅响应示例。"
+    },
+    {
+      "id": "mcptt-resource-priority-header-emergency-vs-imminent-peril",
+      "question": "填 MCPTT 紧急呼叫或紧迫险情呼叫的 Resource-Priority，各查哪个配置块？",
+      "start": "topics/identity/mcptt-on-network-resource-priority-config.md",
+      "boundary": "TS 24.484 V20.1.0 §8.4.2.7 在网项 35 查 emergency-resource-priority 填紧急呼叫；项 36 查 imminent-peril-resource-priority 填紧迫险情呼叫。字段值相等不消除呼叫类型，配置不证明具体头串、消息、发端、优先级已生效或实际抢占。"
+    },
+    {
+      "id": "mcptt-resource-priority-normal-header-when-downgrading",
+      "question": "normal-resource-priority 是所有普通呼叫的配置，还是只在某种降级时用这条？",
+      "start": "topics/identity/mcptt-on-network-resource-priority-config.md",
+      "boundary": "TS 24.484 V20.1.0 §8.4.2.7 在网项 37 只明写从 MCPTT 紧急呼叫或紧迫险情呼叫降到普通优先级时的 Resource-Priority 配置。当前普通不等于已知降级，也不据此禁止别处为普通呼叫填头。这里未定实际降级时机、发端、消息或结果。"
     }
   ]
 }

@@ -1,0 +1,168 @@
+{
+  "topic_id": "r20-identity-mcptt-on-network-resource-priority-config",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。仅核 MCPTT 在网业务档的资源优先级配置和 .7 的填头用途；不推离网、其他业务或实际通信。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "mcptt-resource-priority-on-network-shape-not-semantic-validity",
+      "clause": "8.4.2.3",
+      "conditions": [
+        "核在网 MCPTT 业务配置的三个资源优先级块和各自的子元素，不以某次呼叫只用一种为结构前提。"
+      ],
+      "conclusion": "§8.4.2.1 在网项 9–11 分别要求一份 emergency-resource-priority、imminent-peril-resource-priority、normal-resource-priority，都是 on-network 的直接子元素，不能以 on-network/anyExt 里的同名项代替。§8.4.2.3 将三块声明为 resource-priorityType，每块按 xs:sequence 依次有一个必填的 resource-priority-namespace 和一个必填的 resource-priority-priority，均为 xs:string；其后还有可选扩展，不是说只允许这两个子元素。严格的 XML 顺序看 Schema；上层范围组合或字段类型不证明三个块均齐全、不代替 .6 的命名空间和等级条件。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "on-networkType three required resource-priority blocks; resource-priorityType sequence of two required xs:string elements before optional extensions"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1"
+          ],
+          "items": [
+            "on-network items 9, 10 and 11 required blocks and exact children"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "schema conformance remains distinct from the seven scope combinations and resource-priority value constraints"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-resource-priority-namespace-level-and-nonstrict-order",
+      "clause": "8.4.2.6",
+      "conditions": [
+        "核在网这三块各自的命名空间、等级，再看三种配置等级的关系；不把字面串排序当已知规则。"
+      ],
+      "conclusion": "§8.4.2.6 要求每块 resource-priority-namespace 取 RFC 8101 [20] 指定的 MCPTT 命名空间，resource-priority-priority 取该 RFC 规定的等级。要求紧急 ≥ 紧迫险情、紧迫险情 ≥ 普通，两处允许等号，但相等不证明每块值域有效。注 3 说明 MCPTT 运营方与网络运营方需仔细商定取值。这里未给三块命名空间必须相同、字典序或数字比较、配置默认或专属 HTTP 409/phrase。表 A.2.3-12 印作每块两个相同字符串，只是资料性响应示例，不能代替 RFC 级别、.6 校验或实际 SIP 表示。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "three MCPTT namespace and RFC 8101 level pairs; two greater-or-equal relations; Note 3 operator agreement; no dedicated response in these statements"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1"
+          ],
+          "items": [
+            "on-network items 9–11 and the normative reference label [20]"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "2"
+          ],
+          "items": [
+            "RFC 8101 entry [20], reference only; referenced content not applied here"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "A.2.3"
+          ],
+          "items": [
+            "informative on-network HTTP response example, printed child values not normative"
+          ],
+          "tables": [
+            "A.2.3-12"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-resource-priority-header-source-matches-emergency-call-type",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "要按 MCPTT 在网紧急呼叫或紧迫险情呼叫的情况，追溯 Resource-Priority 字段取值配置。"
+      ],
+      "conclusion": "项 35 的 emergency-resource-priority 说明 MCPTT 紧急呼叫的 Resource-Priority 字段如何填；项 36 的 imminent-peril-resource-priority 对应 MCPTT 紧迫险情呼叫。两类分别选配置，不按等级相等或高低合成一种用途；不由业务配置证明具体 SIP 消息、发端、头字段字面格式、实际分配或抢占。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network items 35 and 36, selected configured source by actual emergency or imminent-peril MCPTT call type"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "shared resource-priorityType is structure, not the call category or wire value"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-resource-priority-normal-header-when-downgrading-from-either",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "问题是从 MCPTT 紧急呼叫或紧迫险情呼叫降到普通优先级时，查哪个在网配置块。"
+      ],
+      "conclusion": "项 37 的 normal-resource-priority 表示从紧急呼叫或紧迫险情呼叫降到普通优先级时怎样填 Resource-Priority。两个来向都适用。只知某次呼叫当前为普通优先级、不知是否从两类之一降级，不能用项 37 判那次头字段的配置来源；这也不表示其他条款禁止初始普通呼叫使用此头。项 37 不触发或证明已经降级，不给降级时机、角色、SIP 消息或话权抢占流程。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network item 37 explicit downgrade from either emergency or imminent peril; items 35/36 distinct original call categories"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "normal priority level validity, not evidence of a priority transition"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "RFC 8101 只保留 [20] 引用，不核其正文、具体注册值、次序算法或头字段序列化；资料性示例不是业务验收。",
+    "配置与实际发送、降级、资源分配、话权和网络判定是不同证据。"
+  ],
+  "related": [
+    "r20-identity-mcptt-service-config-structure-and-extensions-validation",
+    "r20-identity-mcptt-override-priority-hierarchy-config"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
