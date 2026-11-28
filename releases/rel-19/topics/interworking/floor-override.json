@@ -4,9 +4,7 @@
   "state": "clause-checked",
   "common_conditions": [
     "TS23.283 V19.5.0、Release19、Stage2。",
-    "组定义在MCPTT，服务器主控且配置支持覆盖及新旧双方同时发送",
-    "会话已建立且进行中，IWF代表的旧发言者持有话权并发媒体",
-    "旧发言者无法收到话权被占用或撤销的通知"
+    "§10.5.4 的互通组话权覆盖示例。查其规则或一条已辨认事件不以全部现场前提已有证据为条件。"
   ],
   "condition_rule": "Inherit common_conditions and add claim conditions.",
   "source_catalog": "../../sources.json",
@@ -16,6 +14,9 @@
       "id": "overlap",
       "clause": "10.5.4",
       "conditions": [
+        "组定义在MCPTT，服务器主控且配置支持覆盖及新旧双方同时发送",
+        "会话已建立且进行中，IWF代表的旧发言者持有话权并发媒体",
+        "旧发言者无法收到话权被占用或撤销的通知",
         "发生上述覆盖过程"
       ],
       "conclusion": "较高话权优先级的MC用户请求经仲裁获准，服务器向其发granted并向其他参与者发taken。旧LMR用户无法获知变化而继续发送；谁收到新、旧或两路媒体由配置决定，不能断言所有人都混音接收。"
@@ -24,9 +25,143 @@
       "id": "return",
       "clause": "10.5.4 NOTE3",
       "conditions": [
+        "组定义在MCPTT，服务器主控且配置支持覆盖及新旧双方同时发送",
+        "会话已建立且进行中，IWF代表的旧发言者持有话权并发媒体",
+        "旧发言者无法收到话权被占用或撤销的通知",
         "新覆盖者停止发送，旧发言者仍在发媒体"
       ],
       "conclusion": "话权授回旧发言者，音频路由到当前全部话权参与者；这不是任意抢占场景都适用的自动恢复规则。"
+    },
+    {
+      "id": "iwf-floor-override-specific-enabled-overlap-and-notification-incapability",
+      "conditions": [
+        "可纯查本例前提、旧发言者身份或一个已识别步骤。若要将整个实际过程判为 §10.5.4 的此例，再查同组、本次会话、角色、覆盖和双发配置、B 的原有话权／媒体及不能获知通知的条件。"
+      ],
+      "conclusion": "示例限 MCPTT 定义互通组、MCPTT server 主控，会话已经建立且正在进行，服务器配置覆盖并允许新旧双方发送。旧电台不能被告知话权被占或撤。图步骤 1 写授给 IWF，正文写 IWF 所代表的 B 已获授话权并在发语音；不是图增加第二位获得话权的人。",
+      "limitations": [
+        "仅知启用覆盖不说明也允许双发；一次没有抓到通知不等于不能通知。引言列举了同时获权或覆盖 LMR 用户时可能遇到的不能通知情形，不据此改写这张图的前置状态；不把 losing audio 本身、一般撤销或私呼当作本例。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.4 opening and preconditions (case applicability)"
+          ],
+          "printed_pages": [
+            108
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.4 Figure 10.5.4-1 and Steps 1–4, 5a, 6a and 7 (individual action and direction)"
+          ],
+          "printed_pages": [
+            109
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-floor-override-request-arbitration-granted-user-notification-and-media",
+      "conditions": [
+        "可分别查 §10.5.4 图中的步骤 2、3、4、5a、6a、7 或实际已辨认的单个事件，不要求全部送收、媒体和权限记录。判断两项或更多属于同一次覆盖时，再核同会话、A/B 角色、实际端点和相应事件。"
+      ],
+      "conclusion": "2 A 相对 B 有较高话权优先级且想发语音；3 是 A 向话权控制服务器发 Floor Request。4 由服务器仲裁并接受 A 的请求，原文举收到的优先级信息为判断示例。5a server→A 发 Floor Granted，6a 这条授予触发面向 A 用户的提示，不表示用户实际看见或听见提示，7 A 在原已建会话开始送语音。",
+      "limitations": [
+        "优先级、发言意向不代请求、实收或仲裁；获准、授予消息发出、A 实收与本地提示、实际送语音逐项取证。图 7 的媒体横条不能证明实际方向、线路、终端实收或 B 的通知。5b/6b 及覆盖期间媒体配置看相应入口，不从它们反推 A 的一个已知事件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.4 opening and preconditions (case applicability)"
+          ],
+          "printed_pages": [
+            108
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.4 Figure 10.5.4-1 and Steps 1–4, 5a, 6a and 7 (individual action and direction)"
+          ],
+          "printed_pages": [
+            109
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.4 Steps 5b and 6b and NOTES 1–2 (other participant notification and concurrent routing comparison only)"
+          ],
+          "printed_pages": [
+            109
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-floor-override-return-preserves-both-observed-predicates-and-current-routing",
+      "conditions": [
+        "可独立查 NOTE 3 的规则或已经明确的一项实际事件。若判 NOTE 3 所述授回条件是否实际满足，核同一次覆盖中 A 实际停止发送且 B 在这一时点仍发语音；若只核已经识别出的实际授回、转送或接收，则用对应状态／媒体证据，不要求全链。"
+      ],
+      "conclusion": "NOTE 3 在 A 停止发送、B 此时仍发语音时，话权授回 B，音频路由到全部当时的话权参与者。这里未写停发检测或新的 Floor Granted／Revoked 序列。当前参与者不等于组名单、先前参与集或覆盖期间配置收一路／两路的集合。",
+      "limitations": [
+        "B 曾发语音、A 意欲停发、仅见释放信令或丢失报文不替当前事实。某必要条件明确不成立，不是本注的触发；未知则不判已授回。实际授回和接收分别取证，路由不证明每个终端实收、播放或下一次话权操作，不据本注否定其他规则。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.4 opening and preconditions (case applicability)"
+          ],
+          "printed_pages": [
+            108
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.4 NOTE 3 (return gate and audio routing to current participants)"
+          ],
+          "printed_pages": [
+            109
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.4 Steps 5b and 6b and NOTES 1–2 (other participant notification and concurrent routing comparison only)"
+          ],
+          "printed_pages": [
+            109
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
