@@ -1,0 +1,202 @@
+{
+  "topic_id": "r20-identity-mcdata-on-network-functional-alias-config",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只查 MCData 在网业务档 on-network/anyExt/functional-alias-list 及其条目；区分规范文字、Schema 与实际生效或接收的证据。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "mcdata-on-network-functional-alias-list-placement-and-entry-shape",
+      "clause": "10.4.2.3",
+      "conditions": [
+        "查 MCData 在网功能别名配置中外层扩展、别名列表、单条记录及用户容器分别需要哪些元素，区分正文与 XML Schema。"
+      ],
+      "conclusion": "§10.4.2.1 在网项 4(e) 在可选 anyExt 内列 functional-alias-list 并写一条或多条 functional-alias-entry。§10.4.2.3 列表有全局声明，不是 on-network 的具名直接子项；外层 anyExt 可选，列表中 functional-alias-entry 为 0..unbounded。条目存在时依次要求 functional-alias、max-simultaneous-activations、allow-takeover、mcdata-user-list、functional-alias-priority 五个具名直接子项。mcdata-user-list 容器必需，却因 ListEntryType 的 xs:choice 从零起而不等于至少有一个 entry。零条的局部出现次数不改正文、不推整档接受或空名单许可；两个可重复名字不以同名就判重复。与 MCPTT 条目扩展所放的优先级分开。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.1"
+          ],
+          "items": [
+            "on-network item 4(e), optional anyExt and one or more alias entries in prose"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.3"
+          ],
+          "items": [
+            "optional on-network anyExt, separate global alias list, 0..unbounded alias entries, required five direct ordered names, ListEntryType choice 0..unbounded"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "MCPTT functional alias entry four named direct children and entry-local optional anyExt, comparison only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.6"
+          ],
+          "items": [
+            "generic XML Schema and received duplicate conditions, comparison only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcdata-on-network-functional-alias-alias-id-vs-eligible-user-id",
+      "clause": "10.4.2.7",
+      "conditions": [
+        "查一个别名条目指的是哪个别名、列哪个 MCData 用户为可激活，或核对项 17 的大小写、容器和条目层级。"
+      ],
+      "conclusion": "§10.4.2.7 在网项 14 的 functional-alias（anyURI）是功能别名身份，项 17 的 mcdata-user-list/entry 包含被列为获准激活同一别名的 MCData 用户的 MCData ID。项 17 原写 entryType；§10.4.2.3 容器是 mcdatasc:ListEntryType，entry 才用 mcdatasc:EntryType，其 uri-entry（xs:anyURI）必需，display-name 可选且不是 ID。保留不同大小写，不另立类型别名；配置名单不证明本次鉴权、激活或可把空名单当作任意用户许可。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.7"
+          ],
+          "items": [
+            "on-network item 14 functional alias identity and item 17 literal entryType, MCData ID of a user allowed to activate this alias"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.3"
+          ],
+          "items": [
+            "ListEntryType container, EntryType children required uri-entry and optional display-name"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcdata-on-network-functional-alias-per-alias-activation-limit",
+      "clause": "10.4.2.7",
+      "conditions": [
+        "查一个 MCData 功能别名同时可激活几次或项 15 的父项文字。分辨业务授权上限与当前激活情况。"
+      ],
+      "conclusion": "§10.4.2.7 在网项 15 的 max-simultaneous-activations 给对应别名允许的并发激活数，为 positiveInteger；§10.4.2.3 声明为 xs:positiveInteger，0 不满足这个类型，不读成不限。原文该项从子到父字面多列一层 functional-alias（max-simultaneous-activations → functional-alias-entry → functional-alias → functional-alias-list）。§10.4.2.1 4(e) / §10.4.2.3 把并发数和别名 URI 声明为同一 entry 的并列字段，不据项 15 另立 XML 路径、别名或勘误。项 13 的 max-simultaneous-authorizations 数一个 MCData 用户的并发业务授权，不是该别名的激活上限。不从字段推实际激活数、超额动作或固定上限值。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.7"
+          ],
+          "items": [
+            "on-network item 15 per-alias concurrent activation count, literal parent chain; item 13 per-user service authorizations comparison only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.1"
+          ],
+          "items": [
+            "on-network item 4(d)/(e), sibling outer authorization configuration and inside alias entry"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.3"
+          ],
+          "items": [
+            "max-simultaneous-activations xs:positiveInteger and functional-alias sibling leaf; separate global max-simultaneous-authorizations"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcdata-on-network-functional-alias-takeover-of-active-alias",
+      "clause": "10.4.2.7",
+      "conditions": [
+        "查另一个 MCData 用户对当前已激活的同一别名，逐别名配置是否允许接管。区分选人、激活数或运行结果。"
+      ],
+      "conclusion": "§10.4.2.7 在网项 16 的 allow-takeover 是当前已激活别名的布尔项，指示是否允许另一位 MCData 用户接管它。此条件不等于新激活、加入名单、一个用户的通用接管权限或已经接管。§10.4.2.3 在该条目要求出现该布尔项，没写 default/fixed；不把相邻注 1 的信令保护默认值套来，不移用 MCPTT 用户配置或猜多个配置的组合判定。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.7"
+          ],
+          "items": [
+            "on-network item 16 other MCData user and currently activated alias; item 17 eligibility and NOTE 1 signalling-protection defaults only for comparison"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.3"
+          ],
+          "items": [
+            "required xs:boolean allow-takeover, no default/fixed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcdata-on-network-functional-alias-relative-priority-and-note2",
+      "clause": "10.4.2.7",
+      "conditions": [
+        "查功能别名相对优先级的字段和服务器使用边界，区分优先级的定义与实际排序、接管或相邻项。"
+      ],
+      "conclusion": "§10.4.2.7 在网项 18 的 functional-alias-priority 为 positiveInteger，表示该功能别名的相对优先级。注 2 只把这个参数如何由 MCData 服务器使用留给实现，不覆盖所有别名字段或相邻项 19 的通知服务器主机名。§10.4.2.3 把它直接放在 MCData 别名条目并设为必需，没写 default/fixed。不同于 MCPTT 条目内扩展；不推数值排序方向、平局策略、话权抢占或实际接管。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.7"
+          ],
+          "items": [
+            "on-network item 18 relative priority and NOTE 2 only its use by the MCData server; item 19 comparison only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.3"
+          ],
+          "items": [
+            "direct required xs:positiveInteger priority child, no default/fixed"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "MCPTT entry-local anyExt contrast only"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "本主题核同版业务配置的 Schema 和具名条款；没有展开注册、实际许可、激活、接管、选人、多策略仲裁、程序解析或默认推断。MCPTT、通用未知/重复项、通知服务器只作邻域分流。"
+  ],
+  "related": [
+    "r20-identity-mcptt-functional-alias-service-config",
+    "r20-identity-mcvideo-mcdata-service-config-validation",
+    "r20-identity-mcdata-on-network-notification-server-config"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}

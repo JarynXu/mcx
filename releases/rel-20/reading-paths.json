@@ -1687,6 +1687,36 @@
       "question": "MCData 通知服务器主机名能用组织 domain 的 409 验证吗？多条 ns-entry 怎么看？",
       "start": "topics/identity/mcdata-on-network-notification-server-config.md",
       "boundary": "TS 24.484 V20.1.0 §10.4.2.6 要求文档符合 Schema，没列通知服务器列表或主机名专用 409。组织域语法/未知域检查针对 service-configuration-params 的 domain 值，不套给 ns-entry；两种父名不证明服务器判未知，多条同名 ns-entry 不证明实收重复。已独立满足相应未知或实收重复条件时另查既有规则，不推整档接受、实际拒绝或主机可达。"
+    },
+    {
+      "id": "mcdata-on-network-functional-alias-list-placement-and-entry-shape",
+      "question": "MCData 在网功能别名列表在哪里，条目和用户名单各需至少一条吗？",
+      "start": "topics/identity/mcdata-on-network-functional-alias-config.md",
+      "boundary": "TS 24.484 V20.1.0 §10.4.2.1 在网 4(e) 的可选 anyExt 内列 functional-alias-list，写一条或多条。§10.4.2.3 有列表全局声明，functional-alias-entry 0..unbounded；已有条目按序必需别名、并发激活数、接管、MCData 用户列表容器和别名相对优先级五个直接子项。mcdata-user-list 容器必需，ListEntryType 的 xs:choice 可为零；局部次数不改正文，不能据此判空名单许可或整档接受。不把 MCPTT 条目扩展位置套来。"
+    },
+    {
+      "id": "mcdata-on-network-functional-alias-alias-id-vs-eligible-user-id",
+      "question": "MCData 功能别名身份、允许激活它的用户 ID、entryType 的写法分别看哪？",
+      "start": "topics/identity/mcdata-on-network-functional-alias-config.md",
+      "boundary": "TS 24.484 V20.1.0 §10.4.2.7 在网项 14 的 functional-alias 是别名身份；项 17 的 mcdata-user-list/entry 是获准激活它的用户的 MCData ID，原写 entryType。§10.4.2.3 容器 mcdatasc:ListEntryType、条目 mcdatasc:EntryType，必需 uri-entry（xs:anyURI）、可选 display-name，不以显示名代 ID。保留层级和大小写，不把 entryType 当作另一个已声明或可互换的类型，不判空名单许可、实际获准或激活。"
+    },
+    {
+      "id": "mcdata-on-network-functional-alias-per-alias-activation-limit",
+      "question": "MCData 并发激活数是给别名还是给用户，为什么项 15 的父项看起来多一层？",
+      "start": "topics/identity/mcdata-on-network-functional-alias-config.md",
+      "boundary": "TS 24.484 V20.1.0 §10.4.2.7 在网项 15 的 max-simultaneous-activations 是对应别名允许的并发激活数（xs:positiveInteger，0 不表示不限），从子到父原写经过 functional-alias-entry 再到 functional-alias、functional-alias-list。§10.4.2.1 4(e) / §10.4.2.3 把并发数与别名 URI 写成同一条目的并列字段，不由项 15 另定 XML 路径或勘误。项 13 max-simultaneous-authorizations 是一个 MCData 用户的并发业务授权数，不是该别名激活数；不推实际计数或超额动作。"
+    },
+    {
+      "id": "mcdata-on-network-functional-alias-takeover-of-active-alias",
+      "question": "MCData 在网别名的 allow-takeover 配的是谁可以做什么，能否推本次接管？",
+      "start": "topics/identity/mcdata-on-network-functional-alias-config.md",
+      "boundary": "TS 24.484 V20.1.0 §10.4.2.7 在网项 16 指示是否允许另一位 MCData 用户接管当前已激活的这个别名，不是激活名单、允许激活次数、用户通用权限或实际接管结果。§10.4.2.3 该条目必需 xs:boolean、无 default/fixed；不借相邻注 1 默认或 MCPTT 用户配置推组合判定。"
+    },
+    {
+      "id": "mcdata-on-network-functional-alias-relative-priority-and-note2",
+      "question": "MCData 功能别名优先级放哪，注 2 是全部配置留给实现吗？",
+      "start": "topics/identity/mcdata-on-network-functional-alias-config.md",
+      "boundary": "TS 24.484 V20.1.0 §10.4.2.7 在网项 18：functional-alias-priority 是别名的相对优先级，注 2 只说 MCData 服务器如何使用这个参数由实现决定，不延至其他字段或项 19 通知服务器。§10.4.2.3 是该别名条目的必需直接子项 xs:positiveInteger、无 default/fixed，不搬 MCPTT 条目内 anyExt。不推数值比较方向、平局、话权或实际接管。"
     }
   ]
 }
