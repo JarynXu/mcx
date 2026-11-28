@@ -1609,6 +1609,36 @@
       "question": "MCData 在网收发限制省掉父块、只缺一项、填零或留下空元素，能否当成同一种默认？",
       "start": "topics/identity/mcdata-on-network-tx-rx-byte-limits.md",
       "boundary": "TS 24.484 V20.1.0 §10.4.2.1 在网项 1(a)–(d) 与 §10.4.2.3：on-network 的 tx-and-rx-control 与四个有序 xs:unsignedInt 叶各可选，均无 default/fixed。完整在网块无该父块，四项即未提供。§10.4.2.6 仅不施加各缺项对应的限制；已给 0、空元素或不完整片段都不能据此当缺项。未在这些缺项句定义专属 409、整档接受或部署结果。"
+    },
+    {
+      "id": "mcdata-common-tx-rx-duration-temp-data-waiting-limit",
+      "question": "MCData 暂存数据等待交付给接收用户的时限是哪个字段？",
+      "start": "topics/identity/mcdata-common-tx-rx-duration-config.md",
+      "boundary": "TS 24.484 V20.1.0 §10.4.2.7 共用项 1：common/tx-and-rx-control/time-temp-data-waiting。是暂存待交付数据的等待时限，对应 TS 24.483 §11.2.7 TimeTempDataWaiting（仅指向）。不当成公告计时、文件保存期或超时动作。"
+    },
+    {
+      "id": "mcdata-common-tx-rx-duration-periodic-announcement-invited-groups",
+      "question": "MCData 周期公告列什么，哪个共用字段给它计时？",
+      "start": "topics/identity/mcdata-common-tx-rx-duration-config.md",
+      "boundary": "TS 24.484 V20.1.0 §10.4.2.7 共用项 2：common/tx-and-rx-control/time-periodic-announcement 是包含近期受邀且可用的数据组通信列表的周期公告计时器。TS 24.483 §11.2.8 TimePeriodicAnnouncement 仅指向；不是用户列表、等待时限，也不证明已公告。"
+    },
+    {
+      "id": "mcdata-common-tx-rx-duration-common-structure-two-optional-leaves",
+      "question": "MCData 共用结构正文没列周期公告字段，它能否作为共用项，两个时长缺项怎样看？",
+      "start": "topics/identity/mcdata-common-tx-rx-duration-config.md",
+      "boundary": "TS 24.484 V20.1.0 §10.4.2.1 共用项 1(a) 只列等待时长，不把缺列读成周期公告禁止或等待必填。§10.4.2.3 的 common/tx-and-rx-control 是可选直接子块，按序声明两个可选 xs:duration 叶，均无 default/fixed；§10.4.2.7 共用项 2 有周期公告语义。缺项不等于零、无限或空元素，不据局部形状判整档。"
+    },
+    {
+      "id": "mcdata-common-tx-rx-duration-duration-literal-form-and-format-conflict",
+      "question": "这两个 MCData 共用时长的表示式怎样写？如果不合结构，409 的 phrase 怎么看？",
+      "start": "topics/identity/mcdata-common-tx-rx-duration-config.md",
+      "boundary": "TS 24.484 V20.1.0 §10.4.2.6 点名暂存等待和周期公告，要求按秒表示；表示式 PT<h>H<m>M<n>S，<n> 用十进制表示的有效秒值；格式条件原用 PT <n>S。若值不合该结构，CMS 必须返回 HTTP 409 含 XCAP constraint-failure；若带 phrase，建议 invalid format for duration。不从两句确定空格或 H/M 的解析结果，和数值无效分开。"
+    },
+    {
+      "id": "mcdata-common-tx-rx-duration-invalid-n-value-conflict",
+      "question": "MCData 共用时长收到无效秒值时，是否是同一个 409，怎么跟格式不符区分？",
+      "start": "topics/identity/mcdata-common-tx-rx-duration-config.md",
+      "boundary": "TS 24.484 V20.1.0 §10.4.2.6 对收到无效 <n> 要求 CMS 返回 HTTP 409 含 XCAP constraint-failure；如果带 phrase，建议 invalid value for duration。两种条件响应同码，不凭 409 归因；原文未列 <n> 数值范围、先后或重叠时优先级，不套 ad hoc 其他时长段。"
     }
   ]
 }

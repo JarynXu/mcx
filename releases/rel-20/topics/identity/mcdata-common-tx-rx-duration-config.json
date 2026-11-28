@@ -1,0 +1,156 @@
+{
+  "topic_id": "r20-identity-mcdata-common-tx-rx-duration-config",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只查 MCData 业务配置中在网和离网共用的 common/tx-and-rx-control 两个时长，以及 §10.4.2.6 点名它们的分支。查规范不以收到某次消息或响应为前提。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "mcdata-common-tx-rx-duration-temp-data-waiting-limit",
+      "clause": "10.4.2.7",
+      "conditions": [
+        "查 MCData 共用业务档中，已经暂存、等待交付给接收用户的数据可等多久。"
+      ],
+      "conclusion": "§10.4.2.7 共用项 1 的 common/tx-and-rx-control/time-temp-data-waiting 是暂存待交付数据的等待时限，对应 TS 24.483 [4] §11.2.7 TimeTempDataWaiting。它不是周期公告的定时、文件可下载时长或字节上限。此处不规定计时何时开始、超时后清理或重试，也不证明数据已交付。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.7"
+          ],
+          "items": [
+            "common item 1 temporarily stored data awaiting delivery to a receiving user; TS24.483 §11.2.7 pointer only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.3"
+          ],
+          "items": [
+            "commonType optional tx-and-rx-control and optional xs:duration time-temp-data-waiting"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcdata-common-tx-rx-duration-periodic-announcement-invited-groups",
+      "clause": "10.4.2.7",
+      "conditions": [
+        "查 MCData 共用业务档中周期公告的计时器，以及公告列表所指的对象。"
+      ],
+      "conclusion": "§10.4.2.7 共用项 2 的 common/tx-and-rx-control/time-periodic-announcement 是周期公告的计时器；公告包含近期受邀且可用的数据组通信列表。对应 TS 24.483 [4] §11.2.8 TimePeriodicAnnouncement。列表不等于受邀用户或暂存的数据本身。此处不规定计时的起止、复位、公告承载或某次公告已经发送或接收。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.7"
+          ],
+          "items": [
+            "common item 2 timer for periodic announcement with a list of available recently invited data group communications; TS24.483 §11.2.8 pointer only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.3"
+          ],
+          "items": [
+            "common-tx-and-rx-controlType time-periodic-announcement optional xs:duration"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcdata-common-tx-rx-duration-common-structure-two-optional-leaves",
+      "clause": "10.4.2.3",
+      "conditions": [
+        "查 §10.4.2 的共用收发配置字段位置和出现次数；区分结构正文、Schema、显式空值和缺项。"
+      ],
+      "conclusion": "§10.4.2.1 共用项 1(a) 在可选 tx-and-rx-control 下只列 time-temp-data-waiting，不由缺列判 time-periodic-announcement 禁止或等待字段必填。§10.4.2.3 的 commonType 将父块声明为 common 的直接可选子元素；common-tx-and-rx-controlType 按序声明 time-temp-data-waiting 和 time-periodic-announcement，各 xs:duration、minOccurs=0，均无 default 或 fixed。§10.4.2.7 共用项 2 另说明后者角色。这个父块不是在网同名的字节上限块。缺项不由这些声明补零、缺失默认或无限，空值、部分片段和全档接受需分开判断。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.1"
+          ],
+          "items": [
+            "common item 1(a) only lists time-temp-data-waiting under optional tx-and-rx-control"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.3"
+          ],
+          "items": [
+            "commonType optional direct child; common-tx-and-rx-controlType two ordered optional xs:duration leaves without default/fixed; on-network type comparison only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.7"
+          ],
+          "items": [
+            "common data applies to on/off network service; common items 1 and 2 meanings"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcdata-common-tx-rx-duration-duration-literal-form-and-format-conflict",
+      "clause": "10.4.2.6",
+      "conditions": [
+        "查两个已点名的共用时长元素之一是否落在 §10.4.2.6 的结构不符条件。不把缺项当已提供，查条款不要求先有真实响应。"
+      ],
+      "conclusion": "§10.4.2.6 先列 time-temp-data-waiting、time-periodic-announcement，要求按秒表示，表示式原写 PT<h>H<m>M<n>S，其中 <n> 为有效秒值，使用十进制表示法。随后格式校验句另写 PT <n>S。保留两个字面，不判空格、H/M、归一化或某次解析的接受规则。值不符合后一结构时，CMS 必须返回 HTTP 409（Conflict）含 XCAP constraint-failure；如果带 phrase，建议用 invalid format for duration。数值无效是下一句的另一个条件，不能从响应码独自定原因。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.6"
+          ],
+          "items": [
+            "first named duration pair, representation literally PT<h>H<m>M<n>S vs format-validation PT <n>S; valid seconds n using decimal notation and conditional recommended invalid format for duration"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcdata-common-tx-rx-duration-invalid-n-value-conflict",
+      "clause": "10.4.2.6",
+      "conditions": [
+        "查两个共用字段之一实际收到的 <n> 值若无效该按哪条；区分值无效与只知格式不符。"
+      ],
+      "conclusion": "§10.4.2.6 若收到无效 <n>，CMS 必须返回 HTTP 409（Conflict）含 XCAP constraint-failure；如果带 phrase，建议用 invalid value for duration。两项的这段原文没列出 <n> 数值范围、校验次序或多项同时不符的诊断优先级。不把任意特定秒值判无效或有效，不从单个 409 推断是数值无效，也不把这组条文扩到后段 ad hoc 时长的规则。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.6"
+          ],
+          "items": [
+            "first two named duration elements; received invalid n branch and conditional recommended invalid value for duration; later named ad hoc duration section not included"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "TS 24.483 [4] §11.2.7/§11.2.8 只保留指向，不补其正文。两种时间不规定本次发送、接收、计时起止、数值解释或 CMS 实际解析结果。"
+  ],
+  "related": [
+    "r20-identity-mcdata-on-network-tx-rx-byte-limits",
+    "r20-identity-mcvideo-mcdata-service-config-validation"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
