@@ -3,7 +3,7 @@
   "release": 19,
   "state": "clause-checked",
   "common_conditions": [
-    "进行中的互通 chat 组呼包含 MCPTT 客户端与 IWF。"
+    "TS 23.283 V19.5.0，Rel‑19 Stage 2，进行中的互通 chat 的整通释放；区分查规则、已识别的一条消息和实际状态。"
   ],
   "condition_rule": "Inherit common_conditions and add claim conditions.",
   "source_catalog": "../../sources.json",
@@ -13,19 +13,116 @@
       "id": "lmr-release",
       "clause": "10.3.5.4",
       "conditions": [
+        "进行中的互通 chat 组呼包含 MCPTT 客户端与 IWF。",
         "组定义在 LMR 系统",
         "LMR 发起释放"
       ],
-      "conclusion": "IWF 按呼叫中每个 MCPTT 用户发送释放请求；server 转发并通知用户。客户端确认可选，流程释放话权和媒体资源，不改变客户端归属状态。"
+      "conclusion": "IWF 按呼叫中每个 MCPTT 用户发送释放请求；server 转发，MCPTT 用户获通知。客户端应答可选；客户端与 IWF 释放本通话的话权和媒体面资源。成功释放本身不改变客户端归属状态。"
     },
     {
       "id": "mc-release",
       "clause": "10.3.5.5",
       "conditions": [
+        "进行中的互通 chat 组呼包含 MCPTT 客户端与 IWF。",
         "组定义在 MCPTT 系统",
         "MCPTT server 决定释放"
       ],
       "conclusion": "IWF 代理全组加入时 server 向 IWF 发一条；逐用户加入时按每名已加入 LMR 用户发一条。IWF 须响应所收释放请求，MCPTT 客户端确认可选；成功释放不改变客户端归属状态。"
+    },
+    {
+      "id": "iwf-chat-release-lmr-defined-native-optional-reply-relays",
+      "conditions": [
+        "可单查 .4 规范的前提、某个编号或已辨明的一条信息。判整个现场分支才核：组由 LMR 定义，正进行的这通 chat 含 MCPTT 客户端与 IWF，并实际由 LMR 系统发起释放。判实际转发关系时查同次原生应答和 IWF 腿，单查任一消息不需求全链。"
+      ],
+      "conclusion": "1 IWF→MCPTT server 按呼叫中的每名 MCPTT 用户各发一条 IWF 释放请求；2 server 转发至该组的 MCPTT 用户，本段指向 TS 23.379。3 用户获通知，图画在客户端。4 实收步骤 2 请求的客户端可向 server 回原生应答；5 server 将该应答转为 IWF 释放应答发往 IWF。6 客户端与 IWF 释放此 chat 的话权及媒体面资源。",
+      "limitations": [
+        "1 的粒度按通话中 MCPTT 用户，不按配置名册、端点数或单个示意箭头；不把 2 扩成通知未参与的静态成员。正文 3 不给实际用户送达证明；缺 4 不能单独认定失败。5 是转发已有的原生应答，本段不规定静默时自动代答或必须等齐。5 发出、IWF 实收和资源实际释放分别取证，未核引用的 TS 23.379 内文。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.5.4 preconditions, Figure 10.3.5.4-1 and Steps 1–6"
+          ],
+          "printed_pages": [
+            65,
+            66
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-chat-release-mcptt-defined-release-condition-and-join-cardinality",
+      "conditions": [
+        "可独立查 .5 释放条件示例、步骤 2 的请求数量或已辨明的一条消息。判本次完整分支才核 MCPTT 定义组、这通 chat 有 MCPTT 客户端与 IWF 参与，并由 server 决定释放；判触发族核实际条件与 server 决定，判数量按本次已有代理加入或 server 实收逐人 join 记录，不要求两类资料都齐才能查单项。"
+      ],
+      "conclusion": "1 MCPTT server 在至少一个释放条件满足时决定释放。原文例子是 hang time 到期、最后或倒数第二个参与者离开、发起者离开、已归属 MCPTT 组员数低于允许下限。2 server→IWF：IWF 已代表该组全部 LMR 用户加入，发一条；server 已收到逐用户 join 时，对每名已加入的 LMR 用户各发一条。3 server 另向当前组呼的每个 MCPTT 参与者发原生释放请求；4 用户获通知。",
+      "limitations": [
+        "例子不写固定值或全量触发条件。已归属人数不等于正在通话人数，等于下限不满足这个“低于”例；例子出现不等于 server 已作决定。一个箭头或一条记录不证明代理；归属与 join 不互代，也不补两类记录并见时的合并算法或 .4 的逐 MCPTT 用户腿。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.5.5 introduction, precondition, Figure 10.3.5.5-1 and Steps 1–7"
+          ],
+          "printed_pages": [
+            66,
+            67
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-chat-release-mcptt-defined-iwf-confirmation-vs-native-and-resource-state",
+      "conditions": [
+        "可独立查 .5 的 IWF 和原生回包角色、已辨明的 .5 单条应答，或查两支的资源和归属。判断单节点是否真实发出、实收或释放，以该节点及本次组呼的事件或状态为证。只有把多条记录关联到同次时才核操作、具体组呼、组、当事用户和实际端点。"
+      ],
+      "conclusion": ".5 步骤 5 IWF→server 确认实际收到的步骤 2 请求；6 是已收到对应原生释放请求的 MCPTT 客户端可向 server 回复，与 IWF 应答是不同腿。.4 步骤 6 明写 MCPTT 客户端和 IWF，.5 步骤 7 明写客户端 1、2 和 IWF，释放该通话的话权、媒体面资源。这两段都写成功释放本身不改变客户端归属。",
+      "limitations": [
+        "要判一端收到对应应答，核该端实际收件；原生可选应答、IWF 应答、用户实际获通知、资源已经释放与仍归属分别取证。图上最终框跨 server，不能据其增加或排除 server 清理，或用示意位置规定固定等待、逐人返回顺序。归属实际变更、只结束话权、单用户 leave 或全通话结束都有不同证据。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.5.4 preconditions, Figure 10.3.5.4-1 and Steps 1–6"
+          ],
+          "printed_pages": [
+            65,
+            66
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.5.5 introduction, precondition, Figure 10.3.5.5-1 and Steps 1–7"
+          ],
+          "printed_pages": [
+            66,
+            67
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [

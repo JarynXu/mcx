@@ -4844,6 +4844,38 @@
           "read": "topics/interworking/floor-signals.md"
         }
       ]
+    },
+    {
+      "id": "iwf-chat-whole-release-response-and-resources",
+      "question": "整通互通 chat 结束时，IWF 和 MCPTT 客户端各回哪条，回包能证明资源释放了吗？",
+      "start": "topics/interworking/chat-release.md#客户端没有回包能认定整通-chat-没结束吗",
+      "boundary": "TS 23.283 V19.5.0 Stage 2 §10.3.5.4/.5，限正在进行的互通 chat 整通释放；查条文、单条消息或单节点状态不需完整链。.4 LMR 定义且由 LMR 发起，呼叫含 MCPTT 客户端与 IWF；1 IWF→server 按呼叫中每个 MCPTT 用户各一条，2 server 转原生请求、3 用户获通知；实收 2 的客户端可回 4，server 把该应答转成 5 发 IWF，不从客户端不回直接判失败或自动代答；6 客户端与 IWF 释放本通话话权和媒体面资源。.5 MCPTT 定义组，这通呼叫含 MCPTT 客户端与 IWF，且 server 决定释放，至少满足一项条件（如已归属 MCPTT 组员数低于下限，不是通话人数；实例不定固定值）。2 server→IWF，实际代表全部 LMR 用户加入才按这支发一条，实际收到逐人 join 则逐已加入 LMR 用户；一条记录不证明是哪种加入。3 请求另发给每名参与的 MCPTT 用户、4 通知用户。5 IWF 回应所收到的 2；6 只在原生客户端实收该释放请求时可回。7 客户端 1/2 与 IWF 释放本通话话权和媒体面资源。两支成功释放不改变客户端归属，两个回包及实际资源清理、用户实收各自取证；未规定全员应答的等待门槛或跨腿到达顺序。",
+      "next_if": [
+        {
+          "condition": "问已辨明 IWF group call release 请求／应答的字段，不统一原生腿。",
+          "read": "topics/interworking/group-call-operation-elements.md#怎样读代理身份话权和实际结果"
+        },
+        {
+          "condition": "实为发生在预安排组呼的整通释放，不套 chat 的可选应答或示例原因。",
+          "read": "topics/interworking/group-call-release.md"
+        },
+        {
+          "condition": "实为一次用户取消归属后退出，非整通释放。",
+          "read": "topics/interworking/deaffiliation-exit.md"
+        },
+        {
+          "condition": "实际是 MC 系统定义组，问释放前后的归属或取消，包括 GMS 更新与本地状态。",
+          "read": "topics/interworking/affiliation-mc-group.md"
+        },
+        {
+          "condition": "实际是 LMR 定义组，问释放前后的归属或取消，包括显式／隐式 IWF 消息与本地授权。",
+          "read": "topics/interworking/affiliation-lmr-group.md"
+        },
+        {
+          "condition": "问未来同组又开新 chat 时，仍有一个或多个用户归属会怎样。",
+          "read": "topics/interworking/chat-initiation.md#旧通话结束后同组再呼还用话权信令吗"
+        }
+      ]
     }
   ]
 }
