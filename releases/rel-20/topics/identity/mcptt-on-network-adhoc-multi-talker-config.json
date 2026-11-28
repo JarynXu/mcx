@@ -1,0 +1,176 @@
+{
+  "topic_id": "r20-identity-mcptt-on-network-adhoc-multi-talker-config",
+  "release": 20,
+  "state": "clause-checked",
+  "standard_stage": 3,
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只查 MCPTT 在网业务配置的 ad hoc 多发话者支持和允许发话者人数；不以现场已经启用、取到配置或取得话权为查规范的前提。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "claims": [
+    {
+      "id": "mcptt-adhoc-multi-talker-nested-extensions-and-global-declarations",
+      "clause": "8.4.2.3",
+      "conditions": [
+        "查 MCPTT 在网业务配置的 §8.4.2.1 提纲和 .3 局部声明；不以已部署该块或实测解析为前提。"
+      ],
+      "conclusion": "MCPTT 在网 §8.4.2.1 项 13(d)(vi/vii) 在 on-network/anyExt/adhoc-group-call/anyExt 的内层 anyExt 里列两字段。外层 anyExt 与 adhoc-group-call 在提纲中可选；§8.4.2.3 的 on-networkType、adhoc-group-callType 各有可选 anyExt，anyExtType 使用 ##any/lax 元素通配，两父类型自己的 ##other/lax 通配另计。adhoc-multi-talker-control 是全局 xs:boolean，adhoc-multi-talker-max-talkers 是全局 xs:positiveInteger，均无 default/fixed，都未在组呼类型序列中声明为具名直接子项。不能从通配推出必填、固定出现次数或实际接受。§8.4.2.7 项 53 字面未列内层 anyExt，不据此另立直挂路径。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1"
+          ],
+          "items": [
+            "on-network item 13(d)(vi–vii), outer and inner extensions"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "on-networkType, adhoc-group-callType and anyExtType; two global declarations, not named local particles"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network items 52 and 53 differ in the printed parent chain"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-adhoc-multi-talker-control-support-not-grant",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "查 MCPTT 在网 ad hoc 的控制字段含义。查询条文不需要现场布尔值或话权记录。"
+      ],
+      "conclusion": "MCPTT 在网 §8.4.2.7 项 52 明列内层 anyExt 下的 adhoc-multi-talker-control，表示在网 ad hoc 多发话者支持启用或禁用，指 TS 24.483 [4] §7.2.34 AllowAdhocMultiTalker，仅作指向。§8.4.2.3 全局声明为 xs:boolean，无 default/fixed；本项未给控制字段的缺项取值，不能借人数默认 1 或一般 ad hoc 支持的 true 来填开关。配置含义不证明这次实际授予、发话、接收音频或由哪个用户启用。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "item 52 explicit inner anyExt, enabled/disabled support flag and TS24.483 pointer only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "global Boolean declaration, no default/fixed"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "general ad hoc support default as comparison only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-adhoc-multi-talker-max-talkers-count-default-and-literal-lineage",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "查 MCPTT 在网 ad hoc 人数字段；只问规范不需实时开关。判某次是否缺项需相关完整配置，不能用片段、显式 0、无效值或整个上层组呼块不在代替。"
+      ],
+      "conclusion": "MCPTT 在网 §8.4.2.7 项 53 说 adhoc-multi-talker-max-talkers 是 ad hoc 组呼允许多发话者时的允许发话者数量；随后写该人数元素不存在时取 1。它指 TS 24.483 [4] §7.2.35 MaxNoTalkers，仅作指向。1 是语义默认，不是 XSD default、不表示补写 XML、不是开关默认、不是缺整个组呼块的处理，也不证明实际一个人已获准。项 53 字面把该元素说成 adhoc-group-call 的子项，未列 .1 项 13(d)(vii) 明写的内层 anyExt；.3 只有全局 positiveInteger 声明，不从此差异认定另有可用直挂路径、别名或运行行为。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "item 53 allowed talker count when multi-talker is allowed; semantic absent-element value 1; literal ancestry; exact MO pointer only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1"
+          ],
+          "items": [
+            "13(d)(vii) explicitly within inner anyExt"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "global positiveInteger, no default/fixed and no named direct child in adhoc-group-callType"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-adhoc-multi-talker-talkers-vs-participants-and-block-support",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "查 MCPTT 在网业务配置的计数对象和具名字段。比较旧规则不为发话者人数增加关系、校验分支或现场动作。"
+      ],
+      "conclusion": "MCPTT 在网 ad hoc §8.4.2.7 项 48 的 max-no-participants 数允许参与者，项 53 的 adhoc-multi-talker-max-talkers 数允许多发话时的发话者，不能推出两数相同、某种大小关系或本次入会/实际发话。§8.4.2.3 的 allow-adhoc-group-call-support 与 max-no-participants 是出现的 adhoc-group-callType 的必需直接子项；.6 的支持默认 true 与整块缺失表示不支持一般 ad hoc 组呼只作对照，不用于判项 52 开关缺项或项 53 人数缺项。语义默认也不替换 Schema；.6 通用 Schema 校验仍适用，未为两个多发话字段另列特定 409 诊断。实际话权、抢占和降上限去另查已配置多发话者组的 Stage 1 要求。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "items 47/48 and 52/53, separate general support, participants and talkers"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "local required general support and participant count vs extension declarations"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "general support/default and whole-block absence comparison; general XML Schema conformance does not supply a field-specific diagnostic"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "TS 24.483 [4] §§7.2.34/7.2.35 仅作指向；没有用外部正文、通配或语义段的省写填路径、流程、CMS 接受或实际授予。一般 ad hoc 支持、参与者数、时长、转发和 Stage 1 结果另有入口。"
+  ],
+  "related": [
+    "r20-identity-ad-hoc-broadcast-hang-time",
+    "r20-calls-group-multi-talker-control",
+    "r20-calls-ad-hoc-group-call-forwarding",
+    "r20-identity-mcdata-on-network-adhoc-group-data-config",
+    "r20-identity-mcptt-service-config-structure-and-extensions-validation"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}

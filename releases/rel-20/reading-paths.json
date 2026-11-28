@@ -2047,6 +2047,30 @@
       "question": "MCPTT 共用广播 B1、B2 在附录里都写 6，这是不是默认值或要求相等？",
       "start": "topics/identity/mcptt-common-broadcast-hierarchy-config.md",
       "boundary": "TS 24.484 V20.1.0 MCPTT 共用广播的表 A.2.2-16 和 A.2.3-12 各明示 B1=6、B2=6。这是资料性附录 A 的两组显式字段值；§8.4.2.3 两个具名子项均无 default/fixed，不从示例推缺项默认、两数必须相等、在网或离网规定值，或当前配置及 CMS 处理结果。"
+    },
+    {
+      "id": "mcptt-adhoc-multi-talker-nested-extensions-and-global-declarations",
+      "question": "MCPTT 在网 ad hoc 多发话者的两个字段放内层 anyExt，还是直接放在组呼块？",
+      "start": "topics/identity/mcptt-on-network-adhoc-multi-talker-config.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 在网 §8.4.2.1 项 13(d)(vi/vii) 在 on-network/anyExt/adhoc-group-call/anyExt 的内层 anyExt 里列两字段。外层 anyExt 与 adhoc-group-call 在提纲中可选；§8.4.2.3 的 on-networkType、adhoc-group-callType 各有可选 anyExt，anyExtType 使用 ##any/lax 元素通配，两父类型自己的 ##other/lax 通配另计。adhoc-multi-talker-control 是全局 xs:boolean，adhoc-multi-talker-max-talkers 是全局 xs:positiveInteger，均无 default/fixed，都未在组呼类型序列中声明为具名直接子项。不能从通配推出必填、固定出现次数或实际接受。§8.4.2.7 项 53 字面未列内层 anyExt，不据此另立直挂路径。"
+    },
+    {
+      "id": "mcptt-adhoc-multi-talker-control-support-not-grant",
+      "question": "MCPTT 在网 ad hoc 多发话者的 Boolean 开关能说明实际拿到话权吗？",
+      "start": "topics/identity/mcptt-on-network-adhoc-multi-talker-config.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 在网 §8.4.2.7 项 52 明列内层 anyExt 下的 adhoc-multi-talker-control，表示在网 ad hoc 多发话者支持启用或禁用，指 TS 24.483 [4] §7.2.34 AllowAdhocMultiTalker，仅作指向。§8.4.2.3 全局声明为 xs:boolean，无 default/fixed；本项未给控制字段的缺项取值，不能借人数默认 1 或一般 ad hoc 支持的 true 来填开关。配置含义不证明这次实际授予、发话、接收音频或由哪个用户启用。"
+    },
+    {
+      "id": "mcptt-adhoc-multi-talker-max-talkers-count-default-and-literal-lineage",
+      "question": "MCPTT 在网 ad hoc 多发话者的允许人数没写为什么取 1？第 53 项少一层 anyExt 怎么读？",
+      "start": "topics/identity/mcptt-on-network-adhoc-multi-talker-config.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 在网 §8.4.2.7 项 53 说 adhoc-multi-talker-max-talkers 是 ad hoc 组呼允许多发话者时的允许发话者数量；随后写该人数元素不存在时取 1。它指 TS 24.483 [4] §7.2.35 MaxNoTalkers，仅作指向。1 是语义默认，不是 XSD default、不表示补写 XML、不是开关默认、不是缺整个组呼块的处理，也不证明实际一个人已获准。项 53 字面把该元素说成 adhoc-group-call 的子项，未列 .1 项 13(d)(vii) 明写的内层 anyExt；.3 只有全局 positiveInteger 声明，不从此差异认定另有可用直挂路径、别名或运行行为。"
+    },
+    {
+      "id": "mcptt-adhoc-multi-talker-talkers-vs-participants-and-block-support",
+      "question": "MCPTT 在网 ad hoc 多发话者人数，和组呼参与人数或整块支持标志有何区别？",
+      "start": "topics/identity/mcptt-on-network-adhoc-multi-talker-config.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 在网 ad hoc §8.4.2.7 项 48 的 max-no-participants 数允许参与者，项 53 的 adhoc-multi-talker-max-talkers 数允许多发话时的发话者，不能推出两数相同、某种大小关系或本次入会/实际发话。§8.4.2.3 的 allow-adhoc-group-call-support 与 max-no-participants 是出现的 adhoc-group-callType 的必需直接子项；.6 的支持默认 true 与整块缺失表示不支持一般 ad hoc 组呼只作对照，不用于判项 52 开关缺项或项 53 人数缺项。语义默认也不替换 Schema；.6 通用 Schema 校验仍适用，未为两个多发话字段另列特定 409 诊断。实际话权、抢占和降上限去另查已配置多发话者组的 Stage 1 要求。"
     }
   ]
 }
