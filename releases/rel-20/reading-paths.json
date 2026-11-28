@@ -2209,6 +2209,36 @@
       "question": "MCPTT 用户配置档私呼给某个 ID 的 KMS URI 与名单不同就必须加个人项吗？名单为空先拿初始档比较吗？",
       "start": "topics/identity/mcptt-user-profile-private-call-kms-uri.md",
       "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档去话、来话各自的 §8.3.2.7 个人项写 only present if：出现要求关联 MCPTT ID 的 KMS URI 不同于本方向名单级 uri-entry 的 URI；相同不满足该出现条件，不同不意味着必填。比较对象不是另一方向的名单或初始档 KMS；空、缺失、未知不填成相等或不等，不给 URI 相等算法或回退与比较的先后。不据个人项说它已胜出、已发请求、已取钥匙或已批准私呼。"
+    },
+    {
+      "id": "mcptt-user-profile-group-server-info-outline-vs-schema-group-shape",
+      "question": "MCPTT 用户配置档的组 GroupServerInfo 放在哪？在网和离网的名单可以写几个 entry？",
+      "start": "topics/identity/mcptt-user-profile-group-server-info.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档 §8.3.2.1 项 9/10 的 OffNetwork/OnNetwork 各可无或一块，各自块内提纲有一个 MCPTTGroupInfo，离网一个或多个 entry、在网零个或多个。§8.3.2.3 两模式各自的 0..unbounded choice 内列 MCPTTGroupInfo（ListEntryType），名单内部另有独立的 0..unbounded choice，不改写离网提纲或判整档接受。外层 MCPTTGroupInfo/entry/uri-entry 指该组 ID，同条目可选 anyExt 可含全局声明的 GroupServerInfo；已看到 anyExt 不表示必有 GroupServerInfo，它也不是 EntryType 具名直子。仅当 GroupServerInfo 存在且采用 GroupServerInfoType，局部 sequence 才按序要求 GMS-Serv-Id、IDMS-token-endpoint、GroupKMSURI，各为 EntryType、含必需 xs:anyURI 的 uri-entry。通用提纲 entry 写 index 必需，Schema IndexType 的 xs:token 无 use=required；不补默认或实装解释。外层 anyExt 的 ##any/lax 与类型内的 ##other/lax 是两处；.6 无这三字段具名 409，不借初始档校验。"
+    },
+    {
+      "id": "mcptt-user-profile-group-server-info-gms-contact-no-stated-empty-fallback",
+      "question": "MCPTT 用户配置档里 GMS-Serv-Id 是组 ID 吗？在网、离网的 GMS 空时是否写了回退？",
+      "start": "topics/identity/mcptt-user-profile-group-server-info.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档 §8.3.2.7 在网 OnNetwork 与离网 OffNetwork 都按同一 MCPTTGroupInfo/entry 的 uri-entry 定位组 ID，GMS-Serv-Id 在该 entry/anyExt/GroupServerInfo 中记录联系此组 GMS 的 URI，不是组 ID。两句各指 TS 24.483 [4] §5.2.48B8 或 §5.2.53C GMSServID，只作定位；两句都没写此 GMS 空时回退到初始配置档，不借初始档 gms、IDMS 或 KMS 规则。不能据此宣布其他条款或运行永不回退，也不据配置推实际联系或组归属。"
+    },
+    {
+      "id": "mcptt-user-profile-group-server-info-idms-mode-wording-and-two-initial-fields",
+      "question": "MCPTT 用户配置档的组 IDMS-token-endpoint，在网和离网的说明一样吗？原文 entry 空时指初始档哪几项？",
+      "start": "topics/identity/mcptt-user-profile-group-server-info.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档 §8.3.2.7 的 IDMS-token-endpoint 位于同组 MCPTTGroupInfo/entry/anyExt/GroupServerInfo。OnNetwork 原文说联系身份管理服务器的令牌端点，指 TS 24.483 [4] §5.2.48B9 IDMSTokenEndPoint；OffNetwork 原文只说联系身份管理服务器，仍指 IDMSTokenEndPoint，条号原写 §5.2.53D8A9。各句都写若所说的 entry 为空，使用 MCS 初始配置档中的 idms-auth-endpoint 和 idms-token-endpoint 两项。条件未限定 entry 的层级，不是单一端点回填，不因字面区别断离网排除令牌端点，也不推鉴权或实收令牌。"
+    },
+    {
+      "id": "mcptt-user-profile-group-server-info-kms-contact-and-one-initial-field",
+      "question": "MCPTT 用户配置档的组 GroupKMSURI 指什么？在网、离网的 entry 空时是否使用 IDMS 那两项？",
+      "start": "topics/identity/mcptt-user-profile-group-server-info.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档 §8.3.2.7 在网和离网的 GroupKMSURI 都是联系同一 MCPTTGroupInfo/entry 所标组的密钥管理服务器 URI。两句分别指 TS 24.483 [4] §5.2.48B10 和 §5.2.53E 的 GroupKMSURI。若各自所说的 entry 为空，各用 MCS 初始配置档中的 kms 一项，不换成 IDMS 的两项或 GMS，不从私呼的 uri-entry 空或个人 only-if 推组规则。不指定 empty entry 的 XML 路径，不证明 KMS 已达、取得密钥或已作加密。"
+    },
+    {
+      "id": "mcptt-user-profile-group-server-info-empty-entry-literal-scope",
+      "question": "MCPTT 用户配置档组地址的 If the entry element is empty，是说组 ID 或某个端点的 uri-entry 空吗？",
+      "start": "topics/identity/mcptt-user-profile-group-server-info.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档 §8.3.2.7 组 IDMS 与 KMS 共四句原写 If the entry element is empty，没指定完整 XML 路径，不能断为组 ID 的 uri-entry、端点 uri-entry 或某一层确指的 entry。已知地址没出现、只见空白、URI 无效或联系失败，不证明原条件。两模式的 IDMS 各指初始档 idms-auth-endpoint 和 idms-token-endpoint，KMS 各指初始档 kms；两句 GMS 未写这种回退。不同于私呼 KMS 明写 uri-entry 空，不借该判据、不补 XML、解析算法、默认处理顺序或运行故障切换。"
     }
   ]
 }

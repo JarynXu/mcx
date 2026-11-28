@@ -1,0 +1,151 @@
+{
+  "topic_id": "r20-identity-mcptt-user-profile-group-server-info",
+  "release": 20,
+  "state": "clause-checked",
+  "standard_stage": 3,
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只查 MCPTT 用户配置档中同组 OnNetwork 或 OffNetwork 的 GroupServerInfo 联系地址及空值语义；不以实际归属、认证或联系成功为查规范的前提。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "claims": [
+    {
+      "id": "mcptt-user-profile-group-server-info-outline-vs-schema-group-shape",
+      "clause": "8.3.2.3",
+      "conditions": [
+        "先分 MCPTT 用户配置档 .1 提纲、.3 局部 Schema、模式名单与名单内部；查声明不需现实组已归属或服务器已接通。"
+      ],
+      "conclusion": "MCPTT 用户配置档 §8.3.2.1 项 9/10 的 OffNetwork/OnNetwork 各可无或一块，各自块内提纲有一个 MCPTTGroupInfo，离网一个或多个 entry、在网零个或多个。§8.3.2.3 两模式各自的 0..unbounded choice 内列 MCPTTGroupInfo（ListEntryType），名单内部另有独立的 0..unbounded choice，不改写离网提纲或判整档接受。外层 MCPTTGroupInfo/entry/uri-entry 指该组 ID，同条目可选 anyExt 可含全局声明的 GroupServerInfo；已看到 anyExt 不表示必有 GroupServerInfo，它也不是 EntryType 具名直子。仅当 GroupServerInfo 存在且采用 GroupServerInfoType，局部 sequence 才按序要求 GMS-Serv-Id、IDMS-token-endpoint、GroupKMSURI，各为 EntryType、含必需 xs:anyURI 的 uri-entry。通用提纲 entry 写 index 必需，Schema IndexType 的 xs:token 无 use=required；不补默认或实装解释。外层 anyExt 的 ##any/lax 与类型内的 ##other/lax 是两处；.6 无这三字段具名 409，不借初始档校验。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.1"
+          ],
+          "items": [
+            "OffNetwork item 9 and OnNetwork item 10; generic entry outline j and index requirement"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.3"
+          ],
+          "items": [
+            "mode declarations and local ListEntryType choice; entry GroupServerInfoType sequence, uri-entry, IndexType and distinct wildcard levels"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "same-group uri-entry association separate from endpoint declarations"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.6"
+          ],
+          "items": [
+            "generic Schema compliance without named GroupServerInfo endpoint diagnostics"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-user-profile-group-server-info-gms-contact-no-stated-empty-fallback",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "分别读 MCPTT 在网、离网的组 GMS 条目；核同条目的组 ID 和服务器字段，不把别种 URI 的空值语义套给 GMS。"
+      ],
+      "conclusion": "MCPTT 用户配置档 §8.3.2.7 在网 OnNetwork 与离网 OffNetwork 都按同一 MCPTTGroupInfo/entry 的 uri-entry 定位组 ID，GMS-Serv-Id 在该 entry/anyExt/GroupServerInfo 中记录联系此组 GMS 的 URI，不是组 ID。两句各指 TS 24.483 [4] §5.2.48B8 或 §5.2.53C GMSServID，只作定位；两句都没写此 GMS 空时回退到初始配置档，不借初始档 gms、IDMS 或 KMS 规则。不能据此宣布其他条款或运行永不回退，也不据配置推实际联系或组归属。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "two mode-specific GMS contact sentences: §5.2.48B8/§5.2.53C GMSServID pointers; no explicit local empty-entry fallback"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-user-profile-group-server-info-idms-mode-wording-and-two-initial-fields",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "分别查同一组在相应模式的 IDMS 条目和本段 entry 空句，不以字段名给离网段添加没写的词或确定实际地址。"
+      ],
+      "conclusion": "MCPTT 用户配置档 §8.3.2.7 的 IDMS-token-endpoint 位于同组 MCPTTGroupInfo/entry/anyExt/GroupServerInfo。OnNetwork 原文说联系身份管理服务器的令牌端点，指 TS 24.483 [4] §5.2.48B9 IDMSTokenEndPoint；OffNetwork 原文只说联系身份管理服务器，仍指 IDMSTokenEndPoint，条号原写 §5.2.53D8A9。各句都写若所说的 entry 为空，使用 MCS 初始配置档中的 idms-auth-endpoint 和 idms-token-endpoint 两项。条件未限定 entry 的层级，不是单一端点回填，不因字面区别断离网排除令牌端点，也不推鉴权或实收令牌。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "OnNetwork token-endpoint versus OffNetwork identity-management-server wording; literal MO §5.2.48B9/§5.2.53D8A9 and both initial fields in each empty-entry sentence"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-user-profile-group-server-info-kms-contact-and-one-initial-field",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "查同组 GroupKMSURI，不套私呼名单或个人 KMS URI。查本段原文即可，不以已认证或已取钥匙作为前提。"
+      ],
+      "conclusion": "MCPTT 用户配置档 §8.3.2.7 在网和离网的 GroupKMSURI 都是联系同一 MCPTTGroupInfo/entry 所标组的密钥管理服务器 URI。两句分别指 TS 24.483 [4] §5.2.48B10 和 §5.2.53E 的 GroupKMSURI。若各自所说的 entry 为空，各用 MCS 初始配置档中的 kms 一项，不换成 IDMS 的两项或 GMS，不从私呼的 uri-entry 空或个人 only-if 推组规则。不指定 empty entry 的 XML 路径，不证明 KMS 已达、取得密钥或已作加密。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "two group KMS contact clauses and one literal initial kms field; §5.2.48B10/§5.2.53E pointers only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-user-profile-group-server-info-empty-entry-literal-scope",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "先确认正在查 MCPTT 用户配置档及同一模式、组、对应服务字段；只按该行原文的条件读，不以未知取值或联系日志代替。"
+      ],
+      "conclusion": "MCPTT 用户配置档 §8.3.2.7 组 IDMS 与 KMS 共四句原写 If the entry element is empty，没指定完整 XML 路径，不能断为组 ID 的 uri-entry、端点 uri-entry 或某一层确指的 entry。已知地址没出现、只见空白、URI 无效或联系失败，不证明原条件。两模式的 IDMS 各指初始档 idms-auth-endpoint 和 idms-token-endpoint，KMS 各指初始档 kms；两句 GMS 未写这种回退。不同于私呼 KMS 明写 uri-entry 空，不借该判据、不补 XML、解析算法、默认处理顺序或运行故障切换。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "exact unqualified empty-entry qualifier in both group IDMS and KMS contexts; six group sentences and explicit private-call uri-entry comparison only"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "两模式 IDMS 各有两个初始配置项，KMS 各有一个；两句 GMS 未明写同类回退。entry 空句未指定 XML 路径。TS 24.483 [4] 只作指向，不推地址选择、入组、鉴权或密钥交付。"
+  ],
+  "related": [
+    "r20-identity-mcptt-user-profile-private-call-kms-uri",
+    "r20-identity-mcptt-user-profile-xcap-validation",
+    "r20-identity-initial-ue-tls-tunnel-validation",
+    "r20-identity-mcptt-user-profile-private-call-any-peer",
+    "r20-identity-mcptt-user-profile-private-call-forwarding",
+    "r20-identity-mcptt-user-profile-private-call-transfer"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
