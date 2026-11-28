@@ -1,0 +1,127 @@
+{
+  "topic_id": "r20-identity-mcdata-on-network-notification-server-config",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只查 MCData 在网业务档的通知服务器主机名列表和条目；按适用配置、原文表面和实际证据分别读。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "mcdata-on-network-notification-server-list-placement-and-entry-cardinality",
+      "clause": "10.4.2.3",
+      "conditions": [
+        "查 MCData 在网业务配置的通知服务器列表位置、类型或条目次数。区分结构正文与 Schema；不以有现场报文为前提。"
+      ],
+      "conclusion": "§10.4.2.1 在网项 4(f) 在可选 anyExt 内列 notificationserver-hostname-list，写一个或多个 ns-entry。§10.4.2.3 的 on-networkType 声明可选 anyExt，其 type 的元素通配为 ##any、lax；列表有全局声明，不是 on-network 的具名直接子项。列表类型 notificationserver-hostname-listType 的 xs:choice 和 ns-entry 本身都为 0..unbounded；ns-entry 为 xs:anyURI。内层还有 anyExt 及 ##other/lax 通配，与外层不同。零条不被这两处次数声明排除，不能消去正文的一条或多条，也不能判完整配置接受或把外层可选套给所有子项。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.1"
+          ],
+          "items": [
+            "on-network item 4 and 4(f)(i): optional anyExt, named list, one or more ns-entry in the prose"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.3"
+          ],
+          "items": [
+            "on-networkType, optional anyExt and ##any/lax type; global notificationserver-hostname-list; the list type choice and xs:anyURI ns-entry 0..unbounded plus inner extensions"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcdata-on-network-notification-server-literal-parent-name-and-hostname",
+      "clause": "10.4.2.7",
+      "conditions": [
+        "查在网通知服务器条目语义、语义项的父名或对应管理对象。不用已有疑似 XML 路径当成规范名称的证据。"
+      ],
+      "conclusion": "§10.4.2.7 在网项 19 的父名原写 notificationservers；ns-entry 包含通知服务器的主机名，对应 TS 24.483 [4] §11.2.16 NotificationServer 元素的叶节点（仅指向）。结构正文和 Schema 的列表名原写 notificationserver-hostname-list。保留不同字面，不从语义项确立别名、第二 XML 路径或勘误；xs:anyURI 声明不等于任意 URI 都满足主机名语义，也不规定 DNS、选择、注册、连接或实际通知交付。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.7"
+          ],
+          "items": [
+            "on-network item 19: literal notificationservers, ns-entry holds hostname; TS24.483 §11.2.16 NotificationServer element leaf-node pointer only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.1"
+          ],
+          "items": [
+            "on-network item 4(f) literal notificationserver-hostname-list"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.3"
+          ],
+          "items": [
+            "global declaration literal notificationserver-hostname-list and xs:anyURI entry type, cross-surface comparison only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcdata-on-network-notification-server-validation-boundary-not-org-domain",
+      "clause": "10.4.2.6",
+      "conditions": [
+        "查在网通知服务器列表或主机名能否套组织域、未知/重复元素或其他已知配置校验。先确定失配对象和实际判据。"
+      ],
+      "conclusion": "§10.4.2.6 仍要求业务配置文档符合 Schema，但未列通知服务器列表或主机名专用 409。组织域语法和未知域检查针对 service-configuration-params 的 domain 值，不是 ns-entry。不能只因语义段写 notificationservers 而判实收元素未知，或因多条具名 ns-entry 同名就判实收重复。若独立满足未知或实收重复条件，另查既有对应条款；不据本节判整个文档接受、实际拒绝或主机可达。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.6"
+          ],
+          "items": [
+            "general XML Schema conformity; organization domain syntax/unknown domain, unknown and duplicate element/attribute as comparison only; no separately named hostname-list or hostname constraint here"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.3"
+          ],
+          "items": [
+            "ns-entry repeatability in named list, not an actual duplicate classification"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.7"
+          ],
+          "items": [
+            "on-network item 19 hostname versus service-configuration-params organization domain"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "TS 24.483 [4] §11.2.16 NotificationServer 元素的叶节点只作对应定位。未据本处验证运行时接受、DNS、注册、连接、主机选择或通知交付。"
+  ],
+  "related": [
+    "r20-identity-mcvideo-mcdata-service-config-validation",
+    "r20-identity-mcdata-on-network-adhoc-group-data-config"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}

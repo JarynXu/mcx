@@ -1669,6 +1669,24 @@
       "question": "这两个 MCData 在网 ad hoc 时长的格式不合、收到无效秒值和注 5 小数例怎样分开？",
       "start": "topics/identity/mcdata-on-network-adhoc-group-data-config.md",
       "boundary": "TS 24.484 V20.1.0 §10.4.2.6 后段点名 hang-time、max-duration-of-data-comn，要求按秒表示，表示式 PT<h>H<m>M<n>S，其中 <n> 是有效秒值；格式句 PT <n>S；注 5 的 300 ms 为 PT0.3S 只举小数例。任一具名字段的值不合该结构，和收到无效 <n>，是两条条件：CMS 均须 HTTP 409 含 XCAP constraint-failure；带 phrase 分别建议 invalid format for duration、invalid value for duration。不从同码判断原因、<n> 范围、并错优先级或 H/M、空格的解析结果，不套共用清单；缺可选项不等于值错误。"
+    },
+    {
+      "id": "mcdata-on-network-notification-server-list-placement-and-entry-cardinality",
+      "question": "MCData 在网通知服务器主机名列表放哪层，必须有几条 ns-entry？",
+      "start": "topics/identity/mcdata-on-network-notification-server-config.md",
+      "boundary": "TS 24.484 V20.1.0 §10.4.2.1 在网项 4(f)：可选 anyExt 内列 notificationserver-hostname-list，正文写一个或多个 ns-entry。§10.4.2.3 另有列表全局声明，不是 on-network 的具名直接子项。外层 anyExt 的 ##any/lax 不等于名单内 ##other/lax；名单的 xs:choice 和 xs:anyURI 的 ns-entry 各自 0..unbounded。零条只不受这两个次数声明排除，不消去正文要求，不判整档接受，也不把外层可选套给每一子项。"
+    },
+    {
+      "id": "mcdata-on-network-notification-server-literal-parent-name-and-hostname",
+      "question": "MCData 原文为什么有 notificationserver-hostname-list 和 notificationservers 两个名字，ns-entry 指什么？",
+      "start": "topics/identity/mcdata-on-network-notification-server-config.md",
+      "boundary": "TS 24.484 V20.1.0 §10.4.2.1/.3 原写 notificationserver-hostname-list；§10.4.2.7 在网项 19 原写 notificationservers，ns-entry 包含通知服务器的主机名，对应 TS 24.483 §11.2.16 NotificationServer 元素的叶节点（仅指向）。不建立别名、第二 XML 路径或勘误；xs:anyURI 类型不等于任意 URI 都符合主机名语义。不推 DNS、选择、注册、连接或通知交付。"
+    },
+    {
+      "id": "mcdata-on-network-notification-server-validation-boundary-not-org-domain",
+      "question": "MCData 通知服务器主机名能用组织 domain 的 409 验证吗？多条 ns-entry 怎么看？",
+      "start": "topics/identity/mcdata-on-network-notification-server-config.md",
+      "boundary": "TS 24.484 V20.1.0 §10.4.2.6 要求文档符合 Schema，没列通知服务器列表或主机名专用 409。组织域语法/未知域检查针对 service-configuration-params 的 domain 值，不套给 ns-entry；两种父名不证明服务器判未知，多条同名 ns-entry 不证明实收重复。已独立满足相应未知或实收重复条件时另查既有规则，不推整档接受、实际拒绝或主机可达。"
     }
   ]
 }
