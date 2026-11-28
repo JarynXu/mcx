@@ -3,7 +3,7 @@
   "release": 19,
   "state": "clause-checked",
   "common_conditions": [
-    "组定义在 LMR，IWF 已配置 MC/LMR 组及用户身份映射。"
+    "TS 23.283 V19.5.0，Rel‑19 Stage 2，LMR 定义的互通组归属与取消；按所问分别读规范、实况分支或单条已识别消息。"
   ],
   "condition_rule": "Inherit common_conditions and add claim conditions.",
   "source_catalog": "../../sources.json",
@@ -13,6 +13,7 @@
       "id": "affiliate",
       "clause": "10.1.2.4",
       "conditions": [
+        "组定义在 LMR，IWF 已配置 MC/LMR 组及用户身份映射。",
         "IWF 已连接且获与 MC 系统互通授权"
       ],
       "conclusion": "客户端请求经 server 转 IWF；成功响应后 server 存状态并回复客户端。IWF 可因组 ID 未知或无 LMR 映射而拒绝。隐式归属仅执行跨侧请求、响应及存状态步骤，仍通知 IWF。"
@@ -21,9 +22,105 @@
       "id": "deaffiliate",
       "clause": "10.1.2.5",
       "conditions": [
+        "组定义在 LMR，IWF 已配置 MC/LMR 组及用户身份映射。",
         "先前已执行 §10.1.2.4 归属"
       ],
       "conclusion": "显式请求携发起 ID 与组列表；server 按订阅/策略检查归属及互通组，经 IWF 请求/响应后，仅在用户获取消授权时移除状态。隐式取消只执行跨侧请求/响应及有条件移除状态。"
+    },
+    {
+      "id": "iwf-lmr-affiliation-explicit-join-and-optional-lmr-actions",
+      "conditions": [
+        "可单查 §10.1.2.4 的任一步、NOTE 或已辨明一条信息，不需要现场全链。判本次是否适用时核组由 LMR 定义、IWF 与 MC 已连接且获准互通、IWF 已配置组和用户映射。确认组 ID 对 IWF 未知，或确认没有配置对应的 LMR 组标识，任何一项即足以允许拒绝；要排除 NOTE 3 的这两种理由，才需分别排除。要说实际为何拒绝，再核本次拒绝及原因。"
+      ],
+      "conclusion": "显式步骤 1 客户端带 MC service group ID(s) 向 server 发请求；2 检查所请求组是否是 LMR 定义的互通组；3 server→IWF 请求；4 的 IWF→server 应答在该成功流程报告归属成功；5 server 保存该客户端对所请求组的状态；6 server 另回客户端。NOTE 2 是 IWF 可以把请求转给 LMR，LMR 可以检查本客户端授权。NOTE 3 中组 ID 未知或无对应 LMR 组映射，任一情况允许 IWF 拒绝。",
+      "limitations": [
+        "IWF 已获准互通不是该用户已获归属权限，NOTE 2 不是两项强制动作；拒绝动作不反推某一原因，两个例示条件不作必拒绝或完整失败集。图 2 只标 Resolve group ID，不补算法。不要以 IWF 回包证明本地已存、原生回包实收或实际 LMR 端内部办结。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.1.2.4 preconditions, Figure 10.1.2.4-1, Steps 1–6 and NOTES 1–5"
+          ],
+          "printed_pages": [
+            20,
+            21
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-lmr-affiliation-explicit-cancel-reply-and-authorized-local-removal",
+      "conditions": [
+        "可独立查 §10.1.2.5 的某个条件、单条已辨明的信息或局部步骤，不要求先看到取消的两个响应。查某次实际分支才核 LMR 定义组、IWF 已配置组和用户映射、先前执行过 .4；不要用先前执行代当前是否归属。"
+      ],
+      "conclusion": "显式步骤 1 由客户端给出发起 MC service ID 和本次要取消的组 ID；2 依订阅和已存组策略查该用户是否已归属请求组，并核是否互通组。是互通组时 3a server→IWF 发取消请求；3b IWF→server 回应答，步骤未注明成功。4 只有用户获准取消所请求组的归属，server 才移除该用户对这些组的状态；5 是另一条 server→客户端应答。",
+      "limitations": [
+        "图 2 标授权检查、图 4 标更新 MCPTT 组归属状态；具体检查及有条件移除按 MC service 的正文，不把范围按图框缩成仅 MCPTT，亦不把步骤 2 当成授权已经成立。仅见 3b 或借 .4 的成功表述不证明取消成功；有匹配的逐组结果可读它报告了什么，不能替本地移除。移除范围不是整个组或其所有成员，不套 MC 定义组的代理取消／GMS 更新。发出、实收、用户资格、本地状态和现有呼叫状态分别查。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.1.2.5 preconditions, Figure 10.1.2.5-1, Steps 1–5 including 3a/3b and NOTES 1–2"
+          ],
+          "printed_pages": [
+            21,
+            22
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-lmr-affiliation-implicit-retains-iwf-exchange-conditional-state-and-proof",
+      "conditions": [
+        "可纯查隐式 NOTE 或其单独一步；判现场先区分有依据的隐式处理与显式记录缺失，缺客户端消息不能代替判据。关联本次 IWF 与原生消息时核同次用户、所请求组、操作和端点；仅查该用户本地状态无需找到每条消息。"
+      ],
+      "conclusion": ".4 NOTE 5 对隐式归属只列 3、4、5：server→IWF 请求、IWF→server 应答、本地保存。.5 NOTE 2 对隐式取消只列 3a、3b、4：server→IWF 请求、IWF→server 应答、本地仅在该用户获准时移除。没有在这些隐式分支补显式客户端往返。两支的授权资格、应答和实际状态不能合成同一事件。",
+      "limitations": [
+        "不因隐式拿掉 .5 步骤 4 的条件，也不从缺显式步骤推实际协议违规、隐式触发、用户获权或状态。只见一条应答由某端发出或实收不代持久化、状态移除、下游原生回包实收、退出呼叫。外部 TS 23.280、LMR 内部机制及失败恢复不在此页。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.1.2.4 preconditions, Figure 10.1.2.4-1, Steps 1–6 and NOTES 1–5"
+          ],
+          "printed_pages": [
+            20,
+            21
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.1.2.5 preconditions, Figure 10.1.2.5-1, Steps 1–5 including 3a/3b and NOTES 1–2"
+          ],
+          "printed_pages": [
+            21,
+            22
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
