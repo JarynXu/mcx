@@ -3,8 +3,7 @@
   "release": 19,
   "state": "clause-checked",
   "common_conditions": [
-    "正在进行互通组呼；双方已知组配置，IWF 已配置组及用户身份映射。",
-    "参与侧成功完成组归属。"
+    "TS 23.283 V19.5.0，Rel‑19 Stage 2，IWF 互通组呼晚加入；规范查阅、现场分支及单条已识别信息分别按声明的条件判断。"
   ],
   "condition_rule": "Inherit common_conditions and add claim conditions.",
   "source_catalog": "../../sources.json",
@@ -14,6 +13,8 @@
       "id": "trigger",
       "clause": "10.3.3.7.1",
       "conditions": [
+        "正在进行互通组呼；双方已知组配置，IWF 已配置组及用户身份映射。",
+        "参与侧成功完成组归属。",
         "参与侧成功完成组归属"
       ],
       "conclusion": "触发正在进行的互通组呼晚加入；适用于包括紧急、迫近危险和广播在内的组呼类型。"
@@ -22,6 +23,8 @@
       "id": "mc-host",
       "clause": "10.3.3.7.2",
       "conditions": [
+        "正在进行互通组呼；双方已知组配置，IWF 已配置组及用户身份映射。",
+        "参与侧成功完成组归属。",
         "组定义在 MCPTT 系统",
         "LMR 用户加入"
       ],
@@ -31,6 +34,8 @@
       "id": "lmr-host",
       "clause": "10.3.3.7.3",
       "conditions": [
+        "正在进行互通组呼；双方已知组配置，IWF 已配置组及用户身份映射。",
+        "参与侧成功完成组归属。",
         "组定义在 LMR 系统",
         "MCPTT 用户加入"
       ],
@@ -40,6 +45,8 @@
       "id": "floor-status",
       "clause": "10.3.3.7.2 step 6; 10.3.3.7.3 steps 6–7",
       "conditions": [
+        "正在进行互通组呼；双方已知组配置，IWF 已配置组及用户身份映射。",
+        "参与侧成功完成组归属。",
         "晚加入后同步当前话权状态"
       ],
       "conclusion": "floor taken/idle 表示他人持有或当前空闲，不是新加入用户的话权授予。"
@@ -48,10 +55,127 @@
       "id": "lmr-media-condition",
       "clause": "10.3.3.7.3 step 4",
       "conditions": [
+        "正在进行互通组呼；双方已知组配置，IWF 已配置组及用户身份映射。",
+        "参与侧成功完成组归属。",
         "组定义在 LMR 系统",
         "晚加入建立呼叫"
       ],
       "conclusion": "指定 E2EE 时两侧须使用相同编解码；未指定时可以不同，不同编解码需要 IWF 转码。加密转码专门流程不能作为忽略本分支条件的通用许可。"
+    },
+    {
+      "id": "iwf-late-entry-mcptt-defined-iwf-response-is-not-joining-or-existing-user-notice",
+      "conditions": [
+        "可独立查 §10.3.3.7.2 的角色、任一步、NOTE 或一条已辨认的消息，不需要全链。判一次实际触发时，才核 MCPTT 定义的已有组呼、server 与 IWF 均已知组配置、IWF 已配对应组与用户映射和参与侧成功归属；同组后续 LMR 用户还核逐人实际归属。关联实际应答、加入和通知另核同次及端点。"
+      ],
+      "conclusion": ".2 步骤 1 IWF 向 server 触发归属（§10.1.2.2 指针）；2 server 发起晚加入。3 server→IWF 发 IWF 组呼请求，4 IWF→server 以 IWF 组呼应答确认该请求。5 另述 IWF 及 LMR 用户已成功加入已有呼叫，并可通知已在通话中的 MCPTT 客户端 1、2 上的用户；图步骤 5 框只写 IWF，不删正文中的 LMR 用户。6 的话权状态另发给 IWF。",
+      "limitations": [
+        "仅见步骤 4 的发出或 server 实收，不证明步骤 5 实际完成、既有用户已获通知、终端实收或者有媒体。NOTE 2 只排除如何向 LMR 系统送组呼请求的做法，不补其它 LMR 动作。原文首名 LMR 用户适用两种 IWF 归属方式；同组后续仅逐人透传时触发，不以成员名单或代表归属代实际逐人记录。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.3.7.2 introduction, preconditions, Figure 10.3.3.7.2-1, Steps 1–6 and NOTE 2 (MCPTT-defined late entry)"
+          ],
+          "printed_pages": [
+            48,
+            49
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.3.7.1 (successful-affiliation trigger; comparison only)"
+          ],
+          "printed_pages": [
+            48
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-late-entry-lmr-defined-native-setup-iwf-response-and-new-client-added",
+      "conditions": [
+        "可独立查 §10.3.3.7.3 的角色、某个步骤、单条已辨认的信息或对同组后续用户的适用性。判一次实际触发时，才核 LMR 定义的既有组呼、server 与 IWF 均已知组配置、IWF 已配对应组与用户映射和参与侧成功归属。判消息对应或新用户真正加入，另按所问查该腿或加入证据。"
+      ],
+      "conclusion": ".3 步骤 1 新 MCPTT 用户（客户端 1）归属（§10.1.2.4 指针）；2 IWF→server 发 IWF 组呼请求。3 server 为该用户触发原生建立过程，引用 TS 23.379 [7]，不是 IWF 接口消息。4 server→IWF 发 IWF 组呼应答，确认建立成功；5 另述新客户端已加入正在进行的组呼。首名示例的前提是通话中只有 LMR 用户；导言明说也适用于此组后续归属的 MCPTT 用户。",
+      "limitations": [
+        "不把只有 LMR 用户的首名示例前提套成后续通用硬条件，也不移入 .2 的后续 LMR 用户逐人规则。读到已识别的 4 可说明所报成功建立，不从发出或实收推出步骤 5、媒体或话权；不把局部建立当成新建整通。NOTE 2 不规定 IWF 将归属送到 LMR 的方法或 LMR 如何处理晚加入，不扩 TS 23.379 正文。codec 仍按旧步骤 4 的条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.3.7.3 introduction, preconditions, Figure 10.3.3.7.3-1, Steps 1–7 and NOTE 2 (LMR-defined late entry)"
+          ],
+          "printed_pages": [
+            49,
+            50
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.3.7.1 (successful-affiliation trigger; comparison only)"
+          ],
+          "printed_pages": [
+            48
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-late-entry-floor-taken-or-idle-where-each-status-leg-ends",
+      "conditions": [
+        "可独立查 6a/6b、7a/7b 之一或已辨认的一条消息，不需确认已加入或另一腿实收。要判断消息在一次实际晚加入是否对应，核组定义侧、同一呼叫、两个端点及配对的状态；判断实际送到某端另核其接收。"
+      ],
+      "conclusion": ".2 的 6a（已有另一用户获授话权）或 6b（没有任何一方获授话权）由 MCPTT server 向 IWF 发。不是 .2 步骤 5 可通知的既有 MCPTT 用户。.3 的 6a/6b 分别是 IWF 向 server 报相应的已占用或空闲状态，7a/7b 是 server 另向新归属的 MCPTT 客户端 1 用户发 Floor Taken 或 Idle，按 [7]。两条腿不能靠名称认作同一报文。",
+      "limitations": [
+        "两类同步状态不是向新加入方授予话权。未知不能当 Idle，不补其它占用状态或重试。.2 只在 6 指定 IWF，后续是否送 LMR 终端不能由它推出；.3 的 IWF 发出、server 实收、server 向新端发出和新端实收均分立。入通话、实际授予、实际媒体收发或播放不由状态通知直接证明。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.3.7.2 introduction, preconditions, Figure 10.3.3.7.2-1, Steps 1–6 and NOTE 2 (MCPTT-defined late entry)"
+          ],
+          "printed_pages": [
+            48,
+            49
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.3.7.3 introduction, preconditions, Figure 10.3.3.7.3-1, Steps 1–7 and NOTE 2 (LMR-defined late entry)"
+          ],
+          "printed_pages": [
+            49,
+            50
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
