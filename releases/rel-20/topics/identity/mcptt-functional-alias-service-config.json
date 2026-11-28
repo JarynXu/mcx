@@ -1,0 +1,196 @@
+{
+  "topic_id": "r20-identity-mcptt-functional-alias-service-config",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。主结论只核 MCPTT 在网业务配置中的功能别名条目；同版用户配置和其他计数均作对照。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "mcptt-functional-alias-list-entry-shape-and-multiplicity",
+      "clause": "8.4.2.3",
+      "conditions": [
+        "核组织的 MCPTT 在网业务配置中外层 anyExt、功能别名列表和已出现条目的层次及出现次数；区分单项 XSD 与整档校验。"
+      ],
+      "conclusion": "外层 anyExt 可省略。§8.4.2.1 在网项 13(a) 写列表含一条或多条 functional-alias-entry；§8.4.2.3 的列表 Schema 对该元素写 minOccurs=0、maxOccurs=unbounded。零条只满足这一处 XSD 次数，不据此判符合结构正文、CMS 接收、拒绝或实际可用。多个同名条目不凭名字判重复，同一业务别名是否重复配置另核。一条出现的 functional-alias-entry 在 Schema 序列中要求 functional-alias、max-simultaneous-activations、allow-takeover、mcptt-user-list；用户列表容器必填不等于至少有一个 entry，ListEntryType 选择组 minOccurs=0。条目自己的可选 anyExt 与外层不同。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "on-networkType outer optional anyExt; functional-alias-listType repeated entries (0..unbounded), functional-alias-entryType four declared children and optional entry anyExt; ListEntryType optional repeated choice"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1"
+          ],
+          "items": [
+            "on-network item 13(a), with subitems (i)–(v); prose one or more entries"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "general Schema conformance and duplicate-element or attribute rule as comparison, no field-specific diagnosis here"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-functional-alias-alias-uri-vs-activation-user-list",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "查同一个在网功能别名配置条目里别名是哪一个，或某个 MCPTT ID 是否列为获准激活该别名的用户。"
+      ],
+      "conclusion": "项 40 用 functional-alias 的 anyURI 表示该别名身份；项 43 用同一条 mcptt-user-list 的 entry 表示允许激活该别名的用户 MCPTT ID。项 43 原写 entryType；§8.4.2.3 实际声明 mcpttsc:EntryType，含必填 uri-entry（xs:anyURI）与可选 display-name。显示名、别名 URI、激活用户 ID 不互相代用；没有列出的 ID 不等于放开所有用户，列出也不证明用户已经激活、获准接管或通话成功。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network items 40 and 43: identity of an alias versus MCPTT ID allowed to activate that same alias"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "functional-alias-entryType, ListEntryType and EntryType; exact XSD casing and uri-entry versus display-name"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-functional-alias-per-alias-activation-cap-not-adjacent-counts",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "查某一条在网业务配置中这一别名的并发激活上限，不从当前会话数或用户授权数倒推。"
+      ],
+      "conclusion": "项 41 的 max-simultaneous-activations 是正整数，表示那个 functional-alias 的允许并发激活数。别名列表的两个同级字段只作对照：项 45 的 max-simultaneous-authorizations 数一个 MCPTT 用户的并存业务授权；项 46 的 max-immediate-forwardings 数允许的即时呼叫转发。不是跨别名合计、业务授权数、接管排序或实际发生的激活次数；本项不定默认、超限时选择谁或如何应答。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network item 41 per-alias concurrent activations; items 45 and 46 comparison only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "functional-alias-entryType max-simultaneous-activations xs:positiveInteger; separate positiveInteger declarations for adjacent service parameters"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-functional-alias-allow-takeover-not-per-user-profile-or-result",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "查在网业务配置项 42 的逐别名开关；其描述的动作是另一位 MCPTT 用户接管这个当前已激活的别名。"
+      ],
+      "conclusion": "allow-takeover 是布尔值，表示另一个 MCPTT 用户能否接管同一条的当前已激活别名，不是激活许可名单、并发激活容量或实际接管。§8.3.2.7 表 8.3.2.7-46 是另一份用户配置的 allow-takeover-functional-alias-other-user，面向为该用户执行参与功能的 MCPTT 服务器，表示该用户是否获准接管别人先前激活的别名。两项不能替代，也不从本条推组合算法、缺项默认、对未激活别名的裁决或接管成功。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network item 42: takeover by another MCPTT user of the corresponding currently activated alias; item 43 activation list as separate answer"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "allow-takeover xs:boolean within functional-alias-entryType"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "allow-takeover-functional-alias-other-user in the user profile as comparison only; not a combined decision"
+          ],
+          "tables": [
+            "8.3.2.7-46"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-functional-alias-relative-alias-priority-server-use-implementation-dependent",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "核在网业务配置中相应别名条目内可选 anyExt 的 functional-alias-priority，区分参数含义与服务器取舍。"
+      ],
+      "conclusion": "项 44 的 functional-alias-priority 是正整数，表示对应功能别名的相对优先级；注 3 只把 MCPTT 服务器使用此参数的方式留给实现。项 13(a)(v) 把它放在条目自己的可选 anyExt 中。字段不是激活用户的优先级、抢占活动发话的层级或接管许可。不补评比的数字方向、缺项值或实际接管顺序。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network item 44 and immediately attached Note 3; item 6 active-transmission override hierarchy comparison only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1"
+          ],
+          "items": [
+            "on-network item 13(a)(v) optional entry-level anyExt containing functional-alias-priority"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "functional-alias-priority global xs:positiveInteger and the alias entry type optional anyExt"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "§8.4.2.1 的列表次数与 §8.4.2.3 的单项 XSD 次数分别保留；不定整档接受、空列表授权或同名条目的业务判重。",
+    "不把业务配置、用户配置、服务器取舍或一次实际激活、接管混成同一结论；不推离网、其他 Release、默认值或程序消息。"
+  ],
+  "related": [
+    "r20-identity-mcptt-service-config-structure-and-extensions-validation",
+    "r20-identity-mcptt-override-priority-hierarchy-config"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}

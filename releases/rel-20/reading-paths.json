@@ -1441,6 +1441,36 @@
       "question": "离网抢占层级在 TS 24.483 中叫什么？在网有同一指向吗？",
       "start": "topics/identity/mcptt-override-priority-hierarchy-config.md",
       "boundary": "TS 24.484 V20.1.0 §8.4.2.7 离网项 5 把 num-levels-priority-hierarchy 指向 TS 24.483 §7.2.17 NumLevelHierarchy，在网项 6 未给此指向。只保留原文定位，不声称已核目标正文或版次，不推在网、外设离线配置或运行时的继承。"
+    },
+    {
+      "id": "mcptt-functional-alias-list-structure-vs-schema-multiplicity",
+      "question": "MCPTT 在网功能别名列表没有 entry，文档结构和 Schema 都允许吗？",
+      "start": "topics/identity/mcptt-functional-alias-service-config.md",
+      "boundary": "TS 24.484 V20.1.0 §8.4.2.1 在网外层 anyExt 可省略；其项 13(a) 写 functional-alias-list 含一条或多条 functional-alias-entry，§8.4.2.3 的该子元素却是 0..unbounded。零条只满足这处 XSD 次数，不证明整档符合结构、被 CMS 接收或可用。多条同名不直接判重复；已出现的一条要有别名、并发激活数、接管开关和用户列表容器，容器必填不等于至少一个用户 entry。"
+    },
+    {
+      "id": "mcptt-functional-alias-identity-and-allowed-activators",
+      "question": "在网业务档里的别名 URI 和可激活它的用户 ID 分别从哪取？",
+      "start": "topics/identity/mcptt-functional-alias-service-config.md",
+      "boundary": "TS 24.484 V20.1.0 §8.4.2.7 在网项 40/43：functional-alias 是该别名的 anyURI；同一条的 mcptt-user-list/entry 是允许激活它的用户 MCPTT ID。项 43 写 entryType，§8.4.2.3 宣告 mcpttsc:EntryType，必填 uri-entry，不用可选显示名作身份。名单说明允许激活，不能证明已激活、有接管许可，或空名单意味着所有人都可激活。"
+    },
+    {
+      "id": "mcptt-functional-alias-concurrent-activation-cap",
+      "question": "功能别名并发激活的上限，是数别名、业务授权，还是呼叫转发？",
+      "start": "topics/identity/mcptt-functional-alias-service-config.md",
+      "boundary": "TS 24.484 V20.1.0 §8.4.2.7 在网项 41：max-simultaneous-activations 的正整数是这一别名允许的并发激活数。与列表同级的 max-simultaneous-authorizations（项 45）数一位 MCPTT 用户同时拥有的业务授权，max-immediate-forwardings（项 46）数允许的即时呼叫转发，不能相互替代。这里不定现场已激活个数、超限处置或接管顺序。"
+    },
+    {
+      "id": "mcptt-functional-alias-takeover-of-currently-active-alias",
+      "question": "另一个 MCPTT 用户能接管这个已激活的别名吗？业务档和用户档查什么？",
+      "start": "topics/identity/mcptt-functional-alias-service-config.md",
+      "boundary": "TS 24.484 V20.1.0 §8.4.2.7 在网项 42：逐别名 allow-takeover 表示是否允许另一个 MCPTT 用户接管当前已激活的这个别名；激活名单和容量不是该开关。§8.3.2.7 表 8.3.2.7-46 面向为用户执行参与功能的服务器，另查此用户能否接管别人先前激活的别名。不把两项合为一处，不推默认、组合裁决或实际接管。"
+    },
+    {
+      "id": "mcptt-functional-alias-relative-priority-and-server-use",
+      "question": "功能别名的相对优先级可以直接决定谁先接管吗？",
+      "start": "topics/identity/mcptt-functional-alias-service-config.md",
+      "boundary": "TS 24.484 V20.1.0 §8.4.2.7 在网项 44/注 3：条目自身 anyExt 可带正整数 functional-alias-priority，表示该别名的相对优先级；怎样使用取决于 MCPTT 服务器实现。不是发话抢占层级或参与者已有优先级，也不规定较大值一定先、缺项值或一次实际结果。"
     }
   ]
 }
