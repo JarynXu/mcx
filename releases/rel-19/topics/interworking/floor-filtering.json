@@ -44,6 +44,121 @@
         "双方用户已归属，互通组呼进行中且话权空闲"
       ],
       "conclusion": "此过程还要求IWF不代理LMR用户归属，所有LMR组归属均透传给MC服务器；不能把它直接套到IWF代理归属模式。"
+    },
+    {
+      "id": "iwf-mcptt-host-floor-filtered-local-candidate-is-not-final-grant",
+      "conditions": [
+        "可独立查 §10.5.6 的步骤、NOTE 或其中一条已辨明的消息，不用先有全链。判一次适用性才核组归属 MCPTT 且已在 GMS 定义、LMR 侧本地筛选、两侧用户已归属、互通组呼正在进行且起初话权空闲。配对另看同一呼叫和该次操作。"
+      ],
+      "conclusion": "客户端 1→server 的原生 Floor Request（2）与 IWF→server 的请求（3）分开。若有多个 LMR 用户想发话，NOTE 假定 LMR 系统基于本地策略仲裁，仅向 MCPTT 侧呈现一个请求。MCPTT server 在 4 最终裁决，本例选择客户端 1。图中 5 server→IWF 报对应请求被拒；6 给客户端 1 授予，7 原生 Taken 给客户端 2，另有 IWF Taken 给 IWF。被拒和获知客户端 1 获授可以同时成立。",
+      "limitations": [
+        "从一个 IWF 请求不推出筛选已开启、代理归属或全量已收。LMR 本地候选不是最终授予；以到达先后参与裁决只是原文例示，不是固定排序或 MCPTT 用户一定胜出。IWF 出入站不证明后方 LMR 终端送达。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.6 preconditions, Figure 10.5.6-1, Steps 2–9 and NOTE"
+          ],
+          "printed_pages": [
+            111,
+            112
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-mcptt-host-floor-unfiltered-rejection-counts-requests-and-taken-counts-affiliates",
+      "conditions": [
+        "可只查 §10.5.8 的规范、单个收发动作或已辨明的一条消息；判现场是否适用主分支才查 MCPTT 定义组，在进行中互通组呼里双方用户已归属、话权起初空闲，而且 LMR 侧配置转交全部竞争请求、IWF 不代理且所有 LMR 组归属透传。关联多条记录或核分发份数才核同次、实际请求及相应组归属。"
+      ],
+      "conclusion": "3 由 IWF 向 server 按每名申请话权的 LMR 用户发一条，请求含 IWF 转换的该用户 MCPTT ID；4 由 MCPTT server 最终仲裁，本例选客户端 1。5 server 对每个经 IWF 转来而被拒的请求向 IWF 发一条拒绝；6 给客户端 1 发原生授予；7 向原生客户端 2 发 Taken，另对每名已归属 LMR 用户各发一条 IWF Taken 给 IWF。没有申请的已归属 LMR 用户在 7 的范围，不在 5 的被拒请求中。Taken 的 MCPTT ID 指获授者，非被通知的 LMR 用户或 IWF 的端点 ID。",
+      "limitations": [
+        "图举两条竞争请求和两条经 IWF 的拒绝／占用通知，不定义固定数量、普遍到达或配对算法。不能把 7 一一配成 5，也不以这个例子的优先级判每次胜者。换成首次建呼、已有人持有话权、LMR 定义组或互通私呼，不能直接照搬这支。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.8 preconditions, Figure 10.5.8-1, Steps 2–9 and NOTE"
+          ],
+          "printed_pages": [
+            114,
+            115
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.10 Table 10.5.2.10-1 (Taken identifies the grantee, not recipient)"
+          ],
+          "printed_pages": [
+            105
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-mcptt-host-floor-proxy-note-only-aggregates-taken-and-does-not-confirm-receipt",
+      "conditions": [
+        "可独立查 §10.5.8 步骤 7 的 NOTE、两个例子的某个通知或媒体步骤，不要求已有实际归属记录。要将 NOTE 用于实况，核同一组的实际 IWF 代表归属及相应的 Taken；要判哪端收到、话权是否在本端生效或是否已发／收到媒体，分别核相关实际证据。"
+      ],
+      "conclusion": "NOTE 说 IWF 代表该组 LMR 用户归属时，只向 IWF 发一条 IWF Floor Taken。它只比较 Taken 的份数，不改 .8 主流程的不代理／逐人透传前提，不规定代表归属也走步骤 3 或 5。两例 6 的授予、7 的占用、8 的用户提示与 9 的语音分开。.6 语音正文写包括 IWF；.8 写包括 LMR 用户，但图没有逐终端 LMR 媒体腿。",
+      "limitations": [
+        "只观察到一条 Taken 不能证明代表归属或足量送出；发送、IWF 实收、终端实收及实际发／收媒体须分别判断。Taken 不向接收者授予话权，不凭消息名、固定时序或图里一条箭头证明真实媒体或用户提示。不补 LMR 内部、受保护语音或 SIP／RTCP 规则。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.8 preconditions, Figure 10.5.8-1, Steps 2–9 and NOTE"
+          ],
+          "printed_pages": [
+            114,
+            115
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.6 preconditions, Figure 10.5.6-1, Steps 2–9 and NOTE"
+          ],
+          "printed_pages": [
+            111,
+            112
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.5.2.10 Table 10.5.2.10-1 (Taken identifies the grantee, not recipient)"
+          ],
+          "printed_pages": [
+            105
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
