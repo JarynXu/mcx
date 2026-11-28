@@ -1999,6 +1999,30 @@
       "question": "TS 24.484 附录里的 MCPTT min-length-alias 设为 5 或 12，这就是默认吗？",
       "start": "topics/identity/mcptt-mcvideo-minimum-alias-length-config.md",
       "boundary": "TS 24.484 V20.1.0 MCPTT 的 min-length-alias 在 TS 24.484 V20.1.0 资料性附录 A：表 A.2.2-16 显式给 5，表 A.2.3-12 显式给 12。两个都是 MCPTT 配置示例，不是缺项默认、在网或离网的规定值，也不能套给 MCVideo。§8.4.2.3 的此叶无 default/fixed，不从例子判断现场配置或处理结果。"
+    },
+    {
+      "id": "mcdata-off-network-priority-separate-optional-config-blocks",
+      "question": "MCData 离网一对一的 ProSe 与 PQI 放在同一块吗？两块和子项必填吗？",
+      "start": "topics/identity/mcdata-service-off-network-priority-values.md",
+      "boundary": "TS 24.484 V20.1.0 MCData 离网 §10.4.2.1 项 1、2 各列一个可选父块；§10.4.2.3 将 default-prose-per-packet-priority 与 default-pqi 声明为 off-network 的两个具名可选直接子项。每一块分别有可选 xs:unsignedShort 的 mcdata-one-to-one-call-signalling 和 mcdata-one-to-one-call-media。父项和子项各为 minOccurs=0，均无 default/fixed，不凭局部可选判整档接受、缺项补值或同名互换。只查这两个一对一字段，不套 MCVideo 或 MCPTT 的四类字段。"
+    },
+    {
+      "id": "mcdata-off-network-priority-two-one-to-one-uses-and-pointers",
+      "question": "MCData 离网一对一的信令和媒体优先级各查哪个字段和管理对象？",
+      "start": "topics/identity/mcdata-service-off-network-priority-values.md",
+      "boundary": "TS 24.484 V20.1.0 MCData §10.4.2.7 离网项 1、2 在 ProSe 与 PQI 两块各列一对一信令 mcdata-one-to-one-call-signalling 和媒体 mcdata-one-to-one-call-media；各自指向 TS 24.483 [4] §11.2.11 MCDataOneToOneSignalling、§11.2.12 MCDataOneToOneMedia，仅作指向。项 2 及 §10.4.2.6 原印 <default-pqi > 有末尾空格；Schema 定义 default-pqi，不断定另有可用标签或 CMS 行为。两个父块的同名字段不等于值相同或能互相回退；§C.4.2 的 5GS PC5-5QI 对应只作对照，不提供数值换算、落地选路、顺序或回退。这里没有 MCVideo 或 MCPTT 的四类私呼用途，也不判在网 Resource-Priority。"
+    },
+    {
+      "id": "mcdata-off-network-priority-prose-single-value-and-validation",
+      "question": "MCData 离网 ProSe 的一对一信令或媒体填 0、9，会按原句报范围错吗？",
+      "start": "topics/identity/mcdata-service-off-network-priority-values.md",
+      "boundary": "TS 24.484 V20.1.0 MCData 离网 §10.4.2.6 的 ProSe 条件原写 less than 1 and greater than 8，要求同一子项的同一个数值同时满足。单填 0、单填 9 或把 0 与 9 分在信令和媒体都不能命中这条 AND，不能改 OR，也不能断定这些值会接受。原句仍写该条件成立时 CMS 须返回 HTTP 409 含 XCAP constraint-failure，如带 phrase 建议 element value out of range。紧邻注 2 只说 ProSe 数值越大，信令或媒体的相对优先级越高，不用于 PQI、不证明实际调度或获准。各项通用 Schema 要求仍适用。"
+    },
+    {
+      "id": "mcdata-off-network-priority-pqi-single-other-than-and-listed-intervals",
+      "question": "MCData 离网 PQI 的 26 和 27 分别怎样判断？超出时 CMS 要报什么？",
+      "start": "topics/identity/mcdata-service-off-network-priority-values.md",
+      "boundary": "TS 24.484 V20.1.0 MCData 离网 §10.4.2.6 的 PQI 条件只有一个 other than，针对任一所列子项数值不在 21–26、55–61、90–93（均含端点）；例如 26 在列举内，27 在外。命中该条件时 CMS 须返回 HTTP 409 含 XCAP constraint-failure，如带 phrase 建议 element value out of range。原印 <default-pqi > 有末尾空格，不是另一个 Schema 名称。不要套 MCVideo 的重复连接词、ProSe 注 2 顺序或整数类型以外的实现条件；在列举内不证明整档通过、实际授予、缺项值或 CMS 行为。"
     }
   ]
 }

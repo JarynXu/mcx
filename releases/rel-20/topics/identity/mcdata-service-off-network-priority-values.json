@@ -1,0 +1,148 @@
+{
+  "topic_id": "r20-identity-mcdata-service-off-network-priority-values",
+  "release": 20,
+  "state": "clause-checked",
+  "standard_stage": 3,
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只查 MCData 离网业务配置中一对一信令、媒体的 ProSe 和 PQI，按实际所问的父块读；不引入其他业务或模式。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "claims": [
+    {
+      "id": "mcdata-off-network-priority-separate-optional-config-blocks",
+      "clause": "10.4.2.3",
+      "conditions": [
+        "查本版 MCData 业务配置的 off-network 局部声明。查规范类型不要求实际出现配置块；判某次是否缺项需查相关完整配置。"
+      ],
+      "conclusion": "MCData 离网 §10.4.2.1 项 1、2 各列一个可选父块；§10.4.2.3 将 default-prose-per-packet-priority 与 default-pqi 声明为 off-network 的两个具名可选直接子项。每一块分别有可选 xs:unsignedShort 的 mcdata-one-to-one-call-signalling 和 mcdata-one-to-one-call-media。父项和子项各为 minOccurs=0，均无 default/fixed，不凭局部可选判整档接受、缺项补值或同名互换。只查这两个一对一字段，不套 MCVideo 或 MCPTT 的四类字段。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.1"
+          ],
+          "items": [
+            "off-network items 1(a/b) and 2(a/b), optional containing elements and names"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.3"
+          ],
+          "items": [
+            "named optional off-network parents and both types with two optional unsignedShort direct leaves each"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcdata-off-network-priority-two-one-to-one-uses-and-pointers",
+      "clause": "10.4.2.7",
+      "conditions": [
+        "查 MCData 离网配置中是哪个父块、信令还是媒体，不以实际发送或采用过该配置为前提。"
+      ],
+      "conclusion": "MCData §10.4.2.7 离网项 1、2 在 ProSe 与 PQI 两块各列一对一信令 mcdata-one-to-one-call-signalling 和媒体 mcdata-one-to-one-call-media；各自指向 TS 24.483 [4] §11.2.11 MCDataOneToOneSignalling、§11.2.12 MCDataOneToOneMedia，仅作指向。项 2 及 §10.4.2.6 原印 <default-pqi > 有末尾空格；Schema 定义 default-pqi，不断定另有可用标签或 CMS 行为。两个父块的同名字段不等于值相同或能互相回退；§C.4.2 的 5GS PC5-5QI 对应只作对照，不提供数值换算、落地选路、顺序或回退。这里没有 MCVideo 或 MCPTT 的四类私呼用途，也不判在网 Resource-Priority。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.7"
+          ],
+          "items": [
+            "off-network items 1(a/b) and 2(a/b), named management-object pointers only and printed PQI label"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.3"
+          ],
+          "items": [
+            "named PQI element without trailing space in the declaration"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.6"
+          ],
+          "items": [
+            "printed PQI spelling in validation"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "C.4.2"
+          ],
+          "items": [
+            "5GS document-level correspondence, comparison only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcdata-off-network-priority-prose-single-value-and-validation",
+      "clause": "10.4.2.6",
+      "conditions": [
+        "在 MCData 离网 default-prose-per-packet-priority 下查单个具名子项的数值条件，不借 PQI 或别业务处理。"
+      ],
+      "conclusion": "MCData 离网 §10.4.2.6 的 ProSe 条件原写 less than 1 and greater than 8，要求同一子项的同一个数值同时满足。单填 0、单填 9 或把 0 与 9 分在信令和媒体都不能命中这条 AND，不能改 OR，也不能断定这些值会接受。原句仍写该条件成立时 CMS 须返回 HTTP 409 含 XCAP constraint-failure，如带 phrase 建议 element value out of range。紧邻注 2 只说 ProSe 数值越大，信令或媒体的相对优先级越高，不用于 PQI、不证明实际调度或获准。各项通用 Schema 要求仍适用。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.6"
+          ],
+          "items": [
+            "original scalar AND, conditional response and Note 2 limited to its ProSe configuration; general schema obligation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcdata-off-network-priority-pqi-single-other-than-and-listed-intervals",
+      "clause": "10.4.2.6",
+      "conditions": [
+        "查 MCData 离网 default-pqi 的具名信令/媒体子项数值。只看某次冲突报告不能反推是否命中本条件。"
+      ],
+      "conclusion": "MCData 离网 §10.4.2.6 的 PQI 条件只有一个 other than，针对任一所列子项数值不在 21–26、55–61、90–93（均含端点）；例如 26 在列举内，27 在外。命中该条件时 CMS 须返回 HTTP 409 含 XCAP constraint-failure，如带 phrase 建议 element value out of range。原印 <default-pqi > 有末尾空格，不是另一个 Schema 名称。不要套 MCVideo 的重复连接词、ProSe 注 2 顺序或整数类型以外的实现条件；在列举内不证明整档通过、实际授予、缺项值或 CMS 行为。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.6"
+          ],
+          "items": [
+            "single other than and three inclusive listed intervals; original conditional 409 and printed PQI spelling"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.3"
+          ],
+          "items": [
+            "PQI container and unsignedShort leaf declarations distinct from dedicated value constraint"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "TS 24.483 [4] 的两个管理对象仅作指向；不补目标正文、默认值、5GS 换算、实际配置选择、CMS 解析/诊断顺序、调度或收发。"
+  ],
+  "related": [
+    "r20-identity-mcvideo-service-off-network-priority-values",
+    "r20-identity-mcptt-service-off-network-priority-values",
+    "r20-identity-mcvideo-mcdata-resource-priority-config",
+    "r20-identity-mcvideo-mcdata-service-config-validation"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
