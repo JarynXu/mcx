@@ -3,7 +3,7 @@
   "release": 19,
   "state": "clause-checked",
   "common_conditions": [
-    "组配置双方已知、IWF 身份映射已配置，组呼正在进行且包含 IWF 与 MCPTT 客户端。"
+    "TS 23.283 V19.5.0，Rel‑19 Stage 2，IWF 预安排互通组呼的整通释放；按所问区分规范查阅、现场分支和单条已识别的消息。"
   ],
   "condition_rule": "Inherit common_conditions and add claim conditions.",
   "source_catalog": "../../sources.json",
@@ -13,6 +13,7 @@
       "id": "scope",
       "clause": "10.3.3.8.1",
       "conditions": [
+        "组配置双方已知、IWF 身份映射已配置，组呼正在进行且包含 IWF 与 MCPTT 客户端。",
         "组主控服务释放呼叫"
       ],
       "conclusion": "该流程释放所有参与者的组呼，不是单用户退出。MCPTT 侧释放条件引用 TS23.379；LMR 侧释放条件不在本规范范围。"
@@ -21,6 +22,7 @@
       "id": "mc-release",
       "clause": "10.3.3.8.2",
       "conditions": [
+        "组配置双方已知、IWF 身份映射已配置，组呼正在进行且包含 IWF 与 MCPTT 客户端。",
         "组定义在 MCPTT 系统",
         "MCPTT server 发起释放"
       ],
@@ -30,10 +32,136 @@
       "id": "lmr-release",
       "clause": "10.3.3.8.3",
       "conditions": [
+        "组配置双方已知、IWF 身份映射已配置，组呼正在进行且包含 IWF 与 MCPTT 客户端。",
         "组定义在 LMR 系统",
         "LMR 发起释放"
       ],
       "conclusion": "IWF 按呼叫中每个 MCPTT 用户发释放请求，server 转发；客户端响应后 server 向 IWF 确认，最终释放相关话权和媒体资源。"
+    },
+    {
+      "id": "iwf-ordinary-group-release-mcptt-defined-two-sends-and-iwf-confirms-its-received-requests",
+      "conditions": [
+        "可独立查 §10.3.3.8.2 的任一步、NOTE、纯消息语义或一条已辨明的现场信息，不需全链。判本次是否属于该支时，才核组由 MCPTT 定义、server 发起整通释放、双方已知组配置、IWF 已配对应组与用户映射，且同一进行中呼叫包含 IWF 和 MCPTT 客户端。关联实际两条信息另核同次和两端。"
+      ],
+      "conclusion": "server 步骤 2 识别当前参与者，至少一名是由 IWF 代表的 LMR 用户。步骤 3 发 IWF 释放请求到 IWF；IWF 代表该组 LMR 用户统一归属时只发一条，收到逐人归属时按每名已归属 LMR 用户各发一条。只看到一条不能区分代表归属与刚好一名逐人归属。4 是 server 向本组 MCPTT 用户发原生释放请求（TS 23.379 [7] 指针）。NOTE 4 只允许 3/4 任一发送顺序。5 是 IWF→server，用 IWF 释放应答确认 IWF 从 3 收到的请求。",
+      "limitations": [
+        "5 发出、server 实收、4 的各原生端点实收及资源状态分别取证。图只画 4 的原生过程框，不能据此说原生客户端不回；NOTE 4 不规定收件顺序，不免除 5 对对应 3 的依赖。NOTE 3 未规定怎样把释放请求送给 LMR，不由 IWF 应答判 LMR 终端收件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.3.8.2 introduction, preconditions, Figure 10.3.3.8.2-1, Steps 1–6 and NOTES 1–4"
+          ],
+          "printed_pages": [
+            51,
+            52
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.3.8.1 (ongoing whole-call release scope; TS 23.379 pointer only)"
+          ],
+          "printed_pages": [
+            51
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-ordinary-group-release-lmr-defined-native-reply-and-iwf-return-are-separate",
+      "conditions": [
+        "可独立查 §10.3.3.8.3 的一步、图示或一条已辨明的信息，无需原生与 IWF 两腿实况同时存在。判现场选支才查 LMR 定义的进行中互通组呼、LMR 系统发起整通释放、双方已知组配置、IWF 的对应组与用户映射，且通话包含 IWF 和 MCPTT 客户端。定位某次配对再核同次、角色和两端。"
+      ],
+      "conclusion": "1 由 IWF→server 按呼叫中每名 MCPTT 用户发 IWF 请求，2 从 server 向相应 MCPTT 用户转成原生释放请求。3 是 MCPTT 客户端→server 的原生释放应答；4 是 server→IWF 的 IWF 释放应答，确认 server 在 1 收到的 IWF 请求。图把 4a 画在另一客户端的 3b 之前，正文没有收齐全体应答才发 4 的条件。",
+      "limitations": [
+        "3 与 4 各自发出和实收并立，不是同一报文。图只示例 a／b 两条用户腿，不规定人数或实际顺序，也不据此认定可略过 4a 所对应客户端的 3a。条文不靠任何一条应答直接证明全部资源释放。步骤 2 只指向 TS 23.379 [7]；LMR 侧为何释放不在本节范围。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.3.8.3 introduction, preconditions, NOTES 1–2, Figure 10.3.3.8.3-1 and Steps 1–5"
+          ],
+          "printed_pages": [
+            52,
+            53
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.3.8.1 (ongoing whole-call release scope; TS 23.379 pointer only)"
+          ],
+          "printed_pages": [
+            51
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-ordinary-group-release-confirmation-does-not-prove-endpoint-resource-state",
+      "conditions": [
+        "可分别查原文明确的资源动作、某条已辨明应答、某端实际资源终态。只有判断两条实况信息是否属于同一次释放时，才需匹配呼叫、释放尝试、当事角色和接口端点；只判断实况资源终态，按所问端点和这通呼叫核状态，不需要先找到某条回包。"
+      ],
+      "conclusion": "MCPTT 定义侧 .2 步骤 6 和 LMR 定义侧 .3 步骤 5 另述客户端 1、客户端 2 和 IWF 已成功释放这通呼叫的话权控制及媒体面资源。两图的最后框都跨过 server，但这些步骤的正文只点名三个端点。部分应答的存在、发出或实收不会替代相应端点的实际资源证据。",
+      "limitations": [
+        "释放目标是这一整通正在进行的呼叫，非一个用户 leave 或取消归属。光靠同组 ID 或未配对的应答不能确认实际配对；没有媒体或已有应答皆不足以证明各端清理、LMR 终端清理、归属取消或组删除。只核本节资源与消息，不规定服务器实现、SIP 映射或完整失败机制。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.3.8.2 introduction, preconditions, Figure 10.3.3.8.2-1, Steps 1–6 and NOTES 1–4"
+          ],
+          "printed_pages": [
+            51,
+            52
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.3.8.3 introduction, preconditions, NOTES 1–2, Figure 10.3.3.8.3-1 and Steps 1–5"
+          ],
+          "printed_pages": [
+            52,
+            53
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.3.8.1 (ongoing whole-call release scope; TS 23.379 pointer only)"
+          ],
+          "printed_pages": [
+            51
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
