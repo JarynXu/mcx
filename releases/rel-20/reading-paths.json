@@ -1381,6 +1381,24 @@
       "question": "附录表 A.2.3-12 里两个计数都填 3，这能解决计数归属或当默认吗？",
       "start": "topics/identity/mcptt-on-network-connect-disconnect-retry-counters.md",
       "boundary": "TS 24.484 V20.1.0 附录 A §A.2.3 表 A.2.3-12 只是 HTTP 响应示例，T55/T56 均为 PT2S，C55/C56 均为 3；相同计数值无法区分 §8.4.2.7 项 25/26 与 31/32 的指向，示例不规定默认或实际次数。即使一份配置填了不同值，单凭值也不能选映射。"
+    },
+    {
+      "id": "mcptt-on-network-floor-queue-size-vs-one-request-wait",
+      "question": "话权队列的 depth 和 max-user-request-time 分别限制什么？能据此判一笔申请的结果吗？",
+      "start": "topics/identity/mcptt-on-network-floor-queue-config.md",
+      "boundary": "TS 24.484 V20.1.0 §8.4.2.7 在网项 10/11：floor-control-queue 的 depth 是队列容量上限，max-user-request-time 是一笔用户话权请求在队列里的最长时间。不是当前队位、实际等待或发话时限，不证获准、拒绝、排队、移出或计时起止。普通在网话权行为另走同 Release TS 22.179 V20.0.0 Stage 1 §6.2.3.2，不把本页字段套给离网。"
+    },
+    {
+      "id": "mcptt-on-network-floor-queue-parent-child-shape-and-example",
+      "question": "在网 floor-control-queue 可以省吗？子字段、类型和示例是不是默认？",
+      "start": "topics/identity/mcptt-on-network-floor-queue-config.md",
+      "boundary": "TS 24.484 V20.1.0 §8.4.2.1 在网项 6 说可包含队列块、列两子项；§8.4.2.3 的父块、depth 与 max-user-request-time 各自 minOccurs=0；depth 为 xs:unsignedShort，max-user-request-time 为 xs:duration，均无声明默认。表 A.2.3-12 的 4 / PT30S 是 HTTP 响应示例，不由缺项或空块判断配置是否被接收、队列是否关闭。"
+    },
+    {
+      "id": "mcptt-on-network-floor-queue-depth-semantics-vs-duration-validation",
+      "question": "depth 语义无效与 max-user-request-time 时长格式或秒值有误，如何分别核？",
+      "start": "topics/identity/mcptt-on-network-floor-queue-config.md",
+      "boundary": "TS 24.484 V20.1.0 §8.4.2.6：depth 的值语义无效时配置管理服务器须返回 HTTP 409，含 XCAP constraint-failure；若带 phrase，建议 semantic error。其他字段可同报它，缺项/状态/类型不定位到这一字段，不套 min-length-alias 的 >255 门槛。max-user-request-time 是具名时长项 7，格式与秒值走既有时长校验，depth 不在该清单，不共享诊断或排先后。"
     }
   ]
 }

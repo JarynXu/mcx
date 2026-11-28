@@ -1,0 +1,123 @@
+{
+  "topic_id": "r20-identity-mcptt-on-network-floor-queue-config",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只核 MCPTT 业务配置的在网 floor-control-queue。查标准不要求先有一次通话或抓包；现场结果不是配置值本身。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "mcptt-floor-queue-capacity-vs-one-request-time",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "核 TS 24.484 的 MCPTT 业务配置已选在网的 floor-control-queue 内容，先辨是队列容量还是一笔用户话权请求的排队时长。"
+      ],
+      "conclusion": "在网项 10 的 depth 是话权队列容量上限；项 11 的 max-user-request-time 是一笔用户话权请求在队列里的最长时间。两者不是当前队位、实际已等待多久或发话时限。Stage 1 对可配置深度、移出和管理员配置组队列定时器的要求只作对照；不由配置判某次获准/拒绝/排队、计时起止、退出动作、组模式或离网行为。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network item 10 maximum size of the floor control queue",
+            "item 11 maximum time for a user floor control request to be queued",
+            "item 7 transmission time limit as comparison only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "6.2.3.2"
+          ],
+          "printed_pages": [
+            36
+          ],
+          "requirements": [
+            "R-6.2.3.2-006",
+            "R-6.2.3.2-010",
+            "R-6.2.3.2-011",
+            "R-6.2.3.2-012"
+          ],
+          "items": [
+            "Stage 1 separate scope, comparison only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-floor-queue-parent-and-children-optional-xsd",
+      "clause": "8.4.2.3",
+      "conditions": [
+        "已定位完整业务配置的在网分支，核 floor-control-queue 块或 depth / max-user-request-time 各自的声明；例值只作对照。"
+      ],
+      "conclusion": "§8.4.2.1 在网项 6 把队列块写为可含，并列举 depth 和 max-user-request-time。§8.4.2.3 分别把父块和两个子字段声明为 minOccurs=0；depth 是 xs:unsignedShort，max-user-request-time 是 xs:duration，均未声明默认值。不从 XSD 局部声明推某份缺项或空块配置必被接收、未配置即关闭或实际回退方案。附录 A 表 A.2.3-12 的 4 / PT30S 是示例，不是默认。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "on-networkType / floor-control-queueType, three separate minOccurs=0 declarations and distinct types"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1"
+          ],
+          "items": [
+            "on-network item 6 with children a and b"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "A.2.3"
+          ],
+          "items": [
+            "Table A.2.3-12 example HTTP 200 response, not a default declaration"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-floor-queue-depth-invalid-semantics-vs-queue-time-duration",
+      "clause": "8.4.2.6",
+      "conditions": [
+        "核 MCPTT 在网业务配置的校验分支。depth 分支问字段值确为语义无效；查 max-user-request-time 时走具名时长项，不让 一个字段的检查结果代替另一字段证据。"
+      ],
+      "conclusion": "depth 的值语义无效时，配置管理服务器须返回 HTTP 409 (Conflict) 并含 XCAP constraint-failure；若带 phrase，建议 semantic error。缺失、类型或一条不带具体字段的 semantic error 不能单独证明该 depth 条件，min-length-alias >255 不适用到 depth。max-user-request-time 明列为第 7 个具名时长项，depth 不在清单；格式不符与秒值无效的详细判据分别查该版共有的时长校验。不是同一诊断；不补先后、合法范围、具体失败原因或实际请求结果。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "semantic-invalid named values include depth; CMS shall return 409 / XCAP constraint-failure, if included phrase should be semantic error",
+            "adjacent min-length-alias upper bound only as contrast",
+            "item 7 max-user-request-time and distinct duration validations"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "只核队列容量与一笔话权请求最长排队时长，不把这些证据变成队列模式、默认值、合法业务区间、顺序、运行起止和处理结果。",
+    "TS 22.179 V20.0.0 §6.2.3.2 只作本条 Stage 1 对照；原归属仍由普通在网话权主题维护。表 A.2.3-12 为示例。"
+  ],
+  "related": [
+    "r20-calls-ordinary-floor-request-outcomes",
+    "r20-identity-ad-hoc-broadcast-hang-time"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
