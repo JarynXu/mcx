@@ -2179,6 +2179,36 @@
       "question": "TS 24.484 V20.1.0 的 MCPTT 用户档来话字段导语写表 28，真正的来话许可看表 28 还是 48？",
       "start": "topics/identity/mcptt-user-profile-private-call-any-peer.md",
       "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档 §8.3.2.7 对 allow-to-receive-private-call-from-any-user 的导语原印表 8.3.2.7-28，紧接的来话字段真实表题是 8.3.2.7-48。真正的表 8.3.2.7-28 写 allow-regroup，另属重组。来话许可和缺项 false 从实际表 48 的值读，不把导语改写成另一个版本的正文，不带入表 28、私呼参与表 29 或未确认组呼邀请用户信息表 49 的语义。"
+    },
+    {
+      "id": "mcptt-user-profile-private-call-kms-schema-and-literal-parent-surfaces",
+      "question": "MCPTT 用户配置档的私呼 PrivateCallKMSURI 为什么写两层？uri-entry 和 anyExt 是父子吗？",
+      "start": "topics/identity/mcptt-user-profile-private-call-kms-uri.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档 §8.3.2.1 去话项 8(d)(i)(A)(I)/(C)(I)、来话项 10(g)(iii)(A)(I)/(B) 各列名单级和 PrivateCallURI 条目级扩展。个人提纲先写 uri-entry，再接 which contains: 与 anyExt；§8.3.2.3 的 EntryType 则将必需 uri-entry（xs:anyURI）和可选 anyExt 声明为兄弟。全局 PrivateCallKMSURI 是 PrivateCallKMSURIEntryType，内含必需的同名 PrivateCallKMSURI（EntryType），其内有必需的 uri-entry；不是重复写一个叶。§8.3.2.6 仅保通用 Schema 要求，不把提纲与语义差异合成另一个 XML 路径或判整档接受、标量嵌子节点、用户档专用 409。"
+    },
+    {
+      "id": "mcptt-user-profile-private-call-kms-outgoing-list-vs-peer-uri",
+      "question": "MCPTT 用户配置档去话 Common 名单与某个目标用户的 KMS URI 在哪？.7 原文的父元素是否一样？",
+      "start": "topics/identity/mcptt-user-profile-private-call-kms-uri.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档去话提纲为 Common/PrivateCall/PrivateCallList。§8.3.2.7 名单级 URI 是其 anyExt/PrivateCallKMSURI/PrivateCallKMSURI/uri-entry，供联系名单 PrivateCallURI 所列目标 MCPTT ID 关联的 KMS。去话个人段主语却写 Common/PrivateCallList/PrivateCallURI/anyExt/PrivateCallKMSURI，漏 PrivateCall，只写一个同名 KMS 层；该句的名单比较端保留 PrivateCall，指回名单双层 KMS 的 uri-entry。个人项只在关联 ID 的 URI 不同于本方向名单 URI 时出现，不由不同推必填，也不补原写成可用路径。TS 24.483 [4] §5.2.19B PrivateCallKMSURI 只作指向。"
+    },
+    {
+      "id": "mcptt-user-profile-private-call-kms-incoming-list-vs-peer-uri",
+      "question": "MCPTT 用户配置档来话 OnNetwork 名单及对应主叫的 KMS URI 在哪？哪个原句漏了 anyExt？",
+      "start": "topics/identity/mcptt-user-profile-private-call-kms-uri.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档来话提纲为 OnNetwork/anyExt/IncomingPrivateCallList，名单 URI 对应名单 PrivateCallURI 所列来话 MCPTT ID 的 KMS。§8.3.2.7 个人主语写 OnNetwork/anyExt/IncomingPrivateCallList/PrivateCallURI/anyExt/PrivateCallKMSURI/PrivateCallKMSURI，只在关联 ID 的 KMS URI 不同于本方向名单 uri-entry 时出现。它的名单比较端和来话名单释义都漏掉 OnNetwork 后、IncomingPrivateCallList 前的外层 anyExt，保留名单内的 anyExt；名单释义用双层 KMS 内层 PrivateCallKMSURI 作主语，另句才说 uri-entry 空值。保留两种原写，不把缺层视为另一获准路径、不借去话的 URI。TS 24.483 [4] §5.2.48Y5 PrivateCallKMSURI 只作指向。"
+    },
+    {
+      "id": "mcptt-user-profile-private-call-kms-empty-list-uri-entry-initial-fallback",
+      "question": "MCPTT 用户配置档名单级私呼 KMS 的 uri-entry 空时用哪个配置？字段没看到或 KMS 联系失败也可以回退吗？",
+      "start": "topics/identity/mcptt-user-profile-private-call-kms-uri.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档 §8.3.2.7 的去话名单和来话名单都写：确认其名单级 uri-entry 存在且为空时，使用 MCS 初始配置档中的 KMS。不能把缺节点、缺名单、片段未见、仅见空白字符、URI 不合法、联系失败或个人项为空当成该条件；也不借另一方向或组 KMS。回退是文本规定的对象，不自动补写 XML，不据此判使用了哪个实际地址、初始配置未知时再选谁、已连接或收到密钥。"
+    },
+    {
+      "id": "mcptt-user-profile-private-call-kms-peer-uri-only-if-different",
+      "question": "MCPTT 用户配置档私呼给某个 ID 的 KMS URI 与名单不同就必须加个人项吗？名单为空先拿初始档比较吗？",
+      "start": "topics/identity/mcptt-user-profile-private-call-kms-uri.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档去话、来话各自的 §8.3.2.7 个人项写 only present if：出现要求关联 MCPTT ID 的 KMS URI 不同于本方向名单级 uri-entry 的 URI；相同不满足该出现条件，不同不意味着必填。比较对象不是另一方向的名单或初始档 KMS；空、缺失、未知不填成相等或不等，不给 URI 相等算法或回退与比较的先后。不据个人项说它已胜出、已发请求、已取钥匙或已批准私呼。"
     }
   ]
 }

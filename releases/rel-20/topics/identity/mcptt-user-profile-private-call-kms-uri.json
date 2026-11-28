@@ -1,0 +1,160 @@
+{
+  "topic_id": "r20-identity-mcptt-user-profile-private-call-kms-uri",
+  "release": 20,
+  "state": "clause-checked",
+  "standard_stage": 3,
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只查 MCPTT 用户配置档私呼 KMS URI，分去话 Common、来话 OnNetwork 和名单级、关联 ID 个人级。不以实际呼叫或 KMS 接触为查规范的前提。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "claims": [
+    {
+      "id": "mcptt-user-profile-private-call-kms-schema-and-literal-parent-surfaces",
+      "clause": "8.3.2.3",
+      "conditions": [
+        "按 TS 24.484 V20.1.0 分开查 .1 提纲、.3 实际声明和 .7 语义定位，不以 live parser 或实际连接为先决条件。"
+      ],
+      "conclusion": "MCPTT 用户配置档 §8.3.2.1 去话项 8(d)(i)(A)(I)/(C)(I)、来话项 10(g)(iii)(A)(I)/(B) 各列名单级和 PrivateCallURI 条目级扩展。个人提纲先写 uri-entry，再接 which contains: 与 anyExt；§8.3.2.3 的 EntryType 则将必需 uri-entry（xs:anyURI）和可选 anyExt 声明为兄弟。全局 PrivateCallKMSURI 是 PrivateCallKMSURIEntryType，内含必需的同名 PrivateCallKMSURI（EntryType），其内有必需的 uri-entry；不是重复写一个叶。§8.3.2.6 仅保通用 Schema 要求，不把提纲与语义差异合成另一个 XML 路径或判整档接受、标量嵌子节点、用户档专用 409。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.1"
+          ],
+          "items": [
+            "items 8(d)(i) and 10(g)(iii) extension placement and PrivateCallURI textual which-contains phrasing"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.3"
+          ],
+          "items": [
+            "EntryType named siblings and global PrivateCallKMSURI type with mandatory same-named EntryType child"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.6"
+          ],
+          "items": [
+            "generic schema conformance; no field-specific diagnosis for profile private-call KMS URI"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-user-profile-private-call-kms-outgoing-list-vs-peer-uri",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "查 MCPTT 同一去话方向的 Common 配置、名单和关联目标 ID；不以本次私呼许可、相反方向配置或接触 KMS 的运行证据套字段。"
+      ],
+      "conclusion": "MCPTT 用户配置档去话提纲为 Common/PrivateCall/PrivateCallList。§8.3.2.7 名单级 URI 是其 anyExt/PrivateCallKMSURI/PrivateCallKMSURI/uri-entry，供联系名单 PrivateCallURI 所列目标 MCPTT ID 关联的 KMS。去话个人段主语却写 Common/PrivateCallList/PrivateCallURI/anyExt/PrivateCallKMSURI，漏 PrivateCall，只写一个同名 KMS 层；该句的名单比较端保留 PrivateCall，指回名单双层 KMS 的 uri-entry。个人项只在关联 ID 的 URI 不同于本方向名单 URI 时出现，不由不同推必填，也不补原写成可用路径。TS 24.483 [4] §5.2.19B PrivateCallKMSURI 只作指向。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.1"
+          ],
+          "items": [
+            "Common item 8(d)(i) separate per-PrivateCallURI and list extensions"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "outgoing list URI and its own only-if paragraph, keep shortened subject path vs list comparison path; §5.2.19B pointer only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-user-profile-private-call-kms-incoming-list-vs-peer-uri",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "查 MCPTT 同一来话方向的 OnNetwork 段、名单和关联来话方。分别读提纲、个人主语和名单释义或比较端；不声明可互换路径。"
+      ],
+      "conclusion": "MCPTT 用户配置档来话提纲为 OnNetwork/anyExt/IncomingPrivateCallList，名单 URI 对应名单 PrivateCallURI 所列来话 MCPTT ID 的 KMS。§8.3.2.7 个人主语写 OnNetwork/anyExt/IncomingPrivateCallList/PrivateCallURI/anyExt/PrivateCallKMSURI/PrivateCallKMSURI，只在关联 ID 的 KMS URI 不同于本方向名单 uri-entry 时出现。它的名单比较端和来话名单释义都漏掉 OnNetwork 后、IncomingPrivateCallList 前的外层 anyExt，保留名单内的 anyExt；名单释义用双层 KMS 内层 PrivateCallKMSURI 作主语，另句才说 uri-entry 空值。保留两种原写，不把缺层视为另一获准路径、不借去话的 URI。TS 24.483 [4] §5.2.48Y5 PrivateCallKMSURI 只作指向。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.1"
+          ],
+          "items": [
+            "OnNetwork item 10(g)(iii) outer anyExt and separate per-PrivateCallURI/list extensions"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "incoming per-ID subject and list operand, distinct omissions; literal inner element subject before empty uri-entry sentence; §5.2.48Y5 pointer only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-user-profile-private-call-kms-empty-list-uri-entry-initial-fallback",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "独立查去话 Common 与来话 OnNetwork 的名单级空值句。用于实际定位时先确认同方向、名单级、uri-entry 存在且为空；不是要求抓到实际回退动作才查条文。"
+      ],
+      "conclusion": "MCPTT 用户配置档 §8.3.2.7 的去话名单和来话名单都写：确认其名单级 uri-entry 存在且为空时，使用 MCS 初始配置档中的 KMS。不能把缺节点、缺名单、片段未见、仅见空白字符、URI 不合法、联系失败或个人项为空当成该条件；也不借另一方向或组 KMS。回退是文本规定的对象，不自动补写 XML，不据此判使用了哪个实际地址、初始配置未知时再选谁、已连接或收到密钥。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "two separate list-level empty uri-entry statements point to KMS present in MCS initial configuration; not peer leaf or runtime retry"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-user-profile-private-call-kms-peer-uri-only-if-different",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "查 MCPTT 个人条目的必要条件，比较本方向名单级 uri-entry 的原文对象；无法确认同方向两个对象时，不能补运行比较或地址。"
+      ],
+      "conclusion": "MCPTT 用户配置档去话、来话各自的 §8.3.2.7 个人项写 only present if：出现要求关联 MCPTT ID 的 KMS URI 不同于本方向名单级 uri-entry 的 URI；相同不满足该出现条件，不同不意味着必填。比较对象不是另一方向的名单或初始档 KMS；空、缺失、未知不填成相等或不等，不给 URI 相等算法或回退与比较的先后。不据个人项说它已胜出、已发请求、已取钥匙或已批准私呼。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "two direction-local only-present-if conditions, not converse; exact list URI operand, not resolved or dereferenced endpoint"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "缺字段、坏 URI、联系失败不是已知名单级 uri-entry 空。个人 only present if 不作反向必填或回退比较算法。保留三个语义原写的路径差异以及与提纲和 Schema 的差别。TS 24.483 [4] 只作指向，不推运行选择、认证、密码或授权。"
+  ],
+  "related": [
+    "r20-identity-mcptt-user-profile-private-call-any-peer",
+    "r20-identity-mcptt-user-profile-xcap-validation",
+    "r20-identity-initial-ue-tls-tunnel-validation",
+    "r20-identity-mcptt-user-profile-private-call-transfer",
+    "r20-identity-mcptt-user-profile-private-call-forwarding",
+    "r20-calls-floor-controlled-private-call-basics"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
