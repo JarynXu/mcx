@@ -3,7 +3,7 @@
   "release": 19,
   "state": "clause-checked",
   "common_conditions": [
-    "MC用户已注册且正与经IWF接入的LMR用户私呼；可为自动或手动模式，有或无话权控制。"
+    "TS 23.283 V19.5.0，Rel‑19 Stage 2；讨论已建立且仍在进行的 MCPTT／LMR 互通私呼释放。纯查规则或已辨认的一腿不要求完整现场记录。"
   ],
   "condition_rule": "Inherit common_conditions and add claim conditions.",
   "source_catalog": "../../sources.json",
@@ -13,6 +13,7 @@
       "id": "client",
       "clause": "10.4.4.1",
       "conditions": [
+        "MC用户已注册且正与经IWF接入的LMR用户私呼；可为自动或手动模式，有或无话权控制。",
         "MC客户端发起释放"
       ],
       "conclusion": "客户端向服务器请求结束，服务器转IWF；收到IWF确认后，服务器再确认客户端请求。客户端和IWF释放媒体资源；若有话权控制，也释放相关资源，客户端不得再请求话权或发送媒体。"
@@ -21,6 +22,7 @@
       "id": "server",
       "clause": "10.4.4.2",
       "conditions": [
+        "MC用户已注册且正与经IWF接入的LMR用户私呼；可为自动或手动模式，有或无话权控制。",
         "服务器因结束条件决定终止"
       ],
       "conclusion": "最大通话时长或无收发超时是示例条件，并非本页给定的固定时长。服务器向MC客户端和IWF发结束请求，双方确认并释放媒体及适用的话权资源，用户获得结束通知。"
@@ -29,9 +31,144 @@
       "id": "lmr",
       "clause": "10.4.4.3",
       "conditions": [
+        "MC用户已注册且正与经IWF接入的LMR用户私呼；可为自动或手动模式，有或无话权控制。",
         "LMR用户或系统发起释放"
       ],
       "conclusion": "IWF请求服务器，服务器转MC客户端；收到客户端确认后再确认IWF。双方释放媒体及适用的话权资源。附加应用数据可选，客户端如何反应不在该规范范围。"
+    },
+    {
+      "id": "iwf-private-release-client-origin-original-client-id-and-after-iwf-receipt",
+      "conditions": [
+        "可单查 .1 的规范、其中一笔已辨明的原生／IWF 结束消息或确认依赖，不用先有全链。判完整 .1 分支再核已注册 MCPTT 用户、经 IWF 的在通私呼、此次发起释放的是 MCPTT 客户端；原来的主叫、手动或自动、有无话权不决定谁要求结束。"
+      ],
+      "conclusion": ".1 的 2 是 MCPTT 客户端经 SIP 核心→server 的原生结束请求，视原因可带附加应用数据；3 server→IWF 发对应请求，按原请求指定的 MCPTT 客户端 ID 寻址。4 IWF→server 为对应 IWF call end response；server 实收这笔确认后再生成 5 给原请求客户端的确认。5 正文称从 IWF 来的是 MCPTT 私呼结束请求确认，4 和图仍是 IWF 应答，同一个输入，不增一条原生消息。注说 LMR 用户也获通知，方式未规定。",
+      "limitations": [
+        "原请求内的指定 ID 不由起呼角色或示例泳道推定。判现场是否遵循实收后生成，不用 5 的发出代 4 的收件，也不用 4 发出代 server 已收。实际配对核同一通、操作、角色、方向和实际主被叫上下文；不从 .1 的 2 可附数据推出 3 必带、收到、内容或实现。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.4.1 precondition, Figure 10.4.4.1-1, Steps 1–6 and NOTE (MCPTT client initiated release)"
+          ],
+          "printed_pages": [
+            99,
+            100
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-private-release-server-origin-two-separate-requests-and-number-four-replies",
+      "conditions": [
+        "可独立查 .2 的结束条件、已辨明的 2a／2b 或某一条 4，不要求现场两腿都有记录。判断实际是 .2 还是 .1 的同向转发，核已注册 MCPTT 用户正在与经 IWF 的 LMR 用户通话，且 server 是否自己决定结束；不以方向代发起者。"
+      ],
+      "conclusion": ".2 的 1 由 server 作结束决定；管理员配置的最大通话时长到期、无收发超时是例子。2a server 经 SIP 核心发原生结束请求给 MCPTT 客户端，2b 是对应 IWF 结束请求，正文目标是与 LMR 用户关联的 MCPTT 客户端身份，图中逻辑腿是 server→IWF，不能合并成 2a。3 本地 MCPTT 用户获通知，注写 LMR 用户也获通知且方式未规定。4 在图上两条分别是 MCPTT 客户端→server、IWF→server，各确认其所受请求。",
+      "limitations": [
+        "不由一个 4 推另一侧发或收，不把相同编号或齐平箭头认成同一消息、同时或强制等两端实际到达才释放。确认不代实收、实际用户通知或逐端资源释放。该段不提供计时器值、起点、判无收发的算法或完整触发清单。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.4.2 precondition, Figure 10.4.4.2-1, Steps 1–5 and NOTE (MCPTT server initiated release)"
+          ],
+          "printed_pages": [
+            100,
+            101
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-private-release-lmr-origin-after-native-receipt-and-optional-data-reaction",
+      "conditions": [
+        "可单查 .3 的规范、一条已辨明的结束消息、或附加数据和本地通知的关系。判完整 .3 现场才核已注册 MCPTT 用户正在与经 IWF 的 LMR 用户通话，且本次确由 LMR 用户或 LMR 系统发起释放。判客户端可按附加数据反应时看实际本地原生请求是否携带，不要求先证两腿数据全等。"
+      ],
+      "conclusion": ".3 的引言包括 LMR 用户或系统要求结束，1 正文写 LMR 系统，图把开始动作画在 IWF 泳道。2 IWF→server，视释放原因可带附加应用数据；同段说 IWF call end request 和 IWF private call end request，是同一请求腿。3 server 发原生结束请求给原 IWF 请求指定的 MCPTT 客户端；4 通知该 MCPTT 用户，若这条原生请求确有附加数据，客户端可依内容作反应，具体反应不在范围内。5 客户端→server 确认，server 实收匹配的 5 后再生成给 IWF 的 6。",
+      "limitations": [
+        "不从 2 的数据推出 3 必带原值或实际终端处理；数据处理可选，不把基本结束通知也读成有数据才发生。.3 的 6 发出不代 IWF 实收，不在现场以生成的 6 补内腿 5 收件证据；按同次原请求配对，不补 LMR 内部信令。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.4.3 precondition, Figure 10.4.4.3-1, Steps 1–7 and NOTE (LMR user or system initiated release)"
+          ],
+          "printed_pages": [
+            101,
+            102
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-private-release-final-media-and-conditional-floor-resources-not-ack-or-notice",
+      "conditions": [
+        "可独立查最后一步的资源和端点，或核某端关于这通呼叫的实际状态。要判话权资源分支，看建立时是否启用；要核整个呼叫各端的实际清理才逐端取证，不为查已辨明的一条应答强求媒体记录。"
+      ],
+      "conclusion": ".1 Step6、.2 Step5 和 .3 Step7 均写 MCPTT 客户端和 IWF 释放本通话所用的全部媒体面资源；若建立时有话权控制，也释放话权资源，该条件句写客户端不能再请求话权或发送媒体。没有话权控制也要释放媒体，不能反推释放后仍可发送。资源框虽横过 server，正文只在这些步骤点名客户端和 IWF；不另立 server 的资源动作。",
+      "limitations": [
+        "结束确认、客户端通知、实际资源状态和实际媒体停止分别核。话权交还、撤销、RTP 静默或建立阶段失败应答不等于整通已建私呼结束。TS 23.379 的释放条款是来源所引基础，本页不读其正文，不补 SIP 方法、时限、重传、失败清理或 LMR 内部通知机制。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.4.1 precondition, Figure 10.4.4.1-1, Steps 1–6 and NOTE (MCPTT client initiated release)"
+          ],
+          "printed_pages": [
+            99,
+            100
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.4.2 precondition, Figure 10.4.4.2-1, Steps 1–5 and NOTE (MCPTT server initiated release)"
+          ],
+          "printed_pages": [
+            100,
+            101
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.4.3 precondition, Figure 10.4.4.3-1, Steps 1–7 and NOTE (LMR user or system initiated release)"
+          ],
+          "printed_pages": [
+            101,
+            102
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
