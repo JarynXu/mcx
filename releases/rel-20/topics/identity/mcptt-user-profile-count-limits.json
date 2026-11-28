@@ -1,0 +1,240 @@
+{
+  "topic_id": "r20-identity-mcptt-user-profile-count-limits",
+  "release": 20,
+  "state": "clause-checked",
+  "standard_stage": 3,
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只查 MCPTT 用户配置档在网的归属组数 N2、共用的同时接收组呼数 N6、在网一次组呼内同时接收传输数 N7。查规范不要求先看到实际归属、呼叫或媒体。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "claims": [
+    {
+      "id": "mcptt-user-profile-limits-n2-authorized-group-affiliation-count",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "查 MCPTT 用户配置档的在网用户 N2；查条文不用先确认当前归属或某个组的入组结果。"
+      ],
+      "conclusion": "MCPTT 用户配置档 OnNetwork/MaxAffiliationsN2 告知 MCPTT 服务器用户获准归属的 MCPTT 组数上限。§8.3.2.7 写 nonNegativeInteger，.3 声明 xs:nonNegativeInteger。它不是已经归属了几个组、某次新归属已获准或正在接收的组呼数。该句不定义显式/隐式归属的计数方法，不从 MCPTTGroupInfo 的条目数或 N6/N7 代填。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "maximum number of groups the user is authorised to affiliate with, indicated to the MCPTT server"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.1"
+          ],
+          "items": [
+            "OnNetwork item 10(c); separate optional ImplicitAffiliations item 10(d)"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.3"
+          ],
+          "items": [
+            "OnNetworkType local MaxAffiliationsN2 declaration"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-user-profile-limits-n6-concurrently-received-group-calls",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "查 MCPTT 用户共用配置的 N6，分档内字段与本版指向的 MO 标签，不从样例或网络实况选值。"
+      ],
+      "conclusion": "MCPTT 用户配置档 Common/MCPTT-group-call/MaxSimultaneousCallsN6 限制用户同时接收的 MCPTT 组呼数。§8.3.2.7 写 positiveInteger，.3 声明 xs:positiveInteger。它不数发起的组呼、当前归属组或一通组呼里的传输，也不等于每个功能别名的 MaxSimultaneousEmergencyGroupCalls，N6 本句不限定只数紧急组呼。档内字段为 MaxSimultaneousCallsN6，本版 §8.3.2.7 指 TS 24.483 [4] §5.2.31 印作 MaxSimultaneouCallsN6，只定位，不发明可接收的替代 XML 拼法。该值不证明已收到几通或实际取舍。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "N6 simultaneously received group calls; literal §5.2.31 MaxSimultaneouCallsN6 pointer only; separate alias-specific emergency-call cap"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.1"
+          ],
+          "items": [
+            "Common item 8(e)(i) local MaxSimultaneousCallsN6"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.3"
+          ],
+          "items": [
+            "CommonType, MCPTTGroupCallType and xs:positiveInteger declaration"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-user-profile-limits-n7-concurrent-received-transmissions-within-a-call",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "确认在查 MCPTT 用户档的在网 N7；查静态含义不以现场发生过抢占或媒体验证为前提。"
+      ],
+      "conclusion": "MCPTT 用户配置档 OnNetwork/MaxSimultaneousTransmissionsN7 告知 MCPTT 服务器：为抢占（for override），一次 MCPTT 组呼中同时接收的传输数上限。它不数多通呼叫、发送人或实际获准发话人数。§8.3.2.7 写 positiveInteger，§8.3.2.3 声明 xs:nonNegativeInteger，两处并列；不由该配置推发送上限、话权流程、优先级排序、实际抢占或实收媒体。不和 N6 或 ad hoc、Stage 1 多发话者上限互填。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "maximum simultaneous transmissions received in one MCPTT group call for override; positiveInteger as described"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.1"
+          ],
+          "items": [
+            "OnNetwork item 10(e)"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.3"
+          ],
+          "items": [
+            "OnNetworkType local MaxSimultaneousTransmissionsN7 as xs:nonNegativeInteger"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-user-profile-limits-outline-schema-and-n7-zero",
+      "clause": "8.3.2.3",
+      "conditions": [
+        "区分 MCPTT 用户档的 .1 提纲、.3 局部 Schema 和 .7 类型说明；查次数/类型不要求知道整个文档或实际接受情况。"
+      ],
+      "conclusion": "MCPTT 用户配置档 §8.3.2.1：必需的 Common/MCPTT-group-call 内列一个 MaxSimultaneousCallsN6；OnNetwork 可无或一块，出现时各列一个 MaxAffiliationsN2 和 MaxSimultaneousTransmissionsN7。§8.3.2.3：MCPTTGroupCallType 和 OnNetworkType 各有自己的 0..unbounded choice，三者为对应父项的具名直子，声明无 default/fixed；局部 choice 不改写提纲或保证缺项、重复时整档通过。N2 为 xs:nonNegativeInteger、N6 为 xs:positiveInteger。N7 的 0 在 .3 xs:nonNegativeInteger 值域内，不符合 .7 原写的 positiveInteger；1 符合两处类型。不能擅自调和两处、解释 0、补默认或断定运行中的接受、拒绝或校验顺序。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.1"
+          ],
+          "items": [
+            "Common item 8(e)(i), optional OnNetwork items 10(c/e)"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.3"
+          ],
+          "items": [
+            "separate Common MCPTTGroupCallType and OnNetworkType choices; N2/N6/N7 exact field declarations without default or fixed"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "N7 literal positiveInteger contrasted with its xs:nonNegativeInteger declaration"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-user-profile-limits-no-named-xdms-diagnostic-or-default",
+      "clause": "8.3.2.6",
+      "conditions": [
+        "先区分配置声明、已知值、缺项和看不全；查 MCPTT 用户档本节，不把用户 Priority 或业务 CMS 的条件移植。"
+      ],
+      "conclusion": "MCPTT 用户配置档 §8.3.2.6 的通用 Schema 要求仍适用，本节没给 MaxAffiliationsN2、MaxSimultaneousCallsN6、MaxSimultaneousTransmissionsN7 专用的数值条件或 409。不借用户 Priority 的 0 到 255 或其 XDMS 诊断，也不据此断定缺字段或明填 0 会被接受。缺项、空值、摘录未知与明填 0 都不同，N7 的 .3 类型容 0、.7 positiveInteger 不容 0，没规定实际响应或零值用途。附录 A 表 A.2.1-1、A.2.2-14 均明填 N2/N6/N7 为 3/3/1，仅示例，不能当默认、要求相等或由一项补另一项。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.6"
+          ],
+          "items": [
+            "generic Schema requirement and other named validations only; no dedicated range/409 for N2/N6/N7"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.3"
+          ],
+          "items": [
+            "no local default/fixed in all three declarations"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "separate semantic types and objects; N7 type discrepancy"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "A.2.1"
+          ],
+          "items": [
+            "informative example explicitly specifies N2, N6, N7 rather than applying defaults"
+          ],
+          "tables": [
+            "A.2.1-1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "A.2.2"
+          ],
+          "items": [
+            "informative example explicitly specifies N2, N6, N7 rather than applying defaults"
+          ],
+          "tables": [
+            "A.2.2-14"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "N6 的 MO 拼写仅是原文指向，N7 的 .3/.7 类型不一致。三个字段的次数和示例不提供缺项值、运行计数、接纳、排序、话权或诊断推断；TS 24.483 [4] 只定位。"
+  ],
+  "related": [
+    "r20-identity-mcptt-user-profile-priorities",
+    "r20-identity-mcptt-user-profile-xcap-validation",
+    "r20-identity-mcptt-user-profile-group-server-info",
+    "r20-identity-mcptt-on-network-service-authorization-forwarding-caps",
+    "r20-identity-mcptt-override-priority-hierarchy-config",
+    "r20-calls-group-multi-talker-control",
+    "r20-identity-mcptt-on-network-adhoc-multi-talker-config",
+    "r20-identity-mcptt-functional-alias-service-config"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}

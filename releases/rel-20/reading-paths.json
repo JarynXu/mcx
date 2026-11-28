@@ -2269,6 +2269,36 @@
       "question": "MCPTT 用户档只看到 Priority value out of range、只看到 409，或优先级缺项，能确定是哪条校验吗？",
       "start": "topics/identity/mcptt-user-profile-priorities.md",
       "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档的在网和离网组 RelativePresentationPriority、Common/MCPTT-group-call 的用户 Priority 在 §8.3.2.6 有三个各自的 0 到 255 范围条件。确认其中一处整数越界才用该处范围句：XDMS 须返回 HTTP 409 Conflict 并含 XCAP constraint-failure，若带 phrase 则建议写 Priority value out of range，不强制带它。只见 409 或同短语不能辨别路径或验证实际响应；缺项、截断、非整数或格式错误不自动等于已证越界。0 是一个边界值，不是缺项默认。也不从同诊断推故障顺序、唯一拒因、最高/最低优先级或话权结果；其他 XCAP 检查按各自条件。"
+    },
+    {
+      "id": "mcptt-user-profile-limits-n2-authorized-group-affiliation-count",
+      "question": "MCPTT 用户配置档的 N2 限的是获准归属的组数，还是已经归属的组、正在接收的呼叫？",
+      "start": "topics/identity/mcptt-user-profile-count-limits.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档 OnNetwork/MaxAffiliationsN2 告知 MCPTT 服务器用户获准归属的 MCPTT 组数上限。§8.3.2.7 写 nonNegativeInteger，.3 声明 xs:nonNegativeInteger。它不是已经归属了几个组、某次新归属已获准或正在接收的组呼数。该句不定义显式/隐式归属的计数方法，不从 MCPTTGroupInfo 的条目数或 N6/N7 代填。"
+    },
+    {
+      "id": "mcptt-user-profile-limits-n6-concurrently-received-group-calls",
+      "question": "MCPTT 用户配置档的 N6 是同时接收的组呼数吗？字段与 §5.2.31 的拼写为什么不同？",
+      "start": "topics/identity/mcptt-user-profile-count-limits.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档 Common/MCPTT-group-call/MaxSimultaneousCallsN6 限制用户同时接收的 MCPTT 组呼数。§8.3.2.7 写 positiveInteger，.3 声明 xs:positiveInteger。它不数发起的组呼、当前归属组或一通组呼里的传输，也不等于每个功能别名的 MaxSimultaneousEmergencyGroupCalls，N6 本句不限定只数紧急组呼。档内字段为 MaxSimultaneousCallsN6，本版 §8.3.2.7 指 TS 24.483 [4] §5.2.31 印作 MaxSimultaneouCallsN6，只定位，不发明可接收的替代 XML 拼法。该值不证明已收到几通或实际取舍。"
+    },
+    {
+      "id": "mcptt-user-profile-limits-n7-concurrent-received-transmissions-within-a-call",
+      "question": "MCPTT 用户配置档的 N7 是一通组呼里的接收传输数，还是多通组呼或可发话人数？",
+      "start": "topics/identity/mcptt-user-profile-count-limits.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档 OnNetwork/MaxSimultaneousTransmissionsN7 告知 MCPTT 服务器：为抢占（for override），一次 MCPTT 组呼中同时接收的传输数上限。它不数多通呼叫、发送人或实际获准发话人数。§8.3.2.7 写 positiveInteger，§8.3.2.3 声明 xs:nonNegativeInteger，两处并列；不由该配置推发送上限、话权流程、优先级排序、实际抢占或实收媒体。不和 N6 或 ad hoc、Stage 1 多发话者上限互填。"
+    },
+    {
+      "id": "mcptt-user-profile-limits-outline-schema-and-n7-zero",
+      "question": "MCPTT 用户配置档 N2/N6/N7 的提纲和 Schema 怎么看？N7 写 0，两个类型都允许吗？",
+      "start": "topics/identity/mcptt-user-profile-count-limits.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档 §8.3.2.1：必需的 Common/MCPTT-group-call 内列一个 MaxSimultaneousCallsN6；OnNetwork 可无或一块，出现时各列一个 MaxAffiliationsN2 和 MaxSimultaneousTransmissionsN7。§8.3.2.3：MCPTTGroupCallType 和 OnNetworkType 各有自己的 0..unbounded choice，三者为对应父项的具名直子，声明无 default/fixed；局部 choice 不改写提纲或保证缺项、重复时整档通过。N2 为 xs:nonNegativeInteger、N6 为 xs:positiveInteger。N7 的 0 在 .3 xs:nonNegativeInteger 值域内，不符合 .7 原写的 positiveInteger；1 符合两处类型。不能擅自调和两处、解释 0、补默认或断定运行中的接受、拒绝或校验顺序。"
+    },
+    {
+      "id": "mcptt-user-profile-limits-no-named-xdms-diagnostic-or-default",
+      "question": "MCPTT 用户档 N2/N6/N7 缺项、示例 3/3/1 或 N7 为 0，会触发哪条 XDMS 409？是默认吗？",
+      "start": "topics/identity/mcptt-user-profile-count-limits.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档 §8.3.2.6 的通用 Schema 要求仍适用，本节没给 MaxAffiliationsN2、MaxSimultaneousCallsN6、MaxSimultaneousTransmissionsN7 专用的数值条件或 409。不借用户 Priority 的 0 到 255 或其 XDMS 诊断，也不据此断定缺字段或明填 0 会被接受。缺项、空值、摘录未知与明填 0 都不同，N7 的 .3 类型容 0、.7 positiveInteger 不容 0，没规定实际响应或零值用途。附录 A 表 A.2.1-1、A.2.2-14 均明填 N2/N6/N7 为 3/3/1，仅示例，不能当默认、要求相等或由一项补另一项。"
     }
   ]
 }
