@@ -1,0 +1,182 @@
+{
+  "topic_id": "r20-identity-mcdata-on-network-tx-rx-byte-limits",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只核 MCData 在网业务档的收发字节配置，按数据对象和角色查各项；不补离网、其他业务、其他版本的机制。查询规范不以观察到通信为前提。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "mcdata-on-network-byte-limit-originating-sds-message-data",
+      "clause": "10.4.2.7",
+      "conditions": [
+        "查在网 MCData 一条 SDS 消息中始发客户端可发送的数据量，排除仅查控制面负载的问法。"
+      ],
+      "conclusion": "§10.4.2.7 在网项 1 的 on-network/tx-and-rx-control/max-data-size-sds-bytes 是始发客户端在一条 SDS 消息中可发送的最大数据量。§10.4.2.6 说未包含此项，不施加这项 SDS 消息大小上限。控制面 SDS 负载是另一字段；此条没有定义如何计算报头或封装，不给某条消息已发送或接收的结论。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.7"
+          ],
+          "items": [
+            "on-network item 1: maximum data the originating client can send in an SDS message"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.6"
+          ],
+          "items": [
+            "standalone absence clause for max-data-size-sds-bytes"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcdata-on-network-byte-limit-originating-sds-cplane-payload",
+      "clause": "10.4.2.7",
+      "conditions": [
+        "查在网 MCData 始发客户端使用控制面在一条 SDS 消息中可发送的负载量，而非一般 SDS 消息数据量或实走承载。"
+      ],
+      "conclusion": "§10.4.2.7 在网项 2 的 on-network/tx-and-rx-control/max-payload-size-sds-cplane-bytes 是始发客户端经控制面在一条 SDS 消息中可发送的最大负载数据量。§10.4.2.6 说未包含此项，不为该 SDS 消息使用控制面程序施加这项大小上限。SDS 消息大小上限另核，不推控制面必可用、高于上限必回退到用户面、两项比较顺序或现场报文。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.7"
+          ],
+          "items": [
+            "on-network item 2: maximum payload data the originating client can send in an SDS message over C-plane"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.6"
+          ],
+          "items": [
+            "standalone absence clause for max-payload-size-sds-cplane-bytes; no size limit for use of C-plane procedures"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcdata-on-network-byte-limit-originating-fd-message-data",
+      "clause": "10.4.2.7",
+      "conditions": [
+        "查在网 MCData 的一条 FD 消息中始发客户端可发送的数据量，不查供下载时间。"
+      ],
+      "conclusion": "§10.4.2.7 在网项 3 的 on-network/tx-and-rx-control/max-data-size-fd-bytes 是始发客户端在一条 FD 消息中可发送的最大数据量。§10.4.2.6 说未包含此项，不施加这项 FD 消息大小上限。不能当作文件可下载的时长、任意文件长度或分片策略。文件可用性由 §10.4.2.3/.7 的 file-availability 另查。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.7"
+          ],
+          "items": [
+            "on-network item 3: maximum data the originating client can send in an FD message; items 5 and 6 file availability for comparison only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.6"
+          ],
+          "items": [
+            "standalone absence clause for max-data-size-fd-bytes"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.3"
+          ],
+          "items": [
+            "file-availability is separately declared in on-networkType, comparison only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcdata-on-network-byte-limit-server-terminating-unprompted-receive",
+      "clause": "10.4.2.7",
+      "conditions": [
+        "查在网 MCData 服务器发向终止客户端、不请求该用户表明当前是否需要该数据时的发送量，区分有请求分支和实际接收。"
+      ],
+      "conclusion": "§10.4.2.7 在网项 4 的 on-network/tx-and-rx-control/max-data-size-auto-recv-bytes 是服务器不请求该用户表明当前是否需要该数据时，向终止客户端可发送的最大数据量。§10.4.2.6 说未包含此项，不施加这项自动接收大小上限。它不限制始发客户端的数据量，也不规定超限时一定询问、丢弃、排队或通知；不证明用户已收到或已表明需要。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.7"
+          ],
+          "items": [
+            "on-network item 4: maximum data server can send to terminating client without requesting the user to indicate a present need for the data"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.6"
+          ],
+          "items": [
+            "standalone absence clause for max-data-size-auto-recv-bytes"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcdata-on-network-byte-limit-optional-unsigned-fields-and-scope-specific-omission",
+      "clause": "10.4.2.3",
+      "conditions": [
+        "先确定查在网业务配置和哪一个字节上限；区分完整配置已知未包含、带数字、空元素和节选中未显示，不要求手上有实际通信。"
+      ],
+      "conclusion": "§10.4.2.1 在网项 1(a)–(d) 列四项；§10.4.2.3 的 tx-and-rx-control 是 on-network 直接可选子块，四个具名子元素为 xs:unsignedInt，各 minOccurs=0，顺序按 xs:sequence，均无 default 或 fixed。所查完整在网块省略该可选父块时也没有提供四项。§10.4.2.6 对已知未包含的每项分别不施加对应的大小上限，不推总体无限。显式 0、空值或片段没显示不是省略；这一组句子不规定专属 409/phrase，不证明整档接受。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.1"
+          ],
+          "items": [
+            "on-network item 1(a)–(d): four byte fields in optional tx-and-rx-control"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.3"
+          ],
+          "items": [
+            "on-networkType optional tx-and-rx-control; on-network-tx-and-rx-controlType ordered optional xs:unsignedInt children with no default or fixed"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.6"
+          ],
+          "items": [
+            "general Schema conformity and four separate absence sentences, not adjacent file-availability or duration response rules"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "已声明的上限不是一次通信的发送、接收或交付证据；未提供一项不保证其他限制不适用。条款不规定字节计数、选面、阈值触发流程、实现默认或某次 CMS 响应。"
+  ],
+  "related": [
+    "r20-identity-mcvideo-mcdata-service-config-validation"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
