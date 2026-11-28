@@ -3,7 +3,7 @@
   "release": 19,
   "state": "clause-checked",
   "common_conditions": [
-    "IWF 已配置 MC/LMR 组及用户身份映射。"
+    "TS 23.283 V19.5.0，Rel‑19 Stage 2，MC 定义的互通组归属与取消；区分规范、流程适用性和本次已取证的消息或状态。"
   ],
   "condition_rule": "Inherit common_conditions and add claim conditions.",
   "source_catalog": "../../sources.json",
@@ -13,6 +13,7 @@
       "id": "affiliate",
       "clause": "10.1.2.2",
       "conditions": [
+        "IWF 已配置 MC/LMR 组及用户身份映射。",
         "组定义在 MC，IWF 已连接且获互通授权，拥有组信息"
       ],
       "conclusion": "IWF 请求归属；MC server 缺缓存时取组策略，检查组未禁用及给定 ID 的归属授权，按策略/订阅处理并按个人或代理模式存状态，更新 GMS 后响应。"
@@ -21,10 +22,134 @@
       "id": "deaffiliate",
       "clause": "10.1.2.3",
       "conditions": [
+        "IWF 已配置 MC/LMR 组及用户身份映射。",
         "先前已执行 §10.1.2.2 归属",
         "IWF 请求取消"
       ],
       "conclusion": "预期逐用户取消时，server 根据组策略与订阅可取消成员并可存状态；不预期逐用户取消时，该信令取消 IWF、从而取消整个 LMR 系统对此组的归属。随后更新 GMS 并响应。"
+    },
+    {
+      "id": "iwf-mc-affiliation-local-policy-cache-not-iwf-group-information",
+      "conditions": [
+        "可纯查 §10.1.2.2 的前提、缓存规则或任一已识别信息流。要判本次整支适用，才核 MC 定义互通组、IWF 与 MC 已连接且获准互通、IWF 有该组信息并已配置组及用户映射。只判确实命中缓存、请求或收到策略，分别查 MC 服务服务器本地策略或对应消息腿。"
+      ],
+      "conclusion": "步骤 1 由 IWF 代表 LMR 系统向 MC 服务服务器发归属请求。2a 是 MC 服务服务器查本地组策略；未缓存才向 GMS 请求，2b 由 GMS 回策略给 MC 服务服务器。图中 2a/2b 虚线标为 Subscribe group policy / Notify group policy。",
+      "limitations": [
+        "IWF 有组信息不保证 MC 服务服务器的策略缓存已命中。缺 2a/2b 记录不证明命中，也不能把图名读成每次都订阅／实际订阅已建或 IWF 拉取组配置。只见请求发出不证明策略已收到或存下。LMR 内部如何归属不在 .2 范围。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.1.2.2 preconditions, Figure 10.1.2.2-1 and Steps 1–6 including 2a/2b"
+          ],
+          "printed_pages": [
+            18,
+            19
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-mc-affiliation-user-authority-and-local-state-identity",
+      "conditions": [
+        "可单查校验对象、两种存储语义或已识别的一步。判断本次步骤 3 或 4 时，核实际所请求组和该步采用的身份；要判断本次存的是用户还是代理状态，核该组对本次是否预期逐人归属及相符的本地记录，不要求找到 GMS 更新或 IWF 应答。"
+      ],
+      "conclusion": "步骤 3 依组策略查所请求组未禁用，以及 IWF 提供的 MCPTT ID 所指用户是否有权归属这些组。步骤 4 由 MC 服务服务器依组策略和用户订阅为 IWF 办理该组的归属。预期逐用户归属，MC 服务服务器把用户状态关联到 IWF 提供、对应该 LMR 用户的 MC service ID；不预期逐用户归属，则用 IWF 提供的 MC service ID 保存该组代理归属状态。",
+      "limitations": [
+        "IWF 获准互通不等于步骤 3 的用户获准。原文分别写 MCPTT ID 与 MC service ID，不以网关地址、同一字符串或由 IWF 提供这一点判断两个 ID 角色必相同或必不同，也不从存代理状态推出为每个终端另存一条记录、加入通话或已收媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.1.2.2 preconditions, Figure 10.1.2.2-1 and Steps 1–6 including 2a/2b"
+          ],
+          "printed_pages": [
+            18,
+            19
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-mc-affiliation-per-user-deaffiliation-and-proxy-scope",
+      "conditions": [
+        "可单查 §10.1.2.3 前提、取消范围、每项动作或已识别消息。要判整支才核 MC 定义组、IWF 已配置组和用户映射、先前执行过 .2；判断逐人还是代理取消要核本次对目标组的处理模式，不用以前执行过 .2 代替当前状态。"
+      ],
+      "conclusion": "步骤 1 由 IWF 代表 LMR 系统向 MC 服务服务器发取消请求。步骤 2 若预期逐用户取消，依组策略和用户订阅，MC 服务服务器可取消该 LMR 成员对目标组的归属，也可存所请求组的用户状态；不预期逐用户取消时，该信令取消 IWF 对目标组的归属，因而取消它代表的整个 LMR 系统对此组的归属。",
+      "limitations": [
+        "图 2 写 Store the affiliation status，不能把正文两处“可”升格为必做，也不据本地已存状态单判取消原因。取消该组的代理归属不等于取消其他组、停止当前通话或确认了每个 LMR 端的内部动作或实际状态。不要套 LMR 定义组的 .5 步骤。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.1.2.3 preconditions, Figure 10.1.2.3-1 and Steps 1–4"
+          ],
+          "printed_pages": [
+            19,
+            20
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-mc-affiliation-gms-update-vs-iwf-response-and-observed-state",
+      "conditions": [
+        "可单查 .2/.3 任一更新、应答或本地状态定义；认定某一节点实际发出、实收、保存或当前状态时按该节点、用户或代理及目标组取证，不要求消息齐全。只有关联不同节点或角色的事件时才查本次操作、身份、组、端点和消息关联。"
+      ],
+      "conclusion": ".2 步骤 5 正文写 MCPTT server 向 GMS 发组归属状态更新；.3 步骤 3 写 MC 服务服务器向 GMS 发取消归属状态更新；两支都写 GMS 保存并更新组归属状态。这些与 MC 服务服务器另回 IWF 的 .2 步骤 6／.3 步骤 4 是不同消息。",
+      "limitations": [
+        "图没有 GMS 确认回执；本节未写必须等 GMS 实收或保存才回 IWF，也不能由图中箭头的高度推两动作同时发生。不以 MC 端发出更新或 IWF 收到同次应答代 GMS 实收和保存；也不从 GMS 已保存倒推 IWF 实收。已匹配的每组结果可读其报告，但不等于本地／GMS 状态或 LMR 收件，字段去信息流 owner。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.1.2.2 preconditions, Figure 10.1.2.2-1 and Steps 1–6 including 2a/2b"
+          ],
+          "printed_pages": [
+            18,
+            19
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.1.2.3 preconditions, Figure 10.1.2.3-1 and Steps 1–4"
+          ],
+          "printed_pages": [
+            19,
+            20
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
