@@ -4372,6 +4372,26 @@
           "read": "topics/interworking/chat-release.md"
         }
       ]
+    },
+    {
+      "id": "iwf-security-gateway-mc-layer-removal-group-key-condition",
+      "question": "IWF 何时可作加密语音的安全网关，何时必须走组密钥程序？两侧加密是否是端到端？",
+      "start": "topics/interworking/encrypted-transcoding.md#iwf-可作安全网关什么时候必须走组密钥流程",
+      "boundary": "TS 23.283 V19.5.0，Rel‑19 Stage 2 §10.9.1：MC 要求语音加密、两侧实际采用不同 codec 且需转码时，先解除 MC 系统施加的这层加密，之后可施加 LMR 加密，做法不在此规范。IWF 可以部署作安全网关，不是强制。由 IWF 解除这层 MC 加密时，才有本条针对它的义务：必须执行 TS 33.180 [8] 规定的密钥管理程序，以取得这组的密钥材料；本条不规定程序结果或取钥失败处理。[8] 未指定版次，§2 读同 Release 内的最新版，不规定具体取钥时序。仅支持、已部署、LMR 安全消息或两段都加密，不证明本次解除 MC 层或已取到密钥。已证同段语音的 MC 加密层在 IWF 被解除并转码，不是原 MC 层贯通；不据此断 LMR 必明文、其他层有或无。.3.3.1 的 MC 媒体加密与 LMR E2EE 独立，可叠加；.3.3.6 已建双向示例有自己的协商、配置及已取密钥前提，转码在 IWF 内只是示例假设。纯查条款不要求抓包；判断实际保护连续性需对同组语音、层和处理节点。引用不等于引入 KMS 或实现。",
+      "next_if": [
+        {
+          "condition": "实际是传递透明的 LMR 安全消息及它的传输角色，不是 MC 加密语音的处理。",
+          "read": "topics/interworking/lmr-security-transport.md"
+        },
+        {
+          "condition": "实际问互通私呼的 MC 保护和 LMR E2EE，按私呼条款核，不套组呼示例。",
+          "read": "topics/interworking/private-encryption.md"
+        },
+        {
+          "condition": "实际问已辨明的 TS 33.180 组密钥分发流程，而非 TS 23.283 §10.9.1 条件义务；另外核所引版本及角色。",
+          "read": "topics/security/group-key-distribution.md"
+        }
+      ]
     }
   ]
 }

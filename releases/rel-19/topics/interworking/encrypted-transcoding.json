@@ -3,7 +3,7 @@
   "release": 19,
   "state": "clause-checked",
   "common_conditions": [
-    "MCPTT 会话已建立且媒体正在传输；IWF/server 已协商编解码及安全参数；IWF 配置支持转码，并按 TS33.180 取得 MCPTT 密钥材料。"
+    "TS 23.283 V19.5.0，Rel‑19 Stage 2，MCPTT 与 LMR 间的加密语音互通；按声明区分 §10.9.1 的安全网关条件、§10.3.3.6 双向示例及加密层对照。"
   ],
   "condition_rule": "Inherit common_conditions and add claim conditions.",
   "source_catalog": "../../sources.json",
@@ -13,6 +13,7 @@
       "id": "mc-to-lmr",
       "clause": "10.3.3.6 steps 1–4",
       "conditions": [
+        "MCPTT 会话已建立且媒体正在传输；IWF/server 已协商编解码及安全参数；IWF 配置支持转码，并按 TS33.180 取得 MCPTT 密钥材料。",
         "MCPTT 客户端持有话权并发媒体"
       ],
       "conclusion": "IWF 解密 MCPTT 语音、转为 LMR 编解码，必要时按 LMR 安全过程重新加密后发往 LMR。"
@@ -21,6 +22,7 @@
       "id": "lmr-to-mc",
       "clause": "10.3.3.6 steps 5–10",
       "conditions": [
+        "MCPTT 会话已建立且媒体正在传输；IWF/server 已协商编解码及安全参数；IWF 配置支持转码，并按 TS33.180 取得 MCPTT 密钥材料。",
         "话权空闲后 IWF 请求并获授话权"
       ],
       "conclusion": "LMR 语音若已加密，先按 LMR 过程解密；转为 MCPTT 编解码，再按 TS33.180 加密，经 MCPTT server 转发。"
@@ -29,9 +31,149 @@
       "id": "placement",
       "clause": "10.3.3.6 NOTE",
       "conditions": [
+        "MCPTT 会话已建立且媒体正在传输；IWF/server 已协商编解码及安全参数；IWF 配置支持转码，并按 TS33.180 取得 MCPTT 密钥材料。",
         "理解部署位置"
       ],
       "conclusion": "该流程假设转码位于 IWF 内部，但转码实际位置不由本规范规定；不能把示例假设当部署强制要求。"
+    },
+    {
+      "id": "iwf-security-gateway-optional-deployment-required-mc-layer-removal-before-needed-transcoding",
+      "conditions": [
+        "可独立查 §10.9.1 的可部署性、转码与保护先后，无需先证明 §10.3.3.6 的已建会话。判一次实际处理时，先找这段语音的 MC 加密层、双方所用 codec、是否转码及处理节点。"
+      ],
+      "conclusion": "§10.9.1：MC 系统要求语音媒体加密且两侧采用不同 codec 需要转码的场景，转码前必须解除 MC 系统施加的语音加密；之后可以施加 LMR 加密，其做法不在本规范范围。IWF 可以承担这些功能并部署成 MCPTT 与 LMR 之间的安全网关，不是所有互通的强制部署。",
+      "limitations": [
+        "MC 要求加密或两侧 codec 不同，本身不代实际加密或处理证据。仅见 IWF、配置支持转码或称为安全网关，不能断它本次解密或实际采取某部署。不能把相同 codec、未知 MC 加密与此条件互换，或从本条导出其他情况的方案。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.9.1 (MC-layer removal before conversion, optional security gateway/LMR encryption, conditional group key management)"
+          ],
+          "printed_pages": [
+            152
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-security-gateway-key-management-required-when-iwf-removes-mc-encryption",
+      "conditions": [
+        "可直接问 §10.9.1 何时要求 IWF 做密钥管理、为了哪组，或查 [8] 的版次指针；只查规范不需先有会话日志。要断某个 IWF 在实况里的义务、执行或取得密钥，按同一组和实际解除的保护层分别核证。"
+      ],
+      "conclusion": "由 IWF 解除 MC 系统施加的这层语音加密时，IWF 必须执行 TS 33.180 [8] 规定的密钥管理程序，以取得该组密钥材料；本条不规定程序结果或取钥失败处理。§2 [8] 未指定版次，对 3GPP 非特指引用按本规范所属 Release 内的最新版读取；此处不展开 TS 33.180 正文。",
+      "limitations": [
+        "不因看到网关部署、两侧加密或 LMR 安全消息载荷，就宣称本次触发、取得密钥、密钥可用或已用。条件不成立或未知，不由本条否定其他密钥义务；条件不是‘解密之后才取钥’的时序；不补 KMS 框架、服务器角色、端点、消息或算法。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.9.1 (MC-layer removal before conversion, optional security gateway/LMR encryption, conditional group key management)"
+          ],
+          "printed_pages": [
+            152
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "2 References [8] (TS 33.180 designation and non-specific same-release rule only)"
+          ],
+          "printed_pages": [
+            11
+          ],
+          "usage": "dependency"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-security-gateway-protected-segments-not-continuous-original-mc-layer",
+      "conditions": [
+        "可直接比较 §10.9.1 处理与 §10.3.3.1 的两层保护。要判某段语音的保护是否贯穿，只在绑定同组、同段语音、同一保护层及实际经过的处理节点后判断，不凭相邻两段各自的加密外观。"
+      ],
+      "conclusion": "若已证同段语音由 IWF 解除了原 MC 层并转码，那么该 MC 加密层未原样贯穿 IWF；转码之后可另施加 LMR 加密。§10.3.3.1 写预安排组呼可在 IWF 与 MCPTT 客户端间使用 MC 媒体加密，独立于、也可叠加于 LMR E2EE；用 LMR 声码器且主被叫已预配适当 LMR 密钥时可用后者。",
+      "limitations": [
+        "看见双侧加密并不证明同层贯通或断开；只证 MC 层解除也不证明 LMR 一侧必明文、实际部署采用端到端保护或其他层必不存在。不凭同 codec、MC 加密配置或 IWF 标签推出 LMR E2EE 条件已满足。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.9.1 (MC-layer removal before conversion, optional security gateway/LMR encryption, conditional group key management)"
+          ],
+          "printed_pages": [
+            152
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.3.1 NOTE (separate MC media encryption and LMR E2EE, scoped group call)"
+          ],
+          "printed_pages": [
+            40
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-security-gateway-generic-security-role-vs-ongoing-encrypted-group-example",
+      "conditions": [
+        "可独立查 §10.9.1 是否要求部署，以及 §10.3.3.6 图和 NOTE 的位置假定；若问图示的运行场景才核该示例的已建会话、当前传输、协商和取得密钥前提。"
+      ],
+      "conclusion": "§10.9.1 给 IWF 安全网关的可选角色及解除 MC 保护时的条件义务。§10.3.3.6 是已建组呼的双向处理示例，IWF/server 已协商 vocoder 和安全参数，配置支持转码且 IWF 已按所引程序取得 MC 密钥。该示例 NOTE 仅假设转码在 IWF 内进行，实际放在哪里不在规定范围。",
+      "limitations": [
+        "不把示例前提当成 §10.9.1 查通用能力或密钥义务的门槛，不从图推网关必内置、任意外置位置允许或这次已部署。若问 LMR 安全消息运输或真实到达、解密/转码/加密或终端播放，按各自实际事件，不据拓扑补证。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.9.1 (MC-layer removal before conversion, optional security gateway/LMR encryption, conditional group key management)"
+          ],
+          "printed_pages": [
+            152
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.3.6 preconditions, Figure 10.3.3.6-1, Steps 4 and 8 and NOTE (existing example and location scope only)"
+          ],
+          "printed_pages": [
+            46,
+            47
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
