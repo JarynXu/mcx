@@ -1,0 +1,168 @@
+{
+  "topic_id": "r20-identity-mcptt-on-network-signalling-protection-config",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只核 MCPTT 在网业务档的两段信令保护配置，不看离网、其他业务、初始档的启用条件或现场消息。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "mcptt-signalling-protection-client-server-confidentiality-and-integrity",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "查 MCPTT 在网业务配置中客户端与服务器之间 MCPTT 信令的保密性或完整性开关。"
+      ],
+      "conclusion": "signalling-protection 内的 confidentiality-protection（项 33）表示 MCPTT 客户端与服务器之间信令保密性是否启用；integrity-protection（项 34）表示同一段信令完整性是否启用。分别读两个布尔值，不从一个保护或一端的开关推出另一个、服务器之间的保护或实际信令已保护。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network items 33 and 34, MCPTT client/server signalling confidentiality versus integrity"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1"
+          ],
+          "items": [
+            "on-network item 8 and listed children"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-signalling-protection-inter-server-signalling-and-floor-control",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "查 MCPTT 在网业务配置中服务器之间的 MCPTT 信令保护或话权控制信令保护，非客户端与服务器之间。"
+      ],
+      "conclusion": "protection-between-mcptt-servers 内的 allow-signalling-protection（项 38）表示 MCPTT 服务器之间的 MCPTT 信令保护是否启用；allow-floor-control-protection（项 39）表示同一段 MCPTT 话权控制信令保护是否启用。两项应分别核对；项 38 未定义其与项 39 的覆盖、优先或联动，也不以客户端配置代用，不由布尔值判实际保护或算法。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network items 38 and 39, inter-MCPTT-server signalling and floor-control signalling"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1"
+          ],
+          "items": [
+            "on-network item 12 and listed children"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-signalling-protection-four-true-named-defaults-client-constraints-repeat-two",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "查这四个在网保护字段的具名默认值来源，区分默认声明、相邻说明和实际配置证据。"
+      ],
+      "conclusion": "§8.4.2.7 注 4 点名 confidentiality-protection、integrity-protection、allow-signalling-protection、allow-floor-control-protection，默认均为 true；§8.4.2.3 四个布尔叶亦各声明 default=true。§8.4.2.6 只另述前两个客户端与服务器间字段的默认 true 表示对应保护启用，不是后两个的默认来源或四项专属 409 诊断。表 A.2.3-12 在网示例显式填写四个 true，不能证明默认在该例、部署或具体会话中被采用。注 4 不扩到相邻项 45 或别名优先级。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network Note 4 names only the four protection fields; location after item 45 does not assign it a default"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "two standalone client/server default statements for confidentiality-protection and integrity-protection only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "four boolean child declarations each default=true; independent parent presence"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "A.2.3"
+          ],
+          "items": [
+            "informative explicit values in the on-network CMS to MCPTT server HTTP response"
+          ],
+          "tables": [
+            "A.2.3-12"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-signalling-protection-optional-xsd-no-missing-node-insertion",
+      "clause": "8.4.2.3",
+      "conditions": [
+        "按 XSD 校验语义比较两个在网父块、各布尔子项的出现约束和值；区分确认缺失、出现但空、显式 false 与片段未见。"
+      ],
+      "conclusion": "§8.4.2.1 在网项 8、12 各列可选父块与子项；§8.4.2.3 精确声明两个父块及四个子项各 minOccurs=0。只有四个布尔子项带 default=true，没有 fixed；按通用 XSD 元素默认语义，有效出现且没有元素或字符内容的布尔子项可取默认，不补不存在的子项或父块，也不覆盖显式 false。父块存在但没有子项仍是缺子项；只看到片段尚不能判断缺失。只论校验中元素是否出现和值，不据此判整档获 CMS 接收、自动写回或缺字段会话如何保护。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "optional on-network parents with no default and four child xs:boolean minOccurs=0 default=true declarations; XML Schema general element default meaning, not deployed behavior"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1"
+          ],
+          "items": [
+            "on-network optional structure items 8 and 12 and their child lists"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network Note 4 names defaults, not a parent materialization or runtime rule"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "通用 XSD 默认仅解释校验语义，不判断 CMS 回填、实际使用的 TLS、CSK、保护算法或会话结果。",
+    "不转用到离网、别版、MCVideo 或 MCData；也不从 §8.4.2.6 前两项默认文字推后两项无默认。"
+  ],
+  "related": [
+    "r20-identity-initial-ue-tls-tunnel-validation",
+    "r20-identity-mcptt-service-config-structure-and-extensions-validation"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
