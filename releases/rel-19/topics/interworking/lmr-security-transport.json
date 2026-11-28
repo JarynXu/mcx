@@ -32,6 +32,197 @@
         "构造Non-3GPP security message信息流"
       ],
       "conclusion": "发送与目标安全实体对应的两个MC service ID及透明载荷为必需；LMR type一般标为可选，但向MC客户端发送时必需。"
+    },
+    {
+      "id": "iwf-lmr-security-four-logical-directions-and-distinct-end-to-end-endpoints",
+      "conditions": [
+        "可纯查这张表的方向、某支的任一步或已辨明的一腿。主题的 IWF 和 LMR-aware MC 业务客户端是端到端角色，判日志中的一条中继消息不要求两者直接相邻，也无需有两段记录或证明完整前提。"
+      ],
+      "conclusion": "§10.12.1.1 表 10.12.1.1-1 的导语列 4 方向。.2.2 客户端发起：1 MC 业务客户端→MC 业务服务器，2 服务器→IWF；.2.3 IWF 发起：1 IWF→MC 业务服务器，2 服务器→MC 业务客户端。四个箭头同为 Non-3GPP security message。端到端含义与具体 MC 业务独立，3GPP 传输只通过 MCData 实现。",
+      "limitations": [
+        "消息名不代方向、发起者或配对。逻辑端到端不等于物理直连，不把中继改成另一安全实体的终端。MCData 承载不指定具体 SDS 消息类型、Stage 3 编码或直接使用另一章的字段，不把该消息当 IWF‑1 LMR 格式语音媒体。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.12.1.1 introduction and Table 10.12.1.1-1 (four directions, two identities, LMR type, opaque payload)"
+          ],
+          "printed_pages": [
+            163
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.12.2.1 (opaque end-to-end transport endpoints, MCData implementation)"
+          ],
+          "printed_pages": [
+            163
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.12.2.2 precondition, Figure 10.12.2.2-1 and Steps 1–2 (MC client initiation)"
+          ],
+          "printed_pages": [
+            163,
+            164
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.12.2.3 precondition, Figure 10.12.2.3-1 and Steps 1–2 (IWF initiation)"
+          ],
+          "printed_pages": [
+            164
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-lmr-security-mandatory-two-security-entity-identities-and-opaque-payload",
+      "conditions": [
+        "可单查 .1.1 表字段或一个已识别的方向，不需要证明另一腿、客户端注册或内容解码。判断实际两项身份的角色按所支持的安全实体，不由眼前的传输节点猜。"
+      ],
+      "conclusion": "表 10.12.1.1-1 的两项 MC service ID 均为 M：第一项是支持发送方 LMR 安全实体的 MC 业务身份，第二项是支持数据目标 LMR 安全实体的 MC 业务身份。MC 业务服务器转发的出向一腿不使它自动成为第一项身份，接收中继也不自动是第二项。Payload 为 M，表称不透明载荷（Opaque payload）。透明指经 MC 业务转递，不指 MC 业务能理解载荷内容；内容与格式在 3GPP 范围外。",
+      "limitations": [
+        "不由网元名字定值；表不规定两个取值必须不同、不补 UE／网关 ID、线级字段名、完整合规或安全实体确认。M 规定有载荷而非其编码、是否加密或端点实际可处理；不需要打开真实安全内容查表。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.12.1.1 introduction and Table 10.12.1.1-1 (four directions, two identities, LMR type, opaque payload)"
+          ],
+          "printed_pages": [
+            163
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.12.2.1 (opaque end-to-end transport endpoints, MCData implementation)"
+          ],
+          "printed_pages": [
+            163
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-lmr-security-lmr-type-optional-column-and-literal-toward-client-condition",
+      "conditions": [
+        "可独立查 LMR type 一行。核实际字段缺失是否与此要求冲突，先证实这笔是该表消息、确定所查发送方向，并有完整字段记录；仅凭最终客户端方向或中继名称不能替代该判断。"
+      ],
+      "conclusion": "表 10.12.1.1-1 标 LMR type 为 O，描述为 LMR 技术（TETRA、P25 是例子），又明确向 MC 业务客户端发送时必带。已辨认的 MC 业务服务器→MC 业务客户端明确符合这个条件；若已证是向 IWF 送消息，不触发这条面向客户端的附加必带条件。只有 IWF→服务器、业务最终面向客户端时，原文仍用 toward；没有逐跳规定字段在哪一腿首次带或由中继如何继承。",
+      "limitations": [
+        "不把表的 O 当每次均可省，不把向客户端必带写成其他方向不能带或直接规定所有中继腿都必带；缺抓包不代实际缺失，字段出现不证明有效、安全保护生效或端点支持。表不列排他枚举、默认值、错误处置或跨腿复制规则。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.12.1.1 introduction and Table 10.12.1.1-1 (four directions, two identities, LMR type, opaque payload)"
+          ],
+          "printed_pages": [
+            163
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.12.2.2 precondition, Figure 10.12.2.2-1 and Steps 1–2 (MC client initiation)"
+          ],
+          "printed_pages": [
+            163,
+            164
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.12.2.3 precondition, Figure 10.12.2.3-1 and Steps 1–2 (IWF initiation)"
+          ],
+          "printed_pages": [
+            164
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-lmr-security-both-client-prerequisites-and-forwarding-vs-actual-delivery",
+      "conditions": [
+        "可单查任一分支的前提、步骤 2 或已识别的一条消息。判整支的实际资格才核客户端注册、用户认证和使用权限；只验证某节点是否实际发／收，按相应节点证据；跨腿关联再核同一消息、角色、方向和上下文。"
+      ],
+      "conclusion": "§10.12.2.2/.3 两支均列 MC 业务客户端已注册、用户已认证且获准使用 MC 业务服务器，即使第 1 步由 IWF 发起。两支第 2 步明写服务器转发第 1 步的消息内容，分别往 IWF 或 MC 业务客户端。内容对 MC 业务不透明；两图各两箭头，没有另立第三条确认。",
+      "limitations": [
+        "不把前提写成具体鉴权步骤，也不由实际发出反推资格、服务端实收、另一腿发出或目标实收。从转发内容不推整份消息／外层字段逐字节复制、底层无确认、终端解码、实际使用或密钥已装／更新。这里只核 Stage 2 传输职责，不处理密钥格式或算法。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.12.2.1 (opaque end-to-end transport endpoints, MCData implementation)"
+          ],
+          "printed_pages": [
+            163
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.12.2.2 precondition, Figure 10.12.2.2-1 and Steps 1–2 (MC client initiation)"
+          ],
+          "printed_pages": [
+            163,
+            164
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.12.2.3 precondition, Figure 10.12.2.3-1 and Steps 1–2 (IWF initiation)"
+          ],
+          "printed_pages": [
+            164
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
