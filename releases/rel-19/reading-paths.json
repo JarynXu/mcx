@@ -5216,6 +5216,34 @@
           "read": "topics/interworking/floor-control-owner.md"
         }
       ]
+    },
+    {
+      "id": "iwf-floor-filtering-general-reference-vs-actual-branch",
+      "question": "总则的编号和实际过滤场景对不上时，怎么选 IWF 话权流程？",
+      "start": "topics/interworking/floor-filtering.md#总则的编号和实际过滤场景对不上时怎么选",
+      "boundary": "TS 23.283 V19.5.0 Rel‑19 Stage 2 §10.5.1，印刷页 103，和具体分条对读。总则字面 .4／.6 对应 LMR 定义组、.5／.7 对应 MCPTT 定义组，并讲伙伴侧联主系统前配置做／不做本地过滤，未列 .8；不要用它选分支或据斜线给过滤开关。实际都看进行中、起初话权空闲且两侧相关用户已归属的组呼条件：LMR 侧组 .5 归属 LMR、MCPTT server 本地过滤，.7 定义在 LMR、MCPTT 侧不滤而把竞争请求经 IWF 交给 LMR 仲裁；MCPTT 侧组 .6 归属 MCPTT 且已在 GMS 定义、LMR 本地过滤，.8 定义在 MCPTT、LMR 经 IWF 转交所有竞争请求，并同时查 IWF 不代理本组 LMR 用户归属及所有 LMR 组归属是否透传至 MCPTT server。只见一条转交不判过滤、授予或实收。组 .4 是 MCPTT 定义、MCPTT server 主控的已建互通会话：旧话者已持有话权并在发语音，电台不能被告知占用／撤销，本例覆盖配置允许新旧同时发，不是过滤开关。总则说包括私呼，不要求每通私呼启用话权；实际已建且启用的互通私呼按 LMR 经 IWF 主控 .9、MCPTT server 主控 .10 另选，不能按起呼者猜。纯查规则或单个已辨明步骤不需要完整现场链。",
+      "next_if": [
+        {
+          "condition": "问已辨明确属 LMR 归属／定义组的 MCPTT 本地筛选、转交和响应各腿，或纯查 .5/.7 的步骤。",
+          "read": "topics/interworking/floor-filtering.md#lmr-组主控谁拒绝竞争请求哪条才是最终授予"
+        },
+        {
+          "condition": "问已辨明确属 MCPTT 归属／定义组的 LMR 筛选或透传、Reject/Taken 粒度及 .8 代理 NOTE，或纯查 .6/.8 的步骤。",
+          "read": "topics/interworking/floor-filtering.md#mcptt-组主控拒绝和占用通知分别按谁发"
+        },
+        {
+          "condition": "实际问有旧话者且不能被告知的覆盖，或只查 .4 的请求、提示或授回条件。",
+          "read": "topics/interworking/floor-override.md"
+        },
+        {
+          "condition": "问已经建立且采用话权控制的互通私呼的两种主控，或查主控与非主控各自转交职责。",
+          "read": "topics/interworking/floor-control-owner.md#已建立的私呼里谁裁决话权"
+        },
+        {
+          "condition": "只查已辨认的 IWF 与 MCPTT server 之间 Stage 2 消息的方向、角色和字段；不以判完组的过滤模式为前提。",
+          "read": "topics/interworking/floor-signals.md"
+        }
+      ]
     }
   ]
 }
