@@ -257,6 +257,117 @@
         "independent_source_review": false,
         "independent_usage_acceptance": false
       }
+    },
+    {
+      "id": "iwf-simultaneous-regroup-mc-temporary-signalling-do-not-propagate-to-unsupported-lmr",
+      "conditions": [
+        "可直接查 §10.2.2.5 的方向、条件和约束强度，无需实际抓到两侧的请求。判断一次现场是否符合这个拦截条件，核对 MC 侧实际使用的重组信令是否采用临时组，以及所连目标 LMR 系统是否确实不支持重组。"
+      ],
+      "conclusion": "为避免 IWF-1 两侧重组同一批用户带来的路由问题，§10.2.2.5 引言说可采用列出的规则。若 MC 侧使用临时组的重组信令，而目标 LMR 系统不支持重组，IWF 必须阻止这种信令传到该 LMR；引言不把这项 must 改成可选。",
+      "limitations": [
+        "该规则针对 MC→LMR 的这类信令，不规定反向、普通组呼、媒体、所有 IWF 流量或重组结果。LMR 支持重组不推出必须转发，未知不作不支持；普通组呼支持也不能代替重组支持。GMS 与 IWF 之间的申请、应答及不完整记录中未见 LMR 消息，均不能证明已转发、实收或已拦截；分别核具体 IWF 发出和 LMR 实收。只查条文不要求看到并发；判断实际并发仍要核两侧请求的发生及上下文，条文无仲裁、先后、检测或回滚规则。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.2.5 (simultaneous IWF-1 regroup; conditional signalling guard, separate identity translation and TS 23.280 pointer)"
+          ],
+          "printed_pages": [
+            29
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-simultaneous-regroup-translate-mc-temporary-id-and-lmr-original-interworking-id",
+      "conditions": [
+        "可独立查组 ID 角色与责任，不需要已有映射日志。判断实际一次转换，核对同次操作中的 MC 临时组、LMR 原有互通组和 IWF 的实际处理。"
+      ],
+      "conclusion": "§10.2.2.5 另列 IWF 必须处理 MC 侧临时组标识与 LMR 侧所用原有互通组标识之间的转换。前项 LMR 不支持重组的条件不连到这一项。§10.2.2.2 步骤 6 的注不规定 IWF 怎样用临时组 ID，不取消这里的转换责任。",
+      "limitations": [
+        "不从存在临时组、应答成功、配置名称或两个 ID 同名／不同名推出本次已转换。不能把成员 ID、组成组列表或提供配置的组当成这两个角色；不推 LMR 新建临时组、标识必不同、一对一关系、分配时点、字段或实现算法。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.2.5 (simultaneous IWF-1 regroup; conditional signalling guard, separate identity translation and TS 23.280 pointer)"
+          ],
+          "printed_pages": [
+            29
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.2.2 Step 6 NOTE (IWF use of temporary group ID; scope comparison only)"
+          ],
+          "printed_pages": [
+            28
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-simultaneous-regroup-preconfigured-scope-retains-reference-and-rejection",
+      "conditions": [
+        "可独立查 §10.3.7.1 是否仍应用 §10.2.2.5、该拒绝前提，或 §10.2.2.5 回指的条款；实况应用拒绝前提时核这次请求的组成组及实际已有重组。"
+      ],
+      "conclusion": "§10.3.7.1 的预配置组重组只服务 MCPTT，独立于 §10.2.2 的组重组流程，但末段明说 §10.2.2.5 的规则适用。若任一所请求的 MCPTT 组成组已按 TS 23.280 或 §10.2.2 重组，这次预配置请求必须拒绝。§10.2.2.5 写 TS 23.280 [5] §10.2.4.4 的规则也适用；§2 对未指定版次的 3GPP 引用读同 Release 内最新版。",
+      "limitations": [
+        "不把组标识转换当成预配置重组的接受条件或绕过拒绝的办法，也不把这一拒绝当成第一项信令拦截的同一动作。TS 23.280 这里只定位回指，未据它填充流程、并发裁决、错误码或通用拒绝策略。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.7.1 final paragraph (MCPTT-only independent procedure, prior regroup rejection and explicit 10.2.2.5 applicability)"
+          ],
+          "printed_pages": [
+            73
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.2.5 (simultaneous IWF-1 regroup; conditional signalling guard, separate identity translation and TS 23.280 pointer)"
+          ],
+          "printed_pages": [
+            29
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "2 References [5] (TS 23.280 designation and non-specific same-release reading rule only)"
+          ],
+          "printed_pages": [
+            11
+          ],
+          "usage": "dependency"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
