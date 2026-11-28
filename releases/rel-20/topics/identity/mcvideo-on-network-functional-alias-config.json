@@ -1,0 +1,202 @@
+{
+  "topic_id": "r20-identity-mcvideo-on-network-functional-alias-config",
+  "release": 20,
+  "state": "clause-checked",
+  "standard_stage": 3,
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只查 MCVideo 在网业务档 on-network/anyExt 的功能别名列表、条目和同级业务授权上限。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "claims": [
+    {
+      "id": "mcvideo-on-network-functional-alias-outer-extension-and-list-occurrence",
+      "clause": "9.4.2.3",
+      "conditions": [
+        "查同一在网服务文档的结构文字与 Schema 出现约束，不把局部声明当整文档验收。"
+      ],
+      "conclusion": "§9.4.2.1 在网 6(a)(i) 在可选外层 anyExt 内列 functional-alias-list，结构文字写一个或多个 functional-alias-entry。§9.4.2.3 单独全局声明列表，不是 on-network 的具名直接子项；列表类型中的 functional-alias-entry 声明 0..unbounded。列表与条目各自另有可选 anyExt 和 ##other 元素通配项。局部 0 不覆盖原文一个或多个，不代表空列表可被 CMS 接受，也不把实际可重复的条目仅凭同名判成重复错误。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.1"
+          ],
+          "items": [
+            "on-network 6(a)(i): one or more functional-alias-entry elements within functional-alias-list and optional enclosing anyExt"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.3"
+          ],
+          "items": [
+            "optional outer anyExt, global list, local entry 0..unbounded, separate list/entry anyExt and ##other wildcard"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-on-network-functional-alias-priority-prose-vs-global-schema",
+      "clause": "9.4.2.7",
+      "conditions": [
+        "区分文字结构、用途和 Schema 声明，回答配置含义不需要假定已验证实际 XML。"
+      ],
+      "conclusion": "§9.4.2.1 在网 6(a)(i)(E) 和 §9.4.2.7 项 12 把 functional-alias-priority 写在条目内。§9.4.2.3 的 functional-alias-entryType 在序列中声明四个必需的具名字段：functional-alias、max-simultaneous-activations、allow-takeover、mcvideo-user-list；functional-alias-priority 是另列的全局 xs:positiveInteger，并非第五个具名子项。可选的内层 anyExt 或 ##other 不是已证可用的替代路径。项 12 表示别名相对优先级；注 2 仅将这个参数的 MCVideo 服务器用法留给实现，不规定排序方向、平局处理或自动接管，不判实际接受或拒绝。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.1"
+          ],
+          "items": [
+            "on-network 6(a)(i)(A–E): prose includes per-entry functional-alias-priority"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.3"
+          ],
+          "items": [
+            "four named entry children plus extension; separate global priority as xs:positiveInteger"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "on-network item 12 relative priority as positiveInteger; NOTE 2 server usage left to implementation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-on-network-functional-alias-activation-cap-vs-user-authorizations",
+      "clause": "9.4.2.7",
+      "conditions": [
+        "先确定读者所数的是某个别名的激活，还是某位 MCVideo 用户的业务授权，而非现场状态。"
+      ],
+      "conclusion": "§9.4.2.7 在网项 9 的 max-simultaneous-activations 是条目对应功能别名允许的并发激活数量。项 13 的 max-simultaneous-authorizations 是每位 MCVideo 用户同时拥有的业务授权数量上限。§9.4.2.1 在网项 6(b) 和 §9.4.2.7 项 13 把后者写在外层 anyExt、与功能别名列表同级，不是别名条目的子项；§9.4.2.3 分别有条目内的前者和全局的后者，两项均为 xs:positiveInteger。不互换两种计数，也不从类型补默认、超额处理、实际授权或专用 409。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.1"
+          ],
+          "items": [
+            "on-network 6(a)(i)(B) per-entry and 6(b) simultaneous authorizations as outer sibling"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.3"
+          ],
+          "items": [
+            "local activation positiveInteger and separate global authorizations positiveInteger"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "on-network item 9 per-alias concurrent activations; item 13 concurrent service authorizations per MCVideo user"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-on-network-functional-alias-takeover-of-active-alias",
+      "clause": "9.4.2.7",
+      "conditions": [
+        "查对应别名配置时区分可接管条件、首次激活名单及已观察到的现场动作。"
+      ],
+      "conclusion": "§9.4.2.7 在网项 10 的 allow-takeover 是一个布尔值，指是否允许另一位 MCVideo 用户接管对应条目中已激活的功能别名。它不等于项 11 的可激活用户名单或项 12 的相对优先级，不是未激活别名的首次激活许可。只见配置为 true 不证明发生或成功接管，不推执行时机、排序或合并条件。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.1"
+          ],
+          "items": [
+            "on-network 6(a)(i)(C) allow-takeover in functional alias entry"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.3"
+          ],
+          "items": [
+            "local allow-takeover declaration as xs:boolean"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "on-network item 10 another MCVideo user may take over a currently activated alias; items 11/12 comparison only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-on-network-functional-alias-eligible-user-id-vs-alias-uri",
+      "clause": "9.4.2.7",
+      "conditions": [
+        "区分别名身份、条目对应的可激活者身份和现场是否完成激活，不把字段类型等同于授权结果。"
+      ],
+      "conclusion": "§9.4.2.7 在网项 8 的 functional-alias 是别名身份 URI；项 11 的 mcvideo-user-list/entry 放的是可激活该别名的 MCVideo 用户的 MCVideo ID，原文把项类型写作 entryType。§9.4.2.3 中条目内的 mcvideo-user-list 为必需的 mcvideosc:ListEntryType，其选择项是 0..unbounded，出现 entry 时使用 mcvideosc:EntryType，必需 xs:anyURI 的 uri-entry、可选 display-name。局部选择项可为零不免除列表容器，不判整体空表可被接受。不要用显示名或别名 URI 代用户 ID，也不从名单推实际激活、接管或授权结果。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.1"
+          ],
+          "items": [
+            "on-network 6(a)(i)(A)/(D) distinct functional alias and user list"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.3"
+          ],
+          "items": [
+            "required mcvideo-user-list ListEntryType; 0..unbounded choice; EntryType/uri-entry required, display-name optional"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "on-network item 8 functional alias identity anyURI; item 11 lowercase entryType, MCVideo ID of eligible user"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "不替两处原文补优先级扩展路径、实际 CMS 解析、异常分类或专用响应。不借 MCPTT、MCData、个人档或引用正文推相同配置义务、取值算法或运行结果。"
+  ],
+  "related": [
+    "r20-identity-mcptt-functional-alias-service-config",
+    "r20-identity-mcdata-on-network-functional-alias-config",
+    "r20-identity-mcvideo-mcdata-service-config-validation"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
