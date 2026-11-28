@@ -1867,6 +1867,36 @@
       "question": "用功能别名 URI、用户列表的哪一项，判断谁可激活这个 MCVideo 别名？",
       "start": "topics/identity/mcvideo-on-network-functional-alias-config.md",
       "boundary": "TS 24.484 V20.1.0 §9.4.2.7 在网项 8 的 functional-alias 是别名身份 URI；项 11 的 mcvideo-user-list/entry 放的是可激活该别名的 MCVideo 用户的 MCVideo ID，原文把项类型写作 entryType。§9.4.2.3 中条目内的 mcvideo-user-list 为必需的 mcvideosc:ListEntryType，其选择项是 0..unbounded，出现 entry 时使用 mcvideosc:EntryType，必需 xs:anyURI 的 uri-entry、可选 display-name。局部选择项可为零不免除列表容器，不判整体空表可被接受。不要用显示名或别名 URI 代用户 ID，也不从名单推实际激活、接管或授权结果。"
+    },
+    {
+      "id": "mcvideo-off-network-priority-separate-optional-config-blocks",
+      "question": "MCVideo 离网 ProSe 和 PQI 是同一个配置块吗？父块或同名字段缺了有默认值吗？",
+      "start": "topics/identity/mcvideo-service-off-network-priority-values.md",
+      "boundary": "TS 24.484 V20.1.0 §9.4.2.1 离网项 1/3 分别列 default-prose-per-packet-priority 和 default-pqi；§9.4.2.3 在 off-network 下各有独立直接声明，两个父块均 minOccurs=0。两个类型各有四个同名的私呼字段，共八个局部声明，都是 xs:unsignedShort、minOccurs=0，均无 default/fixed。字段名的 default- 不是声明数值。外部设备离线配置、私呼总时长、抢占层级均不同；不推两块必同时出现、同一值、缺项回填或实际接纳。"
+    },
+    {
+      "id": "mcvideo-off-network-priority-four-private-call-uses-and-pointers",
+      "question": "MCVideo 离网普通或紧急私呼的信令与媒体，各看哪个字段和 TS 24.483 入口？",
+      "start": "topics/identity/mcvideo-service-off-network-priority-values.md",
+      "boundary": "TS 24.484 V20.1.0 §9.4.2.7 离网项 1(a–d) ProSe 和 4(a–d) PQI 各列：mcvideo-private-call-signalling 是普通私呼信令，MCVideoPrivateCallSignalling（TS 24.483 [4] §14.2.12）；mcvideo-private-call-media 是普通私呼媒体，MCVideoPrivateCallMedia（§14.2.13）；mcvideo-emergency-private-call-signalling 是紧急私呼信令，MCVideoEmergencyPrivateCallSignalling（§14.2.14）；mcvideo-emergency-private-call-media 是紧急私呼媒体，MCVideoEmergencyPrivateCallMedia（§14.2.15）。普通只与字段名带 emergency 的两格相对。两父块的对应指向相同，只作引文指向，不补目标正文、版本、值相同、回退或现场选择。"
+    },
+    {
+      "id": "mcvideo-off-network-priority-prose-single-value-and-validation",
+      "question": "MCVideo 离网 ProSe 里一个值是 0 或 9，或两个字段分别为 0、9，能命中原文校验吗？数值越大只适用哪一组？",
+      "start": "topics/identity/mcvideo-service-off-network-priority-values.md",
+      "boundary": "TS 24.484 V20.1.0 在 MCVideo 离网业务配置中，§9.4.2.6 对 default-prose-per-packet-priority 的条件原写 less than 1 and greater than 8，是同一标量同时小于 1 且大于 8，不能成立；不是 OR，也不能把两个子字段各满足一边合成命中。不因此称 0、9 必接受、没有别的校验或原文已勘误。原文所列条件成立时，CMS 须 HTTP 409 含 XCAP constraint-failure；带 phrase 建议 element value out of range。紧接注 2 只说明 ProSe 数值越大，给信令或媒体的优先级越高，不套到 PQI、实际调度或获准。"
+    },
+    {
+      "id": "mcvideo-off-network-priority-pqi-printed-repeat-and-listed-intervals",
+      "question": "MCVideo 离网 PQI 原文是否重复了 other than？它列了哪些区间，给出的响应义务是什么？",
+      "start": "topics/identity/mcvideo-service-off-network-priority-values.md",
+      "boundary": "TS 24.484 V20.1.0 在 MCVideo 离网业务配置中，§9.4.2.6 的 default-pqi 子字段条件原写 other than other than，随后列 21–26、55–61、90–93 三段含端点的区间。可按列举核某值是否在三段并集；不把重复连接语当成两次否定、第二组值或独立条件，不擅改原文。该条所述条件成立时，CMS 须 HTTP 409 含 XCAP constraint-failure；带 phrase 建议 element value out of range。只知 xs:unsignedShort、区间内外或同一个 409，不证明该次接受或拒绝；ProSe 注 2 不说明 PQI 大小排序。"
+    },
+    {
+      "id": "mcvideo-off-network-priority-five-gs-equivalent-not-numeric-mapping",
+      "question": "在 MCVideo 离网配置中，5GS 的 PQI 对应哪种 ProSe 配置？能按这条把两个值直接换算吗？",
+      "start": "topics/identity/mcvideo-service-off-network-priority-values.md",
+      "boundary": "TS 24.484 V20.1.0 规范性附录 §C.4.2 在 MC Service over 5G ProSe 下，把离网 default-pqi 的 PC5-5QI 写为 default-prose-per-packet-priority 的 5GS 对应项。这是配置概念对应，不是数值一一映射、换算、选择顺序或缺项回退，不证明实际 MCVideo 呼叫用了哪种值。§9.4.2.7 项 1/4 两组的字段指向相同，也不因此证明实际采用同值或目标正文相同规则。"
     }
   ]
 }

@@ -1,0 +1,148 @@
+{
+  "topic_id": "r20-identity-mcvideo-service-off-network-priority-values",
+  "release": 20,
+  "state": "clause-checked",
+  "standard_stage": 3,
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。主查 MCVideo 业务配置 off-network 内独立的 ProSe 与 PQI 父块和各四项私呼字段。§C.4.2 是通用对应，不预设实际无线系统或部署。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "claims": [
+    {
+      "id": "mcvideo-off-network-priority-separate-optional-config-blocks",
+      "clause": "9.4.2.3",
+      "conditions": [
+        "查 MCVideo 的 off-network 本地声明、各父块和子项的出现约束，不把缺项和实际使用混同。"
+      ],
+      "conclusion": "§9.4.2.1 离网项 1/3 分别列 default-prose-per-packet-priority 和 default-pqi；§9.4.2.3 在 off-network 下各有独立直接声明，两个父块均 minOccurs=0。两个类型各有四个同名的私呼字段，共八个局部声明，都是 xs:unsignedShort、minOccurs=0，均无 default/fixed。字段名的 default- 不是声明数值。外部设备离线配置、私呼总时长、抢占层级均不同；不推两块必同时出现、同一值、缺项回填或实际接纳。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.1"
+          ],
+          "items": [
+            "off-network items 1/3 separate optional parents, same four listed MCVideo private call fields"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.3"
+          ],
+          "items": [
+            "off-networkType and each of its two distinct local configuration types; eight independent optional xs:unsignedShort leaf declarations"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-off-network-priority-four-private-call-uses-and-pointers",
+      "clause": "9.4.2.7",
+      "conditions": [
+        "确定配置父块，然后辨别私呼四格字段；普通仅是对未带 emergency 名的便称，不从配置判现场紧急状态。"
+      ],
+      "conclusion": "§9.4.2.7 离网项 1(a–d) ProSe 和 4(a–d) PQI 各列：mcvideo-private-call-signalling 是普通私呼信令，MCVideoPrivateCallSignalling（TS 24.483 [4] §14.2.12）；mcvideo-private-call-media 是普通私呼媒体，MCVideoPrivateCallMedia（§14.2.13）；mcvideo-emergency-private-call-signalling 是紧急私呼信令，MCVideoEmergencyPrivateCallSignalling（§14.2.14）；mcvideo-emergency-private-call-media 是紧急私呼媒体，MCVideoEmergencyPrivateCallMedia（§14.2.15）。普通只与字段名带 emergency 的两格相对。两父块的对应指向相同，只作引文指向，不补目标正文、版本、值相同、回退或现场选择。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "off-network items 1(a–d) and 4(a–d) same four names and TS 24.483 [4] §§14.2.12–14.2.15 correspondence; items 2/3 distinct compare only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-off-network-priority-prose-single-value-and-validation",
+      "clause": "9.4.2.6",
+      "conditions": [
+        "读取 §9.4.2.6 所名 ProSe 容器内任一具名子字段的单个值，不跨子字段凑条件。"
+      ],
+      "conclusion": "在 MCVideo 离网业务配置中，§9.4.2.6 对 default-prose-per-packet-priority 的条件原写 less than 1 and greater than 8，是同一标量同时小于 1 且大于 8，不能成立；不是 OR，也不能把两个子字段各满足一边合成命中。不因此称 0、9 必接受、没有别的校验或原文已勘误。原文所列条件成立时，CMS 须 HTTP 409 含 XCAP constraint-failure；带 phrase 建议 element value out of range。紧接注 2 只说明 ProSe 数值越大，给信令或媒体的优先级越高，不套到 PQI、实际调度或获准。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.6"
+          ],
+          "items": [
+            "default-prose-per-packet-priority single-constituent literal less than 1 and greater than 8; exact scoped CMS response and NOTE 2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-off-network-priority-pqi-printed-repeat-and-listed-intervals",
+      "clause": "9.4.2.6",
+      "conditions": [
+        "只辨该句列举和自身响应，不凭重复用词创设第二条件、修订原文或判断运行结果。"
+      ],
+      "conclusion": "在 MCVideo 离网业务配置中，§9.4.2.6 的 default-pqi 子字段条件原写 other than other than，随后列 21–26、55–61、90–93 三段含端点的区间。可按列举核某值是否在三段并集；不把重复连接语当成两次否定、第二组值或独立条件，不擅改原文。该条所述条件成立时，CMS 须 HTTP 409 含 XCAP constraint-failure；带 phrase 建议 element value out of range。只知 xs:unsignedShort、区间内外或同一个 409，不证明该次接受或拒绝；ProSe 注 2 不说明 PQI 大小排序。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.6"
+          ],
+          "items": [
+            "default-pqi literal other than other than, the three listed intervals and exact scoped mandatory CMS response; ProSe NOTE 2 comparison only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.3"
+          ],
+          "items": [
+            "base xs:unsignedShort declaration separate from listed PQI values"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-off-network-priority-five-gs-equivalent-not-numeric-mapping",
+      "clause": "C.4.2",
+      "conditions": [
+        "查规范性附录通用的 MC Service over 5G ProSe 对应说明，不以已有实际 MCVideo 呼叫、设备或模式为前提。"
+      ],
+      "conclusion": "规范性附录 §C.4.2 在 MC Service over 5G ProSe 下，把离网 default-pqi 的 PC5-5QI 写为 default-prose-per-packet-priority 的 5GS 对应项。这是配置概念对应，不是数值一一映射、换算、选择顺序或缺项回退，不证明实际 MCVideo 呼叫用了哪种值。§9.4.2.7 项 1/4 两组的字段指向相同，也不因此证明实际采用同值或目标正文相同规则。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "C.4.2"
+          ],
+          "items": [
+            "normative Annex C MC Service over 5G ProSe terminology-equivalent configuration; no numeric conversion"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "off-network items 1/4 analogous four leaf uses as comparison only"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "不修正 AND 或重复 other than，不推运行解析、选路、授权、调度、组呼或在网行为。TS 24.483 [4] 仅作指向，未引目标正文；不套 MCPTT。"
+  ],
+  "related": [
+    "r20-identity-mcptt-service-off-network-priority-values",
+    "r20-identity-mcptt-override-priority-hierarchy-config",
+    "r20-identity-mcvideo-mcdata-resource-priority-config"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
