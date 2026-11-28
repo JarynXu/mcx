@@ -32,6 +32,117 @@
         "处理关联 LMR 用户请求"
       ],
       "conclusion": "LMR 用户自身请求使用转换后的个人 MCPTT ID；另有 IWF 代表组内用户、以 IWF ID 发请求的情形，二者不得混同。代理归属后不因呼叫请求再生成重复归属。IWF 未归属时，该用户呼叫请求只有在个人 ID 列于组表且已归属时才可接纳。"
+    },
+    {
+      "id": "iwf-affiliation-representation-same-group-proxy-request-and-duplicate-signalling",
+      "conditions": [
+        "可单查 d(ii)／(iii) 对某类请求的标准行为。要实际套用这两项，核第二种归属方式：IWF 已配置代理且实际归属到请求作用的同一组，并定位经 IWF 关联的 LMR 用户及其个人请求；只判一次建呼的实际获准或一次报文是否实收，要取各自证据。"
+      ],
+      "conclusion": "d(ii) 所述 MCPTT 系统允许其关联 LMR 用户带个人 MCPTT ID 对 IWF 已归属的组发请求，带或不带功能别名均可；建呼、话权请求是例子。d(iii) 不因这些用户发起呼叫再为其做一次归属，因此不经 IWF 为该重复归属再发额外消息，例如向代理归属身份和执行操作的用户身份都发释放消息。",
+      "limitations": [
+        "代理配置、IWF 已归属别的组、一个别名值或 MCPTT ID 本身都不能证明本次前提。允许这种请求不等于已建呼、已授话权、通过业务权限校验或已实际送达；省去的是重复归属引起的附加消息，不是所有释放消息，也没有规定应发恰好一份。不把 d(iii) 的呼叫条件移作所有信令。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.1.2.1 second-option lead-in and item d stem"
+          ],
+          "printed_pages": [
+            17
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.1.2.1 items d(ii)–(iii)"
+          ],
+          "printed_pages": [
+            18
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-affiliation-representation-same-system-identity-and-special-iwf-limit",
+      "conditions": [
+        "可仅查 d(iv) 对关联用户的识别，或仅查 d(v) 的 IWF 归属限制；读这两条不需要有某次请求。要对现场应用此处 d 的范围，需实际属于配置代理的 IWF 已归属目标组的分支，再按所问核身份归属或配置证据。"
+      ],
+      "conclusion": "d(iv) MCPTT 系统按关联 LMR 用户的 MCPTT ID 与 IWF 同属一个系统来识别关联。d(v) 系统对 IWF 使用专门的限制规则，举例为每用户归属数量限制（N2）。",
+      "limitations": [
+        "原文不指定如何解析字符串、域名后缀或标识字段来判系统，不用同组或同别名替代实际身份和授权。这里没有给 N2 数值、具体计数或默认值，也没写 IWF 不限量或必然豁免，不能把别条普通终端上限自动套在这里。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.1.2.1 second-option lead-in and item d stem"
+          ],
+          "printed_pages": [
+            17
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.1.2.1 items d(iv)–(v)"
+          ],
+          "printed_pages": [
+            18
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-affiliation-representation-listed-personal-affiliation-vs-nonproxy-call-conditions",
+      "conditions": [
+        "可单独查 e(i) 是否允许成员办理个人归属，或单独查 h 对呼叫请求的前提。应用到现场时限配置代理的第二种方式；判 e(i) 确认对应用户在该组成员表，不要求 IWF 已归属或未归属；判 h 核来自该 IWF 关联 LMR 系统的呼叫请求确实针对该 MCPTT 组，IWF 对该组确实尚未归属，而不是状态未知或只有另一组的证据。"
+      ],
+      "conclusion": "e(i) 组表里的 LMR 用户可以经 IWF 用转换后的个人 MCPTT ID 为自己归属，即便 IWF 已代归属。h 在 IWF 尚未归属该组时，只有该用户的个人 MCPTT ID 在该组成员表里且用户已经归属该组，关联 LMR 用户对该组的呼叫请求才可能被接纳。f 的 IWF 使用自己的 MCPTT ID 代表用户请求是另一种身份。",
+      "limitations": [
+        "可办理个人归属不证明本次成功，组表和实际个人归属的两项事实互不代替；满足 h 的两项不证明本次接纳。h 不自动套给办理归属、所有话权或其他业务请求。代理或个人的当前状态、身份对应与呼叫实况分别证实。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.1.2.1 second-option lead-in and item d stem"
+          ],
+          "printed_pages": [
+            17
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.1.2.1 items e(i), f and h"
+          ],
+          "printed_pages": [
+            18
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
