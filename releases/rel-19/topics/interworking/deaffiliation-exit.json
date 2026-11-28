@@ -3,7 +3,7 @@
   "release": 19,
   "state": "clause-checked",
   "common_conditions": [
-    "预安排或 chat 组呼正在进行，MCPTT 用户与 IWF 代表的 LMR 用户同在呼叫中。"
+    "TS 23.283 V19.5.0，Rel‑19 Stage 2，取消归属后的单个参与者离开互通组呼；区分查规范、已识别的单条消息和现场状态。"
   ],
   "condition_rule": "Inherit common_conditions and add claim conditions.",
   "source_catalog": "../../sources.json",
@@ -13,6 +13,7 @@
       "id": "lmr-group",
       "clause": "10.3.6.1–2",
       "conditions": [
+        "预安排或 chat 组呼正在进行，MCPTT 用户与 IWF 代表的 LMR 用户同在呼叫中。",
         "组预先定义在 IWF，已有 MCPTT 用户归属，至少一个 LMR 用户由 MCPTT ID 表示",
         "MCPTT 客户端取消归属"
       ],
@@ -22,10 +23,124 @@
       "id": "mc-group",
       "clause": "10.3.6.3",
       "conditions": [
+        "预安排或 chat 组呼正在进行，MCPTT 用户与 IWF 代表的 LMR 用户同在呼叫中。",
         "组预先定义在组管理服务器，已有 MCPTT 用户归属，至少一个 LMR 用户由 MCPTT ID 表示",
         "IWF 代表的 LMR 用户取消归属"
       ],
       "conclusion": "MCPTT server 向 IWF 发该用户的 leave 请求；IWF 响应并退出对应呼叫，移除该 LMR 用户。"
+    },
+    {
+      "id": "iwf-deaffiliation-exit-lmr-defined-native-and-iwf-relay",
+      "conditions": [
+        "可单查 §10.3.6.2 的任一步或已识别的一个消息。要判本次完整分支才核组在 IWF 上预先定义、已有 MCPTT 用户归属、至少一名 LMR 用户由 MCPTT ID 表示，涉及已同在一通预安排或 chat 组呼中的 MCPTT 用户与经 IWF 接入的 LMR 用户，且本次取消归属的是该 MCPTT 客户端。"
+      ],
+      "conclusion": "步骤 1 从 MCPTT 客户端已取消归属开始；2 IWF 经 MCPTT server 向该客户端发 IWF group call leave request，图上 2 是 IWF→server；3 server→客户端另发原生 group call leave request。4 在客户端通知该 MCPTT 用户要离开；5 客户端回原生应答并离开；6 server→IWF 按 IWF group call leave response 转发；7 是该 MCPTT 客户端从进行中的组呼移除。",
+      "limitations": [
+        "步骤 1 被动表述，不据图判谁启动或执行了取消归属。步骤 4 不等于离开；步骤 5 同一步列回应和离开，不给两项的实际先后或线级时序。见步骤 6 发出不证明 IWF 已收或客户端真实状态；步骤 7 未指定额外终端消息或具体资源清理。IWF leave 的两张表不定义原生腿的字段。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.6.1 scope"
+          ],
+          "printed_pages": [
+            70
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.6.2 preconditions, Figure 10.3.6.2-1 and Steps 1–7"
+          ],
+          "printed_pages": [
+            71
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-deaffiliation-exit-mcptt-defined-iwf-leave-is-person-specific",
+      "conditions": [
+        "可单查 §10.3.6.3 的任一步或已辨明的一条消息。判完整分支时才核组在 GMS 上预先定义、已有 MCPTT 用户归属、至少一名 LMR 用户由 MCPTT ID 表示，涉及已同在一通预安排或 chat 组呼中的 MCPTT 用户与经 IWF 接入的 LMR 用户，且本次已取消归属的是 IWF 代表的那名 LMR 用户。"
+      ],
+      "conclusion": "步骤 1 从 IWF 代表的 LMR 用户已取消归属开始；2 MCPTT server 经 IWF 向该 LMR 用户发 IWF group call leave request；3 IWF 向 MCPTT server 回 IWF group call leave response 并离开该组呼；4 明写从进行中的呼叫移除 IWF 代表的该 LMR 用户。",
+      "limitations": [
+        "不要按图中 MCPTT 客户端的泳道补出原生 leave 往返。步骤 3 的 IWF 退出字面与步骤 4 的移除对象一同读，不能推其他被代表的 LMR 用户全退、整个呼叫结束或真实的 LMR 端动作。应答发出和 server 实收、用户移除分别取证；不把现场第 1 步倒推为某一归属消息。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.6.1 scope"
+          ],
+          "printed_pages": [
+            70
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.6.3 preconditions, Figure 10.3.6.3-1 and Steps 1–4"
+          ],
+          "printed_pages": [
+            71,
+            72
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-deaffiliation-exit-one-observation-and-same-call-correlation",
+      "conditions": [
+        "可只查两个流程的规范区别、一个已识别消息、某一端的实际发送／收到或对应参与状态。只在需要判断多个观测是否同一次退出时，才核实际 leave 操作、目标用户／客户端、组、同一通进行中的呼叫及端点。"
+      ],
+      "conclusion": ".2 的 2 为 IWF→server 请求，.3 的 3 为 IWF→server 应答，同方向和同一组 ID 不能辨出消息类型。已发出的 .2 步骤 6 或 .3 步骤 3 仍各自需要接收端证据才可确认实收；判实际从通话移除，要看 .2 步骤 7 的客户端或 .3 步骤 4 的那名 LMR 用户对应的参与状态。",
+      "limitations": [
+        "归属状态变化、用户被提示、单条 leave 消息、真实退出、媒体停止和整通呼叫释放不是同一结论。未见报文不是相反状态的证据；没有定义 SIP 方法、定时器、UI 或 LMR 侧通知实现。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.6.2 preconditions, Figure 10.3.6.2-1 and Steps 1–7"
+          ],
+          "printed_pages": [
+            71
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.6.3 preconditions, Figure 10.3.6.3-1 and Steps 1–4"
+          ],
+          "printed_pages": [
+            71,
+            72
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [

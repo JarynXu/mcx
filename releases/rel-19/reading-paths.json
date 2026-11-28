@@ -4760,6 +4760,34 @@
           "read": "topics/interworking/deaffiliation-exit.md"
         }
       ]
+    },
+    {
+      "id": "iwf-deaffiliation-one-participant-call-leave-legs",
+      "question": "取消归属后谁要求哪名用户退出组呼，哪个回包属于原生腿，哪个转给 IWF？",
+      "start": "topics/interworking/deaffiliation-exit.md#用户取消归属后哪条消息让谁离开组呼",
+      "boundary": "TS 23.283 V19.5.0 Stage 2 §10.3.6.1–.3，预安排和 chat；核整支时才查组定义侧、已有 MCPTT 用户归属且至少一名 LMR 用户由 MCPTT ID 表示、退出前两端在同一通话及本次哪名客户端或被代表的用户已失去归属，单查规范或已识别一条不要求全链。LMR 定义并预置 IWF、MCPTT 客户端已取消归属（.2）：2 IWF→server、3 server→客户端是两腿请求；4 提示，5 客户端回原生应答并离开，6 server 另向 IWF 转为 IWF 应答，7 移除该客户端。MCPTT 定义并预置 GMS、IWF 代表的 LMR 用户已取消归属（.3）：2 server 经 IWF 向该用户请求；3 IWF 回 server 并离开，4 移除该 LMR 用户，不另补原生客户端 leave 往返。步骤 1 不规定谁发起或执行归属变更，也不规定具体机制，不把应答发出当另一端实收或完成移除，不把单个用户退出当作全员或整通呼叫结束。",
+      "next_if": [
+        {
+          "condition": "只问已辨明 IWF leave 消息的组和用户 ID 或字段，不问本次谁已离开。",
+          "read": "topics/interworking/group-call-operation-elements.md#怎样读代理身份话权和实际结果"
+        },
+        {
+          "condition": "实际只办理 MC 定义组的归属或取消，查 GMS 状态、逐用户和代理范围。",
+          "read": "topics/interworking/affiliation-mc-group.md"
+        },
+        {
+          "condition": "实际只办理 LMR 定义组的归属或取消，查显式、隐式与本地权限。",
+          "read": "topics/interworking/affiliation-lmr-group.md"
+        },
+        {
+          "condition": "已辨明要结束整通预安排呼叫而非移除单用户。",
+          "read": "topics/interworking/group-call-release.md"
+        },
+        {
+          "condition": "已辨明要结束整通 chat 呼叫而非移除单用户。",
+          "read": "topics/interworking/chat-release.md"
+        }
+      ]
     }
   ]
 }
