@@ -786,6 +786,204 @@
         "independent_source_review": false,
         "independent_usage_acceptance": false
       }
+    },
+    {
+      "id": "iwf2-group-request-plane-direction-selects-payload-or-transaction-type-and-offer",
+      "conditions": [
+        "可只查 §10.8.2.4、.5、.7、.8 中一个组请求表、一项字段或相互比较。判断现场时先认 IWF‑2 的本条腿、请求类型和所属传输面；核同一完整请求才能确认缺 M 项，不要求实际媒体传送或其它腿。"
+      ],
+      "conclusion": "IWF→MCData server（.4 发起、.7 代表客户端）对比 MCData server→代理 IWF（.5/.8）。信令控制面的 .4/.5 均有 Payload（M，SDS 内容），未列 Transaction type 或 SDP offer；媒体面的 .7/.8 均有 Transaction type（M，standalone transaction）和 SDP offer（M，提出的参数），未列 Payload 行。四表均有发送数据用户和目标组 ID，server→代理 IWF 两表另列接收数据用户 ID，地址形状不决定传输面。两种面的导语分别指 TS 23.282 §7.4.2.5.2 和 §7.4.2.6.2。",
+      "limitations": [
+        "这是请求表，不拿 offer 当 .2.9 的 SDP answer 或媒体已传输，不把未列项写成线级拒绝要求。查任一表不要求先找到另一方向、完整调用链或接收端回执。这里不引入单人表的选择或外部步骤。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.8.2.4 and Table 10.8.2.4-1 with NOTES 1–2 (IWF initiating to MCData server, group signalling control-plane request)"
+          ],
+          "printed_pages": [
+            148
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.8.2.5 and Table 10.8.2.5-1 with NOTE (MCData server to proxy IWF, group signalling control-plane request)"
+          ],
+          "printed_pages": [
+            148
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.8.2.7 and Table 10.8.2.7-1 with NOTES 1–2 (IWF representing client to MCData server, group media-plane request)"
+          ],
+          "printed_pages": [
+            149
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.8.2.8 and Table 10.8.2.8-1 with NOTE (MCData server to proxy IWF, group media-plane request)"
+          ],
+          "printed_pages": [
+            149,
+            150
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.8.2.6 and 10.8.2.9 table/role contrast only (disposition notification and SDP answer)"
+          ],
+          "printed_pages": [
+            148,
+            149,
+            150
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf2-group-request-directional-reserved-values-and-original-reply-id",
+      "conditions": [
+        "可独立查已辨明的组请求表对 Conversation Identifier／Transaction Identifier、Transaction type、Reply Identifier 或 Disposition Type 的要求；断实际缺项要看完整本笔，跨腿关联才另核相应方向、实际角色、组和同次事务。"
+      ],
+      "conclusion": "四张组请求表都分别把 Conversation Identifier 与 Transaction Identifier 列 M。.4/.7 IWF→server 的 NOTE 1 对两个信息元素各要求定义表示发送方不支持该项的保留值。值不是字段省略，也不是可供配对的实际标识；一个保留不涉及另一个。.5/.8 server→代理 IWF 未列相同表注，不由第一腿推第二腿须定义、接纳、复制或拒绝。媒体 Transaction type（M）是事务类别，不替当前 Transaction Identifier。Reply Identifier（O）指当前事务所答复的原事务，Disposition Type（O）是期望送达、已读或两者。",
+      "limitations": [
+        "不补保留值的具体编码、自动填值或转发；不能用保留值代可用关联。未知的抓包项不是已经确认缺失。期望的处置类型不是 .2.6 的已报告处置，Reply Identifier 也不替其独立的 Disposition association；不看一项名称推对端已收、已读或应用。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.8.2.4 and Table 10.8.2.4-1 with NOTES 1–2 (IWF initiating to MCData server, group signalling control-plane request)"
+          ],
+          "printed_pages": [
+            148
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.8.2.5 and Table 10.8.2.5-1 with NOTE (MCData server to proxy IWF, group signalling control-plane request)"
+          ],
+          "printed_pages": [
+            148
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.8.2.7 and Table 10.8.2.7-1 with NOTES 1–2 (IWF representing client to MCData server, group media-plane request)"
+          ],
+          "printed_pages": [
+            149
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.8.2.8 and Table 10.8.2.8-1 with NOTE (MCData server to proxy IWF, group media-plane request)"
+          ],
+          "printed_pages": [
+            149,
+            150
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.8.2.6 and 10.8.2.9 table/role contrast only (disposition notification and SDP answer)"
+          ],
+          "printed_pages": [
+            148,
+            149,
+            150
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf2-group-request-application-identifier-only-if-with-client-versus-user-description",
+      "conditions": [
+        "可独立查任一组请求表的目的类型与应用标识，包括纯查规范或只问一项。若判本次带的应用标识是否符合条件，看已辨明表的同一实际请求及 Payload Destination Type；若要断缺项另核本笔是否完整。"
+      ],
+      "conclusion": "四表都列 Payload Destination Type（M）和 Application identifier（O，标明预定消费应用，举例文本串、端口地址、URI）。.4/.5 的非应用一侧字面为 MCData client consumption，.7/.8 字面为 MCData user consumption。各表的 NOTE 仅在目的类型指应用消费时允许带应用标识。按表合规且标识出现，目的类型必须指应用；目的类型是应用并不让标识从 O 变必带，缺失不排除应用消费。",
+      "limitations": [
+        "不借 client/user 字面判真实消费实体或编码。日志中只见应用标识出现、不出现或截断，不能替同一笔 Payload Destination Type 或证明合规。应用标识不是目标用户 ID，也不指定缺省应用、收件处理、线上错误或实际消费。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.8.2.4 and Table 10.8.2.4-1 with NOTES 1–2 (IWF initiating to MCData server, group signalling control-plane request)"
+          ],
+          "printed_pages": [
+            148
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.8.2.5 and Table 10.8.2.5-1 with NOTE (MCData server to proxy IWF, group signalling control-plane request)"
+          ],
+          "printed_pages": [
+            148
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.8.2.7 and Table 10.8.2.7-1 with NOTES 1–2 (IWF representing client to MCData server, group media-plane request)"
+          ],
+          "printed_pages": [
+            149
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.8.2.8 and Table 10.8.2.8-1 with NOTE (MCData server to proxy IWF, group media-plane request)"
+          ],
+          "printed_pages": [
+            149,
+            150
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [

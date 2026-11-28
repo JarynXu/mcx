@@ -5112,6 +5112,34 @@
           "read": "topics/interworking/deaffiliation-exit.md"
         }
       ]
+    },
+    {
+      "id": "iwf2-group-sds-request-planes-identifiers-and-destination",
+      "question": "IWF-2 组 SDS 请求的 Payload、SDP offer、保留标识与应用标识，查哪张表？",
+      "start": "topics/interworking/sds-addressing.md#组-sds-请求的四张表哪些字段跟方向和传输面走",
+      "boundary": "TS 23.283 V19.5.0 Rel‑19 Stage 2 §10.8.2.4/.5/.7/.8，印刷页 148–150。先认已辨明的 IWF‑2 组请求及所属面。控制面 .4 IWF→MCData server、.5 server→代理 IWF，Payload M，不列 Transaction type/SDP offer。媒体面 .7 同 IWF 发向 server、.8 server→代理 IWF，Transaction type（standalone）和 SDP offer M，表不列 Payload；不以字段外观单判实际使用传输面或发生媒体。四表 Conversation Identifier / Transaction Identifier 各 M；.4/.7 NOTE 1 对每项定义发送者不支持的保留值，不代省略或实际关联；.5/.8 无该注，不推复制、接受或禁止。Transaction type 不代事务 ID，Reply Identifier O 指所答复的原事务，Disposition Type O 是想要的处置。Payload Destination Type M：控制面原文 client consumption、媒体面 user consumption 均与应用消费相对。Application identifier O 仅目的类型指应用才可带；合规且存在才可据该条件推出应用，应用仍可不带，实况按同一请求的实际标识和目的类型可查带标识是否符合此条件；断真实缺项或整笔合规才另核完整性。可单读一张表或一个字段，不拿请求字段作收到、协商、送达或已读。",
+      "next_if": [
+        {
+          "condition": "已辨明实际是组媒体应答或处置通知；查对应角色、SDP answer 或处置关联。",
+          "read": "topics/interworking/sds-addressing.md#iwf-2组媒体应答与处置通知"
+        },
+        {
+          "condition": "已辨明为 IWF-2 向单个用户而非组的 standalone 请求；单人表不从组表推。",
+          "read": "topics/interworking/sds-addressing.md#iwf-2-单人请求地址两种标识和负载怎样读"
+        },
+        {
+          "condition": "实际要核是不是 IWF-2，或普通原生客户端到 MCData server 的腿。",
+          "read": "topics/interworking/sds-addressing.md#先选接口iwf-2-和-mcdata-3-是一回事吗"
+        },
+        {
+          "condition": "实际问 MCData 用户发组时 IWF 可否代报、实际接收方归属或转发。",
+          "read": "topics/interworking/sds-addressing.md#mcdata-用户向含-lmr-用户的组发-sds"
+        },
+        {
+          "condition": "实际是 IWF 代 LMR 用户发组，问该分支的接收方角色和同组归属。",
+          "read": "topics/interworking/sds-addressing.md#iwf-代-lmr-向-mcdata-组发-sds找目标组再找接收-iwf"
+        }
+      ]
     }
   ]
 }

@@ -83,6 +83,25 @@ TS23.283 V19.5.0，Release19，Stage2。
 
 [scope](scope.md) · [affiliation-results](affiliation-results.md) · [delivery-evidence](../mcdata/delivery-evidence.md) · [结构化条件](sds-addressing.json)
 
+## 组 SDS 请求的四张表，哪些字段跟方向和传输面走？
+
+查 TS 23.283 V19.5.0 的 **IWF‑2 组 standalone SDS 请求**。按已经辨明的请求所属流程和实际这一腿选表：
+
+| 请求所属流程 | IWF→MCData server | MCData server→接收方客户端的代理 IWF | 这一面特有的请求字段 |
+| --- | --- | --- | --- |
+| 信令控制面 | 表 10.8.2.4‑1，IWF 作发起 MCData client | 表 10.8.2.5‑1 | **Payload（M）** 是 SDS 内容；表未列 Transaction type、SDP offer。 |
+| 媒体面 | 表 10.8.2.7‑1，IWF 代表 MCData client | 表 10.8.2.8‑1 | **Transaction type（M）** 写 standalone transaction；**SDP offer（M）** 是所提出的媒体参数。表没有 Payload 行。 |
+
+四张表都有要发往的组 ID 及发送数据的用户 ID。server 发给代理 IWF 的两张表另有接收数据用户 ID。只见两个用户 ID 不能区分控制面和媒体面；两种方向还共用同名请求。媒体面的请求表并不证明媒体已协商、已发或已收。“表没有该行”不用于规定承载、拒绝或兼容行为。控制面两条导语指 TS 23.282 [6] §7.4.2.5.2；媒体面两条指 §7.4.2.6.2，这里只定位引用。
+
+[§10.8.2.4/.5 及两表，印刷页 148（PDF 第 149 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=149)；[§10.8.2.7 的表和 §10.8.2.8 导语，印刷页 149（PDF 第 150 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=150)；[§10.8.2.8 的表，印刷页 150（PDF 第 151 页）](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=151)。
+
+**同一字段名不带过另一腿的表注。** 四张表都把 Conversation Identifier 和 Transaction Identifier 分别列为 M。只有这四张中的 **.4、.7** 有 NOTE 1：对两项分别定义保留值，表示**发送方不支持该项**。保留值不是省略，也不能用作实际会话或事务的关联值；一项采用保留值不决定另一项。同为组请求的 **.5、.8** 没有这条注，不能借 .4/.7 要求定义、带过来或原样填回，也不能据此断定实现拒收。Transaction type 说事务类别，不替 Transaction Identifier。四表的 Reply Identifier（O）表示当前事务答复哪一个原事务；Disposition Type（O）是期望的送达、已读或两者，不是已经报告的处置。
+
+**Application identifier 只在应用消费时可带。** 四表的 Payload Destination Type 都是 M，区分应用消费和另一类消费。控制面表的字面是 MCData client，媒体面表是 MCData user，不据此规定实际运行实体或不同编码。Application identifier（O）用来标记预定消费应用，文本、端口地址、URI 是例子。按对应表的注，已知合规且带应用标识时，目的类型一定指应用消费；目的类型为应用消费并不使标识必带，缺标识也不排除应用消费。只判断实际已带的应用标识是否符合此条件，对照同一请求的实际应用标识和 Payload Destination Type 就够，不必先看齐整笔。要断定有字段缺失或整笔请求是否合规，再核报文完整性。单个字段的有无不证明整笔合规、默认应用或实际消费。
+
+例如 IWF→server 的 .7 请求只有 Conversation Identifier 用了已确认属于本项的保留值，不能拿这个值匹配会话；Transaction Identifier 要按它自己的实际值判断。如果同一次通信后续走 server→代理 IWF 的 .8，后一腿另按自己的字段和证据读取。只查这一腿的一项或查规范，不用先抓到另一腿。只读 [组媒体应答或处置通知](#iwf-2组媒体应答与处置通知) 时，不能用请求的 offer、Reply Identifier 或 Disposition Type 代替相应表的参数、关联或结果。
+
 ## IWF-2：组媒体应答与处置通知
 
 这两种信息流适用 TS 23.283 V19.5.0、Release 19、Stage 2。先确认实际事件在 IWF-2 上，再按信息流、方向和角色选表。同一方向也可能承载不同的信息流；其它参考点的原生 MCData SDS 不用这些表。[§10.8.1，印刷页 146](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=147)；[§10.8.2.1，印刷页 147](https://www.etsi.org/deliver/etsi_ts/123200_123299/123283/19.05.00_60/ts_123283v190500p.pdf#page=148)
