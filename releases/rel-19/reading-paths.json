@@ -5084,6 +5084,34 @@
           "read": "topics/location/lms-subscription-notification.md"
         }
       ]
+    },
+    {
+      "id": "iwf-affiliation-proxy-first-last-config-and-recognition",
+      "question": "什么时候按首末成员发送代理归属，组表配了 IWF ID 是否已经视为归属？",
+      "start": "topics/interworking/affiliation-representation.md#首末成员事件什么时候需要代理信令",
+      "boundary": "TS 23.283 V19.5.0 Rel-19 Stage 2 §10.1.2.1，印刷页 17–18，限 MCPTT 定义的互通组。逐人方式按 LMR 侧每次归属报个人转换身份；代理方式按指定 LMR 组首成员实际归属、末成员实际取消，分别送代表归属及取消。不另发组归属信令限代理方式，两者仍可用于不同成员；未定混用计算或并发。a) 本组表配置本 IWF 的 MCPTT ID，配置识别其代表关联用户的能力；b) IWF 用自己的 ID 实际归属本组，c) MCPTT 系统识别为代表本组 LMR 用户。g) 已知本组没配该 IWF 的 ID，不允许这样归属，有 ID 不证明已归属。d(i) 本 IWF 实际归属本组才把它的关联用户视为归属，无须全员预列。f) 配置代理这支可用自己的 IWF MCPTT ID 代表请求，如 chat 组 join，不等同用经 IWF 转换的个人 ID 申请，也不是 d) 的已归属分项。纯查规则或一条已知消息无需全链；判首末看实际成员，不拿静态表或别组状态代替。各腿发出、实收、状态和入呼另查，不裁 LMR 内部、编码或授权结果。",
+      "next_if": [
+        {
+          "condition": "问已配置代理下的同组个人建呼、话权、e(i) 个人归属、h) 接纳条件或 N2 限制。",
+          "read": "topics/interworking/affiliation-representation.md#iwf-已代表用户归属个人还能用自己的-id-吗"
+        },
+        {
+          "condition": "问实际 MC 定义组的服务器验权、配置缓存、GMS 状态更新或代理取消。",
+          "read": "topics/interworking/affiliation-mc-group.md"
+        },
+        {
+          "condition": "问已识别归属／取消请求或应答的字段、逐个组结果。",
+          "read": "topics/interworking/affiliation-results.md"
+        },
+        {
+          "condition": "实际是 LMR 定义组的归属／取消，不按 MCPTT 定义组分支办理。",
+          "read": "topics/interworking/affiliation-lmr-group.md"
+        },
+        {
+          "condition": "实际问已取消归属后哪位参与者退出正在进行的群呼，另查 call leave。",
+          "read": "topics/interworking/deaffiliation-exit.md"
+        }
+      ]
     }
   ]
 }
