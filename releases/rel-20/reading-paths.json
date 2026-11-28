@@ -1747,6 +1747,36 @@
       "question": "MCVideo 在网 T100 至 T104 的秒值范围是什么，不符合时 409 要带什么？",
       "start": "topics/identity/mcvideo-on-network-r14-transmission-timers.md",
       "boundary": "TS 24.484 V20.1.0 §9.4.2.6 R14 清单 a–e 和 §.3 xs:unsignedByte：整数 0..255（含两端）。任一具名值不符该范围，CMS 必须回 HTTP 409 含 XCAP constraint-failure；带 phrase 时建议写 syntactically incorrect timer value 并含不符合要求的计时器标识，如 T101-transmission-end-request；不规定拼接格式。不移用 f–j 计数含义或另段 xs:duration/PT，缺项不是已有值越界，范围内不等于默认、关闭、立即到期或整档接受。"
+    },
+    {
+      "id": "mcvideo-on-network-r14-retry-extension-scope-and-field-types",
+      "question": "MCVideo 在网 R14 中 T2、T3、T4、C2、C4 是时长还是计数，哪些必需？",
+      "start": "topics/identity/mcvideo-on-network-r14-transmission-retries.md",
+      "boundary": "TS 24.484 V20.1.0 §9.4.2.1 在网 6(d) 的可选 anyExt 内列 tc-timers-counters-R14，§9.4.2.3 有全局声明、非 on-network 具名直接子项。块存在时同一序列里必需三项 T2/T3/T4 xs:duration 和两项 C2/C4 xs:unsignedByte，均无 default/fixed；五项之间还有其他成员，不是完整块或同块 T100–T104 整数秒值，不能因外层可选就省略必需子项。"
+    },
+    {
+      "id": "mcvideo-on-network-r14-retry-t2-idle-c2-not-stated-pair",
+      "question": "MCVideo T2 在什么条件下计 Transmission Idle 间隔，C2 是否明确控制 T2？",
+      "start": "topics/identity/mcvideo-on-network-r14-transmission-retries.md",
+      "boundary": "TS 24.484 V20.1.0 §9.4.2.7 在网 18(g)：T2-transmission-idle 是没有任何 MCVideo 客户端获准传输时 Transmission Idle 的重发间隔，不是没有 RTP。18(m) 的 C2-transmission-idle 是计数值，TS 24.581 [29] 仅指向；本段没明说 C2 控制 T2，不推首发、计数方法或实际发送次数。"
+    },
+    {
+      "id": "mcvideo-on-network-r14-retry-t3-t4-distinct-messages-until-release",
+      "question": "MCVideo T3 撤销与 T4 授予分别重发什么，两项何时停止等待？",
+      "start": "topics/identity/mcvideo-on-network-r14-transmission-retries.md",
+      "boundary": "TS 24.484 V20.1.0 §9.4.2.7 在网 18(h) 的 T3-transmission-revoke 是 Transmission Revoke 重发间隔；18(i) 的 T4-transmission-granted 是传输控制服务器重发 Transmission Granted 前应等待的时间。两项都明写直到收到 Transmission Release，不换成发出 Release、其他消息或整通结束。不从 T4 补 T3 的主体，不推现场实收或时序。"
+    },
+    {
+      "id": "mcvideo-on-network-r14-retry-c4-counts-sent-grants",
+      "question": "MCVideo C4 控制 Transmission Granted 的发送次数，还是最大重发次数？",
+      "start": "topics/identity/mcvideo-on-network-r14-transmission-retries.md",
+      "boundary": "TS 24.484 V20.1.0 §9.4.2.7 在网 18(i) 明说 C4 控制 Transmission Granted 的发送次数，不是原文已定义的最多重发次数；T4 是重发前等待时间。18(n) C4-transmission-granted 是该计数值，TS 24.581 [29] 仅指向；不补首发是否计入、加一、0 的运行含义、C2 同理或实际发送结果。"
+    },
+    {
+      "id": "mcvideo-on-network-r14-retry-duration-format-vs-counter-range",
+      "question": "MCVideo T2/T3/T4 时长格式不符，与 C2/C4 越界分别怎样报错？",
+      "start": "topics/identity/mcvideo-on-network-r14-transmission-retries.md",
+      "boundary": "TS 24.484 V20.1.0 §9.4.2.6 后一份 xs:duration 清单 2–4 点名 T2/T3/T4，要求按秒表示 PT<h>H<m>M<n>S，格式句 PT <n>S；注 6 用 PT0.3S 举例 300 ms，不证明实际接受。不合该结构须 CMS HTTP 409 含 XCAP constraint-failure，带 phrase 建议 invalid format for duration；该段没另列收到无效 <n> 的诊断，不搬前一清单。C2/C4 为 R14 (f)/(g) 0..255 整数（含两端），值不符须同码与 XCAP，带 phrase 建议 syntactically incorrect timer value 及不合要求的标识，不定拼接、解析优先级；缺项和同码不推出特定原因。"
     }
   ]
 }

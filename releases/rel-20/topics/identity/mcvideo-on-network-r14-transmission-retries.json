@@ -1,0 +1,139 @@
+{
+  "topic_id": "r20-identity-mcvideo-on-network-r14-transmission-retries",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只查 MCVideo 在网业务档 on-network/anyExt/tc-timers-counters-R14 的 T2、T3、T4、C2、C4，区分配置、原文的消息与现场。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "mcvideo-on-network-r14-retry-extension-scope-and-field-types",
+      "clause": "9.4.2.3",
+      "conditions": [
+        "查 MCVideo 在网 R14 块中的 T2、T3、T4、C2、C4 的声明与位置，区分外层可选和块内具名项。"
+      ],
+      "conclusion": "§9.4.2.1 在网项 6(d) 在可选 anyExt 内列 tc-timers-counters-R14；§9.4.2.3 有独立全局声明，不是 on-network 的具名直接子项。已出现的 R14 块在同一序列中必需 T2-transmission-idle、T3-transmission-revoke、T4-transmission-granted 三项 xs:duration，及 C2-transmission-idle、C4-transmission-granted 两项 xs:unsignedByte，五项均无 default/fixed。五项之间另有成员，不是连续五项、不是整个类型，也不同于同块的 T100–T104 整数秒值。不能据外层可选判子项可省或实际支持。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.1"
+          ],
+          "items": [
+            "on-network item 6(d)(vii)/(viii)/(ix)/(xiii)/(xiv) and optional enclosing anyExt"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.3"
+          ],
+          "items": [
+            "optional on-network anyExt, global R14, three required xs:duration and two later required xs:unsignedByte leaves"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-on-network-r14-retry-t2-idle-c2-not-stated-pair",
+      "clause": "9.4.2.7",
+      "conditions": [
+        "查同一 R14 块下的 T2 和 C2；区分未授予传输权、媒体静默和实际计数。"
+      ],
+      "conclusion": "§9.4.2.7 在网项 18(g) 的 T2-transmission-idle 是没有任何 MCVideo 客户端获准传输时 Transmission Idle 的重发间隔。没有 RTP 不等于未获传输权。18(m) 的 C2-transmission-idle 是相应计数值，TS 24.581 [29] 仅指向；本段没明说 C2 控制 T2、首发如何计入或实际发送次数。不移用 C4 的明写关系。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "item 18(g) Idle retransmission interval when no MCVideo client has the transmit right, (m) C2 pointer only; (i) explicitly bound C4 as comparison"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-on-network-r14-retry-t3-t4-distinct-messages-until-release",
+      "clause": "9.4.2.7",
+      "conditions": [
+        "查 T3、T4 分别等待怎样的重发，以及两项字面上停止相应重发等待的接收条件。"
+      ],
+      "conclusion": "§9.4.2.7 在网项 18(h) 的 T3-transmission-revoke 是 Transmission Revoke 的重发间隔，直到收到 Transmission Release。18(i) 的 T4-transmission-granted 是传输控制服务器重发 Transmission Granted 前应等待的时间，也直到收到 Transmission Release。项 (h) 未在本句明写主体，不从 (i) 补。两项不把发送 Release、收到其他消息或整个呼叫结束当成这句的收件条件，不推本次真实时序。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "item 18(h) Transmission Revoke and (i) Transmission Granted waiting at the transmission control server; both literally until receipt of Transmission Release"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-on-network-r14-retry-c4-counts-sent-grants",
+      "clause": "9.4.2.7",
+      "conditions": [
+        "查 C4 和 T4 的具体关系，区分间隔、计数变量和现场的发送或响应。"
+      ],
+      "conclusion": "§9.4.2.7 在网项 18(i) 明说 C4 控制 Transmission Granted 的发送次数，T4 配的仍是重发前应等待的时间。18(n) 的 C4-transmission-granted 是相应计数值，TS 24.581 [29] 只作指向。原句不等于最多重发次数，不补首发是否计入、加一公式、0 的运行含义或本次实际发送和收到。C2 没有在本段取得同样的明写关系。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "item 18(i) number of times Transmission Granted shall be sent controlled by C4, (n) counter-value pointer, (m) comparison only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-on-network-r14-retry-duration-format-vs-counter-range",
+      "clause": "9.4.2.6",
+      "conditions": [
+        "查这三项具名时长之一的格式或两项具名计数之一的整数范围，先确定具体收到的值和对应清单。"
+      ],
+      "conclusion": "§9.4.2.6 后一份 xs:duration 清单项 2–4 点名 T2/T3/T4，要求按秒表示，表示式 PT<h>H<m>M<n>S（<n> 为有效秒值），格式句 PT <n>S；注 6 用 PT0.3S 举例 300 ms。实际值不符该结构时，CMS 必须 HTTP 409 含 XCAP constraint-failure，带 phrase 建议 invalid format for duration；这段没有另写收到无效 <n> 的诊断，不等于允许无效值或已证 CMS 接受例值。C2/C4 是 R14 清单 (f)/(g) 的 0..255 整数；值不符时同样必须 409 和 XCAP constraint-failure，带 phrase 建议 syntactically incorrect timer value 及不合要求的标识（原例 T101），不规定拼接。缺项不等于已提供错值，不能从同码判原因、解析形式或重叠优先级。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.6"
+          ],
+          "items": [
+            "R14 range (f)/(g) and common outcome; second duration list items 2–4, two literal forms, NOTE 6 and its own format-only outcome; earlier invalid-n clause only as comparison"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.3"
+          ],
+          "items": [
+            "the two selected declaration families; local presence constraints separate"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "TS 24.581 [29] 只作指向。R14 的其余成员、R15/R18、MCPTT、其它时长和实际解析、计数、重发、收发、结束行为不由本页推定。"
+  ],
+  "related": [
+    "r20-identity-mcvideo-on-network-r14-transmission-timers",
+    "r20-identity-mcptt-on-network-floor-message-retries",
+    "r20-identity-ad-hoc-broadcast-hang-time"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
