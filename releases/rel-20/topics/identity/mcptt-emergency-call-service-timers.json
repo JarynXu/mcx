@@ -1,0 +1,132 @@
+{
+  "topic_id": "r20-identity-mcptt-emergency-call-service-timers",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只核 MCPTT 业务配置的在网或离网 emergency-call 两个字段。查配置含义不要求已经观察到某通呼叫或状态变化。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "mcptt-emergency-private-cancellation-timeout-by-network-mode",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "核 MCPTT 在网或离网业务配置 emergency-call/private-cancel-timeout，所问对象是正在进行的紧急私呼的取消超时值。"
+      ],
+      "conclusion": "在网或离网相应项 1 均把 private-cancel-timeout 解释为取消进行中的该模式紧急私呼所用的超时值。仅离网项 1 给出 TS 24.483 §7.2.14 CancelTimeout 的对应指向，未核其正文。它不是整通私呼上限、静默计时或发话时限；不由本条判开始、复位、到期动作、挂断或优先级/本人状态变化。没有另写话权限定，不据此裁定各类话权的运行适用。TS 22.179 V20.0.0 的 Stage 1 优先级或个人状态取消只作对照，不能绑到这个字段。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network item 1 in-progress emergency private-call cancellation timeout",
+            "off-network item 1 same scoped meaning and TS 24.483 [4] §7.2.14 CancelTimeout correspondence; target body unchecked",
+            "on-network items 3–5 and off-network items 3–4 private-call timing, comparison only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-22.179-v20.0.0",
+          "clauses": [
+            "5.7.2.3.2"
+          ],
+          "printed_pages": [
+            30
+          ],
+          "requirements": [
+            "R-5.7.2.3.2-001",
+            "R-5.7.2.3.2-002",
+            "R-5.7.2.3.2-003"
+          ],
+          "items": [
+            "Stage 1 emergency floor-controlled private-call priority and own state, comparison only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-emergency-group-in-progress-time-limit-by-network-mode",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "核 MCPTT 所选在网或离网业务配置 emergency-call/group-time-limit，所问对象是在 MCPTT 组上进行中的紧急呼叫。"
+      ],
+      "conclusion": "在网或离网相应项 2 均给相应模式在 MCPTT 组上进行中的紧急呼叫的时限。仅离网项 2 指向 TS 24.483 §7.2.16 MCPTTGroupTimeout，未核其正文。不是紧急私呼的取消超时、一般组呼时长、建呼等待、单次发话或普通静默计时。不能据此推组状态、优先级、实际启停、到期动作或模式间回退。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network item 2 time limit of an in-progress emergency call on an MCPTT group",
+            "off-network item 2 corresponding group call scope and TS 24.483 [4] §7.2.16 MCPTTGroupTimeout pointer, target body unchecked",
+            "on-network item 7 and off-network item 6 transmit-time limit as comparison only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-emergency-call-on-off-block-shape-and-duration-names",
+      "clause": "8.4.2.3",
+      "conditions": [
+        "核 MCPTT 在网或离网配置中的 emergency-call 父块、两个子字段各自声明、具名时长条目或例值。"
+      ],
+      "conclusion": "§8.4.2.1 在网和离网项 1 分别列可包含的 emergency-call、private-cancel-timeout 与 group-time-limit；§8.4.2.3 两种模式各自的父块及共享类型的两个子字段均单独 minOccurs=0，子字段都是 xs:duration 且无声明默认。二者入 §8.4.2.6 具名时长项 5、6；格式与秒值的细分按原时长主题。附录 A 表 A.2.3-12 在网 HTTP 响应示例为 PT13S、PT1300S，不设默认或离网回退。缺项或具备字段都不证业务支持、接受某份文档或当次运行。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "on-networkType and off-networkType declarations, shared emergency-callType children and types"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1"
+          ],
+          "items": [
+            "item 1(a/b) under on-network and off-network"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "named durations items 5 and 6; exact validation detail in prior duration owner"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "A.2.3"
+          ],
+          "items": [
+            "Table A.2.3-12 informative example, only on-network block of this response, not default"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "离网指向只据本版 §8.4.2.7 明列；没有验 TS 24.483 的目标正文、版次、运行行为或外设配置流程。",
+    "不补在/离网值继承、缺项回退、计时起止、到期动作或授权。TS 22.179 Stage 1 私呼优先级与本人状态原义另有主入口。"
+  ],
+  "related": [
+    "r20-calls-emergency-private-call-state",
+    "r20-identity-mcptt-private-call-service-timers",
+    "r20-identity-ad-hoc-broadcast-hang-time"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
