@@ -1,0 +1,139 @@
+{
+  "topic_id": "r20-identity-mcvideo-on-network-r15-r18-mbms-timers",
+  "release": 20,
+  "state": "clause-checked",
+  "standard_stage": 3,
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。仅查 MCVideo 在网业务档 on-network/anyExt 的 tc-timers-counters-R15 和 tc-timers-counters-R18 两个扩展及六个具名时长。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "claims": [
+    {
+      "id": "mcvideo-on-network-r15-r18-mbms-separate-extension-blocks",
+      "clause": "9.4.2.3",
+      "conditions": [
+        "只查在网 MCVideo 两种扩展的声明和块内出现约束，不以已取到有效配置为前提。"
+      ],
+      "conclusion": "§9.4.2.1 在网项 6(e)/(f) 在可选外层 anyExt 内列 tc-timers-counters-R15 和 tc-timers-counters-R18。§9.4.2.3 各有独立全局元素声明，不是 on-network 具名直接子项。已出现 R15 时，T300-transmission、T301-map-group-to-bearer、T303-unmap-group-to-bearer 在其序列中必需；已出现 R18 时，T310-transmission、T311-map-group-to-session-stream、T312-unmap-group-from-session-stream 在其自己的序列中必需。六项均为 xs:duration、无 default/fixed。每块另有可选内层 anyExt 与 ##other 元素通配项。外层可选不让块内必需项随意省，不推两块必须同时出现或 CMS 接受整份配置。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.1"
+          ],
+          "items": [
+            "on-network item 6(e)/(f) distinct listed blocks within the optional outer anyExt"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.3"
+          ],
+          "items": [
+            "global R15/R18 elements; respective sequence of three required xs:duration; optional inner anyExt and local ##other wildcard"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-on-network-r15-r18-mbms-t300-t310-literal-subchannel-silence",
+      "clause": "9.4.2.7",
+      "conditions": [
+        "查两项的字面静默约束和释放对象，区分块名、现场承载与实际释放结果。"
+      ],
+      "conclusion": "§9.4.2.7 在网 19(a) T300-transmission 与 20(a) T310-transmission 均写涉及 MBMS bearer 的组会话，在必须释放 MBMS subchannel 前的最长允许静默。T310 虽与 R18 的 session stream 映射项同块，不能把其 MBMS 替换成 MBS。子信道释放不是整通会话结束，不套 ad hoc 两次发话间静默或 R14 接收流空闲。不据相同字面推字段值或运行等同、计时起止或实际释放。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "on-network 19(a)/20(a) both literal MBMS bearer and MBMS subchannel; 19(b/c)/20(b/c) message comparison; 16/NOTE 3 and 18(l) comparison only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-on-network-r15-r18-mbms-r15-map-unmap-bearer-intervals",
+      "clause": "9.4.2.7",
+      "conditions": [
+        "查在网 R15 两个 MCVideo 消息的字面对应和间隔，不拿另一块或另一业务解释同名动作。"
+      ],
+      "conclusion": "§9.4.2.7 在网 19(b) T301-map-group-to-bearer 是 Map Group To Bearer 的重发间隔；19(c) T303-unmap-group-to-bearer 是 Unmap Group To Bearer 的重发间隔，原文仍是 To Bearer，不改成 From Bearer，也不替换成 session stream。两项不配置静默释放上限，不给首次发送、确认、重发次数、MCPTT C17/C27 或实际发送和关联算法。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "on-network 19(b)/(c) exact To Bearer message names; 19(a) and 20(b)/(c) comparison only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-on-network-r15-r18-mbms-r18-map-unmap-session-stream-intervals",
+      "clause": "9.4.2.7",
+      "conditions": [
+        "查在网 R18 映射和解除映射消息，区别 to/from，区分重发间隔与静默上限。"
+      ],
+      "conclusion": "§9.4.2.7 在网 20(b) T311-map-group-to-session-stream 是 Map Group to session stream 的重发间隔；20(c) T312-unmap-group-from-session-stream 是 Unmap Group from session stream 的重发间隔。保留原字面 to/from，不借 19(b)/(c) 都写 To Bearer 的措辞，也不从这两条改写 T310 的 MBMS 静默定义。这里没有首发、确认、重发次数、MCPTT C17/C27 或已发送的依据。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "on-network 20(b)/(c) exact session stream names, preserve literal case; 19(b)/(c) and 20(a) comparison only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-on-network-r15-r18-mbms-six-duration-format-condition",
+      "clause": "9.4.2.6",
+      "conditions": [
+        "基于已提供的这些具名时长之一，区分不合后一份清单的格式与缺项或其他来源的数值规则。"
+      ],
+      "conclusion": "§9.4.2.6 后一份 xs:duration 清单第 8–13 项点名 T300/301/303/310/311/312，须按秒表示 PT<h>H<m>M<n>S（<n> 是有效秒值），格式句另写 PT <n>S；注 6 用 PT0.3S 举例 300 ms。任一已提供的值不合该结构时，CMS 须回 HTTP 409 含 XCAP constraint-failure；带 phrase 建议 invalid format for duration。不移用前一清单单列的无效 <n> 诊断，也不套 R14 的 0..255 整数诊断。缺项不是收到坏值，不从同码、示例或单独一处写法判实际解析、接受、触发原因或处理先后。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.6"
+          ],
+          "items": [
+            "second duration list items 8–13, seconds, both literal forms, NOTE 6, conditional format error; earlier invalid-n and R14 integer clauses comparison only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.3"
+          ],
+          "items": [
+            "required xs:duration within each present block, separate presence condition"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "不从这些配置判断部署的承载模式、发收、释放、计时算法、重发次数或 CMS 解析。不借 MCPTT、离网、R14 或其他引用正文补条件。"
+  ],
+  "related": [
+    "r20-identity-mcvideo-on-network-r14-reception",
+    "r20-identity-mcptt-on-network-mbms-mbs-timers",
+    "r20-identity-ad-hoc-broadcast-hang-time"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
