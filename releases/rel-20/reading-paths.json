@@ -1957,6 +1957,48 @@
       "question": "MCVideo 在网 R14 私呼 private-call-hang-timer 属哪份时长清单？单列的 409 覆盖哪些条件？",
       "start": "topics/identity/mcvideo-private-call-service-timers.md",
       "boundary": "TS 24.484 V20.1.0 MCVideo 在网 R14 的 private-call-hang-timer 是 §9.4.2.6 后一份 13 项时长清单的第 1 项。仍须按秒表示，原写 PT<h>H<m>M<n>S（<n> 为有效秒值）；格式检查句原写 PT <n>S，不合格式时 CMS 须返回 HTTP 409 含 XCAP constraint-failure，有 phrase 时建议 invalid format for duration。后一清单后单列的时长 409 只写格式，未另列收到无效 <n> 的专用响应；有效秒值及通用 Schema 要求仍在，不能把前段诊断、整数 0–255 或缺标签诊断搬过来。注 6 以 PT0.3S 表示 300 ms，不证明实际解析或接受。"
+    },
+    {
+      "id": "minimum-alias-length-mcptt-shape-and-name-purpose",
+      "question": "MCPTT 的 min-length-alias 表示什么？在网和离网分别配吗？",
+      "start": "topics/identity/mcptt-mcvideo-minimum-alias-length-config.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 的 common 数据供在网和离网共用。§8.4.2.1 可选 common 的项 1 列 min-length-alias；§8.4.2.3 在 commonType 中直接声明该子项为 xs:unsignedShort、minOccurs=0，无 default/fixed，不由局部可选判断整份档案合规。§8.4.2.7 的 common 项 1 对应 MCPTT 管理员分配给 MCPTT 用户的字母数字名称最小长度 N3，指向 TS 24.483 [4] §7.2.9 MinLengthAliasID，仅作指向。未写不同于显式 0 或证据没读全；不推缺项值、字符算法、ID / 功能别名 URI 或优先级。"
+    },
+    {
+      "id": "minimum-alias-length-mcptt-numeric-range-and-conflict",
+      "question": "MCPTT 的 min-length-alias 为什么是 unsignedShort 又写 0–255？255 和 256 分别怎样判断？",
+      "start": "topics/identity/mcptt-mcvideo-minimum-alias-length-config.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT §8.4.2.3 声明 common/min-length-alias 为可选 xs:unsignedShort，未给此项专用 255 facet；§8.4.2.6 另写 N3 是 0–255 并指向 TS 22.179 [3] 附录 A，仅作指向。255 是 N3 配置值上界，不是名称的最大长度。已给值大于 255 时 CMS 须返回 HTTP 409 含 XCAP constraint-failure；如带 phrase，建议 element value out of range。0、255 不触发 >255，256 触发；不从数值在范围内推语义有效、0 允许空名称或整份接受。缺项、负值或无效词法不由此 >255 条件判定，不套给其他字段。"
+    },
+    {
+      "id": "minimum-alias-length-mcptt-semantic-invalid-not-range",
+      "question": "MCPTT 的 min-length-alias 在范围内但已知语义无效，和超过 255 要报同一个诊断吗？",
+      "start": "topics/identity/mcptt-mcvideo-minimum-alias-length-config.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT §8.4.2.6 写明 common/min-length-alias 的值语义无效时，CMS 须返回 HTTP 409 含 XCAP constraint-failure；如带 phrase，建议 semantic error。这是另一条件，不是 >255 专用规则的 element value out of range。该语义句另列广播 B1/B2 与在网话权队列 depth；不把 N3 的数值边界套给它们。相同状态码或诊断不能单独定位字段或原因；不规定两条件重叠时的顺序，也不补合法字符或部署判断。"
+    },
+    {
+      "id": "minimum-alias-length-mcvideo-shape-and-name-purpose",
+      "question": "MCVideo 的 min-length-alias 表示什么？在网和离网分别配吗？",
+      "start": "topics/identity/mcptt-mcvideo-minimum-alias-length-config.md",
+      "boundary": "TS 24.484 V20.1.0 MCVideo 的 common 数据供在网和离网共用。§9.4.2.1 可选 common 的项 1 列 min-length-alias；§9.4.2.3 在 commonType 中直接声明该子项为 xs:unsignedShort、minOccurs=0，无 default/fixed，不由局部可选判断整份档案合规。§9.4.2.7 的 common 项 1 对应 MCVideo 管理员分配给 MCVideo 用户的字母数字名称最小长度 N3，指向 TS 24.483 [4] §14.2.9 MinLengthAliasID，仅作指向。未写不同于显式 0 或证据没读全；不推缺项值、字符算法、ID / 功能别名 URI 或优先级。"
+    },
+    {
+      "id": "minimum-alias-length-mcvideo-numeric-range-and-conflict",
+      "question": "MCVideo 的 min-length-alias 为什么是 unsignedShort 又写 0–255？255 和 256 分别怎样判断？",
+      "start": "topics/identity/mcptt-mcvideo-minimum-alias-length-config.md",
+      "boundary": "TS 24.484 V20.1.0 MCVideo §9.4.2.3 声明 common/min-length-alias 为可选 xs:unsignedShort，未给此项专用 255 facet；§9.4.2.6 另写 N3 是 0–255 并指向 TS 22.179 [3] 附录 A，仅作指向。255 是 N3 配置值上界，不是名称的最大长度。已给值大于 255 时 CMS 须返回 HTTP 409 含 XCAP constraint-failure；如带 phrase，建议 element value out of range。0、255 不触发 >255，256 触发；不从数值在范围内推语义有效、0 允许空名称或整份接受。缺项、负值或无效词法不由此 >255 条件判定，不套给其他字段。"
+    },
+    {
+      "id": "minimum-alias-length-mcvideo-semantic-invalid-not-range",
+      "question": "MCVideo 的 min-length-alias 在范围内但已知语义无效，和超过 255 要报同一个诊断吗？",
+      "start": "topics/identity/mcptt-mcvideo-minimum-alias-length-config.md",
+      "boundary": "TS 24.484 V20.1.0 MCVideo §9.4.2.6 写明 common/min-length-alias 的值语义无效时，CMS 须返回 HTTP 409 含 XCAP constraint-failure；如带 phrase，建议 semantic error。这是另一条件，不是 >255 专用规则的 element value out of range。该语义句另列广播 Bc1/Bc2，未列 depth；不把 N3 的数值边界套给它们。相同状态码或诊断不能单独定位字段或原因；不规定两条件重叠时的顺序，也不补合法字符或部署判断。"
+    },
+    {
+      "id": "minimum-alias-length-mcptt-annex-values-are-examples",
+      "question": "TS 24.484 附录里的 MCPTT min-length-alias 设为 5 或 12，这就是默认吗？",
+      "start": "topics/identity/mcptt-mcvideo-minimum-alias-length-config.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 的 min-length-alias 在 TS 24.484 V20.1.0 资料性附录 A：表 A.2.2-16 显式给 5，表 A.2.3-12 显式给 12。两个都是 MCPTT 配置示例，不是缺项默认、在网或离网的规定值，也不能套给 MCVideo。§8.4.2.3 的此叶无 default/fixed，不从例子判断现场配置或处理结果。"
     }
   ]
 }

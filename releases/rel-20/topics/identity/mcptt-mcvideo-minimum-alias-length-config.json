@@ -1,0 +1,241 @@
+{
+  "topic_id": "r20-identity-mcptt-mcvideo-minimum-alias-length-config",
+  "release": 20,
+  "state": "clause-checked",
+  "standard_stage": 3,
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只查 MCPTT 或 MCVideo 各自业务配置的 common/min-length-alias（N3）；不借本页判 MCData 或功能别名操作。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "claims": [
+    {
+      "id": "minimum-alias-length-mcptt-shape-and-name-purpose",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "查 MCPTT 业务配置的 common 项 1。查声明和用途不需要有实际配置；若判断现场是否缺项，要能确认相关配置内容。"
+      ],
+      "conclusion": "MCPTT 的 common 数据供在网和离网共用。§8.4.2.1 可选 common 的项 1 列 min-length-alias；§8.4.2.3 在 commonType 中直接声明该子项为 xs:unsignedShort、minOccurs=0，无 default/fixed，不由局部可选判断整份档案合规。§8.4.2.7 的 common 项 1 对应 MCPTT 管理员分配给 MCPTT 用户的字母数字名称最小长度 N3，指向 TS 24.483 [4] §7.2.9 MinLengthAliasID，仅作指向。未写不同于显式 0 或证据没读全；不推缺项值、字符算法、ID / 功能别名 URI 或优先级。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1"
+          ],
+          "items": [
+            "optional common and common item 1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "named direct optional unsignedShort leaf with no default or fixed"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "common data for both service modes and common item 1; administrator, corresponding users and management-object pointer only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "minimum-alias-length-mcptt-numeric-range-and-conflict",
+      "clause": "8.4.2.6",
+      "conditions": [
+        "查 MCPTT 业务配置 common/min-length-alias 的专用数值条件。查规则不需要实况；判断某次提交是否命中才要核对已给的数值。"
+      ],
+      "conclusion": "MCPTT §8.4.2.3 声明 common/min-length-alias 为可选 xs:unsignedShort，未给此项专用 255 facet；§8.4.2.6 另写 N3 是 0–255 并指向 TS 22.179 [3] 附录 A，仅作指向。255 是 N3 配置值上界，不是名称的最大长度。已给值大于 255 时 CMS 须返回 HTTP 409 含 XCAP constraint-failure；如带 phrase，建议 element value out of range。0、255 不触发 >255，256 触发；不从数值在范围内推语义有效、0 允许空名称或整份接受。缺项、负值或无效词法不由此 >255 条件判定，不套给其他字段。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "base xs:unsignedShort declaration without local upper facet"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "N3 defined range and Annex A pointer; dedicated greater-than-255 condition; separate generic schema conformity"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "minimum-alias-length-mcptt-semantic-invalid-not-range",
+      "clause": "8.4.2.6",
+      "conditions": [
+        "查 MCPTT 业务配置中本字段的值是否已被独立判为语义无效。未见字段、只见 409 或只知值在范围内，不足以确定这个前提。"
+      ],
+      "conclusion": "MCPTT §8.4.2.6 写明 common/min-length-alias 的值语义无效时，CMS 须返回 HTTP 409 含 XCAP constraint-failure；如带 phrase，建议 semantic error。这是另一条件，不是 >255 专用规则的 element value out of range。该语义句另列广播 B1/B2 与在网话权队列 depth；不把 N3 的数值边界套给它们。相同状态码或诊断不能单独定位字段或原因；不规定两条件重叠时的顺序，也不补合法字符或部署判断。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "independent semantic-invalid predicate including min-length-alias with service-specific neighbouring operands; compare dedicated numeric >255 and conditional recommended phrases"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "minimum-alias-length-mcvideo-shape-and-name-purpose",
+      "clause": "9.4.2.7",
+      "conditions": [
+        "查 MCVideo 业务配置的 common 项 1。查声明和用途不需要有实际配置；若判断现场是否缺项，要能确认相关配置内容。"
+      ],
+      "conclusion": "MCVideo 的 common 数据供在网和离网共用。§9.4.2.1 可选 common 的项 1 列 min-length-alias；§9.4.2.3 在 commonType 中直接声明该子项为 xs:unsignedShort、minOccurs=0，无 default/fixed，不由局部可选判断整份档案合规。§9.4.2.7 的 common 项 1 对应 MCVideo 管理员分配给 MCVideo 用户的字母数字名称最小长度 N3，指向 TS 24.483 [4] §14.2.9 MinLengthAliasID，仅作指向。未写不同于显式 0 或证据没读全；不推缺项值、字符算法、ID / 功能别名 URI 或优先级。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.1"
+          ],
+          "items": [
+            "optional common and common item 1"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.3"
+          ],
+          "items": [
+            "named direct optional unsignedShort leaf with no default or fixed"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "common data for both service modes and common item 1; administrator, corresponding users and management-object pointer only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "minimum-alias-length-mcvideo-numeric-range-and-conflict",
+      "clause": "9.4.2.6",
+      "conditions": [
+        "查 MCVideo 业务配置 common/min-length-alias 的专用数值条件。查规则不需要实况；判断某次提交是否命中才要核对已给的数值。"
+      ],
+      "conclusion": "MCVideo §9.4.2.3 声明 common/min-length-alias 为可选 xs:unsignedShort，未给此项专用 255 facet；§9.4.2.6 另写 N3 是 0–255 并指向 TS 22.179 [3] 附录 A，仅作指向。255 是 N3 配置值上界，不是名称的最大长度。已给值大于 255 时 CMS 须返回 HTTP 409 含 XCAP constraint-failure；如带 phrase，建议 element value out of range。0、255 不触发 >255，256 触发；不从数值在范围内推语义有效、0 允许空名称或整份接受。缺项、负值或无效词法不由此 >255 条件判定，不套给其他字段。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.3"
+          ],
+          "items": [
+            "base xs:unsignedShort declaration without local upper facet"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.6"
+          ],
+          "items": [
+            "N3 defined range and Annex A pointer; dedicated greater-than-255 condition; separate generic schema conformity"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "minimum-alias-length-mcvideo-semantic-invalid-not-range",
+      "clause": "9.4.2.6",
+      "conditions": [
+        "查 MCVideo 业务配置中本字段的值是否已被独立判为语义无效。未见字段、只见 409 或只知值在范围内，不足以确定这个前提。"
+      ],
+      "conclusion": "MCVideo §9.4.2.6 写明 common/min-length-alias 的值语义无效时，CMS 须返回 HTTP 409 含 XCAP constraint-failure；如带 phrase，建议 semantic error。这是另一条件，不是 >255 专用规则的 element value out of range。该语义句另列广播 Bc1/Bc2，未列 depth；不把 N3 的数值边界套给它们。相同状态码或诊断不能单独定位字段或原因；不规定两条件重叠时的顺序，也不补合法字符或部署判断。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.6"
+          ],
+          "items": [
+            "independent semantic-invalid predicate including min-length-alias with service-specific neighbouring operands; compare dedicated numeric >255 and conditional recommended phrases"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "minimum-alias-length-mcptt-annex-values-are-examples",
+      "clause": "A.2.2",
+      "conditions": [
+        "查本版资料性附录 A 中实际显示的 MCPTT 业务配置示例值，区分明示的示例值与规范没写字段时的行为。"
+      ],
+      "conclusion": "MCPTT 的 min-length-alias 在 TS 24.484 V20.1.0 资料性附录 A：表 A.2.2-16 显式给 5，表 A.2.3-12 显式给 12。两个都是 MCPTT 配置示例，不是缺项默认、在网或离网的规定值，也不能套给 MCVideo。§8.4.2.3 的此叶无 default/fixed，不从例子判断现场配置或处理结果。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "A.2.2"
+          ],
+          "items": [
+            "informative MCPTT example: explicit value 5"
+          ],
+          "tables": [
+            "A.2.2-16"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "A.2.3"
+          ],
+          "items": [
+            "informative MCPTT example: explicit value 12"
+          ],
+          "tables": [
+            "A.2.3-12"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "no schema default/fixed for the named leaf"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "TS 22.179 [3] 附录 A 和 TS 24.483 [4] 只作指向。不推实际赋名或验证结果、身份与角色权限、完整命名算法、缺项默认值或两业务共用同一个值。"
+  ],
+  "related": [
+    "r20-identity-mcptt-functional-alias-service-config",
+    "r20-identity-mcvideo-on-network-functional-alias-config",
+    "r20-identity-mcdata-on-network-functional-alias-config",
+    "r20-identity-mcptt-service-config-structure-and-extensions-validation",
+    "r20-identity-mcvideo-mcdata-service-config-validation",
+    "r20-identity-mcptt-on-network-floor-queue-config",
+    "r20-identity-mcvideo-service-priority-hierarchy-config"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
