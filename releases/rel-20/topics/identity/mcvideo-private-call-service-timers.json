@@ -1,0 +1,169 @@
+{
+  "topic_id": "r20-identity-mcvideo-private-call-service-timers",
+  "release": 20,
+  "state": "clause-checked",
+  "standard_stage": 3,
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只查 MCVideo 私呼业务配置，按 MCVideo 在网 R14 与离网分别选字段、用途和校验段。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "claims": [
+    {
+      "id": "mcvideo-private-timers-off-network-max-duration",
+      "clause": "9.4.2.7",
+      "conditions": [
+        "查 MCVideo 离网业务配置中该字段的局部声明或用途。判断现场缺项需完整的对应配置，不把片段视为缺项。"
+      ],
+      "conclusion": "MCVideo 的 off-network/private-call/mcvideo-max-duration 在 §9.4.2.1 离网项 2(a) 列出，§9.4.2.3 把 private-call 父项和其内 xs:duration 叶分别声明为 minOccurs=0，叶未声明 default/fixed。§9.4.2.7 离网项 2(a) 是整通离网私呼允许的最长时长，只指向 TS 24.483 [4] §14.2.17。缺项不证明不限时、补零或沿用在网挂起值；字段也不证明计时起止或私呼已结束。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.1"
+          ],
+          "items": [
+            "off-network item 2(a) structure"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.3"
+          ],
+          "items": [
+            "optional private-call and optional mcvideo-max-duration declaration"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "off-network item 2(a) maximum duration of the off-network private call; TS 24.483 section pointer only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-private-timers-on-network-r14-hang-spelling-and-shape",
+      "clause": "9.4.2.3",
+      "conditions": [
+        "查 MCVideo 在网业务配置的 R14 声明和条文拼写。区分查询局部声明与确认某份配置包含该块。"
+      ],
+      "conclusion": "MCVideo §9.4.2.1 在网项 6(d)(vi) 在可选 anyExt 的 R14 块列 private-call-hang-time；§9.4.2.3 全局声明 tc-timers-counters-R14，块内必需的 xs:duration 子项写 private-call-hang-timer，无 default/fixed，§9.4.2.6 和 .7 都用后者。R14 不是 on-network 的具名直接子项，块内必需不等于整份配置必带 R14。保留各处原写，不据此判可互换、可接受的替代路径或 CMS 实际接受。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.1"
+          ],
+          "items": [
+            "on-network item 6(d)(vi) literal private-call-hang-time in optional anyExt"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.3"
+          ],
+          "items": [
+            "optional on-network anyExt, global R14 block, required local private-call-hang-timer declaration"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.6"
+          ],
+          "items": [
+            "later duration list item 1 spelling"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "on-network item 18(f) spelling and context"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-private-timers-on-network-private-hang-not-reception-wait",
+      "clause": "9.4.2.7",
+      "conditions": [
+        "在同版 MCVideo 在网业务配置中，按所问的计时对象对照 R14 18(f)/(j)，不要求已有某次释放或媒体证据。"
+      ],
+      "conclusion": "MCVideo §9.4.2.7 在网 18(f) 的 private-call-hang-timer 是在网私呼的挂起计时值，原项未给出启动、重置或到期动作，也未指向 TS 24.581。18(j) 的 reception-hang-time 才是在参与者已请求接收媒体时，传输控制服务器释放私呼前应等待的时长；该条件不移给 18(f)。18(l) 的接收空闲针对媒体流。也不套在网 ad hoc 的同通连续发送静默、离网私呼整通上限或 MCPTT 话权条件。配置用途不证明实际释放。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "on-network item 18(f) primary; 18(j), 18(l), item 16 Note 3 and off-network item 2(a) as comparison only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-private-timers-off-network-max-duration-two-validation-conditions",
+      "clause": "9.4.2.6",
+      "conditions": [
+        "查 §9.4.2.6 第一份具名时长清单的离网 mcvideo-max-duration。区分已给值的格式判断、收到无效 n 和没有观察到该字段。"
+      ],
+      "conclusion": "MCVideo 离网 mcvideo-max-duration 在 §9.4.2.6 前一份 3 项时长清单列第 1 项；另外两项是 ad hoc 的 hang-time、max-duration-of-call。按秒表示句原写 PT<h>H<m>M<n>S（<n> 为有效秒值），格式检查句原写 PT <n>S。所列字段的值不合格式，或原段另写的收到无效 <n> 值，CMS 在相应条件下须返回 HTTP 409 含 XCAP constraint-failure；如带 phrase，分别建议 invalid format for duration、invalid value for duration。注 5 用 PT0.3S 表示 300 ms，不定 CMS 的实际词法、秒值界限、报错先后；缺项或同码不证明命中。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.6"
+          ],
+          "items": [
+            "earlier duration inventory items 1–3, seconds representation, Note 5, format predicate and distinct received-invalid-n predicate"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-private-timers-on-network-private-hang-format-only-in-later-list",
+      "clause": "9.4.2.6",
+      "conditions": [
+        "查 §9.4.2.6 后一份具名时长清单的在网 MCVideo R14 private-call-hang-timer；不把已给的坏格式、无效秒值和缺标签合并。"
+      ],
+      "conclusion": "MCVideo 在网 R14 的 private-call-hang-timer 是 §9.4.2.6 后一份 13 项时长清单的第 1 项。仍须按秒表示，原写 PT<h>H<m>M<n>S（<n> 为有效秒值）；格式检查句原写 PT <n>S，不合格式时 CMS 须返回 HTTP 409 含 XCAP constraint-failure，有 phrase 时建议 invalid format for duration。后一清单后单列的时长 409 只写格式，未另列收到无效 <n> 的专用响应；有效秒值及通用 Schema 要求仍在，不能把前段诊断、整数 0–255 或缺标签诊断搬过来。注 6 以 PT0.3S 表示 300 ms，不证明实际解析或接受。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.6"
+          ],
+          "items": [
+            "generic schema-conformance sentence and mandatory element branch, the earlier duration list and R14 integer range only as comparison; later duration inventory item 1 and Note 6, required seconds and scoped format 409"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "TS 24.483 [4] §14.2.17 只作指向。未从本条补目标名称、字段别名、全局缺项值、计时运行、CMS 词法/报错顺序或现场释放结果。"
+  ],
+  "related": [
+    "r20-identity-mcvideo-on-network-r14-reception",
+    "r20-identity-mcvideo-on-network-r14-transmission-timers",
+    "r20-identity-mcvideo-on-network-r15-r18-mbms-timers",
+    "r20-identity-ad-hoc-broadcast-hang-time",
+    "r20-identity-mcptt-private-call-service-timers",
+    "r20-identity-mcvideo-service-priority-hierarchy-config"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
