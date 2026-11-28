@@ -1,0 +1,185 @@
+{
+  "topic_id": "r20-identity-mcptt-on-network-service-authorization-forwarding-caps",
+  "release": 20,
+  "state": "clause-checked",
+  "standard_stage": 3,
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只查 MCPTT 在网业务配置的同时业务授权上限和即时转发次数上限；用户配置档只作同版对照，不要求已有配置现场或某次实际授权、转发。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "claims": [
+    {
+      "id": "mcptt-service-caps-outer-extension-and-positive-integer-shape",
+      "clause": "8.4.2.3",
+      "conditions": [
+        "查 MCPTT 在网业务配置的局部结构和类型；规范查询不需要现场配置或解析证据。断定某次缺项需相关完整配置。"
+      ],
+      "conclusion": "MCPTT 在网 §8.4.2.1 项 13(b/c)把 max-simultaneous-authorizations 和 max-immediate-forwardings 放在可选 on-network/anyExt，和 functional-alias-list 并列。§8.4.2.3 的 on-networkType 声明局部可选 anyExt，anyExtType 的 ##any/lax 与父类型序列的 ##other/lax 通配分开。两个上限是全局 xs:positiveInteger，均无 default/fixed，不是 on-networkType 或别名条目的具名直接子项。显式 0 不符合正整数类型，不等于缺项或关闭；通配不单独规定这两个名称的必填、次数或实际接受。注 3 属别名优先级，注 4 的 true 只给四个信令保护字段；.6 通用 Schema 仍适用，未为这两项另列专用 409。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1"
+          ],
+          "items": [
+            "on-network item 13(b/c) within outer optional anyExt, adjacent to alias list"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "local anyExt versus global positiveInteger declarations, separate wildcards, absent default/fixed"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.6"
+          ],
+          "items": [
+            "general Schema conformity, no named validation clause for these two fields"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "items 44–46 and Notes 3/4, scope of adjacent notes only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-service-caps-per-user-simultaneous-service-authorizations",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "查 MCPTT 在网业务配置的项 45，区分所配置的上限与某次实际授权或其他并发计数。"
+      ],
+      "conclusion": "MCPTT 在网业务配置 §8.4.2.7 项 45 的 max-simultaneous-authorizations 给一个 MCPTT 用户允许同时拥有的业务授权数上限。不是全系统用户总数、终端注册数或同时通话数，也不是项 41 按一个功能别名计的并发激活 max-simultaneous-activations。配置上限不证有效授权已有几项、某笔请求被接受或按哪种规则执行。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network item 45 maximum simultaneous service authorizations for an MCPTT user; item 41 per-alias activation comparison only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.1"
+          ],
+          "items": [
+            "item 13(b), outside functional-alias-list"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-service-caps-immediate-forwarding-count-not-trigger-or-timer",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "查 MCPTT 在网业务配置的项 46；只比较用户配置档中的转发条件及未应答计时，不把 Stage 1 来电转发程序、权利或结果搬入。"
+      ],
+      "conclusion": "MCPTT 在网业务配置 §8.4.2.7 项 46 的 max-immediate-forwardings 是允许的即时呼叫转发次数上限，不是所有转发次数、转发成功数或未应答时长。§8.3.2.7 用户配置档的 call-forwarding-condition 区分 immediate 和 no-answer，call-forwarding-no-answer-timeout 是未应答计时的时长，两处仅作对照。项 46 未规定按用户或按呼叫等范围计数、时间窗口、起止与重置、处理优先级、超限动作或这次转发是否执行、成功；不替代私呼与 ad hoc 组呼各自的 Stage 1 条件。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network item 46 allowed immediate call forwarding count only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.3"
+          ],
+          "items": [
+            "named global positiveInteger distinct from duration"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "the profile immediate/no-answer condition and no-answer timeout, comparison only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-service-caps-profile-is-distinct-no-precedence",
+      "clause": "8.4.2.7",
+      "conditions": [
+        "对照同版 MCPTT 在网业务配置项 45 与单独的用户配置档；只核这几个条款的字段、用途和适用位置。"
+      ],
+      "conclusion": "MCPTT 在网业务配置的 on-network/anyExt/max-simultaneous-authorizations（§8.4.2.7 项 45）和用户配置档的 OnNetwork/anyExt/user-max-simultaneous-authorizations（§8.3.2.7）是分别命名的正整数上限。后者也数该 MCPTT 用户的同时业务授权；路径大小写和配置档种类不能互换。这里没有终端实况或数值优先级的依据，也不能从并列字段推出取较小值、覆盖、合并或缺项回退。这不是逐别名激活上限。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.4.2.7"
+          ],
+          "items": [
+            "on-network item 45, service document side of comparison"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "user-profile exact name, OnNetwork/anyExt and scope, comparison only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.1"
+          ],
+          "items": [
+            "profile OnNetwork extension placement, comparison only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.3"
+          ],
+          "items": [
+            "profile global user-max-simultaneous-authorizations declaration, comparison only"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "未引入外部依赖正文。配置的两个上限不推出默认、两档优先、具体执行、计数算法、时间或触发；不把功能别名、不同转发场景或其他业务的规则视为本题条件。"
+  ],
+  "related": [
+    "r20-identity-mcptt-functional-alias-service-config",
+    "r20-identity-mcptt-service-config-structure-and-extensions-validation",
+    "r20-identity-mcptt-on-network-adhoc-multi-talker-config",
+    "r20-calls-incoming-private-call-forwarding",
+    "r20-calls-ad-hoc-group-call-forwarding"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
