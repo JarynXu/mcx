@@ -36,6 +36,89 @@
         "客户端在进行中 chat 呼叫期间离开无线覆盖，随后回到覆盖"
       ],
       "conclusion": "客户端或 server 检测恢复后重建客户端与 IWF 媒体面；有人占话权时 IWF 经 server 转交 floor taken。检测机制不在规范范围。"
+    },
+    {
+      "id": "iwf-chat-entry-lmrgrouphome-mc-client-native-relay-and-existing-floor",
+      "conditions": [
+        "可单独查 .8 前提、单步或已辨明信息流。判这次完整适用时才核 LMR 定义组呼正在进行，MCPTT 客户端已注册、尚未加入，用户已认证／获业务授权并表示要加入；不把回覆盖当未曾入呼。"
+      ],
+      "conclusion": "1 客户端→server 发 join，2 server→IWF 转发；3 IWF→server 回接纳该 join，4 server→客户端另转应答；5 IWF 与该 MCPTT 客户端建立媒体面。6 IWF 可通知自己的用户。话权已被占用时 7a IWF→server 报当前发言者的 IWF Floor Taken，7b 收到该类 IWF 消息后向 MCPTT 客户端转告；8 话权参与者继续使用话权控制。",
+      "limitations": [
+        "IWF 回接纳、server 实收、客户端实收这两腿及媒体建立分别取证；6 不是必通知或用户实收证明。隐式申请和已有话权通知都不是给加入者的新 Grant；不能按图推未占用时另有 Idle 或发媒体条件，不套预安排晚加入。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.5.8 preconditions, Figure 10.3.5.8-1 and Steps 1–8 including 7a/7b"
+          ],
+          "printed_pages": [
+            68,
+            69
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-chat-entry-mcpttgrouphome-iwf-join-affiliation-authorization-distinct",
+      "conditions": [
+        "可单独查 .9 的前提、任一步或已辨明信息流。判实际整支才核 MCPTT 定义组、示例用户 1/2 已加入组且两客户端在同一通进行中呼叫、IWF 还没加入这通呼叫；判本次隐式归属时核 IWF 所用 ID 和所述同组归属；判本次授权时另查 IWF 对该组的授权证据，不由尚未入呼推出尚未归属。"
+      ],
+      "conclusion": "1 IWF→server 发 join；2 在 server 收到后，若 IWF 或 LMR 用户尚未归属目标组，就用 IWF 本次使用的 MCPTT ID 生成隐式归属；同一步另检查 IWF 是否获准归属该组。3 server→IWF 回接纳；4 MCPTT server 建立 server 与 IWF 间的媒体面；5 用户 1/2 可获 IWF 已加入的通知；6 server→IWF 发当前发言者的 Floor Taken；7 这两个客户端及 IWF 相关的话权参与者继续使用话权控制。",
+      "limitations": [
+        "图 2 的 Perform implicit affiliation and check user authorization 不取消隐式归属条件，也不将正文授权主体改成客户端用户；不从此推实际授权或响应错误处理。5 的可能通知不等于逐用户实际接收；6 没有重复 .8 或 .10 的条件句，也没给无人占用时的行为，不能因呼叫进行中判一定有人持有，更不是向 IWF 授话权。查 .9 Step1 具体字段去信息流 owner。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.5.9 preconditions, Figure 10.3.5.9-1 and Steps 1–7"
+          ],
+          "printed_pages": [
+            69,
+            70
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-chat-entry-coverage-return-only-reestablishes-media-and-forwards-floor",
+      "conditions": [
+        "可单独查 .10 的检测者、重建对象、单条消息或话权条件。判完整实际场景才核组归属 LMR、同一进行中的 chat 呼叫中该 MCPTT 客户端原来已在通话、后来离开无线覆盖再返回。只判断某端实际收件、状态或媒体重建时，核对应端点和事件即可。"
+      ],
+      "conclusion": "1 MCPTT 客户端或 MCPTT server 检测已回覆盖；2 用媒体面控制信令重建客户端与 IWF 间的媒体面；3a 若当前有人持有话权，IWF→server 发 IWF Floor Taken；3b 若当前有人持有话权，server→客户端转告 Floor Taken。4 话权参与者继续使用话权控制。",
+      "limitations": [
+        "NOTE 未规定回覆盖检测方法；本节没列再发 join、创建新组、重新授权或话权重新授予。媒体重建、各腿已发／实收、用户实际收到媒体与当前话权分别取证；只核其中一个事实不要求消息齐全；关联多个事件才核同一次恢复、组、呼叫、客户端与有关端点。不把无声或没看到话权通知当某状态的证明。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.3.5.10 precondition, Figure 10.3.5.10-1, Steps 1–4 including 3a/3b and NOTE"
+          ],
+          "printed_pages": [
+            70
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
