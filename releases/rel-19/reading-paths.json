@@ -4932,6 +4932,30 @@
           "read": "topics/interworking/private-release.md"
         }
       ]
+    },
+    {
+      "id": "iwf-regroup-creation-iwf-server-and-member-notifications",
+      "question": "MC 或 IWF 发起重组后，谁保存临时组信息、谁确认哪条通知？安全级别和优先级何时取组成组的值？",
+      "start": "topics/interworking/regroup-boundaries.md#重组应答之后谁保存临时组信息谁通知谁",
+      "boundary": "TS 23.283 V19.5.0 Rel‑19 Stage 2 §§10.2.2.2/.3（印刷页 26–29）。问步骤或已辨明的一腿无需全报文链；判分支看实际发起，MC 与 IWF 各已定义至少一个 MC 服务组，不以此代本次组成组名单。.2 另列组管理客户端已取回各组成组配置。.2 MC 发起：4 IWF 回申请，5 GMS 创建并保存临时组信息，不从 4 代 5。授权用户两项都未指定时取组成组较低的安全级别、较高的优先级；只缺一项不补规则。.2 的 6/7 GMS↔IWF 通知与确认，8/9 GMS↔MC service server 创建通知与确认，10 GMS 通知其所管组成组成员，11 GMS 回原授权用户的组管理客户端。.3 IWF 发起：1 IWF→GMS 申请，2 GMS 查组能否并入临时组，3 GMS 回 IWF 原请求；4 IWF→GMS 创建通知，7 GMS 回 IWF 该通知；5/6 GMS↔MC service server 的创建通知与确认；6 的 MC service server 可拒绝，例如本次重组的一个组成组此时已处于一项重组中，不能从 3 推 6。8 GMS 通知其所管组成组成员。两支的成员通知都可带较低安全级别指示。申请结果、创建／保存、实际发送与各腿收件分别查；不从通知定所有权。原文没写 .3 拒绝后 7 的应答内容、是否继续 8、全员等待或回滚；.3 引用 TS 23.280，未在此核其正文。",
+      "next_if": [
+        {
+          "condition": "只查已辨明 IWF‑1 重组申请／应答、临时组通知或撤组通知的字段和各自结果，不是 MC service server 或原请求端消息体。",
+          "read": "topics/interworking/regroup-boundaries.md#重组的应答成立通知和撤组通知分别证明什么"
+        },
+        {
+          "condition": "查两侧为同批用户重组时的 MC→LMR 信令限制和临时／原互通组标识转换。",
+          "read": "topics/interworking/regroup-boundaries.md#两侧重组时什么信令不能转给-lmr"
+        },
+        {
+          "condition": "实际是 MCPTT 预配置组重组、取消或构成组冲突，不用通用 .2/.3 决策替代。",
+          "read": "topics/interworking/preconfigured-regroup.md"
+        },
+        {
+          "condition": "实际问组成 LMR 组要求端到端加密时的编解码或媒体，不用成员通知代媒体。",
+          "read": "topics/interworking/regroup-media.md"
+        }
+      ]
     }
   ]
 }

@@ -368,10 +368,208 @@
         "independent_source_review": false,
         "independent_usage_acceptance": false
       }
+    },
+    {
+      "id": "iwf-regroup-formation-mc-creation-and-level-condition-not-response",
+      "conditions": [
+        "可单查 .2 创建和级别规则，或某次 GMS 的创建／保存证据。判断缺省规则是否适用，核 MC 系统发起的这笔请求中授权用户有无指定两项；不要求同时看到 IWF 通知或回包。"
+      ],
+      "conclusion": "§10.2.2.2 前提包括组管理客户端已取回组成组配置，且 MC 与 IWF 各已定义至少一个 MC 服务组。两侧已定义不等于该笔的实际组成组名单。4 由 IWF 回申请；5 由 MC GMS 创建并保存临时组信息，含临时组 ID、离网信息、各合并组的 MC service ID、优先级和安全级别。步骤 5 写授权用户未指定安全级别和优先级；两项都未指定时，GMS 必须设组成组中较低的安全级别和较高的优先级。",
+      "limitations": [
+        "只少一项未给单项补值或覆盖另一已给项的规则。该规则不是 .7 应答表的默认值；并不定义实际保护或媒体。独立的 4 接纳应答和临时组 ID 不证明 5 已实际完成，也不推标识分配时点。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.2.2 preconditions and 10.2.2.3 preconditions (distinguish the actual origin branches)"
+          ],
+          "printed_pages": [
+            26,
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.2.2 Figure 10.2.2.2-1 and Steps 4–5 (regroup response vs temporary group creation/storage, level condition)"
+          ],
+          "printed_pages": [
+            27,
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.6–.7, Tables 10.2.1.6-1 and 10.2.1.7-1, NOTE (priority and security presence by flow)"
+          ],
+          "printed_pages": [
+            24
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-regroup-formation-mc-initiated-iwf-service-server-member-and-caller-legs",
+      "conditions": [
+        "可单查 .2 的 6/7、8/9、10 或 11，或以一条已识别消息查该步作用，无需实际全链。判实际回包匹配或各端结果时才查看同一次操作、消息类型、组、参与角色、逻辑端点和各自证据。"
+      ],
+      "conclusion": "MC 发起的 .2 中，6 GMS→IWF 通知重组，7 IWF→GMS 确认该通知；8 GMS→MC service server 通知创建并带组成组信息，9 MC service server→GMS 确认。10 GMS 通知其所管组成组的 MC 服务组成员，可带较低安全级别指示；图画通知动作框。11 GMS 回最初的授权 MC 用户所用组管理客户端。",
+      "limitations": [
+        "6 的注不定义 IWF 如何用临时组 ID。不能从 7 推 9、10、11 或任何一方实收，从 9 推全员确认、从 10 推用户已收、已归属或已启用保护。图和步骤不建立全员等待或跨腿实际到达次序；不要把 .3 Step6 的可拒绝机制移给 .2 的步骤 9。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.2.2 Figure 10.2.2.2-1 and Steps 6–11 and NOTE (IWF, MC service server, members, initiator)"
+          ],
+          "printed_pages": [
+            27,
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.2.3 Figure 10.2.2.3-1 and Steps 4–8 (creation notifications, receipt legs and MC service server rejection)"
+          ],
+          "printed_pages": [
+            28,
+            29
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-regroup-formation-iwf-first-request-and-gms-reply-not-creation",
+      "conditions": [
+        "可单查 .3 前提、步骤 1–3 或已辨认的一条。不为查原请求或原应答强求已观察到创建通知、成员、结果或临时组所有者；判实际发起分支看原发起侧。判断两侧是否已定义组、哪些组实际参加此请求，分别核相应证据。"
+      ],
+      "conclusion": "§10.2.2.3 为 IWF 发起，前提列 MC、IWF 各已定义至少一个 MC 服务组，不以此代本次实际组成组名单；没有 .2 的组管理客户端取回配置前提。1 IWF→GMS 发原始重组请求，2 GMS 核组能否并入临时组，3 GMS→IWF 回原请求。其引言引用 TS 23.280，排除步骤 1、2；本条只查本版 TS23.283 印出的动作和图，不展开引用正文。",
+      "limitations": [
+        "3 不是 7 的通知确认，原始回复并不说明随后 4 已发送、MC service server 已接纳、成员实收或哪方完成创存。参与传递也不等于实际执行重组从而拥有临时组；另按 .4 和实际执行者判断。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.2.2 preconditions and 10.2.2.3 preconditions (distinguish the actual origin branches)"
+          ],
+          "printed_pages": [
+            26,
+            28
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.2.3 opening, Figure 10.2.2.3-1 and Steps 1–3 (incoming request, GMS check and response)"
+          ],
+          "printed_pages": [
+            28,
+            29
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.2.3 Figure 10.2.2.3-1 and Steps 4–8 (creation notifications, receipt legs and MC service server rejection)"
+          ],
+          "printed_pages": [
+            28,
+            29
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.2.4 (temporary group ownership; comparison for distinguishing notification from performing the regroup)"
+          ],
+          "printed_pages": [
+            29
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-regroup-formation-iwf-initiated-notifications-and-later-mc-service-server-rejection",
+      "conditions": [
+        "可独立查 .3 的 4/7、5/6、8 或其中已识别的单条及可拒绝条件，不要求先有步骤 3 或全链。只要判断某笔实际送达、是否拒绝或其他结果，就查这步相应节点的消息内容或状态；跨步看同次操作、组、角色与匹配事件。"
+      ],
+      "conclusion": "IWF 发起的 .3 中，4 IWF→GMS 的临时组创建通知带组成组信息，7 GMS→IWF 确认该通知；5 GMS→MC service server 另通知创建并带组成组信息，6 MC service server→GMS 确认，MC service server 可拒绝该 IWF 重组，例如本次重组的一个组成组此时已处于一项重组中。8 GMS 通知其所管组成组的 MC 服务组成员，可带较低安全级别指示。",
+      "limitations": [
+        "初始 3 或通知 4 不证明 MC service server 实收、肯定结果或 GMS 已创建／保存。不能从 6 的名称或一个既有重组例子认定实际拒绝，也不套 .2 Step4 或预配置重组的规则。本段没写拒绝后 7 的状态、是否执行 8、等待规则或回滚，不认定另一腿回包或成员实收。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.2.3 opening, Figure 10.2.2.3-1 and Steps 1–3 (incoming request, GMS check and response)"
+          ],
+          "printed_pages": [
+            28,
+            29
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.2.3 Figure 10.2.2.3-1 and Steps 4–8 (creation notifications, receipt legs and MC service server rejection)"
+          ],
+          "printed_pages": [
+            28,
+            29
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.2.2 Figure 10.2.2.2-1 and Steps 4–5 (regroup response vs temporary group creation/storage, level condition)"
+          ],
+          "printed_pages": [
+            27,
+            28
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
-    "本页仅覆盖互通差异，不提供完整重组状态机。§10.2.2.1/.3 依赖 TS23.280，未在本页独立核验。"
+    "本页仅覆盖互通差异，不提供完整重组状态机。§10.2.2.1 指向 TS 23.280，§10.2.2.3 的引言也说除步骤 1、2 外沿用该规范；已核本版 TS 23.283 印出的 .3 步骤和图，未核引用规范中的完整过程。"
   ],
   "related": [
     "group-configuration.md",
