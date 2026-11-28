@@ -4876,6 +4876,34 @@
           "read": "topics/interworking/chat-initiation.md#旧通话结束后同组再呼还用话权信令吗"
         }
       ]
+    },
+    {
+      "id": "iwf-affiliation-tables-operation-originator-and-per-group-results",
+      "question": "IWF 归属或取消带多个组和业务时，MC service ID 指谁，应答能判每个组和每项业务吗？",
+      "start": "topics/interworking/affiliation-results.md#一笔归属带多个组多个业务响应能按什么粒度读",
+      "boundary": "TS 23.283 V19.5.0 Stage 2 §10.1.1.1–.5，限 IWF‑1，两方向均列于四表；可读纯规则或已识别一条，不用方向或相同 ID 定消息。四表 M 的 MC service ID 是触发操作者，不按转发或应答的一跳发送方取值；代理 ID 注仅请求 .2/.4：.2 描述 IWF 代表 LMR 系统为自己归属时用配置 ID；.4 对 IWF 代表 LMR 系统取消自己的该组归属同样说明相应配置 ID。只转发个人操作，不因此套这项代理 ID。四表组列表 M、至少一组；只 .2/.3 写目标 MC 系统定义的归属组，不以此认当前收件端或原始组定义侧。.2/.4 表中 MC service type 为 M，例有 MCData、MCPTT 或两者；应答 .3/.5 未列该项，须报告其所列每组结果，不是每业务或总结果。已确完整但某列出的组没结果，不满足逐组要求；捕获不全或未见另一组列入应答，不替它填成败。关联同一次、对应端实收、实际状态、GMS 保存另证。",
+      "next_if": [
+        {
+          "condition": "实况为 MC 系统定义的互通组，问查策略、IWF／GMS 回路或实际归属状态。",
+          "read": "topics/interworking/affiliation-mc-group.md"
+        },
+        {
+          "condition": "实况为 LMR 定义的互通组，问显式／隐式动作、IWF 与客户端腿或移除授权。",
+          "read": "topics/interworking/affiliation-lmr-group.md"
+        },
+        {
+          "condition": "问哪些请求使用个人或 IWF 代理身份、代理是否已在同一个组。",
+          "read": "topics/interworking/affiliation-representation.md"
+        },
+        {
+          "condition": "实际信息流为已经在进行的呼叫里单用户 leave，不是归属取消本身。",
+          "read": "topics/interworking/deaffiliation-exit.md"
+        },
+        {
+          "condition": "问 IWF‑1 接口和其它 IWF 参考点，不从表中业务示例改变体系架构。",
+          "read": "topics/interworking/scope.md"
+        }
+      ]
     }
   ]
 }

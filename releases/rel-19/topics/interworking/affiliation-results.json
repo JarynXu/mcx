@@ -24,6 +24,137 @@
         "归属或取消归属响应"
       ],
       "conclusion": "必需信息含发起者 ID、组列表及每个组的结果，不能用收到一个响应替代逐组结果判断。"
+    },
+    {
+      "id": "iwf-affiliation-tables-both-directions-and-triggering-identity",
+      "conditions": [
+        "可纯查 .1–.5 的适用接口、任一表的方向、身份或请求表注。实况按已辨明的 IWF‑1 操作与请求／应答类型读；判断配置 ID 的代理注才查 IWF 确为这次操作代表 LMR 系统，不凭上行方向或名称认定。"
+      ],
+      "conclusion": "§10.1.1.1 限 IWF‑1，其他参考点指 TS 23.280。四表导语各明写 IWF↔MC 服务服务器。四表必带 MC service ID 表示触发操作的发起者，列 LMR 用户或 MC 服务用户，按触发操作的一方读，不按当前一跳的发送端或应答方取值。仅请求表 .2 和 .4 各注：IWF 代表 LMR 系统为自己归属、或代表其取消时，使用用于该操作配置的 MC service ID。",
+      "limitations": [
+        "相同方向、字段形状或相同 ID 不用来判归属还是取消或把返回方冒认发起者。两张应答表未另列请求的代理注，不据此补回显、不同值、授权或实际身份映射。都不拿发送方是 IWF 直接套代理 ID。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.1.1.1 IWF-1 scope"
+          ],
+          "printed_pages": [
+            16
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.1.1.2/.3 introductory direction, Tables 10.1.1.2-1 and 10.1.1.3-1"
+          ],
+          "printed_pages": [
+            16
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.1.1.4/.5 introductory direction, Tables 10.1.1.4-1 and 10.1.1.5-1"
+          ],
+          "printed_pages": [
+            17
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-affiliation-tables-group-list-qualifier-and-request-service-type",
+      "conditions": [
+        "可单查任一已辨明消息的组列表描述，或单查请求需不需要 MC service type／应答是否列该项；只核表语义不要求找到对向消息。判实际缺项时先确认消息类型及相关内容是否完整。"
+      ],
+      "conclusion": ".2/.3 组列表必带，含一个或多个要归属且在目标 MC 系统定义的 MC service group ID；.4/.5 组列表也必带，含一个或多个要取消归属的 MC service group ID，表中未复述 .2/.3 的目标 MC 系统限定。MC service type 只在 .2/.4 的表中标 M，指请求针对的一个或多个业务，例如 MCData、MCPTT 或两者；.3/.5 应答表未列这项。",
+      "limitations": [
+        "目标 MC 系统不是任一跳的即时收件网元，原始组定义侧另按流程核。不从 .4/.5 未复述推无其他限制，不从表例判断所有设备支持所有业务、默认值、字段编码或改换成 IWF‑2；完整请求确实缺必带信息不能当默认业务，未抓完整不等于实际缺失。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.1.1.1 IWF-1 scope"
+          ],
+          "printed_pages": [
+            16
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.1.1.2/.3 introductory direction, Tables 10.1.1.2-1 and 10.1.1.3-1"
+          ],
+          "printed_pages": [
+            16
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.1.1.4/.5 introductory direction, Tables 10.1.1.4-1 and 10.1.1.5-1"
+          ],
+          "printed_pages": [
+            17
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-affiliation-tables-every-listed-group-not-every-service-or-node-state",
+      "conditions": [
+        "可单查 .3 或 .5 的逐组结果结构或已识别的单条应答，不需要有请求。要判完整应答是否漏结果，核是否完整、该组是否出现在这份应答列表、是否有相应结果。要关联实际请求和应答、或说某端确实实收、实际归属或已存储，再以相应记录取证。"
+      ],
+      "conclusion": ".3 列必带 Affiliation status per MC service group ID，.5 列必带 De-affiliation status per MC service group ID，分别报告本应答所列每个组的结果。两表没有总结果或“组×业务”的结果，单个组结果不能替另一个组，也不能自行分成 MCData 与 MCPTT 两个结果。已证完整应答列 G1/G2 而少 G2 结果，不满足本表逐组要求；未抓完整或没看到 G2 出现在应答列表，不填 G2 结果。",
+      "limitations": [
+        "本节未给全局成败、结果码、列表排序、去重、重试或遗漏时处理。相同组／发起者 ID 不够匹配两条消息；关联还查本次操作、两端等，不据列表位置猜配对。应答被发出、对端实收、所报组结果、GMS 实际保存与客户端加入呼叫分别取证。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.1.1.2/.3 introductory direction, Tables 10.1.1.2-1 and 10.1.1.3-1"
+          ],
+          "printed_pages": [
+            16
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.1.1.4/.5 introductory direction, Tables 10.1.1.4-1 and 10.1.1.5-1"
+          ],
+          "printed_pages": [
+            17
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
