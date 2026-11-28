@@ -4436,6 +4436,46 @@
           "read": "topics/interworking/late-entry.md"
         }
       ]
+    },
+    {
+      "id": "iwf-lmr-encrypted-interworking-key-scope-access-and-capability",
+      "question": "LMR 加密互通：私呼、业务组和临时组用什么密钥？组织能独占控制和访问吗？",
+      "start": "topics/interworking/lmr-encrypted-interworking-architecture.md#加密互通要提供哪些密钥能力",
+      "boundary": "TS 23.283 V19.5.0 Rel‑19 Stage 2 §5.1：私呼 (a) 在 MCPTT 侧一方与 LMR 侧一方之间安全共享该次 LMR E2EE 流量密钥，列真实性、完整性、机密性；(b) 给关联 MC 业务组或组集的组成员安全传 LMR E2EE 密钥或密钥集，用于跨系统互通组呼加密，不排除临时组；(c) 给 MC 系统内临时组成员安全传与临时 MC 业务组关联的 LMR E2EE 密钥，用于跨系统互通组呼加密。(d) 方案须保留 IWF 让一个或多个组织各自独占控制和访问本组织媒体的 LMR E2EE 流量密钥、用户 UKEK/KEK 的能力，不是已经独占或必须每组织启用。(e) 方案须支持 IWF 对零个或多个组媒体做解密／再加密；实际零组可，不免设计能力，不要求每组处理。(f) 当组织希望用 LMR E2EE 与 LMR 用户互通，才按本项看 MC 业务客户端安全配置该用户 UKEK/KEK 及传递 OTAR/OTAK 内容两项。查架构不需真实密钥或会话；不以看见安全消息证明已装钥或更新。",
+      "next_if": [
+        {
+          "condition": "实际是传送一条透明 LMR 安全消息，问 MCData 承载、角色或字段，不是要求能传内容。",
+          "read": "topics/interworking/lmr-security-transport.md"
+        },
+        {
+          "condition": "实际是 MC 加密语音转码或 IWF 解除 MC 层后的程序义务，不是 LMR 密钥能力。",
+          "read": "topics/interworking/encrypted-transcoding.md#iwf-可作安全网关什么时候必须走组密钥流程"
+        },
+        {
+          "condition": "问是否继续承载 LMR 格式媒体而非如何管理密钥。",
+          "read": "topics/interworking/lmr-encrypted-interworking-architecture.md#需要传-lmr-格式媒体时走哪里"
+        }
+      ]
+    },
+    {
+      "id": "iwf-lmr-formatted-media-aware-client-and-optional-protection",
+      "question": "需要传 LMR 格式媒体时，IWF‑1 接到谁，3GPP 加密是否必需？",
+      "start": "topics/interworking/lmr-encrypted-interworking-architecture.md#需要传-lmr-格式媒体时走哪里",
+      "boundary": "TS 23.283 V19.5.0 Rel‑19 Stage 2 §5.2、§7.4.1：需要 LMR 格式媒体的互通会话，从 IWF‑1 承载；IWF‑1 参考点是 IWF↔MCPTT server，不是客户端直连。MCPTT 系统内按 TS 23.379 [7] 指向的方法路由至或来自 LMR-aware MCPTT 客户端，客户端是媒体端，不是参考点端。[7] 未指定版本，按 §2 查本 Release 的最新版；本页不展开 TS 23.379 正文。E2EE 已使 IWF 不能解这份媒体是一个例子，不是唯一条件或所有 E2EE 的结论。MCPTT 系统与 IWF 可选择用 3GPP 机制加密同一 LMR 格式媒体，不强制，不因再受保护而判内部用了 LMR E2EE 或改变格式。NOTE 排除 LMR 格式的媒体内容；不据本节补编码、额外保护层结构或实际接收／解码。",
+      "next_if": [
+        {
+          "condition": "问题在组织的密钥控制、按组能力或加密互通应支持的用户密钥；不是媒体最终去哪。",
+          "read": "topics/interworking/lmr-encrypted-interworking-architecture.md#加密互通要提供哪些密钥能力"
+        },
+        {
+          "condition": "实际是 IWF 解除 MC 层、转码或 LMR 再加密的情形。",
+          "read": "topics/interworking/encrypted-transcoding.md"
+        },
+        {
+          "condition": "载荷实际是一条 LMR 安全消息，问通过哪个 MC 业务服务转给另一端。",
+          "read": "topics/interworking/lmr-security-transport.md"
+        }
+      ]
     }
   ]
 }

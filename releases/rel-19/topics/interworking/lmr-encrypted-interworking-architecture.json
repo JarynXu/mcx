@@ -1,0 +1,287 @@
+{
+  "topic_id": "r19-iwf-lmr-encrypted-interworking-architecture",
+  "release": 19,
+  "standard_stage": 2,
+  "state": "draft",
+  "title": "LMR 加密互通：密钥归谁控制，媒体怎么走",
+  "common_conditions": [
+    "TS 23.283 V19.5.0，Rel‑19 Stage 2，MC/LMR 互通的密钥架构与 IWF‑1 LMR 格式媒体；按所问条款各自的前提查。"
+  ],
+  "condition_rule": "查架构或任一明示条件不用实况；实际资格、权能、配置、处理与对端收件分别按各条核证。",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "iwf-lmr-encrypted-architecture-private-group-or-temporary-group-traffic-key-scope",
+      "conditions": [
+        "可查 §5.1(a)、(b) 或 (c) 任一机制，不要求现场密钥交换。判实际方案对应哪项，先分私呼会话、关联 MC 业务组／组集，或临时 MC 业务组及 MC 系统内的临时组成员。"
+      ],
+      "conclusion": "加密互通的架构要求：(a) 安全共享 MCPTT 侧一方与 LMR 侧一方之间互通私呼的 LMR E2EE 流量密钥，列真实性、完整性和机密性；(b) 向组成员安全传递关联 MC 业务组或组集的 LMR E2EE 密钥或密钥集，用于跨系统互通组呼；(c) 向 MC 系统内临时组成员安全共享关联临时 MC 业务组的 LMR E2EE 密钥，用于跨系统互通组呼。",
+      "limitations": [
+        "(b) 原文未排除临时组；(c) 的特定收件对象不能移去改写 (b)，也不能扩成所有 LMR 成员或未加入临时组的组成组成员。不要用用户 UKEK/KEK、已配置的组或成功信令代这些流量加密所用密钥和接收证据。不补提供方、KMS、密钥用法或成功机制。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "5.1(a–c) (private, MC service group/set, and MC-side temporary-group key mechanisms)"
+          ],
+          "printed_pages": [
+            13
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-lmr-encrypted-architecture-organizational-sole-control-and-sole-access-not-precluded",
+      "conditions": [
+        "可直接问 §5.1(d) 对方案能力的限制，不需要先有组织在用。评价某方案是否保留这条能力，按单个组织及它的两类相应密钥分别核控制权限和访问权限；判断实际运行另查该组织、部署及访问状态。"
+      ],
+      "conclusion": "密钥管理方案不得排除 IWF 让一个或多个任务关键组织各自独占控制权且独占访问权的能力。两类对象按该组织的范围识别：用于本组织媒体流量的 LMR E2EE 流量密钥，以及其用户的 UKEK 或 KEK。仅保留独占控制而强制让别方能访问，不满足同一独占能力。",
+      "limitations": [
+        "这是保留能力，不要求实际每组织独占、不要求一定共享，也不证明 IWF、运营方或其他组织拿到了密钥。不能把一类密钥的控制或访问推成另一类的权限，也不指定存储、实现或所有权交接。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "5.1(d) (must not preclude ability for organization-specific sole control and access over both key scopes)"
+          ],
+          "printed_pages": [
+            13
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-lmr-encrypted-architecture-iwf-media-processing-capability-zero-or-more-groups",
+      "conditions": [
+        "可直接问 §5.1(e) 的能力、数量或义务，不需要某组已启用；实况分别判断方案是否支持该能力、给哪些组配置和本次媒体是否经历实际处理。"
+      ],
+      "conclusion": "方案须支持 IWF 对零个或多个组的媒体流量做解密／再加密的能力。可以有零个组实际使用该处理，不能因实际是零就认为方案不需支持此能力。原文不要求至少一个组或每个组实际被解密／再加密。",
+      "limitations": [
+        "不据 (e) 证明某 IWF 实际能解任何一份媒体、应强制每组配置、解密哪个保护层、已转码、已重新加密或有端到端连续性。实际解除 MC 侧加密另属 §10.9.1 的条件，不把两条义务相抵。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "5.1(e) (support IWF ability for zero or more groups, not actual processing)"
+          ],
+          "printed_pages": [
+            13
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-lmr-encrypted-architecture-client-user-key-and-otar-otak-content-capabilities",
+      "conditions": [
+        "可独立查 §5.1(f) 的前提、两种机制或 §3.2 的缩写，无需有观察到的装钥或报文。判实际某部署是否落在 (f)，确认任务关键组织希望在与 LMR 用户互通时使用 LMR E2EE。"
+      ],
+      "conclusion": "(f) 对该类部署列两种机制：向 MC 业务客户端安全配置该用户的 UKEK 或 KEK，并能传递 LMR OTAR 或 OTAK 消息内容。§3.2 将 UKEK（Unique Key Encryption Key）、OTAR（Over-The-Air Rekeying）列为 P25 术语；KEK（Key Encryption Key）、OTAK（Over-The-Air-Key Management）列为 TETRA 术语。",
+      "limitations": [
+        "不因有 LMR 互通就断 (f) 的部署条件成立，也不因未满足 (f) 否定其他义务。用户的密钥加密密钥与这里私呼／组呼的流量密钥用途不同。安全消息内容被传递不证明用户密钥已配置、更新、可用或投入通话；不补协议字段、步骤或密钥内容。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "5.1(f)(i–ii) (conditional LMR E2EE deployment; client provisioning and conveying contents)"
+          ],
+          "printed_pages": [
+            13
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "3.2 (KEK, UKEK, OTAR and OTAK labels only)"
+          ],
+          "printed_pages": [
+            12
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-lmr-encrypted-architecture-iwf-one-lmr-formatted-media-to-aware-client-not-direct-reference-point",
+      "conditions": [
+        "可直接查 §5.2 要求与可选项、IWF‑1 两端身份或 [7] 指针，无需有媒体捕获。判实际会话先看是否需要在 IWF 和 LMR-aware MCPTT 客户端之间传 LMR 格式语音媒体；判路线、加密、收件或解码分别看该次证据。"
+      ],
+      "conclusion": "在需要传这种 LMR 格式媒体的场景，IWF‑1 承载它，MCPTT 系统内把它路由至或来自 LMR-aware MCPTT 客户端，所用方法回指 TS 23.379 [7]。IWF‑1 的参考点在 IWF 与 MCPTT server 之间；媒体最终对应的客户端不是参考点另一端。使用 E2EE 且 IWF 不能解这份媒体是例子，不是唯一条件。MCPTT 系统与 IWF 可选择用 3GPP 机制加密这份 LMR 格式媒体。",
+      "limitations": [
+        "不把全部 E2EE 或全部互通都视为这个例子，不说 3GPP 加密必须、已选择或可用来证明 LMR E2EE、编解码转换、终端实收或必能处理。保留 LMR 格式与是否有额外保护是两个判断；NOTE 明确 LMR 格式媒体内容不在本规范范围，不推精确封装。非特指 [7] 按 §2 读同一 Release 最新版；没展开其转发方法。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "5.2 introduction, (a–b) and NOTE (LMR-formatted media, aware clients, optional 3GPP encryption, contents out of scope)"
+          ],
+          "printed_pages": [
+            13
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "7.4.1 (IWF-1 reference point endpoints only)"
+          ],
+          "printed_pages": [
+            15
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "2 References [7] (TS 23.379 designation and non-specific same-Release reading rule only)"
+          ],
+          "printed_pages": [
+            11
+          ],
+          "usage": "dependency"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "source_references": [
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "5.1(a–c) (private, MC service group/set, and MC-side temporary-group key mechanisms)"
+      ],
+      "printed_pages": [
+        13
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "5.1(d) (must not preclude ability for organization-specific sole control and access over both key scopes)"
+      ],
+      "printed_pages": [
+        13
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "5.1(e) (support IWF ability for zero or more groups, not actual processing)"
+      ],
+      "printed_pages": [
+        13
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "5.1(f)(i–ii) (conditional LMR E2EE deployment; client provisioning and conveying contents)"
+      ],
+      "printed_pages": [
+        13
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "3.2 (KEK, UKEK, OTAR and OTAK labels only)"
+      ],
+      "printed_pages": [
+        12
+      ],
+      "usage": "comparison-only"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "5.2 introduction, (a–b) and NOTE (LMR-formatted media, aware clients, optional 3GPP encryption, contents out of scope)"
+      ],
+      "printed_pages": [
+        13
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "7.4.1 (IWF-1 reference point endpoints only)"
+      ],
+      "printed_pages": [
+        15
+      ],
+      "usage": "primary"
+    },
+    {
+      "source_id": "3gpp-ts-23.283-v19.5.0",
+      "clauses": [
+        "2 References [7] (TS 23.379 designation and non-specific same-Release reading rule only)"
+      ],
+      "printed_pages": [
+        11
+      ],
+      "usage": "dependency"
+    }
+  ],
+  "related": [
+    {
+      "topic": "r19-iwf-encrypted-transcoding",
+      "required": false,
+      "meaning": "实际声音转码及 IWF 解除 MC 加密时的条件义务独立查 §10.9.1；不要以本页能力替代。"
+    },
+    {
+      "topic": "r19-iwf-lmr-security-transport",
+      "required": false,
+      "meaning": "确实传递 LMR 安全消息内容才查 §10.12；其 MCData 路不是本页 IWF-1 的语音承载。"
+    },
+    {
+      "topic": "r19-interworking-scope",
+      "required": false,
+      "meaning": "IWF 的总体接口与功能范围，不把这两节视为部署模型。"
+    }
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  },
+  "limitations": [
+    "此处列 Stage 2 互通架构和媒体承载，不提供被引文档正文、密钥操作、系统部署、编码或实际运行验证。"
+  ]
+}
