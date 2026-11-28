@@ -4476,6 +4476,30 @@
           "read": "topics/interworking/lmr-security-transport.md"
         }
       ]
+    },
+    {
+      "id": "iwf-preconfigured-constituent-regroup-cancel-direction-ack-vs-deaffiliation",
+      "question": "预配置组成组重组怎么取消？谁验权、谁确认、什么时候退归属？",
+      "start": "topics/interworking/preconfigured-regroup.md#已形成的组成组重组怎么取消",
+      "boundary": "TS 23.283 V19.5.0 Rel‑19 Stage 2 §10.3.7.3.1/.2：查规范不需实况。判现场分支才核同一实际 D、原重组及本次取消的发起侧；不拿配置来源 P、组成组托管或一条回包代分支。MCPTT 支由获权用户经客户端发起、向 server 请求（1/2），server 查本次取消权限 3；4/5 server↔IWF，另 6 server→原客户端，不补 IWF 退归属。前提含客户端获准取消、GMS 向 MCPTT server 订阅组动态数据、IWF 已被重组进 D；步骤 5 首句是取消应答，后句 may reject 的名字没写 cancel，不当必拒条件或 .18 字段。IWF 支前提是所示 MCPTT 客户端已被重组进 D 且正在 MCPTT 系统接受服务；1 IWF→server；2 server 下发，3 客户端通知用户；4 可确认但不回同笔组播取消请求（图 cancel、正文 remove 同一步）。5 server 退客户端的 D 归属，6 server→IWF 单独应答；不以缺 4 判 5/6 失败，不套其他支验权或以图名换发起者。IWF 腿 .16/.17 查请求者 MCPTT ID 与 D 的 ID，皆必带，.17 另必带取消 Result；非客户端 ACK、.18 原因或实际终端／全组状态。单查一条不需全链，发出、实收、实际退归属、D 已取消分别取证。",
+      "next_if": [
+        {
+          "condition": "实际发起的是新的组成组形成请求却被拒绝，不是取消已有重组。",
+          "read": "topics/interworking/preconfigured-group-regroup-rejection.md"
+        },
+        {
+          "condition": "实际用的是用户名单的重组，按该类取消程序。",
+          "read": "topics/interworking/preconfigured-user-regroup-cancellation.md"
+        },
+        {
+          "condition": "实际问 IWF 或某一客户端停止参与时整个重组是否仍有效，不是要找取消消息。",
+          "read": "topics/interworking/preconfigured-regroup.md#退出组成组后预配置重组还有效吗"
+        },
+        {
+          "condition": "实际只结束已有组呼，不是撤销重组配置／组。",
+          "read": "topics/interworking/group-call-release.md"
+        }
+      ]
     }
   ]
 }
