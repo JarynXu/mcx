@@ -1897,6 +1897,36 @@
       "question": "在 MCVideo 离网配置中，5GS 的 PQI 对应哪种 ProSe 配置？能按这条把两个值直接换算吗？",
       "start": "topics/identity/mcvideo-service-off-network-priority-values.md",
       "boundary": "TS 24.484 V20.1.0 规范性附录 §C.4.2 在 MC Service over 5G ProSe 下，把离网 default-pqi 的 PC5-5QI 写为 default-prose-per-packet-priority 的 5GS 对应项。这是配置概念对应，不是数值一一映射、换算、选择顺序或缺项回退，不证明实际 MCVideo 呼叫用了哪种值。§9.4.2.7 项 1/4 两组的字段指向相同，也不因此证明实际采用同值或目标正文相同规则。"
+    },
+    {
+      "id": "mcvideo-hierarchy-config-common-broadcast-group-vs-user-counts",
+      "question": "MCVideo 共用广播配置的 Bc1 和 Bc2 各数什么？对应哪个管理对象？",
+      "start": "topics/identity/mcvideo-service-priority-hierarchy-config.md",
+      "boundary": "TS 24.484 V20.1.0 §9.4.2.7 的 MCVideo common 数据适用于在网和离网，不意味着两种模式块都必需。common 项 2 num-levels-group-hierarchy 是组广播组（group-broadcast groups）的组层级数，§9.4.2.6 指向 Bc1，即 TS 22.280 [30] 附录 E；.7 对应 TS 24.483 [4] §14.2.7 NumLevelGroupHierarchy。common 项 3 num-levels-user-hierarchy 是用户广播组（user-broadcast groups）的用户层级数，.6 指向同附录的 Bc2，.7 对应 TS 24.483 [4] §14.2.8 NumLevelUserHierarchy。两规范仅作指向，不填目标取值，不把层级数当实际人数、组数、赋值或离网抢占层级。"
+    },
+    {
+      "id": "mcvideo-hierarchy-config-common-broadcast-optional-shape",
+      "question": "MCVideo common/broadcast-group 的两个层级数在 Schema 里必需吗？缺项会填 4 吗？",
+      "start": "topics/identity/mcvideo-service-priority-hierarchy-config.md",
+      "boundary": "TS 24.484 V20.1.0 MCVideo §9.4.2.1 的 common 是可选块，其项 2 在可选 broadcast-group 内列 num-levels-group-hierarchy 和 num-levels-user-hierarchy。§9.4.2.3 对 broadcast-group 父项及两个子项各写 minOccurs=0，两个子项均为 xs:unsignedShort，未声明 default/fixed，也不使用离网 priorityhierarchyType 的 4–256 限制。缺项不能补 0 或 4，不从结构列表当必需或根据局部省略判断整档接受。"
+    },
+    {
+      "id": "mcvideo-hierarchy-config-common-bc1-bc2-semantic-rejection",
+      "question": "MCVideo 广播层级数语义无效时，CMS 返回什么？可把 N3 的 255 上限套过来吗？",
+      "start": "topics/identity/mcvideo-service-priority-hierarchy-config.md",
+      "boundary": "TS 24.484 V20.1.0 MCVideo §9.4.2.6 将 num-levels-group-hierarchy、num-levels-user-hierarchy 分别指为 TS 22.280 [30] 附录 E 的 Bc1/Bc2。两项或 min-length-alias 中有语义无效的值时，CMS 须 HTTP 409 含 XCAP constraint-failure；带 phrase 建议 semantic error。min-length-alias > 255 的专门数字规则属于相邻分支，不给 Bc1/Bc2 加上限；不引入目标合法值、把缺项当语义无效、把 xs:unsignedShort 合规当语义合规，或从同码推现场命中的原因。"
+    },
+    {
+      "id": "mcvideo-hierarchy-config-off-network-range-and-confirmed-field-absence",
+      "question": "MCVideo 离网抢占层级字段的范围与缺项规则是什么？整块不在也取 4 吗？",
+      "start": "topics/identity/mcvideo-service-priority-hierarchy-config.md",
+      "boundary": "TS 24.484 V20.1.0 MCVideo §9.4.2.1 的离网提纲未列 num-levels-priority-hierarchy，但 §9.4.2.3 在 off-network 下明写具名直接子项、minOccurs=0、无 default/fixed。priorityhierarchyType 基于 xs:unsignedShort，限制 4–256（含两端）。确认相关 off-network 块存在且该字段确知缺失时，§9.4.2.7 离网项 3 指定采用 Schema 最低值，即 4。这不是 XSD 回填，也不用于整个离网块不存在、截取不完整、显式错误值或 common 广播字段。显式 4 是提供值而不是缺项证据；值在范围内不证明实际使用或整个配置接受。§9.4.2.6 仍要求符合通用 Schema，但未为此字段单列诊断，不套广播层级数的 semantic error。"
+    },
+    {
+      "id": "mcvideo-hierarchy-config-off-network-override-purpose-not-actual-grant",
+      "question": "MCVideo 离网层级字段是给谁的抢占请求用的？能证明某人必获准吗？",
+      "start": "topics/identity/mcvideo-service-priority-hierarchy-config.md",
+      "boundary": "TS 24.484 V20.1.0 MCVideo §9.4.2.7 离网项 3 的 num-levels-priority-hierarchy 用于确定针对正在进行的离网 MCVideo 传输，哪些参与者、参与者类型和紧急传输类型的抢占请求应获准。对应 TS 24.483 [4] §14.2.18 NumLevelHierarchy，仅作指向。原条不提供具体赋权、优先级算法、实际获准或已完成抢占；不等同共用广播层级数、离网私呼 ProSe/PQI、私呼时长或在网 Resource-Priority，也不移用 MCPTT 实现。"
     }
   ]
 }
