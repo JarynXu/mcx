@@ -1,0 +1,214 @@
+{
+  "topic_id": "r20-identity-mcptt-user-profile-priorities",
+  "release": 20,
+  "state": "clause-checked",
+  "standard_stage": 3,
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。只查 MCPTT 用户配置档的在网或离网组呈现优先级、共用用户呼叫优先级及其声明和校验。查规范不要求先有运行数据。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "claims": [
+    {
+      "id": "mcptt-user-profile-priority-group-mode-and-presentation-scope",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "确认配置对象是 MCPTT 用户档中指定模式的组条目。查一个模式下的原文不需要同时有另一个模式或一次实际呈现记录。"
+      ],
+      "conclusion": "MCPTT 用户配置档 §8.3.2.7 的组字段位置为 OnNetwork/MCPTTGroupInfo/entry/anyExt/RelativePresentationPriority 和 OffNetwork/MCPTTGroupInfo/entry/anyExt/RelativePresentationPriority。在网组的 RelativePresentationPriority 相对于其他在网组和在网用户；离网组相对于其他离网组和离网用户。各是同一模式内的呈现优先级，0 到 255 含两端，不定跨模式比较、数字方向、同值顺序或实际呈现。TS 24.483 [4] 在网指 §5.2.48B7 RelativePresentationPriority，离网指 §5.2.53B RelativePresentationPriority；只作定位，不把此值作 Common/MCPTT-group-call/Priority 或话权、抢占、Resource-Priority 报头。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "mode selector and both RelativePresentationPriority data-semantics bullets; §5.2.48B7/§5.2.53B reference only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.3"
+          ],
+          "items": [
+            "PriorityType inclusive bounds and per-entry extension"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-user-profile-priority-user-initiating-and-receiving-priority",
+      "clause": "8.3.2.7",
+      "conditions": [
+        "按用户的 Common/MCPTT-group-call/Priority 查用途。查条文不用先确认某通呼叫获得、拒绝或使用过该值。"
+      ],
+      "conclusion": "MCPTT 用户配置档 §8.3.2.7 的 Common/MCPTT-group-call/Priority 表示该 MCPTT 用户发起和接收 MCPTT 呼叫的优先级。数据语义段写 nonNegativeInteger，.3 该具名直子项用 xs:unsignedShort，.6 仍限 0 到 255 含两端。保留父容器和 MCPTT calls 原词，不因容器名加“仅组呼”，也不从用途句给私呼添加流程。TS 24.483 [4] §5.2.44 Priority 只作定位。不套某个组的呈现优先级、话权请求顺序或 Resource-Priority 报头。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.1"
+          ],
+          "items": [
+            "Common item 8(e)(v), zero or one Priority within MCPTT-group-call"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.3"
+          ],
+          "items": [
+            "CommonType MCPTT-group-call and local Priority xs:unsignedShort"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "Priority of the user for initiating and receiving MCPTT calls; §5.2.44 pointer only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.6"
+          ],
+          "items": [
+            "third named range branch for Priority of MCPTT-group-call"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-user-profile-priority-group-schema-restriction-vs-user-type",
+      "clause": "8.3.2.3",
+      "conditions": [
+        "分清 MCPTT 用户档的组扩展与用户呼叫直子项，分别查 .1 提纲、.3 局部声明、.6 数值要求和 .7 语义。查这些声明不用运行鉴权或等服务器实测。"
+      ],
+      "conclusion": "MCPTT 用户档在网或离网组条目的 RelativePresentationPriority 位于同一 MCPTTGroupInfo/entry 可选 anyExt，与 GroupServerInfo 并列，不在其内。§8.3.2.3 该全局元素用 PriorityType，restriction base 是 xs:nonNegativeInteger，minInclusive=0/maxInclusive=255；条目的 anyExt 有 ##any/lax。Common/MCPTT-group-call/Priority 在 .1 提纲是零或一个，.3 是 MCPTTGroupCallType 的 0..unbounded choice 内具名 xs:unsignedShort 直子项，无 default/fixed；.7 写 nonNegativeInteger。整数 256 超出前者 Schema 的限制；后者的原始类型可表示 256，却仍不满足 .6 的 0 到 255。不能据局部类型、次数或一个合范围整数断整档接受、默认值或解析先后。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.1"
+          ],
+          "items": [
+            "Common item 8(e)(v); generic entry item 5(k) beside (j)"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.3"
+          ],
+          "items": [
+            "global RelativePresentationPriority and PriorityType min/max; entry anyExt; CommonType local group call choice and Priority"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.6"
+          ],
+          "items": [
+            "three named 0..255 field rules separate from schema primitive"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.7"
+          ],
+          "items": [
+            "distinct group and user semantics, user nonNegativeInteger description"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-user-profile-priority-three-xdms-range-clauses",
+      "clause": "8.3.2.6",
+      "conditions": [
+        "要判断一次所述范围错误，先确认 MCPTT 用户档的实际字段、所在模式或 Common 路径及其已知整数值。查规范可分别读取任一路径，不要求其余两处同时出现或失效。"
+      ],
+      "conclusion": "MCPTT 用户配置档 §8.3.2.6 对 OnNetwork/MCPTTGroupInfo/entry/anyExt/RelativePresentationPriority 和 OffNetwork/MCPTTGroupInfo/entry/anyExt/RelativePresentationPriority 各列一条，另列 MCPTT-group-call 的 Priority（.1/.3 定位在 Common 下），不是四条或一条同名通配。各自范围 0 到 255 含两端；0/255 本身未越界，已确认的整数 256 越界。对应值越界时 XDMS 须返 HTTP 409 Conflict 并含 XCAP constraint-failure；若带 phrase，建议 Priority value out of range。RFC 4825 [14] 只是该条所列引用。范围内不保证整档通过，不用这三句替其他字段、CMS 业务配置或实况补结论。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.6"
+          ],
+          "items": [
+            "separate OnNetwork and OffNetwork RelativePresentationPriority clauses; separate Priority of MCPTT-group-call clause; required XDMS response and conditional recommended phrase; RFC 4825 [14] pointer only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.1"
+          ],
+          "items": [
+            "Common item 8(e)(v) parent placement"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.3"
+          ],
+          "items": [
+            "CommonType and local MCPTTGroupCallType labels"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcptt-user-profile-priority-range-phrase-and-missing-evidence",
+      "clause": "8.3.2.6",
+      "conditions": [
+        "区分查规范与诊断本次响应。诊断需要匹配实际用户档字段和可判的值；不从报错词、摘录、缺项或非整数替代所在路径与整数证据。"
+      ],
+      "conclusion": "MCPTT 用户配置档的在网和离网组 RelativePresentationPriority、Common/MCPTT-group-call 的用户 Priority 在 §8.3.2.6 有三个各自的 0 到 255 范围条件。确认其中一处整数越界才用该处范围句：XDMS 须返回 HTTP 409 Conflict 并含 XCAP constraint-failure，若带 phrase 则建议写 Priority value out of range，不强制带它。只见 409 或同短语不能辨别路径或验证实际响应；缺项、截断、非整数或格式错误不自动等于已证越界。0 是一个边界值，不是缺项默认。也不从同诊断推故障顺序、唯一拒因、最高/最低优先级或话权结果；其他 XCAP 检查按各自条件。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.6"
+          ],
+          "items": [
+            "generic schema requirement, three exact range conditions, optional phrase, and other independent profile checks for comparison"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "8.3.2.3"
+          ],
+          "items": [
+            "distinct group restricted type and user primitive, no default/fixed at field declarations"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "三处同范围和诊断不合并其字段、作用或类型。没有声称数字方向、默认值、合排、校验先后、实际呈现、话权或报头；TS 24.483 [4] 与 RFC 4825 [14] 只作指向。"
+  ],
+  "related": [
+    "r20-identity-mcptt-user-profile-group-server-info",
+    "r20-identity-mcptt-user-profile-xcap-validation",
+    "r20-identity-mcptt-on-network-resource-priority-config",
+    "r20-identity-mcptt-override-priority-hierarchy-config",
+    "r20-calls-group-multi-talker-control",
+    "r20-identity-mcptt-user-profile-private-call-kms-uri"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}

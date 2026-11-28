@@ -2239,6 +2239,36 @@
       "question": "MCPTT 用户配置档组地址的 If the entry element is empty，是说组 ID 或某个端点的 uri-entry 空吗？",
       "start": "topics/identity/mcptt-user-profile-group-server-info.md",
       "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档 §8.3.2.7 组 IDMS 与 KMS 共四句原写 If the entry element is empty，没指定完整 XML 路径，不能断为组 ID 的 uri-entry、端点 uri-entry 或某一层确指的 entry。已知地址没出现、只见空白、URI 无效或联系失败，不证明原条件。两模式的 IDMS 各指初始档 idms-auth-endpoint 和 idms-token-endpoint，KMS 各指初始档 kms；两句 GMS 未写这种回退。不同于私呼 KMS 明写 uri-entry 空，不借该判据、不补 XML、解析算法、默认处理顺序或运行故障切换。"
+    },
+    {
+      "id": "mcptt-user-profile-priority-group-mode-and-presentation-scope",
+      "question": "MCPTT 用户配置档的组 RelativePresentationPriority 比的是谁？在网和离网的优先级能放在一起排吗？",
+      "start": "topics/identity/mcptt-user-profile-priorities.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档 §8.3.2.7 的组字段位置为 OnNetwork/MCPTTGroupInfo/entry/anyExt/RelativePresentationPriority 和 OffNetwork/MCPTTGroupInfo/entry/anyExt/RelativePresentationPriority。在网组的 RelativePresentationPriority 相对于其他在网组和在网用户；离网组相对于其他离网组和离网用户。各是同一模式内的呈现优先级，0 到 255 含两端，不定跨模式比较、数字方向、同值顺序或实际呈现。TS 24.483 [4] 在网指 §5.2.48B7 RelativePresentationPriority，离网指 §5.2.53B RelativePresentationPriority；只作定位，不把此值作 Common/MCPTT-group-call/Priority 或话权、抢占、Resource-Priority 报头。"
+    },
+    {
+      "id": "mcptt-user-profile-priority-user-initiating-and-receiving-priority",
+      "question": "MCPTT 用户配置档 Common/MCPTT-group-call 的 Priority 给谁用？只管发起，还是也管接收？",
+      "start": "topics/identity/mcptt-user-profile-priorities.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档 §8.3.2.7 的 Common/MCPTT-group-call/Priority 表示该 MCPTT 用户发起和接收 MCPTT 呼叫的优先级。数据语义段写 nonNegativeInteger，.3 该具名直子项用 xs:unsignedShort，.6 仍限 0 到 255 含两端。保留父容器和 MCPTT calls 原词，不因容器名加“仅组呼”，也不从用途句给私呼添加流程。TS 24.483 [4] §5.2.44 Priority 只作定位。不套某个组的呈现优先级、话权请求顺序或 Resource-Priority 报头。"
+    },
+    {
+      "id": "mcptt-user-profile-priority-group-schema-restriction-vs-user-type",
+      "question": "MCPTT 用户档组的 RelativePresentationPriority 与用户 Priority 的 Schema 类型一样吗？256 是哪一层不满足？",
+      "start": "topics/identity/mcptt-user-profile-priorities.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 用户档在网或离网组条目的 RelativePresentationPriority 位于同一 MCPTTGroupInfo/entry 可选 anyExt，与 GroupServerInfo 并列，不在其内。§8.3.2.3 该全局元素用 PriorityType，restriction base 是 xs:nonNegativeInteger，minInclusive=0/maxInclusive=255；条目的 anyExt 有 ##any/lax。Common/MCPTT-group-call/Priority 在 .1 提纲是零或一个，.3 是 MCPTTGroupCallType 的 0..unbounded choice 内具名 xs:unsignedShort 直子项，无 default/fixed；.7 写 nonNegativeInteger。整数 256 超出前者 Schema 的限制；后者的原始类型可表示 256，却仍不满足 .6 的 0 到 255。不能据局部类型、次数或一个合范围整数断整档接受、默认值或解析先后。"
+    },
+    {
+      "id": "mcptt-user-profile-priority-three-xdms-range-clauses",
+      "question": "MCPTT 用户配置档哪三处优先级越界时，XDMS 要返回 409 Conflict？0、255、256 怎样分？",
+      "start": "topics/identity/mcptt-user-profile-priorities.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档 §8.3.2.6 对 OnNetwork/MCPTTGroupInfo/entry/anyExt/RelativePresentationPriority 和 OffNetwork/MCPTTGroupInfo/entry/anyExt/RelativePresentationPriority 各列一条，另列 MCPTT-group-call 的 Priority（.1/.3 定位在 Common 下），不是四条或一条同名通配。各自范围 0 到 255 含两端；0/255 本身未越界，已确认的整数 256 越界。对应值越界时 XDMS 须返 HTTP 409 Conflict 并含 XCAP constraint-failure；若带 phrase，建议 Priority value out of range。RFC 4825 [14] 只是该条所列引用。范围内不保证整档通过，不用这三句替其他字段、CMS 业务配置或实况补结论。"
+    },
+    {
+      "id": "mcptt-user-profile-priority-range-phrase-and-missing-evidence",
+      "question": "MCPTT 用户档只看到 Priority value out of range、只看到 409，或优先级缺项，能确定是哪条校验吗？",
+      "start": "topics/identity/mcptt-user-profile-priorities.md",
+      "boundary": "TS 24.484 V20.1.0 MCPTT 用户配置档的在网和离网组 RelativePresentationPriority、Common/MCPTT-group-call 的用户 Priority 在 §8.3.2.6 有三个各自的 0 到 255 范围条件。确认其中一处整数越界才用该处范围句：XDMS 须返回 HTTP 409 Conflict 并含 XCAP constraint-failure，若带 phrase 则建议写 Priority value out of range，不强制带它。只见 409 或同短语不能辨别路径或验证实际响应；缺项、截断、非整数或格式错误不自动等于已证越界。0 是一个边界值，不是缺项默认。也不从同诊断推故障顺序、唯一拒因、最高/最低优先级或话权结果；其他 XCAP 检查按各自条件。"
     }
   ]
 }
