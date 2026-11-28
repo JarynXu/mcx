@@ -1,0 +1,239 @@
+{
+  "topic_id": "r19-iwf-private-call-setup-elements",
+  "release": 19,
+  "state": "clause-checked",
+  "common_conditions": [
+    "TS 23.283 V19.5.0，Rel‑19 Stage 2；IWF-1 私呼建立的两张信息流表。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-23.283-v19.5.0",
+  "claims": [
+    {
+      "id": "iwf-private-setup-called-identity-pair-and-id-routing",
+      "conditions": [
+        "可只查表、NOTE 1 或一条已识别的 IWF private call request 或 response；不需要两条消息同时在场。判某条实况是否满足带项条件，须实际识别 IWF-1 消息、区分主被叫且知道字段是否确实存在；截断或漏采不当成缺项。"
+      ],
+      "conclusion": "两表均用于 IWF↔MCPTT server。请求的主叫 MCPTT ID M，主叫功能别名 O；被叫 MCPTT ID、被叫功能别名各 O，但 NOTE 1 要求至少一个、两个都在则按被叫 ID 路由。应答的主叫 MCPTT ID M、被叫 MCPTT ID O，不列功能别名，不套请求 NOTE 1。网元方向不改变两方身份。",
+      "limitations": [
+        "两项已知都缺违反已辨明的完整请求 NOTE 1，不据此编出缺值处理、身份替换或 SIP 错误码。两个身份齐全时的路由优先不裁别名许可、激活、冲突处理、授权或实际到达；仅有别名也不保证解析或请求成功。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.2 Table 10.4.1.2-1 and NOTES 1–3 (request roles, fields and conditions)"
+          ],
+          "printed_pages": [
+            90
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.3 introduction, Table 10.4.1.3-1 and NOTE (response roles, fields and conditions)"
+          ],
+          "printed_pages": [
+            90,
+            91
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.1 (IWF-1 scope and external pointer)"
+          ],
+          "printed_pages": [
+            89
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-private-setup-floor-use-request-and-responses-have-different-meanings",
+      "conditions": [
+        "可独立查请求的任一话权字段、响应字段或已辨明的信息项。只有把两侧视为同一次尝试时才核对应请求和指示；若据字段出现来判规范条件，先确认这笔消息符合该表且字段确有，别从单个字段倒推整笔合规。"
+      ],
+      "conclusion": "请求 Use floor control indication M 表明本通是否用话权。Implicit floor request O 是发起客户端同时申请，NOTE 2 仅在发起客户端请求话权时可带。符合该表且出现后者，表示发起客户端申请话权；申请不使它必带。响应 Use floor control indication response O 和 Implicit floor request response O 分别表示原请求中相应指示是否可接受，不能互当。",
+      "limitations": [
+        "缺隐式项不证明未申请、禁用话权或失败；M 不等于值为 true。可接受的应答报告的是请求指示，不能据此把原值改成 true、断言话权已获授或已实发语音；表没给未知、缺项、矛盾项或跨操作的状态处理。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.2 Table 10.4.1.2-1 and NOTES 1–3 (request roles, fields and conditions)"
+          ],
+          "printed_pages": [
+            90
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.3 introduction, Table 10.4.1.3-1 and NOTE (response roles, fields and conditions)"
+          ],
+          "printed_pages": [
+            90,
+            91
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-private-setup-result-sdp-and-user-acceptance-are-not-the-same-state",
+      "conditions": [
+        "允许只问表的媒体项、Result、Acceptance confirmation 或一条已辨明应答，不须先找到原请求或抓媒体。只有认定是该请求的应答才核同一次尝试、身份、接口端点及配对证据；若判实际收到或建成媒体再查相应端点状态。"
+      ],
+      "conclusion": "请求 SDP offer M 写 MCPTT client 媒体参数；应答 SDP answer M 写选定参数、Result M 写该私呼请求成功或失败。该表没有因 Result 为失败把 SDP answer 改为 O。Acceptance confirmation O 表示用户是否明确接受，需按其值读；成功 Result 不能代它，用户明确接受也不能代 Result。",
+      "limitations": [
+        "仅见 SDP、接受字段存在或某一腿发出，不证明成功、被叫接听、另一端收到、媒体或话权。缺可选的接受确认不自动判接听失败、默认模式或改成手动；不套振铃和结束应答、其他接口状态码、或补所有失败的线级响应。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.2 Table 10.4.1.2-1 and NOTES 1–3 (request roles, fields and conditions)"
+          ],
+          "printed_pages": [
+            90
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.3 introduction, Table 10.4.1.3-1 and NOTE (response roles, fields and conditions)"
+          ],
+          "printed_pages": [
+            90,
+            91
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.1 (IWF-1 scope and external pointer)"
+          ],
+          "printed_pages": [
+            89
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-private-setup-encryption-mode-request-selector-versus-alternative-list",
+      "conditions": [
+        "可单查表中的 Encryption mode、请求算法项或应答算法列表，不必已知某部署使用 E2EE；判断实际选择、保护或媒体流内信息时，另据同一次通信的具体证据。"
+      ],
+      "conclusion": "请求 Encryption mode M 表示是否使用 E2EE；Encryption Algorithm O 指拟用算法，也可指示算法选择由媒体流内信息决定。应答 Encryption Algorithm(s) response O 是一项或多项替代算法列表，不是原请求的算法选择指示。",
+      "limitations": [
+        "带算法列表、选了某种 SDP 或报告成功，不证明本次最终选了哪个算法、实际媒体已按它保护或 E2EE 生效。表没有规定挑选优先级、确认流程、默认算法或媒体内容解析。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.2 Table 10.4.1.2-1 and NOTES 1–3 (request roles, fields and conditions)"
+          ],
+          "printed_pages": [
+            90
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.3 introduction, Table 10.4.1.3-1 and NOTE (response roles, fields and conditions)"
+          ],
+          "printed_pages": [
+            90,
+            91
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-private-setup-optional-mode-provenance-location-and-application-data",
+      "conditions": [
+        "规范字段、NOTE 与单条已经识别的消息可分别查。不把观察到一个可选字段当作其值确知或全条已经符合该表；判语义在实况跑过，另核对应上下文。"
+      ],
+      "conclusion": "请求的 Requested commencement mode、Requested priority、Location 均 O，分别写想用的开始模式、请求的应用优先级和主叫位置。Transfer indicator、Forwarding indicator 各为 O 的 true/false 来源指示。Remotely initiated call request indicator O 表示请求源于收到远程发起请求，仅用于远程发起呼叫；合规请求带此项才可据该限制判其属于这一场景。两表的 Additional application specific data O 均在 LMR 系统使用时可以带，GSM-R 的 UUI 只是例子。",
+      "limitations": [
+        "缺模式不补默认；缺远程发起指示不排除该类呼叫；转接／前转的字段存在、其具体值、操作完成与权限分开。位置项不是被叫位置或转发许可；不能从附加数据判 GSM-R 实际部署、必带、回显或读入其它规范的 UUI 格式。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.2 Table 10.4.1.2-1 and NOTES 1–3 (request roles, fields and conditions)"
+          ],
+          "printed_pages": [
+            90
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.4.1.3 introduction, Table 10.4.1.3-1 and NOTE (response roles, fields and conditions)"
+          ],
+          "printed_pages": [
+            90,
+            91
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    }
+  ],
+  "limitations": [
+    "可读规范或一条已识别消息。此处只说明表规定的信息和条件，不当作线上实现、完整建呼成功或其他参考点的规则。"
+  ],
+  "related": [
+    "private-automatic.md",
+    "private-manual.md",
+    "private-release.md",
+    "private-call-ringing-and-end-elements.md",
+    "private-encryption.md",
+    "floor-control-owner.md"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "independent_source_review": false,
+    "independent_usage_acceptance": false
+  }
+}

@@ -4644,6 +4644,38 @@
           "read": "topics/interworking/talker-location.md"
         }
       ]
+    },
+    {
+      "id": "iwf-private-call-setup-elements-target-and-response",
+      "question": "互通私呼被叫的 ID 或别名怎么填，成功、明确接受、话权响应和算法替代分别说明什么？",
+      "start": "topics/interworking/private-call-setup-elements.md",
+      "boundary": "TS 23.283 V19.5.0 Stage 2 §10.4.1.1–.3，IWF-1 双向，主被叫不随发送方向换位。请求主叫 ID M、主叫别名 O；被叫 ID 与别名至少一个，两者均有按被叫 ID 路由。应答主叫 ID M、被叫 ID O，不搬这条 NOTE。请求 Use floor control indication M 说是否使用，Implicit floor request O 仅在发起客户端申请时可带；呼叫远程发起指示也仅在相应呼叫可带。缺项不反推。应答 Result M 报请求结果、SDP answer M 报选定媒体，Acceptance confirmation O 按值判断用户是否明确接受。两个话权 response O 报原请求指示可接受性，不授予话权。请求 Encryption mode M 说是否用 E2EE，算法 O 可指示从媒体流取选择；应答算法 O 是替代列表、非已选或已启用。主叫位置、请求优先级及 LMR 可选附加数据不代授权或结果。可直接查规则或单条已辨明消息；要关联实际请求再核端点和该次，收件、终端接受与媒体另证。",
+      "next_if": [
+        {
+          "condition": "实际问已选自动私呼的两方向、别名解析和替代参数重试，不只读表。",
+          "read": "topics/interworking/private-automatic.md"
+        },
+        {
+          "condition": "实际是手动建立及等待被叫明确接受，不以 Result 或可选字段替其步骤。",
+          "read": "topics/interworking/private-manual.md"
+        },
+        {
+          "condition": "已辨明是 IWF ringing 或 call end 消息，按其不同身份及字段；不套建呼表。",
+          "read": "topics/interworking/private-call-ringing-and-end-elements.md"
+        },
+        {
+          "condition": "确认是这通已建立私呼后来释放，查实际双方确认、原因与资源。",
+          "read": "topics/interworking/private-release.md"
+        },
+        {
+          "condition": "只问互通私呼的 MC 保护和 LMR 端到端保护条件，不以算法列表认实际加密。",
+          "read": "topics/interworking/private-encryption.md"
+        },
+        {
+          "condition": "实际问已建立且启用话权时谁作最终裁决、有没有许可，不只读建立指示。",
+          "read": "topics/interworking/floor-control-owner.md"
+        }
+      ]
     }
   ]
 }
