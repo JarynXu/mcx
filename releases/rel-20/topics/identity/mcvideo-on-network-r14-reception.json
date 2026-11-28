@@ -1,0 +1,157 @@
+{
+  "topic_id": "r20-identity-mcvideo-on-network-r14-reception",
+  "release": 20,
+  "state": "clause-checked",
+  "standard_stage": 3,
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。仅查 MCVideo 在网业务档 on-network/anyExt/tc-timers-counters-R14 的 reception-hang-time、T6/T11 和 C6/C7/C11。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "claims": [
+    {
+      "id": "mcvideo-on-network-r14-reception-block-types-and-c7-spelling",
+      "clause": "9.4.2.3",
+      "conditions": [
+        "查在网 R14 的实际声明、出现约束或 C7 的原文字面，不以已有配置样本为前提。"
+      ],
+      "conclusion": "§9.4.2.1 在网 6(d) 在可选 anyExt 内列 tc-timers-counters-R14；§9.4.2.3 的 R14 是独立全局声明，不是 on-network 的具名直接子项。R14 块已存在时，reception-hang-time、T6-reception-granted、T11-stream-reception-idle 是必需的 xs:duration；C6-reception-granted、C7-reception-accpeted、C11-media-receivers 是必需的 xs:unsignedByte，均无 default/fixed。它们不是全部成员。C7 在 Schema（.3）原写 accpeted，在 .1/.6/.7 原写 C7-reception-accepted，不判是可互换标签、勘误、实际接受或未知项。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.1"
+          ],
+          "items": [
+            "on-network item 6(d), names x–xii and xv–xvii by order; C7-reception-accepted"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.3"
+          ],
+          "items": [
+            "optional outer on-network anyExt; global tc-timers-counters-R14; local six required declarations including C7-reception-accpeted"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.6"
+          ],
+          "items": [
+            "on-network counter range (i), literal C7-reception-accepted"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "on-network item 18(p), literal C7-reception-accepted"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-on-network-r14-reception-private-release-wait-vs-idle-stream",
+      "clause": "9.4.2.7",
+      "conditions": [
+        "区分参与者已请求接收媒体的私呼场景和接收空闲的媒体流场景，只查配置项用途。"
+      ],
+      "conclusion": "§9.4.2.7 在网 18(j) 的 reception-hang-time 是参与者已请求接收媒体时传输控制服务器释放私呼前应等待的时长。18(l) 的 T11-stream-reception-idle 是接收空闲时传输控制服务器终止媒体流前应等待的时长。接收请求不等于收到了媒体，接收空闲不等于整通释放。18(f) 的 private-call-hang-timer、18(d) 的 T103 等接收请求响应是别的字段；不把这里的时长当作实收、计时起点、实际释放或终止证据。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "on-network 18(j) requested reception/private-call release wait; 18(l) idle reception/stream termination wait; 18(f)/(d) comparison only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-on-network-r14-reception-t6-grant-wait-either-condition",
+      "clause": "9.4.2.7",
+      "conditions": [
+        "查 T6 的原文重发对象和适用条件；若查现场，区分服务器实际未收到与抓包未见、已失去与尚未授予。"
+      ],
+      "conclusion": "§9.4.2.7 在网 18(k) 的 T6-reception-granted 是传输控制服务器重发 Transmission Grant 前应等待的时长；条件是未收到 RTP 包或参与者失去发送许可，不要求两者同时成立。缺日志不证明服务器未收到，没见到授予不证明曾授予的许可已丢失。不把 Transmission Grant 改作 Reception Grant 或 T4 的 Transmission Granted，也不补 T4 的收到 Transmission Release 截止条件、实际开始或重发。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "on-network 18(k) literal Transmission Grant and two OR conditions; 18(i) differing Transmission Granted comparison only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-on-network-r14-reception-c6-c7-counter-roles-and-c11-cap",
+      "clause": "9.4.2.7",
+      "conditions": [
+        "查计数值对应的对象，而非实际计数过程、用户清点或本次传输结果。"
+      ],
+      "conclusion": "§9.4.2.7 在网 18(o)/(p) 的 C6-reception-granted 和 C7-reception-accepted 分别是接收授予、接收接受的计数值；18(q) 的 C11-media-receivers 是媒体接收者数量计数器的最大值，不是现场人数或整网用户上限。三项指向 TS 24.581 [29]，不引入其正文。本段没明说 C6 控制 T6；不从这些值推最大重发次数、首发是否计入、计数算法或超额处理。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "on-network 18(o)/(p) counter-value pointers and 18(q) maximum counter value for number of media receivers, TS 24.581 [29] only; 18(k)/(i) comparison only"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mcvideo-on-network-r14-reception-duration-format-vs-counter-range",
+      "clause": "9.4.2.6",
+      "conditions": [
+        "按已提供的具体值与该字段所属清单核对；不以只见同一错误码或缺了标签代替触发证据。"
+      ],
+      "conclusion": "§9.4.2.6 后一份 xs:duration 清单第 5–7 项是 reception-hang-time、T6、T11，须按秒表示 PT<h>H<m>M<n>S（<n> 是有效秒值），格式句原写 PT <n>S；注 6 的 PT0.3S 只例示 300 ms。三项中任一值不合该结构，CMS 须 HTTP 409 含 XCAP constraint-failure，带 phrase 建议 invalid format for duration；不移用前一清单另列的无效 <n> 诊断，不判实际解析或接受。C6/C7/C11 是 (h)–(j) 的 0..255 整数，含两端，(i) 写 C7-reception-accepted。任一值不符须同码及 XCAP 元素，带 phrase 建议 syntactically incorrect timer value 并含不合要求的标识（T101 为例），不规定拼接。缺项不是收到坏值；同码不指明原因或处理先后，不用 (i) 解决 Schema 拼写。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.6"
+          ],
+          "items": [
+            "R14 integer range (h)–(j), common response incl optional recommended reason and identity; second duration list items 5–7, seconds, both literal forms, NOTE 6 and scoped response; earlier invalid-n sentence as comparison only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.3"
+          ],
+          "items": [
+            "selected three required durations and three required counters; C7 literal comparison and separate presence constraint"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "不推离网、MCPTT、R14 其余字段或 R15/R18。TS 24.581 [29] 只作指向。未验证真实 CMS 解析、计时、重发、权限或释放。"
+  ],
+  "related": [
+    "r20-identity-mcvideo-on-network-r14-transmission-timers",
+    "r20-identity-mcvideo-on-network-r14-transmission-retries",
+    "r20-identity-mcvideo-mcdata-service-config-validation"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
