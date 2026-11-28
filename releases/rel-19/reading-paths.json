@@ -4580,6 +4580,34 @@
           "read": "topics/interworking/floor-override.md"
         }
       ]
+    },
+    {
+      "id": "iwf-lmr-host-floor-filtering-local-reject-and-remote-outcomes",
+      "question": "LMR 主控互通组的原生拒绝是本地筛掉还是 IWF 仲裁返回？哪一条是最终授予？",
+      "start": "topics/interworking/floor-filtering.md#lmr-组主控谁拒绝竞争请求哪条才是最终授予",
+      "boundary": "TS 23.283 V19.5.0 Stage 2 §10.5.5/.7，双方已归属、互通组呼进行中且话权起初空闲；查规则或已辨明一条消息不需全链。两支最终都是 IWF 与 LMR 系统协同仲裁。.5 组归属 LMR 时若 MCPTT server 本地筛选：3 预选客户端 1（未授予）、4 本地拒绝客户端 2；5 只把选中的请求发给 IWF；6 IWF→server Granted，7 原生 Granted 给 1，8 原生 Taken 给 2。.7 组定义在 LMR 且 MCPTT 不筛选：3 分别转交两客户端请求，4 IWF→server 三条：客户端 1 的 Granted、客户端 2 的 Rejected、为客户端 2 准备的 Taken（报告客户端 1 获授）；5/6/7 原生腿分别为 2 的拒绝、1 的授予、2 的占用。该 NOTE 为每个其他已归属同组 MCPTT 客户端各发一条 IWF→server Taken，不要求这些人申请、不证明后续原生或终端实收；不移入 .8 的代理归属规则。只见原生拒绝或跨网消息数量不定本次过滤方式；授予、占用、实际收件、用户提示和语音分查。",
+      "next_if": [
+        {
+          "condition": "实际组归属／定义和最终话权控制在 MCPTT，不是 LMR，查 .6/.8。",
+          "read": "topics/interworking/floor-filtering.md#mcptt-组主控拒绝和占用通知分别按谁发"
+        },
+        {
+          "condition": "只问已辨明的 IWF Floor Request／Granted／Rejected／Taken 的角色、字段和通用确认。",
+          "read": "topics/interworking/floor-signals.md"
+        },
+        {
+          "condition": "独立核代表或逐人归属、组主控，不从此例输出要求反推配置。",
+          "read": "topics/interworking/affiliation-representation.md"
+        },
+        {
+          "condition": "实际是已建立的互通私呼话权控制，不是空闲的 LMR 主控组呼。",
+          "read": "topics/interworking/floor-control-owner.md"
+        },
+        {
+          "condition": "话权已有人持有且在查旧话者无法收到撤销信息的覆盖流程。",
+          "read": "topics/interworking/floor-override.md"
+        }
+      ]
     }
   ]
 }
