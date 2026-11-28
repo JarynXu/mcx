@@ -1,0 +1,274 @@
+{
+  "topic_id": "r20-identity-mcvideo-mcdata-signalling-protection-config",
+  "release": 20,
+  "state": "clause-checked",
+  "common_conditions": [
+    "3GPP TS 24.484 V20.1.0，Release 20，Stage 3。这里核 MCVideo 与 MCData 各自在网业务配置中的信令保护。先辨对应业务和客户端与服务器之间、服务器之间的哪一段；不把条文移到离网、初始 UE 档或其他业务。查配置定义不以已观察到某条信令为前提。"
+  ],
+  "condition_rule": "Inherit common_conditions and add claim conditions.",
+  "source_catalog": "../../sources.json",
+  "source_id": "3gpp-ts-24.484-v20.1.0",
+  "standard_stage": 3,
+  "claims": [
+    {
+      "id": "video-data-signalling-protection-client-confidentiality-and-integrity",
+      "clause": "9.4.2.7",
+      "conditions": [
+        "查 MCVideo 或 MCData 本业务客户端与本业务服务器之间，在网配置中要区分信令的保密性与完整性。"
+      ],
+      "conclusion": "两类在网业务档都在 on-network/signalling-protection 内分别用 confidentiality-protection 表示信令保密性、integrity-protection 表示信令完整性是否启用。MCVideo 定位 §9.4.2.7 在网项 1/2，MCData 定位 §10.4.2.7 在网项 7/8，各指对应业务的客户端与服务器之间。两种属性独立查，不能用另一项或服务器间同业务配置代答，也不是媒体保护或实际用上了保护。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.1"
+          ],
+          "items": [
+            "on-network item 1 lists client-server block and both children"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "on-network items 1 and 2; confidentiality and integrity separately between MCVideo client and server"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.1"
+          ],
+          "items": [
+            "on-network item 2 lists client-server block and both children"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.7"
+          ],
+          "items": [
+            "on-network items 7 and 8; confidentiality and integrity separately between MCData client and server"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "video-data-signalling-protection-video-server-signalling-vs-transmission-control",
+      "clause": "9.4.2.7",
+      "conditions": [
+        "查 MCVideo 在网配置的服务器间一段；区分一般 MCVideo 信令与 MCVideo 传输控制信令。"
+      ],
+      "conclusion": "on-network/protection-between-mcvideo-servers 下，§9.4.2.7 在网项 3 的 allow-signalling-protection 表示 MCVideo 服务器间信令保护是否启用；项 4 的 allow-transmission-control-protection 表示同一服务器间的 MCVideo 传输控制信令保护是否启用。按目标信令分别查，不能用一项推出另一项的值或联动，也不借 MCPTT 的话权控制字段。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.1"
+          ],
+          "items": [
+            "on-network item 2 and its two listed children"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.3"
+          ],
+          "items": [
+            "optional named parent in on-networkType; separately declared allow-signalling-protection and allow-transmission-control-protection in server-protectionType"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "on-network items 3 and 4; general and transmission-control signalling between MCVideo servers"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "video-data-signalling-protection-data-server-declared-signalling",
+      "clause": "10.4.2.7",
+      "conditions": [
+        "查 MCData 在网配置中服务器间信令保护的本业务已声明开关，不预设另一个开关。"
+      ],
+      "conclusion": "on-network/protection-between-mcdata-servers 的已声明具名布尔项是 allow-signalling-protection。§10.4.2.7 在网项 12 表示 MCData 服务器间信令保护是否启用，不拿客户端保密性或完整性替代。§10.4.2.3 的 server-protectionType 还声明可选 anyExt 与 ##other/lax 通配；它们不构成另一个具名保护开关，也不证明某次请求或扩展被接受。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.1"
+          ],
+          "items": [
+            "on-network item 3 has allow-signalling-protection"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.3"
+          ],
+          "items": [
+            "optional named parent in on-networkType; one named boolean plus extensions in server-protectionType"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.7"
+          ],
+          "items": [
+            "on-network item 12, MCData signalling between MCData servers"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "video-data-signalling-protection-data-note-floor-control-name-without-declaration",
+      "clause": "10.4.2.7",
+      "conditions": [
+        "查 MCData §10.4.2.7 注 1 的第四个名称是否能作为本版在网业务档信令保护字段。"
+      ],
+      "conclusion": "§10.4.2.7 注 1 原样把 allow-floor-control-protection 与另外三项并列为默认 true，但同版本 MCData 在网结构 §10.4.2.1 未列该名，§10.4.2.3 的 MCData Schema 未声明，§10.4.2.6 未给这一项的默认说明，§10.4.2.7 在网项未给它位置和业务语义。保留注 1 的字面，不从注增加一个已定义开关、自动补值或改成 MCVideo 的 allow-transmission-control-protection。不套 MCPTT 同名字段；没有本业务声明不等于判 CMS 拒绝扩展、判未知分类或判实际不保护。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.1"
+          ],
+          "items": [
+            "on-network items 2 and 3 list only the declared protection fields"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.3"
+          ],
+          "items": [
+            "MCData signalling-protectionType and server-protectionType; no allow-floor-control-protection declaration"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.6"
+          ],
+          "items": [
+            "default statements for the three declared fields only"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.7"
+          ],
+          "items": [
+            "on-network items 7, 8 and 12 versus Note 1 literal fourth name after item 13"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "video-data-signalling-protection-schema-optional-fields-and-defaults",
+      "clause": "9.4.2.3",
+      "conditions": [
+        "按实际业务、路径和证据检查已声明父块和布尔叶；区分全量档已知缺失、有效空元素、显式布尔值和未知的片段。"
+      ],
+      "conclusion": "§9.4.2.6 分述 MCVideo 四个已声明字段默认 true，§10.4.2.6 分述 MCData 三个；均指对应保护启用。§9.4.2.7 注 1 点名 MCVideo 四项，MCData 注 1 有额外未定义名称，不能算第四个 Schema 默认项。两业务的 signalling-protection 和本业务服务器间父块在 on-network 直接序列各 minOccurs=0，无默认值；已声明子项分别为 xs:boolean、minOccurs=0、default=true，并非 fixed。已出现、没有字符或子元素且符合声明的布尔元素可在 XSD 校验中取得该默认值；缺子项或缺父块不会生成元素。显式 false 不被覆盖。缺失需按完整证据判断；此规则不证明整档通过、CMS 回填或实际保护。",
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.1"
+          ],
+          "items": [
+            "on-network items 1 and 2 list optional parent blocks and corresponding children"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.3"
+          ],
+          "items": [
+            "optional parents without defaults; optional Boolean leaves default true, not fixed"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.6"
+          ],
+          "items": [
+            "four default true statements for the two client/server and two between-server settings"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "9.4.2.7"
+          ],
+          "items": [
+            "on-network Note 1 explicitly names all four declared MCVideo settings"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.1"
+          ],
+          "items": [
+            "on-network items 2 and 3 list optional parent blocks and corresponding children"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.3"
+          ],
+          "items": [
+            "optional parents without defaults; three optional Boolean leaves default true, not fixed"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.6"
+          ],
+          "items": [
+            "three default true statements for declared MCData settings"
+          ]
+        },
+        {
+          "source_id": "3gpp-ts-24.484-v20.1.0",
+          "clauses": [
+            "10.4.2.7"
+          ],
+          "items": [
+            "on-network Note 1 fourth literal is not a schema default declaration for MCData"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "这些字段说明配置是否启用对应信令保护，不规定实际加密、完整性、认证机制或算法，不据此判断媒体保护、TLS、会话密钥、消息是否受保护或 CMS 响应。"
+  ],
+  "related": [
+    "r20-identity-mcptt-on-network-signalling-protection-config",
+    "r20-identity-mcvideo-mcdata-service-config-validation",
+    "r20-identity-initial-ue-tls-tunnel-validation"
+  ],
+  "verification": {
+    "original_clauses_checked": true,
+    "implementation_validated": false
+  }
+}
