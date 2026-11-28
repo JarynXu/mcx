@@ -4312,6 +4312,22 @@
           "read": "topics/interworking/configuration-updates.md"
         }
       ]
+    },
+    {
+      "id": "iwf-group-notify-reference-or-key-material-and-result",
+      "question": "组配置 Notify 至少带哪个字段？谁发通知，Result 是否表示配置已应用？",
+      "start": "topics/interworking/configuration-updates.md#组配置变更通知带什么应答成功说明什么",
+      "boundary": "TS 23.283 V19.5.0，Rel‑19 Stage 2 IWF‑1。.14 通知由该组主系统侧发：MC 主是 MC GMS→IWF，IWF 主是 IWF→MC GMS；.15 反向。§10.2.3.7 要 IWF 已订阅同组 primary MC GMS，且 GMS 收到并保存新组配置；.9 要 MC GMS 已向 IWF 订阅同组且 IWF 有新信息，不搬 .7 的收到并保存前件。.9 Step2 正文多一个 notify，图和表是同一通知应答，不加第二条。.14 M 组 ID，O 的组信息引用与组相关密钥材料按 NOTE 至少带一项；两项同见未违反此条件，完整请求都没有则不满足。引用不是配置本体；日志截断不裁缺项。.15 M 组 ID+Result，报通知请求成败，不是 .11 提供处理、.13 订阅或传输 ACK。单条先查表，配对才核同组、类型、端点和上下文。应答已发与实际收件分开，匹配成功也不证明引用已取、配置或密钥已应用或成员收到。",
+      "next_if": [
+        {
+          "condition": "实际问 .12/.13 的订阅发送及结果，不是后来通知。",
+          "read": "topics/interworking/configuration-updates.md#订阅请求发给谁成功应答说明什么"
+        },
+        {
+          "condition": "实际问主动提供组配置本身和其 .11 处理结果，不是携带引用或密钥材料的 .14 通知。",
+          "read": "topics/interworking/group-configuration.md#主动提供的应答确认了什么"
+        }
+      ]
     }
   ]
 }

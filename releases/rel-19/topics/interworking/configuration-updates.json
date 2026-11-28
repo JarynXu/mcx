@@ -207,6 +207,202 @@
         "independent_source_review": false,
         "independent_usage_acceptance": false
       }
+    },
+    {
+      "id": "iwf-group-notify-primary-system-direction-not-message-type-or-prior-events",
+      "conditions": [
+        "可查 .14/.15 的方向、表项或同一组的主系统分支，也可单读已辨认的信息流，不要求先观察另一腿。实况判一条方向是否适用，看该组的主系统和实际消息类型；只有主张多条相互对应，才核同组、两端、类型和上下文。"
+      ],
+      "conclusion": "§10.2.1.1 限 IWF‑1 组管理。以 MC 为该组主系统时，.14 通知是 MC GMS→IWF、.15 应答反向；以 IWF 为该组主系统时，.14 IWF→MC GMS、.15 反向。发布变更的通知方向与 .12 订阅请求相反，而同向的 .13 订阅应答也不变成通知。",
+      "limitations": [
+        "单用 IWF/GMS 名字、某个用户的主系统或某条方向，不定本组主系统、消息类型、对方订阅状态或是否实收。正反两腿及实际收件分别核；不把该表用于终端通知或传输 ACK。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.1 (IWF-1 group management scope only)"
+          ],
+          "printed_pages": [
+            23
+          ],
+          "usage": "dependency"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.14, Table 10.2.1.14-1 and NOTE (primary-based notify direction, reference or related key material)"
+          ],
+          "printed_pages": [
+            25,
+            26
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.15, Table 10.2.1.15-1 (opposite direction, group ID and notification-result roles)"
+          ],
+          "printed_pages": [
+            26
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.10–.13, Tables 10.2.1.10-1 to 10.2.1.13-1 (provision and subscription comparators only)"
+          ],
+          "printed_pages": [
+            24,
+            25
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-group-notify-request-at-least-one-reference-or-key-material",
+      "conditions": [
+        "可独立查 .14 的字段、NOTE 或某一项的作用，不需先有实际报文、.15 或成功订阅证明。检查存在条件时用完整且辨认出的同一次 .14；截断、脱敏不可读或未看到字段不作为实际缺项。"
+      ],
+      "conclusion": "表 10.2.1.14‑1 中 MC service group ID 为 M，指被通知的组。MC service group information reference 为 O，指已保存的组相关信息；Group related key material 为 O，指用于该组的密钥材料。NOTE 要求两项至少带其一，只有引用、只有密钥材料或两项都有，均满足这条存在条件；仅有组 ID 的完整 .14 不满足 NOTE。",
+      "limitations": [
+        "引用不是配置本身，也不证明接收者能访问、已获取或保存引用内容。表不定义引用格式、缺项/空值处理、密钥分派授权、实际启用或通信保护。两项同见不等于全消息符合其他条件。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.14, Table 10.2.1.14-1 and NOTE (primary-based notify direction, reference or related key material)"
+          ],
+          "printed_pages": [
+            25,
+            26
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.10–.13, Tables 10.2.1.10-1 to 10.2.1.13-1 (provision and subscription comparators only)"
+          ],
+          "printed_pages": [
+            24,
+            25
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-group-notify-procedure-subscribed-and-sender-new-information",
+      "conditions": [
+        "可直接查 §10.2.3.7 或 .9 的相关前件、方向或图文名称，不需现场。判某次流程时，按实际主系统和收发角色核同组已有订阅及该支发端的新信息条件，不凭一个 Result 或一条发送记录倒推这些事实。"
+      ],
+      "conclusion": "§10.2.3.7：IWF 已订阅组的 primary MC GMS，GMS 收到并保存该组新配置后，步骤 1 GMS→IWF 发通知，2 IWF 回应。§10.2.3.9：MC GMS 已向 IWF 订阅同组，IWF 有该组新信息时，步骤 1 IWF→GMS 发通知，2 GMS 回应；本支没有另列 IWF 收到并保存。§.9 步骤 2 正文写 IWF notify group information notify response；图 .9‑1 与 .15 表写 IWF group information notify response，都指该步的一条通知应答。",
+      "limitations": [
+        "不把两支的新信息条件合并为一律要求接收并保存，也不拿当前配置存在代订阅。图文名字差异不新增应答、传输确认或重试。这里只给阶段 2 流程，不给编码、实收或应用证明。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.3.7 and 10.2.3.9, Figures 10.2.3.7-1/.9-1 (different new-information conditions, notification steps, literal .9 response name)"
+          ],
+          "printed_pages": [
+            33,
+            34
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.14, Table 10.2.1.14-1 and NOTE (primary-based notify direction, reference or related key material)"
+          ],
+          "printed_pages": [
+            25,
+            26
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.15, Table 10.2.1.15-1 (opposite direction, group ID and notification-result roles)"
+          ],
+          "printed_pages": [
+            26
+          ],
+          "usage": "primary"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
+    },
+    {
+      "id": "iwf-group-notify-result-reports-notify-not-provision-or-subscription",
+      "conditions": [
+        "可独立查 .15 的字段或已辨认的单条 .15，无需同时看到 .14、订阅或应用。对实际回包归属、通知方是否已收到以及收件方是否处理，分别查同次关联、具体收件和对应状态证据。"
+      ],
+      "conclusion": "表 10.2.1.15‑1 的 MC service group ID 与 Result 均 M，Result 报告通知请求成功或失败。同样的组 ID 和 Result 字段也见于 .11 主动提供应答或 .13 订阅应答，但各自结果只对本操作；其中 .11 报提供配置的接收、修改和保存，.13 报订阅成败。.15 不列组配置、引用、密钥材料或逐动作状态。",
+      "limitations": [
+        "看到应答生成或发出不等于通知方实收；即使实收对应成功 .15，也只确认获得对端发回的通知结果，不证明配置或密钥已获取、保存、启用、分发给组员或后续通知已达。不从结果推传输层确认、失败细因或重试办法。"
+      ],
+      "source_references": [
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.15, Table 10.2.1.15-1 (opposite direction, group ID and notification-result roles)"
+          ],
+          "printed_pages": [
+            26
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.3.7 and 10.2.3.9, Figures 10.2.3.7-1/.9-1 (different new-information conditions, notification steps, literal .9 response name)"
+          ],
+          "printed_pages": [
+            33,
+            34
+          ],
+          "usage": "primary"
+        },
+        {
+          "source_id": "3gpp-ts-23.283-v19.5.0",
+          "clauses": [
+            "10.2.1.10–.13, Tables 10.2.1.10-1 to 10.2.1.13-1 (provision and subscription comparators only)"
+          ],
+          "printed_pages": [
+            24,
+            25
+          ],
+          "usage": "comparison-only"
+        }
+      ],
+      "verification": {
+        "original_clauses_checked": true,
+        "independent_source_review": false,
+        "independent_usage_acceptance": false
+      }
     }
   ],
   "limitations": [
